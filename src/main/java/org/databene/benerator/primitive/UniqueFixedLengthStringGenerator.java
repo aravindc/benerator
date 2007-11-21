@@ -114,7 +114,7 @@ public class UniqueFixedLengthStringGenerator extends LightweightGenerator<Strin
 
     public String toString() {
         return getClass().getSimpleName() + "[length=" + length + ", charset=" +
-                ArrayFormat.formatCharArray(",", digitSymbols) + ']'; 
+                ArrayFormat.formatChars(",", digitSymbols) + ']'; 
     }
 
 }

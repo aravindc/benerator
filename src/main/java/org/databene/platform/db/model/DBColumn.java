@@ -186,7 +186,7 @@ public class DBColumn {
         StringBuilder builder = new StringBuilder(name).append(" : ").append(type);
         if (modifiers.length > 0) {
             builder.append('(');
-            builder.append(ArrayFormat.formatIntArray(",", modifiers));
+            builder.append(ArrayFormat.formatInts(",", modifiers));
             builder.append(')');
         }
         if (!isNullable())

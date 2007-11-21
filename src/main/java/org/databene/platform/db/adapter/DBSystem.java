@@ -396,7 +396,7 @@ public class DBSystem implements System {
                         descriptor.setPrecision(precision(modifiers[1]));
                         break;
                 default:logger.error("ignored size(s) for " + columnId + ": " +
-                            ArrayFormat.format(", ", modifiers));
+                            ArrayFormat.formatInts(", ", modifiers));
             }
             descriptor.setNullable(column.getNotNullConstraint() == null);
             List<DBConstraint> ukConstraints = column.getUkConstraints();

@@ -78,7 +78,7 @@ public class GeneratorFactoryTest extends TestCase {
             int index = (int)((d - min.doubleValue()) / precision.doubleValue());
             count[index]++;
         }
-        logger.debug(weightFunction + ": " + ArrayFormat.format(", ", count));
+        logger.debug(weightFunction + ": " + ArrayFormat.formatInts(", ", count));
     }
 
     // BigDecimal source --------------------------------------------------------------------------------------------

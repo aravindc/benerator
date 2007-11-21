@@ -36,6 +36,7 @@ import org.databene.model.converter.ConvertingIterable;
 import org.databene.model.format.PadFormat;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileLineIterable;
+import org.databene.document.flat.FlatFileUtil;
 import org.databene.commons.SystemInfo;
 
 import java.util.Iterator;

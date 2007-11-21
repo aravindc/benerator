@@ -130,6 +130,6 @@ public class UniqueStringGenerator implements Generator<String> {
 
     public String toString() {
         return getClass().getSimpleName() + '[' + minLength + "<=length<=" + maxLength + ", " +
-                "charSet=[" + ArrayFormat.format(", ", charSet) + "]]";
+                "charSet=[" + ArrayFormat.formatChars(", ", charSet) + "]]";
     }
 }
