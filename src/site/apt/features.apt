@@ -1,0 +1,126 @@
+                    --------
+                    features
+                    --------
+
+
+features
+
+  <<easy design, implementation and usage>> of data providers for load testing:
+    The process of designing and generating valid complex load test data is
+    reduced from weeks to days. Even better: smaller-budget projects now get the
+    chance to load-test at all!
+
+  provides for <<high volume processing>>: benerator is designed to process and create resources of unlimited size.
+
+  <<efficient operation>>: benchmark is to generate at least one million objects per hour on common developer hardware.
+
+  <<domain packages>> provide for easy localized and regionalized creation of commonly used entities:
+
+    * <<address>>: Street, house number, zip code city name, country, phone number.
+
+    * <<person>>: names, titles, salutations, address.
+
+    * <<further domain packages>> are planned and developed on demand or posibility.
+
+  <<data quality assurance>>
+
+    * <<supports single and multi-field constraints>> e.g. generating
+      consistent values for a person's gender, salutation and first name.
+
+    * <<ability to validate generated data>>:
+      Data will be generated according to the constraints definitions. If the
+      tested application uses secret knowledge for input validation, a custom validator
+      may be plugged in to filter out inadequate data sets, e.g. for validating
+      addresses against a postal database.
+
+  <<ease of use for programmers>>: APIs are provided or planned for the following purposes:
+
+      * <<dynamic data creation or access>> for stress test applications (planned).
+
+      * <<command line invocation>> for continuous integration (planned).
+
+      * Providing an initial database setup for <<application deployment>> (planned).
+
+      * Providing and ensuring consistent data for <<unit tests>> (planned).
+
+  <<component based, easily extensible API>>
+
+    * <<Predefined generators>>
+      provide generation of simple data types, arrays, collection and strings that match regular expressions
+
+    * <<extensibility by custom generators>>: A clear component contract for generators provides for
+      easy implementation of custom generators and clean life cycle and resource management.
+
+    * <<internationalization>>:
+      Generated data can be converted with different formats (like time values) or different
+      languages (like salutations or titles).
+
+    * <<region concept>>:
+      Data can be categorized and grouped hierarchically (e.g. cities of a state, country or continent).
+
+  <<customizability>>
+
+    * <<accepts input in multiple formats from multiple sources>>:
+      Specifying a data model is easy.
+      A multitude of generator mechanisms is provided, like file or database import,
+      regular expressions generators, sample lists, distribution functions and
+      different input formats.
+
+    * <<provides output in multiple formats at the same time (planned)>>:
+      Since generated information later may not be retrievable from the target systems
+      (e.g. pin numbers), simultaneous output into multiple databases should be provided
+      (e.g. users into database and csv file). A plugin mechanism for data output should
+      be provided to store data in other systems (e.g. LDAP) or file format (e.g.
+      proprietary formats).
+
+    * <<import of complex data>> (planned):
+      Import of entites (or -better- entity graphs) from databases and files.
+
+    * offers <<powerful randomization options>> and is extendable by custom ones.
+
+  <<data generation from scratch>>
+
+  <<import and anonymization of production data>>:
+    Existing data can be imported and anonymized by overwriting certain attributes
+    with generated data.
+
+  <<little dependency to external libraries>>:
+    For maximum compatibility with the runtime environment, the use of 3rd party tools
+    is avoided where possible.
+
+    * FreeMarker is not required for operation (unless you relly need to use FreeMarker templates.
+
+    * commons-logging is required but actually used to increase plattform independence
+      by allowing to plug in to different logging infrastructures.
+
+  <<Support for all major databases>>
+
+  * benerator was tested with and provides examples for
+
+    * Oracle 10g (thin driver)
+
+    * DB2
+
+    * MS SQL Server
+
+    * MySQL 5
+
+    * PostgreSQL 8.2
+
+    * HSQL 1.8
+
+    * Derby 10.3    
+
+limitations of v0.3.01
+
+  * At least Java 5.0 required
+
+  * Only the most common and simple sql types are supported
+
+  * Single-threaded
+
+  * API not final
+
+  * region concept not final, currently limited to country level
+
+  * uniqueness concept not applicable for large data volumes

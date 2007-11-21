@@ -1,0 +1,74 @@
+/*
+ * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.benerator;
+
+import org.databene.commons.ArrayFormat;
+
+/**
+ * Created: 16.12.2006 19:36:25
+ */
+public class SequenceTestGenerator<E> implements Generator<E> {
+
+    private E[] sequence;
+    int cursor;
+
+    public SequenceTestGenerator(E... sequence) {
+        this.sequence = sequence;
+        this.cursor = 0;
+    }
+
+    public void validate() {
+        if (sequence == null)
+            throw new IllegalArgumentException("sequence is null");
+    }
+
+    public Class<E> getGeneratedType() {
+        return (Class<E>) sequence[0].getClass();
+    }
+
+    public E generate() {
+        if (cursor >= sequence.length)
+            throw new IllegalGeneratorStateException("End of sequence reached");
+        return sequence[cursor++];
+    }
+
+    public boolean available() {
+        return cursor < sequence.length;
+    }
+
+    public void reset() {
+        this.cursor = 0;
+    }
+
+    public void close() {
+        this.cursor = sequence.length;
+    }
+
+    public String toString() {
+        return getClass().getSimpleName() + '[' + ArrayFormat.format(sequence) + ']';
+    }
+}

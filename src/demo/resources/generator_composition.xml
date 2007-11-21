@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.02.dtd"-->
+<setup>
+
+    <!-- creates a text generator -->
+    <bean id="textGen" class="org.databene.benerator.primitive.regex.RegexStringGenerator">
+        <property name="pattern" value="([a-z]{3,8}[ ])*[a-z]{3,8}\."/>
+    </bean>
+
+    <!-- wraps the text generator and creates messages -->
+    <create-entities name="message" count="10">
+        <attribute name="text" source="textGen"
+                   converter="org.databene.model.converter.MessageConverter" pattern="Message: ''{0}''"/>
+        <processor class="org.databene.model.processor.LoggingProcessor"/>
+    </create-entities>
+</setup>

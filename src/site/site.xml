@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="databene">
+
+    <skin>
+        <groupId>databene</groupId>
+        <artifactId>databene-skin</artifactId>
+        <version>1.0</version>
+    </skin>
+
+    <!--bannerLeft>
+      <name>databene</name>
+      <src>images/databene.gif</src>
+      <href>http://databene.org/</href>
+    </bannerLeft-->
+
+    <!--bannerRight>
+      <src>http://maven.apache.org/images/maven-small.gif</src>
+    </bannerRight-->
+
+    <body>
+
+        <head>
+            <meta name="Description" content="Open Source software developer"/>
+            <meta name="Keywords" content="open source,load test data generator,test data generator, data generator, load test data generation, test data generation, data generation"/>
+            <meta name="Author" content="Volker Bergmann"/>
+            <meta name="Publisher" content="Volker Bergmann (databene)"/>
+            <meta name="Copyright" content="Volker Bergmann"/>
+            <meta name="Content-language" content="en"/>
+            <!-- benerator -->
+            <link rel="alternate" type="application/rss+xml" title="databene benerator news" href="http://databene.org/tinc?key=8BW6MdWi"/>
+            <!-- blog -->
+            <link rel="alternate" type="application/rss+xml" title="databene blog RSS Feed" href="http://databene.org/blog/feed/" />
+            <link rel="pingback" href="http://databene.org/blog/xmlrpc.php" />
+            <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://databene.org/blog/xmlrpc.php?rsd" />
+        </head>
+
+        <menu name="databene.org" inherit="top">
+            <item name="about" href="http://databene.org"/>
+            <item name="volker bergmann" href="../volker_bergmann.html"/>
+            <item name="news" href="../news.html"/>
+            <item name="forum" href="../phpBB2"/>
+            <item name="mailing lists" href="../mailing_lists.html"/>
+            <item name="support" href="../support.html"/>
+            <item name="training" href="../training.html"/>
+            <item name="blog" href="../blog"/>
+            <item name="contact" href="../contact.html" />
+        </menu>
+
+        <menu name="all products">
+            <item name="databene benerator" href="../databene-benerator"/>
+            <item name="databene webdecs" href="../databene-webdecs"/>
+            <item name="databene commons" href="../databene-commons"/>
+        </menu>
+
+        <menu name="databene benerator">
+            <item name="about" href="index.html"/>
+            <item name="faq" href="faq.html"/>
+            <item name="features" href="features.html"/>
+            <item name="presentation" href="Sisyphos_is_done-databene_benerator.pdf"/>
+            <item name="domain packages" href="domain_packages.html"/>
+            <item name="getting started" href="getting_started.html"/>
+            <item name="file format" href="file_format.html"/>
+            <item name="user guide" href="user_guide.html"/>
+            <item name="customizing guide" href="customizing_guide.html"/>
+            <item name="similar products" href="similar_products.html"/>
+            <item name="download" href="download.html"/>
+        </menu>
+
+        <menu name="benerator reports" ref="reports" />
+
+    </body>
+</project>

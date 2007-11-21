@@ -1,0 +1,1 @@
+set classpath=%classpath%;mysql-connector-java-5.0.4.jar

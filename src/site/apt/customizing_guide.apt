@@ -1,0 +1,161 @@
+				-----------------
+				customizing guide
+				-----------------
+
+customizing guide
+
+    <This is for the people who want to implement custom generators:>
+
+* interfaces
+
+  Benerator is highly customizable:
+
+[images/benerator-interfaces.gif]
+
+* generator contract
+
+    The interface org.databene.benerator.Generator is the parent interface for all generators.
+    It has the following contract:
+
+** generator states
+
+    A Generator may be in one of three states:
+
+    [constructing] The generator is under construction.
+        This may take several steps, since generators need to be JavaBeans.
+        The generator may transit into the available state automatically
+        or manually when the <validate()> method is called.
+
+    [available] Generator construction is done and the generator is available.
+        The user may loop the Generator via <available()> and <generate()>.
+
+    [unavailable] The Generator may become unavailable automatically if its value space is depleted or
+        manually when <close()> has been invoked. The Generator may be made <available> again by calling <reset()>.
+        When <unavailable>, the generator must be in a state in which it can be safely garbage collected.
+
+** JavaBean
+
+    When implementing a custom generator, make it a JavaBean:
+
+        * Implement a public default (no-arg) constructor
+
+        * make each relevant property configurable by a set-method
+
+    This will be needed for future features in order to support a generic JavaBeans-style setup.
+
+** exceptions
+
+    The <<InvalidGeneratorSetupException>> is used to indicate a bad setup (by means of the JavaBeans properties).
+
+    The <<IllegalGeneratorStateException>> is used to indicate that the generator cannot execute the called operation
+    because it is called in an inappropriate state or has other problems.
+
+** interface
+
+    [void validate()]
+     This is a convenience method for checking the validity of a Generator's setup.
+     If setup is not alright, the <validate()> method is expected to throw an InvalidGeneratorSetupException.
+     If the method finishes without exception, the generator has to be <available>.
+     The next invocation of <generate()> is expected to return a valid product and <available()>
+     is expected to return true.
+     Be aware that this method does not need to be called by the user.
+
+    [P generate()]
+    Returns an instance of the generic tpe P. If the method is called in an inappropriate state
+    (<constructing> or <unavailable>), it will throw an IllegalGeneratorStateException.
+
+    [void reset()]
+    Resets the generator to the initial state.
+    When called, the Generator is expected to act as if 'restarted'.
+    After invocation the state has to be <available>.
+
+    [void close()]
+    Closes the generator. After invocation the state is <unavailable>.
+
+    [boolean available()]
+    Tells if the Generator is in <available> state. If this returns <true>,
+    the next invocation of <generate()> must return a valid product.
+
+* custom generators
+
+    In many cases, a specific generator has a simple state model, e.g. being available immediately and forever.
+    For these cases, the generator can be inherited from the abstract class <LightWeightGenerator> which implements
+    the state related methods correspondigly.
+
+    When deriving a custom generator, prefer delegation to inheritance.
+    This will simplify state control and dirty checking.
+    Abstract implementations of managing the delegate are provided by the abstract classes
+
+        * <GeneratorWrapper> for a single delegate generator
+
+        * <MultiGeneratorWrapper> for an array of generators.
+
+    These provide a default implementation of the state related methods.
+
+* tasks
+
+    Benerator supports multithreaded and parallel execution of user-defined Tasks.
+
+** contract
+
+    A Task must be a JavaBean that implements the interface org.databene.task.Task.
+
+    TODO: JavaBean contract
+
+    interface org.databene.task.Task:
+
+--------------------------------------------------------------------------------
+  public interface Task extends Runnable {
+    public String getTaskName();
+    public void init(TaskContext context);
+    public void run();
+    public void destroy();
+  }
+--------------------------------------------------------------------------------
+
+  A Task needs to provide a name for identification.
+  On parallel execution, the framework appends a number to identify each instance. A Task is initialized by the init()
+  method and closed by the destroy() method. The run() method is inherited from the Runnable interface and implements
+  the core functionality of the Task class. It may be executed sereval times in a row.
+
+[images/task_lifecycle.gif]
+
+  * ThreadSafe: If a Task is thread-safe it may declare this by implementing the (marker) interface
+    org.databene.task.ThreadSafe.
+
+  * Parallelizable: If the task is not thread-safe but executable in several parallel instances,
+    it implements the interface org.databene.task.Parallelizable:
+
+--------------------------------------------------------------------------------
+  public interface Parallelizable extends Cloneable {
+      public Object clone() throws CloneNotSupportedException;
+  }
+--------------------------------------------------------------------------------
+
+  If parallel execution is requested and the task to be executed is Parallelizable,
+  the Task will be cloned by the framework and executed in several instances in parallel.
+
+[images/task_package.gif]
+
+  Tasks can be executed multi-threaded in pages,
+  ensuring that the total number of execution over all threads is the page size.
+
+  On the beginning of each page, the init() method is called on all task object instances,
+  the same is done with the destroy() method on the end of a page
+  (his could be used for flushes or commits on task-level resources).
+  Thus, when the task is ThreadSafe or execute single-threaded, this happens only once.
+
+  If you need 'global' paging actions they can be injected by providing a PageListener implementation
+  as 'pager' attribute.
+
+--------------------------------------------------------------------------------
+    <run-task class="my.SpecialTask" pager="my.PagingStrategy">
+        <property name="message" value="I'm special"/>
+    </run-task>
+--------------------------------------------------------------------------------
+
+  TODO: Sequence diagrams?
+
+* importing entities with an EntityIterable
+
+  TODO

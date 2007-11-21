@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<descriptors>
+    <type name="product" count="3">
+        <feature name="name" values="Prod1,Prod2"/>
+        <feature name="category_id" values="Cat1,Cat2"/>
+        <feature name="price" type="big_decimal"
+                 min="0.09" max="99.99" precision="0.01" distribution="cumulated"/>
+    </type>
+</descriptors>

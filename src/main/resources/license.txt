@@ -1,0 +1,25 @@
+For benerator, a dual license model applies:
+
+
+
+1. GNU Public License
+---------------------
+Free of charge you may do the following under the GNU Public License:
+* use and extend benerator for testing your own or a 3rd party application on a project base,
+  independent of the license of the tested application.
+* extend benerator or include it in a product and redistribute it exclusively under the GPL license.
+* publish articles, introductions and tutorials about benerator in printed or electronic form.
+
+For the GPL text, see te file gpl.txt
+
+
+
+2. Commercial License
+---------------------
+For the following activities, you must first obtain a commercial license:
+    * redistributing benerator, an extended version or a product that uses benerator under other terms than the GPL
+    * offering trainings on benerator
+    * providing e-mail or phone support for a charge
+    * publishing books or e-books on benerator
+
+For a commercial license agreement, please contact volker@databene.org

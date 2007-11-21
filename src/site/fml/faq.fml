@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<faqs title="faq - frequently asked questions">
+
+    <part id="general">
+        <title>general</title>
+
+        <faq id="whats_benerator">
+            <question>What is benerator good for?</question>
+            <answer>
+                <p>databene generator initially was built to generate data for load tests,
+                    but turns out to become the swiss army knive of data creation:</p>
+
+                <p>You can
+                    <ul>
+                        <li>significantly
+                            <b>reduce the effort</b>
+                            of creating or updating test definitions when data specifications change.
+                        </li>
+                        <li>
+                            <b>execute load tests in early stages</b>
+                            of your development phase and get the chance
+                            to change critical elements before the project runs off time.
+                        </li>
+                        <li>save time by
+                            <b>reusing data definitions</b>
+                            for unit, integration and load testing.
+                        </li>
+                        <li>
+                            <b>set up showcases within hours</b>
+                            (and let your working students do some more useful work in the time saved)
+                        </li>
+                        <li>get more
+                            <b>realistic performance measurements</b>
+                            with significantly less work.
+                        </li>
+                        <li>get the chance to perform load tests even in lower-budget or short-term projects.</li>
+                    </ul>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="why_benerator">
+            <question>Why yet another data generator?</question>
+            <answer>
+                <p>There are many data generators available (see
+                    <a href="similar_product.html">similar products</a>
+                    ),
+                    but each one lacks features I desired - especially the open source products.
+                </p>
+
+                <p>Thus I started the development of benerator in June 2006 with the following goals (and USPs):
+
+                    <ul>
+                        <li>Creating and importing data in various formats, supporting csv, xml and flat files
+                            as well as databases or other systems (this includes import and anonymization of production
+                            data).</li>
+                        <li>Supporting all major database products out-of-the-box.</li>
+                        <li>Automatically importing data constraints from (e.g. database) systems or setup files.</li>
+                        <li>Support complex constraints.</li>
+                        <li>Creating realistic data. Realistic data must obey business constraints as well as
+                            statistical characteristics.</li>
+                        <li>Creating mass data. Special issues arise when having to create millions of data sets
+                            efficiently.</li>
+                        <li>Defining, bundling and reusing generators for data that is specific for a business domain
+                            (e.g. addresses, finance).</li>
+                        <li>Strongly reducing data definion effort in software testing by using benerator
+                            as a common data (generator) repositiory for functional tests, integration test, load tests
+                            and showcase setup.</li>
+                        <li>Allowing for easy extension of generators, supported systems and file formats and more.</li>
+                        <li>Exporting generated data in a way that test runners (like JMeter) can easily use it.</li>
+                    </ul>
+                </p>
+
+                <p>
+                    Try to find another test data generator that provides these features.
+                    You can start with
+                    <a href="similar_products.html">this list</a>
+                    .
+                    If you really should find one, please
+                    <a href="mailto:volker@databene.org">tell and surprise me</a>
+                    .
+                </p>
+
+                <p>
+                    The best thing is: you get all this as open source!
+                    OK, the license costs of a commercial generator do not really matter compared to personnel costs,
+                    but you can get developer support for benerator and easily fix problems in source code or customize
+                    it
+                    to your individual needs.
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="load_test">
+            <question>What is a load test?</question>
+            <answer>
+                <p>
+                    Load testing is the process of testing an application's
+                    behavior under the load conditions expected for productive use.
+                    These conditions are (1) the expected database capacity and (2) the
+                    amount of user activity.
+                    Load testing is done in three steps:
+                    <ol>
+                        <li>
+                            The system is setup and filled with data that pretends the
+                            system has been running for months or years.
+                            <b>databene
+                                generator</b>
+                            is intended to perform this.
+                        </li>
+                        <li>
+                            A stress test client is used to generate user load.
+                            The same tool or another one measures and logs the behavior
+                            of the tested system. JMeter is a popular example of stress
+                            test clients.
+                            <b>databene generator</b>
+                            can support stress test
+                            tools by providing appropriate data for a request.
+                        </li>
+                        <li>
+                            The logged system behaviour is evaluated against performace
+                            requirements.
+                        </li>
+                    </ol>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="supported_systems">
+            <question>What systems does benerator support?</question>
+            <answer>
+                <p>
+                    benerator supports the following databases:
+                    <ul>
+                        <li>Oracle</li>
+                        <li>DB2</li>
+                        <li>MS SQL Server</li>
+                        <li>MySQL</li>
+                        <li>PostgreSQL</li>
+                        <li>HSQL</li>
+                        <li>Derby</li>
+                    </ul>
+                </p>
+                <p>If your database is not listed here, try if benerator accepts it anyway.
+                    Please report any problems with your database to
+                    <a href="mailto:benerator@databene.org">benerator@databene.org</a>
+                    .
+                </p>
+
+                <p>The following data file formats can be used for import or export:
+                    <ul>
+                        <li>CSV</li>
+                        <li>Flat file</li>
+                        <li>DBUnit (input only)</li>
+                        <li>Script (output only, e.g. for formatting XML)</li>
+                    </ul>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="speed">
+            <question>How fast is benerator?</question>
+            <answer>
+                <p>
+                    These numbers apply for a common developer notebook (Dell Latitude 620, Dual Core, 2 GHz, 2 GB RAM)
+                    with a local database instance running in an own process (MySQL/Oracle):
+                    <table>
+                        <tr>
+                            <td>database persistense</td>
+                            <td>6 million entities per hour</td>
+                        </tr>
+                        <tr>
+                            <td>csv export:</td>
+                            <td>60 million entities per hour</td>
+                        </tr>
+                        <tr>
+                            <td>flat file export:</td>
+                            <td>60 million entities per hour</td>
+                        </tr>
+                        <tr>
+                            <td>xml export (via FreeMarker script):</td>
+                            <td>45 million entities per hour</td>
+                        </tr>
+                    </table>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="gui">
+            <question>Why don't you provide a GUI, yet?</question>
+            <answer>
+                <p>benerator is in early stages of development,
+                    still much time is needed to improve or finalize functionality.
+                    When the benerator engine design is stable,
+                    a GUI will be added (not before release 0.4).</p>
+            </answer>
+        </faq>
+    </part>
+
+
+    <part id="license">
+        <title>license</title>
+
+        <faq id="why_this_license">
+            <question>Why did you choose this license?</question>
+            <answer>
+                <p>On one side the availability open source software strongly leverages productivity
+                    (you can extend the work done by others at no charge) on the other side creating
+                    a useful, easy-to-use yet sophisticated tool means a lot of work: Not only creating
+                    and using, but also testing, documenting, promoting, planning, bug tracking and more.</p>
+
+                <p>If you are very lucky, you are paid for that work. Well, I am not, thus I had to make a
+                    decision: Developing benerator with the least effort needed for own use in performance testing or
+                    publishing it for common welfare and doing all the extra work in my spare time?
+                    What if a company likes benerator, repackages it and resells it?
+                    ...or integrates it into its $10,000 product for free?
+                    ...while I struggle to pay my rent or salaries of my developers?</p>
+
+                <p>The solution was:
+                    <ul>
+                        <li>Choosing the GPL license for permitting everybody to use and extend benerator
+                            free of charge while preventing him/her to resell it.</li>
+                        <li>Restricting some activities around benerator,
+                            requiring acquisition of a commercial license (see below).</li>
+                        <li>Registering the names benerator&copy; and databene&copy; as a safety net.</li>
+                        <li>Offering services for benerator as support and training for funding further
+                            development.</li>
+                    </ul>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="license_intention">
+            <question>What does the license mean for me?</question>
+            <answer>
+                <p>Free of charge you may do the following under the GNU Public License:
+                    <ul>
+                        <li>use and extend benerator for testing your own or a 3rd party application
+                            <b>on a project base</b>
+                            , independent of the license of the tested application.
+                        </li>
+                        <li>extend benerator or include it in a
+                            <b>product</b>
+                            and redistribute it exclusively
+                            under the GPL license.
+                        </li>
+                        <li>publish articles, introductions and tutorials about benerator in printed or electronic
+                            form.</li>
+                    </ul>
+                </p>
+                <p>For the following activities, acquisition of a commercial license is needed:
+                    <ul>
+                        <li>redistributing benerator, an extended version or a product that uses benerator
+                            under other terms than the GPL</li>
+                        <li>providing trainings on benerator</li>
+                        <li>providing e-mail or phone support for a charge</li>
+                        <li>publishing books or e-books on benerator</li>
+                    </ul>
+                </p>
+            </answer>
+        </faq>
+    </part>
+
+    <part id="usage">
+        <title>usage</title>
+
+        <faq id="running_offline">
+            <question>Can I run benerator offline?</question>
+            <answer>
+                <p>
+                    Yes, if you adapt the DTD location in the DOCTYPE definition of your benerator XML file
+                    <source>DOCTYPE setup LOCAL "local_path/benerator-0.3.dtd"</source>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="prefix_suffix">
+            <question>How to generate strings with a prefix or suffix?</question>
+            <answer>
+                <p>Use an appropriate regular expression, e.g.
+                    <source>pattern="pre_[a-z]{1,7}_post"</source>
+                </p>
+            </answer>
+        </faq>
+
+        <faq id="don_t_know_how_to_handle_descriptor">
+            <question>Why do I get the error message 'Don't know how to handle descriptor'?</question>
+            <answer>
+                <p>
+                    As of release 0.3.01, the minimum meta information that benerator needs fore choosing a generator
+                    one of the following:
+                    <ul>
+                        <li>type</li>
+                        <li>source</li>
+                        <li>generator</li>
+                        <li>values (if no 'type' is specified, they will be used as strings)</li>
+                    </ul>
+                    For example, providing a regular expression 'pattern' alone is not enough for string generation
+                    setup.
+                    You need to explicitly state the type, e.g.
+                    <source>type="string" pattern="[A-Z]{4,8}"</source>
+                </p>
+                <p>As of release 0.3.02, specifying a pattern alone implies string type.</p>
+            </answer>
+        </faq>
+
+        <faq id="csv separator">
+            <question>How to use another separator for csv i/o?</question>
+            <answer>
+                <p>
+                    Create the source or processor as JavaBeans and set their 'separator' property explicitely!
+                    Use them by referencing the JavaBean id in the 'source' or 'processor' attribute.
+                </p>
+            </answer>
+        </faq>
+
+    </part>
+</faqs>

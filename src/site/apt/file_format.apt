@@ -1,0 +1,315 @@
+				-----------
+				file format
+				-----------
+
+benerator file format
+
+  The benerator configuration file is XML based. The current DTD version is benerator-0.3.dtd,
+  the document root is a <<setup>> element:
+
+--------------------------------------------------------------------------------
+  <?xml version="1.0" encoding="iso-8859-1"?>
+  <!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.dtd">
+  <setup>
+      <!-- content here -->
+  </setup>
+--------------------------------------------------------------------------------
+
+javabeans and the context
+
+  You can instantiate JavaBeans by an intuitive syntax like this:
+
+--------------------------------------------------------------------------------
+  <bean id="db" class="org.databene.platform.db.adapter.DBSystem">
+      <property name="url" value="jdbc:mysql://localhost/benerator"/>
+      <property name="driver" value="com.mysql.jdbc.Driver"/>
+      <property name="user" value="benerator"/>
+      <property name="password" value="benerator"/>
+  </bean>
+--------------------------------------------------------------------------------
+
+  The <<class>> attribute denotes which JavaBean class to instantiate (by the default constructor).
+  The enclosed property tags cause the JavaBean's properties to be set to appropriate values.
+  Benerator converts common types automatically. If not, you may define a custom ConverterManager
+  setup (see databane-commons).
+
+  Objects are made available by exposing them in a context. The id attribute defines the name
+  with which an object can be found, e.g. for a 'source' or 'ref' attribute of another element's
+  setup.
+
+  So the example above creates an instance of a DBSystem JavaBean class, setting its properties
+  to values for connecting a database. The object is retrievable by the context with the id 'db'.
+
+  Note: The class DBSystem implements the interface 'System' which provides (among other features)
+  meta information about the entities (tables) contained in the database.
+
+  You can create references to other objects declared before by a 'ref'-attribute in the bean
+  declaration. The following example shows this for a task setup, but this can be applied to beans
+  and processors as well.
+
+  Note: You may implement the System interface for connecting to other system types like SAP or
+  Siebel systems.
+
+  JavaBeans may refer each other and may have collection or attribute properties as shown in the following example:
+
+--------------------------------------------------------------------------------
+      <bean id="csv" class="org.databene.platform.csv.CSVEntityExporter">
+          <property name="uri" value="customers.csv"/>
+          <property name="properties" value="salutation,first_name,last_name"/>
+      </bean>
+
+      <bean id="proxy" class="shop.MyProxy">
+          <property name="target" ref="csv"/>
+      </bean>
+
+      <bean id="log-csv" class="org.databene.model.processor.ProcessorChain">
+          <property name="components">
+              <bean class="org.databene.model.processor.LoggingProcessor"/>
+              <idref bean="proxy"/>
+          </property>
+      </bean>
+--------------------------------------------------------------------------------
+
+
+tasks
+
+--------------------------------------------------------------------------------
+    <run-task class="org.databene.platform.db.adapter.RunSqlScriptTask">
+        <property name="uri" value="shop/create_tables.mysql.sql"/>
+        <property name="db" ref="db"/>
+    </run-task>
+--------------------------------------------------------------------------------
+
+  Besides the general 'bean' elements, other elements may be created by using element name and additional attributes
+  as processing information.
+
+  The example above tells to create a JavaBean of class 'RunSqlScriptTask' with a uri 'shop/create_tables.mysql.sql'
+  and its property 'db' refering the JavaBean "db" in the context. Finally it is executed.
+
+  You may define custom tasks to suit your needs, e.g. for performing health checks, by implementing the interface
+  'org.databene.task.Task'. By its interface a Tasks demarks if it is thread-safe or at least parallelizable.
+
+   The element <<run-task>> also supports the attributes
+
+   * count: the total number of times the Task is executed (defaults to 1)
+
+   * pagesize: the number of invocations to execute 'en bloque' (defaults to 1)
+
+   * threads: the number of threads with which to execute the Task (defaults to 1)
+
+importing entities
+
+  Entities can be imported from 'system's, files or other generators.
+  A typical application is to (re)use a DBUnit setup file from your (hopefully existing ;-) unit tests:
+
+--------------------------------------------------------------------------------
+    <!-- import basic setup from a DBUnit file -->
+    <create-entities source="shop/shop.dbunit.xml">
+        <processor ref="db"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+  Each created entity is forwarded to one or more processors, which usually will persist objects in a file or system,
+  but might also be used to post-process created entities.
+  The specified object needs to implement the Processor or the system interface.
+  When specifying a system here, it will be used to store the entities.
+  File exporters (for CSV and Flat Files) implement the Processor interface.
+
+custom importers
+
+  New import formats can be supported by implementing the EntityIterable interface with a JavaBean implementation,
+  instantiating it as <bean> and refering it by its id with a 'source' attribute, e.g.
+
+--------------------------------------------------------------------------------
+      <bean id="products_flat" class="org.databene.platform.flat.FlatFileEntityIterable">
+          <property name="uri" value="shop/products.import.flat"/>
+          <property name="entity" value="product"/>
+          <property name="properties" value="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]"/>
+      </bean>
+
+      <create-entities name="product" source="products_flat">
+          <processor class="org.databene.model.processor.LoggingProcessor"/>
+      </create-entities>
+--------------------------------------------------------------------------------
+
+chaining generators
+
+ Generators may be chained, composed, or reused in different contexts.
+ You can do so by instantiating a generator as JavaBean and referring it
+ in properties of other JavaBean-instantiated generators or specifying it
+ as 'source' attribute like an importer.
+ 
+--------------------------------------------------------------------------------
+    <!-- creates a text generator -->
+    <bean id="textGen" class="org.databene.benerator.primitive.regex.RegexStringGenerator">
+        <property name="pattern" value="([a-z]{3,8}[ ])*[a-z]{3,8}\."/>
+    </bean>
+
+    <!-- wraps the text generator and creates messages -->
+    <create-entities name="message" count="10">
+        <attribute name="text" source="textGen"
+                   converter="org.databene.model.converter.MessageConverter" pattern="Message: ''{0}''"/>
+        <processor class="org.databene.model.processor.LoggingProcessor"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+
+creating random entities
+
+  Entities can be generated without any input files - benerator provides a rich set of Generator implementations.
+  When using <create-entities> without a 'source' attribute, the registered systems (e.g. the database are requested
+  for metadata). From the metadata, attributes are generated that match the metadata (e.g. database) constraints,
+  as column length, referenced entities and more. By default, associations are treated as one-to-one associations.
+
+--------------------------------------------------------------------------------
+    <!-- create products of random attribs & category -->
+    <create-entities name="db_product" count="1000" pagesize="100">
+        <processor ref="db"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+  Entities are generated as long as each attribute generator is available and limited by the number specified in the
+  'count' attribute. The 'pagesize' defines the number of creations after which a flush() is applied to all processors
+  (for a database system this is mapped to a commit).
+
+exporting generated data to data files
+
+  You will need to reuse some of the generated data for setting up (load) test clients. You can simply export data by an
+  appropriate processor:
+
+--------------------------------------------------------------------------------
+    <!-- create products of random attribs & category -->
+    <create-entities name="db_product" count="1000" pagesize="100">
+        <processor ref="db"/>
+        <processor class="org.databene.platform.flat.FlatFileEntityExporter">
+            <property name="uri" value="products.flat"/>
+            <property name="properties" value="ean_code[13],name[30l],price[10r0]"/>
+        </processor>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+imposing one-field business constraints
+
+  Simple constraints, e.g. formats can be assured by defining an appropriate Generator or regular expression, e.g.
+
+--------------------------------------------------------------------------------
+    <!-- create products of random attribs & category -->
+    <create-entities name="db_product" count="1000" pagesize="100">
+        <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator"/>
+        <attribute name="name" pattern="[A-Z][A-Z]{5,12}"/>
+        <processor ref="db"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+imposing multi-field-constraints
+
+  For supporting multi-field-constraints, you can provide a Generator (with a <<variable>> element) that creates entities,
+  JavaBeans or Maps. This may be e.g. a random generator or an importing generator. On each generation run, an instance
+  is generated and made available to the other sub generators. They can use the entity or sub elements by a source path
+  attribute:
+
+--------------------------------------------------------------------------------
+    <create-entities name="db_customer">
+        <variable name="person" generator="org.databene.domain.person.PersonGenerator" region="DE"/>
+        <attribute name="salutation" source="person.salutation"/>
+        <attribute name="first_name" source="person.givenName"/>
+        <attribute name="last_name" source="person.familyName"/>
+        <processor ref="db"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+  The source path may be composed of property names, map keys and entity features, separated by a dot.
+
+querying information from a system
+
+  Arbitrary information may be queried from a system by a 'selector' attribute, which is system-dependent.
+  For a database SQL is used:
+
+--------------------------------------------------------------------------------
+    <create-entities name="db_order" count="30" pagesize="100">
+        <attribute name="id" mode="ignored"/>
+        <attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true"/>
+        <processor ref="db"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+  The result set of a selector might be quite large, so different strategies (for wrapping any other generator's output)
+  are supported:
+
+  * distribution: Maps to the name of a Sequence or WeightFunction class. For this, the complete result set is loaded
+    into ram. A Sequence should not be applied to result sets of more than 100.000 elements, a WeightFunction should be
+    restricted to at most 10.000 elements.
+
+  * proxy="skip" or proxy="repeat" for iterating sequentially through the set. 'proxy-param1' and 'proxy-param2' may be
+    used to specify minimum and maximum of repetitions or skipped elements. If cyclic="true", the result set will be
+    re-iterated from the beginning when it has reached the end.
+
+
+--------------------------------------------------------------------------------
+    <create-entities name="db_order_item" count="100" pagesize="100">
+        <attribute name="id" mode="ignored"/>
+        <attribute name="number_of_items" min="1" max="27" distribution="cumulated"/>
+        <attribute name="order_id" source="db" selector="select id from db_order" cyclic="true"/>
+        <attribute name="product_id" source="db" selector="select ean_code from db_product" distribution="random"/>
+        <processor ref="db"/>
+    </create-entities>
+--------------------------------------------------------------------------------
+
+all supported generator attributes
+
+    [name] name of the feature to generate
+
+    [type] type of the feature to generate
+
+    [nullable] tells if the feature may be null
+
+    [mode] controls the processing mode: (normal|ignored|secret)
+
+    [pattern] uses a regular expression for String creation or date format pattern for parsing Dates.
+
+    [generator] uses a Generator instance for data creation
+
+    [values] provides a comma-separated list of values to choose from
+
+    [nullQuota] the quota of null values to create
+
+    [converter] the class name of a Converter to apply to the generated objects
+
+    [region] a region to create data for, e.g. reion="DE"
+
+    [locale] a locale to create data for, e.g. locale="de"
+
+    [unique] wether to assure uniqueness, e.g. unique="true". Since this needs to keep every instance in memory, use is
+        restricted to 100.000 elelments. For larger numbers you should use Sequence-based algorithms.
+
+    [source] A system, EntityIterator or file to import data from.
+
+    [selector] A system-dependent selector to query for data.
+
+    [trueQuota] the quota of true values created by a Boolean Generator.
+
+    [min] the minimum Number or Date to generate
+
+    [max] the maximum Number or Date to generate
+
+    [precision] the resolution of Numbers or Dates to generate
+
+    [distribution] the distribution to use for Number or Date generation.
+        This may be a Sequence name or a WeightFunction class name.
+
+    [variation1] first setup parameter for the distribution
+
+    [variation2] second setup parameter for the distribution
+
+    [minLength] the minimum length of the Strings that are generated
+
+    [maxLength] the maximum length of the Strings that are generated
+
+    [cyclic] auto-resets the generator after it has gone unavailable
+
+    [proxy] wraps a generator with a proxy (skip|repeat), which skips or repeats products
+
+    [proxy-param1] sets the minimum skip size / repeat count of the proxy
+
+    [proxy-param2] sets the maximum skip size / repeat count of the proxy
+

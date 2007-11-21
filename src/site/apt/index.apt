@@ -1,0 +1,75 @@
+				-----------------------------------------------
+				benerator - the open source test data generator
+				-----------------------------------------------
+
+about databene benerator
+
+  <<benerator>> is a framework for creating realistic and valid high-volume test data, used for
+  testing (unit/integration/load) and showcase setup.
+
+  Metadata constraints are imported from systems and/or configuration files. Data can be imported from
+  and exported to files and systems, anonymized or generated from scratch. Domain packages provide
+  reusable generators for creating domain-specific data as names and addresses internationalizable
+  in language and region. It is strongly customizable with plugins and configuration options.
+
+  <<benerator>> is released under a {{{license.html}dual license}} - GPL and commercial.
+  For quick details check the {{{faq.html#license_intention}FAQ}}.
+
+participate
+
+  Your are welcome to participate. There are many ways to aid the further development of benerator:
+
+   * report bugs (via forum)
+
+   * request features (via forum)
+
+   * fund the benerator development by contracting {{{http://bergmann-it.de}Volker Bergmann}} for IT consulting
+     or buying support for the databene tools.
+
+release history and road map
+
+*-------------+-------------------+-----------------------------------------------+
+| <<release>> | <<release date>>  | <<features>>                                  |
+*-------------+-------------------+-----------------------------------------------+
+| 0.4         | Q2/2008           | Object graph generation,                      |
+| (planned)   | (planned)         | Platform support: JavaBean, Hibernate, XML    |
+|             |                   | domains: address (CH, AT), web                |
+|             |                   | Region concept                                |
+|             |                   | Feature completion: SQL types, key generation,|
+|             |                   |    identity, uniqueness                       |
+*-------------+-------------------+-----------------------------------------------+
+| 0.3.02      | 2007-11-20        | generator bug fixes                           |
+|             |                   | generation of unique data                     |
+|             |                   | current time generators                       |
+|             |                   | supporting encoding for all file I/O          |
+*-------------+-------------------+-----------------------------------------------+
+| 0.3.01      | 2007-11-03        | database bug fixes                            |
+|             |                   | improved handling of databases                |
+|             |                   | added support for database products:          |
+|             |                   | * DB2                                         |
+|             |                   | * MS SQL Server                               |
+|             |                   | * PostgreSQL                                  |
+|             |                   | * HSQL                                        |
+|             |                   | * Derby                                       |
+*-------------+-------------------+-----------------------------------------------+
+| 0.3         | 2007-10-14        | proof of platform concept                     |
+|             |                   | Platforms: Database, CSV, Flat File, DBUnit   |
+|             |                   | standalone + relational Entity generation     |
+|             |                   | Data extraction, transformation & export      |
+|             |                   | API and descriptor file based command line execution|
+|             |                   | Database upport:                              |
+|             |                   | * Oracle                                      |
+|             |                   | * MySQL                                       |
+*-------------+-------------------+-----------------------------------------------+
+| 0.2         | 2007-07-22        | FileBuilder,                                  |
+|             |                   | Domains: person & address (DE)                |
+|             |                   | Task framework                                |
+|             |                   | API only                                      |
+*-------------+-------------------+-----------------------------------------------+
+| 0.1         | 2006-12-31        | Primitive Generators,                         |
+|             |                   | Weight Functions,                             |
+|             |                   | Sequences,                                    |
+|             |                   | Regex Generator,                              |
+|             |                   | CSV Import                                    |
+|             |                   | API only                                      |
+*-------------+-------------------+-----------------------------------------------+

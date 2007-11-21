@@ -1,0 +1,31 @@
+				---------------
+				domain packages
+				---------------
+
+domain packages
+
+
+  <<benerator>> includes domain packages. Domain packages support for business domain and may be localized by language
+  (locale) or region.
+
+  The follwing domain packages are available for these domains
+
+*-------------+-------------------+-----------------------------------------------+
+| <<domain>>  | <<topics>>        | <<regions/locales>>                           |
+*-------------+-------------------+-----------------------------------------------+
+| personal    | titles            | Locales: German, English, French, Italian     |
+|             | salutations       | Countries:                                    |
+|             | given names       | * Germany                                     |
+|             | family names      | * Switzerland                                 |
+|             |                   | * Austria                                     |
+|             |                   | * USA                                         |
+|             |                   | * UK                                          |
+|             |                   | * Ireland                                     |
+|             |                   | * Australia                                   |
+|             |                   | * France                                      |
+|             |                   | * Italy                                       |
+*-------------+-------------------+-----------------------------------------------+
+| address     | street            | Countries:                                    |
+|             | city, zip code    | * Germany                                     |
+|             | phone numbers     |                                               |
+*-------------+-------------------+-----------------------------------------------+

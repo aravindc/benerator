@@ -1,0 +1,304 @@
+				---------------
+				getting started
+				---------------
+
+installation
+
+    * Download the lastest version of databene benerator at {{http://databene.org/databene-benerator/download.html}}
+
+    * Unzip the downloaded file into a directory
+
+quick start
+
+    <If you want to have quick glance on the features of databene benerator:>
+
+    [[1]] Go to the installation directory and run the demos.
+
+    [[2]] read the demo files in the distribution directory.
+
+    [[3]] Check the API doc for a detailed documentation of the provided generators, especially the domain packages.
+
+overview
+
+   benerator can be used in two ways:
+
+   * has an API that is easy to use for individual use of generators
+
+   * a configuration file based application
+
+demos
+
+* file generation
+
+  for generating files from a configuration file, Benerator can be run from a setup file.
+  See the following example:
+
+--------------------------------------------------------------------------------
+  <?xml version="1.0" encoding="iso-8859-1"?>
+  <!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.dtd">
+  <setup>
+      <create-entities name="product" count="3">
+          <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
+          <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator"/>
+          <attribute name="name" type="string" minLength="5"/>
+          <attribute name="price" type="big_decimal" min="0.49" max="99.90" precision="0.01"/>
+          <processor class="org.databene.platform.flat.FlatFileEntityExporter">
+              <property name="uri" value="products.flat"/>
+              <property name="properties" value="id[8r0],ean_code[13],name[20],price[8r0]"/>
+          </processor>
+      </create-entities>
+  </setup>
+--------------------------------------------------------------------------------
+
+  For an explanation of the file format, see {{file_format.html}}.
+  When running
+
+--------------------------------------------------------------------------------
+  run org.databene.benerator.main.Benerator <filename>
+--------------------------------------------------------------------------------
+
+  benerator will create a flat file 'products.flat' like this:
+
+--------------------------------------------------------------------------------
+  000000017927930616145WSHECZKPO           00098.04
+  0000000297395159     VUTWHGFEU           00063.52
+  0000000314835063     VRUJMF              00023.93
+--------------------------------------------------------------------------------
+
+* shop demo
+
+  a shop demo shows how to fill database schemas from a configuration file.
+  It exists in two versions:
+
+   * MySQL (populate_db.mysql.xml)
+
+   * Oracle (populate_db.oracle.xml)
+
+  The shop database schema is as follows:
+
+[images/shop_er.gif]
+
+  Create a database schema and set up its JDBC connection data in the configuration file's section:
+
+--------------------------------------------------------------------------------
+    <bean id="db" class="org.databene.platform.db.adapter.DBSystem">
+        <property name="url" value="jdbc:mysql://localhost/benerator"/>
+        <property name="driver" value="com.mysql.jdbc.Driver"/>
+        <property name="user" value="benerator"/>
+        <property name="password" value="benerator"/>
+    </bean>
+--------------------------------------------------------------------------------
+
+  See how input files are processed and the database is filled when running
+
+  <<<run org.databene.benerator.main.Benerator populate_db.oracle.xml>>>
+
+  or
+
+  <<<run org.databene.benerator.main.Benerator populate_db.mysql.xml>>>
+
+* hello world demo
+
+    This demonstrates the essential generator creation ansd usage by creating
+    greetings from sets of salutations and names: Runnig
+
+    <<<run org.databene.benerator.demo.HelloWorldDemo>>>
+
+    will generate random salutations like
+
+--------------------------------------------------------------------------------
+    Hi Charly
+    Howdy Bob
+    Hello Alice
+    Hi Charly
+    Hello Bob
+--------------------------------------------------------------------------------
+
+    This is achieved by using two SampleGenerators:
+
+--------------------------------------------------------------------------------
+    Generator<String> salutation = GeneratorFactory.getSampleGenerator("Hi", "Hello", "Howdy");
+    Generator<String> name = GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly");
+    for (int i = 0; i < 5; i++)
+        System.out.println(salutation.generate() + " " + name.generate());
+    salutation.close();
+    name.close();
+--------------------------------------------------------------------------------
+
+  They are created by the GeneratorFactory, used by invoking generate() and finally closed.
+
+* person demo
+
+  This is an example of a domain generator.
+  This one creates person data with title, address and phone numbers:
+
+  <<<run org.databene.benerator.demo.PersonDemo>>>
+
+--------------------------------------------------------------------------------
+    PersonGenerator generator = new PersonGenerator();
+    for (int i = 0; i < 3; i++)
+        System.out.println(generator.generate());
+    generator.close();
+--------------------------------------------------------------------------------
+
+  It evaluates the default locale, find out the country it belongs to and create and print addresses
+  for this country, all with consistent salutation, given name, zip code, city and phone number!
+
+  Here's an example output for Germany:
+
+--------------------------------------------------------------------------------
+    Frau Helga Schmidt, *25.07.1956
+    Herr Dr. Johann Weber, *18.10.1975
+    Herr Prof. Dr. Richard Lange, *18.05.1936
+--------------------------------------------------------------------------------
+
+  Domains support localization: When using
+
+--------------------------------------------------------------------------------
+    PersonGenerator generator = new PersonGenerator(Country.UNITED_KINGDOM, Locale.ENGLISH);
+--------------------------------------------------------------------------------
+
+  the output looks like this:
+
+--------------------------------------------------------------------------------
+  Mrs. Dr. Ellie Thomas, *18.04.1991
+  Mr. Harry Smith, *05.05.1961
+  Mr. Harry Thompson, *07.10.1905
+--------------------------------------------------------------------------------
+
+* Address Demo
+
+  Here's an example of using the address generator:
+
+--------------------------------------------------------------------------------
+  public class AddressDemo {
+      public static void main(String[] args) {
+          AddressGenerator generator = new AddressGenerator(Country.GERMANY);
+          for (int i = 0; i < 3; i++)
+              System.out.println(generator.generate());
+      }
+  }
+--------------------------------------------------------------------------------
+
+  It creates addresses:
+
+--------------------------------------------------------------------------------
+ Burgstraße 43, 06369 Riesdorf, Deutschland (private:+49-34978-2563, work:+49-34978-5266, mobile:+49-179-9334291, fax:+49-34978-2491)
+ Hauptstraße 19, 47506 Neukirchen-Vluyn, Deutschland (private:+49-2845-46731, work:+49-2845-38948, mobile:+49-175-16238464, fax:+49-2845-53393)
+ Dorfstraße 23, 74736 Hardheim, Deutschland (private:+49-6283-28977, work:+49-6283-75058, mobile:+49-179-60232239, fax:+49-6283-29919)
+--------------------------------------------------------------------------------
+
+  Currrently only German addresses are supported.
+
+* regex demo
+
+  Strings can be created by providing a regular expression, e.g. for creating phone numbers:
+
+        <<<run org.databene.benerator.demo.RegexDemo>>>
+
+    Here's an excerpt from the <<<RegexDemo>>>:
+
+--------------------------------------------------------------------------------
+    String PHONE_PATTERN = "\\+[1-9][0-9]{1,2}/[1-9][0-9]{0,4}/[1-9][0-9]{4,8}";
+    Generator<String> phoneGenerator = GeneratorFactory.getRegexStringGenerator(PHONE_PATTERN, 1, 16, null, 0);
+    for (int i = 0; i < 5; i++)
+        System.out.println(phoneGenerator.generate());
+    phoneGenerator.close();
+--------------------------------------------------------------------------------
+
+    which creates output like this:
+
+--------------------------------------------------------------------------------
+    +802/85/810794
+    +92/7261/622937
+    +61/95/31527
+    +30/258/71172783
+    +59/755/8861307
+--------------------------------------------------------------------------------
+
+
+
+* file builder demo
+
+  The PersonXMLBuilderDemo demonstrates the usage of the FileBuilder and the
+  ScriptBasedDocumentWriter for creating xml files with person data.
+
+  Running the demo
+
+  <<<run org.databene.benerator.demo.PersonXMLBuilderDemo>>>
+
+  will cause creation of the file persons.xml with the following content:
+
+--------------------------------------------------------------------------------
+  <?xml version="1.0" encoding="iso-8859-1"?>
+  <persons>
+    <person number="1">
+      <salutation>Frau</salutation>
+      <title>Dr.</title>
+      <givenName>Renate</givenName>
+      <familyName>Walter</familyName>
+    </person>
+    <person number="2">
+      <salutation>Herr</salutation>
+      <title></title>
+      <givenName>Markus</givenName>
+      <familyName>Schneider</familyName>
+    </person>
+  </persons>
+--------------------------------------------------------------------------------
+
+  Now, find out, how it this is achieved: The core code of PersonXMLBuilderDemo
+  creates a ScriptBasedDocumentWriter that assembles three FreeMarker templates (*.ftl)
+  and a Writer (out).
+  This object is used by the FileBuilder for creating 2 objects by the PersonGenerator
+  and serializing them to the writer <<out>>.
+
+--------------------------------------------------------------------------------
+    Writer out = new BufferedWriter(new FileWriter("persons.xml));
+    ScriptBasedDocumentWriter<Person> writer = new ScriptBasedDocumentWriter<Person>(
+        out,
+        "org/databene/benerator/demo/xmlHeader.ftl",
+        "org/databene/benerator/demo/xmlPart.ftl",
+        "org/databene/benerator/demo/xmlFooter.ftl"
+    );
+    FileBuilder.build(new PersonGenerator(), 2, writer);
+    IOUtil.close(out);
+--------------------------------------------------------------------------------
+
+  The templates that rendered the output are:
+
+  <<<org/databene/benerator/demo/xmlHeader.ftl>>>
+
+--------------------------------------------------------------------------------
+  <?xml version="1.0" encoding="iso-8859-1"?>
+  <persons>
+--------------------------------------------------------------------------------
+
+  <<<org/databene/benerator/demo/xmlPart.ftl>>>
+
+--------------------------------------------------------------------------------
+    <person number="${var.part_index + 1}">
+      <salutation>${part.salutation}</salutation>
+      <title>${part.title!}</title>
+      <givenName>${part.givenName}</givenName>
+      <familyName>${part.familyName}</familyName>
+    </person>
+--------------------------------------------------------------------------------
+
+  <<<org/databene/benerator/demo/xmlFooter.ftl>>>
+
+--------------------------------------------------------------------------------
+  </persons>
+--------------------------------------------------------------------------------
+
+
+* distribution demo
+
+  Running the distribution demo visualizes the predefined sequences -
+  the generated values are displayed from left to right, the amounts are
+  indicated vertically.
+
+  <<<run org.databene.benerator.demo.DistributionDemo>>>
+
+[images/distributions.gif]
+

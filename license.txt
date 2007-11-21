@@ -1,0 +1,14 @@
+License
+=======
+Databene generator is released under a dual license:
+
+1. GNU Public License
+---------------------
+Redistribution and use in source and binary forms, with or without modification, is permitted under the terms
+of the GNU General Public License. See the file gpl.txt
+
+2. Commercial License
+---------------------
+For redistributing this software or a derivative work under a license other than the GPL-compatible
+Free Software License as defined by the Free Software Foundation or approved by OSI, you must
+first obtain a commercial license for this software from Volker Bergmann via volker@databene.org.
