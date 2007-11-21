@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
+	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/log4j/log4j/1.2.14/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/junit/junit/3.8.2/junit-3.8.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
