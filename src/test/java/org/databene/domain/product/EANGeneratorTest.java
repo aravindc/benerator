@@ -38,11 +38,11 @@ public class EANGeneratorTest extends GeneratorClassTest {
     public EANGeneratorTest() {
         super(EANGenerator.class);
     }
-/*
+
     public void testNonUnique() {
         expectGenerations(new EANGenerator(false), 100, new EANValidator());
     }
-*/
+
     public void testUnique() {
         expectUniqueGenerations(new EANGenerator(true), 10000);
     }
