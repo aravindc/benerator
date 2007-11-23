@@ -57,8 +57,12 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
     public boolean hasNext() {
         if (hasNext != null)
             return hasNext;
+        if (resultSet == null)
+        	return false;
         try {
             hasNext = resultSet.next();
+            if (!hasNext)
+            	close();
             return hasNext;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -76,11 +80,15 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
         throw new UnsupportedOperationException("Not supported");
     }
 
-    public void close() {
+    public synchronized void close() {
+    	if (resultSet == null)
+    		return;
         try {
             Statement statement = resultSet.getStatement();
-            resultSet.close();
-            statement.close();
+            DBUtil.close(resultSet);
+            resultSet = null;
+            DBUtil.close(statement);
+            statement = null;
         } catch (SQLException e) {
             logger.error(e, e);
         }
