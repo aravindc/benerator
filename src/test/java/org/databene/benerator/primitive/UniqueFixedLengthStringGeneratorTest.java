@@ -67,4 +67,9 @@ public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
         expectUniqueProducts(new UniqueFixedLengthStringGenerator(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
     }
 
+    public void testMany() {
+        UniqueFixedLengthStringGenerator generator = new UniqueFixedLengthStringGenerator(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
+        expectUniqueProducts(generator, 1000).withContinuedAvailability();
+    }
+
 }
