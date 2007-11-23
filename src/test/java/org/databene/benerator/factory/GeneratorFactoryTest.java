@@ -8,6 +8,7 @@ import java.text.NumberFormat;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.WeightFunction;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
@@ -27,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * (c) Copyright 2006 by Volker Bergmann
  * Created: 24.08.2006 07:03:03
  */
-public class GeneratorFactoryTest extends TestCase {
+public class GeneratorFactoryTest extends GeneratorTest {
 
     private static Log logger = LogFactory.getLog(GeneratorFactoryTest.class);
 
@@ -187,10 +188,15 @@ public class GeneratorFactoryTest extends TestCase {
     }
 
     public void testGetRegexGenerator() {
-//        checkRegexGenerator(null, 0, 0, true);
-//        checkRegexGenerator("", 0, 0, false);
-        checkRegexGenerator("[1-9]\\d{0,3}", 1, 4, false);
-    }
+//      checkRegexGenerator(null, 0, 0, true);
+//      checkRegexGenerator("", 0, 0, false);
+      checkRegexGenerator("[1-9]\\d{0,3}", 1, 4, false);
+  }
+
+    public void testGetUniqueRegexGenerator() {
+      Generator<String> generator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{3}", 3, 3, null);
+      expectUniqueGenerations(generator, 1000).withCeasedAvailability();
+  }
 
     private void checkRegexGenerator(String pattern, int minLength, int maxLength, boolean nullable) {
         Generator<String> generator = GeneratorFactory.getRegexStringGenerator(
