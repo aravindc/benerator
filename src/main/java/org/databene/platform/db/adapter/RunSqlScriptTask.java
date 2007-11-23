@@ -30,6 +30,7 @@ import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
 import org.databene.commons.IOUtil;
 import org.databene.model.iterator.ReaderLineIterator;
+import org.databene.platform.db.DBUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -90,13 +91,13 @@ public class RunSqlScriptTask extends AbstractTask {
         this.haltOnError = haltOnError;
     }
 
-    // org.databene.task.Task implementation ---------------------------------------------------------------------------
+    // Task implementation ---------------------------------------------------------------------------
 
     public void run() {
         Connection connection = null;
         Exception exception = null;
         try {
-            connection = db.getConnection();
+            connection = db.createConnection();
             BufferedReader reader = IOUtil.getReaderForURI(uri);
             ReaderLineIterator iterator = new ReaderLineIterator(reader);
             StringBuilder cmd = new StringBuilder();
@@ -138,6 +139,7 @@ public class RunSqlScriptTask extends AbstractTask {
                 } catch (SQLException e) {
                     exception = e;
                 }
+                //DBUtil.close(connection);
             }
         }
         if (exception != null)
