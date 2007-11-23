@@ -39,7 +39,7 @@ import org.databene.benerator.Generator;
  */
 public class ComponentGeneratorFactory {
 
-    public static Generator getComponentGenerator(ComponentDescriptor descriptor, TaskContext context) {
+    public static Generator<? extends Object> getComponentGenerator(ComponentDescriptor descriptor, TaskContext context) {
         if (descriptor instanceof AttributeDescriptor)
             return EntityGeneratorFactory.createAttributeGenerator((AttributeDescriptor)descriptor, context);
         else
