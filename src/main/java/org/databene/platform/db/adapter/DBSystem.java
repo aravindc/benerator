@@ -33,6 +33,7 @@ import org.databene.model.converter.AnyConverter;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
 import org.databene.platform.db.DBQueryIterable;
+import org.databene.platform.db.DBUtil;
 import org.databene.platform.db.ResultSet2EntityConverter;
 import org.databene.platform.db.ResultSetConverter;
 import org.databene.platform.bean.ArrayPropertyExtractor;
@@ -41,10 +42,12 @@ import org.databene.model.data.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -74,14 +77,11 @@ public class DBSystem implements System {
 
     private Database database;
 
-    private Connection connection;
-    private Map<String, Map<String, Integer>> tableColumnIndexes;
-    //private Map<String, AttributeDescriptor> typeMap;
+    private Map<Thread, Connection> connections;
     private Map<String, EntityDescriptor> typeDescriptors;
-    private boolean initialized;
 
     public DBSystem() {
-        this.initialized = false;
+		connections = new HashMap<Thread, Connection>();
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -134,28 +134,15 @@ public class DBSystem implements System {
         this.schema = schema;
     }
 
-    // PlatformAdapter interface ---------------------------------------------------------------------------------------
+    // System interface ------------------------------------------------------------------------------------------------
 
     public EntityDescriptor[] getTypeDescriptors() {
-        assureInitialization();
         if (typeDescriptors == null)
             parseMetaData();
         return CollectionUtil.toArray(typeDescriptors.values(), EntityDescriptor.class);
     }
-/*
-    public String getType(PreparedStatementWrapper instance) {
-        assureInitialization();
-        return instance.getTableName();
-    }
 
-    public String[] getFeatureNames(PreparedStatementWrapper instance) {
-        assureInitialization();
-        String tableName = instance.getTableName();
-        return getColumnNames(tableName);
-    }
-*/
     public EntityDescriptor getTypeDescriptor(String tableName) {
-        assureInitialization();
         if (typeDescriptors == null)
             parseMetaData();
         EntityDescriptor entityDescriptor = typeDescriptors.get(tableName);
@@ -169,13 +156,12 @@ public class DBSystem implements System {
     }
 
     public void store(Entity entity) {
-        assureInitialization();
         try {
             String tableName = entity.getName();
 //            if (entity.getName().equals("db_product"))
 //                java.lang.System.out.println("pd");
             String[] allColumnNames = getColumnNames(tableName);
-            List<String> usedColumnNames = new ArrayList(allColumnNames.length);
+            List<String> usedColumnNames = new ArrayList<String>(allColumnNames.length);
             for (String columnName : allColumnNames) {
                 if (entity.getComponent(columnName) != null)
                     usedColumnNames.add(columnName);
@@ -184,6 +170,7 @@ public class DBSystem implements System {
             String sql = buildSQLInsert(tableName, usedColumnNames.toArray(array));
             if (logger.isDebugEnabled())
                 logger.debug("Storing " + entity);
+            Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
 //            for (int i = 1; i <= getColumnNames(tableName).length; i++)
 //                statement.setObject(i, null);
@@ -194,7 +181,7 @@ public class DBSystem implements System {
                 if (componentDescriptor == null)
                     throw new ConfigurationError("The table '" + tableName + "'" +
                             " does not contain a column '" + columnName + "'");
-                Class<Object> javaType = javaTypeForAbstractType(componentDescriptor.getType());
+                Class<? extends Object> javaType = javaTypeForAbstractType(componentDescriptor.getType());
                 Object value = AnyConverter.convert(entry.getValue(), javaType);
                 statement.setObject(columnIndex, value);
             }
@@ -205,81 +192,37 @@ public class DBSystem implements System {
         }
     }
 
-    Map<String, Class> javaTypes = CollectionUtil.buildMap(
-                "big_integer", BigInteger.class,
-                //Types.BINARY, "binary",
-                "boolean", Byte.class,
-                //Types.BLOB, "",
-                "boolean", Boolean.class,
-                "char", Character.class,
-                //Types.CLOB, "",
-                //Types.DATALINK, "",
-                "date", Date.class,
-                "big_decimal", BigDecimal.class,
-                //Types.DISTINCT, "",
-                "double", Double.class,
-                "float", Float.class,
-                "int", Integer.class,
-                //Types.JAVA_OBJECT, "",
-                //Types.LONGVARBINARY, "binary",
-                //Types.LONGVARCHAR, "string",
-                //Types.NULL, "",
-                //Types.NUMERIC, "double",
-                //Types.OTHER, "",
-                //Types.REAL, "double",
-                //Types.REF, "",
-                "short", Short.class,
-                //Types.STRUCT, "",
-                "date", Date.class,
-                //Types.TIMESTAMP, "date",
-                "byte", Byte.class,
-                //Types.VARBINARY, "",
-                "string", String.class
-    );
-
-    private Class<Object> javaTypeForAbstractType(String simpleType) {
-        Class type = javaTypes.get(simpleType);
-        if (type == null)
-            throw new UnsupportedOperationException("Not mapped to a Java type: " + simpleType);
-        return type;
-    }
-
-    private ComponentDescriptor getComponentDescriptor(String tableName, String columnName) {
-        EntityDescriptor descriptor = getTypeDescriptor(tableName);
-        for (ComponentDescriptor componentDescriptor : descriptor.getComponentDescriptors()) {
-            if (componentDescriptor.getName().equalsIgnoreCase(columnName))
-                return componentDescriptor;
-        }
-        return null;
-    }
-
     public void flush() {
         try {
-            connection.commit();
+        	Iterator<Connection> iterator = connections.values().iterator();
+        	while (iterator.hasNext()) {
+        		Connection connection = iterator.next();
+        		connection.commit();
+        		//DBUtil.close(connection);
+        		//iterator.remove();
+        	}
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public TypedIterable<Entity> getEntities(String type) {
+    	Connection connection = getConnection();
         DBQueryIterable iterable = new DBQueryIterable(connection, "select * from " + type);
         ResultSet2EntityConverter descriptor = new ResultSet2EntityConverter(getTypeDescriptor(type));
         return new ConvertingIterable<ResultSet, Entity>(iterable, descriptor);
     }
 
     public void close() {
-        if (initialized) {
-            try {
-                this.connection.close();
-            } catch (SQLException e) {
-                logger.error(e, e);
-            }
-            initialized = false;
-        }
+    	Iterator<Entry<Thread, Connection>> iterator = connections.entrySet().iterator();
+    	while (iterator.hasNext()) {
+			Entry<Thread, Connection> entry = iterator.next();
+			iterator.remove();
+			DBUtil.close(entry.getValue());
+		}
     }
 
     public TypedIterable<Object> getIds(String tableName, String selector) {
-        assureInitialization();
         List<DBCatalog> catalogs = database.getCatalogs();
         for (DBCatalog catalog : catalogs) {
             DBTable table = catalog.getTable(tableName);
@@ -310,23 +253,84 @@ public class DBSystem implements System {
     }
 
     public TypedIterable<Object> getBySelector(String query) {
-        assureInitialization();
+    	Connection connection = getConnection();
         DBQueryIterable resultSetIterable = new DBQueryIterable(connection, query);
         return new ConvertingIterable<ResultSet, Object>(resultSetIterable, new ResultSetConverter(true));
     }
 
+	public Connection createConnection() { // TODO find better ways to access this DB from outside
+		try {
+            Class.forName(driver);
+            Connection connection = DriverManager.getConnection(url, user, password);
+            connection.setAutoCommit(false);
+            return connection;
+        } catch (ClassNotFoundException e) {
+            throw new ConfigurationError("JDBC driver not found: " + driver, e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Connecting the database failed. URL: " + url, e);
+        }
+	}
+
     // private helpers -------------------------------------------------------------------------------------------------
 
+    Map<String, Class<? extends Object>> javaTypes = CollectionUtil.buildMap(
+            "big_integer", BigInteger.class,
+            //Types.BINARY, "binary",
+            "boolean", Byte.class,
+            //Types.BLOB, "",
+            "boolean", Boolean.class,
+            "char", Character.class,
+            //Types.CLOB, "",
+            //Types.DATALINK, "",
+            "date", Date.class,
+            "big_decimal", BigDecimal.class,
+            //Types.DISTINCT, "",
+            "double", Double.class,
+            "float", Float.class,
+            "int", Integer.class,
+            //Types.JAVA_OBJECT, "",
+            //Types.LONGVARBINARY, "binary",
+            //Types.LONGVARCHAR, "string",
+            //Types.NULL, "",
+            //Types.NUMERIC, "double",
+            //Types.OTHER, "",
+            //Types.REAL, "double",
+            //Types.REF, "",
+            "short", Short.class,
+            //Types.STRUCT, "",
+            "date", Date.class,
+            //Types.TIMESTAMP, "date",
+            "byte", Byte.class,
+            //Types.VARBINARY, "",
+            "string", String.class
+	);
+	
+	private Class<? extends Object> javaTypeForAbstractType(String simpleType) {
+	    Class<? extends Object> type = javaTypes.get(simpleType);
+	    if (type == null)
+	        throw new UnsupportedOperationException("Not mapped to a Java type: " + simpleType);
+	    return type;
+	}
+	
+	private ComponentDescriptor getComponentDescriptor(String tableName, String columnName) {
+	    EntityDescriptor descriptor = getTypeDescriptor(tableName);
+	    for (ComponentDescriptor componentDescriptor : descriptor.getComponentDescriptors()) {
+	        if (componentDescriptor.getName().equalsIgnoreCase(columnName))
+	            return componentDescriptor;
+	    }
+	    return null;
+	}
+/*
     private void assureInitialization() {
         if (!initialized)
             init();
     }
-
+*/
     private void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
             this.typeDescriptors = new HashMap<String, EntityDescriptor>();
-            this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
+            //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema);
             database = importer.importDatabase();
             for (DBCatalog catalog : database.getCatalogs())
@@ -428,7 +432,7 @@ public class DBSystem implements System {
         logger.debug("built SQL statement: " + sql);
         return sql;
     }
-
+/*
     private int getColumnIndex(String tableName, String columnName) {
         tableName = tableName.toLowerCase();
         columnName = columnName.toLowerCase();
@@ -447,7 +451,7 @@ public class DBSystem implements System {
         }
         return index;
     }
-
+*/
     private static final Map TYPE_MAP;
 
     static {
@@ -498,17 +502,14 @@ public class DBSystem implements System {
         return nameExtractor.convert(typeDescriptor.getComponentDescriptors().toArray());
     }
 
-    private void init() {
-        try {
-            Class.forName(driver);
-            this.connection = DriverManager.getConnection(url, user, password);
-            this.connection.setAutoCommit(false);
-            initialized = true;
-        } catch (ClassNotFoundException e) {
-            throw new ConfigurationError("JDBC driver not found: " + driver, e);
-        } catch (SQLException e) {
-            throw new RuntimeException("Connecting the database failed. URL: " + url, e);
-        }
+    private synchronized Connection getConnection() {
+    	Thread currentThread = Thread.currentThread();
+		Connection connection = connections.get(currentThread);
+    	if (connection == null) {
+            connection = createConnection();
+    		connections.put(currentThread, connection);
+    	}
+    	return connection;
     }
 
     private String precision(int scale) {
@@ -524,10 +525,5 @@ public class DBSystem implements System {
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + user + '@' + url + ']';
-    }
-
-    public Connection getConnection() {
-        assureInitialization();
-        return connection;
     }
 }
