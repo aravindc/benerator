@@ -52,6 +52,8 @@ import org.w3c.dom.NamedNodeMap;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Parses and executes a benerator setup file.<br/>
@@ -63,8 +65,10 @@ public class Benerator {
     private static final Log logger = LogFactory.getLog(Benerator.class);
 
     private DataModel model;
+    
+    private ExecutorService executor;
 
-    private int totalEntityCount = 0;
+    //private int totalEntityCount = 0;
 
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
@@ -80,6 +84,7 @@ public class Benerator {
 
     public Benerator() {
         this.model = new DataModel();
+        this.executor = Executors.newCachedThreadPool();
     }
 
     public void processFile(String uri) throws IOException {
@@ -100,9 +105,13 @@ public class Benerator {
         }
         java.lang.System.out.println("context: " + context);
         long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
+        logger.info("Elapsed time: " + RoundedNumberFormat.format(elapsedTime, 0) + " ms");
+        /*
+        long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
         logger.info("Created " + RoundedNumberFormat.format(totalEntityCount, 0) + " entities " +
                 "in " + RoundedNumberFormat.format(elapsedTime, 0) + " ms " +
                 "(" + RoundedNumberFormat.format(totalEntityCount * 3600000L / elapsedTime, 0) + " p.h.)");
+        */
     }
 
     private void parseElement(Element element, Set<Heavyweight> resources, TaskContext context) {
@@ -148,7 +157,7 @@ public class Benerator {
             int pageSize = parseInt(element.getAttribute("pagesize"), 1);
             int threads = parseInt(element.getAttribute("threads"), 1);
             PageListener pager = parsePager(element, context);
-            TaskRunner.run(task, context, count, pager, pageSize, threads);
+            TaskRunner.run(task, context, count, pager, pageSize, threads, executor);
         } catch (ConversionException e) {
             throw new ConfigurationError(e);
         }
@@ -199,57 +208,31 @@ public class Benerator {
         for (Processor<Entity> processor : processors)
             resources.add(processor);
         // parse variables
-        Map<String, Generator> variables = parseVariables(element, context);
+        Map<String, Generator<? extends Object>> variables = parseVariables(element, context);
         // generate
         Generator<Entity> entityGenerator = EntityGeneratorFactory.createEntityGenerator(descriptor, context);
-        int pageSize = 1;
-        if (!StringUtil.isEmpty(element.getAttribute("pagesize")))
-            pageSize = Integer.parseInt(element.getAttribute("pagesize"));
-        logger.debug("Starting entity generation by " + entityGenerator + " with page size " + pageSize);
-        int count = 0;
-        while (allVariablesAvailable(variables.values())) {
-            for (Map.Entry<String, Generator> variable : variables.entrySet()) {
-                String name = variable.getKey();
-                Object value = variable.getValue().generate();
-                context.set(name, value);
-            }
-            if (!entityGenerator.available())
-                break;
-            Entity entity = entityGenerator.generate();
-            totalEntityCount++;
-            // TODO v0.4 process sub-create-entities here
-            for (Processor<Entity> processor : processors)
-                processor.process(entity);
-            for (String variableName : variables.keySet())
-                context.set(variableName, null);
-            count++;
-            if (count % pageSize == 0)
-                for (Processor<Entity> processor : processors)
-                    processor.flush();
+        int count = parseInt(element.getAttribute("count"), -1);
+        int pageSize = parseInt(element.getAttribute("pagesize"), 1);
+        int threads = parseInt(element.getAttribute("threads"), 1);
+        Generator<Entity> configuredGenerator = new ConfiguredGenerator(entityGenerator, variables, context);
+        CreateEntityTask task = new CreateEntityTask(
+        		descriptor.getName(), count, pageSize, threads, 
+        		configuredGenerator, processors, executor);
+        task.init(context);
+        try {
+        	task.run();
+        } finally {
+        	task.destroy();
         }
-        for (String variableName : variables.keySet()) {
-            context.set(variableName, null);
-        }
-        for (Processor<Entity> processor : processors)
-            processor.flush();
     }
 
-    private boolean allVariablesAvailable(Collection<Generator> generators) {
-        for (Generator generator : generators)
-            if (!generator.available()) {
-                logger.debug("No more available: " + generator);
-                return false;
-            }
-        return true;
-    }
-
-    private Map<String, Generator> parseVariables(Element element, TaskContext context) {
-        HashMap<String, Generator> variables = new HashMap<String, Generator>();
+    private Map<String, Generator<? extends Object>> parseVariables(Element element, TaskContext context) {
+        HashMap<String, Generator<? extends Object>> variables = new HashMap<String, Generator<? extends Object>>();
         NodeList varElements = element.getElementsByTagName("variable");
         for (int i = 0; i < varElements.getLength(); i++) {
             Element varElement = (Element) varElements.item(i);
             ComponentDescriptor componentDescriptor = mapComponentDescriptor(varElement);
-            Generator generator = ComponentGeneratorFactory.getComponentGenerator(componentDescriptor, context);
+            Generator<? extends Object> generator = ComponentGeneratorFactory.getComponentGenerator(componentDescriptor, context);
             String varName = varElement.getAttribute("name");
             variables.put(varName, generator);
         }
@@ -300,7 +283,7 @@ public class Benerator {
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Attr attribute = (Attr) attributes.item(i);
-            if (!"pagesize".equals(attribute.getName()) && !"processor".equals(attribute.getName()))
+            if (!"pagesize".equals(attribute.getName()) && !"threads".equals(attribute.getName()) && !"processor".equals(attribute.getName()))
                 ctDescriptor.setDetail(attribute.getName(), attribute.getValue());
         }
         NodeList nodes = element.getChildNodes();
