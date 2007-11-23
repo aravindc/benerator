@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.sample.SequenceGenerator;
 
 /**
  * Tests the UniqueAlternativeGenerator.<br/>
@@ -52,6 +53,14 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         gens[1] = generator(0, 1);
         Generator<Integer> generator = new UniqueAlternativeGenerator<Integer>(Integer.class, gens);
         expectUniqueFromSet(generator, 0, 1, 2).withCeasedAvailability();
+    }
+
+    public void testManyAlternatives() {
+        Generator<Integer>[] gens = new Generator[2];
+        gens[0] = new SequenceGenerator<Integer>(Integer.class, 0, 2, 4, 6, 8);
+        gens[1] = new SequenceGenerator<Integer>(Integer.class, 1, 3, 5, 7, 9);
+        Generator<Integer> generator = new UniqueAlternativeGenerator<Integer>(Integer.class, gens);
+        expectUniqueGenerations(generator, 10).withCeasedAvailability();
     }
 
     private Generator<Integer> generator(int ... values) {
