@@ -93,6 +93,13 @@ public abstract class GeneratorTest extends TestCase {
         return new Helper(generator);
     }
 
+    protected <T> Helper expectUniqueGenerations(Generator<T> generator, int n) {
+        expectUniqueGenerationsOnce(generator, n);
+        generator.reset();
+        expectUniqueGenerationsOnce(generator, n);
+        return new Helper(generator);
+    }
+
     protected <T>String format(T product) {
         return ToStringConverter.convert(product, "[null]");
     }
@@ -260,9 +267,22 @@ public abstract class GeneratorTest extends TestCase {
             T product = generator.generate();
             logger.debug("created " + format(product));
             for (Validator<T> validator : validators) {
-                assertTrue("The generated value '" + format(product) + "' is not valid accoring to " + validator,
+                assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
                         validator.valid(product));
             }
+        }
+    }
+
+    private <T> void expectUniqueGenerationsOnce(Generator<T> generator, int n, Validator<T> ... validators) {
+        UniqueValidator<T> validator = new UniqueValidator<T>();
+        generator.validate();
+        for (int i = 0; i < n; i++) {
+            assertTrue("Generator has gone unavailable before creating the required number of products ",
+                    generator.available());
+            T product = generator.generate();
+            logger.debug("created " + format(product));
+            assertTrue("The generated value '" + format(product) + "' is not unique. Generator is " + generator, 
+                    validator.valid(product));
         }
     }
 
