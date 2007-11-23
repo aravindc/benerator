@@ -1,4 +1,4 @@
-<!DOCTYPE dataset SYSTEM "dataset.dtd">
+<!--DOCTYPE dataset SYSTEM "dataset.dtd"-->
 <dataset>
     <table name="PERSON">
         <column>name</column>
