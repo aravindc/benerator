@@ -74,4 +74,9 @@ public class DBQueryIterable implements Iterable<ResultSet> {
             throw new RuntimeException(e);
         }
     }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + query + ']';
+    }
 }

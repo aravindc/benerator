@@ -63,6 +63,11 @@ public class ResultSetConverter implements Converter<ResultSet, Object> {
         return (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
     }
 
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName();
+    }
+    
     private static Object[] convertToArray(ResultSet resultSet) throws ConversionException {
         try {
             int columnCount = resultSet.getMetaData().getColumnCount();
