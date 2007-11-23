@@ -327,7 +327,7 @@ public class GeneratorFactory {
      */
     public static Generator<String> getRegexStringGenerator(
             String pattern, int minLength, Integer maxLength, Locale locale, double nullQuota) {
-        Generator<String> generator = new RegexStringGenerator(pattern, locale, maxLength, true);
+        Generator<String> generator = new RegexStringGenerator(pattern, locale, maxLength, false);
         generator = new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength));
         return wrapNullQuota(generator, nullQuota);
