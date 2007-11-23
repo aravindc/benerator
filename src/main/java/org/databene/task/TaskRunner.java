@@ -32,6 +32,8 @@ import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.BeanUtil;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Runs a task from its instance or from a config file.<br/>
@@ -43,13 +45,13 @@ public class TaskRunner {
     private static final Log logger = LogFactory.getLog(TaskRunner.class);
 
     public static void run(Task task, TaskContext context, long invocations,
-                           PageListener pager, long pageSize, int threadCount) {
+                           PageListener pager, long pageSize, int threadCount, ExecutorService executor) {
         if (logger.isInfoEnabled()) {
             String invocationInfo = (invocations == 1 ? "once" :
                     invocations + " times with page size " + pageSize + " in " + threadCount + " threads");
             logger.info("Running task " + task + " " + invocationInfo);
         }
-        PagedTask pagedTask = new PagedTask(task, invocations, pager, pageSize, threadCount);
+        PagedTask pagedTask = new PagedTask(task, invocations, pager, pageSize, threadCount, executor);
         pagedTask.init(context);
         try {
             pagedTask.run();
@@ -71,7 +73,7 @@ public class TaskRunner {
             int invocations = Integer.parseInt(cells[1]);
             int pageSize = Integer.parseInt(cells[2]);
             int threadCount = Integer.parseInt(cells[3]);
-            run(task, context, invocations, null, pageSize, threadCount);
+            run(task, context, invocations, null, pageSize, threadCount, Executors.newCachedThreadPool());
         }
         iterator.close();
     }
