@@ -274,6 +274,19 @@
             </answer>
         </faq>
 
+        <faq id="performance">
+            <question>Data generation is too slow. What can I do?</question>
+            <answer>
+                <p>When using default settings and database export, 
+                	each entity is persisted in a single transaction.
+                	You can increase the number of entities created in a transaction 
+                	by setting the pagesize attribute of the create-entities elements.</p>
+                <p>Run benerator multithreaded, e.g.
+                <source>create-entities name="db_user" count="10" pagesize="1000" threads="2"</source>
+                </p>
+            </answer>
+        </faq>
+
         <faq id="prefix_suffix">
             <question>How to generate strings with a prefix or suffix?</question>
             <answer>
