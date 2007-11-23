@@ -26,6 +26,8 @@
 
 package org.databene.task;
 
+import java.util.concurrent.Executors;
+
 import junit.framework.TestCase;
 
 /**
@@ -69,7 +71,7 @@ public class PagedTaskTest extends TestCase {
     public void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) {
         SingleThreadedTask.instanceCount = 0;
         SingleThreadedTask task = new SingleThreadedTask();
-        PagedTask pagedTask = new PagedTask(task, totalInvocations, null, pageSize, threads);
+        PagedTask pagedTask = new PagedTask(task, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
         pagedTask.init(new TaskContext());
         pagedTask.run();
         pagedTask.destroy();
@@ -79,7 +81,7 @@ public class PagedTaskTest extends TestCase {
     private void checkRun(int totalInvocations, int pageSize, int threads,
                           int expectedInitCount, int expectedRunCount, int expectedDestroyCount) {
         CountTask countTask = new CountTask();
-        PagedTask pagedTask = new PagedTask(countTask, totalInvocations, null, pageSize, threads);
+        PagedTask pagedTask = new PagedTask(countTask, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
         pagedTask.init(new TaskContext());
         pagedTask.run();
         pagedTask.destroy();
