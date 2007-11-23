@@ -79,6 +79,7 @@ public class EANGenerator extends GeneratorProxy<String> {
                         new EAN8Generator(false),
                         new EAN13Generator(false)));
             super.validate();
+            dirty = false;
         }
     }
 

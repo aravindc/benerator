@@ -26,8 +26,7 @@
 
 package org.databene.domain.product;
 
-import org.databene.benerator.LightweightGenerator;
-import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.factory.GeneratorFactory;
 
 /**
@@ -35,22 +34,25 @@ import org.databene.benerator.factory.GeneratorFactory;
  * <br/>
  * Created: 30.07.2007 21:47:30
  */
-public class EAN13Generator extends LightweightGenerator<String> {
+public class EAN13Generator extends GeneratorWrapper<String, String> {
 
     private boolean unique;
-
-    private Generator<String> digitGenerator;
 
     public EAN13Generator() {
         this(false);
     }
 
     public EAN13Generator(boolean unique) {
+        super(null);
+        setUnique(unique);
+    }
+
+    private void setUnique(boolean unique) {
         this.unique = unique;
         if (unique)
-            this.digitGenerator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{13}", 13, 13, null);
+            setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{12}", 12, 12, null));
         else
-            this.digitGenerator = GeneratorFactory.getRegexStringGenerator("[0-9]{13}", 13, 13, null, 0);
+            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{12}", 12, 12, null, 0));
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -62,7 +64,7 @@ public class EAN13Generator extends LightweightGenerator<String> {
     public String generate() {
         char[] chars = new char[13];
         int sum = 0;
-        digitGenerator.generate().getChars(0, 13, chars, 0);
+        source.generate().getChars(0, 12, chars, 0);
         for (int i = 0; i < 12; i++)
             sum += (chars[i] - '0') * (1 + (i % 2) * 2);
         if (sum % 10 == 0)

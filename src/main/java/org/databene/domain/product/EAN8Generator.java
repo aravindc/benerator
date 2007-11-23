@@ -26,8 +26,7 @@
 
 package org.databene.domain.product;
 
-import org.databene.benerator.LightweightGenerator;
-import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.factory.GeneratorFactory;
 
 /**
@@ -35,35 +34,45 @@ import org.databene.benerator.factory.GeneratorFactory;
  * <br/>
  * Created: 30.07.2007 21:47:30
  */
-public class EAN8Generator extends LightweightGenerator<String> {
+public class EAN8Generator extends GeneratorWrapper<String, String> {
 
     private boolean unique;
-
-    private Generator<String> baseGenerator;
 
     public EAN8Generator() {
         this(false);
     }
 
     public EAN8Generator(boolean unique) {
-        this.unique = unique;
-        if (unique)
-            this.baseGenerator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{8}", 8, 8, null);
-        else
-            this.baseGenerator = GeneratorFactory.getRegexStringGenerator("[0-9]{8}", 8, 8, null, 0);
+        super(null);
+        setUnique(unique);
     }
 
+    public boolean isUnique() {
+        return unique;
+    }
+
+    private void setUnique(boolean unique) {
+        this.unique = unique;
+        if (unique)
+            setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{7}", 7, 7, null));
+        else
+            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7, null, 0));
+    }
+
+    // Generator interface --------------------------------------------------------------------
+    
     public Class<String> getGeneratedType() {
         return String.class;
     }
 
     public String generate() {
         char[] chars = new char[8];
+        source.generate().getChars(0, 7, chars, 0);
+        chars[7] = chars[6];
+        chars[6] = '0';
         int sum = 0;
-        baseGenerator.generate().getChars(0, 8, chars, 0);
         for (int i = 0; i < 8; i++)
-            if (i != 6)
-                sum += (chars[i] - '0') * (1 + (i % 2) * 2);
+            sum += (chars[i] - '0') * (1 + (i % 2) * 2);
         if (sum % 10 == 0)
             chars[6] = '0';
         else
@@ -76,4 +85,5 @@ public class EAN8Generator extends LightweightGenerator<String> {
     public String toString() {
         return getClass().getSimpleName() + (unique ? "[unique]" : "");
     }
+
 }
