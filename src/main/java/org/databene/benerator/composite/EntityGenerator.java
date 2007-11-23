@@ -46,13 +46,13 @@ public class EntityGenerator extends LightweightGenerator<Entity> {
 
     private String typeName;
     private Generator<Entity> source;
-    private Map<String, Generator> componentGenerators;
+    private Map<String, Generator<? extends Object>> componentGenerators;
 
-    public EntityGenerator(EntityDescriptor descriptor, Map<String, Generator> componentGenerators) {
+    public EntityGenerator(EntityDescriptor descriptor, Map<String, Generator<? extends Object>> componentGenerators) {
         this(descriptor, new SimpleEntityGenerator(descriptor), componentGenerators);
     }
 
-    public EntityGenerator(EntityDescriptor descriptor, Generator<Entity> source, Map<String, Generator> componentGenerators) {
+    public EntityGenerator(EntityDescriptor descriptor, Generator<Entity> source, Map<String, Generator<? extends Object>> componentGenerators) {
         this.typeName = descriptor.getName();
         this.source = source;
         this.componentGenerators = componentGenerators;
@@ -63,7 +63,7 @@ public class EntityGenerator extends LightweightGenerator<Entity> {
             logger.debug("source is no more available: " + source);
             return false;
         }
-        for (Generator compGen : componentGenerators.values()) {
+        for (Generator<? extends Object> compGen : componentGenerators.values()) {
             if (!compGen.available()) {
                 logger.debug("Generator is no more available: " + compGen);
                 return false;
@@ -78,7 +78,7 @@ public class EntityGenerator extends LightweightGenerator<Entity> {
 
     public Entity generate() {
         Entity instance = source.generate();
-        for (Map.Entry<String, Generator> entry : componentGenerators.entrySet()) {
+        for (Map.Entry<String, Generator<? extends Object>> entry : componentGenerators.entrySet()) {
             String componentName = entry.getKey();
             try {
                 Object componentValue = entry.getValue().generate();
