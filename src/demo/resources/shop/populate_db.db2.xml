@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.02.dtd"-->
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.03.dtd"-->
 <setup>
 
     <bean id="db" class="org.databene.platform.db.adapter.DBSystem">

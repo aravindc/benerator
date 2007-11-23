@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.02.dtd"-->
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.03.dtd"-->
 <setup>
 
     <bean id="db" class="org.databene.platform.db.adapter.DBSystem">
@@ -27,8 +27,9 @@
     <create-entities name="db_product" source="shop/products.import.csv" processor="db"/>
 
     <!-- add products of random category -->
-    <create-entities name="db_product" count="10" pagesize="1000">
-        <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator"/>
+    <create-entities name="db_product" count="10" pagesize="1000" threads="2">
+        <attribute name="category_id" source="db" selector="select id from db_category" cyclic="true"/>
+        <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator" unique="true"/>
         <attribute name="name" pattern="[A-Z][a-z]{5,12}"/>
         <processor ref="db"/>
         <processor class="org.databene.platform.flat.FlatFileEntityExporter">
@@ -39,7 +40,7 @@
 
     <!-- create customers -->
 
-    <create-entities name="db_user" count="10" pagesize="1000">
+    <create-entities name="db_user" count="10" pagesize="1000" threads="2">
         <attribute name="id" mode="ignored"/>
         <attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)"/>
         <attribute name="password" pattern="[A-Za-z0-9]{8,12}"/>
@@ -51,7 +52,7 @@
         <processor ref="db"/>
     </create-entities>
 
-    <create-entities name="db_customer" pagesize="1000">
+    <create-entities name="db_customer" pagesize="1000" threads="2">
         <variable name="person" generator="org.databene.domain.person.PersonGenerator" region="DE" locale="DE"/>
         <attribute name="id" source="db" selector="select id from db_user where role_id='customer' and id>3"/>
         <attribute name="category" values="A,B,C"/>
@@ -63,13 +64,13 @@
 
     <!-- create orders for random customers and random products -->
 
-    <create-entities name="db_order" count="30" pagesize="1000">
+    <create-entities name="db_order" count="10" pagesize="1000" threads="2">
         <attribute name="id" mode="ignored"/>
         <attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true"/>
         <processor ref="db"/>
     </create-entities>
 
-    <create-entities name="db_order_item" count="100" pagesize="1000">
+    <create-entities name="db_order_item" count="10" pagesize="1000" threads="2">
         <attribute name="id" mode="ignored"/>
         <attribute name="number_of_items" min="1" max="27" distribution="cumulated"/>
         <attribute name="order_id" source="db" selector="select id from db_order" cyclic="true"/>
