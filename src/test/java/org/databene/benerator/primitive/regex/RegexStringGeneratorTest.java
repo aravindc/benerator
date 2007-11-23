@@ -93,6 +93,7 @@ public class RegexStringGeneratorTest extends GeneratorClassTest {
         expectUniqueFromSet(new RegexStringGenerator("[01]{2,3}", null, 30, true),
                 "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111").withCeasedAvailability();
         expectUniqueProducts(new RegexStringGenerator("0[0-9]{2,4}/[1-9][0-9]5", null, 30, true), 5).withContinuedAvailability();
+        expectUniqueProducts(new RegexStringGenerator("[0-9]{5}", null, 0, true), 1000).withContinuedAvailability();
     }
 
     public void testUniqueGroups() {
