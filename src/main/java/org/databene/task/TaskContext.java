@@ -62,7 +62,12 @@ public class TaskContext implements Context {
         map.put(key, value);
     }
 
+	public void remove(String key) {
+		map.remove(key);
+	}
+	
     public synchronized String toString() {
         return map.toString();
     }
+
 }
