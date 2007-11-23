@@ -100,17 +100,17 @@ public class EntityGeneratorFactory {
     private static Generator<Entity> createLimitCountGenerator(EntityDescriptor descriptor, Generator<Entity> generator, Set<String> usedDetails) {
         if (descriptor.getCount() != null) {
             usedDetails.add(COUNT);
-            generator = new NShotGeneratorProxy(generator, descriptor.getCount());
+            generator = new NShotGeneratorProxy<Entity>(generator, descriptor.getCount());
         }
         return generator;
     }
 
     private static Generator<Entity> createGeneratingEntityGenerator(EntityDescriptor descriptor, TaskContext context) {
-        Map<String, Generator> componentGenerators = new HashMap<String, Generator>();
+        Map<String, Generator<? extends Object>> componentGenerators = new HashMap<String, Generator<? extends Object>>();
         Collection<ComponentDescriptor> descriptors = descriptor.getComponentDescriptors();
         for (ComponentDescriptor component : descriptors) {
             if (component.getMode() != Mode.ignored) {
-                Generator componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context);
+                Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context);
                 componentGenerators.put(component.getName(), componentGenerator);
             }
         }
@@ -119,19 +119,19 @@ public class EntityGeneratorFactory {
 
     private static Generator<Entity> createMutatingEntityGenerator(
             EntityDescriptor descriptor, TaskContext context, Generator<Entity> generator) {
-        Map<String, Generator> componentGenerators = new HashMap<String, Generator>();
+        Map<String, Generator<? extends Object>> componentGenerators = new HashMap<String, Generator<? extends Object>>();
         Collection<ComponentDescriptor> descriptors = descriptor.getDeclaredComponentDescriptors();
         for (ComponentDescriptor component : descriptors) {
             if (component.getMode() != Mode.ignored) {
-                Generator componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context);
+                Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context);
                 componentGenerators.put(component.getName(), componentGenerator);
             }
         }
         return new EntityGenerator(descriptor, generator, componentGenerators);
     }
 
-    public static Generator createAttributeGenerator(AttributeDescriptor descriptor, TaskContext context) {
-        Generator generator = null;
+    public static Generator<? extends Object> createAttributeGenerator(AttributeDescriptor descriptor, TaskContext context) {
+        Generator<? extends Object> generator = null;
         Set<String> usedDetails = new HashSet<String>();
         // create a source generator
         generator = createGeneratorByClass(descriptor, usedDetails, generator);
@@ -156,9 +156,9 @@ public class EntityGeneratorFactory {
         return generator;
     }
 
-    public static Generator createReferenceGenerator(ReferenceDescriptor descriptor, TaskContext context) {
+    public static Generator<? extends Object> createReferenceGenerator(ReferenceDescriptor descriptor, TaskContext context) {
         Set<String> usedDetails = new HashSet<String>();
-        Generator generator = null;
+        Generator<? extends Object> generator = null;
         String targetTye = descriptor.getTargetTye();
         if (targetTye != null) {
             usedDetails.add(TARGET_TYPE);
@@ -171,15 +171,15 @@ public class EntityGeneratorFactory {
             else
                 throw new ConfigurationError("'" + SOURCE + "' is not set for " + descriptor);
             org.databene.model.system.System sourceSystem = (org.databene.model.system.System) context.get(sourceName);
-            generator = new IteratingGenerator(sourceSystem.getIds(targetTye, selector));
+            generator = new IteratingGenerator<Object>(sourceSystem.getIds(targetTye, selector));
         } else
-            generator = new ConstantGenerator(null);
+            generator = new ConstantGenerator<Object>(null);
         generator = createValidatingGenerator(descriptor, generator, usedDetails);
         checkUsedDetails(descriptor, usedDetails);
         return generator;
     }
 
-    private static Generator createSampleGenerator(AttributeDescriptor descriptor, Set<String> usedDetails, Generator generator) {
+    private static Generator<? extends Object> createSampleGenerator(AttributeDescriptor descriptor, Set<String> usedDetails, Generator<? extends Object> generator) {
         // check for samples
         String[] values = descriptor.getValues();
         if (values.length > 0) {
@@ -195,24 +195,23 @@ public class EntityGeneratorFactory {
         return generator;
     }
 
-    private static Generator createGeneratorByClass(AttributeDescriptor descriptor, Set<String> usedDetails, Generator generator) {
+    private static Generator<? extends Object> createGeneratorByClass(AttributeDescriptor descriptor, Set<String> usedDetails, Generator<? extends Object> generator) {
         String generatorClassName = descriptor.getGenerator();
         if (generatorClassName != null) {
             usedDetails.add(GENERATOR);
-            generator = (Generator) BeanUtil.newInstance(generatorClassName);
-            if (descriptor.getLocale() != null) {
-                usedDetails.add(LOCALE);
-                BeanUtil.setPropertyValue(generator, "locale", descriptor.getLocale(), false);
-            }
-            if (descriptor.getRegion() != null) {
-                usedDetails.add(REGION);
-                BeanUtil.setPropertyValue(generator, "region", descriptor.getRegion(), false);
+            generator = (Generator<? extends Object>) BeanUtil.newInstance(generatorClassName);
+            for (FeatureDetail detail : descriptor.getDetails()) {
+                String detailName = detail.getName();
+                if (detail.getValue() != null && BeanUtil.hasProperty(generator.getClass(), detailName)) {
+                    BeanUtil.setPropertyValue(generator, detailName, detail.getValue());
+                    usedDetails.add(detailName);
+                }
             }
         }
         return generator;
     }
 
-    private static <T> Generator createNullQuotaGenerator(
+    private static <T> Generator<T> createNullQuotaGenerator(
             AttributeDescriptor descriptor, Generator<T> generator, Set<String> usedDetails) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null) {
@@ -228,20 +227,20 @@ public class EntityGeneratorFactory {
         return generator;
     }
 
-    private static Generator createTypeGenerator(AttributeDescriptor descriptor, Generator generator, Set<String> usedDetails) {
+    private static Generator<? extends Object> createTypeGenerator(AttributeDescriptor descriptor, Generator<? extends Object> generator, Set<String> usedDetails) {
         if (descriptor.getType() == null)
             return generator;
         usedDetails.add(TYPE);
-        Class targetType = javaClassFor(descriptor.getType());
+        Class<? extends Object> targetType = javaClassFor(descriptor.getType());
         return createTypeGenerator(targetType, descriptor, usedDetails);
     }
 
     private static <T> Generator<T> createTypeConvertingGenerator(
-            AttributeDescriptor descriptor, Generator generator, Set<String> usedDetails) {
+            AttributeDescriptor descriptor, Generator<? extends Object> generator, Set<String> usedDetails) {
         if (descriptor.getType() == null)
-            return generator;
+            return (Generator<T>) generator;
         usedDetails.add(TYPE);
-        Class<T> targetType = javaClassFor(descriptor.getType());
+        Class<T> targetType = (Class<T>)javaClassFor(descriptor.getType());
         Converter converter = null;
         if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
             // String needs to be converted to Date
@@ -257,7 +256,7 @@ public class EntityGeneratorFactory {
         }
         if (converter == null)
             converter = new AnyConverter<T>(targetType);
-        return new ConvertingGenerator<Object, T>(generator, converter);
+        return new ConvertingGenerator<Object, T>((Generator<Object>)generator, converter);
     }
 
     private static <T> Generator<T> createValidatingGenerator(
@@ -359,7 +358,7 @@ public class EntityGeneratorFactory {
         return GeneratorFactory.createProxy(generator, cyclic, iteration, proxyParam1, proxyParam2);
     }
 
-    private static Generator createSourceAttributeGenerator(AttributeDescriptor descriptor, TaskContext context, Set<String> usedDetails) {
+    private static Generator<? extends Object> createSourceAttributeGenerator(AttributeDescriptor descriptor, TaskContext context, Set<String> usedDetails) {
         String source = descriptor.getSource();
         if (source == null)
             return null;
@@ -391,7 +390,7 @@ public class EntityGeneratorFactory {
                 usedDetails.add("encoding");
             else
                 encoding = SystemInfo.fileEncoding();
-            // TODO check wether to import Entities or cells
+            // TODO check whether to import Entities or cells
             generator = new IteratingGenerator(new CSVEntityIterable(source, type, separator, encoding));
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null);
@@ -403,7 +402,7 @@ public class EntityGeneratorFactory {
         Distribution distribution = descriptor.getDistribution();
         if (distribution != null) {
             usedDetails.add("distribution");
-            List values = new ArrayList();
+            List<Object> values = new ArrayList<Object>();
             while (generator.available()) {
                 Object value = generator.generate();
                 values.add(value);
@@ -419,7 +418,7 @@ public class EntityGeneratorFactory {
         return createProxy(descriptor, generator, usedDetails);
     }
 
-    private static Generator createConvertingGenerator(AttributeDescriptor descriptor, Generator generator, Set<String> usedDetails) {
+    private static Generator<? extends Object> createConvertingGenerator(AttributeDescriptor descriptor, Generator<? extends Object> generator, Set<String> usedDetails) {
         if (descriptor.getConverter() != null) {
             usedDetails.add("converter");
             Converter converter = descriptor.getConverter();
@@ -446,7 +445,7 @@ public class EntityGeneratorFactory {
         }
     }
 
-    private static Generator createTypeGenerator(Class targetType, AttributeDescriptor descriptor, Set<String> usedDetails) {
+    private static Generator<? extends Object> createTypeGenerator(Class targetType, AttributeDescriptor descriptor, Set<String> usedDetails) {
         if (Number.class.isAssignableFrom(targetType)) {
             usedDetails.add(TYPE);
             return createNumberGenerator(descriptor, targetType, usedDetails);
@@ -466,7 +465,7 @@ public class EntityGeneratorFactory {
             return null;
     }
 
-    private static Generator createDateGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
+    private static Generator<Date> createDateGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
         Date min = parseDate(descriptor, "min", TimeUtil.date(1970, 0, 1), usedDetails);
         Date max = parseDate(descriptor, "max", TimeUtil.today().getTime(), usedDetails);
         Date precisionDate = parseDate(descriptor, "precision", TimeUtil.date(1970, 0, 2), usedDetails);
@@ -475,7 +474,7 @@ public class EntityGeneratorFactory {
         return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
     }
 
-    private static Generator createCharacterGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
+    private static Generator<Character> createCharacterGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
         String pattern = descriptor.getPattern();
         if (pattern != null)
             usedDetails.add(PATTERN);
@@ -542,7 +541,7 @@ public class EntityGeneratorFactory {
                 targetType, min, max, precision, distribution, variation1, variation2, 0);
     }
 
-    private static Generator createStringGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
+    private static Generator<String> createStringGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
         // evaluate min length
         Integer minLength = descriptor.getMinLength();
         if (minLength == null)
@@ -583,10 +582,10 @@ public class EntityGeneratorFactory {
 
     // helpers ---------------------------------------------------------------------------------------------------------
 
-    private static Map<String, Class> classMappings;
+    private static Map<String, Class<? extends Object>> classMappings;
 
     static {
-        classMappings = new HashMap<String, Class>();
+        classMappings = new HashMap<String, Class<? extends Object>>();
         try {
             Properties props = IOUtil.readProperties("org/databene/platform/bean/types.properties");
             for (Map.Entry<Object, Object> entry : props.entrySet()) {
@@ -600,9 +599,9 @@ public class EntityGeneratorFactory {
         }
     }
 
-    private static Class javaClassFor(String type) {
+    private static Class<? extends Object> javaClassFor(String type) {
         try {
-            Class result = classMappings.get(type);
+            Class<? extends Object> result = classMappings.get(type);
             if (result == null)
                 result = Class.forName(type);
             return result;
