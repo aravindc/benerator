@@ -38,6 +38,10 @@ release history and road map
 |             |                   | Feature completion: SQL types, key generation,|
 |             |                   |    identity, uniqueness                       |
 *-------------+-------------------+-----------------------------------------------+
+| 0.3.03      | 2007-11-24        | performance boost by supporting multithreaded data geberation |
+|             |                   | bug fixes in creation of unique EAN codes                     |
+|             |                   | bug fix in non-unique regex based string generation           |
+*-------------+-------------------+-----------------------------------------------+
 | 0.3.02      | 2007-11-20        | generator bug fixes                           |
 |             |                   | generation of unique data                     |
 |             |                   | current time generators                       |

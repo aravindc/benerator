@@ -1,0 +1,328 @@
+Baustellen:
+===========
+
+create RSS link for blog on all pages
+
+0.3.03
+------
+- Bug fixes
+  - support unique EAN codes
+  - check why db_user.email is unique
+- Features
+  - Support for multithreaded DB access
+  - Descriptor Exporter
+  - parsing of check constraints
+  - support properties files
+  - implement stage mechanism
+  - commercial_license.txt
+	- completing SQL type support
+  - create beans from property files
+  - add execute() element that calls a System.execute(String) method, e.g. for submitting SQL
+  - define defaults by property file, e.g. processor, encoding, separator
+- Build
+  - set up clover
+  - setup bug tracking
+- Doc
+  - How to program workflow like running from setup file
+  - Interaction between setup file and tasks
+  - better example for BeanGraphDemo
+- demo
+  - use examples of each country for shop products
+- Tests
+  - create tests for the demo package (esp. each database)
+  - Perform each test for constructor and JavaBean setup
+- Site
+  - include new DistributionDemo snapshot in web site
+  - test bitreverse _sequence_ (long/double), see WedgeSequenceTest
+  - update Sequence doc for DoubleFromLongGenerator
+  - define SPI
+  - FAQ: How to create unique ids?
+  - List generators
+  - List converters
+  - Site TODOs
+
+Learn more about RSS
+
+0.4
+---
+* nullable -> required?
+* setup file XSD
+* differ between API / SPI
+* describe dynamic aspects of the interfaces
+* Model generation
+* Model transformation
+* TreePathGenerator
+* region concept
+* anonymization
+* Support recursive create-entities with parent reference
+* anonymization demo
+* key generation strategies (esp. Oracle sequences) 1h
+* maxLength support for numbers and dates
+* config file:
+  * separate modeling of entities/builders from invocation
+  * support config file import
+  * property file support?
+* create JavaBeanGenerator that is used via API and reads XML config file structure
+* sequence definition from user config file
+* wrapping string generation with prefix and suffix
+* address generation
+  * CH: extract phone numbers
+  * AT: extract phone numbers
+* Download/Release Section
+** Source Download
+** Binary Download
+
+* 'Getting started' Document
+** Demos
+** Uniqueness
+** Generierung voneinander abhängiger Entities / Daten
+** Dirty check in inheritance hierarchies
+
+Repetitive tasks
+----------------
+* check for TODOs
+* check for UnsupportedOperationException
+* remove deprecations
+* check that the dirty flag is set in each Generator.set method
+* Check for default constructor on non-delegating generators
+* Test that invalid generator setups raise InvalidGeneratorSetupExceptions
+* remove System.out.print(ln)
+* provide JavaDoc for anything
+* remove cycles
+* run Findbugs
+* run PMD
+* CPD check
+* check resource paths
+* Check all validate() methods
+* check that all parents and delegates are closed/reseted/validated
+* remove log4j from main directory
+* upload DTD
+* check demo
+
+
+presentation:
+-------------
+more visualizations
+earlier examples
+effort comparation via visualization
+experiences from Payback Polen
+
+
+license:
+--------
+* monthly rapid updates
+* quarterly service packs with the latest bug fixes
+* business hour support / 24/7 support
+* concerns future minor upgrades (x.*) or all future versions (*.*)
+* compatibility assurance for future minor upgrades (x.*) or all future versions (*.*)
+* influencing further development: voting for future extensions weighted by license fee
+* benerator license includes licenses for commons and webdecs
+
+training (2 days):
+------------------
+* 990 EUR per participant (every 3 months in Munich)
+* 3900 EUR in-house (max. 10 participants)
+* Definiere Zertifizierungsverfahren
+* Definiere Schulung + Termine
+
+usage
+-----
+* testing own software
+* testing 3rd party software
+* redistributing
+* selling books
+* selling training
+
+wording:
+--------
+* value
+* entity
+* data
+
+
+types:
+------
+integer, long, short, float, double, character, byte, boolean, yes_no, true_false
+string
+date, time, timestamp
+calendar, calendar_date
+big_decimal, big_integer
+locale, timezone, currency
+class (fqName)
+binary
+text (clob/text)
+serializable (java object -> bin)
+clob, blob
+imm_date, imm_time, imm_timestamp, imm_calendar, imm_calendar_date, imm_serializable,
+imm_binary
+
+Wiedervorlage:
+--------------
+heiko.rupp@redheat.com
+christian@hibernate.org
+
+Kontakt:
+--------
+Lothar Hegebart
+
+QA
+--
+Linux-Installation auf Altrechner
+
+Special versions
+----------------
+Highspeed Oracle version
+SAP Adapater
+Siebel Adapter
+
+Traffic analysis
+----------------
+- Check client specs for browser/spider/unknown
+- Check domain of frequent accesses
+- Extract referrers (-> create referrer ranking)
+- Error pages
+- download counter
+- exclude access by own provider
+
+referers
+--------
+google 287
+ottosuch.de 121
+search.live.com 31
+freshmeat.net
+http://www.java-forums.org/java-announcements/3534-benerator-0-3-01-a.html
+
+Develop Corporate Design
+------------------------
+* Web Site
+* Visitenkarte
+* Präsentation
+
+marketing
+---------
+* Performance-Blog
+
+OS
+--
+http://java-source.net/
+
+Link sites
+----------
+http://blogs.msdn.com/sachinre/archive/2006/07/06/A-better-approach-to-test-data-generation.aspx
+http://www.brothersoft.com/information_management/database_programs/test_data_generator_tdg_41281.html
+http://www.heise.de/software/download/db_data_generator/43755
+http://www.microolap.com/products/database/mysql-designer/help/Test_Data_Generator.html
+http://www.downloadmix.de/index.asp?DokName=detail.asp&soft_ID=11798&softname=DTM+Data+Generator
+http://www.freeware-archiv.de/shareware/EMSDataGenerator2005forPostgreSQL-PostgreSQL.htm
+http://www.downloadjunction.com/product/software/25743/index.html
+http://www.bluechillies.com/list.html?k=test+data+generator
+http://www.heise.de/software/download/data_generator_for_mysql/30500
+
+EDU datagen
+-----------
+http://www.first.fhg.de/owx_1_809_2_2_0_460471be7d38aa.html
+http://www.cigital.com/labs/projects/1008/
+http://ise.gmu.edu/~ofut/rsrch/atdg.html
+http://www.testingtech.de/download/ICSSEA-2005-CTE.pdf
+http://www.minet.uni-jena.de/~hagen/slides/060905-hagen-dagstuhl06362.pdf
+http://blogs.msdn.com/imtesty/archive/2007/05/30/random-test-data-generation.aspx
+http://www.medien.ifi.lmu.de/forschung/publikationen/detail?pub=atterer2000sep
+http://www.stickyminds.com/sitewide.asp?ObjectId=12611&Function=DETAILBROWSE&ObjectType=COL&sqry=%2AZ%28SM%29%2AJ%28MIXED%29%2AR%28relevance%29%2AK%28simplesite%29%2AF%28test+data%29%2A&sidx=2&sopp=10&sitewide.asp?sid=1&sqry=%2AZ%28SM%29%2AJ%28MIXED%29%2AR%28relevance%29%2AK%28simplesite%29%2AF%28test+data%29%2A&sidx=2&sopp=10
+http://clif.objectweb.org/load_tools_overview.pdf
+
+Test Generators
+---------------
+http://www.verifysoft.com/de_conformiq_testgenerator.html
+
+Other
+-----
+http://www.technologyevaluation.com/request/testtool_softeval.asp
+http://sourceforge.net/projects/ivalidator/
+yahoo directories
+
+Web Directories
+---------------
+http://dmoz.org                                     04.11.07 submitted -> 11.11.07
+(-> google directories)                             04.11.07 submitted -> 25.11.07
+http://www.java2s.com/
+http://en.wikipedia.org
+
+Open Source/Testing Sites
+-------------------------
+http://freshmeat.net                                04.11.07 submitted -> 04.11.07 listed
+http://www.opensourcetesting.org/performance.php    04.11.07 submitted -> 04.11.07 listed
+http://www.stickyminds.com                          04.11.07 submitted -> 06.11.07 listed
+http://krugle.gom                                   04.11.07 submitted -> 04.12.07
+http://java-source.net                              04.11.07 submitted -> 11.11.07
+http://www.aptest.com/resources.html                04.11.07 submitted -> 11.11.07
+http://www.softwareqatest.com
+http://www.testingfaqs.org/t-load.html
+http://www.io.com/~wazmo/qa/
+http://www.testingreflections.com/
+http://clif.objectweb.org/load_tools_overview.pdf
+http://www.manageability.org/blog/stuff/open-source-automated-test-tools-written-in-java/view
+http://www.testdriven.com
+http://sourceforge.net                              06.11.07 submitted -> 09.11.07
+
+
+News Sites
+----------
+heise
+http://www.digg.com
+
+Forum Sites
+-----------
+http://www.java-forums.org
+http://forums.devx.com
+
+Submit http://doris-frank.de to google
+
+google webmaster tools
+google analytics
+openBC foren --> How Early Should You Test for Performance?
+
+Kontakte
+--------
+Heiko Rupp
+Lothar Hegebart
+Lokale ASQF Members
+Armin Gattung
+Sergiy Barlabanow
+
+
+
+databene-Briefkasten
+
+FAQ
+---
+- How stable is the API? Interfaces / file format
+- How to create strings with a given prefix/suffix -> regular expression / MessageFormat
+- How to assure uniqueness
+
+Open Source Software Blog
+
+Datengenerierung in agilen Projekten
+
+
+Artikelreihe über Performance-Testing
+
+Referenzen:
+- OpenBC: How early should you test for Performance?
+- XING-Profil-Update 'biete'
+
+
+Anwaltstermine
+--------------
+- SNP: Am Montag wieder anrufen (Herlitz)
+- Fink/Althaus: Dr. Althaus, Mi 10:00 Uhr
+- Ücker, Literaturhaus, Salvatorplatz, Mo 19.11. 14:00
+- Bettinger, Mo 19.11. 10.Uhr
+
+"Hochwertige" referer
+---------------------
+freshmeat (für open source)
+digg.com
+dmoz
+http://www.opensourcetesting.org
+http://data-quality.qarchive.org/
+http://java-source.net
