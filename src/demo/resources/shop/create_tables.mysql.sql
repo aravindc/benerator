@@ -8,11 +8,14 @@ CREATE TABLE db_category (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE db_product (
-  ean_code     varchar(13) NOT NULL,
-  name         varchar(30) NOT NULL,
-  category_id  varchar(9)  NOT NULL,
-  price        float(8,2)  NOT NULL,
-  manufacturer varchar(30) NOT NULL,
+  ean_code     varchar(13)  NOT NULL,
+  name         varchar(30)  NOT NULL,
+  category_id  varchar(9)   NOT NULL,
+  price        float(8,2)   NOT NULL,
+  manufacturer varchar(30)  NOT NULL,
+  notes        varchar(256)     NULL,
+  description  text             NULL,
+  image        blob             NULL,
   PRIMARY KEY  (ean_code),
   KEY db_product_category_fk (category_id),
   CONSTRAINT db_product_category_fk FOREIGN KEY (category_id) REFERENCES db_category (id)

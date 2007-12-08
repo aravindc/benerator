@@ -32,8 +32,10 @@
     <db_category id="CLTH" name="Clothing &amp; Footwear" />
     <db_category id="LEIS" name="Leisure Goods" />
 
-    <db_product ean_code="4004768406056" name="Gebirgswasser"        category_id="DRNK/SOFT" price="0.87" manufacturer="Stolzenbacher" />
-    <db_product ean_code="8006550301040" name="Ramazzotti"           category_id="DRNK/ALCO" price="8.95" manufacturer="Dist. Fratelli Ramazzotti" />
+    <db_product ean_code="4004768406056" name="Gebirgswasser" description="Still Mineral Water" 
+                category_id="DRNK/SOFT" price="0.87" manufacturer="Stolzenbacher" />
+    <db_product ean_code="8006550301040" name="Ramazzotti"
+                category_id="DRNK/ALCO" price="8.95" manufacturer="Dist. Fratelli Ramazzotti" />
 
     <!-- user data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 

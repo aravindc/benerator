@@ -15,11 +15,14 @@ CREATE INDEX db_cat_parent_fki ON db_category (parent_id);
 -- db_product
 --
 CREATE TABLE db_product (
-  ean_code     varchar2(13) NOT NULL,
-  name         varchar2(30) NOT NULL,
-  category_id  varchar2(9)  NOT NULL,
-  price        number(8,2)  NOT NULL,
-  manufacturer varchar2(30) NOT NULL,
+  ean_code     varchar2(13)  NOT NULL,
+  name         varchar2(30)  NOT NULL,
+  category_id  varchar2(9)   NOT NULL,
+  price        number(8,2)   NOT NULL,
+  manufacturer varchar2(30)  NOT NULL,
+  notes        varchar2(256)     NULL,
+  description  clob              NULL,
+  image        blob              NULL,
   PRIMARY KEY  (ean_code),
   CONSTRAINT db_product_category_fk FOREIGN KEY (category_id) REFERENCES db_category (id)
 );
@@ -59,13 +62,14 @@ CREATE TABLE db_customer (
   PRIMARY KEY  (id),
   CONSTRAINT db_customer_user_fk FOREIGN KEY (id) REFERENCES db_user (id)
 );
+CREATE INDEX db_customer_name on db_customer (first_name, last_name);
 --
 -- db_order
 --
 CREATE TABLE db_order (
   id          number(10) NOT NULL,
   customer_id number(10) NOT NULL,
-  created_at  timestamp  NOT NULL,
+  created_at  timestamp with time zone NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT db_order_customer_fk FOREIGN KEY (customer_id) REFERENCES db_customer (id)
 );
@@ -88,4 +92,4 @@ CREATE INDEX db_order_item_product_fki ON db_order_item (product_ean_code);
 --
 -- sequence
 --
-CREATE SEQUENCE seq_db_id_generator START WITH 1000;
+CREATE SEQUENCE seq_db_id_generator START WITH 10;

@@ -22,14 +22,15 @@
     </run-task>
 
     <!-- import basic setup from a DBUnit file -->
-    <create-entities source="shop/shop.dbunit.oracle.xml" processor="db"/>
+    <create-entities source="shop/shop.dbunit.oracle.xml" pagesize="1000" processor="db"/>
 
     <!-- import products from a CSV file -->
-    <create-entities name="db_product" source="shop/products.import.csv" processor="db"/>
+    <create-entities name="db_product" source="shop/products.import.csv" pagesize="1000" processor="db"/>
 
     <!-- create products of random attribs & category -->
     <create-entities name="db_product" count="10" pagesize="1000">
         <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator"/>
+        <attribute name="notes" nullQuota="1"/>
         <attribute name="price" min="0.49" max="99.99" precision="0.10" distribution="cumulated"/>
         <processor ref="db"/>
         <processor class="org.databene.platform.flat.FlatFileEntityExporter">
@@ -41,7 +42,7 @@
     <!-- create customers -->
 
     <create-entities name="db_user" count="10" pagesize="1000">
-        <attribute name="id" source="db" selector="SELECT seq_db_id_generator.NEXTVAL FROM dual" cyclic="true"/>
+        <attribute name="id" generator="org.databene.platform.db.adapter.DBSequenceHiLoGenerator" source="db" selector="seq_db_id_generator"/>
         <attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)"/>
         <attribute name="password" pattern="[A-Za-z0-9]{8,12}"/>
         <attribute name="role_id" values="customer"/>
@@ -65,13 +66,13 @@
     <!-- create orders for random customers and random products -->
 
     <create-entities name="db_order" count="30" pagesize="1000">
-        <attribute name="id" source="db" selector="SELECT seq_db_id_generator.NEXTVAL FROM dual" cyclic="true"/>
+        <attribute name="id" generator="org.databene.platform.db.adapter.DBSequenceHiLoGenerator" source="db" selector="seq_db_id_generator"/>
         <attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true"/>
         <processor ref="db"/>
     </create-entities>
 
     <create-entities name="db_order_item" count="100" pagesize="1000">
-        <attribute name="id" source="db" selector="SELECT seq_db_id_generator.NEXTVAL FROM dual" cyclic="true"/>
+        <attribute name="id" generator="org.databene.platform.db.adapter.DBSequenceHiLoGenerator" source="db" selector="seq_db_id_generator"/>
         <attribute name="number_of_items" min="1" max="27" distribution="cumulated"/>
         <attribute name="order_id" source="db" selector="select id from db_order" cyclic="true"/>
         <attribute name="product_ean_code" source="db" selector="select ean_code from db_product" distribution="cumulated"/>
