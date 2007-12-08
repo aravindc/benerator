@@ -47,7 +47,7 @@ public class TaskRunner {
     public static void run(Task task, TaskContext context, long invocations,
                            PageListener pager, long pageSize, int threadCount, ExecutorService executor) {
         if (logger.isInfoEnabled()) {
-            String invocationInfo = (invocations == 1 ? "once" :
+            String invocationInfo = (invocations == 1 ? "" :
                     invocations + " times with page size " + pageSize + " in " + threadCount + " threads");
             logger.info("Running task " + task + " " + invocationInfo);
         }
