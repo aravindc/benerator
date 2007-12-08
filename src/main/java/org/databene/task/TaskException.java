@@ -27,7 +27,7 @@
 package org.databene.task;
 
 /**
- * TODO documentation.<br/>
+ * Signals failure in the execution of a Task.<br/>
  * <br/>
  * Created: 20.11.2007 13:09:51
  */
