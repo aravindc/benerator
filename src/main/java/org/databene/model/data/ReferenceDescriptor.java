@@ -34,8 +34,16 @@ package org.databene.model.data;
 public class ReferenceDescriptor extends ComponentDescriptor {
 
     public ReferenceDescriptor(String name) {
-        super(name);
-        addDetailConfig("target-type", String.class, false, null);
+        this(name, null);
+    }
+    
+    public ReferenceDescriptor(ComponentDescriptor parent) {
+        this(parent.getName(), parent);
+    }
+    
+    protected ReferenceDescriptor(String name, ComponentDescriptor parent) {
+        super(name, parent);
+        addDetailConfig("target-type", String.class, true, null);
     }
 
     public String getTargetTye() {
