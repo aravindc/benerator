@@ -56,12 +56,15 @@ public class TaskRunnable implements Runnable {
     }
 
     public void run() {
-        if (context != null)
-            target.init(context);
-        target.run();
-        if (context != null)
-            target.destroy();
-        if (latch != null)
-        	latch.countDown();
+        try {
+            if (context != null)
+                target.init(context);
+            target.run();
+            if (context != null)
+                target.destroy();
+        } finally {
+            if (latch != null)
+            	latch.countDown();
+        }
     }
 }
