@@ -30,8 +30,6 @@ import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.*;
 import org.databene.commons.ArrayUtil;
 
-import java.lang.reflect.Array;
-
 /**
  * Assembles the output of a source generator into an array of random length.<br/>
  * <br/>
@@ -103,8 +101,8 @@ public class SimpleArrayGenerator <E> extends GeneratorWrapper<E, E[]> {
             sizeGenerator.validate();
             if (source == null)
                 throw new InvalidGeneratorSetupException("source", " is null");
-            Class type = (componentType != null ? componentType : source.getGeneratedType());
-            this.generatedType = (Class<E[]>) ArrayUtil.toArray(type).getClass(); // TODO this must be easier to achieve
+            Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
+            this.generatedType = ArrayUtil.arrayType(cType);
             dirty = false;
         }
     }
@@ -112,7 +110,7 @@ public class SimpleArrayGenerator <E> extends GeneratorWrapper<E, E[]> {
     /** @see org.databene.benerator.Generator#generate() */
     public E[] generate() {
         int length = sizeGenerator.generate();
-        E[] array = (E[])Array.newInstance(componentType, length);
+        E[] array = ArrayUtil.newInstance(componentType, length);
         for (int i = 0; i < length; i++)
             array[i] = source.generate();
         return array;
