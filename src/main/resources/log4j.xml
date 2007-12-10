@@ -49,20 +49,32 @@
        <priority value="WARN"/>
     </category>
 
-    <category name="org.databene.model.converter.AnyConverter" additivity="false">
+    <category name="org.databene">
        <priority value="info"/>
     </category>
 
-    <category name="org.databene">
-       <priority value="debug"/>
+    <category name="org.databene.benerator.SQL">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.benerator.JDBC">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.benerator.STATE">
+       <priority value="info"/>
     </category>
 
     <category name="org.databene.model.converter">
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.model.converter.AnyConverter">
+       <priority value="info"/>
+    </category>
+
     <category name="org.databene.task.RunSqlScriptTask">
-       <priority value="debug"/>
+       <priority value="info"/>
     </category>
 
    <!-- ======================= -->
@@ -70,7 +82,7 @@
    <!-- ======================= -->
 
     <root>
-        <priority value="DEBUG"/>
+        <priority value="info"/>
         <appender-ref ref="CONSOLE"/>
         <!--appender-ref ref="FILE"/-->
     </root>
