@@ -32,6 +32,6 @@ package org.databene.model.data;
  * Created: 25.08.2007 21:51:26
  */
 public interface DescriptorProvider {
-    EntityDescriptor[] getTypeDescriptors();
-    EntityDescriptor getTypeDescriptor(String typeName);
+    EntityDescriptor[] getTypeDescriptors(); // TODO v0.4 rename to typeDescriptors()
+    EntityDescriptor getTypeDescriptor(String typeName); // TODO v0.4 rename to typeDescriptor(String name)
 }
