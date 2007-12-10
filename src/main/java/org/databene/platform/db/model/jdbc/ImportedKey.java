@@ -26,6 +26,8 @@
 
 package org.databene.platform.db.model.jdbc;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.platform.db.model.*;
 
 import java.util.List;
@@ -37,6 +39,8 @@ import java.sql.SQLException;
  * Created: 13.01.2007 23:22:55
  */
 class ImportedKey {
+    
+    private static final Log logger = LogFactory.getLog(ImportedKey.class);
 
     /** primary key table catalog being imported (may be null) */
     public String PK_TABLE_CAT;
@@ -132,6 +136,14 @@ class ImportedKey {
         key.FK_NAME = resultSet.getString(12);
         key.PK_NAME = resultSet.getString(13);
         key.DEFERRABILITY = resultSet.getShort(14);
+        if (logger.isDebugEnabled())
+            logger.debug("found imported key " 
+                    + key.PK_TABLE_CAT + ", " + key.PKTABLE_SCHEM + ", " + key.PKTABLE_NAME + ", " + key.PKCOLUMN_NAME + ", " 
+                    + key.FKTABLE_CAT + ", " + key.FKTABLE_SCHEM + ", " + key.FKTABLE_NAME + ", " + key.FKCOLUMN_NAME + ", "
+                    + key.KEY_SEQ + ", " + key.UPDATE_RULE + ", " + key.DELETE_RULE + ", " 
+                    + key.FK_NAME + ", " + key.PK_NAME + ", "
+                    + key.DEFERRABILITY
+            );
         DBColumn fkColumn = fkTable.getColumn(key.FKCOLUMN_NAME);
         DBTable pkTable = null;
         if (catalog != null)
