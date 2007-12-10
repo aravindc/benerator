@@ -27,20 +27,63 @@
 package org.databene.platform.bean;
 
 import org.databene.commons.BeanUtil;
-import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.model.data.AttributeDescriptor;
 import org.databene.model.data.DescriptorProvider;
+import org.databene.model.data.TypeMapper;
 
 import java.beans.PropertyDescriptor;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Provides EntityDescriptors for JavaBeanClasses
  * Created: 27.06.2007 23:04:19
  */
 public class BeanDescriptorProvider implements DescriptorProvider {
+    
+    private TypeMapper<Class<? extends Object>> mapper;
 
+    public BeanDescriptorProvider() {
+        mapper = new TypeMapper<Class<? extends Object>>(
+                "byte", byte.class,
+                "byte", Byte.class,
+
+                "short", short.class,
+                "short", Short.class,
+                
+                "int", int.class,
+                "int", Integer.class,
+                
+                "long", long.class,
+                "long", Long.class,
+                
+                "big_integer", BigInteger.class,
+
+                "float", float.class,
+                "float", Float.class,
+                
+                "double", double.class,
+                "double", Double.class,
+
+                "big_decimal", BigDecimal.class,
+
+                "boolean", boolean.class,
+                "boolean", Boolean.class,
+
+                "char", char.class,
+                "char", Character.class,
+            
+                "date", java.util.Date.class,
+                "timestamp", java.sql.Timestamp.class,
+
+                "string", String.class,
+                "object", Object.class,
+                "binary", byte[].class
+            );
+    }
+    
     public EntityDescriptor[] getTypeDescriptors() {
         return new EntityDescriptor[0]; // There are way too many candidates
     }
@@ -48,6 +91,8 @@ public class BeanDescriptorProvider implements DescriptorProvider {
     public EntityDescriptor getTypeDescriptor(String typeName) {
         return createTypeDescriptor(typeName);
     }
+    
+    
 /*
     public String getType(Object bean) {
         return bean.getClass().getName();
@@ -65,15 +110,40 @@ public class BeanDescriptorProvider implements DescriptorProvider {
 */
     // private helpers -------------------------------------------------------------------------------------------------
 
+    /**
+     * @param concreteType
+     * @return
+     * @see org.databene.model.data.TypeMapper#abstractType(java.lang.Object)
+     */
+    public String abstractType(Class<? extends Object> concreteType) {
+        return mapper.abstractType(concreteType);
+    }
+
+    /**
+     * @param abstractType
+     * @return
+     * @see org.databene.model.data.TypeMapper#concreteType(java.lang.String)
+     */
+    public Class<? extends Object> concreteType(String abstractType) {
+        try {
+            Class<? extends Object> result = mapper.concreteType(abstractType);
+            if (result == null)
+                result = Class.forName(abstractType);
+            return result;
+        } catch (ClassNotFoundException e) {
+            throw new ConfigurationError("No class mapping found for '" + abstractType + "'", e);
+        }
+    }
+
     private EntityDescriptor createTypeDescriptor(String typeName) {
-        Class beanClass = BeanUtil.forName(typeName);
+        Class<? extends Object> beanClass = BeanUtil.forName(typeName);
         EntityDescriptor td = new EntityDescriptor(typeName, true);
         for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
             if ("class".equals(propertyDescriptor.getName()))
                 continue;
             AttributeDescriptor ad = new AttributeDescriptor(propertyDescriptor.getName());
             Class<?> propertyType = propertyDescriptor.getPropertyType();
-            String abstractType = TYPE_MAP.get(propertyType);
+            String abstractType = mapper.abstractType(propertyType);
             if (abstractType == null)
                 abstractType = propertyType.getName();
             ad.setType(abstractType);
@@ -82,34 +152,15 @@ public class BeanDescriptorProvider implements DescriptorProvider {
         return td;
     }
 
-    private static Map<String, String> TYPE_MAP;
+    // private helpers -------------------------------------------------------------------------------------------------
 
-    static {
-        TYPE_MAP = CollectionUtil.buildMap(
-                "char", "char",
-                "java.lang.String", "string",
-
-                "java.lang.Character", "char",
-                "boolean", "boolean",
-                "java.lang.Boolean", "boolean",
-                "byte", "byte",
-                "java.lang.Byte", "byte",
-                "short", "short",
-                "java.lang.Short", "short",
-                "int", "int",
-                "java.lang.Integer", "int",
-                "long", "long",
-                "java.lang.Long", "long",
-
-                "float", "float",
-                "java.lang.Float", "float",
-                "double", "double",
-                "java.lang.Double", "double",
-
-                "java.math.BigInteger", "big_integer",
-                "java.math.BigDecimal", "big_decimal",
-
-                "java.util.Date", "date");
+    public Class<? extends Object> javaTypeForAbstractType(String abstractType) {
+        Class<? extends Object> type = mapper.concreteType(abstractType);
+        if (type == null)
+            throw new UnsupportedOperationException("Not mapped to a Java type: " + abstractType);
+        return type;
     }
+    
+
 
 }
