@@ -35,10 +35,15 @@ release history and road map
 | (planned)   | (planned)         | Platform support: JavaBean, Hibernate, XML    |
 |             |                   | domains: address (CH, AT), web                |
 |             |                   | Region concept                                |
-|             |                   | Feature completion: SQL types, key generation,|
-|             |                   |    identity, uniqueness                       |
+|             |                   | Feature completion: identity, uniqueness      |
 *-------------+-------------------+-----------------------------------------------+
-| 0.3.03      | 2007-11-24        | performance boost by supporting multithreaded data geberation |
+| 0.3.04      | 2007-12-10        | JDBC performance optimized for bulk operation and LAN |
+|             |                   | Oracle performance: LAN: 5,000 rows/sec, local 15,000 rows/sec |
+|             |                   | supports CLOB, BLOB and Oracle timezone types |
+|             |                   | Adds a tool for creating database snapshots   |
+|             |                   | New DB key generator classes                  |
+*-------------+-------------------+-----------------------------------------------+
+| 0.3.03      | 2007-11-24        | performance improvement by supporting multithreaded data generation |
 |             |                   | bug fixes in creation of unique EAN codes                     |
 |             |                   | bug fix in non-unique regex based string generation           |
 *-------------+-------------------+-----------------------------------------------+
