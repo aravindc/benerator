@@ -88,30 +88,34 @@ public class Benerator {
     }
 
     public void processFile(String uri) throws IOException {
-        long startTime = java.lang.System.currentTimeMillis();
-        TaskContext context = new TaskContext();
-        Document document = IOUtil.parseXML(uri);
-        Element root = document.getDocumentElement();
-        NodeList nodes = root.getChildNodes();
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node node = nodes.item(i);
-            if (!(node instanceof Element))
-                continue;
-            Set<Heavyweight> resources = new HashSet<Heavyweight>();
-            parseElement((Element)node, resources, context);
-            for (Heavyweight resource : resources) {
-                resource.close();
+        try {
+            long startTime = java.lang.System.currentTimeMillis();
+            TaskContext context = new TaskContext();
+            Document document = IOUtil.parseXML(uri);
+            Element root = document.getDocumentElement();
+            NodeList nodes = root.getChildNodes();
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node node = nodes.item(i);
+                if (!(node instanceof Element))
+                    continue;
+                Set<Heavyweight> resources = new HashSet<Heavyweight>();
+                parseElement((Element)node, resources, context);
+                for (Heavyweight resource : resources) {
+                    resource.close();
+                }
             }
+            java.lang.System.out.println("context: " + context);
+            long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
+            logger.info("Elapsed time: " + RoundedNumberFormat.format(elapsedTime, 0) + " ms");
+            /*
+            long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
+            logger.info("Created " + RoundedNumberFormat.format(totalEntityCount, 0) + " entities " +
+                    "in " + RoundedNumberFormat.format(elapsedTime, 0) + " ms " +
+                    "(" + RoundedNumberFormat.format(totalEntityCount * 3600000L / elapsedTime, 0) + " p.h.)");
+            */
+        } finally {
+            this.executor.shutdownNow();
         }
-        java.lang.System.out.println("context: " + context);
-        long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-        logger.info("Elapsed time: " + RoundedNumberFormat.format(elapsedTime, 0) + " ms");
-        /*
-        long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-        logger.info("Created " + RoundedNumberFormat.format(totalEntityCount, 0) + " entities " +
-                "in " + RoundedNumberFormat.format(elapsedTime, 0) + " ms " +
-                "(" + RoundedNumberFormat.format(totalEntityCount * 3600000L / elapsedTime, 0) + " p.h.)");
-        */
     }
 
     private void parseElement(Element element, Set<Heavyweight> resources, TaskContext context) {
