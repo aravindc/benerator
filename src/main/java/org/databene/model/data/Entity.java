@@ -26,10 +26,10 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.OrderedMap;
 import org.databene.model.Composite;
 
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Abstraction of an entity.<br/>
@@ -38,7 +38,7 @@ import java.util.HashMap;
  */
 public class Entity implements Composite {
 
-    private Map<String, Object> components;
+    private OrderedMap<String, Object> components;
     private EntityDescriptor descriptor;
     /**
      *
@@ -47,7 +47,7 @@ public class Entity implements Composite {
      */
     public Entity(EntityDescriptor descriptor, Object ... componentKeyValues) {
         this.descriptor = descriptor;
-        this.components = new HashMap<String, Object>();
+        this.components = new OrderedMap<String, Object>();
         for (int i = 0; i < componentKeyValues.length; i += 2)
             setComponent((String)componentKeyValues[i], componentKeyValues[i + 1]);
     }
@@ -68,6 +68,10 @@ public class Entity implements Composite {
                 component = entry.getValue();
         }
         return component;
+    }
+    
+    public boolean componentIsSet(String componentName) {
+        return components.containsKey(componentName);
     }
 
     public Map<String, Object> getComponents() {
@@ -94,7 +98,9 @@ public class Entity implements Composite {
         if (o == null || getClass() != o.getClass())
             return false;
         final Entity that = (Entity) o;
-        return this.descriptor.getName().equals(that.descriptor.getName()) && this.components.equals(that.components);
+        if (!this.descriptor.getName().equals(that.descriptor.getName()))
+            return false;
+        return this.components.equalsIgnoreOrder(that.components);
     }
 
     public int hashCode() {
