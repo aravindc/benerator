@@ -1,51 +1,77 @@
 Baustellen:
 ===========
 
-create RSS link for blog on all pages
-
-0.3.03
+0.3.05
 ------
-- Bug fixes
-  - support unique EAN codes
-  - check why db_user.email is unique
-- Features
-  - Support for multithreaded DB access
-  - Descriptor Exporter
-  - parsing of check constraints
-  - support properties files
-  - implement stage mechanism
-  - commercial_license.txt
-	- completing SQL type support
-  - create beans from property files
-  - add execute() element that calls a System.execute(String) method, e.g. for submitting SQL
-  - define defaults by property file, e.g. processor, encoding, separator
-- Build
-  - set up clover
-  - setup bug tracking
+- Create shell files for
+  - prototype builder
+- features
+  - make benerator finish on SQL script errors
+
+0.4.0
+-----
+- features
+  - support <reference values="..." generator="..."/>
+  - Key concept
+  - nullable -> required?
+  - config file:
+    - separate modeling of entities/builders from invocation
+    - support config file import
+    - property file support?
+  - sequence support on all possible DBs
+    - DB2:			SELECT NEXTVAL FOR myseq
+    - PostgreSQL:	nextval(myseq)
+    - HSQL: 		SELECT NEXT VALUE FOR mysequence
+  - Change Processor for supporting 
+    - XML export
+    - updating DB rows
+  - After generation close all heavyweight JavaBEans in the context
+  - Create shell files for prototype builder
 - Doc
   - How to program workflow like running from setup file
-  - Interaction between setup file and tasks
-  - better example for BeanGraphDemo
-- demo
-  - use examples of each country for shop products
-- Tests
+  - package doc
+  - Processors must be thread-safe
+  - Currently, Generators need not be thread-safe. Possibly future benerator versions will require thread safety
+  - pending SPI changes: Processor, System
+- QA
   - create tests for the demo package (esp. each database)
   - Perform each test for constructor and JavaBean setup
+  - test new features on all DBs
 - Site
   - include new DistributionDemo snapshot in web site
-  - test bitreverse _sequence_ (long/double), see WedgeSequenceTest
   - update Sequence doc for DoubleFromLongGenerator
-  - define SPI
+  - define SPIs
   - FAQ: How to create unique ids?
   - List generators
   - List converters
+  - List data types
   - Site TODOs
+  - create RSS link for blog on all pages
+- Dev Process
+  - Define Eclipse Java file template with disclaimer !!!
 
 Learn more about RSS
 
-0.4
----
-* nullable -> required?
+0.4.1
+------
+- features
+  - Interaction between setup file and tasks
+  - support properties files
+  - implement stage mechanism
+  - define defaults by property file, e.g. processor, encoding, separator
+  - Support recursive create-entities with parent reference
+- Support bytea type on Postgres
+- Shorten pagesize if no more generators are available
+- better example for BeanGraphDemo
+- Build
+  - measure test code coverage
+  - setup bug tracking
+- Region concept
+- parsing of check constraints
+Site
+  - Set up BugZilla
+- demo
+  - use examples of each country for shop products
 * setup file XSD
 * differ between API / SPI
 * describe dynamic aspects of the interfaces
@@ -54,16 +80,9 @@ Learn more about RSS
 * TreePathGenerator
 * region concept
 * anonymization
-* Support recursive create-entities with parent reference
 * anonymization demo
-* key generation strategies (esp. Oracle sequences) 1h
 * maxLength support for numbers and dates
-* config file:
-  * separate modeling of entities/builders from invocation
-  * support config file import
-  * property file support?
 * create JavaBeanGenerator that is used via API and reads XML config file structure
-* sequence definition from user config file
 * wrapping string generation with prefix and suffix
 * address generation
   * CH: extract phone numbers
@@ -77,6 +96,11 @@ Learn more about RSS
 ** Uniqueness
 ** Generierung voneinander abhängiger Entities / Daten
 ** Dirty check in inheritance hierarchies
+
+0.5.0
+-----
+- features
+  - add execute() element that calls a System.execute(String) method, e.g. for submitting SQL
 
 Repetitive tasks
 ----------------
