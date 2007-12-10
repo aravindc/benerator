@@ -28,8 +28,10 @@ package org.databene.platform.db;
 
 import org.databene.model.Converter;
 import org.databene.model.ConversionException;
+import org.databene.model.converter.AnyConverter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
+import org.databene.platform.bean.BeanDescriptorProvider;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -39,13 +41,18 @@ import java.sql.SQLException;
  * Converts a ResultSet's current cursor position to an Entity.<br/>
  * <br/>
  * Created: 23.08.2007 19:30:31
+ * @deprecated use ResultSetEntityIterator
+ * TODO v0.4 remove
  */
 public class ResultSet2EntityConverter implements Converter<ResultSet, Entity> {
 
+    private BeanDescriptorProvider beanDescriptorProvider;
+    
     private EntityDescriptor descriptor;
 
     public ResultSet2EntityConverter(EntityDescriptor descriptor) {
         this.descriptor = descriptor;
+        this.beanDescriptorProvider = new BeanDescriptorProvider();
     }
 
     public Class<Entity> getTargetType() {
@@ -57,14 +64,29 @@ public class ResultSet2EntityConverter implements Converter<ResultSet, Entity> {
             Entity entity = new Entity(descriptor);
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            for (int i = 1; i <= columnCount; i++) {
-                String key = metaData.getColumnName(i);
-                Object value = resultSet.getObject(i);
-                entity.setComponent(key, value);
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                String columnName = metaData.getColumnName(columnIndex);
+                String abstractType = descriptor.getComponentDescriptor(columnName).getType();
+                Object javaValue = javaValue(resultSet, columnIndex, abstractType);
+                entity.setComponent(columnName, javaValue);
             }
             return entity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Object javaValue(ResultSet resultSet, int columnIndex, String abstractType) throws SQLException {
+        if ("date".equals(abstractType))
+            return resultSet.getDate(columnIndex);
+        else if ("timestamp".equals(abstractType))
+            return resultSet.getTimestamp(columnIndex);
+        else if ("string".equals(abstractType))
+            return resultSet.getString(columnIndex);
+        // try generic conversion
+        Object driverValue = resultSet.getObject(columnIndex);
+        Class<? extends Object> javaType = beanDescriptorProvider.concreteType(abstractType);
+        Object javaValue = AnyConverter.convert(driverValue, javaType);
+        return javaValue;
     }
 }
