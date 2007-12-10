@@ -26,6 +26,8 @@
 
 package org.databene.platform.db;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.commons.StringUtil;
 
 import java.sql.Connection;
@@ -35,22 +37,30 @@ import java.sql.ResultSet;
 import java.util.Iterator;
 
 /**
- * Creates Iterators for stepping throug query results.<br/>
+ * Creates Iterators for stepping through query results.<br/>
  * <br/>
  * Created: 17.08.2007 18:48:20
  */
 public class DBQueryIterable implements Iterable<ResultSet> {
+    
+    private static final Log sqlLogger = LogFactory.getLog("org.databene.benerator.SQL"); 
 
     private Connection connection;
     private String query;
+    private int fetchSize;
 
     public DBQueryIterable(Connection connection) {
-        this(connection, null);
+        this(connection, null, 100);
     }
 
     public DBQueryIterable(Connection connection, String query) {
+        this(connection, query, 100);
+    }
+
+    public DBQueryIterable(Connection connection, String query, int fetchSize) {
         this.connection = connection;
         this.query = query;
+        this.fetchSize = fetchSize;
     }
 
     public String getQuery() {
@@ -68,10 +78,13 @@ public class DBQueryIterable implements Iterable<ResultSet> {
             throw new IllegalStateException("'query' is empty or null");
         try {
             Statement statement = connection.createStatement();
+            statement.setFetchSize(fetchSize);
             ResultSet resultSet = statement.executeQuery(query);
+            if (sqlLogger.isDebugEnabled())
+                sqlLogger.debug(query);
             return new ResultSetIterator(resultSet);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error in query: " + query, e);
         }
     }
     
