@@ -22,6 +22,15 @@
                 <include>releasenotes*.txt</include>
             </includes>
         </fileSet>
+        <!-- script files -->
+        <fileSet>
+            <directory>src/main/script</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>*.bat</include>
+                <include>*.sh</include>
+            </includes>
+        </fileSet>
         <!-- main -->
         <fileSet>
             <directory>src/main/java</directory>
@@ -54,7 +63,7 @@
         </fileSet>
         <fileSet>
             <directory>src/demo/resources</directory>
-            <outputDirectory>demo</outputDirectory>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
         <!-- doc -->
         <fileSet>
