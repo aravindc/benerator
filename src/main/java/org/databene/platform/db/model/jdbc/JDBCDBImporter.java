@@ -27,11 +27,10 @@
 package org.databene.platform.db.model.jdbc;
 
 import org.databene.model.ImportFailedException;
+import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.OrderedMap;
-import org.databene.commons.ArrayFormat;
 import org.databene.platform.db.DBUtil;
-import org.databene.platform.db.ResultSetConverter;
 import org.databene.platform.db.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,33 +52,43 @@ public final class JDBCDBImporter implements DBImporter {
 
     private String catalogName;
     private String schemaName;
+    private boolean importingIndexes;
+    private boolean acceptingErrors;
+
+    private String productName;
 
     public JDBCDBImporter(String url, String driverClassname, String user, String password) {
-        this(url, driverClassname, user, password, null);
+        this(url, driverClassname, user, password, null, true);
     }
 
-    public JDBCDBImporter(String url, String driverClassname, String user, String password, String schemaName) {
+    public JDBCDBImporter(String url, String driverClassname, String user, String password, String schemaName, boolean importingIndexes) {
         this.url = url;
         this.driverClassname = driverClassname;
         this.user = user;
         this.password = password;
         this.schemaName = schemaName;
+        this.importingIndexes = importingIndexes;
+        this.acceptingErrors = false;
     }
 
     public Database importDatabase() throws ImportFailedException {
+        logger.info("Importing database metadata. Be patient, this may take some time...");
+        long startTime = System.currentTimeMillis();
         Connection connection = null;
         try {
             Class.forName(driverClassname);
             //DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             connection = DriverManager.getConnection(url, user, password);
             DatabaseMetaData metaData = connection.getMetaData();
+            productName = metaData.getDatabaseProductName();
             Database database = new Database();
             importCatalogs(database, metaData);
             importSchemas(database, metaData);
             importTables(database, metaData);
             importColumns(database, metaData);
             importPrimaryKeys(database, metaData);
-            importIndexes(database, metaData);
+            if (importingIndexes)
+                importIndexes(database, metaData, acceptingErrors);
             importImportedKeys(database, metaData);
             return database;
         } catch (SQLException e) {
@@ -88,16 +97,19 @@ public final class JDBCDBImporter implements DBImporter {
             throw new ImportFailedException("Database driver not found. ", e);
         } finally {
             DBUtil.close(connection);
+            long duration = System.currentTimeMillis() - startTime;
+            logger.info("Imported database metadata within " + duration + " ms.");
         }
     }
 
     private void importCatalogs(Database database, DatabaseMetaData metaData) throws SQLException {
-        logger.debug("Importing catalogs");
+        logger.info("Importing catalogs");
         ResultSet catalogSet = metaData.getCatalogs();
         int catalogCount = 0;
         while (catalogSet.next()) {
-            logResultSet(catalogSet);
             String catalogName = catalogSet.getString(1);
+            if (logger.isDebugEnabled())
+                logger.debug("found catalog " + catalogName);
             if ((schemaName == null && user.equalsIgnoreCase(catalogName)) || (schemaName != null && schemaName.equalsIgnoreCase(catalogName)))
                 this.catalogName = catalogName;
             database.addCatalog(new DBCatalog(catalogName));
@@ -108,11 +120,12 @@ public final class JDBCDBImporter implements DBImporter {
     }
 
     private void importSchemas(Database database, DatabaseMetaData metaData) throws SQLException {
-        logger.debug("Importing schemas");
+        logger.info("Importing schemas");
         ResultSet schemaSet = metaData.getSchemas();
         while (schemaSet.next()) {
-            logResultSet(schemaSet);
             String schemaName = schemaSet.getString(1);
+            if (logger.isDebugEnabled())
+                logger.debug("found schema " + schemaName);
             if (!user.equalsIgnoreCase(schemaName) && !schemaName.equalsIgnoreCase(this.schemaName))
                 continue;
             this.schemaName = schemaName;
@@ -124,13 +137,8 @@ public final class JDBCDBImporter implements DBImporter {
         }
     }
 
-    private void logResultSet(ResultSet schemaSet) {
-        if (logger.isDebugEnabled())
-            logger.debug("ResultSet: " + ArrayFormat.format(", ", (Object[]) ResultSetConverter.convert(schemaSet, false)));
-    }
-
     private void importTables(Database database, DatabaseMetaData metaData) throws SQLException {
-        logger.debug("Importing tables");
+        logger.info("Importing tables");
         ResultSet tableSet = metaData.getTables(catalogName, schemaName, null, null);
         while (tableSet.next()) {
 
@@ -166,7 +174,7 @@ public final class JDBCDBImporter implements DBImporter {
     private void importColumns(Database database, DBCatalog catalog, DatabaseMetaData metaData) throws SQLException {
         String catalogName = catalog.getName();
         String schemaPattern = (database.getSchemas().size() == 1 ? database.getSchemas().get(0).getName() : schemaName);
-        logger.debug("Importing columns for catalog '" + catalogName + "'");
+        logger.info("Importing columns for catalog '" + catalogName + "' and schemaPattern '" + schemaName + "'");
         ResultSet columnSet = metaData.getColumns(catalogName, schemaPattern, null, null);
         ResultSetMetaData setMetaData = columnSet.getMetaData();
         if (setMetaData.getColumnCount() == 0)
@@ -176,8 +184,11 @@ public final class JDBCDBImporter implements DBImporter {
             //String catalogName = columnSet.getString(1);
             String schemaName = columnSet.getString(2);
             String tableName = columnSet.getString(3);
-            if (tableName.startsWith("BIN$"))
+            if (tableName.startsWith("BIN$")) {
+                if (logger.isDebugEnabled())
+                    logger.debug("ignoring column: " + catalogName + ", " + schemaName + ", " + tableName);
                 continue;
+            }
             String columnName = columnSet.getString(4);
             //logger.debug("Found column: " + tableName + '.' + columnName);
             int sqlType = columnSet.getInt(5);
@@ -218,7 +229,7 @@ public final class JDBCDBImporter implements DBImporter {
             }
             if (table != null)
                 table.addColumn(column);
-// TODO            importVersionColumnInfo(catalogName, table, metaData);
+            // TODO v?.? importVersionColumnInfo(catalogName, table, metaData);
         }
     }
 
@@ -263,12 +274,13 @@ public final class JDBCDBImporter implements DBImporter {
         TreeMap<Short, DBColumn> pkComponents = new TreeMap<Short, DBColumn>();
         String pkName = null;
         while (pkset.next()) {
-            logResultSet(pkset);
             String columnName = pkset.getString(4);
             DBColumn column = table.getColumn(columnName);
             short keySeq = pkset.getShort(5);
             pkComponents.put(keySeq, column);
             pkName = pkset.getString(6);
+            if (logger.isDebugEnabled())
+                logger.debug("found pk column " + column + ", " + keySeq + ", " + pkName);
         }
         DBColumn[] columnArray = new DBColumn[pkComponents.size()];
         columnArray = pkComponents.values().toArray(columnArray);
@@ -278,7 +290,7 @@ public final class JDBCDBImporter implements DBImporter {
             column.addUkConstraint(constraint);
     }
 
-    private void importIndexes(Database database, DatabaseMetaData metaData)
+    private void importIndexes(Database database, DatabaseMetaData metaData, boolean acceptErrors)
             throws SQLException {
         for (DBCatalog catalog : database.getCatalogs()) {
             for (DBTable table : catalog.getTables()) {
@@ -287,58 +299,76 @@ public final class JDBCDBImporter implements DBImporter {
                 ResultSet indexSet = metaData.getIndexInfo(catalog.getName(), null, table.getName(), false, false);
                 //DBUtil.print(indexSet);
                 while (indexSet.next()) {
-                    logResultSet(indexSet);
-                    boolean unique = !indexSet.getBoolean(4);
-                    String indexCatalogName = indexSet.getString(5);
-                    String indexName = indexSet.getString(6);
-                    short indexType = indexSet.getShort(7);
-                    /* TODO v0.4
-                     * tableIndexStatistic - this identifies table statistics that are returned in conjuction with a table's index descriptions
-                     * tableIndexClustered - this is a clustered index
-                     * tableIndexHashed - this is a hashed index
-                     * tableIndexOther - this is some other style of index
-                     */
-                    short ordinalPosition = indexSet.getShort(8);
-                    if (ordinalPosition == 0)
-                        continue;
-                    String columnName = indexSet.getString(9);
-                    String ascOrDesc = indexSet.getString(10);
-                    Boolean ascending = (ascOrDesc != null ? ascOrDesc.charAt(0) == 'A' : null);
-                    int cardinality = indexSet.getInt(11);
-                    int pages = indexSet.getInt(12);
-                    String filterCondition = indexSet.getString(13);
-                    DBIndexInfo index = tableIndexes.get(indexName);
-                    if (index == null) {
-                        index = new DBIndexInfo(indexName, indexType, indexCatalogName, unique,
-                            ordinalPosition, columnName,
-                            ascending, cardinality, pages, filterCondition);
-                        tableIndexes.put(indexName, index);
-                    } else {
-                        index.addColumn(ordinalPosition, columnName);
+                    String indexName = null;
+                    try {
+                        boolean unique = !indexSet.getBoolean(4);
+                        String indexCatalogName = indexSet.getString(5);
+                        indexName = indexSet.getString(6);
+                        short indexType = indexSet.getShort(7);
+                        /* TODO v0.4
+                         * tableIndexStatistic - this identifies table statistics that are returned in conjuction with a table's index descriptions
+                         * tableIndexClustered - this is a clustered index
+                         * tableIndexHashed - this is a hashed index
+                         * tableIndexOther - this is some other style of index
+                         */
+                        short ordinalPosition = indexSet.getShort(8);
+                        if (ordinalPosition == 0)
+                            continue;
+                        String columnName = indexSet.getString(9);
+                        String ascOrDesc = indexSet.getString(10);
+                        Boolean ascending = (ascOrDesc != null ? ascOrDesc.charAt(0) == 'A' : null);
+                        int cardinality = indexSet.getInt(11);
+                        int pages = indexSet.getInt(12);
+                        String filterCondition = indexSet.getString(13);
+                        if (logger.isDebugEnabled())
+                            logger.debug("found " + (unique ? "unique index " : "index ") + indexName + ", " 
+                                    + indexCatalogName + ", " + indexType + ", " 
+                                    + ordinalPosition + ", " + columnName + ", " + ascOrDesc + ", " 
+                                    + cardinality + ", " + pages + ", " + filterCondition);
+                        DBIndexInfo index = tableIndexes.get(indexName);
+                        if (index == null) {
+                            index = new DBIndexInfo(indexName, indexType, indexCatalogName, unique,
+                                ordinalPosition, columnName,
+                                ascending, cardinality, pages, filterCondition);
+                            tableIndexes.put(indexName, index);
+                        } else {
+                            index.addColumn(ordinalPosition, columnName);
+                        }
+                    } catch (RuntimeException e) {
+                        if (acceptErrors)
+                            logger.error("Error importing index '" + indexName 
+                                    + "' of table '" + table.getName() + "'", e);
+                        else
+                            throw e;
                     }
                 }
                 for (DBIndexInfo indexInfo : tableIndexes.values()) {
-                    DBIndex index;
-                    DBColumn[] columns = table.getColumns(indexInfo.columnNames);
-                    if (indexInfo.unique) {
-                        DBUniqueConstraint constraint = new DBUniqueConstraint(indexInfo.name, columns);
-                        table.addUniqueConstraint(constraint);
-                        index = new DBUniqueIndex(indexInfo.name, constraint);
-                    } else {
-                        index = new DBNonUniqueIndex(indexInfo.name, columns);
+                    try {
+                        DBIndex index;
+                        DBColumn[] columns = table.getColumns(indexInfo.columnNames);
+                        if (indexInfo.unique) {
+                            DBUniqueConstraint constraint = new DBUniqueConstraint(indexInfo.name, columns);
+                            table.addUniqueConstraint(constraint);
+                            index = new DBUniqueIndex(indexInfo.name, constraint);
+                        } else {
+                            index = new DBNonUniqueIndex(indexInfo.name, columns);
+                        }
+                        if (!StringUtil.isEmpty(indexInfo.catalogName)) {
+                            DBCatalog ct = database.getCatalog(indexInfo.catalogName);
+                            if (ct != null)
+                                ct.addIndex(index);
+                        }
+                        table.addIndex(index);
+                    } catch (ObjectNotFoundException e) {
+                        logger.error(e);
                     }
-                    if (!StringUtil.isEmpty(indexInfo.catalogName)) {
-                        DBCatalog ct = database.getCatalog(indexInfo.catalogName);
-                        if (ct != null)
-                            ct.addIndex(index);
-                    }
-                    table.addIndex(index);
                 }
             }
         }
     }
 
     private void importImportedKeys(Database database, DatabaseMetaData metaData) throws SQLException {
+        logger.info("Importing imported keys");
         int count = 0;
         for (DBCatalog catalog : database.getCatalogs())
             for (DBTable table : catalog.getTables()) {
@@ -365,7 +395,6 @@ public final class JDBCDBImporter implements DBImporter {
         List<ImportedKey> importedKeys = new ArrayList<ImportedKey>();
         ImportedKey recent = null;
         while (resultSet.next()) {
-            logResultSet(resultSet);
             tableName = resultSet.getString(2);
             ImportedKey cursor = ImportedKey.parse(resultSet, catalog, schema, table);
             if (cursor.KEY_SEQ > 1) {
@@ -396,5 +425,26 @@ public final class JDBCDBImporter implements DBImporter {
         if (!defaultValue.startsWith("(") || !defaultValue.endsWith(")"))
             return defaultValue;
         return removeBrackets(defaultValue.substring(1, defaultValue.length() - 1));
+    }
+
+    /**
+     * @return the acceptingErrors
+     */
+    public boolean isAcceptingErrors() {
+        return acceptingErrors;
+    }
+
+    /**
+     * @param acceptingErrors the acceptingErrors to set
+     */
+    public void setAcceptingErrors(boolean acceptingErrors) {
+        this.acceptingErrors = acceptingErrors;
+    }
+
+    /**
+     * @return the productName
+     */
+    public String getProductName() {
+        return productName;
     }
 }
