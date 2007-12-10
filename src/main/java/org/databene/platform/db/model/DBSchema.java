@@ -88,11 +88,11 @@ public class DBSchema {
     }
 
     public DBTable getTable(String tableName) {
-        return tables.get(tableName);
+        return tables.get(tableName.toUpperCase());
     }
 
     public void addTable(DBTable table) {
-        tables.put(table.getName(), table);
+        tables.put(table.getName().toUpperCase(), table);
     }
 
     public void removeTable(DBTable table) {
