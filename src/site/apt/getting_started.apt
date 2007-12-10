@@ -2,29 +2,65 @@
 				getting started
 				---------------
 
+overview
+
+   benerator can be used in three ways:
+
+   * programming a Java program that uses benerator's API for individual use of generators
+   
+   * creating and replaying a database snapshot with command line tools
+
+   * running a setup file from the command line for creating files or filling databases 
+     with meaningful generated data.
+   
 installation
 
-    * Download the lastest version of databene benerator at {{http://databene.org/databene-benerator/download.html}}
+ * download the lastest version of databene benerator at 
+   {{http://databene.org/databene-benerator/download.html}}
 
-    * Unzip the downloaded file into a directory
+ * unzip the downloaded file into a directory. It will be called 'root' below
+
+ * download the jdbc driver libraries and put them in a directory, e.g. root/lib
+ 
+ * edit the file root/custom_classpath.bat and add the necessary file to the classpath setup, e.g.
+
+-------------------------------------------------------
+set classpath=%classpath%;lib\log4j-1.2.14.jar;lib\my_jdbc_drivers14.jar
+-------------------------------------------------------
+
+db snapshot tool
+
+ The db snaphot tool creates a database snapdhot in DbUnit xml file format. 
+ You can use it to easily create a basic configuration for your load test system:
+ Create the database tables with content, make a snapshot and import it in data 
+ generation by using the DbUnitEntityImporter.
+
+ If you have run the populate_db.oracle.xml demo file, you can extract a snapshot 
+ by the shell file 'snapshot.bat':
+
+-----------------------------------------------------------------------------
+snapshot.bat -Ddb.url=jdbc:oracle:thin:@localhost:1521:XE -Ddb.driver=oracle.jdbc.driver.OracleDriver -Ddb.user=benerator -Ddb.password=benerator -Dfile.encoding=UTF-8
+-----------------------------------------------------------------------------
+
+benerator
+
+ benerator can run from a config file, e.g.  
+ 
+-----------------------------------------------------------------------------
+benerator.bat my_benerator_job.xml
+-----------------------------------------------------------------------------
+
+ For information on the config file format, see the 'file format'.
 
 quick start
 
     <If you want to have quick glance on the features of databene benerator:>
 
-    [[1]] Go to the installation directory and run the demos.
+    [[1]] check the demos of this page.
 
     [[2]] read the demo files in the distribution directory.
 
-    [[3]] Check the API doc for a detailed documentation of the provided generators, especially the domain packages.
-
-overview
-
-   benerator can be used in two ways:
-
-   * has an API that is easy to use for individual use of generators
-
-   * a configuration file based application
+    [[3]] check the API doc for a detailed documentation of the provided generators, especially the domain packages.
 
 demos
 
@@ -91,13 +127,11 @@ demos
 
   See how input files are processed and the database is filled when running
 
-  <<<run org.databene.benerator.main.Benerator populate_db.oracle.xml>>>
+  <<<benerator.bat demo/shop/populate_db.oracle.xml>>>
+  
+  Demo files are available for Oracle, DN2, MS SQL Server, MySQL, PostgreSQL, HSQL and Derby.
 
-  or
-
-  <<<run org.databene.benerator.main.Benerator populate_db.mysql.xml>>>
-
-* hello world demo
+* using the benerator api: hello world demo
 
     This demonstrates the essential generator creation ansd usage by creating
     greetings from sets of salutations and names: Runnig
