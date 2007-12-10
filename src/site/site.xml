@@ -54,14 +54,15 @@
 
         <menu name="databene benerator">
             <item name="about" href="index.html"/>
-            <item name="faq" href="faq.html"/>
             <item name="features" href="features.html"/>
-            <item name="presentation" href="Sisyphos_is_done-databene_benerator.pdf"/>
-            <item name="domain packages" href="domain_packages.html"/>
             <item name="getting started" href="getting_started.html"/>
+            <item name="domain packages" href="domain_packages.html"/>
             <item name="file format" href="file_format.html"/>
             <item name="user guide" href="user_guide.html"/>
             <item name="customizing guide" href="customizing_guide.html"/>
+            <item name="reference" href="reference.html"/>
+            <item name="faq" href="faq.html"/>
+            <item name="presentation" href="Sisyphos_is_done-databene_benerator.pdf"/>
             <item name="similar products" href="similar_products.html"/>
             <item name="download" href="download.html"/>
         </menu>
