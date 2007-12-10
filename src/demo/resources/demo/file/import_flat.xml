@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.dtd">
+<setup>
+    <bean id="products_flat" class="org.databene.platform.flat.FlatFileEntityIterable">
+        <property name="uri" value="shop/products.import.flat"/>
+        <property name="entity" value="product"/>
+        <property name="properties" value="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]"/>
+    </bean>
+
+    <create-entities name="product" source="products_flat">
+        <processor class="org.databene.model.processor.LoggingProcessor"/>
+    </create-entities>
+</setup>
