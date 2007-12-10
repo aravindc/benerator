@@ -30,40 +30,48 @@ import org.databene.model.*;
 import org.databene.model.system.System;
 import org.databene.model.converter.ConvertingIterable;
 import org.databene.model.converter.AnyConverter;
+import org.databene.benerator.db.ColumnInfo;
+import org.databene.benerator.db.EntityResultSetIterable;
+import org.databene.benerator.db.JdbcMetaTypeMapper;
+import org.databene.platform.db.ResultSetConverter;
+import org.databene.platform.db.PooledConnection;
+import org.databene.platform.db.DBUtil;
+import org.databene.platform.db.DBQueryIterable;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
-import org.databene.platform.db.DBQueryIterable;
-import org.databene.platform.db.DBUtil;
-import org.databene.platform.db.ResultSet2EntityConverter;
-import org.databene.platform.db.ResultSetConverter;
 import org.databene.platform.bean.ArrayPropertyExtractor;
 import org.databene.commons.*;
 import org.databene.model.data.*;
+import org.databene.model.depend.DependencyModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map.Entry;
 import java.math.BigInteger;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.sql.Types;
 import java.sql.DriverManager;
+import java.sql.Statement;
 
 /**
+ * RDBMS implementation of the System interface.<br/>
+ * <br/>
  * Created: 27.06.2007 23:04:19
+ * @author Volker Bergmann
  */
 public class DBSystem implements System {
-
-    private static Log logger = LogFactory.getLog(DBSystem.class);
+    // TODO v0.4 move this class to org.databene.benerator.db
+    
+    private static final Log logger = LogFactory.getLog(DBSystem.class);
+    private static final Log sqlLogger = LogFactory.getLog("org.databene.benerator.SQL"); 
 
     protected static final ArrayPropertyExtractor<String> nameExtractor
             = new ArrayPropertyExtractor<String>("name", String.class);
@@ -74,14 +82,32 @@ public class DBSystem implements System {
     private String password;
     private String driver;
     private String schema;
+    
+    private int fetchSize;
 
     private Database database;
 
-    private Map<Thread, Connection> connections;
+    private Map<Thread, ThreadContext> contexts;
     private Map<String, EntityDescriptor> typeDescriptors;
+    
+    private TypeMapper<Class<? extends Object>> driverTypeMapper;
+//    private DatabaseStrategy databaseStrategy; TODO v0.4
 
     public DBSystem() {
-		connections = new HashMap<Thread, Connection>();
+        this(null, null, null, null, null);
+    }
+
+    public DBSystem(String id, String url, String driver, String user, String password) {
+        super();
+        this.id = id;
+        this.url = url;
+        this.user = user;
+        this.password = password;
+        this.driver = driver;
+        this.schema = null;
+        this.fetchSize = 100;
+        this.contexts = new HashMap<Thread, ThreadContext>();
+        this.driverTypeMapper = driverTypeMapper();
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -133,16 +159,34 @@ public class DBSystem implements System {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+    
+    /**
+     * @return the fetchSize
+     */
+    public int getFetchSize() {
+        return fetchSize;
+    }
+
+    /**
+     * @param fetchSize the fetchSize to set
+     */
+    public void setFetchSize(int fetchSize) {
+        this.fetchSize = fetchSize;
+    }
 
     // System interface ------------------------------------------------------------------------------------------------
 
     public EntityDescriptor[] getTypeDescriptors() {
+        if (logger.isDebugEnabled())
+            logger.debug("getTypeDescriptors()");
         if (typeDescriptors == null)
             parseMetaData();
         return CollectionUtil.toArray(typeDescriptors.values(), EntityDescriptor.class);
     }
 
     public EntityDescriptor getTypeDescriptor(String tableName) {
+        if (logger.isDebugEnabled())
+            logger.debug("getTypeDescriptor(" + tableName + ")");
         if (typeDescriptors == null)
             parseMetaData();
         EntityDescriptor entityDescriptor = typeDescriptors.get(tableName);
@@ -156,50 +200,48 @@ public class DBSystem implements System {
     }
 
     public void store(Entity entity) {
+        if (logger.isDebugEnabled())
+            logger.debug("Storing " + entity);
+        ColumnInfo[] writeColumnInfos = writeColumnInfos(entity);
         try {
             String tableName = entity.getName();
-//            if (entity.getName().equals("db_product"))
-//                java.lang.System.out.println("pd");
-            String[] allColumnNames = getColumnNames(tableName);
-            List<String> usedColumnNames = new ArrayList<String>(allColumnNames.length);
-            for (String columnName : allColumnNames) {
-                if (entity.getComponent(columnName) != null)
-                    usedColumnNames.add(columnName);
+            PreparedStatement insertStatement = getInsertStatement(tableName, writeColumnInfos);
+            for (int i = 0; i < writeColumnInfos.length; i++) {
+                Object componentValue = entity.getComponent(writeColumnInfos[i].name);
+                Class<? extends Object> type = writeColumnInfos[i].type;
+                Object jdbcValue = AnyConverter.convert(componentValue, type);
+                try {
+                    if (jdbcValue != null)
+                        insertStatement.setObject(i + 1, jdbcValue);
+                    else
+                        insertStatement.setNull(i + 1, writeColumnInfos[i].sqlType);
+                } catch (SQLException e) {
+                    throw new RuntimeException("error setting column " + tableName + '.' + writeColumnInfos[i].name, e);
+                }
             }
-            String[] array = CollectionUtil.toArray(usedColumnNames, String.class);
-            String sql = buildSQLInsert(tableName, usedColumnNames.toArray(array));
-            if (logger.isDebugEnabled())
-                logger.debug("Storing " + entity);
-            Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql);
-//            for (int i = 1; i <= getColumnNames(tableName).length; i++)
-//                statement.setObject(i, null);
-            for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
-                String columnName = entry.getKey();
-                int columnIndex = StringUtil.indexOfIgnoreCase(columnName, array) + 1;
-                ComponentDescriptor componentDescriptor = getComponentDescriptor(tableName, columnName);
-                if (componentDescriptor == null)
-                    throw new ConfigurationError("The table '" + tableName + "'" +
-                            " does not contain a column '" + columnName + "'");
-                Class<? extends Object> javaType = javaTypeForAbstractType(componentDescriptor.getType());
-                Object value = AnyConverter.convert(entry.getValue(), javaType);
-                statement.setObject(columnIndex, value);
-            }
-            statement.execute();
-            statement.close();
+           insertStatement.addBatch();
+//            insertStatement.executeUpdate(); // TODO v0.4 check if batch is supported, enable batch deactivation
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error in persisting " + entity, e);
         }
     }
 
     public void flush() {
+        if (logger.isDebugEnabled())
+            logger.debug("flush()");
         try {
-        	Iterator<Connection> iterator = connections.values().iterator();
+        	Iterator<ThreadContext> iterator = contexts.values().iterator();
         	while (iterator.hasNext()) {
-        		Connection connection = iterator.next();
-        		connection.commit();
-        		//DBUtil.close(connection);
-        		//iterator.remove();
+        		ThreadContext threadContext = iterator.next();
+                if (threadContext.lastInsertStatement != null) {
+                    threadContext.lastInsertStatement.executeBatch();            
+                    // need to finish old statement
+                    DBUtil.close(threadContext.lastInsertStatement);
+                }
+        		threadContext.lastInsertTable = null;
+                threadContext.lastInsertStatement = null;
+                threadContext.lastInsertSQL = null;
+                threadContext.connection.commit();
         	}
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -207,61 +249,80 @@ public class DBSystem implements System {
     }
 
     public TypedIterable<Entity> getEntities(String type) {
-    	Connection connection = getConnection();
-        DBQueryIterable iterable = new DBQueryIterable(connection, "select * from " + type);
-        ResultSet2EntityConverter descriptor = new ResultSet2EntityConverter(getTypeDescriptor(type));
-        return new ConvertingIterable<ResultSet, Entity>(iterable, descriptor);
+        if (logger.isDebugEnabled())
+            logger.debug("getEntities(" + type + ")");
+    	Connection connection = getThreadContext().connection;
+        Iterable<ResultSet> iterable = new DBQueryIterable(connection, "select * from " + type, fetchSize);
+        return new EntityResultSetIterable(iterable, getTypeDescriptor(type));
+    }
+
+    public long countEntities(String tableName) { // TODO v0.4 add to System interface
+        if (logger.isDebugEnabled())
+            logger.debug("countEntities(" + tableName + ")");
+        String sql = "select count(*) from " + tableName;
+        try {
+            Connection connection = getThreadContext().connection;
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            resultSet.next();
+            long count = resultSet.getLong(1);
+            return count;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error in counting rows of table " + tableName + ". SQL = " + sql, e);
+        }
     }
 
     public void close() {
-    	Iterator<Entry<Thread, Connection>> iterator = connections.entrySet().iterator();
+        if (logger.isDebugEnabled())
+            logger.debug("close()");
+        flush();
+    	Iterator<ThreadContext> iterator = contexts.values().iterator();
     	while (iterator.hasNext()) {
-			Entry<Thread, Connection> entry = iterator.next();
+			ThreadContext context = iterator.next();
 			iterator.remove();
-			DBUtil.close(entry.getValue());
+			context.lastInsertTable = null;
+			context.lastInsertStatement = null;
+			context.lastInsertSQL = null;
+			DBUtil.close(context.connection);
 		}
     }
 
     public TypedIterable<Object> getIds(String tableName, String selector) {
-        List<DBCatalog> catalogs = database.getCatalogs();
-        for (DBCatalog catalog : catalogs) {
-            DBTable table = catalog.getTable(tableName);
-            if (table != null) {
-                DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
-                DBColumn[] columns = pkConstraint.getColumns();
-                String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
-                String query = "select " + ArrayFormat.format(pkColumnNames) + " from " + tableName;
-                if (selector != null)
-                    query += " where " + selector;
-                return getBySelector(query);
-            }
-        }
-        List<DBSchema> schemas = database.getSchemas();
-        for (DBSchema schema : schemas) {
-            DBTable table = schema.getTable(tableName);
-            if (table != null) {
-                DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
-                DBColumn[] columns = pkConstraint.getColumns();
-                String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
-                String query = "select " + ArrayFormat.format(pkColumnNames) + " from " + tableName;
-                if (selector != null)
-                    query += " where " + selector;
-                return getBySelector(query);
-            }
-        }
-        throw new RuntimeException("Table not found: " + tableName);
+        if (logger.isDebugEnabled())
+            logger.debug("getIds(" + tableName + ", " + selector + ")");
+        
+        DBTable table = getTable(tableName);
+        DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
+        DBColumn[] columns = pkConstraint.getColumns();
+        String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
+        String query = "select " + ArrayFormat.format(pkColumnNames) + " from " + tableName;
+        if (selector != null)
+            query += " where " + selector;
+        return getBySelector(query);
     }
 
     public TypedIterable<Object> getBySelector(String query) {
-    	Connection connection = getConnection();
+        if (logger.isDebugEnabled())
+            logger.debug("getBySelector(" + query + ")");
+    	Connection connection = getThreadContext().connection;
         DBQueryIterable resultSetIterable = new DBQueryIterable(connection, query);
         return new ConvertingIterable<ResultSet, Object>(resultSetIterable, new ResultSetConverter(true));
     }
-
-	public Connection createConnection() { // TODO find better ways to access this DB from outside
+    
+/* TODO v0.4    
+    public Generator<? extends Object> idGenerator(String type, String name) {
+        if ("sequence".equalsIgnoreCase(type))
+            return new SQLLongGenerator(this, databaseStrategy.sequenceAccessorSql(name));
+        else if ("seqhilo".equalsIgnoreCase(type))
+            return new DBSequenceHiLoGenerator(this, databaseStrategy.sequenceAccessorSql(name), 100);
+        else
+            throw new IllegalArgumentException("ID generator type unknown for " + this);
+    }
+*/
+    public Connection createConnection() {
 		try {
             Class.forName(driver);
-            Connection connection = DriverManager.getConnection(url, user, password);
+            Connection connection = new PooledConnection(DriverManager.getConnection(url, user, password));
             connection.setAutoCommit(false);
             return connection;
         } catch (ClassNotFoundException e) {
@@ -270,80 +331,65 @@ public class DBSystem implements System {
             throw new RuntimeException("Connecting the database failed. URL: " + url, e);
         }
 	}
-
-    // private helpers -------------------------------------------------------------------------------------------------
-
-    Map<String, Class<? extends Object>> javaTypes = CollectionUtil.buildMap(
-            "big_integer", BigInteger.class,
-            //Types.BINARY, "binary",
-            "boolean", Byte.class,
-            //Types.BLOB, "",
-            "boolean", Boolean.class,
-            "char", Character.class,
-            //Types.CLOB, "",
-            //Types.DATALINK, "",
-            "date", Date.class,
-            "big_decimal", BigDecimal.class,
-            //Types.DISTINCT, "",
-            "double", Double.class,
-            "float", Float.class,
-            "int", Integer.class,
-            //Types.JAVA_OBJECT, "",
-            //Types.LONGVARBINARY, "binary",
-            //Types.LONGVARCHAR, "string",
-            //Types.NULL, "",
-            //Types.NUMERIC, "double",
-            //Types.OTHER, "",
-            //Types.REAL, "double",
-            //Types.REF, "",
-            "short", Short.class,
-            //Types.STRUCT, "",
-            "date", Date.class,
-            //Types.TIMESTAMP, "date",
-            "byte", Byte.class,
-            //Types.VARBINARY, "",
-            "string", String.class
-	);
 	
-	private Class<? extends Object> javaTypeForAbstractType(String simpleType) {
-	    Class<? extends Object> type = javaTypes.get(simpleType);
-	    if (type == null)
-	        throw new UnsupportedOperationException("Not mapped to a Java type: " + simpleType);
-	    return type;
-	}
+	// java.lang.Object overrides ------------------------------------------------------------------
 	
-	private ComponentDescriptor getComponentDescriptor(String tableName, String columnName) {
-	    EntityDescriptor descriptor = getTypeDescriptor(tableName);
-	    for (ComponentDescriptor componentDescriptor : descriptor.getComponentDescriptors()) {
-	        if (componentDescriptor.getName().equalsIgnoreCase(columnName))
-	            return componentDescriptor;
-	    }
-	    return null;
-	}
-/*
-    private void assureInitialization() {
-        if (!initialized)
-            init();
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + user + '@' + url + ']';
     }
-*/
-    private void parseMetaData() {
+
+    // private helpers ------------------------------------------------------------------------------
+
+    private PreparedStatement getInsertStatement(String tableName, ColumnInfo[] columnInfos) throws SQLException {
+        ThreadContext context = getThreadContext();
+        if (!tableName.equals(context.lastInsertTable)) {
+            Connection connection = getThreadContext().connection;
+            if (context.lastInsertStatement != null)
+                flush();
+            context.lastInsertTable = tableName;
+            String sql = createSQLInsert(tableName, columnInfos);
+            context.lastInsertSQL = sql;
+            context.lastInsertStatement = connection.prepareStatement(sql);
+        }
+        if (sqlLogger.isDebugEnabled())
+            sqlLogger.debug(context.lastInsertSQL);
+        return context.lastInsertStatement;
+    }
+
+	private void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
-            this.typeDescriptors = new HashMap<String, EntityDescriptor>();
+            this.typeDescriptors = new OrderedMap<String, EntityDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
-            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema);
+            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, false);
             database = importer.importDatabase();
-            for (DBCatalog catalog : database.getCatalogs())
-                for (DBTable table : catalog.getTables())
-                    parseTable(table);
-            for (DBSchema schema : database.getSchemas())
-                for (DBTable table : schema.getTables())
-                    parseTable(table);
-
+            String productName = importer.getProductName();
+            /* TODO v0.4
+            if (productName.toLowerCase().startsWith("oracle"))
+                databaseStrategy = new OracleDatabaseStrategy();
+            else
+                database = new UnsupportedDatabaseStrategy(productName);
+            */
+            // order tables by dependency
+            List<DBTable> tables = dependencyOrderedTables(database);
+            for (DBTable table : tables)
+                parseTable(table);
         } catch (ImportFailedException e) {
             throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
         }
+    }
 
+    private static List<DBTable> dependencyOrderedTables(Database database) {
+        DependencyModel<DBTable> model = new DependencyModel<DBTable>();
+        for (DBCatalog catalog : database.getCatalogs())
+            for (DBTable table : catalog.getTables())
+                model.addNode(table);
+        for (DBSchema schema : database.getSchemas())
+            for (DBTable table : schema.getTables())
+                model.addNode(table);
+        List<DBTable> tables = model.dependencyOrderedObjects(true);
+        return tables;
     }
 
     private void parseTable(DBTable table) {
@@ -364,8 +410,9 @@ public class DBSystem implements System {
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(fkColumnName);
                 descriptor.setSource(id);
                 descriptor.setTargetTye(targetTable.getName());
-                String type = abstractType(foreignKeyColumn.getForeignKeyColumn().getType().getSqlType());
-                descriptor.setType(type);
+                DBColumnType concreteType = foreignKeyColumn.getForeignKeyColumn().getType();
+                String abstractType = JdbcMetaTypeMapper.abstractType(concreteType);
+                descriptor.setType(abstractType);
                 td.setComponentDescriptor(descriptor); // overwrite attribute descriptor
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
@@ -377,14 +424,15 @@ public class DBSystem implements System {
             if (logger.isDebugEnabled())
                 logger.debug("parsing column: " + column);
             if (td.getComponentDescriptor(column.getName()) != null)
-                continue;
+                continue; // skip columns that were already parsed (fk)
             String columnId = table.getName() + '.' + column.getName();
             if (column.isVersionColumn()) {
                 logger.debug("Leaving out version column " + columnId);
                 continue;
             }
             AttributeDescriptor descriptor = new AttributeDescriptor(column.getName());
-            String type = abstractType(column.getType().getSqlType());
+            DBColumnType columnType = column.getType();
+            String type = JdbcMetaTypeMapper.abstractType(columnType);
             descriptor.setType(type);
             String defaultValue = column.getDefaultValue();
             if (defaultValue != null)
@@ -420,15 +468,19 @@ public class DBSystem implements System {
         typeDescriptors.put(td.getName(), td);
     }
 
-    private String buildSQLInsert(String tableName, String[] columnNames) {
-        String sql = "insert into " + tableName + "(";
-        sql += ArrayFormat.format(", ", columnNames);
-        sql += ") values (";
-        if (columnNames.length> 0)
-            sql += "?";
-        for (int i = 1; i < columnNames.length; i++)
-            sql += ",?";
-        sql += ")";
+    private String createSQLInsert(String tableName, ColumnInfo[] columnInfos) {
+        StringBuilder builder = new StringBuilder("insert into ").append(tableName).append("(");
+        if (columnInfos.length > 0)
+            builder.append(columnInfos[0].name);
+        for (int i = 1; i < columnInfos.length; i++)
+            builder.append(',').append(columnInfos[i].name);
+        builder.append(") values (");
+        if (columnInfos.length> 0)
+            builder.append("?");
+        for (int i = 1; i < columnInfos.length; i++)
+            builder.append(",?");
+        builder.append(")");
+        String sql = builder.toString();
         logger.debug("built SQL statement: " + sql);
         return sql;
     }
@@ -452,64 +504,68 @@ public class DBSystem implements System {
         return index;
     }
 */
-    private static final Map TYPE_MAP;
-
-    static {
-
-        TYPE_MAP = CollectionUtil.buildMap(
-                // TODO v0.4 handle missing SQL types
-                //Types.ARRAY, "",
-                Types.BIGINT, "big_integer",
-                //Types.BINARY, "binary",
-                Types.BIT, "boolean",
-                //Types.BLOB, "",
-                Types.BOOLEAN, "boolean",
-                Types.CHAR, "string",
-                //Types.CLOB, "",
-                //Types.DATALINK, "",
-                Types.DATE, "date",
-                Types.DECIMAL, "big_decimal",
-                //Types.DISTINCT, "",
-                Types.DOUBLE, "double",
-                Types.FLOAT, "float",
-                Types.INTEGER, "int",
-                //Types.JAVA_OBJECT, "",
-                //Types.LONGVARBINARY, "binary",
-                Types.LONGVARCHAR, "string",
-                //Types.NULL, "",
-                Types.NUMERIC, "double",
-                //Types.OTHER, "",
-                Types.REAL, "double",
-                //Types.REF, "",
-                Types.SMALLINT, "short",
-                //Types.STRUCT, "",
-                Types.TIME, "date",
-                Types.TIMESTAMP, "date",
-                Types.TINYINT, "byte",
-                //Types.VARBINARY, "",
-                Types.VARCHAR, "string");
-    }
-
-    private String abstractType(int platformType) {
-        String result = (String) TYPE_MAP.get(platformType);
-        if (result == null)
-            throw new ConfigurationError("Platform type not mapped: " + platformType);
-        return result;
-    }
-
-    private String[] getColumnNames(String tableName) {
+    
+    private ColumnInfo[] writeColumnInfos(Entity entity) {
+        String tableName = entity.getName();
+        DBTable table = getTable(tableName);
         EntityDescriptor typeDescriptor = getTypeDescriptor(tableName);
-        return nameExtractor.convert(typeDescriptor.getComponentDescriptors().toArray());
+        Collection<ComponentDescriptor> componentDescriptors = typeDescriptor.getComponentDescriptors();
+        ArrayBuilder<ColumnInfo> builder = new ArrayBuilder<ColumnInfo>(ColumnInfo.class, componentDescriptors.size());
+        EntityDescriptor entityDescriptor = entity.getDescriptor();
+        for (ComponentDescriptor dbCompDescriptor : componentDescriptors) {
+            ComponentDescriptor enCompDescriptor = entityDescriptor.getComponentDescriptor(dbCompDescriptor.getName());
+            if (enCompDescriptor != null && enCompDescriptor.getMode() == Mode.ignored)
+                continue;
+            if (dbCompDescriptor.getMode() != Mode.ignored) {
+                String name = dbCompDescriptor.getName();
+                String abstractType = dbCompDescriptor.getType();
+                DBColumn column = table.getColumn(name);
+                DBColumnType columnType = column.getType();
+                int sqlType = columnType.getJdbcType();
+                Class<? extends Object> javaType = driverTypeMapper.concreteType(abstractType);
+                builder.append(new ColumnInfo(name, sqlType, javaType));
+            }
+        }
+        return builder.toArray();
     }
 
-    private synchronized Connection getConnection() {
-    	Thread currentThread = Thread.currentThread();
-		Connection connection = connections.get(currentThread);
-    	if (connection == null) {
-            connection = createConnection();
-    		connections.put(currentThread, connection);
-    	}
-    	return connection;
+    private DBTable getTable(String tableName) {
+        DBSchema dbSchema = database.getSchema(this.schema);
+        if (dbSchema != null) {
+            DBTable table = dbSchema.getTable(tableName);
+            if (table != null)
+                return table;
+        }
+        for (DBCatalog catalog : database.getCatalogs()) {
+            DBTable table = catalog.getTable(tableName);
+            if (table != null)
+                return table;
+        }
+        for (DBSchema schema2 : database.getSchemas()) {
+            DBTable table = schema2.getTable(tableName);
+            if (table != null)
+                return table;
+        }
+        throw new ObjectNotFoundException("Table " + tableName);
+    }
+
+    private synchronized ThreadContext getThreadContext() {
+        Thread currentThread = Thread.currentThread();
+        ThreadContext context = contexts.get(currentThread);
+        if (context == null) {
+            context = new ThreadContext();
+            context.connection = createConnection();
+            contexts.put(currentThread, context);
+        }
+        return context;
+    }
+    
+    private static class ThreadContext {
+        public Connection connection;
+        public String lastInsertTable;
+        public String lastInsertSQL;
+        public PreparedStatement lastInsertStatement;
+        
     }
 
     private String precision(int scale) {
@@ -522,8 +578,30 @@ public class DBSystem implements System {
         return builder.toString();
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + user + '@' + url + ']';
+    private TypeMapper<Class<? extends Object>> driverTypeMapper() {
+        return new TypeMapper<Class<? extends Object>>(
+                "byte",        Byte.class,
+                "short",       Short.class,
+                "int",         Integer.class,
+                "big_integer", BigInteger.class,
+                "float",       Float.class,
+                "double",      Double.class,
+                "big_decimal", BigDecimal.class,
+                
+                "boolean",     Boolean.class,
+                "char",        Character.class,
+                "date",        java.sql.Date.class,
+                "timestamp",   java.sql.Timestamp.class,
+                
+                "string",      java.sql.Clob.class,
+                "string",      String.class,
+                
+                "binary",      Blob.class,
+                "binary",      byte[].class
+                
+//              "object",      Object.class,
+                
+        );
     }
+
 }
