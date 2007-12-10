@@ -32,38 +32,38 @@ import org.databene.benerator.main.Benerator;
 import java.io.IOException;
 
 /**
- * TODO documentation.<br/>
+ * Tests the shop demo on all supported database systems.<br/>
  * <br/>
  * Created: 20.11.2007 13:24:13
  */
 public class ShopTest extends TestCase {
 
     public void testDB2() throws IOException {
-        perform("shop/populate_db.db2.xml");
+        perform("demo/shop/populate_db.db2.xml");
     }
 
     public void testDerby() throws IOException {
-        perform("shop/populate_db.derby.xml");
+        perform("demo/shop/populate_db.derby.xml");
     }
 
     public void testHSQL() throws IOException {
-        perform("shop/populate_db.hsql.xml");
+        perform("demo/shop/populate_db.hsql.xml");
     }
 
     public void testSQLServer() throws IOException {
-        perform("shop/populate_db.ms_sql_server.xml");
+        perform("demo/shop/populate_db.ms_sql_server.xml");
     }
 
     public void testMySQL() throws IOException {
-        perform("shop/populate_db.mysql.xml");
+        perform("demo/shop/populate_db.mysql.xml");
     }
 
     public void testOracle() throws IOException {
-        perform("shop/populate_db.oracle.xml");
+        perform("demo/shop/populate_db.oracle.xml");
     }
 
     public void testPostgres() throws IOException {
-        perform("shop/populate_db.postgres.xml");
+        perform("demo/shop/populate_db.postgres.xml");
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
