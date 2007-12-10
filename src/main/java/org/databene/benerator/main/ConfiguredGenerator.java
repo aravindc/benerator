@@ -94,10 +94,11 @@ public class ConfiguredGenerator implements Generator<Entity> {
 	}
 
 	public void close() {
-        for (String variableName : variables.keySet())
-            context.set(variableName, null);
 		for (Generator<? extends Object> variable : variables.values())
 			variable.close();
+		entityGenerator.close();
+        for (String variableName : variables.keySet())
+            context.remove(variableName);
 	}
 
 }
