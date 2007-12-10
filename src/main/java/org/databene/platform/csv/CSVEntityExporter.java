@@ -94,7 +94,7 @@ public class CSVEntityExporter implements Processor<Entity> {
         this.encoding = encoding;
     }
 
-    // Converter interface ---------------------------------------------------------------------------------------------
+    // Processor interface ---------------------------------------------------------------------------------------------
 
     public void process(Entity entity) {
         try {
@@ -127,7 +127,7 @@ public class CSVEntityExporter implements Processor<Entity> {
             printer.close();
     }
 
-// java.lang.String overrides --------------------------------------------------------------------------------------
+// java.lang.Object overrides --------------------------------------------------------------------------------------
 
     private void initPrinter() throws IOException {
         // create file

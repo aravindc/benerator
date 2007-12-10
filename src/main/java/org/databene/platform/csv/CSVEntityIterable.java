@@ -65,7 +65,7 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public CSVEntityIterable(String uri, String entityName, char separator, String encoding) {
-        this(uri, new EntityDescriptor(entityName, false), separator, encoding); // TODO finalize case concept
+        this(uri, new EntityDescriptor(entityName, false), separator, encoding); // TODO v0.4 finalize case concept
     }
 
     public CSVEntityIterable(String uri, EntityDescriptor descriptor, char separator, String encoding) {
@@ -106,7 +106,7 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public void setEntityName(String entityName) {
-        this.entityDescriptor = new EntityDescriptor(entityName, false); // TODO finalize case concept
+        this.entityDescriptor = new EntityDescriptor(entityName, false); // TODO v0.4 finalize case concept
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
