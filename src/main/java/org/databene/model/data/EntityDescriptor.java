@@ -100,9 +100,17 @@ public class EntityDescriptor extends FeatureDescriptor {
         for (ComponentDescriptor d : componentMap.values())
             tmp.put(d.getName(), d);
         if (parent != null)
-            for (ComponentDescriptor d : ((EntityDescriptor)parent).getComponentDescriptors())
-                if (!tmp.containsKey(d.getName()))
-                    tmp.put(d.getName(), d);
+            for (ComponentDescriptor d : ((EntityDescriptor)parent).getComponentDescriptors()) {
+                String name = d.getName();
+                if (!tmp.containsKey(name)) {
+                    if (d instanceof AttributeDescriptor)
+                        tmp.put(name, new AttributeDescriptor(d));
+                    else if (d instanceof ReferenceDescriptor)
+                        tmp.put(name, new ReferenceDescriptor(d));
+                    else
+                        throw new UnsupportedOperationException("Unsupported ComponentDescriptor type: " + d.getClass().getName());
+                }
+            }
         return tmp.values();
     }
 
@@ -152,7 +160,7 @@ public class EntityDescriptor extends FeatureDescriptor {
 
         if (caseSensitive != that.caseSensitive)
             return false;
-        if (!componentMap.equals(that.componentMap)) // TODO consider case 
+        if (!componentMap.equals(that.componentMap)) // TODO v0.4 consider case 
             return false;
 
         return true;
