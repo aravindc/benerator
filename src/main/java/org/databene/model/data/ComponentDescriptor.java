@@ -41,6 +41,10 @@ public abstract class ComponentDescriptor extends FeatureDescriptor {
         this(name, null);
     }
 
+    public ComponentDescriptor(ComponentDescriptor parent) {
+        this(parent.getName(), parent);
+    }
+
     public ComponentDescriptor(String name, ComponentDescriptor parent) {
         super(name, parent);
         addDetailConfig("type", String.class, true, null);
@@ -71,7 +75,6 @@ public abstract class ComponentDescriptor extends FeatureDescriptor {
     // literate construction helpers -----------------------------------------------------------------------------------
 
     public ComponentDescriptor ofType(String type) {
-        // TODO make this usable in sub classes like new AttributeDescriptor().ofType().setMin()
         setDetail("type", type);
         return this;
     }
