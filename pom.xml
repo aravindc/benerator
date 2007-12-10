@@ -4,7 +4,7 @@
 
     <groupId>databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.3.03</version>
+    <version>0.3.04</version>
 
     <parent>
         <groupId>databene</groupId>
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>databene</groupId>
             <artifactId>databene-webdecs</artifactId>
-            <version>0.2.03</version>
+            <version>0.2.04</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -81,6 +81,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
     <build>
 
         <resources>
@@ -95,7 +96,7 @@
                     <include>**/*.txt</include>
                 </includes>
                 <excludes>
-                    <exclude>**/log4j.xml</exclude>
+                    <exclude>log4j.xml</exclude>
                     <exclude>dataset.dtd</exclude>
                 </excludes>
             </resource>
