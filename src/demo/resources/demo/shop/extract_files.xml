@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.dtd">
+<setup>
+
+    <bean id="db" class="org.databene.platform.db.adapter.DBSystem">
+        <property name="url" value="jdbc:mysql://localhost/benerator"/>
+        <property name="driver" value="com.mysql.jdbc.Driver"/>
+        <property name="user" value="benerator"/>
+        <property name="password" value="benerator"/>
+    </bean>
+
+    <create-entities name="db_product" source="db">
+        <processor id="flat" class="org.databene.platform.flat.FlatFileEntityExporter">
+            <property name="uri" value="products.flat"/>
+            <property name="properties" value="ean_code[13],name[30l],price[10r0]"/>
+        </processor>
+    </create-entities>
+
+    <bean id="csv" class="org.databene.platform.csv.CSVEntityExporter">
+        <property name="uri" value="customers.csv"/>
+        <property name="properties" value="salutation,first_name,last_name"/>
+    </bean>
+
+    <bean id="proxy" class="shop.MyProxy">
+        <property name="target" ref="csv"/>
+    </bean>
+
+    <bean id="log-csv" class="org.databene.model.processor.ProcessorChain">
+        <property name="components">
+            <bean class="org.databene.model.processor.LoggingProcessor"/>
+            <idref bean="proxy"/>
+        </property>
+    </bean>
+
+    <!-- this anonymizes the family name of the data extracted from the DB -->
+    <create-entities name="db_customer" source="db">
+        <attribute name="last_name" generator="org.databene.domain.person.FamilyNameGenerator"/>
+        <processor ref="log-csv"/>
+    </create-entities>
+</setup>
