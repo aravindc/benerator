@@ -46,6 +46,7 @@ import java.sql.SQLException;
  * Created: 23.08.2007 06:38:43
  */
 public class RunSqlScriptTask extends AbstractTask {
+    // TODO v0.4 move this class to org.databene.benerator.db
 
     private static Log logger = LogFactory.getLog(RunSqlScriptTask.class);
 
@@ -139,7 +140,7 @@ public class RunSqlScriptTask extends AbstractTask {
                 } catch (SQLException e) {
                     exception = e;
                 }
-                //DBUtil.close(connection);
+                DBUtil.close(connection);
             }
         }
         if (exception != null)
