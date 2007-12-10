@@ -28,7 +28,6 @@ package org.databene.benerator.composite;
 
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.Generator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,40 +39,62 @@ import java.util.Map;
  * <br/>
  * Created: 27.06.2007 23:51:42
  */
-public class EntityGenerator extends LightweightGenerator<Entity> {
+public class EntityGenerator implements Generator<Entity> {
 
-    private static final Log logger = LogFactory.getLog(EntityGenerator.class);
+    private static final Log stateLogger = LogFactory.getLog("org.databene.benerator.STATE");
 
-    private String typeName;
+    private String entityName;
     private Generator<Entity> source;
     private Map<String, Generator<? extends Object>> componentGenerators;
 
+    // constructors --------------------------------------------------------------------------------------
+
+    /**
+     * @param descriptor Entity descriptor. 
+     * @param componentGenerators Generators that generate values for the entities' components
+     */
     public EntityGenerator(EntityDescriptor descriptor, Map<String, Generator<? extends Object>> componentGenerators) {
         this(descriptor, new SimpleEntityGenerator(descriptor), componentGenerators);
     }
 
+    /**
+     * @param descriptor Entity descriptor. 
+     * @param source another Generator of entities that serves as Entity builder. 
+     *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
+     * @param componentGenerators Generators that generate values for the entities' components
+     */
     public EntityGenerator(EntityDescriptor descriptor, Generator<Entity> source, Map<String, Generator<? extends Object>> componentGenerators) {
-        this.typeName = descriptor.getName();
+        this.entityName = descriptor.getName();
         this.source = source;
         this.componentGenerators = componentGenerators;
     }
 
+    // Generator interface -----------------------------------------------------------------------------------
+    
+    public Class<Entity> getGeneratedType() {
+        return Entity.class;
+    }
+
+    public void validate() {
+        source.validate();
+        for (Generator<? extends Object> compGen : componentGenerators.values())
+            compGen.validate();
+    }
+
     public boolean available() {
         if (!source.available()) {
-            logger.debug("source is no more available: " + source);
+            if (stateLogger.isDebugEnabled())
+                stateLogger.debug("Source for entity '" + entityName + "' is no more available: " + source);
             return false;
         }
         for (Generator<? extends Object> compGen : componentGenerators.values()) {
             if (!compGen.available()) {
-                logger.debug("Generator is no more available: " + compGen);
+                if (stateLogger.isDebugEnabled())
+                    stateLogger.debug("Generator for entity '" + entityName + "' is no more available: " + compGen);
                 return false;
             }
         }
         return true;
-    }
-
-    public Class<Entity> getGeneratedType() {
-        return Entity.class;
     }
 
     public Entity generate() {
@@ -90,7 +111,22 @@ public class EntityGenerator extends LightweightGenerator<Entity> {
         return instance;
     }
 
-    public String toString() {
-        return getClass().getSimpleName() + '[' + typeName + ']' + componentGenerators;
+    public void close() {
+        source.close();
+        for (Generator<? extends Object> compGen : componentGenerators.values())
+            compGen.close();
     }
+    
+    public void reset() {
+        source.reset();
+        for (Generator<? extends Object> compGen : componentGenerators.values())
+            compGen.reset();
+    }
+
+    // java.lang.Object overrides --------------------------------------------------------------------------
+    
+    public String toString() {
+        return getClass().getSimpleName() + '[' + entityName + ']' + componentGenerators;
+    }
+
 }
