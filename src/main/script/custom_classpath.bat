@@ -1,0 +1,1 @@
+set classpath=%classpath%;lib\log4j-1.2.14.jar;lib\ojdbc14.jar
