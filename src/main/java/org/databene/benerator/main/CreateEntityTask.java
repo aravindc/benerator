@@ -27,25 +27,26 @@
 package org.databene.benerator.main;
 
 import java.util.Collection;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.Generator;
+import org.databene.model.Escalator;
 import org.databene.model.Processor;
 import org.databene.model.data.Entity;
+import org.databene.model.escalate.LoggerEscalator;
 import org.databene.task.AbstractTask;
 import org.databene.task.PagedTask;
 import org.databene.task.ThreadSafe;
 
 public class CreateEntityTask extends PagedTask {
-	
+    
     private Generator<Entity> generator;
 	private Collection<Processor<Entity>> processors;
 	
 	public CreateEntityTask(
 			String name, int count, int pageSize, int threads, 
 			Generator<Entity> generator, Collection<Processor<Entity>> processors, ExecutorService executor) {
-		super(new Runner(generator, processors), count, null, pageSize, threads, executor);
+		super(new Worker(name, generator, processors), count, null, pageSize, threads, executor);
 		this.generator = generator;
 		this.processors = processors;
 	}
@@ -56,20 +57,33 @@ public class CreateEntityTask extends PagedTask {
 	}
 
 	@Override
+	public void destroy() {
+		super.destroy();
+	    synchronized(generator) {
+	        generator.close();
+	    }
+	};
+	
+	@Override
 	protected boolean workPending(int currentPageNo) {
 		return generator.available();
 	}
 	
-	private static class Runner extends AbstractTask implements ThreadSafe {
+	private static class Worker extends AbstractTask implements ThreadSafe {
 
+	    private String name;
 	    private Generator<Entity> generator;
 		private Collection<Processor<Entity>> processors;
+	    private Escalator noProcessorHandler;
+	    private int generationCount;
 		
-		public Runner(Generator<Entity> generator,
+		public Worker(String name, Generator<Entity> generator,
 				Collection<Processor<Entity>> processors) {
-			super();
+			this.name = name;
 			this.generator = generator;
 			this.processors = processors;
+	        this.noProcessorHandler = new LoggerEscalator();
+	        this.generationCount = 0;
 		}
 
 		public void run() {
@@ -77,10 +91,26 @@ public class CreateEntityTask extends PagedTask {
 			synchronized (generator) {
 				if (generator.available())
 			        entity = generator.generate();
+				else
+				    return;
 			}
-			if (entity != null)
+			if (processors.size() == 0)
+			    noProcessorHandler.escalate("No processors defined ", this, null);
+			if (entity != null) {
+			    generationCount++;
 				for (Processor<Entity> processor : processors)
 					processor.process(entity);
+			}
+		}
+		
+		@Override
+		public void destroy() {
+		    super.destroy();
+		}
+		
+		@Override
+		public String toString() {
+		    return getClass().getSimpleName() + '[' + name + ']';
 		}
 	}
 }
