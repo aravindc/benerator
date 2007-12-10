@@ -37,7 +37,6 @@ import org.databene.model.Converter;
 
 import java.util.Locale;
 import java.text.Format;
-import java.text.MessageFormat;
 
 /**
  * Created: 30.06.2007 07:29:43
@@ -45,7 +44,15 @@ import java.text.MessageFormat;
 public class AttributeDescriptor extends ComponentDescriptor {
 
     public AttributeDescriptor(String name) {
-        super(name);
+        this(name, null);
+    }
+    
+    public AttributeDescriptor(ComponentDescriptor parent) {
+        this(parent.getName(), parent);
+    }
+    
+    protected AttributeDescriptor(String name, ComponentDescriptor parent) {
+        super(name, parent);
 
         // general constraints
         addDetailConfig("nullable", Boolean.class, true, true);
@@ -228,11 +235,11 @@ public class AttributeDescriptor extends ComponentDescriptor {
         setDetail("source", source);
     }
 
-    public Converter getConverter() {
-        return (Converter) getDetailValue("converter");
+    public Converter<? extends Object, ? extends Object> getConverter() {
+        return (Converter<? extends Object, ? extends Object>) getDetailValue("converter");
     }
 
-    public void setConverter(Converter converter) {
+    public void setConverter(Converter<? extends Object, ? extends Object> converter) {
         setDetail("converter", converter);
     }
 
@@ -337,7 +344,7 @@ public class AttributeDescriptor extends ComponentDescriptor {
     // generic property access -----------------------------------------------------------------------------------------
 
     public void setDetail(String detailName, Object detailValue) {
-        Class targetType = getDetailType(detailName);
+        Class<? extends Object> targetType = getDetailType(detailName);
         if (targetType == Distribution.class && detailValue.getClass() == String.class)
             detailValue = mapDistribution((String) detailValue);
         if (targetType == Converter.class && detailValue.getClass() == String.class)
@@ -347,13 +354,13 @@ public class AttributeDescriptor extends ComponentDescriptor {
 
 // private helpers -------------------------------------------------------------------------------------------------
 
-    private Converter mapConverter(String converterString) {
+    private Converter<? extends Object, ? extends Object> mapConverter(String converterString) {
         Object result = BeanUtil.newInstance(converterString);
         if (result instanceof Format)
-            result = new ParseFormatConverter(Object.class, (Format) result); // TODO use Java mapped type
+            result = new ParseFormatConverter(Object.class, (Format) result);
         else if (!(result instanceof Converter))
             throw new ConfigurationError("Class is no Converter: " + result.getClass());
-        return (Converter) result;
+        return (Converter<? extends Object, ? extends Object>) result;
     }
 
     private static Distribution mapDistribution(String distributionName) {
