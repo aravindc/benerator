@@ -17,5 +17,11 @@
 	<classpathentry kind="lib" path="C:/dev/jdk1.5.0_09/jre/lib/rt.jar"/>
 	<classpathentry kind="lib" path="C:/dev/hsqldb/lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="C:/dev/mysql-connector-java-5.0.3/mysql-connector-java-5.0.3-bin.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="C:/dev/oracle/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="C:/dev/db-derby-10.3.1.4-bin/lib/derbyclient.jar"/>
+	<classpathentry kind="lib" path="C:/dev/PostgreSQL-8.2/jdbc/postgresql-8.2-506.jdbc3.jar"/>
+	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc_license_cu.jar"/>
+	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc.jar"/>
+	<classpathentry kind="lib" path="C:/dev/Microsoft SQL Server/sqljdbc_1.1/deu/sqljdbc.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
