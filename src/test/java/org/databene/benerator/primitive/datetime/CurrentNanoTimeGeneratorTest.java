@@ -33,6 +33,8 @@ import org.databene.model.Validator;
  * Tests the CurrentNanoTimeGenerator.<br/>
  * <br/>
  * Created: 19.11.2007 20:43:45
+ * @author Volker Bergmann
+ * @since 0.3.03
  */
 public class CurrentNanoTimeGeneratorTest extends GeneratorClassTest {
 
@@ -42,8 +44,9 @@ public class CurrentNanoTimeGeneratorTest extends GeneratorClassTest {
 
     public void testProducts() {
         expectGenerations(new CurrentNanoTimeGenerator(), 10, new Validator<Long>() {
-            public boolean valid(Long nanos) {
-                return Math.abs(System.nanoTime() - nanos) < 1000000L;
+            public boolean valid(Long generatedNanos) {
+                long nanoTime = System.nanoTime();
+                return Math.abs(nanoTime - generatedNanos) < 500000000L;
             }
         });
     }
