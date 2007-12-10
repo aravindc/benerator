@@ -40,8 +40,8 @@ public class DBColumnType {
     public static final DBColumnType DATETIME = new DBColumnType("DATETIME");
     public static final DBColumnType FLOAT = new DBColumnType("FLOAT");
 */
-    public static DBColumnType getInstance(int sqlType, String name) {
-        return new DBColumnType(sqlType, name.toUpperCase());
+    public static DBColumnType getInstance(int jdbcType, String name) {
+        return new DBColumnType(jdbcType, name.toUpperCase());
     }
 
     public static DBColumnType getInstance(String name) {
@@ -49,7 +49,7 @@ public class DBColumnType {
     }
 
     private String name;
-    private int sqlType;
+    private int jdbcType;
 
     // constructors ----------------------------------------------------------------------------------------------------
 /*
@@ -58,21 +58,19 @@ public class DBColumnType {
     }
 */
     private DBColumnType(int sqlType, String name) {
-        this.sqlType = sqlType;
+        this.jdbcType = sqlType;
         this.name = name.toUpperCase();
 //        instances.put(this.name, this);
     }
 
 // properties ------------------------------------------------------------------------------------------------------
 
-/*
     public String getName() {
         return name;
     }
-*/
 
-    public int getSqlType() {
-        return sqlType;
+    public int getJdbcType() {
+        return jdbcType;
     }
 
     public boolean isLOB() {
@@ -80,8 +78,8 @@ public class DBColumnType {
     }
 
     public boolean isAlpha() {
-        return sqlType == Types.VARCHAR || sqlType == Types.CHAR
-                || sqlType == Types.CLOB || sqlType == Types.LONGVARCHAR;
+        return jdbcType == Types.VARCHAR || jdbcType == Types.CHAR
+                || jdbcType == Types.CLOB || jdbcType == Types.LONGVARCHAR;
     }
 
 // java.lang.Object overrides --------------------------------------------------------------------------------------
