@@ -54,6 +54,10 @@ public class DBForeignKeyConstraint extends DBConstraint {
         return foreignKeyColumns.get(0).getForeignKeyColumn().getTable();
     }
 
+    public DBTable getForeignTable() {
+        return foreignKeyColumns.get(0).getTargetColumn().getTable();
+    }
+
     public DBColumn[] getColumns() {
         DBColumn[] columns = new DBColumn[foreignKeyColumns.size()];
         for (int i = 0; i < foreignKeyColumns.size(); i++)
