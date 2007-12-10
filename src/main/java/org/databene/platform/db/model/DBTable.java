@@ -26,7 +26,9 @@
 
 package org.databene.platform.db.model;
 
+import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.OrderedMap;
+import org.databene.model.Dependent;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created: 06.01.2007 08:58:49
  */
-public class DBTable {
+public class DBTable implements Dependent<DBTable>{
 
     private DBCatalog catalog;
     private DBSchema schema;
@@ -118,19 +120,27 @@ public class DBTable {
 
     public DBColumn[] getColumns(List<String> columnNames) {
         List<DBColumn> list = new ArrayList<DBColumn>(columnNames.size());
-        for (String columnName : columnNames)
-            list.add(getColumn(columnName));
+        for (String columnName : columnNames) {
+            DBColumn column = getColumn(columnName);
+            if (column == null)
+                throw new IllegalArgumentException("Table '" + name + "' does not have a column '" + columnName + "'");
+            list.add(column);
+        }
         DBColumn[] array = new DBColumn[columnNames.size()];
         return list.toArray(array);
     }
 
     public DBColumn getColumn(String columnName) {
-        return columns.get(columnName);
+        DBColumn column = columns.get(columnName.toUpperCase());
+        if (column == null)
+            throw new ObjectNotFoundException("Column '" + columnName + 
+                    "' not found in table '" + this.getName() + "'");
+        return column;
     }
 
     public void addColumn(DBColumn column) {
         column.setTable(this);
-        columns.put(column.getName(), column);
+        columns.put(column.getName().toUpperCase(), column);
     }
 
     // index operations ------------------------------------------------------------------------------------------------
@@ -199,6 +209,18 @@ public class DBTable {
     @Override
     public String toString() {
         return name;
+    }
+
+    public int countProviders() {
+        return foreignKeyConstraints.size();
+    }
+
+    public DBTable getProvider(int index) {
+        return foreignKeyConstraints.get(index).getForeignTable();
+    }
+
+    public boolean requiresProvider(int index) {
+        return !foreignKeyConstraints.get(index).getForeignKeyColumns().get(0).getForeignKeyColumn().isNullable();
     }
 
 }
