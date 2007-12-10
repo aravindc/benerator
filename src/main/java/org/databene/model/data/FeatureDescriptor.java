@@ -14,26 +14,26 @@ import java.util.List;
 public abstract class FeatureDescriptor {
 
     protected FeatureDescriptor parent;
-    protected OrderedMap<String, FeatureDetail> details;
+    protected OrderedMap<String, FeatureDetail<? extends Object>> details;
 
     // constructor -----------------------------------------------------------------------------------------------------
 
     public FeatureDescriptor(String name, FeatureDescriptor parent) {
-        this.details = new OrderedMap<String, FeatureDetail>();
+        this.details = new OrderedMap<String, FeatureDetail<? extends Object>>();
         this.parent = parent;
-        addDetailConfig("name", String.class, true, null);
-        addDetailConfig("generator", Object.class, false, null);
-        addDetailConfig("source", String.class, false, null);
-        addDetailConfig("encoding", String.class, false, null);
-        addDetailConfig("pattern", String.class, false, null);
-        addDetailConfig("unique", Boolean.class, true, null);
-        addDetailConfig("cyclic", Boolean.class, false, null);
-        addDetailConfig("selector", String.class, false, null);
-        addDetailConfig("mode", Mode.class, false, Mode.normal);
-        addDetailConfig("proxy", Iteration.class, false, null);
-        addDetailConfig("proxy-param1", Long.class, false, null);
-        addDetailConfig("proxy-param2", Long.class, false, null);
-        addDetailConfig("validator", String.class, false, null);
+        addDetailConfig("name",         String.class,    true,  null);
+        addDetailConfig("generator",    Object.class,    false, null);
+        addDetailConfig("source",       String.class,    false, null);
+        addDetailConfig("encoding",     String.class,    false, null);
+        addDetailConfig("pattern",      String.class,    false, null);
+        addDetailConfig("unique",       Boolean.class,   true,  false);
+        addDetailConfig("cyclic",       Boolean.class,   false, null);
+        addDetailConfig("selector",     String.class,    false, null);
+        addDetailConfig("mode",         Mode.class,      false, Mode.normal);
+        addDetailConfig("proxy",        Iteration.class, false, null);
+        addDetailConfig("proxy-param1", Long.class,      false, null);
+        addDetailConfig("proxy-param2", Long.class,      false, null);
+        addDetailConfig("validator",    String.class,    false, null);
         setName(name);
     }
 
@@ -99,11 +99,11 @@ public abstract class FeatureDescriptor {
         setDetail("generator", generatorName);
     }
 
-    public Validator getValidator() {
+    public Validator<? extends Object> getValidator() {
         String validatorClassName = (String) getDetailValue("validator");
         if (validatorClassName == null)
             return null;
-        return (Validator) BeanUtil.newInstance(validatorClassName);
+        return (Validator<? extends Object>) BeanUtil.newInstance(validatorClassName);
     }
 
     public void setValidator(String validatorName) {
@@ -220,17 +220,17 @@ public abstract class FeatureDescriptor {
     }
 
     public Object getDetailValue(String name) {
-        FeatureDetail detail = getDeclaredDetail(name);
+        FeatureDetail<? extends Object> detail = getDeclaredDetail(name);
         Object value = detail.getValue();
-        if (value == null && parent != null && parent.supportsDetail(name) && detail.isConstraint())
+        if (value == null && parent != null && parent.supportsDetail(name) /* TODO && detail.isConstraint() */)
             value = parent.getDetailValue(name);
 //        if (value == null)
 //            value = detail.getDefault();
         return value;
     }
 
-    public <T> void setDetail(String detailName, T detailValue) {
-        FeatureDetail<T> detail = getDeclaredDetail(detailName);
+    public <T> void setDetail(String detailName, Object detailValue) {
+        FeatureDetail<T> detail = (FeatureDetail<T>) getDeclaredDetail(detailName);
         if (detail == null)
             throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);
         detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
@@ -240,7 +240,7 @@ public abstract class FeatureDescriptor {
         return getDeclaredDetail(name).getDefault();
     }
 
-    public List<FeatureDetail> getDetails() {
+    public List<FeatureDetail<? extends Object>> getDetails() {
         return details.values();
     }
 
@@ -249,7 +249,7 @@ public abstract class FeatureDescriptor {
     public String toString() {
         StringBuilder buffer = new StringBuilder(getName()).append("[");
         boolean empty = true;
-        for (FeatureDetail descriptor : details.values())
+        for (FeatureDetail<? extends Object> descriptor : details.values())
             if (descriptor.getValue() != null && !"name".equals(descriptor.getName())) {
                 if (!empty)
                     buffer.append(", ");
@@ -265,7 +265,7 @@ public abstract class FeatureDescriptor {
         if (o == null || getClass() != o.getClass())
             return false;
         final FeatureDescriptor that = (FeatureDescriptor) o;
-        if (!this.details.equals(that.details)) // TODO consider case
+        if (!this.details.equals(that.details)) // TODO v0.4 consider case
             return false;
         return !(parent != null ? !parent.equals(that.parent) : that.parent != null);
     }
@@ -276,8 +276,8 @@ public abstract class FeatureDescriptor {
 
     // helpers ---------------------------------------------------------------------------------------------------------
 
-    protected Class getDetailType(String detailName) {
-        FeatureDetail detail = details.get(detailName);
+    protected Class<? extends Object> getDetailType(String detailName) {
+        FeatureDetail<? extends Object> detail = details.get(detailName);
         if (detail == null)
             throw new UnsupportedOperationException("Feature detail not supported: " + detailName);
         return detail.getType();
@@ -291,8 +291,8 @@ public abstract class FeatureDescriptor {
         this.details.put(detailName, new FeatureDetail<T>(detailName, detailType, constraint, defaultValue));
     }
 
-    protected FeatureDetail getDeclaredDetail(String name) {
-        FeatureDetail detail = details.get(name);
+    protected FeatureDetail<? extends Object> getDeclaredDetail(String name) {
+        FeatureDetail<? extends Object> detail = details.get(name);
         if (detail == null)
             throw new UnsupportedOperationException("Feature detail not supported: " + name);
         return detail;
