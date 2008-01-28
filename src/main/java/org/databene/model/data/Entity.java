@@ -59,6 +59,16 @@ public class Entity implements Composite {
     public EntityDescriptor getDescriptor() {
         return descriptor;
     }
+    
+    /**
+     * Allows for generic 'map-like' access to component values, e.g. by FreeMarker. 
+     * @param componentName the name of the component whose value to return.
+     * @return the value of the specified component.
+     * @since 0.4.0
+     */
+    public Object get(String componentName) {
+        return getComponent(componentName);
+    }
 
     public Object getComponent(String componentName) {
         Object component = components.get(componentName);
