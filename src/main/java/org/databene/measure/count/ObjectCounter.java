@@ -30,10 +30,12 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * Counts objects.<br/><br/>
  * Created: 14.12.2006 18:03:47
+ * @author Volker Bergmann
  */
 public class ObjectCounter<E> {
-
+    // TODO v0.4.1 move to an appropriate location 
     private Map<E, AtomicInteger> instances;
     long totalCount;
 
