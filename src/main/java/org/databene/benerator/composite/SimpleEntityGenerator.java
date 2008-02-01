@@ -34,6 +34,7 @@ import org.databene.model.data.EntityDescriptor;
  * Instantiates an entity without initializing any components.<br/>
  * <br/>
  * Created: 01.09.2007 07:39:52
+ * @author Volker Bergmann
  */
 public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
 
