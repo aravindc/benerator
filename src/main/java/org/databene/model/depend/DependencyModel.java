@@ -34,7 +34,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.model.Dependent;
 
 import static org.databene.model.depend.NodeState.*;
 

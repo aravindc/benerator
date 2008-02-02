@@ -26,7 +26,6 @@
 
 package org.databene.model.depend;
 
-import org.databene.model.Dependent;
 
 /**
  * Default implementation of the Dependent interface.

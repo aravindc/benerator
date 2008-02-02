@@ -29,7 +29,6 @@ package org.databene.model.depend;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.databene.model.Dependent;
 import static org.databene.model.depend.NodeState.*;
 
 /**
