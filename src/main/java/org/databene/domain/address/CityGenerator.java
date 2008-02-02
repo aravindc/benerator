@@ -39,6 +39,7 @@ import java.io.IOException;
  * Generates City objects.<br/>
  * <br/>
  * Created: 14.10.2007 21:24:25
+ * @author Volker Bergmann
  */
 public class CityGenerator extends WeightedSampleGenerator<City> {
 
@@ -46,7 +47,7 @@ public class CityGenerator extends WeightedSampleGenerator<City> {
         String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
         try {
             CityManager.readCities(country, filename);
-            for (State state : country.getStates()) // TODO v0.4 group cities by state
+            for (State state : country.getStates()) // TODO v0.5 group cities by state
                 for (City city : state.getCities())
                     addValue(city);
         } catch (IOException e) {
