@@ -26,20 +26,22 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.region.Region;
 import org.databene.benerator.Distribution;
 import org.databene.benerator.Sequence;
-import org.databene.model.converter.ParseFormatConverter;
-import org.databene.model.Converter;
 
 import java.util.Locale;
 import java.text.Format;
 
 /**
+ * Descriptor for attributes<br/><br/>
  * Created: 30.06.2007 07:29:43
+ * @author Volker Bergmann
  */
 public class AttributeDescriptor extends ComponentDescriptor {
 
@@ -58,12 +60,13 @@ public class AttributeDescriptor extends ComponentDescriptor {
         addDetailConfig("nullable", Boolean.class, true, true);
 
         // association constraints
-        //addDetailConfig("minCount", Integer.class, true, 1, new MaxOperation<Integer>()); // TODO v0.4 implement association handling
+        //addDetailConfig("minCount", Integer.class, true, 1, new MaxOperation<Integer>()); // TODO v0.5 implement association handling
         //addDetailConfig("maxCount", Integer.class, true, 1, new MinOperation<Integer>());
 
+        addDetailConfig("script", String.class, false, "");
         // string constraints
         addDetailConfig("minLength", Integer.class, true, 1/*, new MaxOperation<Integer>()*/);
-        addDetailConfig("maxLength", Integer.class, true, null/*, new MinOperation<Integer>()*/);
+        addDetailConfig("maxLength", Integer.class, true, 30/*, new MinOperation<Integer>()*/);
 
         // number constraints
         addDetailConfig("min", String.class, true, "1");
@@ -243,6 +246,14 @@ public class AttributeDescriptor extends ComponentDescriptor {
         setDetail("converter", converter);
     }
 
+    public String getScript() {
+        return (String) getDetailValue("script");
+    }
+
+    public void setScript(String script) {
+        setDetail("script", script);
+    }
+
     // literate build helpers ------------------------------------------------------------------------------------------
 
     public AttributeDescriptor withPrivacy(Boolean privacy) {
@@ -347,7 +358,7 @@ public class AttributeDescriptor extends ComponentDescriptor {
         Class<? extends Object> targetType = getDetailType(detailName);
         if (targetType == Distribution.class && detailValue.getClass() == String.class)
             detailValue = mapDistribution((String) detailValue);
-        if (targetType == Converter.class && detailValue.getClass() == String.class)
+        else if (targetType == Converter.class && detailValue.getClass() == String.class)
             detailValue = mapConverter((String) detailValue);
         super.setDetail(detailName, detailValue);
     }
