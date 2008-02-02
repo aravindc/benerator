@@ -30,9 +30,13 @@ import org.databene.platform.array.Array2EntityConverter;
 import org.databene.model.data.EntityIterable;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
-import org.databene.model.iterator.ConvertingIterator;
 import org.databene.document.csv.CSVLineIterable;
+import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.converter.ArrayConverter;
+import org.databene.commons.converter.ConverterChain;
+import org.databene.commons.converter.NoOpConverter;
+import org.databene.commons.iterator.ConvertingIterator;
 
 import java.util.Iterator;
 
@@ -40,12 +44,14 @@ import java.util.Iterator;
  * Imports Entites from a CSV file.<br/>
  * <br/>
  * Created: 26.08.2007 12:16:08
+ * @author Volker Bergmann
  */
 public class CSVEntityIterable implements EntityIterable {
 
     private String uri;
     private char   separator;
     private String encoding;
+    private Converter<String, String> preprocessor;
 
     private Iterable<String[]> source;
     private EntityDescriptor entityDescriptor;
@@ -65,14 +71,19 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public CSVEntityIterable(String uri, String entityName, char separator, String encoding) {
-        this(uri, new EntityDescriptor(entityName, false), separator, encoding); // TODO v0.4 finalize case concept
+        this(uri, new EntityDescriptor(entityName, false), new NoOpConverter<String>(), separator, encoding); // TODO v0.5 finalize capitalization concept
     }
 
-    public CSVEntityIterable(String uri, EntityDescriptor descriptor, char separator, String encoding) {
+    public CSVEntityIterable(String uri, String entityName, Converter<String, String> preprocessor, char separator, String encoding) {
+        this(uri, new EntityDescriptor(entityName, false), preprocessor, separator, encoding); // TODO v0.5 finalize capitalization concept
+    }
+
+    public CSVEntityIterable(String uri, EntityDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) {
         this.uri = uri;
         this.separator = separator;
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
+        this.preprocessor = preprocessor;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -106,7 +117,7 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public void setEntityName(String entityName) {
-        this.entityDescriptor = new EntityDescriptor(entityName, false); // TODO v0.4 finalize case concept
+        this.entityDescriptor = new EntityDescriptor(entityName, false); // TODO v0.5 finalize case concept
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
@@ -120,7 +131,9 @@ public class CSVEntityIterable implements EntityIterable {
             init();
         Iterator<String[]> arrayIterator = source.iterator();
         String[] featureNames = arrayIterator.next();
-        Array2EntityConverter<String> converter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
+        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, preprocessor); 
+        Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
+        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
         return new ConvertingIterator<String[], Entity>(arrayIterator, converter);
     }
 

@@ -26,17 +26,16 @@
 
 package org.databene.platform.flat;
 
-import org.databene.model.Processor;
-import org.databene.model.Converter;
+import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
-import org.databene.model.format.PadFormat;
-import org.databene.model.format.Alignment;
-import org.databene.model.converter.ConverterChain;
-import org.databene.model.converter.FormatFormatConverter;
-import org.databene.model.converter.AccessingConverter;
 import org.databene.model.data.ComponentAccessor;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.commons.*;
+import org.databene.commons.converter.AccessingConverter;
+import org.databene.commons.converter.ConverterChain;
+import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.commons.format.Alignment;
+import org.databene.commons.format.PadFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -50,8 +49,9 @@ import java.text.ParseException;
  * Exports Entities to flat files.<br/>
  * <br/>
  * Created: 26.08.2007 06:17:41
+ * @author Volker Bergmann
  */
-public class FlatFileEntityExporter implements Processor<Entity> {
+public class FlatFileEntityExporter extends AbstractConsumer<Entity> {
 
     private static final Log logger = LogFactory.getLog(FlatFileEntityExporter.class);
 
@@ -76,7 +76,7 @@ public class FlatFileEntityExporter implements Processor<Entity> {
         this.uri = uri;
     }
 
-    public void setProperties(String propertyFormatList) { // TODO v0.4 simplify by FlatFileUtil
+    public void setProperties(String propertyFormatList) { // TODO v0.5 simplify by FlatFileUtil
         if (propertyFormatList == null) {
             converters = null;
             return;
@@ -134,9 +134,9 @@ public class FlatFileEntityExporter implements Processor<Entity> {
         }
     }
 
-    // Processor interface ---------------------------------------------------------------------------------------------
+    // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void process(Entity entity) {
+    public void startConsuming(Entity entity) {
         try {
             if (printer == null) {
                 // it's the first call, we need to create the PrintWriter

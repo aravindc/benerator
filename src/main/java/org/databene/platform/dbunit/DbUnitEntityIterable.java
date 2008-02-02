@@ -26,6 +26,7 @@
 
 package org.databene.platform.dbunit;
 
+import org.databene.commons.Context;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityIterable;
 
@@ -36,13 +37,18 @@ import java.io.IOException;
  * Creates DBUnitXmlDataSetIterators.<br/>
  * <br/>
  * Created: 28.08.2007 08:53:00
+ * @author Volker Bergmann
  */
 public class DbUnitEntityIterable implements EntityIterable {
 
     private String uri;
+    private Context context;
+    private String defaultScriptEngine;
 
-    public DbUnitEntityIterable(String uri) {
+    public DbUnitEntityIterable(String uri, Context context, String defaultScriptEngine) {
         this.uri = uri;
+        this.context = context;
+        this.defaultScriptEngine = defaultScriptEngine;
     }
 
     public Class<Entity> getType() {
@@ -51,9 +57,14 @@ public class DbUnitEntityIterable implements EntityIterable {
 
     public Iterator<Entity> iterator() {
         try {
-            return new DbUnitEntityIterator(uri);
+            return new DbUnitEntityIterator(uri, context, defaultScriptEngine);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + uri + ']';
     }
 }

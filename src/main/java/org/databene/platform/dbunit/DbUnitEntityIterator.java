@@ -26,8 +26,10 @@
 
 package org.databene.platform.dbunit;
 
-import org.databene.model.HeavyweightIterator;
 import org.databene.model.data.EntityDescriptor;
+import org.databene.script.ScriptUtil;
+import org.databene.commons.Context;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
@@ -43,23 +45,68 @@ import java.util.ArrayList;
  * Iterates the rows defined an a DBUnit dataset file. It supports the normal format as well as the flat format.<br/>
  * <br/>
  * Created: 05.08.2007 07:43:36
+ * @author Volker Bergmann
  */
 public class DbUnitEntityIterator implements HeavyweightIterator<org.databene.model.data.Entity> {
 
     private static final Log logger = LogFactory.getLog(DbUnitEntityIterator.class);
 
+    private Context context;
+    
     private List<Row> rows;
 
     private int nextRowNum;
 
-    public DbUnitEntityIterator(String uri) throws IOException {
+    public DbUnitEntityIterator(String uri, Context context, String defaultScriptEngine) throws IOException {
+        this.context = context;
         this.rows = new ArrayList<Row>();
         Document document = readDocument(uri);
         if (isFlatDataset(document))
             parseFlatDataset(document);
         else
             parseDataset(document);
+        processScripts(defaultScriptEngine);
         this.nextRowNum = 0;
+    }
+    
+    // HeavyweightIterator interface implementation --------------------------------------------------------------------
+
+    public boolean hasNext() {
+        return nextRowNum < rows.size();
+    }
+
+    public org.databene.model.data.Entity next() {
+        if (nextRowNum < rows.size()) {
+            Row row = rows.get(nextRowNum);
+            String[] rowValues = row.getValues();
+            org.databene.model.data.Entity result = new org.databene.model.data.Entity(new EntityDescriptor(row.getTableName(), false));
+            for (int i = 0; i < rowValues.length; i++)
+                result.setComponent(row.getColumnName(i), rowValues[i]);
+            nextRowNum++;
+            return result;
+        } else
+            return null;
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void close() {
+        // This is not implemented, so why make the class a Heavyweight? 
+        // Because we might need to process very long files one day and 
+        // don't want to change the contract for that
+    }
+
+    // private helpers -------------------------------------------------------------------------------------------------
+
+    private void processScripts(String defaultScriptEngine) {
+        for (Row row : rows) {
+            String[] cells = row.getValues();
+            for (int i = 0; i < cells.length; i++) {
+                cells[i] = ScriptUtil.render(cells[i], context, defaultScriptEngine);
+            }
+        }
     }
 
     private boolean isFlatDataset(Document document) {
@@ -124,30 +171,6 @@ public class DbUnitEntityIterator implements HeavyweightIterator<org.databene.mo
                 rows.add(row);
             }
         }
-    }
-
-    public void close() {
-    }
-
-    public boolean hasNext() {
-        return nextRowNum < rows.size();
-    }
-
-    public org.databene.model.data.Entity next() {
-        if (nextRowNum < rows.size()) {
-            Row row = rows.get(nextRowNum);
-            String[] rowValues = row.getValues();
-            org.databene.model.data.Entity result = new org.databene.model.data.Entity(new EntityDescriptor(row.getTableName(), false));
-            for (int i = 0; i < rowValues.length; i++)
-                result.setComponent(row.getColumnName(i), rowValues[i]);
-            nextRowNum++;
-            return result;
-        } else
-            return null;
-    }
-
-    public void remove() {
-        throw new UnsupportedOperationException();
     }
 
     private static class Table {

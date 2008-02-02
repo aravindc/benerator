@@ -26,9 +26,9 @@
 
 package org.databene.platform.bean;
 
-import org.databene.model.Converter;
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Converter;
 
 import java.util.Map;
 

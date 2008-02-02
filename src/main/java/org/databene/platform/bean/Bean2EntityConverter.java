@@ -26,10 +26,10 @@
 
 package org.databene.platform.bean;
 
-import org.databene.model.Converter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Converter;
 
 import java.beans.PropertyDescriptor;
 

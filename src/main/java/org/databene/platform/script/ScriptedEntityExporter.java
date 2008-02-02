@@ -26,25 +26,24 @@
 
 package org.databene.platform.script;
 
-import org.databene.model.Processor;
+import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 import org.databene.script.ScriptedDocumentWriter;
 import org.databene.commons.ConfigurationError;
-import org.databene.platform.map.Entity2MapConverter;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Script based entity exporter.
  * Three scripts may be combined for formatting header, generated document part(s) and footer<br/>
  * <br/>
  * Created: 01.09.2007 18:05:04
+ * @author Volker Bergmann
  */
-public class ScriptedEntityExporter implements Processor<Entity> {
+public class ScriptedEntityExporter extends AbstractConsumer<Entity> {
 
     private static final Log logger = LogFactory.getLog(ScriptedEntityExporter.class);
 
@@ -53,8 +52,7 @@ public class ScriptedEntityExporter implements Processor<Entity> {
     private String partScript;
     private String footerScript;
 
-    private ScriptedDocumentWriter<Map> writer;
-    private Entity2MapConverter converter = new Entity2MapConverter();
+    private ScriptedDocumentWriter<Entity> writer;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -107,18 +105,17 @@ public class ScriptedEntityExporter implements Processor<Entity> {
         this.footerScript = footerScript;
     }
 
-    // Processor interface ---------------------------------------------------------------------------------------------
+    // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void process(Entity entity) {
+    public void startConsuming(Entity entity) {
         try {
             if (writer == null) {
-                writer = new ScriptedDocumentWriter<Map>(
+                writer = new ScriptedDocumentWriter<Entity>(
                         new FileWriter(uri), headerScript, partScript, footerScript);
             }
             if (logger.isDebugEnabled())
                 logger.debug("Exporting " + entity);
-            Map<String, Object> map = converter.convert(entity); // TODO v0.4 get rid of Map
-            writer.writeElement(map);
+            writer.writeElement(entity);
         } catch (IOException e) {
             throw new ConfigurationError(e);
         }

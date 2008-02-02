@@ -26,7 +26,7 @@
 
 package org.databene.platform.array;
 
-import org.databene.model.Converter;
+import org.databene.commons.Converter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 

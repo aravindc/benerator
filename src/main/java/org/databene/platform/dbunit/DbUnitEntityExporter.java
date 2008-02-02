@@ -34,16 +34,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
-import org.databene.model.Processor;
-import org.databene.model.converter.AnyConverter;
+import org.databene.commons.converter.AnyConverter;
+import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 
 /**
  * Exports entities in DbUnit XML file format.
- * @author Volker Bergmann
  * @since 0.3.04
+ * @author Volker Bergmann
  */
-public class DbUnitEntityExporter implements Processor<Entity> {
+public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ public class DbUnitEntityExporter implements Processor<Entity> {
     }
 
     public DbUnitEntityExporter(String uri) {
-        this(uri, DEFAULT_URI);
+        this(uri, DEFAULT_FILE_ENCODING);
     }
 
     public DbUnitEntityExporter(String uri, String encoding) {
@@ -92,9 +92,9 @@ public class DbUnitEntityExporter implements Processor<Entity> {
             this.encoding = DEFAULT_FILE_ENCODING;
     }
 
-    // Converter interface ---------------------------------------------------------------------------------------------
+    // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void process(Entity entity) {
+    public void startConsuming(Entity entity) {
         try {
             if (logger.isDebugEnabled())
                 logger.debug("exporting " + entity);
@@ -120,9 +120,10 @@ public class DbUnitEntityExporter implements Processor<Entity> {
     }
 
     public void close() {
-        printer.print("</dataset>");
-        if (printer != null)
+        if (printer != null) { 
+            printer.print("</dataset>");
             printer.close();
+        }
     }
 
 // java.lang.String overrides --------------------------------------------------------------------------------------

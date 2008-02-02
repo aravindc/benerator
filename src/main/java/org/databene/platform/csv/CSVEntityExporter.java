@@ -26,8 +26,12 @@
 
 package org.databene.platform.csv;
 
-import org.databene.model.Processor;
+import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.EntityDescriptor;
+import org.databene.commons.BeanUtil;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.SystemInfo;
@@ -36,17 +40,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Exports Entities to a CSV file.<br/>
  * <br/>
  * Created: 21.08.2007 21:16:59
+ * @author Volker Bergmann
  */
-public class CSVEntityExporter implements Processor<Entity> {
-
-    // attributes ------------------------------------------------------------------------------------------------------
+public class CSVEntityExporter extends AbstractConsumer<Entity> {
 
     private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
+    
+    // defaults --------------------------------------------------------------------------------------------------------
+    
+    private static final char   DEFAULT_SEPARATOR = ',';
+    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
+    private static final String DEFAULT_URI       = "export.csv";
+
+    // attributes ------------------------------------------------------------------------------------------------------
 
     private String uri;
     private String[] propertyNames;
@@ -58,16 +71,33 @@ public class CSVEntityExporter implements Processor<Entity> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public CSVEntityExporter() {
-        this(null, null);
+        this(DEFAULT_URI, "");
     }
-
+    
     public CSVEntityExporter(String uri, String attributes) {
-        this(uri, attributes, ',', SystemInfo.fileEncoding());
+        this(uri, attributes, DEFAULT_SEPARATOR, DEFAULT_ENCODING);
     }
 
     public CSVEntityExporter(String uri, String attributes, char separator, String encoding) {
         this.uri = uri;
         setProperties(attributes);
+        this.separator = separator;
+        this.encoding = encoding;
+    }
+
+    public CSVEntityExporter(EntityDescriptor descriptor) {
+        this(descriptor.getName() + ".csv", descriptor);
+    }
+
+    public CSVEntityExporter(String uri, EntityDescriptor descriptor) {
+        this(uri, descriptor, DEFAULT_SEPARATOR, DEFAULT_ENCODING);
+    }
+
+    public CSVEntityExporter(String uri, EntityDescriptor descriptor, char separator, String encoding) {
+        this.uri = uri;
+        Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponentDescriptors();
+        List<String> componentNames = BeanUtil.extractProperties(componentDescriptors, "name");
+        this.propertyNames = CollectionUtil.toArray(componentNames, String.class);
         this.separator = separator;
         this.encoding = encoding;
     }
@@ -84,6 +114,7 @@ public class CSVEntityExporter implements Processor<Entity> {
 
     public void setProperties(String attributes) {
         this.propertyNames = StringUtil.tokenize(attributes, ',');
+        StringUtil.trimAll(propertyNames);
     }
 
     public void setSeparator(char separator) {
@@ -94,9 +125,9 @@ public class CSVEntityExporter implements Processor<Entity> {
         this.encoding = encoding;
     }
 
-    // Processor interface ---------------------------------------------------------------------------------------------
+    // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void process(Entity entity) {
+    public void startConsuming(Entity entity) {
         try {
             if (logger.isDebugEnabled())
                 logger.debug("exporting " + entity);
@@ -127,8 +158,8 @@ public class CSVEntityExporter implements Processor<Entity> {
             printer.close();
     }
 
-// java.lang.Object overrides --------------------------------------------------------------------------------------
-
+    // private helpers -------------------------------------------------------------------------------------------------
+    
     private void initPrinter() throws IOException {
         // create file
         printer = IOUtil.getPrinterForURI(uri, encoding);
@@ -141,7 +172,10 @@ public class CSVEntityExporter implements Processor<Entity> {
         printer.println();
     }
 
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
     public String toString() {
         return getClass().getSimpleName() + '(' + ArrayFormat.format(propertyNames) + ") -> " + uri;
     }
+
 }
