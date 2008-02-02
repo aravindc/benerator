@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.databene.benerator.Generator;
 import org.databene.benerator.Sequence;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.model.iterator.ReaderLineIterator;
+import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.IOUtil;
 
