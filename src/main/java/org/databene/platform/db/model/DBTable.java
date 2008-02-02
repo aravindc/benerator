@@ -28,7 +28,7 @@ package org.databene.platform.db.model;
 
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.OrderedMap;
-import org.databene.model.Dependent;
+import org.databene.model.depend.Dependent;
 
 import java.util.List;
 import java.util.ArrayList;

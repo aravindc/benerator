@@ -26,7 +26,7 @@
 
 package org.databene.platform.db.model;
 
-import org.databene.model.ImportFailedException;
+import org.databene.commons.ImportFailedException;
 
 /**
  * Created: 06.01.2007 19:17:27
