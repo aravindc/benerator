@@ -31,7 +31,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import org.databene.model.converter.AnyConverter;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.platform.bean.BeanDescriptorProvider;

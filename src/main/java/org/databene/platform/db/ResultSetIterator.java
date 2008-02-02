@@ -26,7 +26,7 @@
 
 package org.databene.platform.db;
 
-import org.databene.model.HeavyweightIterator;
+import org.databene.commons.HeavyweightIterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,17 +44,22 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
 
     private static final Log logger = LogFactory.getLog(ResultSetIterator.class);
 
+    private String query;
+
     private ResultSet resultSet;
     private Boolean hasNext;
 
-    public ResultSetIterator(ResultSet resultSet) {
+    public ResultSetIterator(ResultSet resultSet, String query) {
         this.resultSet = resultSet;
         this.hasNext = null;
+        this.query = query;
     }
 
     // interface -------------------------------------------------------------------------------------------------------
 
     public boolean hasNext() {
+        if (logger.isDebugEnabled())
+            logger.debug("hasNext() called on: " + this);
         if (hasNext != null)
             return hasNext;
         if (resultSet == null)
@@ -65,15 +70,20 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
             	close();
             return hasNext;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error in query: " + query, e);
         }
     }
 
     public ResultSet next() {
-        if (!hasNext())
-            throw new IllegalStateException("No more row available");
-        hasNext = null;
-        return resultSet;
+        if (logger.isDebugEnabled())
+            logger.debug("next() called on: " + this);
+        try {
+            if (!hasNext())
+                throw new IllegalStateException("No more row available");
+            return resultSet;
+        } finally {
+            hasNext = null;
+        }
     }
 
     public void remove() {
@@ -81,6 +91,9 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
     }
 
     public synchronized void close() {
+        if (logger.isDebugEnabled())
+            logger.debug("closing " + this);
+        hasNext = false;
     	if (resultSet == null)
     		return;
         try {
@@ -93,8 +106,10 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
             logger.error(e, e);
         }
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return getClass().getSimpleName();
+        return getClass().getSimpleName() + '[' + query + ']';
     }
 }

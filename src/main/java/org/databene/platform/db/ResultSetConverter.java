@@ -26,8 +26,11 @@
 
 package org.databene.platform.db;
 
-import org.databene.model.Converter;
-import org.databene.model.ConversionException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.databene.commons.ArrayFormat;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,6 +39,7 @@ import java.sql.SQLException;
  * Converts a ResultSet's current cursor position to an array of objects or, if it is of size 1, to a single object.<br/>
  * <br/>
  * Created: 15.08.2007 18:19:25
+ * @author Volker Bergmann
  */
 public class ResultSetConverter implements Converter<ResultSet, Object> {
 
@@ -48,6 +52,8 @@ public class ResultSetConverter implements Converter<ResultSet, Object> {
     public ResultSetConverter(boolean simplifying) {
         this.simplifying = simplifying;
     }
+    
+    // Converter interface ---------------------------------------------------------------------------------------------
 
     public Class<Object> getTargetType() {
         return Object.class;
@@ -57,16 +63,22 @@ public class ResultSetConverter implements Converter<ResultSet, Object> {
         Object[] tmp = convertToArray(resultSet);
         return (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
     }
+    
+    // static convenience methods --------------------------------------------------------------------------------------
 
     public static Object convert(ResultSet resultSet, boolean simplifying) throws ConversionException {
         Object[] tmp = convertToArray(resultSet);
         return (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
     	return getClass().getSimpleName();
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
     
     private static Object[] convertToArray(ResultSet resultSet) throws ConversionException {
         try {
@@ -74,9 +86,13 @@ public class ResultSetConverter implements Converter<ResultSet, Object> {
             Object[] cells = new Object[columnCount];
             for (int i = 0; i < columnCount; i++)
                 cells[i] = resultSet.getObject(i + 1);
+            if (logger.isDebugEnabled())
+                logger.debug("Converted: " + ArrayFormat.format(cells));
             return cells;
         } catch (SQLException e) {
             throw new ConversionException(e);
         }
     }
+    
+    private static final Log logger = LogFactory.getLog(ResultSetConverter.class);
 }

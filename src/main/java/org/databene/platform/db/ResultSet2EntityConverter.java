@@ -26,9 +26,9 @@
 
 package org.databene.platform.db;
 
-import org.databene.model.Converter;
-import org.databene.model.ConversionException;
-import org.databene.model.converter.AnyConverter;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.platform.bean.BeanDescriptorProvider;
@@ -41,11 +41,13 @@ import java.sql.SQLException;
  * Converts a ResultSet's current cursor position to an Entity.<br/>
  * <br/>
  * Created: 23.08.2007 19:30:31
+ * @author Volker Bergmann
  * @deprecated use ResultSetEntityIterator
- * TODO v0.4 remove
  */
 public class ResultSet2EntityConverter implements Converter<ResultSet, Entity> {
 
+    // TODO v0.5 remove
+    
     private BeanDescriptorProvider beanDescriptorProvider;
     
     private EntityDescriptor descriptor;
