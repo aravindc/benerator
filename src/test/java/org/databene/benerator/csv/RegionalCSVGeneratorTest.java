@@ -29,7 +29,9 @@ package org.databene.benerator.csv;
 import org.databene.benerator.GeneratorClassTest;
 
 /**
+ * Tests the {@link RegionalCSVGenerator}.
  * Created: 14.06.2007 07:02:09
+ * @author Volker Bergmann
  */
 public class RegionalCSVGeneratorTest extends GeneratorClassTest {
 
@@ -38,6 +40,6 @@ public class RegionalCSVGeneratorTest extends GeneratorClassTest {
     }
 
     public void test() {
-        // TODO v0.4 test
+        // TODO v0.5 test
     }
 }
