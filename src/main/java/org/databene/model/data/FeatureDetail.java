@@ -26,15 +26,18 @@
 
 package org.databene.model.data;
 
-import org.databene.model.operation.FirstArgSelector;
-import org.databene.model.Operation;
+import org.databene.commons.Operation;
+import org.databene.commons.operation.FirstArgSelector;
 
 /**
  * A FeatureDescriptor is composed og FeatureDetails, which have name, value, type and default value.<br/>
  * <br/>
  * Created: 03.08.2007 06:57:42
+ * @author Volker Bergmann
  */
 public class FeatureDetail<E> {
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     private String name;
     private Class<E> type;
@@ -42,6 +45,8 @@ public class FeatureDetail<E> {
     private E defaultValue;
     private Operation<E, E> combinator;
     private boolean constraint;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public FeatureDetail(String name, Class<E> type, boolean constraint, E defaultValue) {
         this(name, type, constraint, defaultValue, new FirstArgSelector<E>());
@@ -59,6 +64,8 @@ public class FeatureDetail<E> {
         this.constraint = constraint;
         this.combinator = combinator;
     }
+    
+    // interface -------------------------------------------------------------------------------------------------------
 
     public String getName() {
         return name;
@@ -77,12 +84,6 @@ public class FeatureDetail<E> {
     }
 
     public Object getDefault() {
-/*
-        Object result = get(this.name);
-        if (result == null)
-            result = defaultValue;
-        return result;
-*/
         return defaultValue;
     }
 
@@ -97,6 +98,8 @@ public class FeatureDetail<E> {
     public String getDescription() {
         return name + '=' + value + " (" + type + ')';
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
         return name + '=' + value;
@@ -120,40 +123,4 @@ public class FeatureDetail<E> {
         return result;
     }
 
-/* support of defaults file is disabled
-
-    private static final String DEFAULTS_FILENAME = "defaults.properties";
-
-    private static final Log logger = LogFactory.getLog(FeatureDetail.class);
-
-    private static Map<String, Object> defaults;
-
-    static {
-        defaults = new HashMap<String, Object>();
-        readDefaults(DEFAULTS_FILENAME);
-    }
-
-    private static Object get(String detailName) {
-        return defaults.get(detailName);
-    }
-
-    private static void readDefaults(String uri) {
-        AttributeDescriptor template = new AttributeDescriptor(null);
-        if (IOUtil.isURIAvailable(uri)) {
-            try {
-                Properties properties = IOUtil.readProperties(uri);
-                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                    String detailName = (String) entry.getKey();
-                    logger.debug(detailName + "=" + entry.getValue());
-                    Class detailType = template.getDetailType(detailName);
-                    Object detailValue = AnyConverter.convert(entry.getValue(), detailType);
-                    defaults.put(detailName, detailValue);
-                }
-            } catch (Exception e) {
-                logger.error("Error in reading defaults file: " + uri, e);
-            }
-        } else
-            logger.info("No defaults file exists: " + uri + ", using application defaults");
-    }
-*/
 }
