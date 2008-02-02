@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.model.converter.ParseFormatConverter;
+import org.databene.commons.converter.ParseFormatConverter;
 
 import java.text.Format;
 

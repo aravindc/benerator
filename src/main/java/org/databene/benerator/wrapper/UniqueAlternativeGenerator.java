@@ -55,10 +55,6 @@ public class UniqueAlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
         return targetType;
     }
 
-    public void validate() {
-        super.validate();
-    }
-
     public boolean available() {
         for (Generator<E> source : sources)
             if (source.available())

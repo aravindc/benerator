@@ -30,8 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.model.Converter;
-import org.databene.model.ConversionException;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
 
 /**
  * Reads products from a source Generator and applies a Converter to transform them into the target products.<br/>

@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.ValidatingGenerator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.model.validator.StringLengthValidator;
+import org.databene.commons.validator.StringLengthValidator;
 
 import java.text.MessageFormat;
 

@@ -26,10 +26,10 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.model.HeavyweightIterator;
-import org.databene.model.TypedIterable;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.TypedIterable;
 
 import java.util.Iterator;
 
