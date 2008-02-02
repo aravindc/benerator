@@ -28,9 +28,9 @@ package org.databene.benerator.csv;
 
 import org.databene.region.RegionUtil;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
-import org.databene.model.converter.NoOpConverter;
-import org.databene.model.Converter;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Converter;
+import org.databene.commons.converter.NoOpConverter;
 
 import java.util.Locale;
 
@@ -40,6 +40,7 @@ import java.util.Locale;
  * similar to the JDK ResourceBundle handling.<br/>
  * <br/>
  * Created: 07.06.2007 17:21:24
+ * @author Volker Bergmann
  */
 public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
 

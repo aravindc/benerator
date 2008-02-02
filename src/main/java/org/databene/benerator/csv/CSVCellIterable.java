@@ -27,7 +27,7 @@
 package org.databene.benerator.csv;
 
 import org.databene.commons.ConfigurationError;
-import org.databene.model.TypedIterable;
+import org.databene.commons.TypedIterable;
 
 import java.util.Iterator;
 
@@ -35,6 +35,7 @@ import java.util.Iterator;
  * Creates Iterators that iterate through the cells of a CSV file.<br/>
  * <br/>
  * Created: 01.09.2007 11:40:30
+ * @author Volker Bergmann
  */
 public class CSVCellIterable implements TypedIterable<String> {
 

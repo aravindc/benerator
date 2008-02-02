@@ -27,10 +27,10 @@
 package org.databene.benerator.csv;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.commons.ConversionException;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.document.csv.CSVTokenizer;
 import org.databene.document.csv.CSVTokenType;
-import org.databene.model.ConversionException;
-import org.databene.model.HeavyweightIterator;
 
 import java.io.IOException;
 
@@ -38,6 +38,7 @@ import java.io.IOException;
  * Iterates through cells of a CSV file.<br/>
  * <br/>
  * Created: 26.08.2006 18:52:08
+ * @author Volker Bergmann
  */
 public class CSVCellIterator implements HeavyweightIterator<String> {
 

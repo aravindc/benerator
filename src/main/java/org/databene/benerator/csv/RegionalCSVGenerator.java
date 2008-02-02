@@ -27,10 +27,10 @@
 package org.databene.benerator.csv;
 
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.commons.Converter;
+import org.databene.commons.converter.NoOpConverter;
 import org.databene.region.Region;
 import org.databene.region.RegionUtil;
-import org.databene.model.converter.NoOpConverter;
-import org.databene.model.Converter;
 
 /**
  * Generates data from a regionalized csv file.
@@ -38,6 +38,7 @@ import org.databene.model.Converter;
  * similar to the JDK ResourceBundle handling.<br/>
  * <br/>
  * Created: 07.06.2007 17:14:04
+ * @author Volker Bergmann
  */
 public class RegionalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
 
@@ -86,7 +87,7 @@ public class RegionalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static String url(String baseName, Region region, String suffix) {
-        return RegionUtil.availableRegionUrl(baseName, region, suffix); // TODO v0.4 consider nested sets
+        return RegionUtil.availableRegionUrl(baseName, region, suffix); // TODO v0.5 consider nested sets
     }
 
 }
