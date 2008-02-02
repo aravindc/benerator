@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive.number.adapter;
 
 import org.databene.benerator.*;
-import org.databene.model.converter.NumberToNumberConverter;
+import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
  * Abstract parent class for all number-conversion adapters.

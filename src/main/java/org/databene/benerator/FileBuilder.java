@@ -26,7 +26,7 @@
 
 package org.databene.benerator;
 
-import org.databene.model.DocumentWriter;
+import org.databene.commons.DocumentWriter;
 
 import java.io.IOException;
 

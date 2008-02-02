@@ -28,8 +28,8 @@ package org.databene.benerator.primitive.number.adapter;
 
 import org.databene.benerator.primitive.number.distribution.*;
 import org.databene.benerator.*;
-import org.databene.model.converter.AnyConverter;
-import org.databene.model.ConversionException;
+import org.databene.commons.ConversionException;
+import org.databene.commons.converter.AnyConverter;
 
 /**
  * Parent class for all number-conversion adapters that internally access a LongGenerator.<br/>

@@ -28,7 +28,7 @@ package org.databene.benerator.primitive.number.adapter;
 
 import org.databene.benerator.primitive.number.distribution.*;
 import org.databene.benerator.*;
-import org.databene.model.converter.NumberToNumberConverter;
+import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
  * Parent class for all number-conversion adapters that internally access a DoubleGenerator.<br/>

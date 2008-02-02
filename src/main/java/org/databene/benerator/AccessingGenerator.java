@@ -26,7 +26,7 @@
 
 package org.databene.benerator;
 
-import org.databene.model.Accessor;
+import org.databene.commons.Accessor;
 
 /**
  * Returns the results of an accessor that is applied on a constant provider object.<br/>

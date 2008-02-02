@@ -31,6 +31,7 @@ package org.databene.benerator;
  * and delegates life cycle control to it.<br/>
  * <br/>
  * Created: 12.12.2006 19:13:55
+ * @author Volker Bergmann
  */
 public abstract class GeneratorWrapper<S, P> implements Generator<P> {
 
@@ -67,10 +68,14 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
     }
 
     public void reset() {
+        if (dirty)
+            validate();
         source.reset();
     }
 
     public void close() {
+        if (dirty)
+            validate();
         source.close();
     }
 

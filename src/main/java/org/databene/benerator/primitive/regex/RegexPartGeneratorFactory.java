@@ -33,8 +33,8 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.primitive.UniqueStringGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.regex.*;
-import org.databene.model.converter.ToStringConverter;
 
 import java.util.Set;
 
