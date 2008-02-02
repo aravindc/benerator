@@ -38,11 +38,11 @@ import org.databene.benerator.primitive.number.adapter.BigDecimalGenerator;
 import org.databene.benerator.primitive.number.adapter.FloatingPointNumberGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
-import org.databene.model.converter.*;
+import org.databene.commons.converter.*;
+import org.databene.commons.iterator.TextLineIterable;
+import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.*;
 import org.databene.model.data.Iteration;
-import org.databene.model.iterator.TextLineIterable;
-import org.databene.model.validator.StringLengthValidator;
 import org.databene.document.csv.CSVLineIterable;
 import org.databene.regex.RegexParser;
 
