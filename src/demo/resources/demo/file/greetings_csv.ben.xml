@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.0.dtd">
+<setup>
+    <create-entities name="greeting" count="10">
+        <attribute name="salutation" values="Hello,Hi,Howdy"/>
+        <attribute name="name" values="Alice,Bob,Charly"/>
+        <consumer id="csv" class="org.databene.platform.csv.CSVEntityExporter">
+            <property name="uri" value="greetings.csv"/>
+            <property name="properties" value="salutation,name"/>
+        </consumer>
+    </create-entities>
+</setup>
