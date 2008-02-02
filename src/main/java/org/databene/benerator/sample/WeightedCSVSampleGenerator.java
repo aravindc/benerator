@@ -29,10 +29,10 @@ package org.databene.benerator.sample;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.Generator;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
+import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVLineIterator;
-import org.databene.model.Converter;
-import org.databene.model.ConversionException;
-import org.databene.model.converter.NoOpConverter;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
