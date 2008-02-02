@@ -26,48 +26,25 @@
 
 package org.databene.task;
 
-import org.databene.model.Context;
-
-import java.util.Map;
-import java.util.HashMap;
+import org.databene.commons.Context;
+import org.databene.commons.context.DefaultContext;
 
 /**
- * A thread-safe space to exchange data among difierent tasks.<br/>
+ * A thread-safe space to exchange data among different tasks.
+ * Content was actually extracted to a new class 'DefaultContext'.
+ * The class is left here for compatibility and possible task-specific features.
  * <br/>
  * Created: 06.07.2007 06:30:43
+ * @author Volker Bergmann
  */
-public class TaskContext implements Context {
-
-    private Context parent;
-
-    private Map<String, Object> map;
+public class TaskContext extends DefaultContext {
 
     public TaskContext() {
-        this(null);
+        super();
     }
 
-    public TaskContext(Context parent) {
-        this.map = new HashMap<String, Object>();
-        this.parent = parent;
+    public TaskContext(Context defaults) {
+        super(defaults);
     }
-
-    public synchronized Object get(String key) {
-        Object value = map.get(key);
-        if (value == null && parent != null)
-            value = parent.get(key);
-        return value;
-    }
-
-    public synchronized void set(String key, Object value) {
-        map.put(key, value);
-    }
-
-	public void remove(String key) {
-		map.remove(key);
-	}
-	
-    public synchronized String toString() {
-        return map.toString();
-    }
-
+    
 }

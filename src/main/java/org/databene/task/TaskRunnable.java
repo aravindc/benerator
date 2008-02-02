@@ -28,15 +28,18 @@ package org.databene.task;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.databene.commons.Context;
+
 /**
  * Thread implementation that executes a Task.<br/>
  * <br/>
  * Created: 16.07.2007 20:14:52
+ * @author Volker Bergmann
  */
 public class TaskRunnable implements Runnable {
 
     private Task target;
-    private TaskContext context;
+    private Context context;
     private CountDownLatch latch;
 
     /**
@@ -45,11 +48,11 @@ public class TaskRunnable implements Runnable {
      * @param target
      * @param context
      */
-    public TaskRunnable(Task target, TaskContext context) {
+    public TaskRunnable(Task target, Context context) {
         this(target, context, null);
     }
 
-    public TaskRunnable(Task target, TaskContext context, CountDownLatch latch) {
+    public TaskRunnable(Task target, Context context, CountDownLatch latch) {
         this.target = target;
         this.context = context;
         this.latch = latch;

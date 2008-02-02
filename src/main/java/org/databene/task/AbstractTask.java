@@ -26,15 +26,20 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
+
 /**
  * Simple abstract implementation of the Task interface.<br/>
  * <br/>
  * Created: 16.07.2007 18:55:16
+ * @author Volker Bergmann
  */
 public abstract class AbstractTask implements Task {
 
     protected String taskName;
-    protected TaskContext context;
+    protected Context context;
+    
+    // constructor -----------------------------------------------------------------------------------------------------
 
     protected AbstractTask() {
         setTaskName(getClass().getSimpleName());
@@ -43,6 +48,8 @@ public abstract class AbstractTask implements Task {
     protected AbstractTask(String taskName) {
         setTaskName(taskName);
     }
+    
+    // Task interface --------------------------------------------------------------------------------------------------
 
     public String getTaskName() {
         return taskName;
@@ -52,9 +59,14 @@ public abstract class AbstractTask implements Task {
         this.taskName = taskName;
     }
 
-    public void init(TaskContext context) {
+    public void init(Context context) {
         this.context = context;
+    }
+    
+    public boolean wantsToRun() {
+        return true;
     }
 
     public void destroy() { }
+
 }

@@ -26,10 +26,13 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
+
 /**
  * Wraps a Task and forwards invocations.<br/>
  * <br/>
  * Created: 06.07.2007 06:36:22
+ * @author Volker Bergmann
  */
 public abstract class TaskProxy extends AbstractTask {
 
@@ -44,14 +47,21 @@ public abstract class TaskProxy extends AbstractTask {
         setTaskName(realTask != null ? realTask.getClass().getSimpleName() : "undefined");
     }
 
-    public void init(TaskContext context) {
+    @Override
+    public void init(Context context) {
         realTask.init(context);
     }
 
+    @Override
+    public boolean wantsToRun() {
+        return realTask.wantsToRun();
+    }
+    
     public void run() {
         realTask.run();
     }
 
+    @Override
     public void destroy() {
         realTask.destroy();
     }

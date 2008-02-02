@@ -30,18 +30,20 @@ package org.databene.task;
  * Task implementation that provides for repeated execution.<br/>
  * <br/>
  * Created: 06.07.2007 07:36:35
+ * @author Volker Bergmann
  */
 public class LoopedTask extends TaskProxy {
 
-    private int loopSize;
+    private long loopSize;
 
-    public LoopedTask(Task realTask, int loopSize) {
+    public LoopedTask(Task realTask, long loopSize) {
         super(realTask);
         this.loopSize = loopSize;
     }
 
+    @Override
     public void run() {
-        for (int i = 0; i < loopSize; i++)
+        for (int i = 0; i < loopSize && realTask.wantsToRun(); i++)
             super.run();
     }
 }

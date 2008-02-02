@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Context;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -39,12 +40,13 @@ import java.util.concurrent.Executors;
  * Runs a task from its instance or from a config file.<br/>
  * <br/>
  * Created: 06.07.2007 06:37:20
+ * @author Volker Bergmann
  */
 public class TaskRunner {
 
     private static final Log logger = LogFactory.getLog(TaskRunner.class);
 
-    public static void run(Task task, TaskContext context, long invocations,
+    public static void run(Task task, Context context, long invocations,
                            PageListener pager, long pageSize, int threadCount, ExecutorService executor) {
         if (logger.isInfoEnabled()) {
             String invocationInfo = (invocations == 1 ? "" :
