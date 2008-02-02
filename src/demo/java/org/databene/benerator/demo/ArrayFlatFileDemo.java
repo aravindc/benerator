@@ -34,12 +34,11 @@ import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.benerator.wrapper.FormatFormatGenerator;
 import org.databene.commons.*;
+import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
 import org.databene.script.ScriptException;
 import org.databene.script.AbstractScript;
-import org.databene.model.format.Alignment;
-import org.databene.model.DocumentWriter;
 
 import java.io.*;
 import java.util.Date;
@@ -118,7 +117,7 @@ public class ArrayFlatFileDemo {
             this.length = length;
         }
 
-        public void execute(Writer writer) throws IOException, ScriptException {
+        public void execute(Context context, Writer writer) throws IOException {
             writer.write("H");
             writer.write(StringUtil.padRight("Tx", 12, ' '));
             writer.write(StringUtil.padLeft(String.valueOf(length), 8, ' '));

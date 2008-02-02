@@ -29,10 +29,10 @@ package org.databene.benerator.demo;
 import org.databene.benerator.FileBuilder;
 import org.databene.domain.person.PersonGenerator;
 import org.databene.domain.person.Person;
+import org.databene.commons.DocumentWriter;
 import org.databene.commons.IOUtil;
 import org.databene.script.Script;
 import org.databene.document.csv.BeanCSVWriter;
-import org.databene.model.DocumentWriter;
 
 import java.io.*;
 

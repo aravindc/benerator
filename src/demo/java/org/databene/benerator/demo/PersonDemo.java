@@ -38,7 +38,7 @@ import java.util.Locale;
  */
 public class PersonDemo {
     public static void main(String[] args) {
-        PersonGenerator generator = new PersonGenerator(Country.UNITED_KINGDOM, Locale.ENGLISH);
+        PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMAN);
         for (int i = 0; i < 10; i++)
             System.out.println(generator.generate());
         generator.close();

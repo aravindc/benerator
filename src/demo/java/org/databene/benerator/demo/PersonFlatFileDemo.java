@@ -29,11 +29,11 @@ package org.databene.benerator.demo;
 import org.databene.domain.person.PersonGenerator;
 import org.databene.domain.person.Person;
 import org.databene.benerator.FileBuilder;
+import org.databene.commons.DocumentWriter;
 import org.databene.commons.IOUtil;
+import org.databene.commons.format.Alignment;
 import org.databene.document.flat.BeanFlatFileWriter;
 import org.databene.document.flat.FlatFileColumnDescriptor;
-import org.databene.model.format.Alignment;
-import org.databene.model.DocumentWriter;
 
 import java.io.*;
 
