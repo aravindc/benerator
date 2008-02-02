@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 
+import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 
@@ -37,6 +38,7 @@ import org.databene.model.data.EntityDescriptor;
  * Tests the DBUnitXmlDataSetImporter with a standard and a flat dataset file.<br/>
  * <br/>
  * Created: 05.08.2007 08:05:10
+ * @author Volker Bergmann
  */
 public class DbUnitEntityIterableTest extends TestCase {
 
@@ -52,7 +54,7 @@ public class DbUnitEntityIterableTest extends TestCase {
     // helpers ---------------------------------------------------------------------------------------------------------
 
     private void check(String uri) throws IOException {
-        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri);
+        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new DefaultContext(), "qsc");
         assertTrue(iterator.hasNext());
         assertEquals(createPerson("Alice", "23"), iterator.next());
         assertTrue(iterator.hasNext());

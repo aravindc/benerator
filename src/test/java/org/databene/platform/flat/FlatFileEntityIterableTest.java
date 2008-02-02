@@ -28,10 +28,10 @@ package org.databene.platform.flat;
 
 import junit.framework.TestCase;
 import org.databene.document.flat.FlatFileColumnDescriptor;
-import org.databene.model.format.Alignment;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.format.Alignment;
 
 import java.util.Iterator;
 
