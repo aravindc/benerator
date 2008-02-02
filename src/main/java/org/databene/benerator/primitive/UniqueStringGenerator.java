@@ -39,6 +39,7 @@ import java.util.Set;
  * Generates unique strings of variable length.<br/>
  * <br/>
  * Created: 16.11.2007 11:56:15
+ * @author Volker Bergmann
  */
 public class UniqueStringGenerator implements Generator<String> {
 
@@ -60,6 +61,7 @@ public class UniqueStringGenerator implements Generator<String> {
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.charSet = charSet;
+        this.subGens = new Generator[0];
         dirty = true;
     }
 
