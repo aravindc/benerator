@@ -39,6 +39,7 @@ import java.text.ParseException;
  * Generates Character values from a character set or a regular expression.<br/>
  * <br/>
  * Created: 09.06.2006 20:34:55
+ * @author Volker Bergmann
  */
 public class CharacterGenerator implements Generator<Character> {
 
@@ -163,14 +164,20 @@ public class CharacterGenerator implements Generator<Character> {
     }
 
     public void reset() {
+        if (dirty)
+            validate();
         source.reset();
     }
 
     public void close() {
+        if (dirty)
+            validate();
         source.close();
     }
 
     public boolean available() {
+        if (dirty)
+            validate();
         return source.available();
     }
 

@@ -27,90 +27,49 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.LightweightGenerator;
-import org.databene.commons.NumberUtil;
-
-import java.net.InetAddress;
+import org.databene.id.UUIDProvider;
 
 /**
  * Creates UUIDs evaluating IP address, a JVM ID and timestamp.<br/>
  * <br/>
  * Created: 15.11.2007 10:52:55
+ * @author Volker Bergmann
  */
 public class HexUUIDGenerator extends LightweightGenerator<String> {
-
-    private static final String IP_ADDRESS;
-    private static final String JVM_ID = NumberUtil.formatHex((int) (System.currentTimeMillis() >>> 8), 8);
-
-    private static short counter = (short) 0;
-
-    private String separator;
-    private boolean dirty;
+    
+    private UUIDProvider source;
 
     // constructors ----------------------------------------------------------------------------------------------------
-
-    static {
-        int ipadd;
-        try {
-            ipadd = NumberUtil.toInt( InetAddress.getLocalHost().getAddress() );
-        } catch (Exception e) {
-            ipadd = 0;
-        }
-        IP_ADDRESS = NumberUtil.formatHex(ipadd, 8);
-    }
 
     public HexUUIDGenerator() {
         this("");
     }
 
     public HexUUIDGenerator(String separator) {
-        this.separator = separator;
-        this.dirty = true;
+        super(String.class);
+        this.source = new UUIDProvider(separator);
     }
 
-    // ptoperties ------------------------------------------------------------------------------------------------------
+    // properties ------------------------------------------------------------------------------------------------------
 
     public String getSeparator() {
-        return separator;
-    }
-
-    public void setSeparator(String separator) {
-        this.separator = separator;
-        this.dirty = true;
+        return source.getSeparator();
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<String> getGeneratedType() {
-        return String.class;
-    }
-
-    public void validate() {
-        super.validate();
-        this.dirty = false;
+    @Override
+    public boolean available() {
+        return super.available() && source.hasNext();
     }
 
     public String generate() {
-        if (dirty)
-            validate();
-        long time = System.currentTimeMillis();
-        short count;
-        synchronized(HexUUIDGenerator.class) {
-            if (counter < 0)
-                counter = 0;
-            count = counter++;
-        }
-        return new StringBuilder(36)
-            .append(IP_ADDRESS).append(separator)
-            .append(JVM_ID).append(separator)
-            .append(NumberUtil.formatHex((short) (time >>> 32), 4)).append(separator)
-            .append(NumberUtil.formatHex((int) time, 8)).append(separator)
-            .append(NumberUtil.formatHex(count, 4))
-            .toString();
+        return source.next();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return getClass().getSimpleName() + "[ipAddress=" + IP_ADDRESS + ", jvmId=" + JVM_ID + ']';
+        return getClass().getSimpleName() + "[" + source + ']';
     }
 }
