@@ -32,24 +32,32 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.commons.Context;
 import org.databene.model.data.Entity;
-import org.databene.task.TaskContext;
 
+/**
+ * Encapsulates variables, entity generator and context behind a Generator interface.<br/><br/>
+ * Created: 30.01.2008 20:45:21
+ * @since 0.4.0
+ * @author Volker Bergmann
+ */
 public class ConfiguredGenerator implements Generator<Entity> {
 	
-	private static Log logger = LogFactory.getLog(ConfiguredGenerator.class);
+    private static Log logger = LogFactory.getLog(ConfiguredGenerator.class);
 
     private Generator<Entity> entityGenerator;
 	private Map<String, Generator<? extends Object>> variables;
-	private TaskContext context;
+	private Context context;
 	private boolean variablesInitialized;
 	
-	public ConfiguredGenerator(Generator<Entity> entityGenerator, Map<String, Generator<? extends Object>> variables, TaskContext context) {
+	public ConfiguredGenerator(Generator<Entity> entityGenerator, Map<String, Generator<? extends Object>> variables, Context context) {
 		this.entityGenerator = entityGenerator;
 		this.variables = variables;
 		this.context = context;
 		this.variablesInitialized = false;
 	}
+	
+	// Generator implementation ----------------------------------------------------------------------------------------
 	
 	public Class<Entity> getGeneratedType() {
 		return Entity.class;
@@ -80,17 +88,20 @@ public class ConfiguredGenerator implements Generator<Entity> {
 		if (!available())
 			throw new IllegalGeneratorStateException("Generator is not available");
         Entity entity = entityGenerator.generate();
-        for (String variableName : variables.keySet())
-            context.remove(variableName);
+//        for (String variableName : variables.keySet())
+//            context.remove(variableName);
         variablesInitialized = false;
+        logger.debug("Generated " + entity);
         return entity;
 	}
 
 	public void reset() {
-        for (String variableName : variables.keySet())
-            context.set(variableName, null);
+//        for (String variableName : variables.keySet()) 
+//            context.set(variableName, null);
 		for (Generator<? extends Object> variable : variables.values())
 			variable.reset();
+		variablesInitialized = false;
+		entityGenerator.reset();
 	}
 
 	public void close() {
@@ -99,6 +110,16 @@ public class ConfiguredGenerator implements Generator<Entity> {
 		entityGenerator.close();
         for (String variableName : variables.keySet())
             context.remove(variableName);
+	}
+
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
+	
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName() + "[\n"
+	        + (variables.size() > 0 ? "    variables" + variables + "\n" : "")
+	        + "    " + entityGenerator + "\n"
+	        + "]";
 	}
 
 }
