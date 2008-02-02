@@ -26,7 +26,7 @@
 
 package org.databene.domain.person;
 
-import org.databene.model.converter.PropertyResourceBundleConverter;
+import org.databene.commons.converter.PropertyResourceBundleConverter;
 
 import java.util.Locale;
 

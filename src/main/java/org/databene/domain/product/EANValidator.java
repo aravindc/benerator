@@ -26,7 +26,7 @@
 
 package org.databene.domain.product;
 
-import org.databene.model.Validator;
+import org.databene.commons.Validator;
 
 /**
  * Validates an EAN code.<br/>
