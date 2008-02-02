@@ -26,7 +26,9 @@
 
 package org.databene.platform.db.model.jdbc;
 
-import org.databene.model.ImportFailedException;
+import org.databene.commons.Escalator;
+import org.databene.commons.ImportFailedException;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.OrderedMap;
@@ -39,7 +41,9 @@ import java.sql.*;
 import java.util.*;
 
 /**
+ * Imports a DB model via JDBC.<br/><br/>
  * Created: 06.01.2007 19:16:45
+ * @author Volker Bergmann
  */
 public final class JDBCDBImporter implements DBImporter {
 
@@ -56,6 +60,8 @@ public final class JDBCDBImporter implements DBImporter {
     private boolean acceptingErrors;
 
     private String productName;
+    private Escalator escalator = new LoggerEscalator();
+
 
     public JDBCDBImporter(String url, String driverClassname, String user, String password) {
         this(url, driverClassname, user, password, null, true);
@@ -81,6 +87,8 @@ public final class JDBCDBImporter implements DBImporter {
             connection = DriverManager.getConnection(url, user, password);
             DatabaseMetaData metaData = connection.getMetaData();
             productName = metaData.getDatabaseProductName();
+            if (logger.isDebugEnabled())
+                logger.debug("Product name: " + productName);
             Database database = new Database();
             importCatalogs(database, metaData);
             importSchemas(database, metaData);
@@ -146,9 +154,13 @@ public final class JDBCDBImporter implements DBImporter {
             String tCatalogName = tableSet.getString(1);
             String tSchemaName = tableSet.getString(2);
             String tableName = tableSet.getString(3);
-            if (tableName.startsWith("BIN$"))
+            if (tableName.startsWith("BIN$")) {
+                if (productName.toLowerCase().startsWith("oracle") && tableName.startsWith("BIN$"))
+                    escalator.escalate("BIN$ table found (for improved performance " +
+                                "execute 'PURGE RECYCLEBIN;')", url, tableName);
                 continue;
-            String tableType = tableSet.getString(4); // TODO v0.4 Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+            }
+            String tableType = tableSet.getString(4); // TODO v0.5 Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
             String tableRemarks = tableSet.getString(5);
             if (logger.isDebugEnabled())
                 logger.debug("found table: " + tCatalogName + ", " + tSchemaName + ", " + tableName + ", " + tableType + ", " + tableRemarks);
@@ -215,8 +227,8 @@ public final class JDBCDBImporter implements DBImporter {
                 column.setDoc(comment);
             if (!StringUtil.isEmpty(defaultValue)) {
                 if (!column.getType().isAlpha())
-                    defaultValue = removeBrackets(defaultValue);
-                column.setDefaultValue(defaultValue.trim()); // TODO v0.4 find out why oracle thin driver produces "1 "
+                    defaultValue = removeBrackets(defaultValue); // some driver adds brackets to number defaults
+                column.setDefaultValue(defaultValue.trim()); // oracle thin driver produces "1 "
             }
             if (!nullable)
                 column.setNullable(false);
@@ -229,7 +241,7 @@ public final class JDBCDBImporter implements DBImporter {
             }
             if (table != null)
                 table.addColumn(column);
-            // TODO v?.? importVersionColumnInfo(catalogName, table, metaData);
+            // TODO v0.5 importVersionColumnInfo(catalogName, table, metaData);
         }
     }
 
@@ -305,7 +317,7 @@ public final class JDBCDBImporter implements DBImporter {
                         String indexCatalogName = indexSet.getString(5);
                         indexName = indexSet.getString(6);
                         short indexType = indexSet.getShort(7);
-                        /* TODO v0.4
+                        /* TODO v0.5
                          * tableIndexStatistic - this identifies table statistics that are returned in conjuction with a table's index descriptions
                          * tableIndexClustered - this is a clustered index
                          * tableIndexHashed - this is a hashed index
@@ -415,9 +427,9 @@ public final class JDBCDBImporter implements DBImporter {
         }
     }
 
-    // TODO v0.4 check what this metaData provides: attributes, bestRowIdentifier, columnPrivileges, crossReference
-    // TODO v0.4 check what this metaData provides: exportedKeys, procedures, procedureColumns,
-    // TODO v0.4 check what this metaData provides: superTables, superTypes, tablePrivileges, udts, versionColumns
+    // TODO v0.5 check what this metaData provides: attributes, bestRowIdentifier, columnPrivileges, crossReference
+    // TODO v0.5 check what this metaData provides: exportedKeys, procedures, procedureColumns,
+    // TODO v0.5 check what this metaData provides: superTables, superTypes, tablePrivileges, udts, versionColumns
 
     private static String removeBrackets(String defaultValue) {
         if (StringUtil.isEmpty(defaultValue))
