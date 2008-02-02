@@ -28,20 +28,22 @@ package org.databene.model.data;
 
 import org.databene.commons.OrderedMap;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.ListBasedSet;
-import org.databene.model.operation.MaxOperation;
-import org.databene.model.operation.MinOperation;
+import org.databene.commons.collection.ListBasedSet;
+import org.databene.commons.operation.MaxOperation;
+import org.databene.commons.operation.MinOperation;
 
 import java.util.Map;
 import java.util.Collection;
 import java.util.Set;
 
 /**
+ * Describes an entity.
  * Created: 30.06.2007 10:09:34
+ * @author Volker Bergmann
  */
 public class EntityDescriptor extends FeatureDescriptor {
 
-    private boolean caseSensitive; // TODO v0.4 define more sophisticated mapping strategy
+    private boolean caseSensitive; // TODO v0.5 define more sophisticated mapping strategy
     private Map<String, ComponentDescriptor> componentMap;
 
     public EntityDescriptor(String name, boolean caseSensitive) {
@@ -102,14 +104,8 @@ public class EntityDescriptor extends FeatureDescriptor {
         if (parent != null)
             for (ComponentDescriptor d : ((EntityDescriptor)parent).getComponentDescriptors()) {
                 String name = d.getName();
-                if (!tmp.containsKey(name)) {
-                    if (d instanceof AttributeDescriptor)
-                        tmp.put(name, new AttributeDescriptor(d));
-                    else if (d instanceof ReferenceDescriptor)
-                        tmp.put(name, new ReferenceDescriptor(d));
-                    else
-                        throw new UnsupportedOperationException("Unsupported ComponentDescriptor type: " + d.getClass().getName());
-                }
+                if (!tmp.containsKey(name))
+                    tmp.put(name, d);
             }
         return tmp.values();
     }
@@ -160,7 +156,7 @@ public class EntityDescriptor extends FeatureDescriptor {
 
         if (caseSensitive != that.caseSensitive)
             return false;
-        if (!componentMap.equals(that.componentMap)) // TODO v0.4 consider case 
+        if (!componentMap.equals(that.componentMap)) // TODO v0.5 consider case 
             return false;
 
         return true;
