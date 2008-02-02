@@ -1,3 +1,29 @@
+/*
+ * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.databene.benerator.factory;
 
 import java.util.Set;
@@ -6,14 +32,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.ValidatingGeneratorProxy;
-import org.databene.model.Validator;
+import org.databene.commons.Validator;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.Iteration;
 
-class FeatureGeneratorFactory {
+/**
+ * Creates generators that generate entity components.<br/>
+ * <br/>
+ * @author Volker Bergmann
+ */
+abstract class FeatureGeneratorFactory {
 
+    private static final Log logger = LogFactory.getLog(FeatureGeneratorFactory.class);
+
+    // descriptor feature names ----------------------------------------------------------------------------------------
+    
+    protected static final String ENCODING    = "encoding";
     protected static final String GENERATOR   = "generator";
     protected static final String SOURCE      = "source";
     protected static final String VALIDATOR   = "validator";
@@ -27,13 +63,13 @@ class FeatureGeneratorFactory {
     protected static final String REGION      = "region";
     protected static final String UNIQUE      = "unique";
 
-    private static final Log logger = LogFactory.getLog(FeatureGeneratorFactory.class);
+    // helper methods for child classes --------------------------------------------------------------------------------
     
     protected static void checkUsedDetails(FeatureDescriptor descriptor, Set<String> usedDetails) {
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             String name = detail.getName();
             if (!"name".equals(name) && detail.getValue() != null && !usedDetails.contains(name))
-                logger.warn("Ignored detail: " + detail + " in descriptor " + descriptor);
+                logger.debug("Ignored detail: " + detail + " in descriptor " + descriptor); // TODO v0.4.1 improve tracking of unused features
         }
     }
 
