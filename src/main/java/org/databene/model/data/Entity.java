@@ -26,8 +26,8 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.Composite;
 import org.databene.commons.OrderedMap;
-import org.databene.model.Composite;
 
 import java.util.Map;
 

@@ -26,7 +26,7 @@
 
 package org.databene.model.data;
 
-import org.databene.model.TypedIterable;
+import org.databene.commons.TypedIterable;
 
 /**
  * Common interface for all Entity importers.<br/>

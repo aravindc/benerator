@@ -26,7 +26,7 @@
 
 package org.databene.model.data;
 
-import org.databene.model.Accessor;
+import org.databene.commons.Accessor;
 
 /**
  * Accesses a component of an entity specified by the component name.<br/>
