@@ -46,14 +46,14 @@ public class ByteArrayGenerator extends GeneratorWrapper<Byte, byte[]> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public ByteArrayGenerator() {
-        this(null, null, 0, 30, Sequence.RANDOM);
+        this(null, 0, 30, Sequence.RANDOM);
     }
 
-    public ByteArrayGenerator(Generator<Byte> source, Class<Byte> productType, int minLength, int maxLength) {
-        this(source, productType, minLength, maxLength, Sequence.RANDOM);
+    public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength) {
+        this(source, minLength, maxLength, Sequence.RANDOM);
     }
 
-    public ByteArrayGenerator(Generator<Byte> source, Class<Byte> productType, int minLength, int maxLength, Distribution distribution) {
+    public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength, Distribution distribution) {
         super(source);
         this.sizeGenerator = new IntegerGenerator(minLength, maxLength, 1, distribution);
     }
