@@ -30,19 +30,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
+ * Represents a database index.<br/><br/>
  * Created: 13.01.2007 23:40:52
+ * @author Volker Bergmann
  */
 class DBIndexInfo {
     public String name;
     public boolean unique;
     public String catalogName;
     public short type;
-    /* TODO v0.4
-         * tableIndexStatistic - this identifies table statistics that are returned in conjuction with a table's index descriptions
-         * tableIndexClustered - this is a clustered index
-         * tableIndexHashed - this is a hashed index
-         * tableIndexOther - this is some other style of index
-         */
     public Boolean ascending;
     public int cardinality;
     public int pages;
