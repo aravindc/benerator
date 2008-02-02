@@ -30,8 +30,9 @@ package org.databene.model.data;
  * Abstraction for all elements that can provide descriptors for entities.<br/>
  * <br/>
  * Created: 25.08.2007 21:51:26
+ * @author Volker Bergmann
  */
 public interface DescriptorProvider {
-    EntityDescriptor[] getTypeDescriptors(); // TODO v0.4 rename to typeDescriptors()
-    EntityDescriptor getTypeDescriptor(String typeName); // TODO v0.4 rename to typeDescriptor(String name)
+    EntityDescriptor[] getTypeDescriptors();
+    EntityDescriptor getTypeDescriptor(String typeName);
 }

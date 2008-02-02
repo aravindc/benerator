@@ -33,6 +33,7 @@ import java.util.List;
  * Merges and organizes entity definitions of different systems.<br/>
  * <br/>
  * Created: 25.08.2007 20:40:17
+ * @author Volker Bergmann
  */
 public class DataModel {
 
@@ -49,7 +50,7 @@ public class DataModel {
     public EntityDescriptor getTypeDescriptor(String type) {
         for (DescriptorProvider provider : descriptorProviders) {
             EntityDescriptor descriptor = provider.getTypeDescriptor(type);
-            if (descriptor != null) // TODO v0.4 how to merge all hits?
+            if (descriptor != null) // TODO v0.5 how to merge all hits?
                 return descriptor;
         }
         return null;
