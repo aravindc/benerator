@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.model.Validator;
+import org.databene.commons.Validator;
 
 /**
  * Tests the CurrentMilliTimeGenerator.<br/>
