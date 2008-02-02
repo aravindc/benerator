@@ -27,15 +27,17 @@
 package org.databene.benerator.factory;
 
 import org.databene.model.data.*;
-import org.databene.model.system.System;
-import org.databene.model.*;
+import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.wrapper.*;
-import org.databene.task.TaskContext;
 import org.databene.commons.*;
+import org.databene.document.flat.FlatFileColumnDescriptor;
+import org.databene.document.flat.FlatFileUtil;
 import org.databene.platform.dbunit.DbUnitEntityIterable;
+import org.databene.platform.flat.FlatFileEntityIterable;
 import org.databene.platform.csv.CSVEntityIterable;
+import org.databene.script.ScriptConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -45,30 +47,46 @@ import java.util.*;
  * Creates entity generators from entity metadata.<br/>
  * <br/>
  * Created: 08.09.2007 07:45:40
+ * @author Volker Bergmann
  */
 public class EntityGeneratorFactory extends FeatureGeneratorFactory {
 
-    // TODO v0.3.04 separate functionality entityGen/attribGen/common
-
-    private static final String COUNT = "count";
-
     private static final Log logger = LogFactory.getLog(EntityGeneratorFactory.class);
 
-    public static Generator<Entity> createEntityGenerator(EntityDescriptor descriptor, TaskContext context) {
+    // descriptor feature names ----------------------------------------------------------------------------------------
+    
+    private static final String COUNT = "count";
+    
+    // attributes ------------------------------------------------------------------------------------------------------
+    
+    private static Escalator escalator = new LoggerEscalator();
+
+    // private constructor for preventing instatiation -----------------------------------------------------------------
+    
+    private EntityGeneratorFactory() {}
+    
+    // public utility methods ------------------------------------------------------------------------------------------
+
+    public static Generator<Entity> createEntityGenerator(EntityDescriptor descriptor, Context context, GenerationSetup setup) {
+        if (logger.isDebugEnabled())
+            logger.debug("createEntityGenerator(" + descriptor.getName() + ")");
         Set<String> usedDetails = new HashSet<String>();
-        // TODO v0.3.04 create from generator class
         // create original generator
-        Generator<Entity> generator = createSourceEntityGenerator(descriptor, context, usedDetails);
-        if (generator != null)
-            generator = createMutatingEntityGenerator(descriptor, context, generator);
+        Generator<Entity> generator = createSourceEntityGenerator(descriptor, context, setup, usedDetails);
+        if (generator == null)
+            generator = createGeneratingEntityGenerator(descriptor, context, setup);
         else
-            generator = createGeneratingEntityGenerator(descriptor, context);
+            generator = createMutatingEntityGenerator(descriptor, context, generator, setup);
         // create wrappers
         generator = createValidatingGenerator(descriptor, generator, usedDetails);
         generator = createLimitCountGenerator(descriptor, generator, usedDetails);
         checkUsedDetails(descriptor, usedDetails);
+        if (logger.isDebugEnabled())
+            logger.debug("Created " + generator);
         return generator;
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<Entity> createLimitCountGenerator(EntityDescriptor descriptor, Generator<Entity> generator, Set<String> usedDetails) {
         if (descriptor.getCount() != null) {
@@ -78,33 +96,33 @@ public class EntityGeneratorFactory extends FeatureGeneratorFactory {
         return generator;
     }
 
-    private static Generator<Entity> createGeneratingEntityGenerator(EntityDescriptor descriptor, TaskContext context) {
+    private static Generator<Entity> createGeneratingEntityGenerator(EntityDescriptor descriptor, Context context, GenerationSetup setup) {
         Map<String, Generator<? extends Object>> componentGenerators = new HashMap<String, Generator<? extends Object>>();
         Collection<ComponentDescriptor> descriptors = descriptor.getComponentDescriptors();
         for (ComponentDescriptor component : descriptors) {
             if (component.getMode() != Mode.ignored) {
-                Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context);
+                Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context, setup);
                 componentGenerators.put(component.getName(), componentGenerator);
             }
         }
-        return new EntityGenerator(descriptor, componentGenerators);
+        return new EntityGenerator(descriptor, componentGenerators, context);
     }
 
     private static Generator<Entity> createMutatingEntityGenerator(
-            EntityDescriptor descriptor, TaskContext context, Generator<Entity> generator) {
+            EntityDescriptor descriptor, Context context, Generator<Entity> generator, GenerationSetup setup) {
         Map<String, Generator<? extends Object>> componentGenerators = new HashMap<String, Generator<? extends Object>>();
         Collection<ComponentDescriptor> descriptors = descriptor.getDeclaredComponentDescriptors();
         for (ComponentDescriptor component : descriptors) {
             if (component.getMode() != Mode.ignored) {
-                Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context);
+                Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.getComponentGenerator(component, context, setup);
                 componentGenerators.put(component.getName(), componentGenerator);
             }
         }
-        return new EntityGenerator(descriptor, generator, componentGenerators);
+        return new EntityGenerator(descriptor, generator, componentGenerators, context);
     }
 
     private static Generator<Entity> createSourceEntityGenerator(
-            EntityDescriptor descriptor, TaskContext context, Set<String> usedDetails) {
+            EntityDescriptor descriptor, Context context, GenerationSetup setup, Set<String> usedDetails) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
         if (sourceName == null)
@@ -114,8 +132,13 @@ public class EntityGeneratorFactory extends FeatureGeneratorFactory {
         Generator<Entity> generator = null;
         Object sourceObject = context.get(sourceName);
         if (sourceObject != null) {
-            if (sourceObject instanceof System) {
-                System system = (System) sourceObject;
+            if (sourceObject instanceof StorageSystem) {
+                StorageSystem storage = (StorageSystem) sourceObject;
+                String selector = descriptor.getSelector();
+                generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector));
+            } else if (sourceObject instanceof org.databene.model.system.System) {
+                escalator.escalate("Using deprecated class: " + sourceObject.getClass().getName(), EntityGeneratorFactory.class, null);
+                org.databene.model.system.System system = (org.databene.model.system.System) sourceObject;
                 generator = new IteratingGenerator<Entity>(system.getEntities(descriptor.getName()));
             } else if (sourceObject instanceof TypedIterable) {
                 generator = new IteratingGenerator((TypedIterable) sourceObject);
@@ -125,14 +148,31 @@ public class EntityGeneratorFactory extends FeatureGeneratorFactory {
                 throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
         } else {
             if (sourceName.endsWith(".xml"))
-                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(sourceName));
+                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(sourceName, context, setup.getDefaultScript()));
             else if (sourceName.endsWith(".csv")) {
                 String encoding = descriptor.getEncoding();
                 if (encoding != null)
-                    usedDetails.add("encoding");
+                    usedDetails.add(ENCODING);
                 else
-                    encoding = SystemInfo.fileEncoding();
-                generator = new IteratingGenerator(new CSVEntityIterable(sourceName, descriptor.getName(), ',', encoding));
+                    encoding = setup.getDefaultEncoding();
+                ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+                CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
+                generator = new IteratingGenerator(iterable);
+            } else if (sourceName.endsWith(".flat")) {
+                String encoding = descriptor.getEncoding();
+                if (encoding != null)
+                    usedDetails.add(ENCODING);
+                else
+                    encoding = setup.getDefaultEncoding();
+                String pattern = descriptor.getPattern();
+                if (pattern != null)
+                    usedDetails.add(ENCODING);
+                else
+                    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
+                FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
+                ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+                FlatFileEntityIterable iterable = new FlatFileEntityIterable(sourceName, descriptor, scriptConverter, encoding, ffcd);
+                generator = new IteratingGenerator(iterable);
             } else
                 throw new UnsupportedOperationException("Unknown source type: " + sourceName);
         }

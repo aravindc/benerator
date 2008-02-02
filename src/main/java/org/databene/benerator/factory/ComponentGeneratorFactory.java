@@ -40,68 +40,119 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.model.ConversionException;
-import org.databene.model.Converter;
-import org.databene.model.TypedIterable;
-import org.databene.model.Validator;
-import org.databene.model.accessor.GraphAccessor;
-import org.databene.model.converter.AnyConverter;
-import org.databene.model.converter.ParseFormatConverter;
-import org.databene.model.converter.String2DateConverter;
+import org.databene.id.GlobalIdProviderFactory;
+import org.databene.id.IdProvider;
+import org.databene.id.IdProviderFactory;
+import org.databene.id.IdStrategy;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.AttributeDescriptor;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
+import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
-import org.databene.model.system.System;
-import org.databene.model.validator.NotNullValidator;
-import org.databene.model.validator.StringLengthValidator;
+import org.databene.model.storage.StorageSystem;
 import org.databene.platform.bean.BeanDescriptorProvider;
 import org.databene.platform.csv.CSVEntityIterable;
-import org.databene.task.TaskContext;
+import org.databene.script.Script;
+import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptUtil;
 import org.databene.benerator.AccessingGenerator;
 import org.databene.benerator.Distribution;
 import org.databene.benerator.Generator;
 import org.databene.benerator.Sequence;
 import org.databene.benerator.ValidatingGeneratorProxy;
 import org.databene.benerator.WeightFunction;
+import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
+import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.NullableGenerator;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.TypedIterable;
+import org.databene.commons.Validator;
+import org.databene.commons.accessor.GraphAccessor;
+import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.converter.ParseFormatConverter;
+import org.databene.commons.converter.String2DateConverter;
+import org.databene.commons.validator.NotNullValidator;
+import org.databene.commons.validator.StringLengthValidator;
 
 /**
  * Creates generators that generate entity components.<br/>
  * <br/>
  * Created: 14.10.2007 22:16:34
+ * @author Volker Bergmann
  */
 public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
 
-    private static final String TARGET_TYPE = "target-type";
-    private static final String VALUES      = "values";
-    private static final String SELECTOR    = "selector";
-
-    private static final Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
+    // factory methods for component generators ------------------------------------------------------------------------
     
-    private ComponentGeneratorFactory() {}
-    
-    public static Generator<? extends Object> getComponentGenerator(ComponentDescriptor descriptor, TaskContext context) {
+    public static Generator<? extends Object> getComponentGenerator(
+            ComponentDescriptor descriptor, Context context, GenerationSetup setup) {
         if (descriptor instanceof AttributeDescriptor)
-            return createAttributeGenerator((AttributeDescriptor)descriptor, context);
-        else
+            return createAttributeGenerator((AttributeDescriptor)descriptor, context, setup);
+        else if (descriptor instanceof ReferenceDescriptor)
             return createReferenceGenerator((ReferenceDescriptor)descriptor, context);
+        else if (descriptor instanceof IdDescriptor)
+            return createIdGenerator((IdDescriptor)descriptor, context);
+        else 
+            throw new ConfigurationError("Unsupported element: " + descriptor.getClass());
     }
     
-    public static Generator<? extends Object> createAttributeGenerator(AttributeDescriptor descriptor, TaskContext context) {
+    private static Generator<? extends Object> createIdGenerator(
+            IdDescriptor descriptor, Context context) {
+        Set<String> usedDetails = new HashSet<String>();
+        IdProviderFactory source = null;
+        // check strategy
+        String strategyName = descriptor.getStrategy();
+        if (strategyName != null)
+            usedDetails.add(STRATEGY);
+        else
+            throw new ConfigurationError("No strategy defined for key: " + descriptor.getName());
+
+        // check scope
+        String scope = descriptor.getScope();
+        if (scope != null)
+            usedDetails.add(SCOPE);
+        // check source
+        String sourceId = descriptor.getSource();
+        if (sourceId != null) {
+            usedDetails.add(SOURCE);
+            source = (IdProviderFactory) context.get(sourceId);
+        }
+        // check param
+        String param = descriptor.getParam();
+        if (param != null)
+            usedDetails.add(PARAM);
+        
+
+        checkUsedDetails(descriptor, usedDetails);
+        IdStrategy idStrategy = new IdStrategy(strategyName, null);
+        IdProvider idProvider;
+        if (source != null)
+            idProvider = source.idProvider(idStrategy, param, scope);
+        else
+            idProvider = GLOBAL_ID_PROVIDER_FACTORY.idProvider(idStrategy, param, scope);
+        Generator<Object> generator = new IdGenerator(idProvider);
+        if (logger.isDebugEnabled())
+            logger.debug("Created " + generator);
+        return generator;
+    }
+
+    public static Generator<? extends Object> createAttributeGenerator(
+            AttributeDescriptor descriptor, Context context, GenerationSetup setup) {
         Generator<? extends Object> generator = null;
         Set<String> usedDetails = new HashSet<String>();
         // create a source generator
@@ -109,14 +160,14 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         if (generator == null) {
             generator = createGeneratorByClass(descriptor, context, usedDetails, generator);
             if (generator == null)
+                generator = createSourceAttributeGenerator(descriptor, context, setup, usedDetails);
+            if (generator == null)
+                generator = createScriptGenerator(descriptor, context, usedDetails, setup.getDefaultScript());
+            if (generator == null)
                 generator = createSampleGenerator(descriptor, usedDetails, generator);
             if (generator == null)
-                generator = createSourceAttributeGenerator(descriptor, context, usedDetails);
-            /* TODO v0.4
-            if (generator == null)
-                generator = createNullGenerator(descriptor, usedDetails);
+                generator = createNullGenerator(descriptor, setup, usedDetails);
             if (generator == null) {
-            */
                 if (generator == null)
                     generator = createTypeGenerator(descriptor, generator, usedDetails);
                 if (generator == null)
@@ -130,32 +181,15 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
                 generator = createValidatingGenerator(descriptor, generator, usedDetails);
                 generator = createProxy(descriptor, generator, usedDetails);
                 generator = createNullQuotaGenerator(descriptor, generator, usedDetails);
-            // TODO v0.4 }
+            }
         }
         checkUsedDetails(descriptor, usedDetails);
+        if (logger.isDebugEnabled())
+            logger.debug("Created " + generator);
         return generator;
     }
 
-    private static Generator<? extends Object> createNullQuotaOneGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota != null && nullQuota.doubleValue() == 1) {
-            usedDetails.add(NULL_QUOTA);
-            return new ConstantGenerator<Object>(null);
-        }
-        return null;
-    }
-/* TODO v0.4
-    private static Generator<? extends Object> createNullGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
-        Boolean nullable = descriptor.isNullable();
-        if (nullable != null) {
-            usedDetails.add("nullable");
-                if (nullable.booleanValue())
-            return new ConstantGenerator<Object>(null);
-        }
-        return null;
-    }
-*/
-    public static Generator<? extends Object> createReferenceGenerator(ReferenceDescriptor descriptor, TaskContext context) {
+    public static Generator<? extends Object> createReferenceGenerator(ReferenceDescriptor descriptor, Context context) {
         Set<String> usedDetails = new HashSet<String>();
         Generator<? extends Object> generator = null;
         String targetTye = descriptor.getTargetTye();
@@ -169,13 +203,60 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
                 usedDetails.add(SOURCE);
             else
                 throw new ConfigurationError("'" + SOURCE + "' is not set for " + descriptor);
-            org.databene.model.system.System sourceSystem = (org.databene.model.system.System) context.get(sourceName);
-            generator = new IteratingGenerator<Object>((TypedIterable<Object>) sourceSystem.getIds(targetTye, selector));
+            Object sourceObject = context.get(sourceName);
+            if (sourceObject instanceof StorageSystem) {
+                StorageSystem sourceSystem = (StorageSystem) sourceObject;
+                TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTye, selector);
+                generator = new IteratingGenerator<Object>(entityIds);
+            } else if (sourceObject instanceof org.databene.model.system.System) {
+                org.databene.model.system.System sourceSystem = (org.databene.model.system.System) sourceObject;
+                TypedIterable<Object> entityIds = (TypedIterable<Object>) sourceSystem.getIds(targetTye, selector);
+                generator = new IteratingGenerator<Object>(entityIds);
+            }
         } else
             generator = new ConstantGenerator<Object>(null);
         generator = createValidatingGenerator(descriptor, generator, usedDetails);
         checkUsedDetails(descriptor, usedDetails);
+        if (logger.isDebugEnabled())
+            logger.debug("Created " + generator);
         return generator;
+    }
+
+    // private helpers -------------------------------------------------------------------------------------------------
+
+    private static Generator<? extends Object> createScriptGenerator(
+            AttributeDescriptor descriptor, Context context, Set<String> usedDetails, String defaultEngineId) {
+        Generator<String> generator = null;
+        String scriptText = descriptor.getScript();
+        if (scriptText != null) {
+            usedDetails.add(SCRIPT);
+            Script script = ScriptUtil.parseUnspecificText(scriptText, defaultEngineId);
+            generator = new ScriptGenerator(script, context);
+        }
+        return generator;
+    }
+
+    private static Generator<? extends Object> createNullQuotaOneGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
+        Double nullQuota = descriptor.getNullQuota();
+        if (nullQuota != null && nullQuota.doubleValue() == 1) {
+            usedDetails.add(NULL_QUOTA);
+            return new ConstantGenerator<Object>(null);
+        }
+        return null;
+    }
+
+    private static Generator<? extends Object> createNullGenerator(
+            AttributeDescriptor descriptor, GenerationSetup setup, Set<String> usedDetails) {
+        Boolean nullable = descriptor.isNullable();
+        if (nullable != null) {
+            usedDetails.add("nullable");
+            if (nullable.booleanValue()) {
+                Boolean defaultNull = setup.isDefaultNull();
+                if (defaultNull != null && defaultNull.booleanValue())
+                    return new ConstantGenerator<Object>(null);
+            }
+        }
+        return null;
     }
 
     private static Generator<? extends Object> createSampleGenerator(AttributeDescriptor descriptor, Set<String> usedDetails, Generator<? extends Object> generator) {
@@ -194,19 +275,19 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         return generator;
     }
 
-    private static Generator<? extends Object> createGeneratorByClass(AttributeDescriptor descriptor, TaskContext context, Set<String> usedDetails, Generator<? extends Object> generator) {
+    private static Generator<? extends Object> createGeneratorByClass(AttributeDescriptor descriptor, Context context, Set<String> usedDetails, Generator<? extends Object> generator) {
         String generatorClassName = descriptor.getGenerator();
         if (generatorClassName != null) {
             usedDetails.add(GENERATOR);
-            generator = (Generator<? extends Object>) BeanUtil.newInstance(generatorClassName);
-            for (FeatureDetail detail : descriptor.getDetails()) {
+            generator = BeanUtil.newInstance(generatorClassName);
+            for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
                 setProperty(generator, detail, context, usedDetails);
             }
         }
         return generator;
     }
 
-    private static void setProperty(Object bean, FeatureDetail<? extends Object> detail, TaskContext context, Set<String> usedDetails) {
+    private static void setProperty(Object bean, FeatureDetail<? extends Object> detail, Context context, Set<String> usedDetails) {
         String detailName = detail.getName();
         if (detail.getValue() != null && BeanUtil.hasProperty(bean.getClass(), detailName)) {
             try {
@@ -254,7 +335,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         if (descriptor.getType() == null)
             return (Generator<T>) generator;
         usedDetails.add(TYPE);
-        Class<T> targetType = (Class<T>)javaClassFor(descriptor.getType());
+        Class<T> targetType = javaClassFor(descriptor.getType());
         Converter converter = null;
         if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
             // String needs to be converted to Date
@@ -273,7 +354,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         return new ConvertingGenerator<Object, T>((Generator<Object>)generator, converter);
     }
 
-    private static Generator<? extends Object> createSourceAttributeGenerator(AttributeDescriptor descriptor, TaskContext context, Set<String> usedDetails) {
+    private static Generator<? extends Object> createSourceAttributeGenerator(AttributeDescriptor descriptor, Context context, GenerationSetup setup, Set<String> usedDetails) {
         String source = descriptor.getSource();
         if (source == null)
             return null;
@@ -285,7 +366,9 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         Generator<? extends Object> generator;
         if (context.get(source) != null) {
             Object sourceObject = context.get(source);
-            if (sourceObject instanceof org.databene.model.system.System)
+            if (sourceObject instanceof StorageSystem)
+                generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector));
+            else if (sourceObject instanceof org.databene.model.system.System)
                 generator = new IteratingGenerator(((org.databene.model.system.System) sourceObject).getBySelector(selector));
             else if (sourceObject instanceof Generator)
                 generator = (Generator) sourceObject;
@@ -302,11 +385,12 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
             }
             String encoding = descriptor.getEncoding();
             if (encoding != null)
-                usedDetails.add("encoding");
+                usedDetails.add(ENCODING);
             else
                 encoding = SystemInfo.fileEncoding();
-            // TODO v0.3.04 check whether to import Entities or cells
-            generator = new IteratingGenerator(new CSVEntityIterable(source, type, separator, encoding));
+            // TODO v0.4.1 decide whether to import Entities or cells
+            ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+            generator = new IteratingGenerator(new CSVEntityIterable(source, descriptor.getName(), scriptConverter, separator, encoding));
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null);
         } else {
@@ -316,7 +400,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         // check distribution
         Distribution distribution = descriptor.getDistribution();
         if (distribution != null) {
-            usedDetails.add("distribution");
+            usedDetails.add(DISTRIBUTION);
             List<Object> values = new ArrayList<Object>();
             while (generator.available()) {
                 Object value = generator.generate();
@@ -335,7 +419,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
 
     private static Generator<? extends Object> createConvertingGenerator(AttributeDescriptor descriptor, Generator<? extends Object> generator, Set<String> usedDetails) {
         if (descriptor.getConverter() != null) {
-            usedDetails.add("converter");
+            usedDetails.add(CONVERTER);
             Converter converter = descriptor.getConverter();
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
@@ -389,14 +473,14 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
     private static Generator<? extends Object> createByteArrayGenerator(
             AttributeDescriptor descriptor, Set<String> usedDetails) {
         Generator<Byte> byteGenerator = GeneratorFactory.getNumberGenerator(Byte.class, (byte)-128, (byte)127, (byte)1, Sequence.RANDOM, 0);
-        return new ByteArrayGenerator(byteGenerator, byte.class, 
+        return new ByteArrayGenerator(byteGenerator, 
                 getMinLength(descriptor, usedDetails), getMaxLength(descriptor, usedDetails));
     }
 
     private static Generator<Date> createDateGenerator(AttributeDescriptor descriptor, Set<String> usedDetails) {
-        Date min = parseDate(descriptor, "min", TimeUtil.date(1970, 0, 1), usedDetails);
-        Date max = parseDate(descriptor, "max", TimeUtil.today().getTime(), usedDetails);
-        Date precisionDate = parseDate(descriptor, "precision", TimeUtil.date(1970, 0, 2), usedDetails);
+        Date min = parseDate(descriptor, MIN, TimeUtil.date(1970, 0, 1), usedDetails);
+        Date max = parseDate(descriptor, MAX, TimeUtil.today().getTime(), usedDetails);
+        Date precisionDate = parseDate(descriptor, PRECISION, TimeUtil.date(1970, 0, 2), usedDetails);
         long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
         Distribution distribution = getDistribution(descriptor, usedDetails);
         return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
@@ -461,15 +545,15 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
 
     private static <T extends Number> Generator<T> createNumberGenerator(
             AttributeDescriptor descriptor, Class<T> targetType, Set<String> usedDetails) {
-        T min = getNumberDetail(descriptor, "min", targetType, usedDetails);
-        T max = getNumberDetail(descriptor, "max", targetType, usedDetails);
+        T min = getNumberDetail(descriptor, MIN, targetType, usedDetails);
+        T max = getNumberDetail(descriptor, MAX, targetType, usedDetails);
         if (min.equals(max)) {
             return new ConstantGenerator<T>(min);
         }
-        T precision = getNumberDetail(descriptor, "precision", targetType, usedDetails);
+        T precision = getNumberDetail(descriptor, PRECISION, targetType, usedDetails);
         Distribution distribution = getDistribution(descriptor, usedDetails);
-        T variation1 = getNumberDetail(descriptor, "variation1", targetType, usedDetails);
-        T variation2 = getNumberDetail(descriptor, "variation2", targetType, usedDetails);
+        T variation1 = getNumberDetail(descriptor, VARIATION1, targetType, usedDetails);
+        T variation2 = getNumberDetail(descriptor, VARIATION2, targetType, usedDetails);
         return GeneratorFactory.getNumberGenerator(
                 targetType, min, max, precision, distribution, variation1, variation2, 0);
     }
@@ -482,8 +566,8 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
             usedDetails.add(MAX_LENGTH);
         } else {
             // maxLength was not set in this descriptor. So check the parent setting's value 
-            // (it is interpreted as constraint which may be to high to be useful by default)
-            maxLength = descriptor.getMaxLength(); // TODO v0.4 there will be more than one parent level in the future. Implement querying the topmost one or follow a constraint/default notion
+            // (it is interpreted as constraint which may be too high to be useful by default)
+            maxLength = descriptor.getMaxLength();
             if (maxLength != null)
                 usedDetails.add(MAX_LENGTH);
             else
@@ -537,32 +621,30 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         return generator;
     }
 
-    private static Validator createAttributeConstraintValidator(
+    private static <T> Validator<T> createAttributeConstraintValidator(
             AttributeDescriptor descriptor, Set<String> usedDetails) {
-        if ("string".equals(descriptor.getType()) && (descriptor.getMinLength() != null || descriptor.getMaxLength() != null)) {
-            // TODO v0.4 check for number lengths?
+        if ((descriptor.getMinLength() != null || descriptor.getMaxLength() != null) && "string".equals(descriptor.getType())) {
+            // TODO v0.5 check for number lengths?
             Integer minLength = getMinLength(descriptor, usedDetails);
             Integer maxLength = getMaxLength(descriptor, usedDetails);
             boolean nullable = false;
             if (descriptor.isNullable() != null) {
-                usedDetails.add("nullable");
+                usedDetails.add(NULLABLE);
                 nullable = descriptor.isNullable();
             }
-            return new StringLengthValidator(minLength, maxLength, nullable);
+            return (Validator<T>)new StringLengthValidator(minLength, maxLength, nullable);
         } else if (descriptor.isNullable() != null) {
-            usedDetails.add("nullable");
+            usedDetails.add(NULLABLE);
             if (!descriptor.isNullable())
-                return new NotNullValidator();
+                return new NotNullValidator<T>();
         }
         return null;
     }
 
-    // helpers ---------------------------------------------------------------------------------------------------------
-
     private static final BeanDescriptorProvider beanDescriptorProvider = new BeanDescriptorProvider();
     
-    private static Class<? extends Object> javaClassFor(String type) {
-        return beanDescriptorProvider.concreteType(type);
+    private static <T> T javaClassFor(String type) {
+        return (T)beanDescriptorProvider.concreteType(type);
     }
 
     // descriptor accessors --------------------------------------------------------------------------------------------
@@ -570,7 +652,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
     private static Distribution getDistribution(AttributeDescriptor descriptor, Set<String> usedDetails) {
         Distribution distribution = descriptor.getDistribution();
         if (distribution != null)
-            usedDetails.add("distribution");
+            usedDetails.add(DISTRIBUTION);
         else if (isUnique(descriptor, usedDetails))
             distribution = Sequence.BIT_REVERSE;
         else
@@ -616,7 +698,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
         } else {
             // maxLength was not set in this descriptor. So check the parent setting's value 
             // (it is interpreted as constraint which may be to high to be useful by default)
-            maxLength = descriptor.getMaxLength(); // TODO v0.4 there will be more than one parent level in the future. Implement querying the topmost one or follow a constraint/default notion
+            maxLength = descriptor.getMaxLength();
             if (maxLength != null)
                 usedDetails.add(MAX_LENGTH);
             else
@@ -631,9 +713,34 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
             Set<String> usedDetails) {
         Integer minLength = descriptor.getMinLength();
         if (minLength != null)
-            usedDetails.add("minLength");
+            usedDetails.add(MIN_LENGTH);
         else
             minLength = 0;
         return minLength;
     }
+
+    private ComponentGeneratorFactory() {}
+    
+    private static final GlobalIdProviderFactory GLOBAL_ID_PROVIDER_FACTORY = new GlobalIdProviderFactory();
+
+    private static final Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
+    
+    // descriptor feature names ----------------------------------------------------------------------------------------
+    
+    private static final String TARGET_TYPE  = "target-type";
+    private static final String NULLABLE     = "nullable";
+    private static final String VALUES       = "values";
+    private static final String SELECTOR     = "selector";
+    private static final String MIN          = "min";
+    private static final String MAX          = "max";
+    private static final String PRECISION    = "precision";
+    private static final String DISTRIBUTION = "distribution";
+    private static final String VARIATION1   = "variation1";
+    private static final String VARIATION2   = "variation2";
+    private static final String CONVERTER    = "converter";
+    private static final String SCRIPT       = "script";
+    private static final String STRATEGY     = "strategy";
+    private static final String PARAM        = "param";
+    private static final String SCOPE        = "scope";
+
 }
