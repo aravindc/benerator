@@ -26,20 +26,25 @@
 
 package org.databene.model.system;
 
+import org.databene.commons.Heavyweight;
+import org.databene.commons.TypedIterable;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
-import org.databene.model.TypedIterable;
 
 /**
+ * Abstraction of an Entity storage<br/><br/>
  * Created: 27.06.2007 23:02:21
+ * @author Volker Bergmann
+ * @deprecated as of v0.4.0, use {@link StorageSystem}
  */
-public interface System extends DescriptorProvider {
-    String getId();
-    TypedIterable<Entity> getEntities(String type); // TODO v0.4 rename to TypedIterable<Entity> allEntities(String type);
-    TypedIterable<Object> getIds(String typeName, String selector); // TODO v0.4 rename to TypedIterable<? extends Object> entityIds(String entityName, String selector); // TODO check with key concept
-    TypedIterable<Object> getBySelector(String selector); // TODO v0.4 rename to TypedIterable<? extends Object> query(String selector);
-    // TODO v0.4 add Generator<? extends Object> idGenerator(String type, String param);
-    void store(Entity entity);
-    void flush();
-    void close();
+@Deprecated
+public interface System extends DescriptorProvider, Heavyweight {
+    
+    @Deprecated String getId();
+    @Deprecated TypedIterable<Entity> getEntities(String type);
+    @Deprecated TypedIterable<Object> getIds(String typeName, String selector);
+    @Deprecated TypedIterable<Object> getBySelector(String selector);
+    @Deprecated void store(Entity entity);
+    @Deprecated void flush();
+    @Deprecated void close();
 }
