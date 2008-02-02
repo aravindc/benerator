@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.commons.ArrayUtil;
-import org.databene.model.converter.ParseFormatConverter;
+import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.GeneratorClassTest;
 
 /**
