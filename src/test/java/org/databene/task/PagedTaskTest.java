@@ -31,7 +31,9 @@ import java.util.concurrent.Executors;
 import junit.framework.TestCase;
 
 /**
+ * Tests the {@link PagedTask}<br/><br/>
  * Created: 16.07.2007 20:02:03
+ * @author Volker Bergmann
  */
 public class PagedTaskTest extends TestCase {
 

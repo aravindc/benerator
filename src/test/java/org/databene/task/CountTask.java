@@ -26,23 +26,33 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
+
 /**
+ * Helper class for testing Task handling.<br/><br/>
  * Created: 16.07.2007 19:58:41
+ * @author Volker Bergmann
  */
 public class CountTask implements Task, ThreadSafe {
 
     public int initCount = 0;
     public int runCount = 0;
     public int destroyCount = 0;
+    
+    // Task interface --------------------------------------------------------------------------------------------------
 
     public String getTaskName() {
         return getClass().getSimpleName();
     }
 
-    public void init(TaskContext context) {
+    public void init(Context context) {
         if (context == null)
             throw new IllegalArgumentException("context is null");
         initCount++;
+    }
+
+    public boolean wantsToRun() {
+        return true;
     }
 
     public void run() {
@@ -52,8 +62,11 @@ public class CountTask implements Task, ThreadSafe {
     public void destroy() {
         destroyCount++;
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
         return "CountTask[initCount=" + initCount + ", runCount=" + runCount + ", destroyCount=" + destroyCount + ']';
     }
+
 }
