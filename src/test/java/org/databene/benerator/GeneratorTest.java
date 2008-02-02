@@ -33,9 +33,9 @@ import java.util.Collection;
 
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
-import org.databene.model.Validator;
-import org.databene.model.validator.UniqueValidator;
-import org.databene.model.converter.ToStringConverter;
+import org.databene.commons.Validator;
+import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.validator.UniqueValidator;
 import org.databene.measure.count.ObjectCounter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -28,7 +28,7 @@ package org.databene.benerator;
 
 import junit.framework.TestCase;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.model.Validator;
+import org.databene.commons.Validator;
 
 /**
  * Created: 29.09.2006 17:01:59
