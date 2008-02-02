@@ -27,7 +27,8 @@
 package org.databene.domain.product;
 
 import junit.framework.TestCase;
-import org.databene.model.Validator;
+
+import org.databene.commons.Validator;
 
 /**
  * Tests validation of an EAN code.<br/>

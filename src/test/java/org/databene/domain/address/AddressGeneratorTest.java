@@ -26,16 +26,19 @@
 
 package org.databene.domain.address;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.region.Country;
 import org.databene.benerator.GeneratorClassTest;
 
 /**
  * Tests the AddressGenerator<br/><br/>
  * Created: 12.06.2007 06:45:41
+ * @author Volker Bergmann
  */
 public class AddressGeneratorTest extends GeneratorClassTest {
 
-    private static boolean quiet = true;
+    private static final Log logger = LogFactory.getLog(AddressGeneratorTest.class);
 
     public AddressGeneratorTest() {
         super(AddressGenerator.class);
@@ -44,7 +47,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     public void testGermany() {
         check(Country.GERMANY);
     }
-/* TODO v0.4 test austrian and swiss addresses
+/* TODO v0.5 test austrian and swiss addresses
     public void testAustria() {
         check(Country.AUSTRIA);
     }
@@ -57,8 +60,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
         AddressGenerator generator = new AddressGenerator(country);
         for (int i = 0; i < 100; i++) {
             Address address = generator.generate();
-            if (!quiet)
-                System.out.println(address);
+            logger.debug(address);
         }
     }
 }

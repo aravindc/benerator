@@ -1,7 +1,7 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.model.validator.UniqueValidator;
+import org.databene.commons.validator.UniqueValidator;
 
 public class EAN8GeneratorTest extends GeneratorClassTest {
 
