@@ -28,9 +28,9 @@ package org.databene.benerator.wrapper;
 
 import java.util.Arrays;
 
-import org.databene.model.iterator.DefaultTypedIterable;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
+import org.databene.commons.iterator.DefaultTypedIterable;
 
 /**
  * Tests the IteratingGenerator.<br/>

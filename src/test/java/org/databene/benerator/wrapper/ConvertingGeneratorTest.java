@@ -28,8 +28,8 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.model.Converter;
-import org.databene.model.ConversionException;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
 
 /**
  * Created: 11.10.2006 23:12:21
