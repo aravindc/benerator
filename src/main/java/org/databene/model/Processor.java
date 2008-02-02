@@ -26,12 +26,19 @@
 
 package org.databene.model;
 
+import org.databene.commons.Heavyweight;
+
 /**
- * Abstraction of an object that processes (possibly larger quantities) other objects.
- * An implementation might keep processed objects im memory, so a call to flush() is necessary from time to time.<br/>
+ * Abstraction of an object that processes (possibly larger quantities of) objects.
+ * An implementation might keep processed objects in memory, so a call to flush() 
+ * is necessary from time to time, telling the Processor, when it is a good time 
+ * for finalizing them.<br/>
  * <br/>
  * Created: 21.08.2007 19:51:05
+ * @author Volker Bergmann
+ * @deprecated as of 0.4.0, migrate existing Processors to {@link Consumer}.
  */
+@Deprecated
 public interface Processor<E> extends Heavyweight {
     void process(E object);
     void flush();
