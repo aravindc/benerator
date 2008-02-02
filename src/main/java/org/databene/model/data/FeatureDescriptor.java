@@ -1,15 +1,17 @@
 package org.databene.model.data;
 
-import org.databene.model.converter.AnyConverter;
-import org.databene.model.Validator;
-import org.databene.model.Operation;
+import org.databene.commons.Operation;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Validator;
+import org.databene.commons.converter.AnyConverter;
 
 import java.util.List;
 
 /**
+ * Common parent class of all descriptors.<br/><br/>
  * Created: 17.07.2006 21:30:45
+ * @author Volker Bergmann
  */
 public abstract class FeatureDescriptor {
 
@@ -222,10 +224,8 @@ public abstract class FeatureDescriptor {
     public Object getDetailValue(String name) {
         FeatureDetail<? extends Object> detail = getDeclaredDetail(name);
         Object value = detail.getValue();
-        if (value == null && parent != null && parent.supportsDetail(name) /* TODO && detail.isConstraint() */)
+        if (value == null && parent != null && parent.supportsDetail(name) && detail.isConstraint())
             value = parent.getDetailValue(name);
-//        if (value == null)
-//            value = detail.getDefault();
         return value;
     }
 
@@ -265,13 +265,13 @@ public abstract class FeatureDescriptor {
         if (o == null || getClass() != o.getClass())
             return false;
         final FeatureDescriptor that = (FeatureDescriptor) o;
-        if (!this.details.equals(that.details)) // TODO v0.4 consider case
+        if (!this.details.equals(that.details)) // TODO v0.5 consider capitalization
             return false;
         return !(parent != null ? !parent.equals(that.parent) : that.parent != null);
     }
 
     public int hashCode() {
-        return (parent != null ? parent.hashCode() : 0) * 29 + details.hashCode();
+        return (getClass().hashCode() * 29 + (parent != null ? parent.hashCode() : 0)) * 29 + details.hashCode();
     }
 
     // helpers ---------------------------------------------------------------------------------------------------------
