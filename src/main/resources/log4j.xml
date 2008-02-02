@@ -14,7 +14,7 @@
 
       <layout class="org.apache.log4j.PatternLayout">
          <!-- The default pattern: Date Priority [Category] Message\n -->
-         <param name="ConversionPattern" value="%d %-5p [%c] %m%n"/>
+         <param name="ConversionPattern" value="%d %-5p (%t) [%c] %m%n"/>
 
          <!-- The full pattern: Date MS Priority [Category] (Thread:NDC) Message\n
          <param name="ConversionPattern" value="%d %-5r %-5p [%c] (%t:%x) %m%n"/>
@@ -33,11 +33,11 @@
       <!--errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/-->
 
       <param name="Target" value="System.out"/>
-      <param name="Threshold" value="DEBUG"/>
+      <param name="Threshold" value="debug"/>
 
       <layout class="org.apache.log4j.PatternLayout">
          <!-- The default pattern: Date Priority [Category] Message\n -->
-         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c] %m%n"/>
+         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p (%t) [%c] %m%n"/>
       </layout>
    </appender>
 
@@ -46,7 +46,7 @@
    <!-- ================ -->
 
     <category name="org.apache">
-       <priority value="WARN"/>
+       <priority value="warn"/>
     </category>
 
     <category name="org.databene">
@@ -65,11 +65,11 @@
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.model.converter">
+    <category name="org.databene.commons.converter">
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.model.converter.AnyConverter">
+    <category name="org.databene.commons.converter.AnyConverter">
        <priority value="info"/>
     </category>
 
