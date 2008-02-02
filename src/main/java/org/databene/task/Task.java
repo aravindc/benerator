@@ -26,13 +26,21 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
+
 /**
  * The Task interface.
  * General usage is to call init() for initialization,
  * then once or several times the run() method for executing the task's work.
- * After usage, destroy() is called.<br/>
+ * After usage, destroy() is called. 
+ * If the goal of a Task has been achieved by external influences or Task 
+ * completion, the Task may signal that it does not require further execution 
+ * by returning false in {@link #wantsToRun()}.
+ * When implementing the Task interface, you should preferably inherit from 
+ * {@link AbstractTask}, this may compensate for future interface changes.<br/>
  * <br/>
  * Created: 06.07.2007 06:30:22
+ * @author Volker Bergmann
  */
 public interface Task extends Runnable {
 
@@ -40,11 +48,17 @@ public interface Task extends Runnable {
     String getTaskName();
 
     /** initializes the task and, if necessary, stores a reference to the context. */
-    void init(TaskContext context);
+    void init(Context context);
+
+    /**
+     * tells if the task still wants to be executed.
+     * @since 0.4.0
+     */
+    boolean wantsToRun();
 
     /** executes the main functionality of the task. */
     void run();
-
+    
     /** closes the task and releases all resources. */
     void destroy();
 }
