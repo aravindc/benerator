@@ -40,6 +40,7 @@ import java.io.FileWriter;
  * Reads and perists city files in CSV format (column header = property name).<br/>
  * <br/>
  * Created: 28.07.2007 15:21:12
+ * @author Volker Bergmann
  */
 public class CityManager {
 
@@ -57,7 +58,7 @@ public class CityManager {
             "Markt", "Hofamt", "Maria", "Deutsch", "Moorbad", "Bairisch", "Klein", "Hohe", "Groﬂ", // AT
             "La", "Le", "Les", // CH
             "San", "Santa", "Val", "Monte", "Ponte", "Castel", "Riva", "Villa", // CH
-            "Santa Maria"); // TODO v0.4 "Santa Maria" are two words
+            "Santa Maria"); // TODO v0.5 "Santa Maria" are two words
     private static Set<String> suffixes = ArrayUtil.toSet(
             "Stadt", "Land", // CH
             "Umgebung", "Kurort", "Markt", "Neustadt", "Neudorf", "II", // AT
@@ -77,14 +78,16 @@ public class CityManager {
             String[] cells = iterator.next();
             if (cells.length == 0)
                 continue;
-//System.out.println(ArrayFormat.format(";", cells));
+            if (logger.isDebugEnabled())
+                logger.debug(ArrayFormat.format(";", cells));
             if (cells.length == 1)
                 continue;
             Map<String, String> instance = new HashMap<String, String>();
             for (int i = 0; i < cells.length; i++) {
                 instance.put(header[i], cells[i]);
             }
-            //System.out.println(instance);
+            if (logger.isDebugEnabled())
+                logger.debug(instance);
 
             // create/setup state
             String stateId = instance.get("state");
@@ -127,7 +130,7 @@ public class CityManager {
         if (warnCount > 0)
             System.out.println(warnCount + " warnings");
         if (suspectiveNames.size() > 0)
-            System.out.println("Suspective names: " + suspectiveNames);
+            logger.warn("Suspective names: " + suspectiveNames);
     }
 
     public static void persistCities(Country country, String filename) throws IOException {
@@ -165,16 +168,16 @@ public class CityManager {
         // Extension = State | '(' Text ')' | Locator
         // Locator = ('b.' | 'im' | 'am' | 'in der' | 'an der' | 'ob' | 'sopra' | 'di') (Word | Words)
 
-        // TODO v0.4 check for double names like Frantschach-St. Gertraud
-        // TODO v0.4 make use of district and institution info
+        // TODO v0.5 check for double names like Frantschach-St. Gertraud
+        // TODO v0.5 make use of district and institution info
 
         String[] nameParts = StringUtil.tokenize(cityName, ' ');
         // check prefix
         String name = "";
         String extension = "";
 
-        String district = null;
-        String institution = null;
+//        String district = null;
+//        String institution = null;
 //        int warnCount = 0;
 
         // process prefixes
@@ -186,10 +189,10 @@ public class CityManager {
         // check for district and institution
         for (int i = 0; i < nameParts.length; i++) {
             if (ParseUtil.isPositiveNumber(nameParts[i])) {
-                district = nameParts[i];
+                //district = nameParts[i];
                 if (i < nameParts.length - 1) {
                     String[] institutionParts = ArrayUtil.copyOfRange(nameParts, i + 1, nameParts.length - i - 1);
-                    institution = ArrayFormat.format(" ", institutionParts);
+                    //institution = ArrayFormat.format(" ", institutionParts);
                     nameParts = ArrayUtil.copyOfRange(nameParts, 0, i);
                 } else
                     nameParts = ArrayUtil.remove(nameParts, nameParts.length - 1);
@@ -244,8 +247,6 @@ public class CityManager {
                 }
             }
             if (nameParts.length >= 3) {
-//                if (nameParts.length >= 4)
-//                    System.out.println("");
                 // check for simple locator
                 for (int startIndex = 1; startIndex < nameParts.length - 1; startIndex++) {
                     if (simpleLocatorWords.contains(nameParts[startIndex])) {
