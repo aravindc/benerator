@@ -166,9 +166,13 @@
                     with a local database instance running in an own process (MySQL/Oracle):
                     <table>
                         <tr>
-                            <td>database persistense</td>
-                            <td>6 million entities per hour</td>
+                            <td>oracle export (on local system)</td>
+                            <td>3 million entities per hour</td>
                         </tr>
+                        <!--tr>
+                            <td>oracle export (via LAN)</td>
+                            <td>18 million entities per hour</td>
+                        </tr-->
                         <tr>
                             <td>csv export:</td>
                             <td>60 million entities per hour</td>
