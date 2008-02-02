@@ -29,11 +29,13 @@ package org.databene.platform.db.model;
 import java.sql.Types;
 
 /**
+ * Represents a database column type.<br/><br/>
  * Created: 06.01.2007 10:12:29
+ * @author Volker Bergmann
  */
 public class DBColumnType {
 /*
-    TODO v0.4 manage types
+    TODO v0.5 manage types
     private static final Map<String, DBColumnType> instances = new HashMap<String, DBColumnType>();
 
     public static final DBColumnType VARCHAR = new DBColumnType("VARCHAR");

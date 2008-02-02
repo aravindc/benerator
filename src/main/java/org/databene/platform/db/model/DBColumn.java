@@ -32,13 +32,15 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
+ * Represents a database column.<br/><br/>
  * Created: 06.01.2007 08:58:49
+ * @author Volker Bergmann
  */
 public class DBColumn {
 
     private String name;
     private DBColumnType type;
-    private int[] modifiers;
+    private int[] modifiers; // TODO v0.4.1 transform to 'size' and 'scale' attributes
     private String doc;
     private String defaultValue;
     private DBTable table;
@@ -160,7 +162,7 @@ public class DBColumn {
 
     public int size() {
         if (modifiers != null && modifiers.length > 0)
-            return modifiers[0]; // TODO v0.4 evaluate if byte or char
+            return modifiers[0]; // TODO v0.4.1 evaluate if byte or char
         return 1;
     }
 
