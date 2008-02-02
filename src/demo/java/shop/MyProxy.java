@@ -26,43 +26,52 @@
 
 package shop;
 
-import org.databene.model.Processor;
+import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Simple processor proxy implementation that logs an entity before it is forwarded to the target processor.<br/>
+ * Simple {@link Consumer} proxy implementation that logs an entity before it is forwarded to the target consumer.<br/>
  * <br/>
  * Created: 26.08.2007 14:47:40
  */
-public class MyProxy implements Processor<Entity> {
+public class MyProxy extends AbstractConsumer<Entity> {
 
     private static Log logger = LogFactory.getLog(MyProxy.class);
 
-    private Processor<Entity> target;
+    private Consumer<Entity> target;
 
     public MyProxy() {
         this(null);
     }
 
-    public MyProxy(Processor<Entity> target) {
+    public MyProxy(Consumer<Entity> target) {
         this.target = target;
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
-    public Processor<Entity> getTarget() {
+    public Consumer<Entity> getTarget() {
         return target;
     }
 
-    public void setTarget(Processor<Entity> target) {
+    public void setTarget(Consumer<Entity> target) {
         this.target = target;
     }
+    
+    // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void process(Entity entity) {
-        logger.info(entity);
-        target.process(entity);
+    public void startConsuming(Entity object) {
+        logger.info(object);
+        target.startConsuming(object);
     }
 
+    public void finishConsuming(Entity object) {
+        logger.info(object);
+        target.finishConsuming(object);
+    }
     public void flush() {
         target.flush();
     }
@@ -70,4 +79,5 @@ public class MyProxy implements Processor<Entity> {
     public void close() {
         target.close();
     }
+
 }
