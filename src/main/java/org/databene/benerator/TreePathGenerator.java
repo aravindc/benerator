@@ -26,7 +26,7 @@
 
 package org.databene.benerator;
 
-import org.databene.model.TreeModel;
+import org.databene.commons.TreeModel;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -26,7 +26,7 @@
 
 package org.databene.benerator;
 
-import org.databene.model.Validator;
+import org.databene.commons.Validator;
 
 /**
  * Generator proxy that uses another generator for creating values and filters out invalid ones.

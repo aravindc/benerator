@@ -28,7 +28,7 @@ package org.databene.benerator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.model.Validator;
+import org.databene.commons.Validator;
 
 /**
  * Provides an abstract implementation of a generator that validates its generated values.<br/>
