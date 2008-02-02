@@ -26,25 +26,43 @@
 
 package org.databene.region;
 
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
+
 /**
  * Represents a phone number.<br/>
  * <br/>
  * Created: 13.06.2006 07:19:26
+ * @author Volker Bergmann
  */
 public class PhoneNumber {
-
+    
+    private static final Escalator escalator = new LoggerEscalator();
+    
     private String countryCode;
-    private String cityCode;
-    private String localCode;
-
+    private String areaCode;
+    private String localNumber;
+    
     private boolean mobile;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
-    public PhoneNumber(String countryCode, String cityCode, String localCode, boolean mobile) {
+    public PhoneNumber() {
+        this("", "", "");
+    }
+
+    public PhoneNumber(String countryCode, String cityCode, String localNumber) {
+        this(countryCode, cityCode, localNumber, false);
+    }
+
+    public PhoneNumber(String countryCode, String cityCode, String localNumber, boolean mobile) {
         this.countryCode = countryCode;
-        this.cityCode = cityCode;
-        this.localCode = localCode;
+        this.areaCode = cityCode;
+        this.localNumber = localNumber;
         this.mobile = mobile;
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     public String getCountryCode() {
         return countryCode;
@@ -54,20 +72,60 @@ public class PhoneNumber {
         this.countryCode = countryCode;
     }
 
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String cityCode) {
+        this.areaCode = cityCode;
+    }
+
+    /**
+     * @return
+     * @deprecated replaced with {@link #getAreaCode()}
+     */
     public String getCityCode() {
-        return cityCode;
+        escalator.escalate(getClass().getSimpleName() + ".getCityCode() is deprecated. " +
+        		"Use getAreaCode() instead" , getClass(), null);
+        return areaCode;
     }
 
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
+    /**
+     * @param areaCode
+     * @deprecated replaced with {@link #setAreaCode(String)}
+     */
+    public void setCityCode(String areaCode) {
+        escalator.escalate(getClass().getSimpleName() + ".setCityCode(String) is deprecated. " +
+                "Use setAreaCode(String) instead" , getClass(), null);
+        this.areaCode = areaCode;
     }
 
+    public String getLocalNumber() {
+        return localNumber;
+    }
+
+    public void setLocalNumber(String localNumber) {
+        this.localNumber = localNumber;
+    }
+
+    /**
+     * @return
+     * @deprecated replaced with {@link #getLocalNumber()}
+     */
     public String getLocalCode() {
-        return localCode;
+        escalator.escalate(getClass().getSimpleName() + ".getLocalCode() is deprecated. " +
+                "Use getLocalNumber() instead" , getClass(), null);
+        return localNumber;
     }
 
+    /**
+     * @param localCode
+     * @deprecated replaced with {@link #setLocalCode(String)}
+     */
     public void setLocalCode(String localCode) {
-        this.localCode = localCode;
+        escalator.escalate(getClass().getSimpleName() + ".setLocalCode() is deprecated. " +
+                "Use setLocalNumber() instead" , getClass(), null);
+        this.localNumber = localCode;
     }
 
     public boolean isMobile() {
@@ -77,8 +135,51 @@ public class PhoneNumber {
     public void setMobile(boolean mobile) {
         this.mobile = mobile;
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return '+' + countryCode + '-' + cityCode + '-' + localCode;
+        return "+" + countryCode + '-' + areaCode + '-' + localNumber;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((areaCode == null) ? 0 : areaCode.hashCode());
+        result = prime * result
+                + ((countryCode == null) ? 0 : countryCode.hashCode());
+        result = prime * result
+                + ((localNumber == null) ? 0 : localNumber.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final PhoneNumber other = (PhoneNumber) obj;
+        if (areaCode == null) {
+            if (other.areaCode != null)
+                return false;
+        } else if (!areaCode.equals(other.areaCode))
+            return false;
+        if (countryCode == null) {
+            if (other.countryCode != null)
+                return false;
+        } else if (!countryCode.equals(other.countryCode))
+            return false;
+        if (localNumber == null) {
+            if (other.localNumber != null)
+                return false;
+        } else if (!localNumber.equals(other.localNumber))
+            return false;
+        return true;
+    }
+    
 }
