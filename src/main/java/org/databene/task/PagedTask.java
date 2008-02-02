@@ -30,12 +30,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
@@ -43,12 +40,13 @@ import java.lang.reflect.InvocationTargetException;
  * Task implementation that provides for repeated, paged, multithreaded Task execution.<br/>
  * <br/>
  * Created: 16.07.2007 19:25:30
+ * @author Volker Bergmann
  */
 public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionHandler {
 
     private static final Log logger = LogFactory.getLog(PagedTask.class);
 
-    private Task realTask;
+    protected Task realTask;
     private PageListener listener;
 
     private long totalInvocations;
@@ -88,6 +86,27 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
 
     // Task implementation ---------------------------------------------------------------------------------------------
 
+    /**
+     * @return the totalInvocations
+     */
+    public long getTotalInvocations() {
+        return totalInvocations;
+    }
+
+    /**
+     * @return the pageSize
+     */
+    public long getPageSize() {
+        return pageSize;
+    }
+
+    /**
+     * @return the threadCount
+     */
+    public int getThreadCount() {
+        return threadCount;
+    }
+
     public void run() {
     	if (totalInvocations == 0)
     		return;
@@ -97,48 +116,13 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
             logger.debug("Running PagedTask[" + getTaskName() + "]");
         int currentPageNo = 0;
         while (workPending(currentPageNo)) {
-            pageStarting(currentPageNo, -1); // TODO 
+            pageStarting(currentPageNo);
             long currentPageSize = (totalInvocations < 0 ? pageSize : Math.min(pageSize, totalInvocations - invocationCount));
-            int maxLoopsPerPage = (int)((currentPageSize + threadCount - 1) / threadCount);
-            int shorterLoops = (int)(threadCount * maxLoopsPerPage - currentPageSize);
-            if (realTask instanceof ThreadSafe)
-                realTask.init(context);
-            // create threads for a page
-            CountDownLatch latch = new CountDownLatch(threadCount);
-            for (int threadNo = 0; threadNo < threadCount; threadNo++) {
-                int loopSize = maxLoopsPerPage;
-                if (totalInvocations >= 0 && threadNo >= threadCount - shorterLoops)
-               		loopSize--;
-                if (loopSize > 0) {
-                    Task task = realTask;
-                    if (threadCount > 1) {
-                        if (!(task instanceof ThreadSafe)) {
-                            if (task instanceof Parallelizable)
-                                task = cloneTask((Parallelizable) task);
-                            else
-                                throw new ConfigurationError("Since the task is not marked as thread-safe," +
-                                        "it must either be used single-threaded " +
-                                        "or implement the Parallelizable interface");
-                        }
-                    }
-                    task = new LoopedTask(task, loopSize);
-                    TaskRunnable thread = new TaskRunnable(task, (realTask instanceof ThreadSafe ? null : context), latch);
-                    executor.execute(thread);
-                    invocationCount += loopSize;
-                } else
-                	latch.countDown();
-            }
-            
-            if (logger.isDebugEnabled())
-                logger.debug("Waiting for end of page " + (currentPageNo + 1) + " of " + getTaskName() + "...");
-            try {
-				latch.await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-            if (realTask instanceof ThreadSafe)
-                realTask.destroy();
-            pageFinished(currentPageNo, -1); // TODO
+            if (threadCount > 1)
+                invocationCount += runMultiThreaded(currentPageNo, currentPageSize);
+            else
+                invocationCount += runSingleThreaded(currentPageSize);
+            pageFinished(currentPageNo);
             if (exception != null)
                 throw new RuntimeException(exception);
             currentPageNo++;
@@ -147,7 +131,61 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
             logger.debug("PagedTask " + getTaskName() + " finished");
     }
 
+    private long runMultiThreaded(int currentPageNo, long currentPageSize) {
+        long localInvocationCount = 0;
+        int maxLoopsPerPage = (int)((currentPageSize + threadCount - 1) / threadCount);
+        int shorterLoops = (int)(threadCount * maxLoopsPerPage - currentPageSize);
+        if (realTask instanceof ThreadSafe)
+            realTask.init(context);
+        // create threads for a page
+        CountDownLatch latch = new CountDownLatch(threadCount);
+        for (int threadNo = 0; threadNo < threadCount; threadNo++) {
+            int loopSize = maxLoopsPerPage;
+            if (totalInvocations >= 0 && threadNo >= threadCount - shorterLoops)
+                loopSize--;
+            if (loopSize > 0) {
+                Task task = realTask;
+                if (threadCount > 1) {
+                    if (!(task instanceof ThreadSafe)) {
+                        if (task instanceof Parallelizable)
+                            task = cloneTask((Parallelizable) task);
+                        else
+                            throw new ConfigurationError("Since the task is not marked as thread-safe," +
+                                    "it must either be used single-threaded " +
+                                    "or implement the Parallelizable interface");
+                    }
+                }
+                task = new LoopedTask(task, loopSize); // TODO v0.4.1 leave the loop if generator has become unavailable 
+                TaskRunnable thread = new TaskRunnable(task, (realTask instanceof ThreadSafe ? null : context), latch);
+                executor.execute(thread);
+                localInvocationCount += loopSize;
+            } else
+                latch.countDown();
+        }
+        
+        if (logger.isDebugEnabled())
+            logger.debug("Waiting for end of page " + (currentPageNo + 1) + " of " + getTaskName() + "...");
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (realTask instanceof ThreadSafe)
+            realTask.destroy();
+        return localInvocationCount;
+    }
+
+    private long runSingleThreaded(long currentPageSize) {
+        Task task = new LoopedTask(realTask, currentPageSize);
+        task.init(context);
+        task.run();
+        task.destroy();
+        return currentPageSize;
+    }
+
     protected boolean workPending(int currentPageNo) {
+        if (!realTask.wantsToRun())
+            return false;
         long pages = (totalInvocations >= 0 ? (totalInvocations + pageSize - 1) / pageSize : -1);
 		return pages < 0 || currentPageNo < pages;
 	}
@@ -165,18 +203,18 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
         }
     }
 
-    protected void pageStarting(int currentPageNo, long totalPages) {
+    protected void pageStarting(int currentPageNo) {
         if (logger.isDebugEnabled())
-            logger.debug("Starting page " + (currentPageNo + 1) + '/' + totalPages + " of " + getTaskName());
+            logger.debug("Starting page " + (currentPageNo + 1) + " of " + getTaskName() + " with pagesize=" + pageSize);
         if (listener != null)
-            listener.pageStarting(currentPageNo, totalPages);
+            listener.pageStarting(currentPageNo, -1);
     }
 
-    protected void pageFinished(int currentPageNo, long totalPages) {
+    protected void pageFinished(int currentPageNo) {
         if (logger.isDebugEnabled())
-            logger.debug("Page " + (currentPageNo + 1) + '/' + totalPages + " of " + getTaskName() + " finished");
+            logger.debug("Page " + (currentPageNo + 1) + " of " + getTaskName() + " finished");
         if (listener != null)
-            listener.pageFinished(currentPageNo, totalPages);
+            listener.pageFinished(currentPageNo, -1);
     }
 
     public void uncaughtException(Thread t, Throwable e) {
