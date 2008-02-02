@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.0.dtd">
+<setup>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	     Demonstration file for populating the shop database.
+	     Please invoke with JVM paramenters like these:
+	         -Dstage=development -Ddatabase=oracle
+	     or something appropriate for your environment.
+	     
+	     When doing so you need to provide the following files:
+	         shop.development.properties
+	         oracle/shop.oracle.properties
+	         oracle/create_tables.oracle.sql
+	         oracle/drop_tables.oracle.sql
+	         
+	     Have a look at the examples provided for oracle, db, 
+	     sql_server, mysql, postgres, hsql, mysql & derby
+	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<!-- first, import stage and database specific properties -->
+	<include uri="{demo/shop/${database}/shop.${database}.properties}" />
+	<include uri="{demo/shop/shop.${stage}.properties}" />
+
+	<!-- log the settings to the console -->
+	<echo message="Starting generation for" />
+	<echo message="{  ${product_count + 6} products}" />
+	<echo message="{  ${customer_count + 1} customers}" />
+	<echo message="{  ${orders_per_customer} orders per customer}" />
+	<echo message="{  ${items_per_order} items per order}" />
+	<echo message="{  ${total_items} entities in total}" />
+	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
+
+	<!-- define a database that will be referred by the id 'db' later -->
+	<database id="db" url="{${db_uri}}" driver="{${db_driver}}" schema="{${db_schema!}}"
+		user="{${db_user}}" password="{${db_password!}}" batch="{${db_batch!}}" />
+
+	<!-- drop the current tables/sequences if they exist and recreate them -->
+	<run-task class="org.databene.platform.db.RunSqlScriptTask">
+	<!--  note: the 'drop' script is database independent -->
+		<property name="uri" value="{demo/shop/${database}/drop_tables.${database}.sql}" />
+		<property name="db" ref="db" />
+		<property name="haltOnError" value="false" />
+	</run-task>
+	<run-task class="org.databene.platform.db.RunSqlScriptTask">
+		<!-- note: The 'create' script is database specific -->
+		<property name="uri" value="{demo/shop/${database}/create_tables.${database}.sql}" />
+		<property name="db" ref="db" />
+		<property name="ignoreComments" value="false" />
+		<property name="haltOnError" value="true" />
+	</run-task>
+
+	<!-- Create a valid base data set for regression testing by importing a DbUnit file -->
+	<create-entities source="demo/shop/shop.dbunit.xml" consumer="db" />
+
+	<!-- import some more predefined products from a CSV file -->
+	<create-entities name="db_product" source="demo/shop/products.import.csv" consumer="db" />
+	<!-- you could import them from a flat file as well, e.g. -->
+	<!-- <create-entities name="db_product" source="demo/shop/products.import.flat" 
+		pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /> -->
+
+	<!-- For the db_product table, the primary keys are EAN codes, create a specific generator for them -->
+	<bean id="ean_generator" class="org.databene.domain.product.EANGenerator">
+		<property name="unique" value="true" />
+	</bean>
+
+	<!-- create products of random attributes & category -->
+	<create-entities name="db_product" count="{ftl:${product_count}}" consumer="db">
+		<attribute name="ean_code" source="ean_generator" /> <!-- This uses the EAN generator defined above -->
+		<attribute name="category_id" source="db" selector="select id from db_category" distribution="random" />
+		<attribute name="price" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
+		<!-- Export the generated products not only to the database, but also to a flat file -->
+		<consumer class="org.databene.platform.flat.FlatFileEntityExporter">
+			<property name="uri" value="products.flat" />
+			<property name="properties" value="ean_code[13],name[30l],price[10.2r0]" />
+		</consumer>
+	</create-entities>
+
+	<!-- create customers -->
+	<create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
+		<variable name="person" generator="org.databene.domain.person.PersonGenerator" />
+		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
+		<attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)" />
+		<attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
+		<attribute name="role_id" values="customer" />
+		<create-entities name="db_customer" count="1" consumer="db">
+			<attribute name="id" source="db_user.id" />
+			<attribute name="category" values="A,B,C" />
+			<attribute name="salutation" source="person.salutation" />
+			<attribute name="first_name" source="person.givenName" />
+			<attribute name="last_name" source="person.familyName" />
+			<attribute name="birth_date" nullable="false" />
+			<!-- Export the customers not only to the database, but there names and passwords to a CSV file -->
+			<consumer class="org.databene.platform.csv.CSVEntityExporter">
+				<property name="uri" value="customers.csv" />
+				<property name="properties" value="name,password" />
+			</consumer>
+		</create-entities>
+	</create-entities>
+
+	<!-- create one default order for each customer based on a DBUnit template -->
+	<create-entities name="db_order" consumer="db">
+		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<attribute name="customer_id" source="db" selector="select id from db_customer" />
+		<create-entities name="db_order_item" source="demo/shop/default_order.dbunit.xml" consumer="db">
+			<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		</create-entities>
+	</create-entities>
+
+	<!-- create orders for random customers and random products -->
+	<create-entities name="db_order" count="{ftl:${customer_count * orders_per_customer}}" consumer="db">
+		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true" />
+	</create-entities>
+
+	<!-- create order items -->
+	<create-entities name="db_order_item"
+			count="{ftl:${customer_count * orders_per_customer * items_per_order}}" consumer="db">
+		<variable name="product" source="db" selector="select ean_code, price from db_product" distribution="cumulated" />
+		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
+		<attribute name="order_id" source="db" selector="select id from db_order" cyclic="true" />
+		<attribute name="product_ean_code" script="{${product[0]}}" />
+		<attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
+	</create-entities>
+</setup>
