@@ -35,26 +35,34 @@ import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
-import org.databene.platform.db.adapter.DBSystem;
+import org.databene.platform.db.DBSystem;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
 
 /**
  * Creates a snapshot of a database schema and exports it in DbUnit XML file format.
- * @author Volker Bergmann
  * @since 0.3.04
+ * @author Volker Bergmann
  */
 public class DBSnapshotTool {
     
     private static final Log logger = LogFactory.getLog(DBSnapshotTool.class);
     
     public static void main(String[] args) {
-
+        logger.info("Starting " + DBSnapshotTool.class.getSimpleName());
         String filename = (args.length > 0 ? args[0] : "snapshot.dbunit.xml");
         String fileEncoding = System.getProperty("file.encoding");
         
         String dbUrl = System.getProperty("db.url");
+        if (dbUrl == null)
+            throw new IllegalArgumentException("No database URL specified. " +
+            		"Please provide the JDBC URL as an environment property like '-Ddb.url=jdbc:...'");
         String dbDriver = System.getProperty("db.driver");
+        if (dbDriver == null)
+            throw new IllegalArgumentException("No database driver specified. " +
+                    "Please provide the JDBC driver class name as an environment property like '-Ddb.driver=...'");
         String dbUser = System.getProperty("db.user");
+        if (dbUser == null)
+            logger.warn("No JDBC user specified");
         String dbPassword = System.getProperty("db.password");
         String dbSchema = System.getProperty("db.schema");
         
@@ -75,8 +83,8 @@ public class DBSnapshotTool {
             logger.info("Starting export");
             for (EntityDescriptor descriptor : descriptors) {
                 logger.info("Exporting table " + descriptor.getName());
-                for (Entity entity : db.getEntities(descriptor.getName())) {
-                    exporter.process(entity);
+                for (Entity entity : db.queryEntities(descriptor.getName(), "")) {
+                    exporter.startConsuming(entity);
                     count++;
                 }
             }
