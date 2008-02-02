@@ -29,6 +29,8 @@ package org.databene.benerator.composite;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
 import org.databene.benerator.Generator;
+import org.databene.benerator.wrapper.IdGenerator;
+import org.databene.commons.Context;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,6 +40,7 @@ import java.util.Map;
  * Generates instances of an entity type as specified by its EntityDescriptor.<br/>
  * <br/>
  * Created: 27.06.2007 23:51:42
+ * @author Volker Bergmann
  */
 public class EntityGenerator implements Generator<Entity> {
 
@@ -46,6 +49,7 @@ public class EntityGenerator implements Generator<Entity> {
     private String entityName;
     private Generator<Entity> source;
     private Map<String, Generator<? extends Object>> componentGenerators;
+    private Context context;
 
     // constructors --------------------------------------------------------------------------------------
 
@@ -53,8 +57,8 @@ public class EntityGenerator implements Generator<Entity> {
      * @param descriptor Entity descriptor. 
      * @param componentGenerators Generators that generate values for the entities' components
      */
-    public EntityGenerator(EntityDescriptor descriptor, Map<String, Generator<? extends Object>> componentGenerators) {
-        this(descriptor, new SimpleEntityGenerator(descriptor), componentGenerators);
+    public EntityGenerator(EntityDescriptor descriptor, Map<String, Generator<? extends Object>> componentGenerators, Context context) {
+        this(descriptor, new SimpleEntityGenerator(descriptor), componentGenerators, context);
     }
 
     /**
@@ -63,10 +67,11 @@ public class EntityGenerator implements Generator<Entity> {
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param componentGenerators Generators that generate values for the entities' components
      */
-    public EntityGenerator(EntityDescriptor descriptor, Generator<Entity> source, Map<String, Generator<? extends Object>> componentGenerators) {
+    public EntityGenerator(EntityDescriptor descriptor, Generator<Entity> source, Map<String, Generator<? extends Object>> componentGenerators, Context context) {
         this.entityName = descriptor.getName();
         this.source = source;
         this.componentGenerators = componentGenerators;
+        this.context = context;
     }
 
     // Generator interface -----------------------------------------------------------------------------------
@@ -84,13 +89,13 @@ public class EntityGenerator implements Generator<Entity> {
     public boolean available() {
         if (!source.available()) {
             if (stateLogger.isDebugEnabled())
-                stateLogger.debug("Source for entity '" + entityName + "' is no more available: " + source);
+                stateLogger.debug("Source for entity '" + entityName + "' is not available any more: " + source);
             return false;
         }
         for (Generator<? extends Object> compGen : componentGenerators.values()) {
             if (!compGen.available()) {
                 if (stateLogger.isDebugEnabled())
-                    stateLogger.debug("Generator for entity '" + entityName + "' is no more available: " + compGen);
+                    stateLogger.debug("Generator for entity '" + entityName + "' is not available any more: " + compGen);
                 return false;
             }
         }
@@ -98,23 +103,25 @@ public class EntityGenerator implements Generator<Entity> {
     }
 
     public Entity generate() {
-        Entity instance = source.generate();
+        Entity entity = source.generate();
+        context.set(this.entityName, entity);
         for (Map.Entry<String, Generator<? extends Object>> entry : componentGenerators.entrySet()) {
             String componentName = entry.getKey();
             try {
                 Object componentValue = entry.getValue().generate();
-                instance.setComponent(componentName, componentValue);
+                entity.setComponent(componentName, componentValue);
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of component '" + componentName + "'", e);
             }
         }
-        return instance;
+        return entity;
     }
 
     public void close() {
         source.close();
         for (Generator<? extends Object> compGen : componentGenerators.values())
-            compGen.close();
+            if (!(compGen instanceof IdGenerator))
+                compGen.close();
     }
     
     public void reset() {
