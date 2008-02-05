@@ -37,8 +37,7 @@ import org.databene.commons.*;
 import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
-import org.databene.script.ScriptException;
-import org.databene.script.AbstractScript;
+import org.databene.script.Script;
 
 import java.io.*;
 import java.util.Date;
@@ -109,7 +108,7 @@ public class ArrayFlatFileDemo {
         }
     }
 
-    private static class HeaderScript extends AbstractScript {
+    private static class HeaderScript implements Script {
 
         int length;
 

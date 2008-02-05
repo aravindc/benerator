@@ -7,17 +7,25 @@
         <version>1.0</version>
     </skin>
 
-    <!--bannerLeft>
+    <bannerLeft>
       <name>databene</name>
-      <src>images/databene.gif</src>
-      <href>http://databene.org/</href>
-    </bannerLeft-->
+      <src>images/logos/benerator.png</src>
+      <href>./</href>
+    </bannerLeft>
 
-    <!--bannerRight>
-      <src>http://maven.apache.org/images/maven-small.gif</src>
+    <!-- bannerRight>
+      <src>images/logos/databene-logo.gif</src>
+      <href>http://databene.org</href>
     </bannerRight-->
 
-    <body>
+  <publishDate position="left" format="yyyy-MMM-dd"/>
+  
+  <poweredBy>
+    <logo name="Maven" href="http://maven.apache.org/"
+          img="images/logos/maven-button-2.png"/>
+  </poweredBy>
+  
+  <body>
 
         <head>
             <meta name="Description" content="Open Source software developer"/>
@@ -55,16 +63,12 @@
         <menu name="databene benerator">
             <item name="about" href="index.html"/>
             <item name="features" href="features.html"/>
-            <item name="getting started" href="getting_started.html"/>
-            <item name="domain packages" href="domain_packages.html"/>
-            <item name="file format" href="file_format.html"/>
-            <item name="user guide" href="user_guide.html"/>
-            <item name="customizing guide" href="customizing_guide.html"/>
-            <item name="reference" href="reference.html"/>
             <item name="faq" href="faq.html"/>
-            <item name="presentation" href="Sisyphos_is_done-databene_benerator.pdf"/>
+            <item name="getting started" href="getting_started.html"/>
+            <item name="documentation" href="documentation.html"/>
             <item name="similar products" href="similar_products.html"/>
             <item name="download" href="download.html"/>
+            <item name="history &amp; roadmap" href="history-roadmap.html"/>
         </menu>
 
         <menu name="benerator reports" ref="reports" />
