@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc_license_cu.jar"/>
 	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc.jar"/>
 	<classpathentry kind="lib" path="C:/dev/Microsoft SQL Server/sqljdbc_1.1/deu/sqljdbc.jar"/>
+	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/org/easymock/easymock/2.0/easymock-2.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
