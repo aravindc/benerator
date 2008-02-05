@@ -1,58 +1,196 @@
-Baustellen:
-===========
+Baustellen
+==========
 
-0.3.05
+04.02.08
+--------
+13:00: 	freshmeat announcement
+20:00: 	create databene-commons forum
+		release announcement on 
+		- theserverside.com
+		- opensourcetesting.com
+CfP mathema campus
+Visitenkarten-Entwurf 
+
+05.02.08
+--------
+Xing
+- Diskussion: How early should you test for performance
+- Xing-OS-Gruppe/Testgruppe: Vorstellung benerator
+get links from more sites
+
+
+
+Prio 2
 ------
-- Create shell files for
-  - prototype builder
-- features
-  - make benerator finish on SQL script errors
+Xing-Gruppe IT-Recht
+Check ranking for google queries:
+- open source test data generator (1)
+- test data generator (10)
+- load test data generator (20)
+- performance test data generator (n.f.) 
+- generate test data (n.f.)
+- create test data (n.f.)
+- generate data (n.f.)
+Kontakt Tobias Frech wg. JavaForum
+Oracle Performance-Schulung
+Amazon-Links
 
-0.4.0
+Profile
+-------
+- prv: Add 
+  - Hibernate
+  - Besuchte Schulungen u. Konferenzen
+  - Vorträge
+  - Expertise
+  - Speziellere Zieltätigkeiten
+- Gulp, Pentasys, mathema, Xing: Update
+
+bergmann-it.de
+-------------
+Create English version
+
+0.4.1
 -----
+- announcements
+  - hector team
+  - sal
+  - openbc
+  - http://www.javalobby.org/java/forums/f17.html
+  - http://www.theserverside.com/
+  - http://www.scouty.de/
+  - http://entwickler.com
+  - http://it-republik.de/jaxenter/
+  - slashdot.org
+  - http://www.infoq.com/performance-scalability
+
+- check site with
+  - Opera
+  - IE 6
+  - Other browsers?
+- count code lines
+- Marketing
+  - Post articles to sites
+    - digg.com
+    - devx.com
+    - theserverside.com
+    - javaworld.com
+  - Networking
+    - check GI
+    - join JUGM
+    - check ASQF groups
+    - Check conferences
+    - Get involved with JSR 303
+    - Check OSI and retry sourceforge
+    - Join barcamp
 - features
-  - support <reference values="..." generator="..."/>
+  - Add serialVersionUIDs
+  - print deprecation message
+  - id strategy=foreign?
+  - Check why/when Oracle reports 4x the length of varchar2 fields 
+  - make benerator finish on 
+    - SQL script errors
+    - create-entities exceptions
+  - ERROR ommiting entry java.vendor.url.bug=http://java.sun.com/cgi-bin/bugreport.cgi
+  - define XML-Java binding
+  - support inclusion of setup files
+  - Support Velocity (check necessity by vls/ftl licenses) 4h
+  - log creation throughput for each top-level entity
+  - custom setup file element handler
+  - default generators by name (created/inserted/updated_at/by), as part of domain package?
+  - finalize case handling
+  - prototype builder
+    - provide shell file (win/unix)
+    - scan existing data for null quota, distinct values and probabilities
+    - Filter DBSystem properties that are exported by PrototypeBuilder
+  - Ant plugin
+  - Maven plugin
+  - Check performance
+    - metadata import (check if unused columns are imported)
+    - SQL script invocation
+    - Entity/OrderedMap
+  - JDBCDBImporter: group tables by prefix
+  - Region concept
+  - parsing of check constraints
   - Key concept
-  - nullable -> required?
-  - config file:
-    - separate modeling of entities/builders from invocation
-    - support config file import
-    - property file support?
-  - sequence support on all possible DBs
-    - DB2:			SELECT NEXTVAL FOR myseq
-    - PostgreSQL:	nextval(myseq)
-    - HSQL: 		SELECT NEXT VALUE FOR mysequence
-  - Change Processor for supporting 
-    - XML export
-    - updating DB rows
-  - After generation close all heavyweight JavaBEans in the context
-  - Create shell files for prototype builder
-- Doc
-  - How to program workflow like running from setup file
-  - package doc
-  - Processors must be thread-safe
-  - Currently, Generators need not be thread-safe. Possibly future benerator versions will require thread safety
-  - pending SPI changes: Processor, System
+  - maxLength support for numbers and dates
+  - uniqueness/key/identity concept (single/multiple columns)
+  - setup file: unique = true | pk | name
+  - Standard properties
+    - benerator.default.key.generator=QName (DB specific)
+    - benerator.default.key.source=DB id (only DB)
+    - benerator.default.key.selector=SQL Query (DB specific)
+  - retrieve Oracle sequence names & auto-map them to tables
+  - support <reference values="..." | generator="..."/>
+  - Velocity support
+  - Sybase
+  - add execute() element that calls a System.execute(String) method, e.g. for submitting DDL
+  - support jdbc.properties file
+- Build
+  - measure test code coverage
+  - setup Bugzilla
 - QA
   - create tests for the demo package (esp. each database)
   - Perform each test for constructor and JavaBean setup
   - test new features on all DBs
+  - set up linux on Daniela's old computer
+  - measure test coverage
+  - improve tests on shop demo
+  - add check constraints to shop where it is useful
+- demo
+  - use examples of each country for shop products
+- Marketing
+  - Learn more about RSS
 - Site
+  - create RSS link for blog on all pages
+  - check internal links on all pages
+  - add tracking to javadoc/source-xref
+  - add delicious tags as html keywords
+  - remove mailing list
+  - link to freshmeat for registering for announcements
+- legal
+  - choose lawyer
+  - Define Terms and Conditions
+  - define OSI compliant license
+- Doc
+  - How to program workflow like running from setup file
+  - package doc
+  - Conventions
+    - *.dbunit.xml
+    - *.ben.xml
+  - anonymization
+  - anonymization demo
+  - describe dynamic aspects of the interfaces
+  - region concept
+  - Uniqueness
+  - Generierung voneinander abhängiger Entities / Daten
   - include new DistributionDemo snapshot in web site
   - update Sequence doc for DoubleFromLongGenerator
   - define SPIs
-  - FAQ: How to create unique ids?
-  - List generators
   - List converters
-  - List data types
-  - Site TODOs
-  - create RSS link for blog on all pages
-- Dev Process
-  - Define Eclipse Java file template with disclaimer !!!
+  - cross-link doc pages
+  - Known issues
+    - halting on errors
+    - no useful error messages in batch mode
+    - speed of metadata import (-> purge recyclebin)
 
-Learn more about RSS
-
-0.4.1
+0.5.0
+-----
+- features
+  - benerator XML schema
+  - config file:
+    - separate modeling of entities/builders from invocation
+    - compare mule setup with benerator setup
+  - Change Processor interface for supporting 
+    - XML export
+    - updating DB rows
+    - yaml support
+  - identity concept
+  - context -> repository?
+  - protocol handling: file://, http://, ftp://, custom
+- site
+  - online domain test data generator for manual testing?
+      
+0.5.1
 ------
 - features
   - Interaction between setup file and tasks
@@ -61,69 +199,67 @@ Learn more about RSS
   - define defaults by property file, e.g. processor, encoding, separator
   - Support recursive create-entities with parent reference
 - Support bytea type on Postgres
-- Shorten pagesize if no more generators are available
 - better example for BeanGraphDemo
-- Build
-  - measure test code coverage
-  - setup bug tracking
-- Region concept
-- parsing of check constraints
-Site
-  - Set up BugZilla
-- demo
-  - use examples of each country for shop products
-* setup file XSD
-* differ between API / SPI
-* describe dynamic aspects of the interfaces
-* Model generation
-* Model transformation
-* TreePathGenerator
-* region concept
-* anonymization
-* anonymization demo
-* maxLength support for numbers and dates
-* create JavaBeanGenerator that is used via API and reads XML config file structure
-* wrapping string generation with prefix and suffix
-* address generation
-  * CH: extract phone numbers
-  * AT: extract phone numbers
-* Download/Release Section
-** Source Download
-** Binary Download
+- Model generation
+- Model transformation
+- TreePathGenerator
+- create JavaBeanGenerator that is used via API and reads XML config file structure
+- address generation
+  - CH: extract phone numbers
+  - AT: extract phone numbers
+- Dirty check in inheritance hierarchies
 
-* 'Getting started' Document
-** Demos
-** Uniqueness
-** Generierung voneinander abhängiger Entities / Daten
-** Dirty check in inheritance hierarchies
-
-0.5.0
------
-- features
-  - add execute() element that calls a System.execute(String) method, e.g. for submitting SQL
-
-Repetitive tasks
-----------------
-* check for TODOs
-* check for UnsupportedOperationException
-* remove deprecations
-* check that the dirty flag is set in each Generator.set method
-* Check for default constructor on non-delegating generators
-* Test that invalid generator setups raise InvalidGeneratorSetupExceptions
-* remove System.out.print(ln)
-* provide JavaDoc for anything
-* remove cycles
-* run Findbugs
-* run PMD
-* CPD check
-* check resource paths
-* Check all validate() methods
-* check that all parents and delegates are closed/reseted/validated
-* remove log4j from main directory
-* upload DTD
-* check demo
-
-
+release tasks
+-------------
+- Complete/cleanup code
+  - check for Java TODOs
+  - check for XML TODOs
+  - check for UnsupportedOperationException
+  - remove (use of) deprecations, explain deprecations
+  - remove System.out.print(ln)
+  - provide JavaDoc for anything
+  - check forums for pending fixes/enhancements
+  - uncomment DTD reference in benerator and check all files if they run
+  - Assure that usage of deprecated features is escalated
+- run code checkers
+  - JDepend (esp. remove cycles)
+  - Findbugs
+  - PMD
+  - CPD
+- check demos
+  - run all demos
+  - test all databases
+- Run tests
+  - Check for default constructor on non-delegating generators
+  - check that the dirty flag is set in each Generator.set method
+  - Test that invalid generator setups raise InvalidGeneratorSetupExceptions
+  - Assure that all shell scripts work in a distribution
+- Update Site
+  - doc/samples for changed features
+  - Migration guide
+- check assembly
+  - assure log4j.xml is not contained
+  - check resource paths
+- upload
+  - site
+  - release files
+  - DTD
+- post on 
+  - freshmeat.net
+  - digg.com
+  - opensourcetesting.org
+  - dzone
+  - http://www.jsurfer.de/
+  - databene blog
+  
+  - http://www.javalobby.org/java/forums/f17.html
+  - http://www.theserverside.com/
+  - http://www.scouty.de/
+  - http://entwickler.com
+  - http://it-republik.de/jaxenter/
+  - slashdot.org
+  - http://www.infoq.com/performance-scalability
+  
 presentation:
 -------------
 more visualizations
@@ -134,34 +270,34 @@ experiences from Payback Polen
 
 license:
 --------
-* monthly rapid updates
-* quarterly service packs with the latest bug fixes
-* business hour support / 24/7 support
-* concerns future minor upgrades (x.*) or all future versions (*.*)
-* compatibility assurance for future minor upgrades (x.*) or all future versions (*.*)
-* influencing further development: voting for future extensions weighted by license fee
-* benerator license includes licenses for commons and webdecs
+- monthly rapid updates
+- quarterly service packs with the latest bug fixes
+- business hour support / 24/7 support
+- concerns future minor upgrades (x.*) or all future versions (*.*)
+- compatibility assurance for future minor upgrades (x.*) or all future versions (*.*)
+- influencing further development: voting for future extensions weighted by license fee
+- benerator license includes licenses for commons and webdecs
 
 training (2 days):
 ------------------
-* 990 EUR per participant (every 3 months in Munich)
-* 3900 EUR in-house (max. 10 participants)
-* Definiere Zertifizierungsverfahren
-* Definiere Schulung + Termine
+- 990 EUR per participant (every 3 months in Munich)
+- 3900 EUR in-house (max. 10 participants)
+- Definiere Zertifizierungsverfahren
+- Definiere Schulung + Termine
 
 usage
 -----
-* testing own software
-* testing 3rd party software
-* redistributing
-* selling books
-* selling training
+- testing own software
+- testing 3rd party software
+- redistributing
+- selling books
+- selling training
 
 wording:
 --------
-* value
-* entity
-* data
+- value
+- entity
+- data
 
 
 types:
@@ -207,6 +343,7 @@ Traffic analysis
 - Error pages
 - download counter
 - exclude access by own provider
+- Assign downloads to domains (by IP address)
 
 referers
 --------
@@ -218,13 +355,13 @@ http://www.java-forums.org/java-announcements/3534-benerator-0-3-01-a.html
 
 Develop Corporate Design
 ------------------------
-* Web Site
-* Visitenkarte
-* Präsentation
+- Web Site
+- Visitenkarte
+- Präsentation
 
 marketing
 ---------
-* Performance-Blog
+- Performance-Blog
 
 OS
 --
@@ -327,7 +464,6 @@ Open Source Software Blog
 
 Datengenerierung in agilen Projekten
 
-
 Artikelreihe über Performance-Testing
 
 Referenzen:
@@ -342,6 +478,7 @@ Anwaltstermine
 - Ücker, Literaturhaus, Salvatorplatz, Mo 19.11. 14:00
 - Bettinger, Mo 19.11. 10.Uhr
 
+
 "Hochwertige" referer
 ---------------------
 freshmeat (für open source)
@@ -350,3 +487,134 @@ dmoz
 http://www.opensourcetesting.org
 http://data-quality.qarchive.org/
 http://java-source.net
+
+
+benerator key marketing factors
+-------------------------------
+- Datenschutz
+- Early performance testing
+- Agilität in performancekritischen Projekten
+  - quick start -> prototype builder, powerful conventions
+  - nightly performance test -> maven/cruise control integration, limit check (e.g. by perfunit integration)
+- (later) DBUnit replacement -> collect DbUnit critics 
+  - nulls in data definition
+  - 
+- Trust factors
+  - popularity (freshmeat, Google ads?, conferences, articles)
+  - support (support program, community size, user base, training offer, books)
+  - company (GmbH, size, appearance, web site)
+  
+popularity strategy
+===================
+Blog
+----
+Strategie:
+- Hochwertige Blogs schreiben
+- Hochwertige Kommentare zu anderen Blogs schreiben
+- Hochwertige Blogger persönlich kennenlernen
+- Blogger bewerten: z.B. auf digg, del.icio.us per Link/Friendship/favorite
+Themen
+- benerator samples als landing page
+- API design 
+- tricks in coding benerator
+- coding for change
+- MDA
+- Performance of JVM Versions
+- Konferenztermine
+- Performance (Meta) Antipatterns
+- Hibernate Performance
+ 
+Path To Profitability
+---------------------
+01/08
+benerator 0.3.05
+AGBs
+Konferenzen bestimmen
+Generierungsartikel in Print
+Formuliere Vortragsthemen
+Posting Xing: How early should you test for performance?
+
+02/08
+Konferenz-RfPs: benerator, testing, Design, Performance
+Consulting-Vertrag
+Schulungsvertrag
+Consulting/training on benerator, hibernate and performance
+
+06/08
+benerator 0.4
+benerator-Artikel in Print
+Create _high_ reputation at _many_ people that make decisions on
+  - performance testing
+  - product evaluation
+Buch 'Hibernate Performance'
+Sell performance training
+
+12/08
+benerator 1.0
+GmbH
+Buch 'benerator'
+benerator support
+benerator training
+
+
+
+
+
+
+
+
+
+
+
+
+BUG --------------------------------------------------------------------------------------------------------
+Postgres Shop with > 100 orders 
+08:29:48,281 DEBUG (main) [org.databene.task.PagedTask] Page 99 of PagedCreateEntityTask finished
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.task.PagedTask] Starting page 100 of PagedCreateEntityTask with pagesize=1
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.benerator.primitive.ScriptGenerator] Generated: 901.46
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] next() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+08:29:48,281 DEBUG (main) [org.databene.platform.db.ResultSetConverter] Converted: 1170
+08:29:48,281 DEBUG (main) [org.databene.benerator.primitive.ScriptGenerator] Generated: 0694451274662
+08:29:48,296 DEBUG (main) [org.databene.benerator.main.ConfiguredGenerator] Generated db_order_item{number_of_items=14, total_price=901.46, order_id=1170, product_ean_code=0694451274662, id=1272}
+08:29:48,296 DEBUG (main) [org.databene.platform.db.DBSystem] Storing db_order_item{number_of_items=14, total_price=901.46, order_id=1170, product_ean_code=0694451274662, id=1272}
+08:29:48,296 DEBUG (main) [org.databene.platform.db.DBSystem] getTypeDescriptor(db_order_item)
+08:29:48,296 DEBUG (main) [org.databene.platform.db.DBSystem] built SQL statement: insert into db_order_item(order_id,product_ean_code,id,number_of_items,total_price) values (?,?,?,?,?)
+08:29:48,296 DEBUG (main) [org.databene.benerator.JDBC] Creating prepared statement: insert into db_order_item(order_id,product_ean_code,id,number_of_items,total_price) values (?,?,?,?,?)
+08:29:48,296 DEBUG (main) [org.databene.platform.db.DBSystem] flush()
+08:29:48,296 DEBUG (main) [org.databene.benerator.JDBC] Closing statement: insert into db_order_item(order_id,product_ean_code,id,number_of_items,total_price) values (1170,0694451274662,1272,14,901.46)
+08:29:48,296 DEBUG (main) [org.databene.benerator.JDBC] Committing connection: org.databene.platform.db.PooledConnection@8ab708
+08:29:48,296 DEBUG (main) [org.databene.task.PagedTask] Page 100 of PagedCreateEntityTask finished
+08:29:48,296 DEBUG (main) [org.databene.platform.db.ResultSetIterator] hasNext() called on: ResultSetIterator[select id from db_order]
+Exception in thread "main" java.lang.RuntimeException: Error in query: select id from db_order
+	at org.databene.platform.db.ResultSetIterator.hasNext(ResultSetIterator.java:73)
+	at org.databene.commons.iterator.ConvertingIterator.hasNext(ConvertingIterator.java:56)
+	at org.databene.benerator.wrapper.IteratingGenerator.available(IteratingGenerator.java:106)
+	at org.databene.benerator.wrapper.CyclicGeneratorProxy.available(CyclicGeneratorProxy.java:50)
+	at org.databene.benerator.composite.EntityGenerator.available(EntityGenerator.java:96)08:29:48,296 DEBUG (main) [org.databene.platform.db.ResultSetIterator] closing ResultSetIterator[select id from db_order]
+
+	at org.databene.benerator.GeneratorWrapper.available(GeneratorWrapper.java:85)
+	at org.databene.benerator.wrapper.NShotGeneratorProxy.available(NShotGeneratorProxy.java:59)
+	at org.databene.benerator.main.ConfiguredGenerator.available(ConfiguredGenerator.java:84)
+	at org.databene.benerator.main.PagedCreateEntityTask.workPending(PagedCreateEntityTask.java:73)
+	at org.databene.task.PagedTask.run(PagedTask.java:118)
+	at org.databene.benerator.main.Benerator.parseAndRunCreateEntities(Benerator.java:277)
+	at org.databene.benerator.main.Benerator.parseRootChild(Benerator.java:154)
+	at org.databene.benerator.main.Benerator.processFile(Benerator.java:130)
+	at org.databene.benerator.main.Benerator.main(Benerator.java:97)
+Caused by: org.postgresql.util.PSQLException: ERROR: portal "C_18" does not exist
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:1548)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1316)
+	at org.postgresql.core.v3.QueryExecutorImpl.fetch(QueryExecutorImpl.java:1483)
+	at org.postgresql.jdbc2.AbstractJdbc2ResultSet.next(AbstractJdbc2ResultSet.java:1825)
+	at org.databene.platform.db.ResultSetIterator.hasNext(ResultSetIterator.java:68)
+	... 13 more

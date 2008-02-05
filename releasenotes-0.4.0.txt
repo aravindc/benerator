@@ -2,30 +2,28 @@ Release Notes benerator 0.4.0
 =============================
 
 Summary
-The new release is a general makeover of system and processor handling, 
-improves overall usage convenience and adds some great new features like 
-script and template support. Scripts can be used in all import formats: 
-CSV, Flat Files, DbUnit and benerator files. A ScriptGenerator can 
-calculate dependent values dynamically.
+-------
+benerator now incorporates mature and comfortable 
+generation capabilities for relational data, providing convenient database configuration 
+and primary key generation, script support in generators and all import file formats, 
+as well as a staging concept. Especially the script feature is a great improvement in 
+generating randomized data with multi-field constraints.
+  
+Furthermore, central concepts were extended for generation of hierarchical data, like dependent 
+data in databases or nested data structures like XML. After having left behind all open source 
+alternatives with release 0.3, benerator competes with all commercial generation products.
 
 Changes
+-------
 - nullable database columns are generated as null by default
-- extended System interface and renamed methods for JavaBeans compliance
-- Processors are closed when the setup file is processed completely, not after the first <create-entities>
-- System replaced with StorageSystem
 - Processor replaced with Consumer
+- Consumers are closed when the setup file is processed completely, not after the first <create-entities>
+- System replaced with StorageSystem
 - Task uses the Context interface instead of TaskContext and has new method wantsToRun()
-- New class PhoneNumberFormat
 - renamed PhoneNumber properties
 
-Migration
-- For own Processor implementations, change 'implements Processor' to 'extends AbstractProcessor'
-- For own System implementations:
-  - rename getEntities() to allEntities()
-  - rename getIds() to entityIds()
-  - rename getBySelector() to query()
-
 New Features
+------------
 - New IdProvider interface, special IdGenerator life cycle, managed externally by an IdProviderFactory
 - ScriptGenerator class
 - unix support
@@ -51,7 +49,6 @@ New Features
   - recursive invocation of create-entities
   - <key type="seqhilo|sequence|query" param=""/>
   - <echo message="..."/>
-  - <setup default-script="ftl" default-null="true">
   - <attribute ... script="..."/>
 - Configurable global defaults:
   - defaultEncoding: file encoding
@@ -59,8 +56,10 @@ New Features
   - defaultPagesize: number of entities to store in one tx
   - defaultScript: Template engine to choose
   - database dialects
+- New class PhoneNumberFormat
   
 Bug fixes
+---------
 - clean up of EntityGenerators
 - resource leaks: After a generation run all heavy-weight JavaBeans in the context are closed
 - bug fix in default file encoding of DbUnitEntityExporter
@@ -70,5 +69,3 @@ Bug fixes
 - NullPointerException in CharacterGenerator
 - FeatureDescriptor/EntityDescriptor: constraint handling and object identity
 - AttributeDescriptor: default values
-
-QA
