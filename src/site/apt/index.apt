@@ -15,6 +15,20 @@ about databene benerator
   <<benerator>> is released under a {{{license.html}dual license}} - GPL and commercial.
   For quick details check the {{{faq.html#license_intention}FAQ}}.
 
+news
+
+  <<2008-02-02 benerator release 0.4.0:>> benerator now incorporates mature and comfortable 
+  generation capabilities for relational data, providing convenient database configuration 
+  and primary key generation, script support in generators and all import file formats, 
+  as well as a staging concept. especially the script feature is a great improvement in 
+  generating randomized data with multi-field constraints. 
+  
+  furthermore, central concepts were extended for generation of hierarchical data, like dependent 
+  data in databases or nested data structures like XML. after having left behind all open source 
+  alternatives with release 0.3, benerator competes with all commercial generation products.
+  
+  {{{http://databene.org/databene-benerator/download.html}download benerator}}
+  
 participate
 
   Your are welcome to participate. There are many ways to aid the further development of benerator:
@@ -25,60 +39,3 @@ participate
 
    * fund the benerator development by contracting {{{http://bergmann-it.de}Volker Bergmann}} for IT consulting
      or buying support for the databene tools.
-
-release history and road map
-
-*-------------+-------------------+-----------------------------------------------+
-| <<release>> | <<release date>>  | <<features>>                                  |
-*-------------+-------------------+-----------------------------------------------+
-| 0.4         | Q2/2008           | Object graph generation,                      |
-| (planned)   | (planned)         | Platform support: JavaBean, Hibernate, XML    |
-|             |                   | domains: address (CH, AT), web                |
-|             |                   | Region concept                                |
-|             |                   | Feature completion: identity, uniqueness      |
-*-------------+-------------------+-----------------------------------------------+
-| 0.3.04      | 2007-12-10        | JDBC performance optimized for bulk operation and LAN |
-|             |                   | Oracle performance: LAN: 5,000 rows/sec, local 15,000 rows/sec |
-|             |                   | supports CLOB, BLOB and Oracle timezone types |
-|             |                   | Adds a tool for creating database snapshots   |
-|             |                   | New DB key generator classes                  |
-*-------------+-------------------+-----------------------------------------------+
-| 0.3.03      | 2007-11-24        | performance improvement by supporting multithreaded data generation |
-|             |                   | bug fixes in creation of unique EAN codes                     |
-|             |                   | bug fix in non-unique regex based string generation           |
-*-------------+-------------------+-----------------------------------------------+
-| 0.3.02      | 2007-11-20        | generator bug fixes                           |
-|             |                   | generation of unique data                     |
-|             |                   | current time generators                       |
-|             |                   | supporting encoding for all file I/O          |
-*-------------+-------------------+-----------------------------------------------+
-| 0.3.01      | 2007-11-03        | database bug fixes                            |
-|             |                   | improved handling of databases                |
-|             |                   | added support for database products:          |
-|             |                   | * DB2                                         |
-|             |                   | * MS SQL Server                               |
-|             |                   | * PostgreSQL                                  |
-|             |                   | * HSQL                                        |
-|             |                   | * Derby                                       |
-*-------------+-------------------+-----------------------------------------------+
-| 0.3         | 2007-10-14        | proof of platform concept                     |
-|             |                   | Platforms: Database, CSV, Flat File, DBUnit   |
-|             |                   | standalone + relational Entity generation     |
-|             |                   | Data extraction, transformation & export      |
-|             |                   | API and descriptor file based command line execution|
-|             |                   | Database upport:                              |
-|             |                   | * Oracle                                      |
-|             |                   | * MySQL                                       |
-*-------------+-------------------+-----------------------------------------------+
-| 0.2         | 2007-07-22        | FileBuilder,                                  |
-|             |                   | Domains: person & address (DE)                |
-|             |                   | Task framework                                |
-|             |                   | API only                                      |
-*-------------+-------------------+-----------------------------------------------+
-| 0.1         | 2006-12-31        | Primitive Generators,                         |
-|             |                   | Weight Functions,                             |
-|             |                   | Sequences,                                    |
-|             |                   | Regex Generator,                              |
-|             |                   | CSV Import                                    |
-|             |                   | API only                                      |
-*-------------+-------------------+-----------------------------------------------+

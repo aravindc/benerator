@@ -15,6 +15,26 @@ benerator file format
   </setup>
 --------------------------------------------------------------------------------
 
+
+
+properties
+
+ As of release 0.4.0, benerator supports global properties.
+
+ You can define them as
+ 
+--------------------------------------------------------------------------------
+	<property name="my_name" value="Volker" />
+--------------------------------------------------------------------------------
+
+ or import several of them from a properties file:
+  
+--------------------------------------------------------------------------------
+	<include uri="my.properties" />
+--------------------------------------------------------------------------------
+
+
+
 javabeans and the context
 
   You can instantiate JavaBeans by an intuitive syntax like this:
@@ -69,6 +89,18 @@ javabeans and the context
           </property>
       </bean>
 --------------------------------------------------------------------------------
+
+As of benerator 0.4.0, you have a simpler syntax for defining databases
+
+--------------------------------------------------------------------------------
+	<database id="db" 
+		url="jdbc:mysql://localhost/benerator" 
+		driver="com.mysql.jdbc.Driver" 
+		schema="benerator"
+		user="benerator" password="benerator" batch="true"
+	/>
+--------------------------------------------------------------------------------
+
 
 
 tasks
@@ -172,6 +204,12 @@ creating random entities
   'count' attribute. The 'pagesize' defines the number of creations after which a flush() is applied to all processors
   (for a database system this is mapped to a commit).
 
+nesting entities
+
+ Entities can form composition structures, which are generated best by recursive create-entities structures.
+ 
+ TODO: example
+
 exporting generated data to data files
 
   You will need to reuse some of the generated data for setting up (load) test clients. You can simply export data by an
@@ -219,6 +257,63 @@ imposing multi-field-constraints
 --------------------------------------------------------------------------------
 
   The source path may be composed of property names, map keys and entity features, separated by a dot.
+
+data types
+
+ The following data types are supported:
+
+*------------------+---------------------+-----------+---------------------+
+|<<benerator type>>| <<JDBC type name>>  | <<JDBC>>  | <<Java type>>       |
+|                  |                     | <<type>>  |                     |
+|                  |                     | <<value>> |                     |
+*------------------+---------------------+-----------+---------------------+
+| byte             | Types.TINYINT       |        -6 | java.lang.Byte      |
+|                  | Types.BIT           |        -7 |                     |
+*------------------+---------------------+-----------+---------------------+
+| short            | Types.SMALLINT      |                   5 | java.lang.Short     |
+*------------------+---------------------+-----------+---------------------+
+| int              | Types.INTEGER       |         4 | java.lang.Integer   |
+*------------------+---------------------+-----------+---------------------+
+| big_integer      | Types.BIGINT        |        -5 | java.math.BigInteger|
+*------------------+---------------------+-----------+---------------------+
+| float            | Types.FLOAT         |         6 | java.lang.Float     |
+*------------------+---------------------+-----------+---------------------+
+| double           | Types.DOUBLE        |         8 | java.lang.Double    |
+|                  | Types.NUMERIC       |         2 |                     |
+|                  | Types.REAL          |         7 |                     |
+*------------------+---------------------+-----------+---------------------+
+| big_decimal      | Types.DECIMAL       |         3 | java.math.BigDecimal|
+*------------------+---------------------+-----------+---------------------+
+| boolean          | Types.BOOLEAN       |        16 | java.lang.Boolean   |
+*------------------+---------------------+-----------+---------------------+
+| char             | Types.CHAR          |         1 | java.lang.Character |
+*------------------+---------------------+-----------+---------------------+
+| date             | Types.DATE          |        91 | java.util.Date      |
+|                  | Types.TIME          |        92 |                     |
+*------------------+---------------------+-----------+---------------------+
+| timestamp        | Types.TIMESTAMP     |        93 | java.sql.Timestamp  |
+*------------------+---------------------+-----------+---------------------+
+| string           | Types.VARCHAR       |        12 | java.lang.String    |
+|                  | Types.LONGVARCHAR   |        -1 |                     |
+|                  | Types.CLOB          |      2005 |                     |
+*------------------+---------------------+-----------+---------------------+
+| object (TODO)    | Types.JAVA_OBJECT   |      2000 | java.lang.Object    | 
+*------------------+---------------------+-----------+---------------------+
+| binary           | Types.BINARY        |        -2 | byte[]              |
+|                  | Types.VARBINARY     |        -3 |                     |
+|                  | Types.VARBINARY     |        -4 |                     |
+|                  | Types.BLOB          |      2004 |                     |
+*------------------+---------------------+-----------+---------------------+
+| (specific)       | Types.OTHER         |      1111 | (specific)          |
+*------------------+---------------------+-----------+---------------------+
+| n/a              | Types.DATALINK      |        70 | n/a                 |
+|                  | Types.NULL          |         0 |                     |
+|                  | Types.DISTINCT      |      2001 |                     |
+|                  | Types.STRUCT        |      2002 |                     |
+|                  | Types.ARRAY         |      2003 |                     |
+|                  | Types.REF           |      2006 |                     |
+*------------------+---------------------+-----------+---------------------+
+
 
 querying information from a system
 
@@ -313,3 +408,120 @@ all supported generator attributes
 
     [proxy-param2] sets the maximum skip size / repeat count of the proxy
 
+
+
+scripting
+
+ as of release 0.4.0 benerator supports scripting: By implementing a plugin contract,
+ you can introduce your own scripting engine. The default for benerator is FreeMarker.
+ 
+ Scripts are supported in
+ 
+ * benerator setup files
+ 
+ * properties files
+ 
+ * DbUnit XML files
+ 
+ * CSV files
+ 
+ * Flat files
+ 
+ A script is denoted by curly braces, e.g. '{Hi, I am ${my_name}}'. This syntax will use 
+ the default script engine for rendering the text as, e.g. 'Hi, I am Volker'.
+ 
+ The default script engine is set by the property <benerator.defaultScript>.
+ 
+ If you need to support different script engines (e.g. while combining files from different 
+ sources), you can differ them by prepending the scripting engine id, e.g. 
+ '{ftl:Hi, I am ${my_name}}' or '{Vel:Hi, I am ${my_name}}'
+ 
+ Scripts in the benerator setup are evaluated while parsing. If you need to dynamically 
+ generate script text at runtime, use a attribute.script field:
+ 
+--------------------------------------------------------------------------------
+ <attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
+--------------------------------------------------------------------------------
+
+ With scripts you can access
+ 
+ * environment variables
+ 
+ * JVM parameters
+ 
+ * any JavaBean globally declared in the benerator setup
+ 
+ * the last generated entity of each type
+ 
+ * variable values
+
+
+
+staging
+
+ Combining scripting and property files, you get a staging mechanism, which is demonstarted in the 
+ shop demo. Check the file demo/shop/shop.ben.xml in your benerator installation. It uses staging 
+ for populating all seven supported databases with the same benerator setup file, moving database
+ specific code to small properties files.
+ 
+ When invoking benerator with a -Dstage=development JVM parameter, you can make your import
+
+	<include uri="{demo/shop/shop.${stage}.properties}" />
+
+
+
+template support
+
+ You can use DbUnit import files for replicating entity graph structures many times on each generated object.
+ Say, for each customer in a tested online shop, a default order structure should be created. You would then
+ define the order structure in a DbUnit file
+ 
+--------------------------------------------------------------------------------
+ <dataset>
+    <db_order_item order_id="{${db_order.id}}" number_of_items="2" product_ean_code="8076800195057" total_price="2.40" />
+    <db_order_item order_id="{${db_order.id}}" number_of_items="1" product_ean_code="8006550301040" total_price="8.70" />
+ </dataset>
+--------------------------------------------------------------------------------
+
+ and then create an order for each customer that imports its sub structure from the DbUnit file:
+
+--------------------------------------------------------------------------------
+	<create-entities name="db_order" consumer="db">
+		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<attribute name="customer_id" source="db" selector="select id from db_customer" />
+		<create-entities name="db_order_item" source="demo/shop/default_order.dbunit.xml" consumer="db">
+			<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		</create-entities>
+	</create-entities>
+--------------------------------------------------------------------------------
+
+ Of course, you have to care for appropriate ids yourself.
+
+id providers
+
+ With release 0.4.0, benerator introduces an IdProvider concept, where you can define own 
+ IdProviders and IdProviderFactories with more customizable life cycle handling than  
+ normal generators.
+ 
+ An <id> element is defined as follows: 
+ 
+-----------------------------------------------------------------------------------
+ <id name="id" strategy="sequhilo" source="db" param="my_seq_name" />
+-----------------------------------------------------------------------------------
+ 
+ The currently available startegies are 
+ 
+ * <seqhilo> retrieves 'hi' from a sequence, multiplying them with 100 and creating 100 intermediate keys internally.
+   This is the id strategy of choice for high performance data creation from multiple client instances.
+   Only works with databases that support sequences: Oracle, DB2, HSQL, PostgreSQL
+ 
+ * <uuid> Can also be executed by multiple clients in parallel, but is restricted to generating string ids.
+ 
+ * <increment> creates key values starting from a start value, increasing by one on each call. 
+   Useful only if one client instance generates all data (but this will be the general case). 
+ 
+ * <sequence> retrieves values from a sequence. Since ith requires a database call for each value, it is rather slow. 
+   Only works with databases that support sequences: Oracle, DB2, HSQL, PostgreSQL
+ 
+ * <query> retrieves values from a SQL query. 
+ 

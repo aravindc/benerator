@@ -12,7 +12,13 @@ features
 
   provides for <<high volume processing>>: benerator is designed to process and create resources of unlimited size.
 
-  <<efficient operation>>: benchmark is to generate at least one million objects per hour on common developer hardware.
+  <<efficient operation>>: 
+  
+    * benchmark is to generate at least one million objects per hour on common developer hardware.
+  
+    * benerator can run multithreaded, making efficient use of multi-core systems.
+    
+    * benerator's database access is highly optimized, supporting persistence of several thousand rows per second.
 
   <<domain packages>> provide for easy localized and regionalized creation of commonly used entities:
 
@@ -95,6 +101,8 @@ features
 
   <<Support for all major databases>>
 
+  * all common SQL data types are supported (for a list of unsupported types, see {{{#limitations}limitations}})
+
   * benerator was tested with and provides examples for
 
     * Oracle 10g (thin driver)
@@ -110,17 +118,23 @@ features
     * HSQL 1.8
 
     * Derby 10.3    
-
-limitations of v0.3.01
+    
+{limitations}
 
   * At least Java 5.0 required
 
-  * Only the most common and simple sql types are supported
-
-  * Single-threaded
+  * The following SQL types are <<not>> supported:
+    
+    * Types.ARRAY
+    
+    * Types.DISTINCT
+    
+    * Types.NULL
+    
+    * Types.STRUCT
 
   * API not final
+  
+  * the region concept is not final, currently limited to country level
 
-  * region concept not final, currently limited to country level
-
-  * uniqueness concept not applicable for large data volumes
+  * Database persistence supports only inserts, no updates of pre-existing or previously persisted data. 

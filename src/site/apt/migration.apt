@@ -1,0 +1,111 @@
+                     ----------------------------
+                     migrating benerator versions
+                     ----------------------------
+
+migrating benerator versions
+
+from 0.3.03 to 0.3.04
+
+ * Rename DbUnit class name usages from DBUnit... to DbUnit...
+ 
+from 0.3.04 to 0.4.0
+
+ I apologize, there are quite some changes between 0.3.04 and 0.4.0. Since benerator is still developing, 
+ some names and plugin interfaces had to be changed for avoiding confusion and other problems in future features. 
+ Corresponding to current user feedback, most users rely on the plugin implementations provided by benerator 
+ and will have little work in migration.
+ 
+ As the user base grows and benerator matures, future redesigns will have less impact on plugin development.
+
+* Changes in databene-commons
+
+ The package 'org.databene.model' has been renamed to 'org.databene.commons'.
+ 
+ <Required action:> 
+ If you have defined custom converters, iterators or validators, 
+ rename their import declarations from 'import org.databene.model.**' 
+ to import 'import org.databene.commons.**' 
+ 
+ <Attention:> 
+ This does not apply for the package 'org.databene.model' in benerator, 
+ so any import of an entity, system or processor class remains 'as is'.
+ 
+* Changes in webdecs
+
+ The script concept has been completely redesigned. Instantiation of a Script class is now performed 
+ by the class ScriptUtil. 'Script' is a pure interface now and the AbstractScript as been removed. 
+ The set/getVariable() methods have been removed as well. Variables must now be managed by the client 
+ and provided in a Context object on invocation of Script.execute().
+ 
+ <Required action:> 
+ If you have defined own Script implementations, replace 'extends Script' or 
+ 'extends AbstractScript' with 'implements Script'. Change your Script implementation to process a 
+ Context object, change your client code to put the needed variables into the context when needed.
+ 
+* Processor has been deprecated
+
+ The Processor interface has been deprecated in favor of the new Consumer interface.
+ 
+ <Required action:> 
+ 
+ In you benerator files, rename all 'processor' elements and attributes to 'consumer'. This is a simple 
+ text replacement.
+ 
+ If you have implemented own Processors, migrate them to the new Consumer interface, 
+ preferably by extending AbstractConsumer and moving the code from the former process() method to the new 
+ startConsuming() method. benerator versions 0.4.x will still support the Processor interface, but in later 
+ versions it <will> be removed! 
+  
+* System has been deprecated
+ 
+ The System interface has been deprecated in favor of the StorageSystem interface.
+ 
+ <Required action:>
+  
+ In benerator setup files, use the new 'database' element for defining databases.
+ 
+ Do not use database id generators directly any more, but use the new 'id' element,
+ which will retrieve id generators from the StorageSystem and cause benerator to reuse them 
+ (there were problems with the former approach):
+´
+----------------------------------------------------------------------------------------
+ <id name="id" strategy="seqhilo" source="db" param="my_seq_name" />
+----------------------------------------------------------------------------------------
+ 
+ Migrate your System implementation to the new StorageSystem interface, preferably 
+ by extending AbstractStorageSystem.
+ 
+ * rename getEntities() to allEntities()
+ 
+ * rename getIds() to entityIds()
+ 
+ * rename getBySelector() to query()
+ 
+ benerator versions 0.4.x will still support the System interface, but in later 
+ versions it <will> be removed!
+
+* Task interface has changed
+
+ A new method wantsToRun() has been added and the TaskContext has been replaced with the Context.
+ 
+ <Required action:>
+ 
+ If you extended AbstractTask, you only need to replace TaskContext with Context.
+ 
+ If you have implemented the Task interface directly, consider extending AbstractTask instead or 
+ implement the wantsToRun() method.
+ 
+* nullable columns
+
+ In the releases 0.3.x, benerator generated values for any field it could find. 
+ As of release 0.4.0, benerator will generate all nullable attributes as null by default.
+ 
+ <Required action:>
+ 
+ If you want to enforce the old behavior, set the benerator property benerator.defaultNull=false
+ by including a properties file or having <property name="benerator.defaultNull" value="false"/>
+ 
+* PhoneNumber properties have been renamed
+
+ See the javadoc 
+

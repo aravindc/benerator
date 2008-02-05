@@ -1,0 +1,421 @@
+				-----------------------
+				benerator api reference
+				-----------------------
+
+benerator api reference
+
+
+
+GeneratorFactory
+
+    You may get a quick overview of the provided Generators and its features by checking the API documentation of
+    the GeneratorFactory. The following sub sections list the generators by type
+
+** sample generators
+
+    A sample generator uses a single value or a set of values of which it returns one.
+    The values may be weighted equally (default), individually or by a distribution.
+
+    The factory methods for sample generators are:
+
+    [public \<T\> Generator\<T\> getConstantGenerator(T value)] Creates the most trivial generator
+    which returns the same value again and again.
+
+    [public \<T\> Generator\<T\> getSampleGenerator(Collection\<T\> values)] Creates a generator
+    that chooses from a set of values with equal weights.
+
+    [public \<T\> Generator\<T\> getSampleGenerator(T ... values)] Creates a generator
+    that chooses from a set of values with equal weights.
+
+    [public \<T\> Generator\<T\> getSampleGenerator(String url, Converter\<T,String\> converter)] Creates a generator
+    that reads cell Strings from a CSV file and converts them into objects by a converter.
+
+    [public \<T\> Generator\<T\> getWeightedSampleGenerator(Collection\<Sample\<T\>\> samples)] Creates a generator
+    that chooses from a set of samples, using an individual weight for each sample.
+
+    [public \<T\> Generator\<T\> getWeightedSampleGenerator(Sample\<T\> ... samples)] Creates a generator
+    that chooses from a set of samples, using an individual weight for each sample.
+
+** primitive generators
+
+    Generators are provided for generating Booleans, Numbers, Dates, Strings and Characters.
+    For number generators, extremely many configuration options are available.
+    Lets start with one of my personal favorites, the RegexStringGenerator:
+
+        [public Generator\<String\> getRegexStringGenerator(String pattern, int minLength, int maxLength,
+            Locale locale, double nullQuota)] Creates a generator that produces Strings
+            which match a regular expression with characters from one locale.
+            They are checked for a minimum and maximum length
+            and the generator will generate a given quota of <<null>> values (detemined by the <<nullQuota>>).
+
+    [public Generator\<Boolean\> getBooleanGenerator(float trueQuota, double nullQuota)] Creates a generator
+        for boolean values, which returns a given quota (nullQuota \[0-1\]) of null values. The non-null values
+        have a given quota of true values (trueQuota \[0-1\]).
+
+    [public \<T extends Number\> Generator\<T\> getNumberGenerator(Class\<T\> type, T min, T max, T precision,
+            Distribution distribution, double nullQuota)] Creates a generator for numbers of any standard Java Number
+            implementation (Byte, Short, Int, Long, float, double, BigInteger, BigDecimal) from a given range
+            (min \<= x \<= max) and resolution ( x = min + n*resolution, with n being an integer).
+            The numbers are distributed according to a dstribution or a weight function (distribution).
+            There may be a quota of null values (nullQuota).
+
+    [public \<T extends Number\> Generator\<T\> getNumberGenerator(
+            Class\<T\> type, T min, T max, T precision,
+            Distribution distribution, T variation1, T variation2,
+            double nullQuota)]
+    Creates a generator for numbers like the one above with additional variation parameters.
+    These may take influence on the distribution characteristics in a way that depends on the selected distribution.
+
+    [public Generator\<Date\> getDateGenerator(Date min, Date max, long precision,
+        Distribution distribution, double nullQuota)] Creates a Date generator that generates
+        random dates between min and max. Depending on the precision these may be e.g. days or seconds.
+
+    [public Generator\<Date\> getDateGenerator(String url, String pattern, double nullQuota)]
+    Creates a date generator that reads date entries from a CSV file of the given URL and SimpleDateFormat pattern.
+
+    [public Generator\<Character\> getCharacterGenerator(Locale locale, double nullQuota)]
+        Creates a generator that produces characters of a locale.
+
+    [public Generator\<Character\> getCharacterGenerator(String pattern, Locale locale, double nullQuota)]
+        Creates a Character generator that creates characters of a locale which match a regular expression that
+        specifies a character set (e.g. '\w').
+
+    [public Generator\<Character\> getCharacterGenerator(Collection\<Character\> characters, double nullQuota)]
+        Creates a character generator that creates values from a set of characters (like the SampleGenerator).
+
+    [public Generator\<Character\> getCharacterGenerator(double nullQuota, Character ... characters)]
+        Creates a character generator that creates values from a set of characters (like the SampleGenerator).
+
+* converting generators
+
+    Converting generators take the output of one ore more other generators and convert them,
+    e.g. by using a MessageFormat:
+
+    [public \<T,S\> Generator\<T\> getConvertingGenerator(Generator\<S\> source, Converter\<T,S\> converter)]
+        Creates a generator that accepts products from a source generator and serves them as output after conversion.
+
+    [public Generator\<String\> getMessageGenerator(String pattern, int minLength, int maxLength,
+            Generator ... sources)]
+        Creates a generator that generates messages by reading the products of several source generators and
+        combining them by a Java MessageFormat. The result will be checked for a minimum and maximum length.
+        For the pattern format see the documentation of the java.util.MessageFormat.
+
+* collection generators
+
+    Collection generators assemle the output of one or more other generators to collections or arrays:
+
+    [public \<C extends Collection\<I\>, I\> Generator\<C\> getCollectionGenerator(
+            Class\<C\> collectionType, Generator\<I\> source, int minLength, int maxLength,
+            Distribution lengthDistribution)]
+        Creates a generator that combines several products of a source generator to a collection.
+        The collection type may be any Java collection interface (e.g. java.util.List) or collection implementation
+        that provides a default constructor (e.g. java.util.TreeSet).
+        The collections have a minimum and maximum length and have the given distribution.
+
+    [public \<T\> Generator\<T\[\]\> getArrayGenerator(
+            Generator\<T\> source, Class\<T\> type, int minLength, int maxLength, Distribution lengthDistribution)]
+        Creates a generator that combines several products of a source generator to an array.
+        The type to be specified is the element type to be declared by the array (e.g. String).
+        The produced arrays have a minimum and maximum length and have the given distribution.
+
+    [public Generator\<Object\[\]\> getArrayGenerator(Generator\[\] sources)]
+        Creates a generator that reads products of an array of generators and combines them to an Object array.
+
+* source generators
+
+    Source generators import data from data sources. As of v0.1, only CSV import is supported,
+    either by importing cell-by-cell as String or by importing CSV lines as String arrays.
+
+    [public Generator\<String\> getCSVCellGenerator(String url, Iteration iteration)]
+        Creates a generator that iterates through a CSV file of the given URL and returns each cell as a String value.
+        Line breaks are ignored.
+        The generator may iterate once and finish (Iteration.SINGLE) or repetitively (Iteration.REPETITIVE).
+
+    [public Generator\<String\[\]\> getCSVLineGenerator(String url, Iteration iteration)]
+        Creates a generator that imports lines from a CSV file of the given URL and returns them as String arrays.
+
+* general advice
+
+    * Use the GeneratorFactory whenever possible instead of instantiating the provided generators directly.
+      This is an early version and the GeneratorFactory interface will be subject to less changes
+      than the Generator implementations themselves.
+
+    * When using weight functions, take special care of the precision: (max - min) / precision should be less than 1000.
+
+    * If you need to create a large number of unique values, use a predefine Sequence or design a custom one.
+      For non-number types you might get on by converting the sequence's numbers with custom Converter implementations.
+
+
+
+Generator
+
+* generator contract
+
+    The interface org.databene.benerator.Generator is the parent interface for all generators.
+    It has the following contract:
+
+* generator states
+
+    A Generator may be in one of three states:
+
+    [constructing] The generator is under construction.
+        This may take several steps, since generators need to be JavaBeans.
+        The generator may transit into the available state automatically
+        or manually when the <validate()> method is called.
+
+    [available] Generator construction is done and the generator is available.
+        The user may loop the Generator via <available()> and <generate()>.
+
+    [unavailable] The Generator may become unavailable automatically if its value space is depleted or
+        manually when <close()> has been invoked. The Generator may be made <available> again by calling <reset()>.
+        When <unavailable>, the generator must be in a state in which it can be safely garbage collected.
+
+* threading
+
+  Currently, Generators need not be thread-safe. Possibly future benerator versions will require thread safety
+
+* JavaBean
+
+    When implementing a custom generator, make it a JavaBean:
+
+        * Implement a public default (no-arg) constructor
+
+        * make each relevant property configurable by a set-method
+
+    This will be needed for future features in order to support a generic JavaBeans-style setup.
+
+* exceptions
+
+    The <<InvalidGeneratorSetupException>> is used to indicate a bad setup (by means of the JavaBeans properties).
+
+    The <<IllegalGeneratorStateException>> is used to indicate that the generator cannot execute the called operation
+    because it is called in an inappropriate state or has other problems.
+
+* interface
+
+    [void validate()]
+     This is a convenience method for checking the validity of a Generator's setup.
+     If setup is not alright, the <validate()> method is expected to throw an InvalidGeneratorSetupException.
+     If the method finishes without exception, the generator has to be <available>.
+     The next invocation of <generate()> is expected to return a valid product and <available()>
+     is expected to return true.
+     Be aware that this method does not need to be called by the user.
+
+    [P generate()]
+    Returns an instance of the generic tpe P. If the method is called in an inappropriate state
+    (<constructing> or <unavailable>), it will throw an IllegalGeneratorStateException.
+
+    [void reset()]
+    Resets the generator to the initial state.
+    When called, the Generator is expected to act as if 'restarted'.
+    After invocation the state has to be <available>.
+
+    [void close()]
+    Closes the generator. After invocation the state is <unavailable>.
+
+    [boolean available()]
+    Tells if the Generator is in <available> state. If this returns <true>,
+    the next invocation of <generate()> must return a valid product.
+
+* custom generators
+
+    In many cases, a specific generator has a simple state model, e.g. being available immediately and forever.
+    For these cases, the generator can be inherited from the abstract class <LightWeightGenerator> which implements
+    the state related methods correspondigly.
+
+    When deriving a custom generator, prefer delegation to inheritance.
+    This will simplify state control and dirty checking.
+    Abstract implementations of managing the delegate are provided by the abstract classes
+
+        * <GeneratorWrapper> for a single delegate generator
+
+        * <MultiGeneratorWrapper> for an array of generators.
+
+    These provide a default implementation of the state related methods.
+
+* generators provided by the GeneratorFactory
+
+ see {{#GeneratorFactory}}
+
+* generators for direct instantiation
+
+ These generators are provided for direct instantiation and use:
+
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| <<generator class>>                                                     | <<product type>>|<<documentation>>|<<properties>>|
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| org.databene.benerator.primitive.HexUUIDGenerator                       | java.lang.String| Generates (sort of) universally unique ids. | separator  |
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| org.databene.benerator.primitive.IncrementGenerator                     | java.lang.Long  | Generates Long values that are unique for one run of one benerator instance. | min        |
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| org.databene.benerator.primitive.datetime.CurrentDateGenerator          | java.util.Date  | Generates Date objects for today 0:00 |            |
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| org.databene.benerator.primitive.datetime.CurrentTimeGenerator          | java.util.Date  | Generates Date objects for the current time|            |
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| org.databene.benerator.primitive.datetime.CurrentMilliTimeGenerator     | java.lang.Long  | Generates Long values that count the milliseconds since 1970-01-01 |            |
+*-------------------------------------------------------------------------+-----------------+-+------------+
+| org.databene.benerator.primitive.datetime.CurrentNanoTimeGenerator      | java.lang.Long  | Generates Long values that count the nanoseconds since an arbitrary date. Only useful for measuring elapsed time. |            |
+*-------------------------------------------------------------------------+-----------------+-+------------+
+
+
+
+Task
+
+    Benerator supports multithreaded and parallel execution of user-defined Tasks.
+
+* contract
+
+    A Task must be a JavaBean that implements the interface org.databene.task.Task:
+
+    * it must provide a public default constructor
+    
+    * configuration is performed by calling set-methods
+
+    The interface org.databene.task.Task:
+
+--------------------------------------------------------------------------------
+  public interface Task extends Runnable {
+    public String getTaskName();
+    public void init(TaskContext context);
+    boolean wantsToRun();
+    public void run();
+    public void destroy();
+  }
+--------------------------------------------------------------------------------
+
+  A Task needs to provide a name for identification.
+  On parallel execution, the framework appends a number to identify each instance. A Task is initialized by the init()
+  method and closed by the destroy() method. The run() method is inherited from the Runnable interface and implements
+  the core functionality of the Task class. It may be executed several times in a row. 
+  If the Task finds out that further executions are not useful, it can signal that by returning <false> in the 
+  <wantsToRun()> method. Note that the Task might be <run()> in spite of the fact that it does not want to be.
+
+[images/task_lifecycle.gif]
+
+  * ThreadSafe: If a Task is thread-safe it may declare this by implementing the (marker) interface
+    org.databene.task.ThreadSafe.
+
+  * Parallelizable: If the task is not thread-safe but executable in several parallel instances,
+    it implements the interface org.databene.task.Parallelizable:
+
+--------------------------------------------------------------------------------
+  public interface Parallelizable extends Cloneable {
+      public Object clone() throws CloneNotSupportedException;
+  }
+--------------------------------------------------------------------------------
+
+  If parallel execution is requested and the task to be executed is Parallelizable,
+  the Task will be cloned by the framework and executed in several instances in parallel.
+
+[images/task_package.gif]
+
+  Tasks can be executed multi-threaded in pages,
+  ensuring that the total number of execution over all threads is the page size.
+
+  On the beginning of each page, the init() method is called on all task object instances,
+  the same is done with the destroy() method on the end of a page
+  (his could be used for flushes or commits on task-level resources).
+  Thus, when the task is ThreadSafe or execute single-threaded, this happens only once.
+
+  If you need 'global' paging actions they can be injected by providing a PageListener implementation
+  as 'pager' attribute.
+
+--------------------------------------------------------------------------------
+    <run-task class="my.SpecialTask" pager="my.PagingStrategy">
+        <property name="message" value="I'm special"/>
+    </run-task>
+--------------------------------------------------------------------------------
+
+  TODO: Sequence diagrams?
+
+
+
+EntityIterable
+
+  Implementing the EntityIterable interface is the easiest way of defining a custom data importer.
+  
+  The interface is as follows:
+  
+--------------------------------------------------------------------------------
+ Class<E> getType();
+ Iterator iterator();
+--------------------------------------------------------------------------------
+
+ <getType()> tells the type of the objects that will be provided by the iterator returned by the 
+ <iterator()> method.
+
+ The following implementations are provided by benerator
+  
+ * org.databene.platform.csv.CSVEntityIterable
+  
+ * org.databene.platform.dbunit.DbUnitEntityIterable
+  
+ * org.databene.platform.flat.FlatFileEntityIterable
+
+
+
+Consumer
+
+  A consumer is an object that consumes the data created when benerator
+  processes a setup file. Consumers are instantiated as JavaBeans and 
+  have the following contract:
+
+* contract
+
+** interface
+  
+---------------------------------------------------------------------------------
+   void startConsuming(E object);
+   void finishConsuming(E object);
+   void flush();
+   void close();
+---------------------------------------------------------------------------------
+ 
+ When a data object is created, the method <startConsuming()> is called. 
+ If the object has nested sub-data-components, they are created and consumed 
+ afterwards. Finally, <finishConsuming()> is called for signaling that the 
+ object is complete with all sub structures.
+ 
+ For flat (list or relational) data, only <startConsuming()> is supposed to be implemented.
+ 
+ An implementation might keep consumed objects in memory, so a call to <flush()> 
+ is necessary from time to time, telling the Consumer, when it is a good time 
+ for finalizing data processing.
+ 
+ When the consumer is not needed anymore, it must be closed by calling the <close()> method.
+ 
+** requirements
+
+ A consumer must be thread-safe
+
+
+
+StorageSystem
+
+ StorageSystem is an interface that abstracts systems that are capable of storing and 
+ querying entities.
+ 
+ ---------------------------------------------------------------------------------
+    String getId();
+    TypedIterable<Entity> queryEntities(String type, String selector);
+    <T> TypedIterable<T> queryEntityIds(String entityName, String selector);
+    <T> TypedIterable<T> query(String selector);
+    void store(Entity entity);
+    void flush();
+    void close();
+---------------------------------------------------------------------------------
+ 
+ benerator provides the DBSystem class that implements this abstraction for relational 
+ databases. Implementations for other system types are possible.
+ 
+ 
+ 
+IdProvider, IdProviderFactory
+ 
+ TODO
+
+
+
+Script
+
+ TODO

@@ -4,15 +4,22 @@
 
 overview
 
-   benerator can be used in three ways:
+ There are quite different scenarios in which you might use benerator:
+ 
+ * Synthesizing production data for preparing load and performance tests
+ 
+ * Creating, anonymizing and restoring production database snapshots
+ 
+ * Create batch files for performance tests
+ 
+ * Feed a load runner with useful client request data
+ 
+ * Do any generation or ETL task by writing programs that use the benerator api
+ 
+ For the first three steps you can run benerator from the command line
 
-   * programming a Java program that uses benerator's API for individual use of generators
-   
-   * creating and replaying a database snapshot with command line tools
 
-   * running a setup file from the command line for creating files or filling databases 
-     with meaningful generated data.
-   
+ 
 installation
 
  * download the lastest version of databene benerator at 
@@ -20,13 +27,42 @@ installation
 
  * unzip the downloaded file into a directory. It will be called 'root' below
 
- * download the jdbc driver libraries and put them in a directory, e.g. root/lib
+ * if you want to use a database, download the jdbc driver appropriate for your database 
+   and put it into a directory, e.g. root/lib
  
- * edit the file root/custom_classpath.bat and add the necessary file to the classpath setup, e.g.
+ * edit the file root/benerator_common[.bat] and add the necessary file to the classpath setup, e.g.
 
 -------------------------------------------------------
-set classpath=%classpath%;lib\log4j-1.2.14.jar;lib\my_jdbc_drivers14.jar
+set LOCALCLASSPATH=%LOCALCLASSPATH%;lib\mydriver.jar
 -------------------------------------------------------
+
+
+
+benerator
+
+ benerator can run from a setup file, e.g.  
+ 
+-----------------------------------------------------------------------------
+benerator.bat my_benerator_job.ben.xml
+-----------------------------------------------------------------------------
+
+ As a naming convention, all benerator setup files should have the suffix .ben.xml.
+ For information on the setup file format, see the {{{file_format.html}file format}} page.
+
+quick start
+
+    <If you want to get quick a quick impression of what benerator is good for and how it is used:>
+
+    [[1]] Check the {{{Sisyphos_is_done-databene_benerator.pdf}presentation}}
+
+    [[2]] read this document
+
+    [[3]] read the demo files in the distribution directory.
+
+    [[4]] check the API doc for a detailed documentation of the provided generators, especially the domain packages.
+
+
+
 
 db snapshot tool
 
@@ -36,35 +72,15 @@ db snapshot tool
  generation by using the DbUnitEntityImporter.
 
  If you have run the populate_db.oracle.xml demo file, you can extract a snapshot 
- by the shell file 'snapshot.bat':
+ by the shell file <snapshot>:
 
 -----------------------------------------------------------------------------
-snapshot.bat -Ddb.url=jdbc:oracle:thin:@localhost:1521:XE -Ddb.driver=oracle.jdbc.driver.OracleDriver -Ddb.user=benerator -Ddb.password=benerator -Dfile.encoding=UTF-8
+snapshot -Ddb.url=jdbc:oracle:thin:@localhost:1521:XE -Ddb.driver=oracle.jdbc.driver.OracleDriver -Ddb.user=benerator -Ddb.password=benerator -Dfile.encoding=UTF-8
 -----------------------------------------------------------------------------
 
-benerator
 
- benerator can run from a config file, e.g.  
- 
------------------------------------------------------------------------------
-benerator.bat my_benerator_job.xml
------------------------------------------------------------------------------
 
- For information on the config file format, see the 'file format'.
-
-quick start
-
-    <If you want to have quick glance on the features of databene benerator:>
-
-    [[1]] check the demos of this page.
-
-    [[2]] read the demo files in the distribution directory.
-
-    [[3]] check the API doc for a detailed documentation of the provided generators, especially the domain packages.
-
-demos
-
-* file generation
+file generation sample
 
   for generating files from a configuration file, Benerator can be run from a setup file.
   See the following example:
@@ -77,17 +93,45 @@ demos
           <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
           <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator"/>
           <attribute name="name" type="string" minLength="5"/>
-          <attribute name="price" type="big_decimal" min="0.49" max="99.90" precision="0.01"/>
-          <processor class="org.databene.platform.flat.FlatFileEntityExporter">
+          <attribute name="price" type="big_decimal" min="0.49" max="99.99" precision="0.10"/>
+          <consumer class="org.databene.platform.flat.FlatFileEntityExporter">
               <property name="uri" value="products.flat"/>
               <property name="properties" value="id[8r0],ean_code[13],name[20],price[8r0]"/>
-          </processor>
+          </consumer>
       </create-entities>
   </setup>
 --------------------------------------------------------------------------------
 
-  For an explanation of the file format, see {{file_format.html}}.
-  When running
+ The file has a central <create-entities> element which tells benerator to create three <entities> 
+ of type 'product'. An entity is the word, that benerator uses for business objects or, more 
+ general, composite data objects. Entities are composed of <attributes>.
+ 
+ The attributes are the data components of an entity. The attribute elements above describe, 
+ how the attributes should be generated: 
+ 
+ * <id> is generated as continuous <long> values from 1 to 1000000000
+ 
+ * <ean_code> is created by a distinct 'Generator' class. This is the first place where you can insert 
+   plugins. You will learn more about it later.
+   
+ * <name> is an arbitrary string of lenght 5
+ 
+ * <price> is a <big decimal> value between 0.49 and 99.99 (both inclusive), with a precision of 0.10.
+   This means the values 0.49, 0.59, 0.69, ..., 99.79, 99.89, 99.99
+   
+ The <consumer> element tell benerator to instantiate the JavaBean class 
+ org.databene.platform.flat.FlatFileEntityExporter and have it process each generated entity.
+ The entities will be written to a file 'products.flat' using a flat file format, rendering 
+ the columns with fixed with, alignment and padding character: 
+ 
+ <id[8r0]> means that the attribute 'id' is padded to eight characters, aligned to the right and 
+ padded with '0' characters.
+ 
+ <ean_code[13]> means padding to 13 characters using default alignment (left) and character (' ')
+ 
+ (For a more detailed explanation of the file format, see {{file_format.html}})
+
+ So, when running the example via
 
 --------------------------------------------------------------------------------
   run org.databene.benerator.main.Benerator <filename>
@@ -101,55 +145,170 @@ demos
   0000000314835063     VRUJMF              00023.93
 --------------------------------------------------------------------------------
 
-* shop demo
 
-  a shop demo shows how to fill database schemas from a configuration file.
-  It exists in two versions:
 
-   * MySQL (populate_db.mysql.xml)
+database population sample
 
-   * Oracle (populate_db.oracle.xml)
-
+  A shop demo shows how to fill database schemas based on a setup file.
+  
   The shop database schema is as follows:
 
 [images/shop_er.gif]
 
-  Create a database schema and set up its JDBC connection data in the configuration file's section:
+  You can find it in the {{{download.html}benerator distribution}}. 
+  It supports seven major databases:
 
---------------------------------------------------------------------------------
-    <bean id="db" class="org.databene.platform.db.adapter.DBSystem">
-        <property name="url" value="jdbc:mysql://localhost/benerator"/>
-        <property name="driver" value="com.mysql.jdbc.Driver"/>
-        <property name="user" value="benerator"/>
-        <property name="password" value="benerator"/>
-    </bean>
---------------------------------------------------------------------------------
+   * Oracle (oracle)
 
-  See how input files are processed and the database is filled when running
+   * DB2 (db2)
 
-  <<<benerator.bat demo/shop/populate_db.oracle.xml>>>
+   * MS SQL Server (sql_server)
+
+   * MySQL (mysql)
+
+   * PostgreSQL (postgres)
+
+   * HSQL (sql)
+
+   * Derby (derby)
+   
+ If you have a look at the directory demo/shop of you distribution, 
+ you will find 
+ 
+ * the main file <shop.ben.xml> and sub directories named
+   with the database identifiers above (e.g. postgres for PostgreSQL).
+   
+ * the files shop.<stage>.properties files, e.g. shop.development.properties
+   and shop.perftest.properties
+ 
+ * sub directories like <oracle> with three files each:
   
-  Demo files are available for Oracle, DN2, MS SQL Server, MySQL, PostgreSQL, HSQL and Derby.
+   * shop.<database>.properties with the setup variables specific for this database
+ 
+   * create_tables.<database>.sql
+ 
+   * drop_tables.<database>.sql
 
-* using the benerator api: hello world demo
+* Running the demo
 
-    This demonstrates the essential generator creation ansd usage by creating
-    greetings from sets of salutations and names: Runnig
+  Time to get going:
+  
+  * Choose a database for your first steps, e.g. oracle
+  
+  * {{{#Installation}Install}} benerator, the database and an appropriate jdbc driver
+  
+  * create or select a schema in your database
 
-    <<<run org.databene.benerator.demo.HelloWorldDemo>>>
+  * edit the file BENERATOR_HOME/demo/shop/oracle/shop.oracle.properties and set the 
+    correct database url, driver, schema, user and password:
+  
+--------------------------------------------------------------------------------
+ db_uri=jdbc:oracle:thin:@localhost:1521:XE
+ db_driver=oracle.jdbc.driver.OracleDriver
+ db_user=benerator
+ db_password=benerator
+ db_schema=benerator
+ id_strategy=seqhilo
+ id_param=seq_id_gen
+--------------------------------------------------------------------------------
 
-    will generate random salutations like
+  * now go to the root directory of your benerator installation and run 
+    (from the command line): 
+  
+--------------------------------------------------------------------------------
+  bin/benerator -Dstage=development -Ddatabase=oracle shop.ben.xml
+--------------------------------------------------------------------------------
+  
+  If you've done everything right, benerator will now populate your schema with some entities.
+  
+  If you want to test performance, you can use the perftest stage, editing the file 
+  shop.perftest.properties and starting benerator with -Dstage=perftest. In the 
+  shop.perftest.properties you can adapt the settings:
 
 --------------------------------------------------------------------------------
-    Hi Charly
-    Howdy Bob
-    Hello Alice
-    Hi Charly
-    Hello Bob
+ product_count=5000
+ customer_count=10000
+ orders_per_customer=3
+ items_per_order=3
+--------------------------------------------------------------------------------
+  
+
+ If you have a look at the file shop.ben.xml, you see how the pieces are put together:
+
+ First, the -Dstage and -Ddatabase parameters are evcaluates for importing the 
+ corresponding properties files:
+   
+--------------------------------------------------------------------------------
+	<include uri="{demo/shop/${database}/shop.${database}.properties}" />
+	<include uri="{demo/shop/shop.${stage}.properties}" />
+--------------------------------------------------------------------------------
+ 
+ The following <echo> elements print some settings to the console, e.g.
+ 
+--------------------------------------------------------------------------------
+ <echo message="{  ${product_count + 6} products}" />
+--------------------------------------------------------------------------------
+ 
+ After that, the database is defined with the id 'db'.
+ 
+ A Task class is instantiated by JavaBean mechanisms and executed, 
+ running an SQL script on the database 'db'.
+
+--------------------------------------------------------------------------------
+	<run-task class="org.databene.platform.db.RunSqlScriptTask">
+		<property name="uri" value="{demo/shop/${database}/create_tables.${database}.sql}" />
+		<property name="db" ref="db" />
+	</run-task>
 --------------------------------------------------------------------------------
 
-    This is achieved by using two SampleGenerators:
+ A DbUnit file is used for creating a basic predefined setup that may serve for unit tests 
+ and regression tests:
 
+--------------------------------------------------------------------------------
+	<create-entities source="demo/shop/shop.dbunit.xml" consumer="db" />
+--------------------------------------------------------------------------------
+ 
+ Let's skip the following examples, you have got the idea from the {{file generation sample}}.
+ 
+ Just one more create-entities example (the last one of the file and the most sophisticated):
+ 
+--------------------------------------------------------------------------------
+	<!-- create order items -->
+	<create-entities name="db_order_item"
+			count="{ftl:${customer_count * orders_per_customer * items_per_order}}" consumer="db">
+		<variable name="product" source="db" selector="select ean_code, price from db_product" distribution="cumulated" />
+		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
+		<attribute name="order_id" source="db" selector="select id from db_order" cyclic="true" />
+		<attribute name="product_ean_code" script="{${product[0]}}" />
+		<attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
+	</create-entities> 
+--------------------------------------------------------------------------------
+ 
+ The attribute <count>="{ftl:${customer_count * orders_per_customer * items_per_order}}" tells benerator 
+ to use a scripting engine (FreeMarker, registered as 'ftl') for calculating the number of entities to 
+ create.
+
+ The <id> is generated by one of the predefined strategies by ${id_strategy} and ${id_param}), 
+ parameters which are set in the database properties file. 
+
+ A variable <product> is used for querying the db_product database table, extracting ean_code and price 
+ from all rows, buffering them in memory and providing them with a probability distribution of bell shape:
+ The middle products will be used frequently, the first and last products just rarely
+ 
+ The attribute <total_price> is determined by evaluating a script '${(product[1] * db_order_item.number_of_items)?c}'
+ with the default script engine. This multiplies column 1 of the 'product' variable (the price column) with 
+ the number_of_items attribute of the current entity and renders it for a 'computer audience' because of '?c'.
+ Otherwise, you might get locale.dependent formatting, which would confuse benerator. 
+ 
+
+benerator api
+
+    If your Task is very special, you might need to learn the benerator api and plumb things together as you need.
+    
+    A Generator is an object responsible for creating objects. 
+    You can instantiate most predefined Generators by the GeneratorFactory:
+    
 --------------------------------------------------------------------------------
     Generator<String> salutation = GeneratorFactory.getSampleGenerator("Hi", "Hello", "Howdy");
     Generator<String> name = GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly");
@@ -159,9 +318,21 @@ demos
     name.close();
 --------------------------------------------------------------------------------
 
-  They are created by the GeneratorFactory, used by invoking generate() and finally closed.
+ First, two generators are created by the GeneratorFactory, used 5 times by invoking generate() and finally closed.
 
-* person demo
+ This code will print out something similar to the following text:
+
+--------------------------------------------------------------------------------
+    Hi Charly
+    Howdy Bob
+    Hello Alice
+    Hi Charly
+    Hello Bob
+--------------------------------------------------------------------------------
+
+
+
+PersonGenerator
 
   This is an example of a domain generator.
   This one creates person data with title, address and phone numbers:
@@ -200,7 +371,9 @@ demos
   Mr. Harry Thompson, *07.10.1905
 --------------------------------------------------------------------------------
 
-* Address Demo
+
+
+AddressGenerator
 
   Here's an example of using the address generator:
 
@@ -224,7 +397,9 @@ demos
 
   Currrently only German addresses are supported.
 
-* regex demo
+
+
+Regex Generator
 
   Strings can be created by providing a regular expression, e.g. for creating phone numbers:
 
@@ -252,7 +427,7 @@ demos
 
 
 
-* file builder demo
+custom file builder
 
   The PersonXMLBuilderDemo demonstrates the usage of the FileBuilder and the
   ScriptBasedDocumentWriter for creating xml files with person data.
@@ -326,13 +501,11 @@ demos
 --------------------------------------------------------------------------------
 
 
-* distribution demo
+distribution demo
 
   Running the distribution demo visualizes the predefined sequences -
   the generated values are displayed from left to right, the amounts are
-  indicated vertically.
-
-  <<<run org.databene.benerator.demo.DistributionDemo>>>
+  indicated vertically. See org.databene.benerator.demo.DistributionDemo
 
 [images/distributions.gif]
 

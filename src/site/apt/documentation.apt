@@ -1,0 +1,49 @@
+				-------------
+				documentation
+				-------------
+
+documentation
+
+ For a short abstract of what benerator does, have a look at the {{{index.html}benerator home page}}, 
+ for more detailed informations, check the {{{features.html}feature list}}. 
+
+ There is a {{{Sisyphos_is_done-databene_benerator.pdf}presentation}} that takes you to a tour through 
+ benerator in 30 minutes.
+ 
+ The next level of questions should be answered by the {{{faq.html}FAQ}}.
+ 
+ Now you should be keen on seeing how benerator works: the {{{gettings_started.html}getting started}} 
+ document will introduce you to syntax, usage and API of benerator.
+ 
+ Now, that you have reached this point, it is time to {{{download.html}download}} the current benerator 
+ distribution. Looking at the examples provided in the <<demo>> directory will give you a detailed 
+ view on how to use benerator. Cross-check it with the {{{file_format.html}file format}} documentation.
+
+ Now you can start rolling your own test data. For the first specific data providers you might use 
+ some from the {{{domain_packages.html}domain packages}}.
+ 
+ You will soon face some data constraints that are too special to be handled generically, 
+ like e.g. creating data that fits with special checksum algorithms or strange multi-field constraints.
+ There are many places at which you can plug in own Java code as described in the 
+ {{{customizing_guide.html}customizing guide}}.
+ 
+ Documentation will always be one step behind implementation. If the documentation did not explain well 
+ enough, ask me in the {{{http://databene.org/phpBB2/viewforum.php?f=2}help forum}}.
+ 
+ Possibly the data format you have to create is too strange to cope with the standard
+ benerator behavior (yes, I've seen some really sick data file formats out there). 
+ In such cases you can still fall back to the benerator api and plumb things together as they fit your needs best.
+ Check the {{{api_guide.html}api guide}} and {{{api_reference.html}api reference}} for this task.
+ 
+ If you are missing features, tell me by the {{{http://databene.org/phpBB2/viewforum.php?f=4}feature requests forum}}.
+ If you find a bug, please post it in the {{{http://databene.org/phpBB2/viewforum.php?f=3}problems & bugs forum}}.
+  
+ benerator is still evolving. Before release 1.0, all interfaces and formats might change in non-trivial ways.
+ The steps necessary for upgrading are described in the {{{migration.html}migration guide}}. 
+ I will try to keep changes small for the majority of users, but the deeper you dive into the 
+ benerator implementation, the more work you might have in migration. If you are heavily implementing 
+ customizations, please get in contact with me - 
+ if I know what you are doing, I can try to save upgrade work for you.
+  
+ If benerator was of use for you, you are welcome to describe your experiences in a 
+ {{{http://databene.org/phpBB2/viewforum.php?f=7}field report}}.
