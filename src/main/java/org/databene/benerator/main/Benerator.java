@@ -289,16 +289,19 @@ public class Benerator implements GenerationSetup {
         Map<String, Generator<? extends Object>> variables = parseVariables(element, context);
         // generate
         Generator<Entity> entityGenerator = EntityGeneratorFactory.createEntityGenerator(descriptor, context, this);
-        int count = parseIntAttribute(element, "count", context, -1);
+        int count    = parseIntAttribute(element, "count", context, -1);
         int pageSize = parseIntAttribute(element, "pagesize", context, defaultPagesize);
-        int threads = parseIntAttribute(element, "threads", context, 1);
+        int threads  = parseIntAttribute(element, "threads", context, 1);
         Generator<Entity> configuredGenerator = new ConfiguredGenerator(entityGenerator, variables, context);
         // create sub create-entities
-        NodeList subCreates = element.getElementsByTagName("create-entities");
-        List<PagedCreateEntityTask> subs = new ArrayList<PagedCreateEntityTask>(subCreates.getLength());
-        for (int i = 0; i < subCreates.getLength(); i++) {
-            Element ceElement = (Element) subCreates.item(i);
-            subs.add(parseCreateEntities(ceElement, resources, context, true));
+        List<PagedCreateEntityTask> subs = new ArrayList<PagedCreateEntityTask>();
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (!(node instanceof Element))
+                continue;
+            if ("create-entities".equals(node.getNodeName()))
+                subs.add(parseCreateEntities((Element)node, resources, context, true));
         }
         // done
         return new PagedCreateEntityTask(
