@@ -4,7 +4,12 @@
 
     <groupId>databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
+
+    <properties>
+	    <webdecs_version>0.3.1</webdecs_version>
+	    <commons_version>0.3.1</commons_version>
+    </properties>
 
     <parent>
         <groupId>databene</groupId>
@@ -66,7 +71,12 @@
         <dependency>
             <groupId>databene</groupId>
             <artifactId>databene-webdecs</artifactId>
-            <version>0.3.0</version>
+            <version>${webdecs_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>databene</groupId>
+            <artifactId>databene-commons</artifactId>
+            <version>${commons_version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -155,7 +165,7 @@
 
     <reporting>
         <plugins>
-<!-- --> 
+<!-- -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>

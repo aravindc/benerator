@@ -70,7 +70,7 @@ public class TaskRunner {
             String[] cells = iterator.next();
             if (cells.length == 0)
                 continue;
-            Class<Task> taskClass = (Class<Task>) BeanUtil.forName(cells[0]);
+            Class<Task> taskClass = BeanUtil.forName(cells[0]);
             Task task = BeanUtil.newInstance(taskClass);
             int invocations = Integer.parseInt(cells[1]);
             int pageSize = Integer.parseInt(cells[2]);

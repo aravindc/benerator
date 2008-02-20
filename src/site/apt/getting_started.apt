@@ -112,13 +112,15 @@ file generation sample
  * <id> is generated as continuous <long> values from 1 to 1000000000
  
  * <ean_code> is created by a distinct 'Generator' class. This is the first place where you can insert 
-   plugins. You will learn more about it later.
-   
+ plugins. You will learn more about it later
+  
  * <name> is an arbitrary string of lenght 5
- 
+
  * <price> is a <big decimal> value between 0.49 and 99.99 (both inclusive), with a precision of 0.10.
-   This means the values 0.49, 0.59, 0.69, ..., 99.79, 99.89, 99.99
+ This means the values 0.49, 0.59, 0.69, ..., 99.79, 99.89, 99.99
    
+ []
+ 
  The <consumer> element tell benerator to instantiate the JavaBean class 
  org.databene.platform.flat.FlatFileEntityExporter and have it process each generated entity.
  The entities will be written to a file 'products.flat' using a flat file format, rendering 
@@ -131,21 +133,31 @@ file generation sample
  
  (For a more detailed explanation of the file format, see {{file_format.html}})
 
- So, when running the example via
+ So, when running the example from the root directory of your benerator installation on a Unix system via
 
 --------------------------------------------------------------------------------
-  run org.databene.benerator.main.Benerator <filename>
+ bin/benerator demo/file/create_flat.ben.xml
 --------------------------------------------------------------------------------
 
-  benerator will create a flat file 'products.flat' like this:
+ or, on Windows, via
 
 --------------------------------------------------------------------------------
-  000000017927930616145WSHECZKPO           00098.04
-  0000000297395159     VUTWHGFEU           00063.52
-  0000000314835063     VRUJMF              00023.93
+ bin\benerator demo\file\create_flat.ben.xml
 --------------------------------------------------------------------------------
 
+ benerator will create a flat file 'transactions.flat' like this:
 
+--------------------------------------------------------------------------------
+ 00000001800035300638600009.850006
+ 00000002800035000334000002.490018
+ 00000003800035300638600009.850010
+ 00000004807680000008500000.890022
+ 00000005807680000008500000.890024
+ 00000006807680000008500000.890024
+ ...
+--------------------------------------------------------------------------------
+
+ (When running offline, you will need to remove the DOCTYPE declaration from the file demo/file/create_flat.ben.xml)
 
 database population sample
 
@@ -195,7 +207,7 @@ database population sample
   
   * Choose a database for your first steps, e.g. oracle
   
-  * {{{#Installation}Install}} benerator, the database and an appropriate jdbc driver
+  * Install benerator, the database and an appropriate jdbc driver
   
   * create or select a schema in your database
 
@@ -285,7 +297,7 @@ database population sample
 	</create-entities> 
 --------------------------------------------------------------------------------
  
- The attribute <count>="{ftl:${customer_count * orders_per_customer * items_per_order}}" tells benerator 
+ The attribute <count>="\{ftl:$\{customer_count * orders_per_customer * items_per_order\}\}" tells benerator 
  to use a scripting engine (FreeMarker, registered as 'ftl') for calculating the number of entities to 
  create.
 

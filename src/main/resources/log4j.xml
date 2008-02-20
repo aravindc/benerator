@@ -49,8 +49,12 @@
        <priority value="warn"/>
     </category>
 
+    <category name="shop">
+       <priority value="debug"/>
+    </category>
+
     <category name="org.databene">
-       <priority value="info"/>
+       <priority value="debug"/>
     </category>
 
     <category name="org.databene.benerator.SQL">
@@ -82,7 +86,7 @@
    <!-- ======================= -->
 
     <root>
-        <priority value="info"/>
+        <priority value="debug"/>
         <appender-ref ref="CONSOLE"/>
         <!--appender-ref ref="FILE"/-->
     </root>

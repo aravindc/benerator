@@ -67,7 +67,7 @@ public class SeqHiLoProviderTest extends TestCase {
     }
 
     private void prepare(String selector, long ... queryResults) throws SQLException {
-        // TODO v0.4.1 move this to a DB test helper package
+        // TODO v0.4.2 move this to a DB test helper package
         connection = EasyMock.createStrictMock(Connection.class);
         statement = EasyMock.createStrictMock(PreparedStatement.class);
         EasyMock.expect(connection.prepareStatement(selector)).andReturn(statement);

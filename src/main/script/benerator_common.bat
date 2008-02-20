@@ -37,7 +37,7 @@ echo Please set the BENERATOR_HOME environment variable to the path where you in
 goto endcommon
 
 :setLocalClassPath
-set LOCALCLASSPATH=.;%BENERATOR_HOME%\bin;%BENERATOR_HOME%\databene-benerator-0.3.04.jar;%BENERATOR_HOME%\lib\databene-webdecs-0.2.04.jar;%BENERATOR_HOME%\lib\databene-commons-0.2.04.jar;%BENERATOR_HOME%\lib\commons-logging-1.0.4.jar
+set LOCALCLASSPATH=.;%BENERATOR_HOME%\bin;%BENERATOR_HOME%\databene-benerator-${project.version}.jar;%BENERATOR_HOME%\lib\databene-webdecs-${webdecs_version}.jar;%BENERATOR_HOME%\lib\databene-commons-${commons_version}.jar;%BENERATOR_HOME%\lib\commons-logging-1.0.4.jar
 set LOCALCLASSPATH=%LOCALCLASSPATH%;lib\log4j-1.2.14.jar;lib\ojdbc14.jar
 
 :checkJava

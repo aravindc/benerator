@@ -1,27 +1,25 @@
 Baustellen
 ==========
 
-04.02.08
---------
-13:00: 	freshmeat announcement
-20:00: 	create databene-commons forum
-		release announcement on 
-		- theserverside.com
-		- opensourcetesting.com
-CfP mathema campus
-Visitenkarten-Entwurf 
-
-05.02.08
---------
-Xing
-- Diskussion: How early should you test for performance
-- Xing-OS-Gruppe/Testgruppe: Vorstellung benerator
-get links from more sites
-
-
+PRIO 1
+-----
+Laptop-Akku
+Visitenkarten
+Artikel: Differenzierung von Last- und Performancetests 
 
 Prio 2
 ------
+Check CfP-Termine für Herbstkonferenzen
+E-Mail Mirko Novakovic (Multiplikator) novakovic@codecentric.de
+release announcement on 
+- theserverside.com
+- opensourcetesting.com
+Visitenkarten-Entwurf 
+E-Mail Heiko Rupp
+Xing
+- Diskussion: How early should you test for performance
+- Xing-OS-Gruppe/Testgruppe: Vorstellung benerator
+Recherche + Anmeldung Verzeichnisdienste
 Xing-Gruppe IT-Recht
 Check ranking for google queries:
 - open source test data generator (1)
@@ -33,7 +31,12 @@ Check ranking for google queries:
 - generate data (n.f.)
 Kontakt Tobias Frech wg. JavaForum
 Oracle Performance-Schulung
-Amazon-Links
+Eclipse Metrics Plugin
+Web Site vermarkten per 
+- Google Ads
+- Amazon-Links
+
+
 
 Profile
 -------
@@ -49,41 +52,16 @@ bergmann-it.de
 -------------
 Create English version
 
-0.4.1
------
-- announcements
-  - hector team
-  - sal
-  - openbc
-  - http://www.javalobby.org/java/forums/f17.html
-  - http://www.theserverside.com/
-  - http://www.scouty.de/
-  - http://entwickler.com
-  - http://it-republik.de/jaxenter/
-  - slashdot.org
-  - http://www.infoq.com/performance-scalability
 
-- check site with
-  - Opera
-  - IE 6
-  - Other browsers?
+0.4.2
+-----
 - count code lines
-- Marketing
-  - Post articles to sites
-    - digg.com
-    - devx.com
-    - theserverside.com
-    - javaworld.com
-  - Networking
-    - check GI
-    - join JUGM
-    - check ASQF groups
-    - Check conferences
-    - Get involved with JSR 303
-    - Check OSI and retry sourceforge
-    - Join barcamp
+- finalize
+  - Region concept
+  - finalize capitalization handling
 - features
-  - Add serialVersionUIDs
+  - support DOCTYPE also in offline mode
+  - DTDDecriptorProvider
   - print deprecation message
   - id strategy=foreign?
   - Check why/when Oracle reports 4x the length of varchar2 fields 
@@ -97,7 +75,6 @@ Create English version
   - log creation throughput for each top-level entity
   - custom setup file element handler
   - default generators by name (created/inserted/updated_at/by), as part of domain package?
-  - finalize case handling
   - prototype builder
     - provide shell file (win/unix)
     - scan existing data for null quota, distinct values and probabilities
@@ -107,9 +84,8 @@ Create English version
   - Check performance
     - metadata import (check if unused columns are imported)
     - SQL script invocation
-    - Entity/OrderedMap
+    - Snapshot (Entity/OrderedMap)
   - JDBCDBImporter: group tables by prefix
-  - Region concept
   - parsing of check constraints
   - Key concept
   - maxLength support for numbers and dates
@@ -125,7 +101,9 @@ Create English version
   - Sybase
   - add execute() element that calls a System.execute(String) method, e.g. for submitting DDL
   - support jdbc.properties file
+  - introduce (UML) model based testing
 - Build
+  - Auto-create classpath for shell files with current pom version numbers
   - measure test code coverage
   - setup Bugzilla
 - QA
@@ -141,6 +119,8 @@ Create English version
 - Marketing
   - Learn more about RSS
 - Site
+  - remove forum from search indexes (robots.txt)
+  - explain bans on forum page
   - create RSS link for blog on all pages
   - check internal links on all pages
   - add tracking to javadoc/source-xref
@@ -177,6 +157,11 @@ Create English version
 -----
 - features
   - benerator XML schema
+  - YAML support
+	  - YAMLWriter
+	  - YAMLEntityExporter
+	  - YAMLEntityIterable
+  - Add serialVersionUIDs
   - config file:
     - separate modeling of entities/builders from invocation
     - compare mule setup with benerator setup
@@ -237,6 +222,12 @@ release tasks
 - Update Site
   - doc/samples for changed features
   - Migration guide
+- check site with
+  - Firefox
+  - Opera
+  - IE 6
+  - IE 7
+  - Other browsers?
 - check assembly
   - assure log4j.xml is not contained
   - check resource paths
@@ -251,6 +242,7 @@ release tasks
   - dzone
   - http://www.jsurfer.de/
   - databene blog
+  - hector team
   
   - http://www.javalobby.org/java/forums/f17.html
   - http://www.theserverside.com/
@@ -369,6 +361,10 @@ http://java-source.net/
 
 Link sites
 ----------
+http://www.testingfaqs.org/
+http://www.aptest.com/resources.html
+http://www.qaforums.com/
+http://www.softwareqatest.com/
 http://blogs.msdn.com/sachinre/archive/2006/07/06/A-better-approach-to-test-data-generation.aspx
 http://www.brothersoft.com/information_management/database_programs/test_data_generator_tdg_41281.html
 http://www.heise.de/software/download/db_data_generator/43755
@@ -618,3 +614,185 @@ Caused by: org.postgresql.util.PSQLException: ERROR: portal "C_18" does not exis
 	at org.postgresql.jdbc2.AbstractJdbc2ResultSet.next(AbstractJdbc2ResultSet.java:1825)
 	at org.databene.platform.db.ResultSetIterator.hasNext(ResultSetIterator.java:68)
 	... 13 more
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+Dem Finanzamt melden, dass ich in Q4/07 eingeschränkte Einkünfte habe
+Markus: Referenz
+Schreibtisch
+Visitenkarte
+Weiterbildung: Selbstdarstellung, Präsentation, Verkaufsgespräch
+Check Absturzursache Lightroom auf Danielas Laptop
+Fotosachen verkaufen
+Website: Referenz LP
+Gutscheincode Kaspersky
+engl. CV: Sascha Leser
+Termin Hölscher
+- Impfung
+- Ohrgeräusche
+Termin Hautarzt
+SpamFreeWeb
+Rechtsanwalt: AGB + Lizenzmodell + Vertrag
+Call for Papers jax (-15.11.)
+Publicity
+  Vorstellung benerator auf freshmeat.net
+  Anmeldung dmoz.org
+  Google Adwords
+  krugle
+  sourceforge/codehaus(?)
+Suchmaschinenoptimierung
+  SearchBot oder so
+  Google
+  Yahoo-Anmeldung
+Lizenzcheck
+  JBoss
+  RedHat
+Buch: Softwaretest
+IT-Haftpflicht
+Leistungsbeschreibung Reviews + Beratung -> 
+  Worofsky
+  mathema
+  gulp
+  Computerwoche
+  RHG
+  top IT
+  redhat
+  Hays
+Engl. Profil -> Leser
+Markenanmeldungen weltweit (HABM/Madrid Protokoll, USA)
+Weinbestellung
+Berechnung welchen Wert hat der benerator-Einsatz in einem IT-Projekt?
+Rechtsschutzversicherung?
+Check benerator@databene.org
+
+Anwälte (für AGB, Lizenz, Support-Vertrag, Partner-Vertrag (Schulun, Support, Buch))
+-------
+http://www.trk-partner.de/
+http://www.bettinger.de/index.htm
+http://www.schlawien-naab.de/index.shtml?de_muenchen
+http://www.finck-partner.de/
+Franks Bekannter
+
+Das folgende Institut sieht auch interessant aus:
+http://www.ifross.de/ 
+
+BACKUP volumes:
+---------------
+IT Courses/labs
+
+Wiedervorlage:
+--------------
+- AVIS
+
+Agile Projekte: http://www.ambysoft.com/surveys/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHANNELS
+========
+
+Portale
+-------
+www.informit.com
+www.jdj.com
+www.javaworld.com
+www.competence-site.de
+
+  - sal
+  - openbc
+  - http://www.javalobby.org/java/forums/f17.html
+  - http://www.theserverside.com/
+  - http://www.scouty.de/
+  - http://entwickler.com
+  - http://it-republik.de/jaxenter/
+  - slashdot.org
+  - http://www.infoq.com/performance-scalability
+  - http://www.slashdot.org/
+
+Print-Magazine
+--------------
+JavaMagazin
+JavaSpektrum
+ObjektSpektrum
+
+Verzeichnisdienste
+------------------
+dmoz.org
+www.yahoo.com
+hit-net.de
+web-verzeichnis.net
+Viele mehr auf: dmoz.org/World/Deutsch/Computer/Internet/Suchen/Verzeichnisse
+
+  - Post articles to sites
+    - digg.com
+    - devx.com
+    - theserverside.com
+    - javaworld.com
+  - Networking
+    - check GI
+    - join JUGM
+    - check ASQF groups
+    - Check conferences
+    - Get involved with JSR 303
+    - Check OSI and retry sourceforge
+    - Join barcamp
+
+
+Check social sites for follow (and update social_sites.csv):
+------------------------------
+http://www.bloglines.com/
+http://www.netscape.com
+http://digg.com
+http://www.stumbleupon.com
+http://technorati.com
+http://www.mybloglog.com/
+http://reddit.com/
+http://www.fark.com/
+http://www.newsvine.com/
+http://www.dzone.com/
+

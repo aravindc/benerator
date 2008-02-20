@@ -388,7 +388,7 @@ public class ComponentGeneratorFactory extends FeatureGeneratorFactory {
                 usedDetails.add(ENCODING);
             else
                 encoding = SystemInfo.fileEncoding();
-            // TODO v0.4.1 decide whether to import Entities or cells
+            // TODO v0.4.2 decide whether to import Entities or cells
             ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
             generator = new IteratingGenerator(new CSVEntityIterable(source, descriptor.getName(), scriptConverter, separator, encoding));
         } else if (lcn.endsWith(".txt")) {

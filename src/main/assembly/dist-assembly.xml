@@ -29,6 +29,10 @@
             <includes>
                 <include>*</include>
             </includes>
+            <excludes>
+                <exclude>benerator_common.bat</exclude>
+                <exclude>benerator_common</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/main/resources</directory>
@@ -77,6 +81,20 @@
             <outputDirectory>doc/api</outputDirectory>
         </fileSet>
     </fileSets>
+
+	<!-- filtered script files -->
+    <files>
+		<file>
+			<source>src/main/script/benerator_common.bat</source>
+			<outputDirectory>bin</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+		<file>
+			<source>src/main/script/benerator_common</source>
+			<outputDirectory>bin</outputDirectory>
+			<filtered>true</filtered>
+		</file>
+    </files>
 
     <dependencySets>
         <dependencySet>

@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Volker Bergmann
  */
 public class ObjectCounter<E> {
-    // TODO v0.4.1 move to an appropriate location 
+    // TODO v0.4.2 move to an appropriate location 
     private Map<E, AtomicInteger> instances;
     long totalCount;
 

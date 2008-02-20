@@ -90,7 +90,7 @@ javabeans and the context
       </bean>
 --------------------------------------------------------------------------------
 
-As of benerator 0.4.0, you have a simpler syntax for defining databases
+ as of benerator 0.4.0, you have a simpler syntax for defining databases
 
 --------------------------------------------------------------------------------
 	<database id="db" 
@@ -427,14 +427,14 @@ scripting
  
  * Flat files
  
- A script is denoted by curly braces, e.g. '{Hi, I am ${my_name}}'. This syntax will use 
+ A script is denoted by curly braces, e.g. '\{Hi, I am $\{my_name\}\}'. This syntax will use 
  the default script engine for rendering the text as, e.g. 'Hi, I am Volker'.
  
  The default script engine is set by the property <benerator.defaultScript>.
  
  If you need to support different script engines (e.g. while combining files from different 
  sources), you can differ them by prepending the scripting engine id, e.g. 
- '{ftl:Hi, I am ${my_name}}' or '{Vel:Hi, I am ${my_name}}'
+ '\{ftl:Hi, I am $\{my_name\}\}' or '\{Vel:Hi, I am $\{my_name\}\}'
  
  Scripts in the benerator setup are evaluated while parsing. If you need to dynamically 
  generate script text at runtime, use a attribute.script field:
@@ -466,7 +466,7 @@ staging
  
  When invoking benerator with a -Dstage=development JVM parameter, you can make your import
 
-	<include uri="{demo/shop/shop.${stage}.properties}" />
+	<include uri="\{demo/shop/shop.$\{stage\}.properties\}" />
 
 
 

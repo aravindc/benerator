@@ -27,9 +27,15 @@
 package shop;
 
 import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.main.Benerator;
+import org.databene.commons.IOUtil;
+import org.databene.platform.db.DBSystem;
 
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Tests the shop demo on all supported database systems.<br/>
@@ -37,38 +43,80 @@ import java.io.IOException;
  * Created: 20.11.2007 13:24:13
  */
 public class ShopTest extends TestCase {
+    
+    private static final String BENERATOR_FILE = "demo/shop/shop.ben.xml";
 
-    public void testDB2() throws IOException {
-        perform("demo/shop/populate_db.db2.xml");
+    private static final Log logger = LogFactory.getLog(ShopTest.class);
+
+    public void testDB2() throws IOException, InterruptedException {
+        checkGeneration("db2");
     }
 
-    public void testDerby() throws IOException {
-        perform("demo/shop/populate_db.derby.xml");
+    public void testDerby() throws IOException, InterruptedException {
+        checkGeneration("derby");
     }
 
-    public void testHSQL() throws IOException {
-        perform("demo/shop/populate_db.hsql.xml");
+    public void testHSQL() throws IOException, InterruptedException {
+        checkGeneration("hsql");
     }
 
-    public void testSQLServer() throws IOException {
-        perform("demo/shop/populate_db.ms_sql_server.xml");
+    public void testSQLServer() throws IOException, InterruptedException {
+        checkGeneration("ms_sql_server");
     }
 
-    public void testMySQL() throws IOException {
-        perform("demo/shop/populate_db.mysql.xml");
+    public void testMySQL() throws IOException, InterruptedException {
+        checkGeneration("mysql");
     }
 
-    public void testOracle() throws IOException {
-        perform("demo/shop/populate_db.oracle.xml");
+    public void testOracle() throws IOException, InterruptedException {
+        checkGeneration("oracle");
     }
 
-    public void testPostgres() throws IOException {
-        perform("demo/shop/populate_db.postgres.xml");
+    public void testPostgres() throws IOException, InterruptedException {
+        checkGeneration("postgres");
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void perform(String uri) throws IOException {
-        Benerator.main(new String[] {uri});
+    private void checkGeneration(String database) throws IOException, InterruptedException {
+        checkGeneration(database, true);
+        //checkGeneration(database, false);
+    }
+
+    private void checkGeneration(String database, boolean shell) throws IOException, InterruptedException {
+        if (shell)
+            runFromCommandLine(BENERATOR_FILE, database, "test");
+        else
+            runAsClass(BENERATOR_FILE, database, "test");
+        Properties properties = IOUtil.readProperties("demo/shop/" + database + "/shop." + database + ".properties");
+        DBSystem db = new DBSystem(
+                "db", 
+                properties.getProperty("db_uri"), 
+                properties.getProperty("db_driver"), 
+                properties.getProperty("db_user"), 
+                properties.getProperty("db_password")
+        );
+        assertEquals(28, db.countEntities("db_category"));
+        assertEquals(9,  db.countEntities("db_product"));
+        assertEquals(9,  db.countEntities("db_user"));
+        assertEquals(6,  db.countEntities("db_customer"));
+        assertEquals(22, db.countEntities("db_order"));
+        assertEquals(43, db.countEntities("db_order_item"));
+    }
+
+    private void runAsClass(String file, String database, String stage) throws IOException {
+        System.setProperty("stage", stage);
+        System.setProperty("database", database);
+        Benerator.main(new String[] { file });
+    }
+
+    private void runFromCommandLine(String file, String database, String stage) throws IOException, InterruptedException {
+        // TODO v0.4.2 make it run and properly check the result
+        String command = "benerator -Ddatabase=" + database + " -Dstage=" + stage + " " + file;
+        logger.debug(command);
+        Process process = Runtime.getRuntime().exec(command);
+        IOUtil.transfer(process.getInputStream(), System.out);
+        process.waitFor();
+        logger.debug(process.exitValue());
     }
 }

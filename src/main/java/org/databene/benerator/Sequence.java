@@ -55,13 +55,11 @@ public class Sequence implements Distribution {
                 String name = (String) entry.getKey();
                 String setup = (String) entry.getValue();
                 String[] generatorClasses = StringUtil.tokenize(setup, ',');
-                Class<AbstractDoubleGenerator> dgClass
-                        = (Class<AbstractDoubleGenerator>) BeanUtil.forName(generatorClasses[0]);
+                Class<AbstractDoubleGenerator> dgClass = BeanUtil.forName(generatorClasses[0]);
                 if (generatorClasses.length == 1) {
                     new Sequence(name, dgClass);
                 } else {
-                    Class<AbstractLongGenerator> ngClass
-                            = (Class<AbstractLongGenerator>) BeanUtil.forName(generatorClasses[1]);
+                    Class<AbstractLongGenerator> ngClass = BeanUtil.forName(generatorClasses[1]);
                     new Sequence(name, dgClass, ngClass);
                 }
             }

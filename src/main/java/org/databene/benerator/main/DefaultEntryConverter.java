@@ -41,7 +41,7 @@ import org.databene.commons.mutator.AnyMutator;
  * @author Volker Bergmann
  */
 public class DefaultEntryConverter implements Converter<Map.Entry, Map.Entry> {
-    // TODO v0.4.1 make it more general and move to commons
+    // TODO v0.4.2 make it more general and move to commons
     private Context context;
     private Converter<String, String> preprocessor;
     private boolean putEntriesToContext;

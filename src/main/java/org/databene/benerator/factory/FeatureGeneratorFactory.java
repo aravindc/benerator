@@ -69,7 +69,7 @@ abstract class FeatureGeneratorFactory {
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             String name = detail.getName();
             if (!"name".equals(name) && detail.getValue() != null && !usedDetails.contains(name))
-                logger.debug("Ignored detail: " + detail + " in descriptor " + descriptor); // TODO v0.4.1 improve tracking of unused features
+                logger.debug("Ignored detail: " + detail + " in descriptor " + descriptor); // TODO v0.4.2 improve tracking of unused features
         }
     }
 
