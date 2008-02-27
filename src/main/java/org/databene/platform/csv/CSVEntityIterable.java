@@ -27,6 +27,7 @@
 package org.databene.platform.csv;
 
 import org.databene.platform.array.Array2EntityConverter;
+import org.databene.model.data.DefaultEntityDescriptor;
 import org.databene.model.data.EntityIterable;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntityDescriptor;
@@ -71,11 +72,11 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public CSVEntityIterable(String uri, String entityName, char separator, String encoding) {
-        this(uri, new EntityDescriptor(entityName, false), new NoOpConverter<String>(), separator, encoding); // TODO v0.5 finalize capitalization concept
+        this(uri, new DefaultEntityDescriptor(entityName, false), new NoOpConverter<String>(), separator, encoding); // TODO v0.5 finalize capitalization concept
     }
 
     public CSVEntityIterable(String uri, String entityName, Converter<String, String> preprocessor, char separator, String encoding) {
-        this(uri, new EntityDescriptor(entityName, false), preprocessor, separator, encoding); // TODO v0.5 finalize capitalization concept
+        this(uri, new DefaultEntityDescriptor(entityName, false), preprocessor, separator, encoding); // TODO v0.5 finalize capitalization concept
     }
 
     public CSVEntityIterable(String uri, EntityDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) {
@@ -117,7 +118,7 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public void setEntityName(String entityName) {
-        this.entityDescriptor = new EntityDescriptor(entityName, false); // TODO v0.5 finalize case concept
+        this.entityDescriptor = new DefaultEntityDescriptor(entityName, false); // TODO v0.5 finalize capitaliyation concept
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
