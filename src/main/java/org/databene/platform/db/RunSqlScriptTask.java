@@ -28,6 +28,7 @@ package org.databene.platform.db;
 
 import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
+import org.databene.commons.DBUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.apache.commons.logging.Log;
