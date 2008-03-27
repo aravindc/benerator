@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.SimpleRandom;
+import org.databene.benerator.util.SimpleRandom;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;

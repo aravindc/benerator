@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.distribution.BitReverseNaturalNumberGenerator;
-import org.databene.commons.ArrayUtil;
+import org.databene.benerator.util.SimpleRandom;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CustomCounter;
@@ -43,9 +43,9 @@ import java.util.Set;
 public class UniqueFixedLengthStringGenerator extends LightweightGenerator<String> {
 
     public static final Set<Character> DEFAULT_CHAR_SET
-            = ArrayUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            = CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
     public static final Set<Character> ORDERED_CHAR_SET
-            = ArrayUtil.toSortedSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            = CollectionUtil.toSortedSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
     private static final int DEFAULT_LENGTH = 4;
 
     private int radix;
