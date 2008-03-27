@@ -1,9 +1,9 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.WeightFunction;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.Sequence;
+import org.databene.model.function.Sequence;
+import org.databene.model.function.WeightFunction;
 
 import javax.swing.*;
 import java.awt.*;

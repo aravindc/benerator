@@ -1,8 +1,8 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.Sequence;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.model.function.Sequence;
 
 import javax.swing.*;
 import java.awt.*;

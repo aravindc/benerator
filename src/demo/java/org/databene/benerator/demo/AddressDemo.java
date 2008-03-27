@@ -27,7 +27,7 @@
 package org.databene.benerator.demo;
 
 import org.databene.domain.address.AddressGenerator;
-import org.databene.region.Country;
+import org.databene.domain.address.Country;
 
 /**
  * Demonstrates the use of the AddressGenerator.<br/>

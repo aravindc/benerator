@@ -26,8 +26,8 @@
 
 package org.databene.benerator.demo;
 
+import org.databene.domain.address.Country;
 import org.databene.domain.person.PersonGenerator;
-import org.databene.region.Country;
 
 import java.util.Locale;
 

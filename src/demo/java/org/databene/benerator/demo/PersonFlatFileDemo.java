@@ -28,7 +28,7 @@ package org.databene.benerator.demo;
 
 import org.databene.domain.person.PersonGenerator;
 import org.databene.domain.person.Person;
-import org.databene.benerator.FileBuilder;
+import org.databene.benerator.file.FileBuilder;
 import org.databene.commons.DocumentWriter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.format.Alignment;

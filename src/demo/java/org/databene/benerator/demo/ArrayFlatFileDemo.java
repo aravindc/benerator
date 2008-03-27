@@ -26,17 +26,17 @@
 
 package org.databene.benerator.demo;
 
-import org.databene.benerator.FileBuilder;
 import org.databene.benerator.Generator;
-import org.databene.benerator.Sequence;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.benerator.wrapper.FormatFormatGenerator;
 import org.databene.commons.*;
 import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
+import org.databene.model.function.Sequence;
 import org.databene.script.Script;
 
 import java.io.*;
