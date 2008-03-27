@@ -26,8 +26,8 @@
 
 package org.databene.platform.bean;
 
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
 
@@ -40,14 +40,14 @@ import java.beans.PropertyDescriptor;
  */
 public class Bean2EntityConverter<E> implements Converter<E, Entity> {
 
-    private EntityDescriptor descriptor;
+    private ComplexTypeDescriptor descriptor;
     private BeanDescriptorProvider beanDescriptorProvider = new BeanDescriptorProvider();
 
     public Bean2EntityConverter() {
         this(null);
     }
 
-    public Bean2EntityConverter(EntityDescriptor descriptor) {
+    public Bean2EntityConverter(ComplexTypeDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
@@ -61,11 +61,11 @@ public class Bean2EntityConverter<E> implements Converter<E, Entity> {
         Entity entity = new Entity(descriptor != null ? descriptor : createBeanDescriptor(bean.getClass()));
         for (PropertyDescriptor descriptor : BeanUtil.getPropertyDescriptors(bean.getClass()))
             if (!"class".equals(descriptor.getName()))
-                entity.setComponent(descriptor.getName(), BeanUtil.getPropertyValue(bean, descriptor.getName()));
+                entity.setComponentValue(descriptor.getName(), BeanUtil.getPropertyValue(bean, descriptor.getName()));
         return entity;
     }
 
-    private EntityDescriptor createBeanDescriptor(Class beanClass) {
-        return beanDescriptorProvider.getTypeDescriptor(beanClass.getName());
+    private ComplexTypeDescriptor createBeanDescriptor(Class<? extends Object> beanClass) {
+        return (ComplexTypeDescriptor) beanDescriptorProvider.getTypeDescriptor(beanClass.getName());
     }
 }

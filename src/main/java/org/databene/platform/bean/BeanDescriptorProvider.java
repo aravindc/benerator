@@ -28,9 +28,10 @@ package org.databene.platform.bean;
 
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.model.data.EntityDescriptor;
-import org.databene.model.data.AttributeDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DescriptorProvider;
+import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.TypeMapper;
 
 import java.beans.PropertyDescriptor;
@@ -84,11 +85,15 @@ public class BeanDescriptorProvider implements DescriptorProvider {
             );
     }
     
-    public EntityDescriptor[] getTypeDescriptors() {
-        return new EntityDescriptor[0]; // There are way too many candidates
+    public String getId() {
+        return "ben";
+    }
+    
+    public TypeDescriptor[] getTypeDescriptors() {
+        return new TypeDescriptor[0]; // There are way too many candidates
     }
 
-    public EntityDescriptor getTypeDescriptor(String typeName) {
+    public TypeDescriptor getTypeDescriptor(String typeName) {
         return createTypeDescriptor(typeName);
     }
     
@@ -120,34 +125,33 @@ public class BeanDescriptorProvider implements DescriptorProvider {
     }
 
     /**
-     * @param abstractType
+     * @param primitiveType
      * @return
      * @see org.databene.model.data.TypeMapper#concreteType(java.lang.String)
      */
-    public Class<? extends Object> concreteType(String abstractType) {
+    public Class<? extends Object> concreteType(String primitiveType) {
         try {
-            Class<? extends Object> result = mapper.concreteType(abstractType);
+            Class<? extends Object> result = mapper.concreteType(primitiveType);
             if (result == null)
-                result = Class.forName(abstractType);
+                result = Class.forName(primitiveType);
             return result;
         } catch (ClassNotFoundException e) {
-            throw new ConfigurationError("No class mapping found for '" + abstractType + "'", e);
+            throw new ConfigurationError("No class mapping found for '" + primitiveType + "'", e);
         }
     }
 
-    private EntityDescriptor createTypeDescriptor(String typeName) {
+    private TypeDescriptor createTypeDescriptor(String typeName) {
         Class<? extends Object> beanClass = BeanUtil.forName(typeName);
-        EntityDescriptor td = new EntityDescriptor(typeName, true);
+        ComplexTypeDescriptor td = new ComplexTypeDescriptor(typeName);
         for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
             if ("class".equals(propertyDescriptor.getName()))
                 continue;
-            AttributeDescriptor ad = new AttributeDescriptor(propertyDescriptor.getName());
             Class<?> propertyType = propertyDescriptor.getPropertyType();
             String abstractType = mapper.abstractType(propertyType);
             if (abstractType == null)
                 abstractType = propertyType.getName();
-            ad.setType(abstractType);
-            td.setComponentDescriptor(ad);
+            PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), abstractType);
+            td.addComponent(pd);
         }
         return td;
     }
