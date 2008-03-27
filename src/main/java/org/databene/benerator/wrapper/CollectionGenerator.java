@@ -27,7 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.commons.BeanUtil;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 import org.databene.benerator.*;
 
 import java.util.*;
@@ -37,13 +38,10 @@ import java.util.*;
  * <br/>
  * Created: 07.07.2006 19:13:22
  */
-public class CollectionGenerator<C extends Collection, I> extends GeneratorWrapper<I, C> {
+public class CollectionGenerator<C extends Collection, I> extends CardinalGenerator<I, C> {
 
     /** The collection type to create */
     private Class<C> collectionType;
-
-    /** Generator that determines the collection size on generation */
-    private IntegerGenerator sizeGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -66,9 +64,8 @@ public class CollectionGenerator<C extends Collection, I> extends GeneratorWrapp
     public CollectionGenerator(
             Class<C> collectionType, Generator<I> source,
             int minLength, int maxLength, Distribution lengthDistribution) {
-        super(source);
+        super(source, minLength, maxLength, lengthDistribution);
         this.collectionType = mapCollectionType(collectionType);
-        sizeGenerator = new IntegerGenerator(minLength, maxLength, 1, lengthDistribution);
     }
 
     // configuration properties ----------------------------------------------------------------------------------------
@@ -81,61 +78,12 @@ public class CollectionGenerator<C extends Collection, I> extends GeneratorWrapp
         this.collectionType = collectionType;
     }
 
-    public Generator<I> getSource() {
-        return source;
-    }
-
-    public void setSource(Generator<I> source) {
-        this.source = source;
-    }
-
-    public int getMinSize() {
-        return sizeGenerator.getMin();
-    }
-
-    public void setMinSize(int minCardinality) {
-        sizeGenerator.setMin(minCardinality);
-    }
-
-    public int getMaxSize() {
-        return sizeGenerator.getMin();
-    }
-
-    public void setMaxSize(int maxCardinality) {
-        sizeGenerator.setMax(maxCardinality);
-    }
-
-    public Distribution getSizeDistribution() {
-        return sizeGenerator.getDistribution();
-    }
-
-    public void setSizeDistribution(Distribution distribution) {
-        sizeGenerator.setDistribution(distribution);
-    }
-
-    public Integer getSizeVariation1() {
-        return sizeGenerator.getVariation1();
-    }
-
-    public void setSizeVariation1(Integer varation1) {
-        sizeGenerator.setVariation1(varation1);
-    }
-
-    public Integer getSizeVariation2() {
-        return sizeGenerator.getVariation2();
-    }
-
-    public void setSizeVariation2(Integer variation2) {
-        sizeGenerator.setVariation2(variation2);
-    }
-
     // Generator interface ---------------------------------------------------------------------------------------------
 
     /** ensures consistency of the state */
     public void validate() {
         if (collectionType == null)
             throw new InvalidGeneratorSetupException("collectionType", "undefined");
-        sizeGenerator.validate();
         super.validate();
     }
 
@@ -148,7 +96,7 @@ public class CollectionGenerator<C extends Collection, I> extends GeneratorWrapp
         if (dirty)
             validate();
         C collection = BeanUtil.newInstance(collectionType);
-        int size = sizeGenerator.generate();
+        int size = countGenerator.generate().intValue();
         for (int i = 0; i < size; i++)
             collection.add(source.generate());
         return collection;
