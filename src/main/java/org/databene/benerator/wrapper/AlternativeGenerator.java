@@ -27,9 +27,9 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.MultiGeneratorWrapper;
-import org.databene.benerator.Distribution;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.util.GeneratorUtil;
+import org.databene.model.Distribution;
 
 /**
  * On each call to generate(), it chooses a generator from a collection,
@@ -88,14 +88,32 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
     }
 
     public void validate() {
-        super.validate();
-        indexGenerator.validate();
+        if (dirty) {
+            super.validate();
+            indexGenerator.validate();
+            dirty = false;
+        }
+    }
+    
+    @Override
+    public boolean available() {
+        validate();
+        for (Generator<? extends Object> source : sources)
+            if (source.available())
+                return true;
+        return false;
     }
 
     /** @see org.databene.benerator.Generator#generate() */
     public E generate() {
-        Generator<E> generator = getSource(indexGenerator.generate());
-        return generator.generate();
+        if (!available())
+            GeneratorUtil.stateException(this);
+        for (int i = 0; i < 1000; i++) {
+            Generator<E> generator = getSource(indexGenerator.generate());
+            if (generator.available())
+                return generator.generate();
+        }
+        throw new IllegalStateException("Unable to choose an available generator");
     }
 
 }
