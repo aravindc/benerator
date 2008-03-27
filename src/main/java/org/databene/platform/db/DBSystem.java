@@ -30,7 +30,6 @@ import org.databene.id.IdProvider;
 import org.databene.id.IdProviderFactory;
 import org.databene.id.IdProviderId;
 import org.databene.id.IdStrategy;
-import org.databene.platform.db.dialect.UnknownDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
 import org.databene.commons.*;

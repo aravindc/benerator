@@ -24,9 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.db.dialect;
+package org.databene.platform.db;
 
-import org.databene.platform.db.DatabaseDialect;
 
 /**
  * Space holder for unknown databases.<br/><br/>
