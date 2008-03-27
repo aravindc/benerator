@@ -24,14 +24,56 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.platform.xml;
 
+import org.databene.commons.xml.XMLUtil;
+import org.w3c.dom.Element;
+
 /**
- * TODO documentation<br/><br/>
- * Created: 27.03.2008 13:50:59
+ * Represents an XML annotation with a documentation String and an appInfo element.<br/><br/>
+ * Created: 27.02.2008 09:51:45
+ * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLModel {
-    public static final String XML_REPRESENTATION = "xml:style";
+public class Annotation {
+
+    private String documentation;
+    private Element appInfo;
+    
+    public Annotation(Element element) {
+        this(getDocumentation(element), getAppInfo(element));
+    }
+    
+    public Annotation(String documentation, Element appInfo) {
+        this.documentation = documentation;
+        this.appInfo = appInfo;
+    }
+    
+    // interface -------------------------------------------------------------------------------------------------------
+
+    /**
+     * @return the documentation
+     */
+    public String getDocumentation() {
+        return documentation;
+    }
+
+    /**
+     * @return the appInfo
+     */
+    public Element getAppInfo() {
+        return appInfo;
+    }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
+    
+    private static Element getAppInfo(Element element) {
+        return XMLUtil.getChildElement(element, false, false, "appinfo");
+    }
+
+    private static String getDocumentation(Element element) {
+        Element docElement = XMLUtil.getChildElement(element, false, false, "documentation");
+        return XMLUtil.getText(docElement);
+    }
+
 }

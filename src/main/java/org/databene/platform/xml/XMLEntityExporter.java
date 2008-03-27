@@ -216,7 +216,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
         TypeDescriptor type = componentDescriptor.getType();
         if (type instanceof ComplexTypeDescriptor)
             return true;
-        Object style = componentDescriptor.getPSInfo(XMLModel.XML_REPRESENTATION);
+        Object style = componentDescriptor.getPSInfo(XMLSchemaDescriptorProvider.XML_REPRESENTATION);
         return "element".equals(style);
     }
     

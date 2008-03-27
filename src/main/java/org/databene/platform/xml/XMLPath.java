@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.databene.benerator.xml.XMLSchemaDescriptorProvider;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.NullSafeComparator;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -120,7 +119,7 @@ public class XMLPath {
             this.children = new ArrayList<ComponentDescriptor>();
             for (ComponentDescriptor component : entity.getDescriptor().getComponents()) {
                 if (component.getType() instanceof ComplexTypeDescriptor ||
-                        "element".equals(component.getPSInfo(XMLModel.XML_REPRESENTATION)))
+                        "element".equals(component.getPSInfo(XMLSchemaDescriptorProvider.XML_REPRESENTATION)))
                     this.children.add(component);
             }
         }
