@@ -3,7 +3,6 @@ package org.databene.domain.address;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.region.*;
 
 /**
  * Creates Addresses.<br/>
@@ -28,7 +27,7 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     public AddressGenerator(Country country) {
         this.country = country;
         this.cityGenerator = new CityGenerator(country);
-        this.streetNameGenerator = new StreetNameGenerator(Region.getInstance(country.getIsoCode()));
+        this.streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
         this.mobilePhoneNumberGenerator = new MobilePhoneCodeGenerator(country);
         this.localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
     }
@@ -42,7 +41,7 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     public Address generate() throws IllegalGeneratorStateException {
         City city = cityGenerator.generate();
         Street street = new Street(city, streetNameGenerator.generate());
-        String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.5 make street name generator fit the locale
+        String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.6 make street name generator fit the locale
         String houseNumber = data[0];
         String zipCode = data[1];
         PhoneNumber privatePhone = generatePhoneNumber(city);

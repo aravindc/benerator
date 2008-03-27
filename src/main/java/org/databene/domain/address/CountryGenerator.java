@@ -27,7 +27,6 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.sample.WeightedSampleGenerator;
-import org.databene.region.Country;
 
 /**
  * Generates a random country.<br/>

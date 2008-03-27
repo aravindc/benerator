@@ -26,58 +26,27 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.sample.WeightedCSVSampleGenerator;
-import org.databene.region.Region;
-import org.databene.region.RegionUtil;
-
-import java.util.Map;
-import java.util.HashMap;
+import org.databene.benerator.csv.DataSetCSVGenerator;
 
 /**
  * Generates a street name for a region.<br/>
  * <br/>
  * Created: 12.06.2006 00:08:28
  */
-public class StreetNameGenerator extends WeightedCSVSampleGenerator<String> {
+public class StreetNameGenerator extends DataSetCSVGenerator<String> {
 
+    private static final String REGION = "org/databene/dataset/region";
     private static final String BASE_NAME = "org/databene/domain/address/street";
 
-    private static Map<Region, StreetNameGenerator> instances = new HashMap<Region, StreetNameGenerator>();
-
-    private Region region;
-
     public StreetNameGenerator() {
-        this(Region.getDefault());
+        this("DE");
     }
 
-    public StreetNameGenerator(Region region) {
-        super(RegionUtil.availableRegionUrl(BASE_NAME, region, ".csv"));
-        assert(region != null);
-        this.region = region;
-        instances.put(region, this);
+    public StreetNameGenerator(String dataSetName) {
+        this(REGION, dataSetName, BASE_NAME);
     }
 
-    public static StreetNameGenerator getInstance(Region region) {
-        StreetNameGenerator instance = instances.get(region);
-        if (instance == null)
-            instance = new StreetNameGenerator(region);
-        return instance;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        final StreetNameGenerator that = (StreetNameGenerator) o;
-        return this.region.equals(that.region);
-    }
-
-    public int hashCode() {
-        return region.hashCode();
-    }
-
-    public String toString() {
-        return getClass().getSimpleName() + '[' + region + ']';
+    public StreetNameGenerator(String dataSetType, String dataSetName, String baseName) {
+        super(dataSetType, dataSetName, baseName, ".csv", "UTF-8");
     }
 }

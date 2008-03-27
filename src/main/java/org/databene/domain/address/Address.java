@@ -1,7 +1,5 @@
 package org.databene.domain.address;
 
-import org.databene.region.Country;
-import org.databene.region.PhoneNumber;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann

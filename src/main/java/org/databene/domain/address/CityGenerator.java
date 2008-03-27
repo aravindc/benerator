@@ -26,10 +26,6 @@
 
 package org.databene.domain.address;
 
-import org.databene.region.City;
-import org.databene.region.CityManager;
-import org.databene.region.State;
-import org.databene.region.Country;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.commons.ConfigurationError;
 
@@ -47,7 +43,7 @@ public class CityGenerator extends WeightedSampleGenerator<City> {
         String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
         try {
             CityManager.readCities(country, filename);
-            for (State state : country.getStates()) // TODO v0.5 group cities by state
+            for (State state : country.getStates()) // TODO v0.6 group cities by state
                 for (City city : state.getCities())
                     addValue(city);
         } catch (IOException e) {

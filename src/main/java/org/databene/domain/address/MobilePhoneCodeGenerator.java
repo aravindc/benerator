@@ -30,8 +30,6 @@ import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.Generator;
 import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.region.Country;
-import org.databene.region.PhoneNumber;
 
 /**
  * Generates mobile phone numbers.<br/>
