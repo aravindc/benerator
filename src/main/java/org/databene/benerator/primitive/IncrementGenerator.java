@@ -38,6 +38,8 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     private static final long DEFAULT_MIN = 1;
     
     private long min;
+    private long max = Long.MAX_VALUE - 1;
+    
     private long cursor;
     
     // constructors -----------------------------------------------------------------------------------
@@ -48,6 +50,11 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     
     public IncrementGenerator(long min) {
         setMin(min);
+    }
+    
+    public IncrementGenerator(long min, long max) {
+        setMin(min);
+        setMax(max);
     }
     
     // properties ----------------------------------------------------------------------------------------
@@ -61,8 +68,21 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
         this.cursor = min;
     }
     
+    public long getMax() {
+        return max;
+    }
+
+    public void setMax(long max) {
+        this.max = max;
+    }
+
     // Generator interface ------------------------------------------------------------------------
 
+    @Override
+    public boolean available() {
+        return cursor < max;
+    }
+    
     public Long generate() {
         return cursor++;
     }
