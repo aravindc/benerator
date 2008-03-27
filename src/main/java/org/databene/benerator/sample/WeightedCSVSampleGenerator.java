@@ -31,6 +31,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.Generator;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVLineIterator;
 
@@ -53,11 +54,14 @@ import java.util.ArrayList;
  * @see WeightedSampleGenerator<br/>
  * <br/>
  * Created: 11.06.2006 20:49:33
+ * @author Volker Bergmann
  */
 public class WeightedCSVSampleGenerator<E> implements Generator<E> {
 
     /** The URL to read the samples from */
     private String url;
+    
+    private String encoding;
 
     /** The converter to create instances from the CSV cell strings */
     private Converter<String, E> converter;
@@ -71,20 +75,21 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public WeightedCSVSampleGenerator() {
-        this((String)null);
+        this((Converter) null);
     }
 
-    public WeightedCSVSampleGenerator(String url) {
-        this(url, new NoOpConverter());
+    public WeightedCSVSampleGenerator(String url, String encoding) {
+        this(url, encoding, new NoOpConverter());
     }
 
     public WeightedCSVSampleGenerator(Converter<String, E> converter) {
-        this(null, converter);
+        this(null, SystemInfo.fileEncoding(), converter);
     }
 
-    public WeightedCSVSampleGenerator(String url, Converter<String, E> converter) {
+    public WeightedCSVSampleGenerator(String url, String encoding, Converter<String, E> converter) {
         this.source = new WeightedSampleGenerator<E>();
         this.converter = converter;
+        this.encoding = encoding;
         if (url != null && url.trim().length() > 0)
             setUrl(url);
     }
@@ -115,10 +120,12 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
     public void validate() {
         if (dirty) {
             try {
-                CSVLineIterator parser = new CSVLineIterator(url);
-                String[] tokens;
+                CSVLineIterator iterator = new CSVLineIterator(url, ',', encoding);
                 List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
-                while ((tokens = parser.next()) != null && tokens.length > 0) {
+                while (iterator.hasNext()) {
+                    String[] tokens = iterator.next();
+                    if (tokens.length == 0)
+                        continue;
                     double weight = (tokens.length < 2 ? 1. : Double.parseDouble(tokens[1]));
                     E value = converter.convert(tokens[0]);
                     WeightedSample<E> sample = new WeightedSample<E>(value, weight);
