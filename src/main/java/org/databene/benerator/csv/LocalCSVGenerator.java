@@ -26,10 +26,11 @@
 
 package org.databene.benerator.csv;
 
-import org.databene.region.RegionUtil;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
+import org.databene.commons.LocaleUtil;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
 
 import java.util.Locale;
@@ -51,19 +52,19 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public LocalCSVGenerator() {
-        this(null, null);
+        this(null, null, SystemInfo.fileEncoding());
     }
 
-    public LocalCSVGenerator(String baseName, String suffix) {
-        this(baseName, Locale.getDefault(), suffix);
+    public LocalCSVGenerator(String baseName, String suffix, String encoding) {
+        this(baseName, Locale.getDefault(), suffix, encoding);
     }
 
-    public LocalCSVGenerator(String baseName, Locale locale, String suffix) {
-        this(baseName, locale, suffix, NoOpConverter.getInstance());
+    public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding) {
+        this(baseName, locale, suffix, encoding, NoOpConverter.getInstance());
     }
 
-    public LocalCSVGenerator(String baseName, Locale locale, String suffix, Converter<String, E> converter) {
-        super(availableUri(baseName, locale, suffix), converter);
+    public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding, Converter<String, E> converter) {
+        super(availableUri(baseName, locale, suffix), encoding, converter);
         this.baseName = baseName;
         this.locale = locale;
         this.suffix = suffix;
@@ -85,7 +86,7 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
     private static String availableUri(String baseName, Locale locale, String suffix) {
         if (baseName == null || suffix == null)
             return null;
-        String uri = RegionUtil.availableLocaleUrl(baseName, locale, suffix);
+        String uri = LocaleUtil.availableLocaleUrl(baseName, locale, suffix);
         if (uri == null)
             throw new ConfigurationError("No localization found for " + baseName + suffix);
         return uri;
