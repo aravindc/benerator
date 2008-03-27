@@ -26,7 +26,7 @@
 
 package org.databene.platform.db.model;
 
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class DBForeignKeyConstraint extends DBConstraint {
 
     public DBForeignKeyConstraint(String name, DBForeignKeyColumn ... foreignKeyColumns) {
         super(name);
-        this.foreignKeyColumns = ArrayUtil.toList(foreignKeyColumns);
+        this.foreignKeyColumns = CollectionUtil.toList(foreignKeyColumns);
     }
 
     public List<DBForeignKeyColumn> getForeignKeyColumns() {
