@@ -27,7 +27,7 @@
 package org.databene.platform.db.model;
 
 import org.databene.commons.ArrayFormat;
-import org.databene.platform.bean.ArrayPropertyExtractor;
+import org.databene.commons.bean.ArrayPropertyExtractor;
 
 import java.util.Arrays;
 
