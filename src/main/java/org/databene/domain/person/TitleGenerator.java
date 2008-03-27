@@ -15,6 +15,6 @@ public class TitleGenerator extends LocalCSVGenerator<String> {
     }
 
     public TitleGenerator(Locale locale) {
-        super("org/databene/domain/person/title", locale, ".csv");
+        super("org/databene/domain/person/title", locale, ".csv", "utf-8");
     }
 }
