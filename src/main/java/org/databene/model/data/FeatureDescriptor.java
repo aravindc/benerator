@@ -1,7 +1,5 @@
 package org.databene.model.data;
 
-import org.databene.benerator.main.String2ConverterConverter;
-import org.databene.benerator.main.String2DistributionConverter;
 import org.databene.commons.Converter;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
@@ -9,7 +7,9 @@ import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
+import org.databene.commons.converter.String2ConverterConverter;
 import org.databene.commons.converter.ToStringConverter;
+import org.databene.model.String2DistributionConverter;
 
 import java.util.List;
 

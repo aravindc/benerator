@@ -26,19 +26,13 @@
 
 package org.databene.model.data;
 
-import java.text.Format;
-
-import org.databene.benerator.Sequence;
-import org.databene.commons.BeanUtil;
-import org.databene.commons.ConfigurationError;
-import org.databene.commons.Converter;
-import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.operation.FirstArgSelector;
 import org.databene.commons.operation.MaxNumberLiteral;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinNumberLiteral;
 import org.databene.commons.operation.MinOperation;
 import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 /**
  * Describes a simple type.<br/><br/>
@@ -78,6 +72,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         // string setup
         addRestriction(MIN_LENGTH,      Integer.class,     1, new MaxOperation<Integer>());
         addRestriction(MAX_LENGTH,      Integer.class,    30, new MinOperation<Integer>());
+        // other config
         addConfig(LENGTH_DISTRIBUTION,  Distribution.class, Sequence.RANDOM);
     }
 
@@ -175,7 +170,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     }
 
     public Distribution getLengthDistribution() {
-        return mapDistribution((String) getDetailValue(LENGTH_DISTRIBUTION));
+        return (Distribution) getDetailValue(LENGTH_DISTRIBUTION);
+    }
+    
+    public void setLengthDistribution(Distribution lengthDistribution) {
+        setDetailValue(LENGTH_DISTRIBUTION, lengthDistribution);
     }
 
     // literate build helpers ------------------------------------------------------------------------------------------
@@ -238,16 +237,18 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     // generic property access -----------------------------------------------------------------------------------------
 
     public void setDetail(String detailName, Object detailValue) {
+/*
         Class<? extends Object> targetType = getDetailType(detailName);
         if (targetType == Distribution.class && detailValue.getClass() == String.class)
             detailValue = mapDistribution((String) detailValue);
         else if (targetType == Converter.class && detailValue.getClass() == String.class)
             detailValue = mapConverter((String) detailValue);
         super.setDetailValue(detailName, detailValue);
+*/
     }
 
 // private helpers -------------------------------------------------------------------------------------------------
-
+/*
     private Converter<? extends Object, ? extends Object> mapConverter(String converterString) {
         Object result = BeanUtil.newInstance(converterString);
         if (result instanceof Format)
@@ -266,6 +267,6 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
             return (Distribution) BeanUtil.newInstance(distributionName);
         }
     }
-
+*/
 
 }
