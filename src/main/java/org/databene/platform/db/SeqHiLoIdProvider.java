@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.DBUtil;
 import org.databene.id.IdProvider;
 
 /**
