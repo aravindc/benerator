@@ -30,13 +30,11 @@ import org.databene.id.IdProvider;
 import org.databene.id.IdProviderFactory;
 import org.databene.id.IdProviderId;
 import org.databene.id.IdStrategy;
-import org.databene.id.IncrementIdProvider;
-import org.databene.platform.db.DBUtil;
 import org.databene.platform.db.dialect.UnknownDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
-import org.databene.platform.bean.ArrayPropertyExtractor;
 import org.databene.commons.*;
+import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.model.data.*;
@@ -46,13 +44,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.math.BigDecimal;
@@ -79,12 +74,11 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             = new ArrayPropertyExtractor<String>("name", String.class);
     
     public static final IdStrategy<Long>   SEQHILO   = new IdStrategy<Long>("seqhilo", Long.class);
-    public static final IdStrategy<Long>   INCREMENT = new IdStrategy<Long>("increment", Long.class);
     public static final IdStrategy<Long>   SEQUENCE  = new IdStrategy<Long>("sequence", Long.class);
     public static final IdStrategy<Object> QUERY     = new IdStrategy<Object>("query", Object.class);
 
     private static final IdStrategy[] ID_STRATEGIES = {
-        SEQHILO, INCREMENT, SEQUENCE, QUERY
+        SEQHILO, SEQUENCE, QUERY
     };
     
     // attributes ------------------------------------------------------------------------------------------------------
@@ -102,7 +96,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private Database database;
 
     private Map<Thread, ThreadContext> contexts;
-    private Map<String, EntityDescriptor> typeDescriptors;
+    private Map<String, TypeDescriptor> typeDescriptors;
     
     private TypeMapper<Class<? extends Object>> driverTypeMapper;
     private DatabaseDialect dialect;
@@ -207,22 +201,22 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     // DescriptorProvider interface ------------------------------------------------------------------------------------
 
-    public EntityDescriptor[] getTypeDescriptors() {
+    public TypeDescriptor[] getTypeDescriptors() {
         if (logger.isDebugEnabled())
             logger.debug("getTypeDescriptors()");
         if (typeDescriptors == null)
             parseMetaData();
-        return CollectionUtil.toArray(typeDescriptors.values(), EntityDescriptor.class);
+        return CollectionUtil.toArray(typeDescriptors.values(), TypeDescriptor.class);
     }
 
-    public EntityDescriptor getTypeDescriptor(String tableName) {
+    public TypeDescriptor getTypeDescriptor(String tableName) {
         if (logger.isDebugEnabled())
             logger.debug("getTypeDescriptor(" + tableName + ")");
         if (typeDescriptors == null)
             parseMetaData();
-        EntityDescriptor entityDescriptor = typeDescriptors.get(tableName);
+        TypeDescriptor entityDescriptor = typeDescriptors.get(tableName);
         if (entityDescriptor == null)
-            for (EntityDescriptor candidate : typeDescriptors.values())
+            for (TypeDescriptor candidate : typeDescriptors.values())
                 if (candidate.getName().equalsIgnoreCase(tableName)) {
                     entityDescriptor = candidate;
                     break;
@@ -240,7 +234,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             String tableName = entity.getName();
             PreparedStatement insertStatement = getInsertStatement(entity.getDescriptor(), writeColumnInfos);
             for (int i = 0; i < writeColumnInfos.length; i++) {
-                Object componentValue = entity.getComponent(writeColumnInfos[i].name);
+                String columnName = writeColumnInfos[i].name;
+                Object componentValue = entity.getComponent(columnName);
                 Class<? extends Object> type = writeColumnInfos[i].type;
                 Object jdbcValue = AnyConverter.convert(componentValue, type);
                 try {
@@ -249,7 +244,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                     else
                         insertStatement.setNull(i + 1, writeColumnInfos[i].sqlType);
                 } catch (SQLException e) {
-                    throw new RuntimeException("error setting column " + tableName + '.' + writeColumnInfos[i].name, e);
+                    throw new RuntimeException("error setting column " + tableName + '.' + columnName, e);
                 }
             }
             if (batch)
@@ -287,7 +282,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     	Connection connection = getThreadContext().connection;
         String sql = "select * from " + type + (StringUtil.isEmpty(selector) ? "" : " WHERE " + selector);
         Iterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize);
-        return new EntityResultSetIterable(iterable, getTypeDescriptor(type));
+        return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
 
     public long countEntities(String tableName) {
@@ -343,8 +338,6 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         if (provider == null) {
             if (SEQHILO.equals(strategy))
                 provider = (IdProvider<T>) new SeqHiLoIdProvider(getConnection(), dialect.sequenceAccessorSql(param), 100);
-            else if (INCREMENT.equals(strategy))
-                provider = (IdProvider<T>) createIdProvider(param);
             else if (SEQUENCE.equals(strategy))
                 provider = (IdProvider<T>) new LongQueryIdProvider(getConnection(), dialect.sequenceAccessorSql(param));
             else if (QUERY.equals(strategy))
@@ -378,7 +371,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     // private helpers ------------------------------------------------------------------------------
 
-    private PreparedStatement getInsertStatement(EntityDescriptor descriptor, ColumnInfo[] columnInfos) throws SQLException {
+    private PreparedStatement getInsertStatement(ComplexTypeDescriptor descriptor, ColumnInfo[] columnInfos) throws SQLException {
         ThreadContext context = getThreadContext();
         return context.getInsertStatement(descriptor, columnInfos);
     }
@@ -386,7 +379,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 	private void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
-            this.typeDescriptors = new OrderedMap<String, EntityDescriptor>();
+            this.typeDescriptors = new OrderedMap<String, TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, false);
             database = importer.importDatabase();
@@ -403,8 +396,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private void mapStrategy(String productName) { 
         String filename = "org/databene/platform/db/databene.db_dialect.properties";
         try {
-            Properties mappings = IOUtil.readProperties(filename);
-            for (Map.Entry<Object, Object> entry : mappings.entrySet())
+            Map<String, String> mappings = IOUtil.readProperties(filename);
+            for (Map.Entry<String, String> entry : mappings.entrySet())
                 if (productName.toLowerCase().contains((String)entry.getKey())) {
                     dialect = (DatabaseDialect) BeanUtil.newInstance((String)entry.getValue());
                     return;
@@ -433,7 +426,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         String tableName = table.getName();
         if (tableName.startsWith("BIN$"))
             return;
-        EntityDescriptor td = new EntityDescriptor(tableName, false);
+        ComplexTypeDescriptor td = new ComplexTypeDescriptor(tableName);
         // process foreign keys
         for (DBForeignKeyConstraint constraint : table.getForeignKeyConstraints()) {
             List<DBForeignKeyColumn> foreignKeyColumns = constraint.getForeignKeyColumns();
@@ -442,13 +435,14 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 DBColumn targetColumn = foreignKeyColumn.getTargetColumn();
                 DBTable targetTable = targetColumn.getTable();
                 String fkColumnName = foreignKeyColumn.getForeignKeyColumn().getName();
-                ReferenceDescriptor descriptor = new ReferenceDescriptor(fkColumnName);
-                descriptor.setSource(id);
-                descriptor.setTargetTye(targetTable.getName());
                 DBColumnType concreteType = foreignKeyColumn.getForeignKeyColumn().getType();
                 String abstractType = JdbcMetaTypeMapper.abstractType(concreteType);
-                descriptor.setType(abstractType);
-                td.setComponentDescriptor(descriptor); // overwrite attribute descriptor
+                ReferenceDescriptor descriptor = new ReferenceDescriptor(
+                        fkColumnName, 
+                        abstractType,
+                        targetTable.getName());
+                descriptor.getLocalType(false).setSource(id);
+                td.addComponent(descriptor); // overwrite attribute descriptor
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
                 logger.error("Not implemented: Don't know how to handle composite foreign keys");
@@ -458,33 +452,29 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         for (DBColumn column : table.getColumns()) {
             if (logger.isDebugEnabled())
                 logger.debug("parsing column: " + column);
-            if (td.getComponentDescriptor(column.getName()) != null)
+            String columnName = column.getName();
+            if (td.getComponent(columnName) != null)
                 continue; // skip columns that were already parsed (fk)
-            String columnId = table.getName() + '.' + column.getName();
+            String columnId = table.getName() + '.' + columnName;
             if (column.isVersionColumn()) {
                 logger.debug("Leaving out version column " + columnId);
                 continue;
             }
-            AttributeDescriptor descriptor = new AttributeDescriptor(column.getName());
             DBColumnType columnType = column.getType();
             String type = JdbcMetaTypeMapper.abstractType(columnType);
-            descriptor.setType(type);
             String defaultValue = column.getDefaultValue();
+            SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, type);
             if (defaultValue != null)
-                descriptor.setDetail("values", defaultValue);
-            int[] modifiers = column.getModifiers();
-            switch (modifiers.length) {
-                case 0: break;
-                case 1: descriptor.setMaxLength(modifiers[0]);
-                        break;
-                case 2: descriptor.setMaxLength(modifiers[0]);
-                        if (!"string".equals(type))
-                            break;
-                        descriptor.setPrecision(precision(modifiers[1]));
-                        break;
-                default:logger.error("ignored size(s) for " + columnId + ": " +
-                            ArrayFormat.formatInts(", ", modifiers));
-            }
+                typeDescriptor.setDetailValue("values", defaultValue);
+            if (column.getSize() != null)
+                typeDescriptor.setMaxLength(column.getSize());
+            if (column.getFractionDigits() != null)
+                typeDescriptor.setPrecision(precision(column.getFractionDigits()));
+            //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
+            PartDescriptor descriptor = new PartDescriptor(columnName);
+            descriptor.setLocalType(typeDescriptor);
+            descriptor.setMinCount(1L);
+            descriptor.setMaxCount(1L);
             descriptor.setNullable(column.getNotNullConstraint() == null);
             List<DBConstraint> ukConstraints = column.getUkConstraints();
             for (DBConstraint constraint : ukConstraints) {
@@ -493,11 +483,11 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                     descriptor.setUnique(true);
                 } else {
                     logger.error("Uniqueness assurance on multiple columns is not supported yet: " + constraint);
-                    // TODO v0.5 support uniqueness constraints on combination of columns
+                    // TODO v0.6 support uniqueness constraints on combination of columns
                 }
             }
             logger.debug("parsed attribute " + columnId + ": " + descriptor);
-            td.setComponentDescriptor(descriptor);
+            td.addComponent(descriptor);
         }
 
         typeDescriptors.put(td.getName(), td);
@@ -543,21 +533,21 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private ColumnInfo[] writeColumnInfos(Entity entity) {
         String tableName = entity.getName();
         DBTable table = getTable(tableName);
-        EntityDescriptor typeDescriptor = getTypeDescriptor(tableName);
-        Collection<ComponentDescriptor> componentDescriptors = typeDescriptor.getComponentDescriptors();
+        ComplexTypeDescriptor typeDescriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
+        Collection<ComponentDescriptor> componentDescriptors = typeDescriptor.getComponents();
         ArrayBuilder<ColumnInfo> builder = new ArrayBuilder<ColumnInfo>(ColumnInfo.class, componentDescriptors.size());
-        EntityDescriptor entityDescriptor = entity.getDescriptor();
+        ComplexTypeDescriptor entityDescriptor = entity.getDescriptor();
         for (ComponentDescriptor dbCompDescriptor : componentDescriptors) {
-            ComponentDescriptor enCompDescriptor = entityDescriptor.getComponentDescriptor(dbCompDescriptor.getName());
+            ComponentDescriptor enCompDescriptor = entityDescriptor.getComponent(dbCompDescriptor.getName());
             if (enCompDescriptor != null && enCompDescriptor.getMode() == Mode.ignored)
                 continue;
             if (dbCompDescriptor.getMode() != Mode.ignored) {
                 String name = dbCompDescriptor.getName();
-                String abstractType = dbCompDescriptor.getType();
+                String primitiveType = ((SimpleTypeDescriptor) dbCompDescriptor.getType()).getPrimitiveType().getName();
                 DBColumn column = table.getColumn(name);
                 DBColumnType columnType = column.getType();
                 int sqlType = columnType.getJdbcType();
-                Class<? extends Object> javaType = driverTypeMapper.concreteType(abstractType);
+                Class<? extends Object> javaType = driverTypeMapper.concreteType(primitiveType);
                 builder.append(new ColumnInfo(name, sqlType, javaType));
             }
         }
@@ -584,13 +574,6 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         throw new ObjectNotFoundException("Table " + tableName);
     }
 
-    private IncrementIdProvider createIdProvider(String param) {
-        long initialValue = 1;
-        if (param != null)
-            initialValue = Long.parseLong(param);
-        return new IncrementIdProvider(initialValue);
-    }
-
     private synchronized ThreadContext getThreadContext() {
         Thread currentThread = Thread.currentThread();
         ThreadContext context = contexts.get(currentThread);
@@ -609,16 +592,16 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         
         private Connection connection;
         
-        public Map<EntityDescriptor, PreparedStatement> insertStatements;
+        public Map<ComplexTypeDescriptor, PreparedStatement> insertStatements;
         
         public ThreadContext() {
-            insertStatements = new HashMap<EntityDescriptor, PreparedStatement>();
+            insertStatements = new HashMap<ComplexTypeDescriptor, PreparedStatement>();
             connection = createConnection();
         }
         
         void commit() {
             try {
-                for (Map.Entry<EntityDescriptor, PreparedStatement> entry : insertStatements.entrySet()) {
+                for (Map.Entry<ComplexTypeDescriptor, PreparedStatement> entry : insertStatements.entrySet()) {
                     PreparedStatement statement = entry.getValue();
                     if (statement != null) {
                         statement.executeBatch();            
@@ -637,7 +620,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             }
         }
 
-        public PreparedStatement getInsertStatement(EntityDescriptor descriptor, ColumnInfo[] columnInfos) {
+        public PreparedStatement getInsertStatement(ComplexTypeDescriptor descriptor, ColumnInfo[] columnInfos) {
             try {
                 PreparedStatement statement = insertStatements.get(descriptor);
                 if (statement == null) {
