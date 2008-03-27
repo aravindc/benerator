@@ -26,8 +26,8 @@
 
 package org.databene.benerator.primitive.regex;
 
-import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.Generator;
+import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.benerator.wrapper.UniqueCompositeGenerator;
 
 /**

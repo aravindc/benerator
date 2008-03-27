@@ -27,8 +27,8 @@
 package org.databene.benerator.primitive.regex;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.SimpleRandom;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.util.SimpleRandom;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.regex.AlternativePattern;
 import org.databene.regex.SubPattern;

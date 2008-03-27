@@ -26,10 +26,11 @@
 
 package org.databene.benerator.primitive.regex;
 
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.MultiGeneratorWrapper;
+import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.benerator.wrapper.UniqueCompositeGenerator;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.regex.*;
@@ -154,13 +155,15 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
             try {
                 if (regex == null)
                     regex = parse(pattern, locale);
-                if (regex == null)
-                    return;
-                RegexPart[] parts = regex.getParts();
-                Generator<String>[] sources = new Generator[parts.length];
-                for (int i = 0; i < parts.length; i++)
-                    sources[i] = RegexPartGeneratorFactory.createRegexPartGenerator(parts[i], maxQuantity, unique);
-                partsGenerator.setSources(sources);
+                Generator<String>[] sources = null;
+                if (regex != null) {
+                    RegexPart[] parts = regex.getParts();
+                    sources = new Generator[parts.length];
+                    for (int i = 0; i < parts.length; i++)
+                        sources[i] = RegexPartGeneratorFactory.createRegexPartGenerator(parts[i], maxQuantity, unique);
+                    partsGenerator.setSources(sources);
+                } else
+                    partsGenerator.setSources(new ConstantGenerator<String>(null));
             } catch (Exception e) {
                 throw new InvalidGeneratorSetupException(e);
             }
@@ -214,7 +217,7 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
         try {
             return new RegexParser(locale).parse(pattern);
         } catch (ParseException e) {
-            throw new InvalidGeneratorSetupException("pattern", e.toString());
+            throw new InvalidGeneratorSetupException("Invalid pattern: " + pattern, e);
         }
     }
 
