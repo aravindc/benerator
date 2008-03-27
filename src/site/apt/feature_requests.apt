@@ -292,7 +292,7 @@ feature requests
 
   * custom converters
 
-  * custom processors
+  * custom consumers
 
 * control randomness
 
@@ -503,8 +503,6 @@ load generation
 * file format
 
   * customization
-
-  * support processor-Attribute in generate-entities
 
   * setup-file import
 

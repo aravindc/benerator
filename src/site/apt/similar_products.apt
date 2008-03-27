@@ -5,7 +5,7 @@
 
 similar products
 
- The following products are concerned with data generation and/or transformation:
+ The following products are concerned with data generation and/or transformation: 
 
 *---------------------------------------------------------------------------------+--------------+
 | <<Product>>                                                                     | <<License>>  |
@@ -81,6 +81,8 @@ similar products
 | {{{http://testgen.tigris.org}testgen}}                                          | Open Source  |
 *---------------------------------------------------------------------------------+--------------+
 | {{{http://rubyforge.org/projects/datagen}datagen}}                              | Open Source  |
+*---------------------------------------------------------------------------------+--------------+
+| {{{http://www.cs.toronto.edu/tox/toxgene/}ToXgene}}                             | Open Source  |
 *---------------------------------------------------------------------------------+--------------+
 | {{{http://www.cloveretl.org/}Clover ETL}}                                       | Open Source  |
 *---------------------------------------------------------------------------------+--------------+

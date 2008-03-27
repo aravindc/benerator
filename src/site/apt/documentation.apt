@@ -17,7 +17,9 @@ documentation
  
  Now, that you have reached this point, it is time to {{{download.html}download}} the current benerator 
  distribution. Looking at the examples provided in the <<demo>> directory will give you a detailed 
- view on how to use benerator. Cross-check it with the {{{file_format.html}file format}} documentation.
+ view on how to use benerator. If you are primarily populating databases, cross-check it with the 
+ {{{file_format.html}file format}} documentation. For XML file generation, check the {{{xml.html}XML}} 
+ documentation.
 
  Now you can start rolling your own test data. For the first specific data providers you might use 
  some from the {{{domain_packages.html}domain packages}}.

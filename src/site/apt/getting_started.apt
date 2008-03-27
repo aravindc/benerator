@@ -22,8 +22,8 @@ overview
  
 installation
 
- * download the lastest version of databene benerator at 
-   {{http://databene.org/databene-benerator/download.html}}
+ * download the lastest version of databene benerator at the 
+   {{{http://databene.org/databene-benerator/download.html}download page}}
 
  * unzip the downloaded file into a directory. It will be called 'root' below
 
@@ -31,6 +31,8 @@ installation
    and put it into a directory, e.g. root/lib
  
  * edit the file root/benerator_common[.bat] and add the necessary file to the classpath setup, e.g.
+ 
+ []
 
 -------------------------------------------------------
 set LOCALCLASSPATH=%LOCALCLASSPATH%;lib\mydriver.jar
@@ -40,10 +42,10 @@ set LOCALCLASSPATH=%LOCALCLASSPATH%;lib\mydriver.jar
 
 benerator
 
- benerator can run from a setup file, e.g.  
+ benerator can execute a setup file from the command line, e.g.  
  
 -----------------------------------------------------------------------------
-benerator.bat my_benerator_job.ben.xml
+benerator my_benerator_job.ben.xml
 -----------------------------------------------------------------------------
 
  As a naming convention, all benerator setup files should have the suffix .ben.xml.
@@ -57,7 +59,7 @@ quick start
 
     [[2]] read this document
 
-    [[3]] read the demo files in the distribution directory.
+    [[3]] read the demo files in the distribution's demo directory.
 
     [[4]] check the API doc for a detailed documentation of the provided generators, especially the domain packages.
 
@@ -75,12 +77,135 @@ db snapshot tool
  by the shell file <snapshot>:
 
 -----------------------------------------------------------------------------
-snapshot -Ddb.url=jdbc:oracle:thin:@localhost:1521:XE -Ddb.driver=oracle.jdbc.driver.OracleDriver -Ddb.user=benerator -Ddb.password=benerator -Dfile.encoding=UTF-8
+snapshot -Ddb.url=jdbc:oracle:thin:@localhost:1521:XE \
+  -Ddb.driver=oracle.jdbc.driver.OracleDriver \
+  -Ddb.user=benerator -Ddb.password=benerator -Dfile.encoding=UTF-8
 -----------------------------------------------------------------------------
 
 
+xml file generation
 
-file generation sample
+ You can provide benerator with an XML schema file and have it automatically create XML files that match the schema.
+ 
+ Assume you would use an XML schema file 'product.xsd' with the following definitions:
+ 
+-----------------------------------------------------------------------------
+<xs:simpleType name="ean13-type">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="[0-9]{13}" />
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="price-type">
+    <xs:restriction base="xs:decimal">
+        <xs:minInclusive value="0"/>
+        <xs:totalDigits value="8" />
+        <xs:fractionDigits value="2" />
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:element name="product">
+    <xs:complexType>
+        <xs:attribute name="ean_code" type="ean13-type" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="price" type="price-type" use="required"/>
+        <xs:attribute name="manufacturer" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:element>
+-----------------------------------------------------------------------------
+
+ you could then create an XML file from it by invoking 'createXML product.xsd product 1', 
+ which would result in a file 'product-1.xml' like this
+ 
+-----------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<product elementFormDefault="unqualified"
+        ean_code="1600604358820" 
+        price="5" 
+        manufacturer="GLMCKFTXLIIOSGIUNORKTLCUQ">
+    <name>PMOQFMXJLZUIHTQTW</name>
+</product>
+-----------------------------------------------------------------------------
+ 
+ This is valid according to the XML schema, but not for an application. You can add generator setup 
+ in XML schema annotations, e.g.:
+ 
+-----------------------------------------------------------------------------
+<xs:simpleType name="ean13-type">
+    <xs:annotation><xs:appinfo>
+        <ben:type generator="org.databene.domain.product.EAN13Generator"/>
+    </xs:appinfo></xs:annotation>
+    <xs:restriction base="xs:string">
+        <xs:pattern value="[0-9]{13}" />
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="price-type">
+    <xs:annotation><xs:appinfo>
+        <ben:type min="0.49" max="99.99" precision="0.10" distribution="cumulated"/>
+    </xs:appinfo></xs:annotation>
+    <xs:restriction base="xs:decimal">
+        <xs:minInclusive value="0"/>
+        <xs:totalDigits value="8" />
+        <xs:fractionDigits value="2" />
+    </xs:restriction>
+</xs:simpleType>
+
+<xs:element name="product">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="name" type="xs:string">
+                <xs:annotation><xs:appinfo>
+                    <ben:type values="Apples,Bananas,Cherries"/>
+                </xs:appinfo></xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="ean_code" type="ean13-type" use="required"/>
+        <xs:attribute name="price" type="price-type" use="required"/>
+        <xs:attribute name="manufacturer" type="xs:string" use="required">
+            <xs:annotation><xs:appinfo>
+                <ben:part pattern="[BDFGH][aeiou][lr][tpmn] (Inc\.|Corp\.)"/>
+            </xs:appinfo></xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:element>
+-----------------------------------------------------------------------------
+ 
+ With this approach, you can annotate even your production XML schemas safely with benerator configuration 
+ without danger of interfering with other applications! 
+ 
+ This setup file sets the following configuration:
+ 
+ * any value of type ean13-type is created by a custom generator of class 'org.databene.domain.product.EAN13Generator'
+ 
+ * any created price is 0.49 + x * 0.10. The maximum value is 99.99. 
+   The probability distribution is 'cumulated' which means, values in the middle of the range (50) 
+   are more frequent than at the ends.
+   
+ * for the product element, all name elements have one the values: Apples, Bananas, Cherries
+ 
+ * Each generated manufacturer attribute matches the regular expression '[BDFGH][aeiou][lr][tpmn] (Inc\.|Corp\.)'
+ 
+ []
+ 
+ Running benerator with the new schema file creates e.g.
+ 
+-----------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<product elementFormDefault="unqualified"
+        ean_code="7693659353226"
+        price="50.69"
+        manufacturer="Bert Corp.">
+    <name>Cherries</name>
+</product>
+-----------------------------------------------------------------------------
+ 
+ Download the distribution and have a look at the file demo/shop/shop.xsd for a more detailed impression.
+ Check the {{{xml.html}XML}} and {{{file_format.html}file format}} documentation for a complete overview.
+ 
+
+
+flat file generation sample
 
   for generating files from a configuration file, Benerator can be run from a setup file.
   See the following example:
@@ -251,14 +376,14 @@ database population sample
  corresponding properties files:
    
 --------------------------------------------------------------------------------
-	<include uri="{demo/shop/${database}/shop.${database}.properties}" />
-	<include uri="{demo/shop/shop.${stage}.properties}" />
+<include uri="{demo/shop/${database}/shop.${database}.properties}" />
+<include uri="{demo/shop/shop.${stage}.properties}" />
 --------------------------------------------------------------------------------
  
  The following <echo> elements print some settings to the console, e.g.
  
 --------------------------------------------------------------------------------
- <echo message="{  ${product_count + 6} products}" />
+<echo message="{  ${product_count + 6} products}" />
 --------------------------------------------------------------------------------
  
  After that, the database is defined with the id 'db'.
@@ -267,34 +392,37 @@ database population sample
  running an SQL script on the database 'db'.
 
 --------------------------------------------------------------------------------
-	<run-task class="org.databene.platform.db.RunSqlScriptTask">
-		<property name="uri" value="{demo/shop/${database}/create_tables.${database}.sql}" />
-		<property name="db" ref="db" />
-	</run-task>
+<run-task class="org.databene.platform.db.RunSqlScriptTask">
+	<property name="uri" value="{demo/shop/${database}/create_tables.${database}.sql}" />
+	<property name="db" ref="db" />
+</run-task>
 --------------------------------------------------------------------------------
 
  A DbUnit file is used for creating a basic predefined setup that may serve for unit tests 
  and regression tests:
 
 --------------------------------------------------------------------------------
-	<create-entities source="demo/shop/shop.dbunit.xml" consumer="db" />
+<create-entities source="demo/shop/shop.dbunit.xml" consumer="db" />
 --------------------------------------------------------------------------------
  
- Let's skip the following examples, you have got the idea from the {{file generation sample}}.
+ Let's skip the following examples, you have got the idea from the {{flat file generation sample}}.
  
  Just one more create-entities example (the last one of the file and the most sophisticated):
  
 --------------------------------------------------------------------------------
-	<!-- create order items -->
-	<create-entities name="db_order_item"
-			count="{ftl:${customer_count * orders_per_customer * items_per_order}}" consumer="db">
-		<variable name="product" source="db" selector="select ean_code, price from db_product" distribution="cumulated" />
-		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
-		<attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
-		<attribute name="order_id" source="db" selector="select id from db_order" cyclic="true" />
-		<attribute name="product_ean_code" script="{${product[0]}}" />
-		<attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
-	</create-entities> 
+<!-- create order items -->
+<create-entities name="db_order_item"
+        count="{ftl:${customer_count * orders_per_customer * items_per_order}}" 
+        consumer="db">
+    <variable name="product" source="db" selector="select ean_code, price from db_product" 
+        distribution="cumulated" />
+    <id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+    <attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
+    <attribute name="order_id" source="db" selector="select id from db_order" cyclic="true" />
+    <attribute name="product_ean_code" script="{${product[0]}}" />
+    <attribute name="total_price" 
+        script="{${(product[1] * db_order_item.number_of_items)?c}}" />
+</create-entities> 
 --------------------------------------------------------------------------------
  
  The attribute <count>="\{ftl:$\{customer_count * orders_per_customer * items_per_order\}\}" tells benerator 
@@ -322,12 +450,12 @@ benerator api
     You can instantiate most predefined Generators by the GeneratorFactory:
     
 --------------------------------------------------------------------------------
-    Generator<String> salutation = GeneratorFactory.getSampleGenerator("Hi", "Hello", "Howdy");
-    Generator<String> name = GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly");
-    for (int i = 0; i < 5; i++)
-        System.out.println(salutation.generate() + " " + name.generate());
-    salutation.close();
-    name.close();
+Generator<String> salutation = GeneratorFactory.getSampleGenerator("Hi", "Hello", "Howdy");
+Generator<String> name = GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly");
+for (int i = 0; i < 5; i++)
+    System.out.println(salutation.generate() + " " + name.generate());
+salutation.close();
+name.close();
 --------------------------------------------------------------------------------
 
  First, two generators are created by the GeneratorFactory, used 5 times by invoking generate() and finally closed.
@@ -335,11 +463,11 @@ benerator api
  This code will print out something similar to the following text:
 
 --------------------------------------------------------------------------------
-    Hi Charly
-    Howdy Bob
-    Hello Alice
-    Hi Charly
-    Hello Bob
+Hi Charly
+Howdy Bob
+Hello Alice
+Hi Charly
+Hello Bob
 --------------------------------------------------------------------------------
 
 
@@ -352,10 +480,10 @@ PersonGenerator
   <<<run org.databene.benerator.demo.PersonDemo>>>
 
 --------------------------------------------------------------------------------
-    PersonGenerator generator = new PersonGenerator();
-    for (int i = 0; i < 3; i++)
-        System.out.println(generator.generate());
-    generator.close();
+PersonGenerator generator = new PersonGenerator();
+for (int i = 0; i < 3; i++)
+    System.out.println(generator.generate());
+generator.close();
 --------------------------------------------------------------------------------
 
   It evaluates the default locale, find out the country it belongs to and create and print addresses
@@ -364,15 +492,15 @@ PersonGenerator
   Here's an example output for Germany:
 
 --------------------------------------------------------------------------------
-    Frau Helga Schmidt, *25.07.1956
-    Herr Dr. Johann Weber, *18.10.1975
-    Herr Prof. Dr. Richard Lange, *18.05.1936
+Frau Helga Schmidt, *25.07.1956
+Herr Dr. Johann Weber, *18.10.1975
+Herr Prof. Dr. Richard Lange, *18.05.1936
 --------------------------------------------------------------------------------
 
   Domains support localization: When using
 
 --------------------------------------------------------------------------------
-    PersonGenerator generator = new PersonGenerator(Country.UNITED_KINGDOM, Locale.ENGLISH);
+PersonGenerator generator = new PersonGenerator(Country.UNITED_KINGDOM, Locale.ENGLISH);
 --------------------------------------------------------------------------------
 
   the output looks like this:
@@ -420,21 +548,21 @@ Regex Generator
     Here's an excerpt from the <<<RegexDemo>>>:
 
 --------------------------------------------------------------------------------
-    String PHONE_PATTERN = "\\+[1-9][0-9]{1,2}/[1-9][0-9]{0,4}/[1-9][0-9]{4,8}";
-    Generator<String> phoneGenerator = GeneratorFactory.getRegexStringGenerator(PHONE_PATTERN, 1, 16, null, 0);
-    for (int i = 0; i < 5; i++)
-        System.out.println(phoneGenerator.generate());
-    phoneGenerator.close();
+String PHONE_PATTERN = "\\+[1-9][0-9]{1,2}/[1-9][0-9]{0,4}/[1-9][0-9]{4,8}";
+Generator<String> phoneGenerator = GeneratorFactory.getRegexStringGenerator(PHONE_PATTERN, 1, 16, null, 0);
+for (int i = 0; i < 5; i++)
+    System.out.println(phoneGenerator.generate());
+phoneGenerator.close();
 --------------------------------------------------------------------------------
 
     which creates output like this:
 
 --------------------------------------------------------------------------------
-    +802/85/810794
-    +92/7261/622937
-    +61/95/31527
-    +30/258/71172783
-    +59/755/8861307
++802/85/810794
++92/7261/622937
++61/95/31527
++30/258/71172783
++59/755/8861307
 --------------------------------------------------------------------------------
 
 
@@ -475,15 +603,15 @@ custom file builder
   and serializing them to the writer <<out>>.
 
 --------------------------------------------------------------------------------
-    Writer out = new BufferedWriter(new FileWriter("persons.xml));
-    ScriptBasedDocumentWriter<Person> writer = new ScriptBasedDocumentWriter<Person>(
-        out,
-        "org/databene/benerator/demo/xmlHeader.ftl",
-        "org/databene/benerator/demo/xmlPart.ftl",
-        "org/databene/benerator/demo/xmlFooter.ftl"
-    );
-    FileBuilder.build(new PersonGenerator(), 2, writer);
-    IOUtil.close(out);
+Writer out = new BufferedWriter(new FileWriter("persons.xml));
+ScriptBasedDocumentWriter<Person> writer = new ScriptBasedDocumentWriter<Person>(
+    out,
+    "org/databene/benerator/demo/xmlHeader.ftl",
+    "org/databene/benerator/demo/xmlPart.ftl",
+    "org/databene/benerator/demo/xmlFooter.ftl"
+);
+FileBuilder.build(new PersonGenerator(), 2, writer);
+IOUtil.close(out);
 --------------------------------------------------------------------------------
 
   The templates that rendered the output are:
@@ -498,12 +626,12 @@ custom file builder
   <<<org/databene/benerator/demo/xmlPart.ftl>>>
 
 --------------------------------------------------------------------------------
-    <person number="${var.part_index + 1}">
-      <salutation>${part.salutation}</salutation>
-      <title>${part.title!}</title>
-      <givenName>${part.givenName}</givenName>
-      <familyName>${part.familyName}</familyName>
-    </person>
+<person number="${var.part_index + 1}">
+    <salutation>${part.salutation}</salutation>
+    <title>${part.title!}</title>
+    <givenName>${part.givenName}</givenName>
+    <familyName>${part.familyName}</familyName>
+</person>
 --------------------------------------------------------------------------------
 
   <<<org/databene/benerator/demo/xmlFooter.ftl>>>

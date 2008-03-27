@@ -9,7 +9,7 @@ Before version 1.0, all releases have beta status.
  The system is evolving with new learnings from own application (a.k.a. eat your own dog food) and user feedback.
  Thus, change is necessary and beneficiary in the long term. I try to minimize the pain for migration from minor versions 
  (e.g. 0.4.0 to 0.4.1), most users will see no change at all. 
- If you implement own System or Processor plugins, there is some probability that you need to make changes on new major 
+ If you implement own System or Consumer plugins, there is some probability that you need to make changes on new major 
  releases (e.g. 0.4.x to 0.5.0).
  
  For any release several hundred unit tests is applied before release, further QA happens in my own performance 
@@ -21,6 +21,11 @@ Before version 1.0, all releases have beta status.
 
 *-------------+-------------------+-----------------------------------------------+
 | <<release>> | <<release date>>  | <<features>>                                  |
+*-------------+-------------------+-----------------------------------------------+
+| 0.5.0       | 2000-03-31        | XML schema import and XML file generation     |
+|             |                   | finalized region concept (-> dataset)         |
+|             |                   | template & script support                     |
+|             |                   | recursion                                     |
 *-------------+-------------------+-----------------------------------------------+
 | 0.4.0       | 2000-02-03        | staging                                       |
 |             |                   | properties file support                       |
@@ -78,10 +83,10 @@ road map
 *-------------+-------------------+-----------------------------------------------+
 | <<release>> | <<release date>>  | <<features>>                                  |
 *-------------+-------------------+-----------------------------------------------+
-| 0.5.0       | Q2 2008           | Object graph generation,                      |
-|             |                   | Platform support: JavaBean, XML, YAML         |
+| 0.6.0       | Q2 2008           | Object graph generation,                      |
+|             |                   | Platform support: Java Annotations            |
 |             |                   | web domain                                    |
-|             |                   | Concept finalizations: region, identity, uniqueness |
+|             |                   | Concept finalizations: identity, uniqueness   |
 *-------------+-------------------+-----------------------------------------------+
 | 1.0.0       | Q4 2008           | Production release                            |
 *-------------+-------------------+-----------------------------------------------+

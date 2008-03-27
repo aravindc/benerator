@@ -4,18 +4,20 @@
 
 benerator file format
 
-  The benerator configuration file is XML based. The current DTD version is benerator-0.3.dtd,
-  the document root is a <<setup>> element:
+ The benerator configuration file is XML based. An XML schema is provided.
+ The document root is a <<setup>> element:
 
 --------------------------------------------------------------------------------
-  <?xml version="1.0" encoding="iso-8859-1"?>
-  <!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.dtd">
-  <setup>
-      <!-- content here -->
-  </setup>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup xmlns="http://databene.org/benerator-0.4.2.xsd"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://databene.org/benerator-0.5.0.xsd benerator-0.5.0.xsd">
+<setup>
+    <!-- content here -->
+</setup>
 --------------------------------------------------------------------------------
 
-
+ benerator files should end with the suffix .ben.xml.
 
 properties
 
@@ -51,7 +53,7 @@ javabeans and the context
   The <<class>> attribute denotes which JavaBean class to instantiate (by the default constructor).
   The enclosed property tags cause the JavaBean's properties to be set to appropriate values.
   Benerator converts common types automatically. If not, you may define a custom ConverterManager
-  setup (see databane-commons).
+  setup (see databene-commons). Date and time formatting is supported according to ISO 8601 Conventions.
 
   Objects are made available by exposing them in a context. The id attribute defines the name
   with which an object can be found, e.g. for a 'source' or 'ref' attribute of another element's
@@ -65,7 +67,7 @@ javabeans and the context
 
   You can create references to other objects declared before by a 'ref'-attribute in the bean
   declaration. The following example shows this for a task setup, but this can be applied to beans
-  and processors as well.
+  and consumers as well.
 
   Note: You may implement the System interface for connecting to other system types like SAP or
   Siebel systems.
@@ -82,9 +84,9 @@ javabeans and the context
           <property name="target" ref="csv"/>
       </bean>
 
-      <bean id="log-csv" class="org.databene.model.processor.ProcessorChain">
+      <bean id="log-csv" class="org.databene.model.consumer.ConsumerChain">
           <property name="components">
-              <bean class="org.databene.model.processor.LoggingProcessor"/>
+              <bean class="org.databene.model.consumer.LoggingConsumer"/>
               <idref bean="proxy"/>
           </property>
       </bean>
@@ -137,15 +139,17 @@ importing entities
 --------------------------------------------------------------------------------
     <!-- import basic setup from a DBUnit file -->
     <create-entities source="shop/shop.dbunit.xml">
-        <processor ref="db"/>
+        <consumer ref="db"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
-  Each created entity is forwarded to one or more processors, which usually will persist objects in a file or system,
+  For importing DbUnit files, follow the naming conventions using the suffix .dbunit.xml.
+  
+  Each created entity is forwarded to one or more consumers, which usually will persist objects in a file or system,
   but might also be used to post-process created entities.
-  The specified object needs to implement the Processor or the system interface.
+  The specified object needs to implement the Consumer or the system interface.
   When specifying a system here, it will be used to store the entities.
-  File exporters (for CSV and Flat Files) implement the Processor interface.
+  File exporters (for CSV and Flat Files) implement the Consumer interface.
 
 custom importers
 
@@ -160,7 +164,7 @@ custom importers
       </bean>
 
       <create-entities name="product" source="products_flat">
-          <processor class="org.databene.model.processor.LoggingProcessor"/>
+          <consumer class="org.databene.model.consumer.LoggingConsumer"/>
       </create-entities>
 --------------------------------------------------------------------------------
 
@@ -181,7 +185,7 @@ chaining generators
     <create-entities name="message" count="10">
         <attribute name="text" source="textGen"
                    converter="org.databene.model.converter.MessageConverter" pattern="Message: ''{0}''"/>
-        <processor class="org.databene.model.processor.LoggingProcessor"/>
+        <consumer class="org.databene.model.consumer.LoggingConsumer"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
@@ -196,12 +200,12 @@ creating random entities
 --------------------------------------------------------------------------------
     <!-- create products of random attribs & category -->
     <create-entities name="db_product" count="1000" pagesize="100">
-        <processor ref="db"/>
+        <consumer ref="db"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
   Entities are generated as long as each attribute generator is available and limited by the number specified in the
-  'count' attribute. The 'pagesize' defines the number of creations after which a flush() is applied to all processors
+  'count' attribute. The 'pagesize' defines the number of creations after which a flush() is applied to all consumers
   (for a database system this is mapped to a commit).
 
 nesting entities
@@ -213,16 +217,16 @@ nesting entities
 exporting generated data to data files
 
   You will need to reuse some of the generated data for setting up (load) test clients. You can simply export data by an
-  appropriate processor:
+  appropriate consumer:
 
 --------------------------------------------------------------------------------
     <!-- create products of random attribs & category -->
     <create-entities name="db_product" count="1000" pagesize="100">
-        <processor ref="db"/>
-        <processor class="org.databene.platform.flat.FlatFileEntityExporter">
+        <consumer ref="db"/>
+        <consumer class="org.databene.platform.flat.FlatFileEntityExporter">
             <property name="uri" value="products.flat"/>
             <property name="properties" value="ean_code[13],name[30l],price[10r0]"/>
-        </processor>
+        </consumer>
     </create-entities>
 --------------------------------------------------------------------------------
 
@@ -235,7 +239,7 @@ imposing one-field business constraints
     <create-entities name="db_product" count="1000" pagesize="100">
         <attribute name="ean_code" generator="org.databene.domain.product.EANGenerator"/>
         <attribute name="name" pattern="[A-Z][A-Z]{5,12}"/>
-        <processor ref="db"/>
+        <consumer ref="db"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
@@ -252,7 +256,7 @@ imposing multi-field-constraints
         <attribute name="salutation" source="person.salutation"/>
         <attribute name="first_name" source="person.givenName"/>
         <attribute name="last_name" source="person.familyName"/>
-        <processor ref="db"/>
+        <consumer ref="db"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
@@ -324,7 +328,7 @@ querying information from a system
     <create-entities name="db_order" count="30" pagesize="100">
         <attribute name="id" mode="ignored"/>
         <attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true"/>
-        <processor ref="db"/>
+        <consumer ref="db"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
@@ -346,7 +350,7 @@ querying information from a system
         <attribute name="number_of_items" min="1" max="27" distribution="cumulated"/>
         <attribute name="order_id" source="db" selector="select id from db_order" cyclic="true"/>
         <attribute name="product_id" source="db" selector="select ean_code from db_product" distribution="random"/>
-        <processor ref="db"/>
+        <consumer ref="db"/>
     </create-entities>
 --------------------------------------------------------------------------------
 
@@ -412,8 +416,9 @@ all supported generator attributes
 
 scripting
 
- as of release 0.4.0 benerator supports scripting: By implementing a plugin contract,
- you can introduce your own scripting engine. The default for benerator is FreeMarker.
+ as of release 0.4.0 benerator supports templates with FreeMarker.
+ You can introduce your own template engine by implementing a plugin contract 
+ with custom 'Script' and 'ScriptFactory' implementations.
  
  Scripts are supported in
  
@@ -455,7 +460,8 @@ scripting
  
  * variable values
 
-
+ Variable names in scripting may not contain points - a point always implies navigation, 
+ e.g. person.familyName navigates from the person object to the familyName attribute/property/key.
 
 staging
 

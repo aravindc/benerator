@@ -5,16 +5,23 @@
 
 features
 
+  <<generic approach>> benerator is not limited to a special kind of system or platform -
+  <<XML>> and <<relational (database) data>> are supported yet, Java annotation support will come soon.
+  The abstract data model allows application to virtually any specific technology for 
+  representing data. The long term goal is to support all major standards and standard 
+  applications (web services, SAP, Siebel, ...)
+  
   <<easy design, implementation and usage>> of data providers for load testing:
     The process of designing and generating valid complex load test data is
     reduced from weeks to days. Even better: smaller-budget projects now get the
     chance to load-test at all!
-
+    
   provides for <<high volume processing>>: benerator is designed to process and create resources of unlimited size.
 
   <<efficient operation>>: 
   
-    * benchmark is to generate at least one million objects per hour on common developer hardware.
+    * the minimum requirement for any generation feature is to generate at least one million objects per hour 
+      on common development hardware.
   
     * benerator can run multithreaded, making efficient use of multi-core systems.
     
@@ -83,6 +90,9 @@ features
       Import of entites (or -better- entity graphs) from databases and files.
 
     * offers <<powerful randomization options>> and is extendable by custom ones.
+    
+    * supports grouping of data into hierarchical data sets. data sets may overlap 
+      and form several parallel types of hierarchy.
 
   <<data generation from scratch>>
 
@@ -135,6 +145,7 @@ features
 
   * API not final
   
-  * the region concept is not final, currently limited to country level
-
   * Database persistence supports only inserts, no updates of pre-existing or previously persisted data. 
+
+  * Sequence concept is not final, yet
+  

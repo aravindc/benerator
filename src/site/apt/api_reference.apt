@@ -11,7 +11,7 @@ GeneratorFactory
     You may get a quick overview of the provided Generators and its features by checking the API documentation of
     the GeneratorFactory. The following sub sections list the generators by type
 
-** sample generators
+* sample generators
 
     A sample generator uses a single value or a set of values of which it returns one.
     The values may be weighted equally (default), individually or by a distribution.
@@ -36,7 +36,7 @@ GeneratorFactory
     [public \<T\> Generator\<T\> getWeightedSampleGenerator(Sample\<T\> ... samples)] Creates a generator
     that chooses from a set of samples, using an individual weight for each sample.
 
-** primitive generators
+* primitive generators
 
     Generators are provided for generating Booleans, Numbers, Dates, Strings and Characters.
     For number generators, extremely many configuration options are available.

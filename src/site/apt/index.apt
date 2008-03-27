@@ -17,15 +17,9 @@ about databene benerator
 
 news
 
-  <<2008-02-02 benerator release 0.4.0:>> benerator now incorporates mature and comfortable 
-  generation capabilities for relational data, providing convenient database configuration 
-  and primary key generation, script support in generators and all import file formats, 
-  as well as a staging concept. especially the script feature is a great improvement in 
-  generating randomized data with multi-field constraints. 
-  
-  furthermore, central concepts were extended for generation of hierarchical data, like dependent 
-  data in databases or nested data structures like XML. after having left behind all open source 
-  alternatives with release 0.3, benerator competes with all commercial generation products.
+  <<2008-03-31 benerator release 0.5.0:>> benerator now supports the generation of XML files 
+  based on XML schema files. XML schema annotations allow configuration of the generation.
+  The region concept has been finally abstracted to a dataset concept.
   
   {{{http://databene.org/databene-benerator/download.html}download benerator}}
   
@@ -33,9 +27,9 @@ participate
 
   Your are welcome to participate. There are many ways to aid the further development of benerator:
 
-   * report bugs (via forum)
+   * report bugs (via forum or email)
 
-   * request features (via forum)
+   * request features (via forum or email)
 
-   * fund the benerator development by contracting {{{http://bergmann-it.de}Volker Bergmann}} for IT consulting
-     or buying support for the databene tools.
+   * fund the benerator development by hiring {{{http://bergmann-it.de}Volker Bergmann}} for IT consulting, 
+     system analysis and optimization or buying support for the databene tools.
