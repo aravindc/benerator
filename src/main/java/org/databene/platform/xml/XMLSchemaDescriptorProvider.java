@@ -32,15 +32,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.StringUtil;
-import org.databene.commons.context.ContextStack;
-import org.databene.commons.context.DefaultContext;
-import org.databene.commons.context.PropertiesContext;
+import org.databene.commons.Context;
 import org.databene.commons.xml.NamespaceAlias;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.Parser;
@@ -76,19 +72,20 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     // attributes ------------------------------------------------------------------------------------------------------
     
     private Parser parser = new Parser();
-    private ContextStack context;
+    private Context context;
     private DataModel dataModel;
     private List<String> propertiesFiles;
 
     
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public XMLSchemaDescriptorProvider(String schemaUri) {
-        this(schemaUri, DataModel.getDefaultInstance());
+    public XMLSchemaDescriptorProvider(String schemaUri, Context context) {
+        this(schemaUri, context, DataModel.getDefaultInstance());
     }
     
-    public XMLSchemaDescriptorProvider(String schemaUri, DataModel dataModel) {
+    public XMLSchemaDescriptorProvider(String schemaUri, Context context, DataModel dataModel) {
         super(schemaUri);
+        this.context = context;
         this.dataModel = dataModel;
         this.propertiesFiles = new ArrayList<String>();
         setSchemaUri(schemaUri);
@@ -120,12 +117,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         NamespaceAlias schemaAlias = XMLUtil.namespaceAlias(document, SCHEMA_NAMESPACE);
         dataModel.addDescriptorProvider(new XMLSchemaNativeTypeProvider(schemaAlias.getAliasName()));
         dataModel.addDescriptorProvider(this);
-        // TODO 0.5.1 simplify & encapsulate
-        this.context = new ContextStack();
-        context.push(new PropertiesContext(java.lang.System.getenv()));
-        context.push(new PropertiesContext(java.lang.System.getProperties()));
-        context.push(new DefaultContext());
-        context.set("benerator", new SimpleGenerationSetup());
         Element root = document.getDocumentElement();
         Element[] childElements = XMLUtil.getChildElements(root);
         for (Element element : childElements) {
