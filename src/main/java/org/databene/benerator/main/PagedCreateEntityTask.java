@@ -47,13 +47,19 @@ public class PagedCreateEntityTask extends PagedTask {
 	private Collection<Consumer<Entity>> consumers;
 	
 	public PagedCreateEntityTask(
-			String name, int count, int pageSize, int threads, List<? extends Task> subTasks, 
+			String entityName, int count, int pageSize, int threads, List<? extends Task> subTasks, 
 			Generator<Entity> generator, Collection<Consumer<Entity>> consumers, ExecutorService executor, 
 			boolean isSubTask) {
-		super(new CreateEntityTask(name, generator, consumers, subTasks, isSubTask), count, null, pageSize, threads, executor);
+		super(new CreateEntityTask(entityName, generator, consumers, subTasks, isSubTask), count, null, pageSize, threads, executor);
 		this.generator = generator;
 		this.consumers = consumers;
 	}
+	
+	public String getEntityName() {
+	    return ((CreateEntityTask) realTask).getEntityName();
+	}
+
+	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
 	public void pageFinished(int currentPageNo, long totalPages) {
 		for (Consumer<Entity> consumer : consumers)
@@ -76,9 +82,12 @@ public class PagedCreateEntityTask extends PagedTask {
 	public void reset() {
 	    generator.reset();
 	}
-	
+
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
+
 	@Override
 	public String toString() {
 	    return getClass().getSimpleName() + '[' + realTask + ']';
 	}
+
 }

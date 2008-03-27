@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
 
@@ -45,6 +45,7 @@ import org.databene.platform.dbunit.DbUnitEntityExporter;
  */
 public class DBSnapshotTool {
     
+    // TODO 0.5.1 test with each database
     private static final Log logger = LogFactory.getLog(DBSnapshotTool.class);
     
     public static void main(String[] args) {
@@ -79,9 +80,10 @@ public class DBSnapshotTool {
             db = new DBSystem("db", dbUrl, dbDriver, dbUser, dbPassword);
             if (dbSchema != null)
                 db.setSchema(dbSchema);
-            List<EntityDescriptor> descriptors = Arrays.asList(db.getTypeDescriptors());
+            //db.setFetchSize(1);
+            List<TypeDescriptor> descriptors = Arrays.asList(db.getTypeDescriptors());
             logger.info("Starting export");
-            for (EntityDescriptor descriptor : descriptors) {
+            for (TypeDescriptor descriptor : descriptors) {
                 logger.info("Exporting table " + descriptor.getName());
                 for (Entity entity : db.queryEntities(descriptor.getName(), "")) {
                     exporter.startConsuming(entity);

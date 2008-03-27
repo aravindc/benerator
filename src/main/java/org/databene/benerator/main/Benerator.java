@@ -27,20 +27,22 @@
 package org.databene.benerator.main;
 
 import org.databene.platform.db.DBSystem;
-import org.databene.platform.xml.XMLElement2BeanConverter;
-import org.databene.platform.xml.XMLUtil;
+import org.databene.model.Parser;
 import org.databene.model.Processor;
 import org.databene.commons.*;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
+import org.databene.commons.converter.DefaultEntryConverter;
+import org.databene.commons.xml.XMLElement2BeanConverter;
+import org.databene.commons.xml.XMLUtil;
 import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
 import org.databene.task.TaskRunner;
 import org.databene.task.Task;
 import org.databene.task.PageListener;
-import org.databene.benerator.factory.EntityGeneratorFactory;
-import org.databene.benerator.factory.ComponentGeneratorFactory;
+import org.databene.benerator.composite.ConfiguredEntityGenerator;
+import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.GenerationSetup;
 import org.databene.benerator.Generator;
 import org.databene.model.consumer.Consumer;
@@ -48,7 +50,6 @@ import org.databene.model.consumer.ProcessorToConsumerAdapter;
 import org.databene.model.data.*;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemConsumer;
-import org.databene.model.system.SystemToStorageAdapter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
@@ -73,12 +74,19 @@ public class Benerator implements GenerationSetup {
 
     private static final Log logger = LogFactory.getLog(Benerator.class);
     
+    private static final Collection<String> COMPONENT_TYPES 
+        = CollectionUtil.toSet("attribute", "part", "id", "reference");
+    
+    private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil.toSet("pagesize", "threads", "consumer");
+
+    
     public  static final String  DEFAULT_SCRIPT   = "ftl";
     public  static final boolean DEFAULT_NULL     = true;
     public  static final String  DEFAULT_ENCODING = SystemInfo.fileEncoding();
     public  static final int     DEFAULT_PAGESIZE = 1;
     
-    private DataModel model;
+    private Parser parser = new Parser();
+    
     private ExecutorService executor;
     private Escalator escalator;
     
@@ -102,7 +110,6 @@ public class Benerator implements GenerationSetup {
     }
 
     public Benerator() {
-        this.model = new DataModel();
         this.executor = Executors.newCachedThreadPool();
         this.escalator = new LoggerEscalator();
         this.defaultScript = DEFAULT_SCRIPT;
@@ -119,7 +126,7 @@ public class Benerator implements GenerationSetup {
             context.push(new PropertiesContext(java.lang.System.getProperties()));
             context.push(new DefaultContext());
             context.set("benerator", this);
-            Document document = IOUtil.parseXML(uri);
+            Document document = XMLUtil.parse(uri);
             Element root = document.getDocumentElement();
             NodeList nodes = root.getChildNodes();
             Set<Heavyweight> resources = new HashSet<Heavyweight>();
@@ -134,17 +141,15 @@ public class Benerator implements GenerationSetup {
             }
             //java.lang.System.out.println("context: " + context);
             long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-            logger.info("Elapsed time: " + RoundedNumberFormat.format(elapsedTime, 0) + " ms");
-            /*
-            long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-            logger.info("Created " + RoundedNumberFormat.format(totalEntityCount, 0) + " entities " +
-                    "in " + RoundedNumberFormat.format(elapsedTime, 0) + " ms " +
-                    "(" + RoundedNumberFormat.format(totalEntityCount * 3600000L / elapsedTime, 0) + " p.h.)");
-            */
+            logger.info("Created a total of " + ConfiguredEntityGenerator.entityCount() + " entities " +
+                    "in " + elapsedTime + " ms " +
+                    "(~" + RoundedNumberFormat.format(ConfiguredEntityGenerator.entityCount() * 3600000L / elapsedTime, 0) + " p.h.)");
         } finally {
             this.executor.shutdownNow();
         }
     }
+
+    // private helpers -------------------------------------------------------------------------------------------------
 
     private void parseRootChild(Element element, Set<Heavyweight> resources, ContextStack context) {
         String elementType = element.getNodeName();
@@ -157,7 +162,7 @@ public class Benerator implements GenerationSetup {
         else if ("property".equals(elementType))
             parseProperty(element, context);
         else if ("include".equals(elementType))
-            parseInclude(element, context);
+            parser.parseInclude(element, context);
         else if ("echo".equals(elementType))
             parseEcho(element, context);
         else if ("database".equals(elementType))
@@ -183,17 +188,6 @@ public class Benerator implements GenerationSetup {
         System.out.println(ScriptUtil.render(message, context, defaultScript));
     }
 
-    private void parseInclude(Element element, ContextStack context) {
-        String uri = parseAttribute(element, "uri", context);
-        try {
-            ScriptConverter preprocessor = new ScriptConverter(context, defaultScript);
-            DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
-            IOUtil.readProperties(uri, converter);
-        } catch (IOException e) {
-            throw new ConfigurationError("Properties not found at uri: " + uri);
-        }
-    }
-
     private Object parseBean(Element element, Set<Heavyweight> resources, ContextStack context) {
         try {
             String beanId = parseAttribute(element, "id", context);
@@ -207,7 +201,7 @@ public class Benerator implements GenerationSetup {
                 context.set(beanId, bean);
             }
             if (bean instanceof DescriptorProvider)
-                model.addDescriptorProvider((DescriptorProvider) bean);
+                DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
             if (bean instanceof Heavyweight)
                 resources.add((Heavyweight)bean);
             return bean;
@@ -231,7 +225,7 @@ public class Benerator implements GenerationSetup {
             );
             db.setSchema(parseAttribute(element, "schema", context));
             context.set(id, db);
-            model.addDescriptorProvider(db);
+            DataModel.getDefaultInstance().addDescriptorProvider(db);
             resources.add(db);
         } catch (ConversionException e) {
             throw new ConfigurationError(e);
@@ -272,27 +266,30 @@ public class Benerator implements GenerationSetup {
 
     private void parseAndRunCreateEntities(Element element, Set<Heavyweight> resources, ContextStack context) {
         PagedCreateEntityTask task = parseCreateEntities(element, resources, context, false);
+        long t0 = System.currentTimeMillis();
+        long count0 = ConfiguredEntityGenerator.entityCount();
         task.init(context);
         try {
             task.run();
         } finally {
             task.destroy();
         }
+        long dc = ConfiguredEntityGenerator.entityCount() - count0;
+        long dt = System.currentTimeMillis() - t0;
+        if (dt > 0)
+            logger.info("Created " + dc + " entities from '" + task.getEntityName() + "' setup in " + dt + " ms (" + (dc * 1000 / dt) + "/s)");
+        else
+            logger.info("Created " + dc + " entities from '" + task.getEntityName() + "' setup in no time");
     }
 
     private PagedCreateEntityTask parseCreateEntities(Element element, Set<Heavyweight> resources, ContextStack context, boolean isSubTask) {
-        EntityDescriptor descriptor = mapEntityDescriptorElement(element, context);
+        InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
+        descriptor.setNullable(false);
         logger.info(descriptor);
         // parse consumers
         Collection<Consumer<Entity>> consumers = parseConsumers(element, resources, context);
-        // parse variables
-        Map<String, Generator<? extends Object>> variables = parseVariables(element, context);
-        // generate
-        Generator<Entity> entityGenerator = EntityGeneratorFactory.createEntityGenerator(descriptor, context, this);
-        int count    = parseIntAttribute(element, "count", context, -1);
-        int pageSize = parseIntAttribute(element, "pagesize", context, defaultPagesize);
-        int threads  = parseIntAttribute(element, "threads", context, 1);
-        Generator<Entity> configuredGenerator = new ConfiguredGenerator(entityGenerator, variables, context);
+        // create generator
+        Generator<Entity> configuredGenerator = (Generator<Entity>) InstanceGeneratorFactory.createInstanceGenerator(descriptor, context, this);
         // create sub create-entities
         List<PagedCreateEntityTask> subs = new ArrayList<PagedCreateEntityTask>();
         NodeList childNodes = element.getChildNodes();
@@ -303,23 +300,14 @@ public class Benerator implements GenerationSetup {
             if ("create-entities".equals(node.getNodeName()))
                 subs.add(parseCreateEntities((Element)node, resources, context, true));
         }
+        // parse task properties
+        int count    = parseIntAttribute(element, "count", context, -1);
+        int pageSize = parseIntAttribute(element, "pagesize", context, defaultPagesize);
+        int threads  = parseIntAttribute(element, "threads", context, 1);
         // done
         return new PagedCreateEntityTask(
                 descriptor.getName(), count, pageSize, threads, subs, 
                 configuredGenerator, consumers, executor, isSubTask);
-    }
-
-    private Map<String, Generator<? extends Object>> parseVariables(Element parent, ContextStack context) {
-        HashMap<String, Generator<? extends Object>> variables = new HashMap<String, Generator<? extends Object>>();
-        NodeList varElements = parent.getElementsByTagName("variable");
-        for (int i = 0; i < varElements.getLength(); i++) {
-            Element varElement = (Element) varElements.item(i);
-            ComponentDescriptor componentDescriptor = mapComponentDescriptor(varElement, context);
-            Generator<? extends Object> generator = ComponentGeneratorFactory.getComponentGenerator(componentDescriptor, context, this);
-            String varName = parseAttribute(varElement, "name", context);
-            variables.put(varName, generator);
-        }
-        return variables;
     }
 
     private Collection<Consumer<Entity>> parseConsumers(Element parent, Set<Heavyweight> resources, ContextStack context) {
@@ -366,10 +354,7 @@ public class Benerator implements GenerationSetup {
         Object tmp = context.get(consumerId);
         if (tmp instanceof StorageSystem)
             consumer = new StorageSystemConsumer((StorageSystem) tmp);
-        else if (tmp instanceof org.databene.model.system.System) {
-            StorageSystem storage = new SystemToStorageAdapter((org.databene.model.system.System) tmp);
-            consumer = new StorageSystemConsumer(storage);
-        } else if (tmp instanceof Consumer)
+        else if (tmp instanceof Consumer)
             consumer = (Consumer<Entity>) tmp;
         else if (tmp instanceof Processor)
             consumer = new ProcessorToConsumerAdapter((Processor<Entity>) tmp);
@@ -382,54 +367,57 @@ public class Benerator implements GenerationSetup {
         return consumer;
     }
 
-    private EntityDescriptor mapEntityDescriptorElement(Element element, Context context) {
+    private InstanceDescriptor mapEntityDescriptorElement(Element element, Context context) {
         String entityName = parseAttribute(element, "name", context);
-        EntityDescriptor parentDescriptor = model.getTypeDescriptor(entityName);
-        EntityDescriptor ctDescriptor = new EntityDescriptor(entityName, false, parentDescriptor); // TODO v0.5 how to handle case sensitivity here?
+        InstanceDescriptor instance = new InstanceDescriptor(entityName, entityName);
+        TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(entityName);
+        TypeDescriptor localType = new ComplexTypeDescriptor(entityName);
+        if (parentType == null) 
+            localType.setName("_local");
+        else {
+            localType.setName(entityName);
+            localType.setParent(parentType);
+        }
+        instance.setLocalType(localType);
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Attr attribute = (Attr) attributes.item(i);
-            if (!"pagesize".equals(attribute.getName()) && !"threads".equals(attribute.getName()) && !"consumer".equals(attribute.getName()))
-                ctDescriptor.setDetail(attribute.getName(), parseAttribute(attribute, context));
+            String attributeName = attribute.getName();
+            if (!CREATE_ENTITIES_EXT_SETUP.contains(attributeName)) {
+                String attributeValue = parseAttribute(attribute, context);
+                if (instance.supportsDetail(attributeName))
+                    instance.setDetailValue(attributeName, attributeValue);
+                else if (localType != null)
+                    localType.setDetailValue(attributeName, attributeValue);
+                // else we expect different types
+            }
         }
-        NodeList nodes = element.getChildNodes();
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node childNode = nodes.item(i);
-            if (!(childNode instanceof Element))
-                continue;
-            Element childElement = (Element) childNode;
-            String childType = childElement.getNodeName();
-            if ("attribute".equals(childType)) {
-                ComponentDescriptor ad = mapComponentDescriptor(childElement, context);
-                ctDescriptor.setComponentDescriptor(ad);
-            } else if ("id".equals(childType)) {
-                ComponentDescriptor ad = mapComponentDescriptor(childElement, context);
-                ctDescriptor.setComponentDescriptor(ad);
-            } else if (!"create-entities".equals(childType) 
+        for (Element child : XMLUtil.getChildElements(element)) {
+           String childType = XMLUtil.localName(child);
+           if ("variable".equals(childType)) {
+               parser.parseVariable(child, (ComplexTypeDescriptor) localType, context);
+           } else if (COMPONENT_TYPES.contains(childType)) {
+               ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType, context);
+               ((ComplexTypeDescriptor) instance.getType()).addComponent(component);
+           } else if (!"create-entities".equals(childType) 
                     && !"consumer".equals(childType) && !"variable".equals(childType))
                 throw new ConfigurationError("Unexpected element: " + childType);
         }
-        return ctDescriptor;
+        return instance;
     }
-
-    private ComponentDescriptor mapComponentDescriptor(Element element, Context context) {
-        String attributeName = parseAttribute(element, "name", context);
-        ComponentDescriptor descriptor;
-        String nodeName = element.getNodeName();
-        if ("attribute".equals(nodeName) || "variable".equals(nodeName))
-            descriptor = new AttributeDescriptor(attributeName);
-        else if ("id".equals(nodeName))
-            descriptor = new IdDescriptor(attributeName);
-        else
-            throw new UnsupportedOperationException("'attribute' or 'variable' element expected, found: " + nodeName);
-        NamedNodeMap attributes = element.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Attr attribute = (Attr) attributes.item(i);
-            descriptor.setDetail(attribute.getName(), parseAttribute(attribute, context));
+/*
+    private Map<String, Generator<? extends Object>> parseVariables(Element parent, ComplexTypeDescriptor complexType, ContextStack context) {
+        HashMap<String, Generator<? extends Object>> variables = new HashMap<String, Generator<? extends Object>>();
+        Element[] varElements = XMLUtil.getChildElements(parent, false, "variable");
+        for (Element varElement : varElements) {
+            InstanceDescriptor varDescriptor = parser.parseVariable(varElement, complexType, context);
+            Generator<? extends Object> generator = InstanceGeneratorFactory.createInstanceGenerator(varDescriptor, context, this);
+            String varName = parseAttribute(varElement, "name", context);
+            variables.put(varName, generator);
         }
-        return descriptor;
+        return variables;
     }
-    
+*/
     // attribute parsing -----------------------------------------------------------------------------------------------
     
     private String parseAttribute(Attr attribute, Context context) {
@@ -522,5 +510,5 @@ public class Benerator implements GenerationSetup {
     public void setDefaultPagesize(int defaultPageSize) {
         this.defaultPagesize = defaultPageSize;
     }
-        
+
 }
