@@ -26,12 +26,11 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.Distribution;
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.Sequence;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 /**
  * Creates arrays of random length filled with random bytes.

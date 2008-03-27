@@ -28,7 +28,6 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;

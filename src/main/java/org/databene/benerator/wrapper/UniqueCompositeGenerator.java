@@ -26,7 +26,6 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.MultiGeneratorWrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;

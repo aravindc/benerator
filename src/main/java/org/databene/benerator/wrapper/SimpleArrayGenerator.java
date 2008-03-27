@@ -29,6 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.*;
 import org.databene.commons.ArrayUtil;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 /**
  * Assembles the output of a source generator into an array of random length.<br/>

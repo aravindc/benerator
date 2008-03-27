@@ -26,10 +26,9 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.GeneratorProxy;
 import org.databene.benerator.Generator;
-import org.databene.benerator.SimpleRandom;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.util.SimpleRandom;
 
 /**
  * A generator proxy that forwards the output of another generator with a random number of repetitions.<br/>

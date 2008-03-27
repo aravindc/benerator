@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
+import org.databene.benerator.util.SimpleRandom;
 
 /**
  * Forwards the output of other generators in random order, but at most once.<br/>
