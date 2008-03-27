@@ -27,36 +27,40 @@
 package org.databene.model.data;
 
 import org.databene.commons.Composite;
+import org.databene.commons.CompositeFormatter;
 import org.databene.commons.OrderedMap;
 
 import java.util.Map;
 
 /**
- * Abstraction of an entity.<br/>
+ * Instance of a composite data type as described by a {@link ComplexTypeDescriptor}.<br/>
  * <br/>
  * Created: 20.08.2007 19:20:22
+ * @since 0.3
+ * @author Volker Bergmann
  */
-public class Entity implements Composite {
+public class Entity implements Composite<Object> {
 
     private OrderedMap<String, Object> components;
-    private EntityDescriptor descriptor;
+    private ComplexTypeDescriptor descriptor;
+
     /**
      *
      * @param descriptor the name of the entity, it may be null
-     * @param componentKeyValues
+     * @param componentKeyValuePairs
      */
-    public Entity(EntityDescriptor descriptor, Object ... componentKeyValues) {
+    public Entity(ComplexTypeDescriptor descriptor, Object ... componentKeyValuePairs) {
         this.descriptor = descriptor;
         this.components = new OrderedMap<String, Object>();
-        for (int i = 0; i < componentKeyValues.length; i += 2)
-            setComponent((String)componentKeyValues[i], componentKeyValues[i + 1]);
+        for (int i = 0; i < componentKeyValuePairs.length; i += 2)
+            setComponentValue((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
     }
 
     public String getName() {
         return descriptor.getName();
     }
 
-    public EntityDescriptor getDescriptor() {
+    public ComplexTypeDescriptor getDescriptor() {
         return descriptor;
     }
     
@@ -72,7 +76,7 @@ public class Entity implements Composite {
 
     public Object getComponent(String componentName) {
         Object component = components.get(componentName);
-        if (component == null && !descriptor.isCaseSensitive()) {
+        if (component == null) {
             Map.Entry<String, Object> entry = getComponentEntry(componentName);
             if (entry != null)
                 component = entry.getValue();
@@ -88,19 +92,15 @@ public class Entity implements Composite {
         return components;
     }
 
-    public void setComponent(String componentName, Object component) {
+    public void setComponentValue(String componentName, Object component) {
         Map.Entry<String, Object> entry = getComponentEntry(componentName);
         if (entry != null)
             entry.setValue(component);
         else
             this.components.put(componentName, component);
     }
-
+    
     // java.lang.overrides ---------------------------------------------------------------------------------------------
-
-    public String toString() {
-        return descriptor.getName() + components;
-    }
 
     public boolean equals(Object o) {
         if (this == o)
@@ -117,11 +117,15 @@ public class Entity implements Composite {
         return descriptor.hashCode() * 29 + components.hashCode();
     }
 
+    public String toString() {
+        return CompositeFormatter.render(getName() + '[', this, "]", true, true);
+    }
+
     // helper methods --------------------------------------------------------------------------------------------------
 
     protected Map.Entry<String, Object> getComponentEntry(String componentName) {
         for (Map.Entry<String, Object> entry : components.entrySet())
-            if (entry.getKey().equals(componentName) || (!descriptor.isCaseSensitive() && entry.getKey().equalsIgnoreCase(componentName)))
+            if (entry.getKey().equalsIgnoreCase(componentName))
                 return entry;
         return null;
     }

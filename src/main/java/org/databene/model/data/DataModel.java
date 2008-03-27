@@ -26,33 +26,117 @@
 
 package org.databene.model.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.databene.commons.ConfigurationError;
 
 /**
- * Merges and organizes entity definitions of different systems.<br/>
- * <br/>
+ * Merges and organizes entity definitions of different systems.<br/><br/>
  * Created: 25.08.2007 20:40:17
+ * @since 0.3
  * @author Volker Bergmann
  */
 public class DataModel {
+    
+    private static final DataModel defaultInstance = new DataModel();
 
-    private List<DescriptorProvider> descriptorProviders;
+    private Map<String, DescriptorProvider> providers;
 
     public DataModel() {
-        this.descriptorProviders = new ArrayList<DescriptorProvider>();
+        this.providers = new HashMap<String, DescriptorProvider>();
+        addDescriptorProvider(new PrimitiveDescriptorProvider(), false);
     }
 
     public void addDescriptorProvider(DescriptorProvider provider) {
-        this.descriptorProviders.add(provider);
+        addDescriptorProvider(provider, true);
     }
     
-    public EntityDescriptor getTypeDescriptor(String type) {
-        for (DescriptorProvider provider : descriptorProviders) {
-            EntityDescriptor descriptor = provider.getTypeDescriptor(type);
-            if (descriptor != null) // TODO v0.5 how to merge all hits?
-                return descriptor;
+    public void addDescriptorProvider(DescriptorProvider provider, boolean validate) {
+        providers.put(provider.getId(), provider);
+        if (validate)
+            validate();
+    }
+    
+    public TypeDescriptor getTypeDescriptor(String typeId) {
+        String ns = null;
+        String name = typeId;
+        if (typeId.contains(":")) {
+            int i = typeId.indexOf(':');
+            ns = typeId.substring(0, i);
+            name = typeId.substring(i + 1);
+        }
+        
+        if (ns != null) {
+            DescriptorProvider provider = providers.get(ns);
+            if (provider == null)
+                throw new ConfigurationError("No provider found for namespace: " + ns);
+            // first, search case-sensitive
+            TypeDescriptor typeDescriptor = provider.getTypeDescriptor(name);
+            if (typeDescriptor != null)
+                return typeDescriptor;
+            else {
+                // not found yet, try it case-insensitive
+                return searchCaseInsensitive(provider, name);
+            }
+        } else {
+            // first, search case-sensitive
+            for (DescriptorProvider provider : providers.values()) {
+                TypeDescriptor descriptor = provider.getTypeDescriptor(name);
+                if (descriptor != null)
+                    return descriptor;
+            }
+            // not found yet, try it case-insensitive
+            for (DescriptorProvider provider : providers.values()) {
+                TypeDescriptor descriptor = searchCaseInsensitive(provider, name);
+                if (descriptor != null)
+                    return descriptor;
+            }
         }
         return null;
     }
+    
+    public void validate() {
+        for (DescriptorProvider provider : providers.values()) {
+            for (TypeDescriptor desc : provider.getTypeDescriptors())
+                validate(desc);
+        }
+    }
+    
+    public static DataModel getDefaultInstance() {
+        return defaultInstance;
+    }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
+
+    private TypeDescriptor searchCaseInsensitive(DescriptorProvider provider, String name) {
+        for (TypeDescriptor type : provider.getTypeDescriptors())
+            if (type.getName().equals(name))
+                return type;
+        return null;
+    }
+
+    private void validate(TypeDescriptor type) {
+        if (type instanceof SimpleTypeDescriptor) {
+            validate((SimpleTypeDescriptor) type);
+        } else if (type instanceof ComplexTypeDescriptor) {
+            validate((ComplexTypeDescriptor) type);
+        } else
+            throw new UnsupportedOperationException("Descriptor type not supported: " + type.getClass());
+    }
+
+    private void validate(ComplexTypeDescriptor desc) {
+        for (ComponentDescriptor component : desc.getComponents()) {
+            TypeDescriptor type = component.getType();
+            if (!(type instanceof ComplexTypeDescriptor))
+                validate(type);
+        }
+    }
+
+    private void validate(SimpleTypeDescriptor desc) {
+        PrimitiveType<? extends Object> primitiveType = desc.getPrimitiveType();
+        if (primitiveType == null)
+            throw new ConfigurationError("No primitive type defined for simple type: " + desc.getName());
+    }
+
 }

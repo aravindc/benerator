@@ -26,7 +26,9 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.Converter;
 import org.databene.commons.Operation;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.operation.FirstArgSelector;
 
 /**
@@ -43,25 +45,26 @@ public class FeatureDetail<E> {
     private Class<E> type;
     private E value;
     private E defaultValue;
+    private Converter<String, E> converter;
     private Operation<E, E> combinator;
-    private boolean constraint;
+    private boolean restriction;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public FeatureDetail(String name, Class<E> type, boolean constraint, E defaultValue) {
-        this(name, type, constraint, defaultValue, new FirstArgSelector<E>());
+    public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue) {
+        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(type));
     }
 
-    public FeatureDetail(String name, Class<E> type, boolean constraint, E defaultValue, Operation<E, E> combinator) {
-        this(name, type, constraint, defaultValue, null, combinator);
+    public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter) {
+        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(type), new FirstArgSelector<E>());
     }
 
-    public FeatureDetail(String name, Class<E> type, boolean constraint, E defaultValue, E value, Operation<E, E> combinator) {
+    public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter, Operation<E, E> combinator) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
-        this.value = value;
-        this.constraint = constraint;
+        this.value = null;
+        this.restriction = restriction;
         this.combinator = combinator;
     }
     
@@ -80,10 +83,17 @@ public class FeatureDetail<E> {
     }
 
     public void setValue(E value) {
+        if (value != null && !(type.isAssignableFrom(value.getClass())))
+            throw new IllegalArgumentException("Tried to assign a value of type '" + value.getClass().getName() 
+                    + "'to detail '" + name + "' of type '" + type + "'");
         this.value = value;
     }
 
-    public Object getDefault() {
+    public void setValueAsString(String value) {
+        this.value = converter.convert(value);
+    }
+
+    public E getDefault() {
         return defaultValue;
     }
 
@@ -91,8 +101,8 @@ public class FeatureDetail<E> {
         return combinator.perform(this.value, otherValue);
     }
 
-    public boolean isConstraint() {
-        return constraint;
+    public boolean isRestriction() {
+        return restriction;
     }
 
     public String getDescription() {
@@ -110,7 +120,7 @@ public class FeatureDetail<E> {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        final FeatureDetail that = (FeatureDetail) o;
+        final FeatureDetail<E> that = (FeatureDetail<E>) o;
         if (!name.equals(that.name))
             return false;
         return !(value != null ? !value.equals(that.value) : that.value != null);

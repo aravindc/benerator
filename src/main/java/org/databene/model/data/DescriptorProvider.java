@@ -33,6 +33,7 @@ package org.databene.model.data;
  * @author Volker Bergmann
  */
 public interface DescriptorProvider {
-    EntityDescriptor[] getTypeDescriptors();
-    EntityDescriptor getTypeDescriptor(String typeName);
+    String getId();
+    TypeDescriptor[] getTypeDescriptors();
+    TypeDescriptor getTypeDescriptor(String typeName);
 }
