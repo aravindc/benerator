@@ -118,8 +118,11 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
                 CSVLineIterator parser = new CSVLineIterator(url);
                 String[] tokens;
                 List<E> samples = new ArrayList<E>();
-                while ((tokens = parser.next()) != null && tokens.length > 0)
-                    samples.add(converter.convert(tokens[0]));
+                while (parser.hasNext()) {
+                    tokens = parser.next();
+                    if (tokens.length > 0)
+                        samples.add(converter.convert(tokens[0]));
+                }
                 source.setValues(samples);
                 dirty = false;
             } catch (FileNotFoundException e) {
