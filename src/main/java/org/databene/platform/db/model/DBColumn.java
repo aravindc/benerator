@@ -40,7 +40,8 @@ public class DBColumn {
 
     private String name;
     private DBColumnType type;
-    private int[] modifiers; // TODO v0.4.2 transform to 'size' and 'scale' attributes
+    private Integer size;
+    private Integer fractionDigits;
     private String doc;
     private String defaultValue;
     private DBTable table;
@@ -56,15 +57,24 @@ public class DBColumn {
         this(null, null);
     }
 
-    public DBColumn(String name, DBColumnType type, int ... modifiers) {
-        this(null, name, type, modifiers);
+    public DBColumn(String name, DBColumnType type) {
+        this(name, type, null);
     }
 
-    public DBColumn(DBTable table, String name, DBColumnType type, int ... modifiers) {
+    public DBColumn(String name, DBColumnType type, Integer size) {
+        this(name, type, size, null);
+    }
+    
+    public DBColumn(String name, DBColumnType type, Integer size, Integer fractionDigits) {
+        this(null, name, type, size, null);
+    }
+
+    public DBColumn(DBTable table, String name, DBColumnType type, Integer size, Integer fractionDigits) {
         this.table = table;
         this.name = name;
         this.type = type;
-        this.modifiers = modifiers;
+        this.size = size;
+        this.fractionDigits = fractionDigits;
         this.doc = null;
         this.defaultValue = null;
         this.ukConstraints = new ArrayList<DBConstraint>();
@@ -91,12 +101,20 @@ public class DBColumn {
         return type;
     }
 
-    public int[] getModifiers() {
-        return modifiers;
+    public Integer getSize() {
+        return size;
     }
 
-    public void setModifiers(int[] modifiers) {
-        this.modifiers = modifiers;
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public Integer getFractionDigits() {
+        return fractionDigits;
+    }
+
+    public void setFractionDigits(Integer fractionDigits) {
+        this.fractionDigits = fractionDigits;
     }
 
     public String getDoc() {
@@ -159,13 +177,13 @@ public class DBColumn {
     public void setVersionColumn(boolean versionColumn) {
         this.versionColumn = versionColumn;
     }
-
+/*
     public int size() {
-        if (modifiers != null && modifiers.length > 0)
-            return modifiers[0]; // TODO v0.4.2 evaluate if byte or char
+        if (size != null)
+            return size; // TODO v0.5.1 evaluate if byte or char
         return 1;
     }
-
+*/
     // java.lang.overrides ---------------------------------------------------------------------------------------------
 
     @Override
@@ -186,9 +204,11 @@ public class DBColumn {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(name).append(" : ").append(type);
-        if (modifiers.length > 0) {
+        if (size != null) {
             builder.append('(');
-            builder.append(ArrayFormat.formatInts(",", modifiers));
+            builder.append(size);
+            if (fractionDigits != null)
+                builder.append(",").append(fractionDigits);
             builder.append(')');
         }
         if (!isNullable())
