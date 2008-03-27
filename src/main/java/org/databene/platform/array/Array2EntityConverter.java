@@ -27,8 +27,8 @@
 package org.databene.platform.array;
 
 import org.databene.commons.Converter;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 
 /**
  * Converts an array of feature values to an entity.<br/>
@@ -37,10 +37,10 @@ import org.databene.model.data.EntityDescriptor;
  */
 public class Array2EntityConverter<E> implements Converter<E[], Entity> {
 
-    private EntityDescriptor descriptor;
+    private ComplexTypeDescriptor descriptor;
     private String[] featureNames;
 
-    public Array2EntityConverter(EntityDescriptor descriptor, String[] featureNames) {
+    public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames) {
         this.descriptor = descriptor;
         this.featureNames = featureNames;
     }
@@ -53,7 +53,7 @@ public class Array2EntityConverter<E> implements Converter<E[], Entity> {
         Entity entity = new Entity(descriptor);
         for (int i = 0; i < sourceValue.length; i++) {
             String featureName = featureNames[i];
-            entity.setComponent(featureName, sourceValue[i]);
+            entity.setComponentValue(featureName, sourceValue[i]);
         }
         return entity;
     }
