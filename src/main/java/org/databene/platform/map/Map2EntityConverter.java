@@ -27,8 +27,8 @@
 package org.databene.platform.map;
 
 import org.databene.commons.Converter;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 
 import java.util.Map;
 
@@ -39,9 +39,9 @@ import java.util.Map;
  */
 public class Map2EntityConverter implements Converter<Map<String, Object>, Entity> {
 
-    private EntityDescriptor descriptor;
+    private ComplexTypeDescriptor descriptor;
 
-    public Map2EntityConverter(EntityDescriptor descriptor) {
+    public Map2EntityConverter(ComplexTypeDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
@@ -51,8 +51,8 @@ public class Map2EntityConverter implements Converter<Map<String, Object>, Entit
 
     public Entity convert(Map<String, Object> map) {
         Entity entity = new Entity(descriptor);
-        for (Map.Entry entry : map.entrySet())
-            entity.setComponent((String) entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Object> entry : map.entrySet())
+            entity.setComponentValue((String) entry.getKey(), entry.getValue());
         return entity;
     }
 
