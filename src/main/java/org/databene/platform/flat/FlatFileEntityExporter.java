@@ -76,7 +76,7 @@ public class FlatFileEntityExporter extends AbstractConsumer<Entity> {
         this.uri = uri;
     }
 
-    public void setProperties(String propertyFormatList) { // TODO v0.5 simplify by FlatFileUtil
+    public void setProperties(String propertyFormatList) {
         if (propertyFormatList == null) {
             converters = null;
             return;
