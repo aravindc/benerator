@@ -43,7 +43,7 @@
             <question>Why yet another data generator?</question>
             <answer>
                 <p>There are many data generators available (see
-                    <a href="similar_product.html">similar products</a>
+                    <a href="similar_products.html">similar products</a>
                     ),
                     but each one lacks features I desired - especially the open source products.
                 </p>
@@ -312,6 +312,7 @@
                         <li>generator</li>
                         <li>values (if no 'type' is specified, they will be used as strings)</li>
                     </ul>
+                    
                     For example, providing a regular expression 'pattern' alone is not enough for string generation
                     setup.
                     You need to explicitly state the type, e.g.
