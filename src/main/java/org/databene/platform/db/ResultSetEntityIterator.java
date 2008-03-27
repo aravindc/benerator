@@ -32,8 +32,11 @@ import java.sql.SQLException;
 import java.util.Iterator;
 
 import org.databene.commons.converter.AnyConverter;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.bean.BeanDescriptorProvider;
 
 /**
@@ -48,9 +51,9 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
     
     private BeanDescriptorProvider beanDescriptorProvider;
     
-    private EntityDescriptor descriptor;
+    private ComplexTypeDescriptor descriptor;
 
-    public ResultSetEntityIterator(Iterator<ResultSet> resultSetIterator, EntityDescriptor descriptor) {
+    public ResultSetEntityIterator(Iterator<ResultSet> resultSetIterator, ComplexTypeDescriptor descriptor) {
         this.resultSetIterator = resultSetIterator;
         this.descriptor = descriptor;
         this.beanDescriptorProvider = new BeanDescriptorProvider();
@@ -70,9 +73,10 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
             int columnCount = metaData.getColumnCount();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 String columnName = metaData.getColumnName(columnIndex);
-                String abstractType = descriptor.getComponentDescriptor(columnName).getType();
-                Object javaValue = javaValue(resultSet, columnIndex, abstractType);
-                entity.setComponent(columnName, javaValue);
+                ComponentDescriptor component = descriptor.getComponent(columnName);
+                SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getType();
+                Object javaValue = javaValue(resultSet, columnIndex, type.getPrimitiveType().getName());
+                entity.setComponentValue(columnName, javaValue);
             }
             return entity;
         } catch (SQLException e) {
@@ -86,16 +90,16 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
 
     // private helpers ----------------------------------------------------------------------------------------
     
-    private Object javaValue(ResultSet resultSet, int columnIndex, String abstractType) throws SQLException {
-        if ("date".equals(abstractType))
+    private Object javaValue(ResultSet resultSet, int columnIndex, String primitiveType) throws SQLException {
+        if ("date".equals(primitiveType))
             return resultSet.getDate(columnIndex);
-        else if ("timestamp".equals(abstractType))
+        else if ("timestamp".equals(primitiveType))
             return resultSet.getTimestamp(columnIndex);
-        else if ("string".equals(abstractType))
+        else if ("string".equals(primitiveType))
             return resultSet.getString(columnIndex);
         // try generic conversion
         Object driverValue = resultSet.getObject(columnIndex);
-        Class<? extends Object> javaType = beanDescriptorProvider.concreteType(abstractType);
+        Class<? extends Object> javaType = beanDescriptorProvider.concreteType(primitiveType);
         Object javaValue = AnyConverter.convert(driverValue, javaType);
         return javaValue;
     }

@@ -30,8 +30,8 @@ import java.sql.ResultSet;
 import java.util.Iterator;
 
 import org.databene.commons.TypedIterable;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 
 /**
  * Iterates a ResultSet, returning Entities.
@@ -41,10 +41,10 @@ import org.databene.model.data.EntityDescriptor;
 public class EntityResultSetIterable implements TypedIterable<Entity> {
 
     private Iterable<ResultSet> iterable;
-    private EntityDescriptor entityDescriptor;
+    private ComplexTypeDescriptor entityDescriptor;
     
     public EntityResultSetIterable(Iterable<ResultSet> iterable,
-            EntityDescriptor entityDescriptor) {
+            ComplexTypeDescriptor entityDescriptor) {
         this.iterable = iterable;
         this.entityDescriptor = entityDescriptor;
     }
