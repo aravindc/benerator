@@ -2,8 +2,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.region.Region;
-import org.databene.region.Country;
+import org.databene.domain.address.Country;
 
 import java.util.Locale;
 
@@ -30,13 +29,12 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     public PersonGenerator(Country country, Locale locale) {
         genderGen = new GenderGenerator();
-        Region region = country.getRegion();
-        maleGivenNameGen = new GivenNameGenerator(region, Gender.MALE);
-        femaleGivenNameGen = new GivenNameGenerator(region, Gender.FEMALE);
-        familyNameGen = new FamilyNameGenerator(region);
+        String countryCode = country.getIsoCode();
+        maleGivenNameGen = new GivenNameGenerator(countryCode, Gender.MALE);
+        femaleGivenNameGen = new GivenNameGenerator(countryCode, Gender.FEMALE);
+        familyNameGen = new FamilyNameGenerator(countryCode);
         titleGen = new TitleGenerator(locale);
         salutationProvider = new SalutationProvider(locale);
-        //addressGenerator = new AddressGenerator(country, locale);
         birthDateGenerator = new BirthDateGenerator(15, 105);
     }
 
@@ -47,10 +45,10 @@ public class PersonGenerator extends LightweightGenerator<Person> {
         salutationProvider.setLocale(locale);
     }
 
-    public void setRegion(Region region) {
-        maleGivenNameGen.setRegion(region);
-        femaleGivenNameGen.setRegion(region);
-        familyNameGen.setRegion(region);
+    public void setDataSet(String dataSetName) {
+        maleGivenNameGen = new GivenNameGenerator(dataSetName, Gender.MALE);
+        femaleGivenNameGen = new GivenNameGenerator(dataSetName, Gender.FEMALE);
+        familyNameGen = new FamilyNameGenerator(dataSetName);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -76,6 +74,6 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return getClass().getSimpleName() + '[' + familyNameGen.getRegion() + ']';
+        return getClass().getSimpleName();
     }
 }
