@@ -27,6 +27,7 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.LightweightGenerator;
 import org.databene.commons.TreeModel;
 
 import java.util.List;
