@@ -32,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.DBUtil;
 import org.databene.id.IdProvider;
 
 /**
