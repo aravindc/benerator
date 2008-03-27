@@ -28,11 +28,15 @@ package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.benerator.csv.CSVCellIterable;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
-import org.databene.benerator.primitive.DateGenerator;
 import org.databene.benerator.*;
+import org.databene.benerator.primitive.datetime.DateGenerator;
+import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
+import org.databene.benerator.primitive.number.AbstractLongGenerator;
+import org.databene.benerator.primitive.number.DoubleFromLongGenerator;
+import org.databene.benerator.primitive.number.LongFromDoubleGenerator;
+import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.benerator.primitive.number.adapter.IntegralNumberGenerator;
 import org.databene.benerator.primitive.number.adapter.BigDecimalGenerator;
 import org.databene.benerator.primitive.number.adapter.FloatingPointNumberGenerator;
@@ -44,8 +48,10 @@ import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.*;
 import org.databene.model.data.Iteration;
 import org.databene.document.csv.CSVLineIterable;
+import org.databene.platform.csv.CSVCellIterable;
 import org.databene.regex.RegexParser;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -120,6 +126,15 @@ public class GeneratorFactory {
                 nullQuota);
     }
 
+    public static <T extends Number> Generator<T> getNumberGenerator(
+            Class<T> type, T min, T max, T precision,
+            Distribution distribution, T variation1, T variation2,
+            double nullQuota) {
+        int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
+        int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
+        return getNumberGenerator(type, min, max, totalDigits, fractionDigits, precision, distribution, variation1, variation2, nullQuota);
+    }
+    
     /**
      * Creates a generator for numbers.
      *
@@ -134,7 +149,7 @@ public class GeneratorFactory {
      * @return a Number generator of the desired characteristics
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
-            Class<T> type, T min, T max, T precision,
+            Class<T> type, T min, T max, int totalDigits, int fractionDigits, T precision,
             Distribution distribution, T variation1, T variation2,
             double nullQuota) {
         if (type == null)
@@ -143,14 +158,37 @@ public class GeneratorFactory {
         if (Integer.class.equals(type) || Long.class.equals(type) || Byte.class.equals(type) || Short.class.equals(type) || BigInteger.class.equals(type))
             source = new IntegralNumberGenerator<T>(type, min, max, precision, distribution, variation1, variation2);
         else if (Double.class.equals(type) || Float.class.equals(type))
-            source = (Generator<T>) new FloatingPointNumberGenerator(type, min, max, precision, distribution, variation1, variation2);
+            source = (Generator<T>) new FloatingPointNumberGenerator(
+                    type, 
+                    min, 
+                    max(type, max, totalDigits, fractionDigits), 
+                    precision(type, precision, fractionDigits), 
+                    distribution, 
+                    variation1, 
+                    variation2);
         else if (BigDecimal.class.equals(type))
             source = (Generator<T>) new BigDecimalGenerator(
-                    (BigDecimal) min, (BigDecimal) max, (BigDecimal) precision, distribution,
-                    (BigDecimal) variation1, (BigDecimal) variation2);
+                    (BigDecimal) min, 
+                    (BigDecimal) max(type, max, totalDigits, fractionDigits), 
+                    (BigDecimal) precision(type, precision, fractionDigits), 
+                    distribution,
+                    (BigDecimal) variation1, 
+                    (BigDecimal) variation2);
         else
             throw new UnsupportedOperationException("Number type not supported: " + type.getName());
         return wrapNullQuota(source, nullQuota);
+    }
+
+    private static <T> T max(Class<T> type, T max, int totalDigits, int fractionDigits) {
+        if (max != null)
+            return max;
+        return NumberConverter.convert(Math.pow(10, totalDigits - fractionDigits), type);
+    }
+
+    private static <T> T precision(Class<T> type, T precision, int fractionDigits) {
+        if (precision != null)
+            return precision;
+        return NumberConverter.convert(Math.pow(10, -fractionDigits), type);
     }
 
     // sample source ------------------------------------------------------------------------------------------------
@@ -162,10 +200,10 @@ public class GeneratorFactory {
      * @param converter the converter to use for representing the file entries
      * @return a Generator that creates instances of the parameterized type T.
      */
-    public static <T> Generator<T> getSampleGenerator(String uri, Converter<String, T> converter) {
+    public static <T> Generator<T> getSampleGenerator(String uri, String encoding, Converter<String, T> converter) {
         if (converter == null)
             converter = new NoOpConverter();
-        return new WeightedCSVSampleGenerator<T>(uri, converter);
+        return new WeightedCSVSampleGenerator<T>(uri, encoding, converter);
     }
 
     /**
@@ -238,10 +276,10 @@ public class GeneratorFactory {
      * @param nullQuota the quota of null values to generate
      * @return a generator of the desired characteristics
      */
-    public static Generator<Date> getDateGenerator(String uri, String pattern, double nullQuota) {
+    public static Generator<Date> getDateGenerator(String uri, String encoding, String pattern, double nullQuota) {
         DateFormat format = new SimpleDateFormat(pattern);
         Converter<String, Date> converter = new ParseFormatConverter<Date>(Date.class, format);
-        WeightedCSVSampleGenerator<Date> generator = new WeightedCSVSampleGenerator<Date>(uri, converter);
+        WeightedCSVSampleGenerator<Date> generator = new WeightedCSVSampleGenerator<Date>(uri, encoding, converter);
         return wrapNullQuota(generator, nullQuota);
     }
 
@@ -480,7 +518,7 @@ public class GeneratorFactory {
         Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
         return createProxy(generator, cyclic, iteration, proxyParam1, proxyParam2);
     }
-
+    
     // helpers ---------------------------------------------------------------------------------------------------------
 
     /**
