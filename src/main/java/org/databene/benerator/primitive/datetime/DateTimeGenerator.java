@@ -36,8 +36,8 @@ import java.util.TimeZone;
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.TimeUtil;
-import org.databene.model.Sequence;
-import org.databene.model.String2DistributionConverter;
+import org.databene.model.function.Sequence;
+import org.databene.model.function.String2DistributionConverter;
 
 /**
  * Creates DateTimes with separate date and time distribution characteristics.<br/><br/>

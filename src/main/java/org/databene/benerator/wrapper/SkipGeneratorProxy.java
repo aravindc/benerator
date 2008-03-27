@@ -28,8 +28,8 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 
 /**
  * This forwards a source generator's products.

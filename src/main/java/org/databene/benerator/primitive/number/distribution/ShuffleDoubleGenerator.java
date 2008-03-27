@@ -28,8 +28,8 @@ package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 
 /**
  * Double Generator that implements a 'shuffle' Double Sequence.<br/>

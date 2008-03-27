@@ -29,8 +29,8 @@ package org.databene.benerator.primitive.number.distribution;
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
 import org.databene.benerator.primitive.number.NumberGenerator;
-import org.databene.model.Distribution;
-import org.databene.model.WeightFunction;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.WeightFunction;
 
 import java.util.Arrays;
 import java.util.Random;

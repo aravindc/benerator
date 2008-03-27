@@ -34,7 +34,7 @@ import org.databene.commons.operation.AndOperation;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinOperation;
 import org.databene.commons.operation.OrOperation;
-import org.databene.model.Distribution;
+import org.databene.model.function.Distribution;
 
 /**
  * Describes generation of (several) entities of a type by uniqueness, 

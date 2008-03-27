@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.model.Distribution;
+import org.databene.model.function.Distribution;
 
 /**
  * On each call to generate(), it chooses a generator from a collection,

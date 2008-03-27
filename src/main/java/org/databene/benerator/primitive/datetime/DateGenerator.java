@@ -29,8 +29,8 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.Generator;
 import org.databene.commons.Period;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 
 import java.util.Date;
 import java.util.GregorianCalendar;

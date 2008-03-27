@@ -29,8 +29,8 @@ package org.databene.benerator.primitive.number.distribution;
 import org.databene.benerator.*;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.NumberUtil;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 
 /**
  * Long Generator that implements a 'bitreverse' Long Sequence.<br/>

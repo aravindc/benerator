@@ -30,9 +30,9 @@ import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
 import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.benerator.primitive.number.distribution.*;
 import org.databene.commons.converter.NumberToNumberConverter;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
-import org.databene.model.WeightFunction;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
+import org.databene.model.function.WeightFunction;
 
 /**
  * Parent class for all number-conversion adapters that internally access a DoubleGenerator.<br/>

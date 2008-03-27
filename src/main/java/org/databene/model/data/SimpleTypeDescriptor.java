@@ -31,8 +31,8 @@ import org.databene.commons.operation.MaxNumberLiteral;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinNumberLiteral;
 import org.databene.commons.operation.MinOperation;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 
 /**
  * Describes a simple type.<br/><br/>

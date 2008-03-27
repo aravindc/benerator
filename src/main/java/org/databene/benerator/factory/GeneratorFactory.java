@@ -47,6 +47,7 @@ import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.*;
 import org.databene.model.data.Iteration;
+import org.databene.model.function.Distribution;
 import org.databene.document.csv.CSVLineIterable;
 import org.databene.platform.csv.CSVCellIterable;
 import org.databene.regex.RegexParser;

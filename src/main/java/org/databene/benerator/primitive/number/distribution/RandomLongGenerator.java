@@ -29,8 +29,8 @@ package org.databene.benerator.primitive.number.distribution;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.primitive.number.AbstractLongGenerator;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 
 import java.util.Random;
 

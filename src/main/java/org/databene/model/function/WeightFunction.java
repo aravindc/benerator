@@ -24,32 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive.number.distribution;
+package org.databene.model.function;
 
-import org.databene.model.function.WeightFunction;
 
 /**
- * Returns a constant value.<br/>
+ * Common interface for weight functions.<br/>
  * <br/>
- * Created: 18.06.2006 15:30:18
+ * Created: 10.06.2006 05:27:38
  */
-public class ConstantFunction implements WeightFunction {
-
-    private double value;
-
-    public ConstantFunction() {
-        this(1);
-    }
-
-    public ConstantFunction(double value) {
-        this.value = value;
-    }
-
-    public double value(double param) {
-        return value;
-    }
-
-    public String toString() {
-        return getClass().getSimpleName() + '[' + value + ']';
-    }
+public interface WeightFunction extends Distribution {
+    double value(double param);
 }

@@ -29,7 +29,7 @@ package org.databene.benerator.primitive.regex;
 import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.model.Sequence;
+import org.databene.model.function.Sequence;
 
 /**
  * Calls another string generator a variable number of times and appends a variable number of times.<br/>

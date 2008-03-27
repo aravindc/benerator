@@ -24,12 +24,12 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 import org.databene.platform.bean.BeanDescriptorProvider;
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 

@@ -39,7 +39,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
-import org.databene.model.Sequence;
+import org.databene.model.function.Sequence;
 
 /**
  * TODO documentation<br/><br/>

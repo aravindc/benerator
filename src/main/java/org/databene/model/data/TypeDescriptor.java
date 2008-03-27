@@ -33,7 +33,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.operation.ArrayIntersectionOperation;
 import org.databene.commons.operation.FirstNonNullSelector;
-import org.databene.model.Distribution;
+import org.databene.model.function.Distribution;
 
 /**
  * Describes a type.<br/><br/>

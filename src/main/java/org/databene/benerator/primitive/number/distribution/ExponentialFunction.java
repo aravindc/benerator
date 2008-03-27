@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.number.distribution;
 
-import org.databene.model.WeightFunction;
+import org.databene.model.function.WeightFunction;
 
 /**
  * Exponential function. a * e^bx.<br/>
