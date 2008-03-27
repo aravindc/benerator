@@ -26,9 +26,13 @@
 
 package org.databene.benerator.primitive.number.adapter;
 
+import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
+import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.benerator.primitive.number.distribution.*;
-import org.databene.benerator.*;
 import org.databene.commons.converter.NumberToNumberConverter;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
+import org.databene.model.WeightFunction;
 
 /**
  * Parent class for all number-conversion adapters that internally access a DoubleGenerator.<br/>
@@ -67,7 +71,7 @@ public class FloatingPointNumberGenerator<E extends Number> extends AbstractNumb
     }
 
     protected NumberGenerator<Double> createSource(Sequence sequence) {
-        AbstractDoubleGenerator doubleGenerator = sequence.createDoubleGenerator();
+        AbstractDoubleGenerator doubleGenerator = SequenceFactory.createDoubleGenerator(sequence);
         doubleGenerator.setMin(min.doubleValue());
         doubleGenerator.setMax(max.doubleValue());
         doubleGenerator.setPrecision(precision.doubleValue());

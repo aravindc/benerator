@@ -26,8 +26,8 @@
 
 package org.databene.benerator.primitive.number.adapter;
 
-import org.databene.benerator.Sequence;
-import org.databene.benerator.Distribution;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 /**
  * Wrapper for a LongGenerator that forwards the generated Longs.<br/>

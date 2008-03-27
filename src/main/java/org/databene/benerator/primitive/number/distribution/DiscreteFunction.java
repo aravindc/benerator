@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.number.distribution;
 
-import org.databene.benerator.WeightFunction;
+import org.databene.model.WeightFunction;
 
 /**
  * Discrete function that is based on an array.

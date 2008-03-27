@@ -26,10 +26,14 @@
 
 package org.databene.benerator.primitive.number.adapter;
 
+import org.databene.benerator.primitive.number.AbstractLongGenerator;
+import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.benerator.primitive.number.distribution.*;
-import org.databene.benerator.*;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
+import org.databene.model.WeightFunction;
 
 /**
  * Parent class for all number-conversion adapters that internally access a LongGenerator.<br/>
@@ -76,7 +80,7 @@ public class IntegralNumberGenerator<E extends Number> extends AbstractNumberGen
     }
 
     protected NumberGenerator<Long> createSource(Sequence sequence) {
-        AbstractLongGenerator longGenerator = sequence.createLongGenerator();
+        AbstractLongGenerator longGenerator = SequenceFactory.createLongGenerator(sequence);
         longGenerator.setMin(min.longValue());
         longGenerator.setMax(max.longValue());
         longGenerator.setPrecision(precision.longValue());

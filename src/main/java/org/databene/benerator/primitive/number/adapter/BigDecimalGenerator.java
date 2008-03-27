@@ -26,8 +26,9 @@
 
 package org.databene.benerator.primitive.number.adapter;
 
-import org.databene.benerator.Distribution;
-import org.databene.benerator.Sequence;
+import org.databene.commons.MathUtil;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,7 +42,7 @@ public class BigDecimalGenerator extends IntegralNumberGenerator<BigDecimal> {
 
     public static final BigDecimal DEFAULT_PRECISION = new BigDecimal("0.01");
 
-    private Integer scale;
+    private Integer fractionDigits;
 
     /** Initializes the generator to create uniformly distributed random BigDecimals with precision 1 */
     public BigDecimalGenerator() {
@@ -72,12 +73,15 @@ public class BigDecimalGenerator extends IntegralNumberGenerator<BigDecimal> {
 
     public void setPrecision(BigDecimal precision) {
         super.setPrecision(precision);
-        scale = precision.scale();
+        this.fractionDigits = Math.max(
+                MathUtil.fractionDigits(min.doubleValue()),
+                MathUtil.fractionDigits(precision.doubleValue())
+            );
         dirty = true;
     }
 
-    public Integer getScale() {
-        return scale;
+    public Integer getFractionDigits() {
+        return fractionDigits;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -99,7 +103,7 @@ public class BigDecimalGenerator extends IntegralNumberGenerator<BigDecimal> {
         if (dirty)
             validate();
         BigDecimal tmp = super.generate().multiply(precision).add(min);
-        return tmp.setScale(scale, RoundingMode.HALF_UP);
+        return tmp.setScale(fractionDigits, RoundingMode.HALF_UP);
     }
 
 }

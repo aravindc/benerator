@@ -27,9 +27,9 @@
 package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.AbstractLongGenerator;
-import org.databene.benerator.Sequence;
-import org.databene.benerator.Distribution;
+import org.databene.benerator.primitive.number.AbstractLongGenerator;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 /**
  * Long Generator that implements a 'step' Long Sequence.<br/>

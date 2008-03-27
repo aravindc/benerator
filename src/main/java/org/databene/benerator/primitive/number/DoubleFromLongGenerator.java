@@ -24,35 +24,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive.number.adapter;
-
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+package org.databene.benerator.primitive.number;
 
 /**
- * Wrapper for a DoubleGenerator that forwards the generated Doubles.<br/>
- * <br/>
- * Created: 07.06.2006 19:04:08
+ * Long Generator that maps products from a Double generator.<br/>
+ * <br/> 
+ * Created: 13.11.2007 12:43:10
  */
-public class DoubleGenerator extends FloatingPointNumberGenerator<Double> {
+public class DoubleFromLongGenerator extends AbstractDoubleGenerator {
 
-    /** Initializes the generator to create uniformly distributed random Doubles with precision 1 */
-    public DoubleGenerator() {
-        this(Double.MIN_VALUE, Double.MAX_VALUE);
+    private AbstractLongGenerator indexGenerator;
+
+    public DoubleFromLongGenerator(AbstractLongGenerator longGenerator) {
+        this.indexGenerator = longGenerator;
     }
 
-    /** Initializes the generator to create uniformly distributed random Doubles with precision 1 */
-    public DoubleGenerator(double min, double max) {
-        this(min, max, 1.);
+    public void validate() {
+        if (dirty) {
+            super.validate();
+            indexGenerator.setMin(0L);
+            long maxIndex = (long) ((max - min) / precision);
+            indexGenerator.setMax(maxIndex);
+            indexGenerator.validate();
+        }
     }
 
-    /** Initializes the generator to create uniformly distributed random Doubles with the specified precision */
-    public DoubleGenerator(double min, double max, double precision) {
-        this(min, max, precision, Sequence.RANDOM);
+    public boolean available() {
+        return indexGenerator.available();
     }
 
-    /** Initializes the generator to create Doubles */
-    public DoubleGenerator(Double min, Double max, Double precision, Distribution distribution) {
-        super(Double.class, min, max, precision, distribution);
+    public Double generate() {
+        if (dirty)
+            validate();
+        return min + indexGenerator.generate() * precision;
+    }
+
+    public void reset() {
+        super.reset();
+        indexGenerator.reset();
+    }
+
+    public void close() {
+        super.close();
+        indexGenerator.close();
     }
 }

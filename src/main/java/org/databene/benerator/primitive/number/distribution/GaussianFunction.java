@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.number.distribution;
 
-import org.databene.benerator.WeightFunction;
+import org.databene.model.WeightFunction;
 
 /**
  * Gaussian Function. 1/(deviation*sqrt(2PI)) * e^(-(x - average)^2/(4 * deviation^2)).<br/>

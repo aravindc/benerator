@@ -26,10 +26,10 @@
 
 package org.databene.benerator.primitive.number.distribution;
 
-import org.databene.benerator.SimpleRandom;
-import org.databene.benerator.Sequence;
-import org.databene.benerator.Distribution;
-import org.databene.benerator.AbstractDoubleGenerator;
+import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
+import org.databene.benerator.util.SimpleRandom;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 /**
  * Double Generator that implements a 'random' Double Sequence.<br/>

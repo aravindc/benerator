@@ -24,35 +24,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive.number.adapter;
-
-import org.databene.model.Distribution;
-import org.databene.model.Sequence;
+package org.databene.benerator.primitive.number;
 
 /**
- * Wrapper for a DoubleGenerator that forwards the generated Doubles.<br/>
- * <br/>
- * Created: 07.06.2006 19:04:08
+ * Long Generator that maps products from a Double generator.<br/>
+ * <br/> 
+ * Created: 23.09.2006 09:02:10
  */
-public class DoubleGenerator extends FloatingPointNumberGenerator<Double> {
+public class LongFromDoubleGenerator extends AbstractLongGenerator {
 
-    /** Initializes the generator to create uniformly distributed random Doubles with precision 1 */
-    public DoubleGenerator() {
-        this(Double.MIN_VALUE, Double.MAX_VALUE);
+    private AbstractDoubleGenerator doubleGenerator;
+
+    public LongFromDoubleGenerator(AbstractDoubleGenerator doubleGenerator) {
+        this.doubleGenerator = doubleGenerator;
     }
 
-    /** Initializes the generator to create uniformly distributed random Doubles with precision 1 */
-    public DoubleGenerator(double min, double max) {
-        this(min, max, 1.);
+    public void validate() {
+        if (dirty) {
+            doubleGenerator.setMin((double)min);
+            doubleGenerator.setMax((double)max);
+            doubleGenerator.setPrecision((double)precision);
+            doubleGenerator.setVariation1((double)variation1);
+            doubleGenerator.setVariation2((double)variation2);
+            doubleGenerator.validate();
+            super.validate();
+        }
     }
 
-    /** Initializes the generator to create uniformly distributed random Doubles with the specified precision */
-    public DoubleGenerator(double min, double max, double precision) {
-        this(min, max, precision, Sequence.RANDOM);
+    public boolean available() {
+        return doubleGenerator.available();
     }
 
-    /** Initializes the generator to create Doubles */
-    public DoubleGenerator(Double min, Double max, Double precision, Distribution distribution) {
-        super(Double.class, min, max, precision, distribution);
+    public Long generate() {
+        if (dirty)
+            validate();
+        return doubleGenerator.generate().longValue();
     }
+
 }

@@ -26,9 +26,9 @@
 
 package org.databene.benerator.primitive.number.adapter;
 
-import org.databene.benerator.Sequence;
-import org.databene.benerator.Distribution;
 import org.databene.commons.converter.NumberToNumberConverter;
+import org.databene.model.Distribution;
+import org.databene.model.Sequence;
 
 import java.math.BigInteger;
 
