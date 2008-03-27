@@ -26,14 +26,21 @@
 
 package org.databene.platform.dbunit;
 
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
+import org.databene.model.data.Entity;
 import org.databene.script.ScriptUtil;
 import org.databene.commons.Context;
 import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.IOUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
-import org.w3c.dom.*;
+import org.databene.commons.xml.XMLUtil;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
@@ -47,7 +54,7 @@ import java.util.ArrayList;
  * Created: 05.08.2007 07:43:36
  * @author Volker Bergmann
  */
-public class DbUnitEntityIterator implements HeavyweightIterator<org.databene.model.data.Entity> {
+public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
 
     private static final Log logger = LogFactory.getLog(DbUnitEntityIterator.class);
 
@@ -75,13 +82,13 @@ public class DbUnitEntityIterator implements HeavyweightIterator<org.databene.mo
         return nextRowNum < rows.size();
     }
 
-    public org.databene.model.data.Entity next() {
+    public Entity next() {
         if (nextRowNum < rows.size()) {
             Row row = rows.get(nextRowNum);
             String[] rowValues = row.getValues();
-            org.databene.model.data.Entity result = new org.databene.model.data.Entity(new EntityDescriptor(row.getTableName(), false));
+            Entity result = new Entity(getType(row));
             for (int i = 0; i < rowValues.length; i++)
-                result.setComponent(row.getColumnName(i), rowValues[i]);
+                result.setComponentValue(row.getColumnName(i), rowValues[i]);
             nextRowNum++;
             return result;
         } else
@@ -100,6 +107,14 @@ public class DbUnitEntityIterator implements HeavyweightIterator<org.databene.mo
 
     // private helpers -------------------------------------------------------------------------------------------------
 
+    private ComplexTypeDescriptor getType(Row row) {
+        String name = row.getTableName();
+        ComplexTypeDescriptor type = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(name);
+        if (type == null)
+            type = new ComplexTypeDescriptor(name);
+        return type;
+    }
+
     private void processScripts(String defaultScriptEngine) {
         for (Row row : rows) {
             String[] cells = row.getValues();
@@ -114,7 +129,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<org.databene.mo
     }
 
     private Document readDocument(String uri) throws IOException {
-        return IOUtil.parseXML(uri);
+        return XMLUtil.parse(uri);
     }
 
     private void parseDataset(Document document) {
