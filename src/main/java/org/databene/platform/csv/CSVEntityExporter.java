@@ -27,9 +27,9 @@
 package org.databene.platform.csv;
 
 import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
@@ -85,17 +85,17 @@ public class CSVEntityExporter extends AbstractConsumer<Entity> {
         this.encoding = encoding;
     }
 
-    public CSVEntityExporter(EntityDescriptor descriptor) {
+    public CSVEntityExporter(ComplexTypeDescriptor descriptor) {
         this(descriptor.getName() + ".csv", descriptor);
     }
 
-    public CSVEntityExporter(String uri, EntityDescriptor descriptor) {
+    public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor) {
         this(uri, descriptor, DEFAULT_SEPARATOR, DEFAULT_ENCODING);
     }
 
-    public CSVEntityExporter(String uri, EntityDescriptor descriptor, char separator, String encoding) {
+    public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor, char separator, String encoding) {
         this.uri = uri;
-        Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponentDescriptors();
+        Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponents();
         List<String> componentNames = BeanUtil.extractProperties(componentDescriptors, "name");
         this.propertyNames = CollectionUtil.toArray(componentNames, String.class);
         this.separator = separator;

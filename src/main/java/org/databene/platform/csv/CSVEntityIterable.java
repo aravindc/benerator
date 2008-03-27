@@ -27,10 +27,9 @@
 package org.databene.platform.csv;
 
 import org.databene.platform.array.Array2EntityConverter;
-import org.databene.model.data.DefaultEntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.EntityIterable;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 import org.databene.document.csv.CSVLineIterable;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
@@ -55,7 +54,7 @@ public class CSVEntityIterable implements EntityIterable {
     private Converter<String, String> preprocessor;
 
     private Iterable<String[]> source;
-    private EntityDescriptor entityDescriptor;
+    private ComplexTypeDescriptor entityDescriptor;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -72,14 +71,14 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public CSVEntityIterable(String uri, String entityName, char separator, String encoding) {
-        this(uri, new DefaultEntityDescriptor(entityName, false), new NoOpConverter<String>(), separator, encoding); // TODO v0.5 finalize capitalization concept
+        this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
     }
 
     public CSVEntityIterable(String uri, String entityName, Converter<String, String> preprocessor, char separator, String encoding) {
-        this(uri, new DefaultEntityDescriptor(entityName, false), preprocessor, separator, encoding); // TODO v0.5 finalize capitalization concept
+        this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
     }
 
-    public CSVEntityIterable(String uri, EntityDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) {
+    public CSVEntityIterable(String uri, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) {
         this.uri = uri;
         this.separator = separator;
         this.encoding = encoding;
@@ -118,7 +117,7 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public void setEntityName(String entityName) {
-        this.entityDescriptor = new DefaultEntityDescriptor(entityName, false); // TODO v0.5 finalize capitaliyation concept
+        this.entityDescriptor = new ComplexTypeDescriptor(entityName);
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
