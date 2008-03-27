@@ -27,10 +27,10 @@
 package org.databene.platform.flat;
 
 import org.databene.platform.array.Array2EntityConverter;
-import org.databene.platform.bean.ArrayPropertyExtractor;
+import org.databene.commons.bean.ArrayPropertyExtractor;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.EntityIterable;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileLineIterable;
 import org.databene.document.flat.FlatFileUtil;
@@ -54,7 +54,7 @@ public class FlatFileEntityIterable extends ConvertingIterable<String[], Entity>
 
     private String uri;
     private String encoding;
-    private EntityDescriptor entityDescriptor;
+    private ComplexTypeDescriptor entityDescriptor;
     private FlatFileColumnDescriptor[] descriptors;
     private boolean initialized;
     
@@ -64,11 +64,11 @@ public class FlatFileEntityIterable extends ConvertingIterable<String[], Entity>
         this(null, null, SystemInfo.fileEncoding());
     }
 
-    public FlatFileEntityIterable(String uri, EntityDescriptor entityDescriptor, String encoding, FlatFileColumnDescriptor ... descriptors) {
+    public FlatFileEntityIterable(String uri, ComplexTypeDescriptor entityDescriptor, String encoding, FlatFileColumnDescriptor ... descriptors) {
         this(uri, entityDescriptor, new NoOpConverter<String>(), encoding, descriptors);
     }
 
-    public FlatFileEntityIterable(String uri, EntityDescriptor entityDescriptor, Converter<String, String> preprocessor, String encoding, FlatFileColumnDescriptor ... descriptors) {
+    public FlatFileEntityIterable(String uri, ComplexTypeDescriptor entityDescriptor, Converter<String, String> preprocessor, String encoding, FlatFileColumnDescriptor ... descriptors) {
         super(null, null);
         this.uri = uri;
         this.encoding = encoding;
@@ -89,7 +89,7 @@ public class FlatFileEntityIterable extends ConvertingIterable<String[], Entity>
     }
 
     public void setEntity(String entity) {
-        this.entityDescriptor = new EntityDescriptor(entity, false); // TODO v0.5 finalize case handling
+        this.entityDescriptor = new ComplexTypeDescriptor(entity);
     }
 
     public void setProperties(String properties) {
@@ -111,7 +111,7 @@ public class FlatFileEntityIterable extends ConvertingIterable<String[], Entity>
         this.converter = createConverter(entityDescriptor, descriptors);
     }
     
-    private Converter<String[], Entity> createConverter(EntityDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
+    private Converter<String[], Entity> createConverter(ComplexTypeDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
         String[] featureNames = ArrayPropertyExtractor.convert(descriptors, "name", String.class);
         Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
         Converter<String[], String[]> aConv = new ArrayConverter<String, String>(String.class, preprocessor);
