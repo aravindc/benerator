@@ -28,7 +28,7 @@ package org.databene.platform.bean;
 
 import junit.framework.TestCase;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.PersonBean;
 
 /**
@@ -39,7 +39,7 @@ import org.databene.platform.PersonBean;
 public class Entity2BeanConverterTest extends TestCase {
 
     public void test() {
-        EntityDescriptor descriptor = new EntityDescriptor(PersonBean.class.getName(), true);
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         PersonBean bean = new PersonBean("Alice", 23);
         assertEquals(bean, new Entity2BeanConverter<PersonBean>().convert(entity));

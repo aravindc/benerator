@@ -31,7 +31,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.GeneratorClassTest;
 
@@ -46,7 +46,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
         super(SequencedCSVSampleGenerator.class);
     }
 
-    // TODO v0.5 test with large data amounts
+    // TODO v0.5.1 test with large data amounts
 
     private static final String FILE_PATH = "org/databene/benerator/csv/dates.csv";
 
@@ -56,7 +56,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
         SequencedCSVSampleGenerator<Date> generator = new SequencedCSVSampleGenerator<Date>(FILE_PATH, converter);
-        List<Date> expectedDates = ArrayUtil.toList(sdf.parse("01.02.2003"), sdf.parse("02.02.2003"), sdf.parse("03.02.2003"));
+        List<Date> expectedDates = CollectionUtil.toList(sdf.parse("01.02.2003"), sdf.parse("02.02.2003"), sdf.parse("03.02.2003"));
         for (int i = 0; i < 10; i++) {
             Date generatedDate = generator.generate();
             assertTrue("generated date not in expected value set: " + sdf.format(generatedDate),

@@ -26,6 +26,7 @@
 
 package org.databene.benerator;
 
+import org.databene.benerator.util.TreePathGenerator;
 import org.databene.commons.tree.DefaultTreeModel;
 import org.databene.commons.tree.DefaultTreeNode;
 import org.apache.commons.logging.Log;

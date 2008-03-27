@@ -34,7 +34,10 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
+ * Tests the BigDecimalGenerator.<br/><br/>
  * Created: 09.10.2006 20:33:21
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class BigDecimalGeneratorTest extends GeneratorClassTest {
 
@@ -67,7 +70,7 @@ public class BigDecimalGeneratorTest extends GeneratorClassTest {
 
     private void checkScale(BigDecimalGenerator generator, BigDecimal precision, int expectedScale) {
         generator.setPrecision(precision);
-        assertEquals(expectedScale, (Object)generator.getScale());
+        assertEquals(expectedScale, (Object)generator.getFractionDigits());
     }
 
     private void checkUniformDistribution(String min, String max, String precision,

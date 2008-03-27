@@ -2,8 +2,7 @@ package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
-import junit.framework.TestCase;
+import org.databene.commons.CollectionUtil;
 
 import java.util.Set;
 
@@ -30,7 +29,7 @@ public class RandomWalkDoubleGeneratorTest extends GeneratorClassTest {
 
     public void testGreaterOrEquals() throws IllegalGeneratorStateException {
         RandomWalkDoubleGenerator generator = new RandomWalkDoubleGenerator(1, 5, 2, 0, 2);
-        Set<Double> space = ArrayUtil.toSet(1., 3., 5.);
+        Set<Double> space = CollectionUtil.toSet(1., 3., 5.);
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
@@ -45,7 +44,7 @@ public class RandomWalkDoubleGeneratorTest extends GeneratorClassTest {
 
     public void testLessOrEquals() throws IllegalGeneratorStateException {
         RandomWalkDoubleGenerator generator = new RandomWalkDoubleGenerator(1, 5, 2, -2, 0);
-        Set<Double> space = ArrayUtil.toSet(1., 3., 5.);
+        Set<Double> space = CollectionUtil.toSet(1., 3., 5.);
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
@@ -61,7 +60,7 @@ public class RandomWalkDoubleGeneratorTest extends GeneratorClassTest {
 
     public void testLessOrGreater() throws IllegalGeneratorStateException {
         RandomWalkDoubleGenerator generator = new RandomWalkDoubleGenerator(1, 5, 2, -2, 2);
-        Set<Double> space = ArrayUtil.toSet(1., 3., 5.);
+        Set<Double> space = CollectionUtil.toSet(1., 3., 5.);
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));

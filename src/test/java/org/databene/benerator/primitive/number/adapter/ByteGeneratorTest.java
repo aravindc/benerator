@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive.number.adapter;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Created: 11.10.2006 23:04:43
@@ -44,12 +44,12 @@ public class ByteGeneratorTest extends GeneratorClassTest {
 
     public void test() {
         checkEqualDistribution(ByteGenerator.class, (byte)-2, (byte) 2, (byte)1,
-                10000, 0.1, ArrayUtil.toSet((byte)-2, (byte)-1, (byte)0, (byte)1, (byte)2));
+                10000, 0.1, CollectionUtil.toSet((byte)-2, (byte)-1, (byte)0, (byte)1, (byte)2));
         checkEqualDistribution(ByteGenerator.class, (byte)-2, (byte) 2, (byte)2,
-                10000, 0.1, ArrayUtil.toSet((byte)-2, (byte)0, (byte)2));
+                10000, 0.1, CollectionUtil.toSet((byte)-2, (byte)0, (byte)2));
         checkEqualDistribution(ByteGenerator.class, (byte) 1, (byte) 5, (byte)2,
-                10000, 0.1, ArrayUtil.toSet((byte)1, (byte)3, (byte)5));
+                10000, 0.1, CollectionUtil.toSet((byte)1, (byte)3, (byte)5));
         checkEqualDistribution(ByteGenerator.class, (byte)-5, (byte)-1, (byte)2,
-                10000, 0.1, ArrayUtil.toSet((byte)-5, (byte)-3, (byte)-1));
+                10000, 0.1, CollectionUtil.toSet((byte)-5, (byte)-3, (byte)-1));
     }
 }

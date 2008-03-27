@@ -38,8 +38,8 @@ public class DBUniqueConstraintTest extends TestCase {
     public void testToString() {
         DBColumnType blobType = DBColumnType.getInstance("blob");
         DBTable table = new DBTable("tablename");
-        DBColumn column1 = new DBColumn(table, "column1", blobType);
-        DBColumn column2 = new DBColumn(table, "column2", blobType);
+        DBColumn column1 = new DBColumn(table, "column1", blobType, null, null);
+        DBColumn column2 = new DBColumn(table, "column2", blobType, null, null);
         DBUniqueConstraint constraint = new DBUniqueConstraint("constraintname", column1, column2);
         assertEquals("DBUniqueConstraint[tablename[column1, column2]]", constraint.toString());
     }

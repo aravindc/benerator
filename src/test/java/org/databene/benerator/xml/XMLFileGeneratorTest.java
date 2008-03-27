@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,24 +24,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.address;
+package org.databene.benerator.xml;
 
-import org.databene.benerator.GeneratorClassTest;
+import java.io.File;
+import java.io.IOException;
+
+import org.databene.benerator.file.XMLFileGenerator;
+import org.databene.commons.xml.XMLUtil;
+
+import junit.framework.TestCase;
 
 /**
- * Tests the StreetNameGenerator.
- * Created: 12.06.2007 06:46:33
+ * Tests the XMLFileGenerator.<br/><br/>
+ * Created: 06.03.2008 11:16:45
+ * @since 0.5.0
  * @author Volker Bergmann
  */
-public class StreetNameGeneratorTest extends GeneratorClassTest {
+public class XMLFileGeneratorTest extends TestCase {
+    
+    // todo create createXML.bat
 
-    public StreetNameGeneratorTest() {
-        super(StreetNameGenerator.class);
-    }
+    private static final String ROOT_ELEMENT = "root";
+    private static final String SCHEMA_FILE = "org/databene/platform/xml/xsdtest.xsd";
+/*
+    private static final String ROOT_ELEMENT = "product";
+    private static final String SCHEMA_FILE = "demo/shop/product-simple.xsd";
+    private static final String SCHEMA_FILE = "demo/shop/product-annotated.xsd";
 
-    public void test() {
-        StreetNameGenerator generator = new StreetNameGenerator("DE");
-        for (int i = 0; i < 10; i++)
-            assertNotNull(generator.generate());
+    private static final String OUTPUT_FILE_PREFIX = "setup";
+    private static final String SCHEMA_FILE = "org/databene/benerator/benerator-0.5.0.xsd";
+*/
+    public void test() throws IOException {
+        XMLFileGenerator generator = new XMLFileGenerator(SCHEMA_FILE, ROOT_ELEMENT);
+        File file = generator.generate();
+        System.out.println("Generated " + file);
+        XMLUtil.parse(file.getAbsolutePath()); // validate the generated file
     }
 }

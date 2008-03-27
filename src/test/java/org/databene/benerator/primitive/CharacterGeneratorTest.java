@@ -1,7 +1,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 import java.util.Locale;
 import java.util.HashSet;
@@ -23,12 +23,12 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
 
     public void testDigit() throws Exception {
         checkProductSet(new CharacterGenerator("\\d"), 1000,
-                ArrayUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7','8', '9'));
+                CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7','8', '9'));
     }
 
     public void testRange() throws Exception {
-        checkProductSet(new CharacterGenerator("[1-2]"), 1000, ArrayUtil.toSet('1', '2'));
-        checkProductSet(new CharacterGenerator("[12]"), 1000, ArrayUtil.toSet('1', '2'));
+        checkProductSet(new CharacterGenerator("[1-2]"), 1000, CollectionUtil.toSet('1', '2'));
+        checkProductSet(new CharacterGenerator("[12]"), 1000, CollectionUtil.toSet('1', '2'));
     }
 
     public void testLocale() throws Exception {
@@ -52,7 +52,7 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
     }
 
     public void testSet() {
-        Set<Character> values = ArrayUtil.toSet('A', 'B');
+        Set<Character> values = CollectionUtil.toSet('A', 'B');
         checkProductSet(new CharacterGenerator(values), 1000, values);
     }
 }

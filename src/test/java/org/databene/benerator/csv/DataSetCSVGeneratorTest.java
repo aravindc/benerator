@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,35 +24,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.address;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.GeneratorClassTest;
+package org.databene.benerator.csv;
+
+import junit.framework.TestCase;
 
 /**
- * Tests the AddressGenerator<br/><br/>
- * Created: 12.06.2007 06:45:41
+ * Tests the DataSetCSVGenerator.<br/><br/>
+ * Created: 21.03.2008 16:58:20
+ * @since 0.5.0
  * @author Volker Bergmann
  */
-public class AddressGeneratorTest extends GeneratorClassTest {
+public class DataSetCSVGeneratorTest extends TestCase {
 
-    private static final Log logger = LogFactory.getLog(AddressGeneratorTest.class);
+    private static final String FAMILY_NAME = "org/databene/domain/person/familyName";
+    private static final String REGION = "org/databene/dataset/region";
 
-    public AddressGeneratorTest() {
-        super(AddressGenerator.class);
-    }
-
-    public void testGermany() {
-        check(Country.GERMANY);
-    }
-
-    private void check(Country country) {
-        AddressGenerator generator = new AddressGenerator(country);
-        for (int i = 0; i < 100; i++) {
-            Address address = generator.generate();
-            assertNotNull(address);
-            logger.debug(address);
+    public void testDE() {
+        DataSetCSVGenerator<String> generator = new DataSetCSVGenerator<String>(REGION, "DE", FAMILY_NAME, ".csv", "UTF-8");
+        boolean mueller = false;
+        for (int i = 0; i < 1000; i++) {
+            if ("Müller".equals(generator.generate()))
+                mueller = true;
         }
+        assertTrue(mueller);
+    }
+
+    public void testEurope() {
+        DataSetCSVGenerator<String> generator = new DataSetCSVGenerator<String>(REGION, "europe", FAMILY_NAME, ".csv", "UTF-8");
+        boolean mueller = false; // German name
+        boolean garcia = false;  // Spanish name
+        for (int i = 0; i < 100000 && (!mueller || !garcia); i++) {
+            String name = generator.generate();
+            if ("Müller".equals(name))
+                mueller = true;
+            if ("García".equals(name))
+                garcia = true;
+        }
+        assertTrue(mueller);
+        assertTrue(garcia);
     }
 }

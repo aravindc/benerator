@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,22 +24,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.csv;
 
-import org.databene.benerator.GeneratorClassTest;
+package org.databene.domain.business;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.databene.domain.organization.CompanyNameGenerator;
+
+import junit.framework.TestCase;
 
 /**
- * Tests the {@link RegionalCSVGenerator}.
- * Created: 14.06.2007 07:02:09
+ * Tests the CompanyNameGenerator.<br/><br/>
+ * Created: 14.03.2008 08:31:26
  * @author Volker Bergmann
  */
-public class RegionalCSVGeneratorTest extends GeneratorClassTest {
+public class CompanyNameGeneratorTest extends TestCase {
 
-    public RegionalCSVGeneratorTest() {
-        super(RegionalCSVGenerator.class);
+    private static Log logger = LogFactory.getLog(CompanyNameGeneratorTest.class);
+    
+    public void test() {
+        check("artificial");
+        check("tech");
     }
 
-    public void test() {
-        // TODO v0.5 test
+    public void check(String style) {
+        CompanyNameGenerator generator = new CompanyNameGenerator(style);
+        for (int i = 0; i < 10; i++) {
+            String name = generator.generate();
+            logger.debug(name);
+            assertNotNull(name);
+            assertTrue(name.length() > 1);
+        }
     }
 }

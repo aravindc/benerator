@@ -31,7 +31,7 @@ import java.util.List;
 import org.databene.benerator.Generator;
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 import org.databene.measure.count.ObjectCounter;
 
 /**
@@ -47,7 +47,7 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
         CollectionGenerator<List, Integer> generator = new CollectionGenerator<List, Integer>(List.class, source, 1, 5);
         List<Integer> list = generator.generate();
-        checkEqualDistribution(list, 0., ArrayUtil.toSet(1));
+        checkEqualDistribution(list, 0., CollectionUtil.toSet(1));
     }
 
     public void testSize() {
@@ -56,6 +56,6 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
         ObjectCounter<Integer> counter = new ObjectCounter<Integer>(4);
         for (int i = 0; i < 5000; i++)
             counter.count(generator.generate().size());
-        checkEqualDistribution(counter, 0.1, ArrayUtil.toSet(0, 1, 2, 3));
+        checkEqualDistribution(counter, 0.1, CollectionUtil.toSet(0, 1, 2, 3));
     }
 }

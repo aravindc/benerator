@@ -32,7 +32,7 @@ import java.io.IOException;
 
 import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 
 /**
  * Tests the DBUnitXmlDataSetImporter with a standard and a flat dataset file.<br/>
@@ -70,15 +70,15 @@ public class DbUnitEntityIterableTest extends TestCase {
     }
 
     private Entity createPerson(String name, String age) {
-        Entity person = new Entity(new EntityDescriptor("PERSON", false));
-        person.setComponent("name", name);
-        person.setComponent("age", age);
+        Entity person = new Entity(new ComplexTypeDescriptor("PERSON"));
+        person.setComponentValue("name", name);
+        person.setComponentValue("age", age);
         return person;
     }
 
     private Entity createRole(String name) {
-        Entity role = new Entity(new EntityDescriptor("ROLE", false));
-        role.setComponent("name", name);
+        Entity role = new Entity(new ComplexTypeDescriptor("ROLE"));
+        role.setComponentValue("name", name);
         return role;
     }
 

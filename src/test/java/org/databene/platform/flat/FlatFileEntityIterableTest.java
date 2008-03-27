@@ -29,7 +29,7 @@ package org.databene.platform.flat;
 import junit.framework.TestCase;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.format.Alignment;
 
@@ -45,7 +45,7 @@ public class FlatFileEntityIterableTest extends TestCase {
     private static final String URI = "org/databene/platform/flat/person-bean.flat";
 
     public void test() {
-        EntityDescriptor descriptor = new EntityDescriptor("person", true);
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("person");
         FlatFileColumnDescriptor[] descriptors = new FlatFileColumnDescriptor[] {
                 new FlatFileColumnDescriptor("name", 6, Alignment.LEFT, ' '),
                 new FlatFileColumnDescriptor("age", 3, Alignment.RIGHT, '0')

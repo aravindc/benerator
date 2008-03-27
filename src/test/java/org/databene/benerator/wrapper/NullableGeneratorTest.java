@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Created: 11.10.2006 23:10:34
@@ -42,18 +42,18 @@ public class NullableGeneratorTest extends GeneratorClassTest {
     public void testNoNull() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         NullableGenerator<Integer> generator = new NullableGenerator<Integer>(source, 0);
-        checkProductSet(generator, 100, ArrayUtil.toSet(1));
+        checkProductSet(generator, 100, CollectionUtil.toSet(1));
     }
 
     public void testOnlyNull() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         NullableGenerator<Integer> generator = new NullableGenerator<Integer>(source, 1);
-        checkProductSet(generator, 100, ArrayUtil.toSet((Integer)null));
+        checkProductSet(generator, 100, CollectionUtil.toSet((Integer)null));
     }
 
     public void testFiftyPercent() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         NullableGenerator<Integer> generator = new NullableGenerator<Integer>(source, (float)0.5);
-        checkEqualDistribution(generator, 1000, 0.1, ArrayUtil.toSet(null, 1));
+        checkEqualDistribution(generator, 1000, 0.1, CollectionUtil.toSet(null, 1));
     }
 }

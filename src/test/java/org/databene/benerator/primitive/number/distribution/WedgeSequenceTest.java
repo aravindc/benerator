@@ -1,9 +1,9 @@
 package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.Sequence;
 import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.model.function.Sequence;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann

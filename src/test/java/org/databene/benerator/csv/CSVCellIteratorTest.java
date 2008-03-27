@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import java.io.IOException;
 
+import org.databene.platform.csv.CSVCellIterator;
+
 /**
  * Created: 11.10.2006 23:14:33
  */

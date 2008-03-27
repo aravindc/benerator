@@ -26,17 +26,21 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Set;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.model.data.AttributeDescriptor;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.number.distribution.ConstantFunction;
 import org.databene.benerator.Generator;
 import org.databene.benerator.factory.ComponentGeneratorFactory;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.task.TaskContext;
+import org.databene.commons.context.DefaultContext;
+import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 
 /**
  * Tests the ComponentGeneratorFactory class for all useful setups.<br/>
@@ -46,6 +50,9 @@ import org.databene.task.TaskContext;
 public class ComponentGeneratorFactoryTest extends TestCase {
 
     private static Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
+    
+    private static Set<String> componentFeatures = CollectionUtil.toSet(
+            "type", "unique", "nullable", "minCount", "maxCount", "count", "nullQuota");
     
     private static int testCount = 0;
 
@@ -301,21 +308,25 @@ public class ComponentGeneratorFactoryTest extends TestCase {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private Generator createGenerator(String name, String ... featureDetails) {
-        GenerationSetup setup = new GenerationSetup() {
-            public String getDefaultEncoding() { return "UTF-8"; }
-            public int getDefaultPagesize() { return 1; }
-            public String getDefaultScript() { return "ftl"; }
-            public boolean isDefaultNull() { return true; }
-        };
+        GenerationSetup setup = new SimpleGenerationSetup();
         logger.debug("Test #" + (++testCount));
         if (featureDetails.length % 2 != 0)
             throw new ConfigurationError("Illegal setup: need an even number of parameters (name/value pairs)");
-        AttributeDescriptor descriptor = new AttributeDescriptor(name);
+        SimpleTypeDescriptor type = new SimpleTypeDescriptor(name, null);
+        PartDescriptor part = new PartDescriptor(name, type);
         for (int i = 0; i < featureDetails.length; i += 2)
-            descriptor.setDetail(featureDetails[i], featureDetails[i + 1]);
-        Generator generator = ComponentGeneratorFactory.getComponentGenerator(descriptor, new TaskContext(), setup);
-        for (int i = 0; i < 10; i++)
-            generator.generate();
+            if (componentFeatures.contains(featureDetails[i]))
+                if ("type".equals(featureDetails[i]))
+                    part.setTypeName(featureDetails[i + 1]);
+                else
+                    part.setDetailValue(featureDetails[i], featureDetails[i + 1]);
+            else
+                type.setDetailValue(featureDetails[i], featureDetails[i + 1]);
+        Generator generator = ComponentGeneratorFactory.createComponentGenerator(part, new DefaultContext(), setup);
+        for (int i = 0; i < 10; i++) {
+            Object value = generator.generate();
+            logger.debug(value);
+        }
         return generator;
     }
 }

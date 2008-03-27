@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive.number.adapter;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Created: 11.10.2006 23:04:43
@@ -43,18 +43,18 @@ public class IntegerGeneratorTest extends GeneratorClassTest {
     }
 
     public void testSingle() {
-        checkEqualDistribution(IntegerGenerator.class, 0,  0, 1, 10, 0.1, ArrayUtil.toSet( 0));
-        checkEqualDistribution(IntegerGenerator.class, 1,  1, 2, 10, 0.1, ArrayUtil.toSet( 1));
-        checkEqualDistribution(IntegerGenerator.class,-1, -1, 1, 10, 0.1, ArrayUtil.toSet(-1));
+        checkEqualDistribution(IntegerGenerator.class, 0,  0, 1, 10, 0.1, CollectionUtil.toSet( 0));
+        checkEqualDistribution(IntegerGenerator.class, 1,  1, 2, 10, 0.1, CollectionUtil.toSet( 1));
+        checkEqualDistribution(IntegerGenerator.class,-1, -1, 1, 10, 0.1, CollectionUtil.toSet(-1));
     }
 
     public void testRange() {
-        checkEqualDistribution(IntegerGenerator.class, -2,  2, 1, 10000, 0.1, ArrayUtil.toSet(-2, -1, 0, 1, 2));
+        checkEqualDistribution(IntegerGenerator.class, -2,  2, 1, 10000, 0.1, CollectionUtil.toSet(-2, -1, 0, 1, 2));
     }
 
     public void testPrecision() {
-        checkEqualDistribution(IntegerGenerator.class, -2,  2, 2, 10000, 0.1, ArrayUtil.toSet(-2, 0, 2));
-        checkEqualDistribution(IntegerGenerator.class,  1,  5, 2, 10000, 0.1, ArrayUtil.toSet(1, 3, 5));
-        checkEqualDistribution(IntegerGenerator.class, -5, -1, 2, 10000, 0.1, ArrayUtil.toSet(-5, -3, -1));
+        checkEqualDistribution(IntegerGenerator.class, -2,  2, 2, 10000, 0.1, CollectionUtil.toSet(-2, 0, 2));
+        checkEqualDistribution(IntegerGenerator.class,  1,  5, 2, 10000, 0.1, CollectionUtil.toSet(1, 3, 5));
+        checkEqualDistribution(IntegerGenerator.class, -5, -1, 2, 10000, 0.1, CollectionUtil.toSet(-5, -3, -1));
     }
 }

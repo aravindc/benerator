@@ -27,8 +27,8 @@
 package org.databene.platform.map;
 
 import junit.framework.TestCase;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Map;
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class Entity2MapConverterTest extends TestCase {
     public void test() {
-        EntityDescriptor descriptor = new EntityDescriptor("Person", true);
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         Map map = CollectionUtil.buildMap("name", "Alice", "age", 23);
         assertEquals(map, new Entity2MapConverter().convert(entity));

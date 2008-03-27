@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Created: 11.10.2006 23:03:30
@@ -40,16 +40,16 @@ public class RandomLongGeneratorTest extends GeneratorClassTest {
 
     public void testSimple() {
         RandomLongGenerator generator = new RandomLongGenerator(0, 1);
-        checkEqualDistribution(generator, 3000, 0.1, ArrayUtil.toSet(0L, 1L));
+        checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(0L, 1L));
     }
 
     public void testPrecision() {
         RandomLongGenerator generator = new RandomLongGenerator(-2, 2, 2);
-        checkEqualDistribution(generator, 3000, 0.1, ArrayUtil.toSet(-2L, 0L, 2L));
+        checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-2L, 0L, 2L));
     }
 
     public void testPrecisionOffset() {
         RandomLongGenerator generator = new RandomLongGenerator(-1, 3, 2);
-        checkEqualDistribution(generator, 3000, 0.1, ArrayUtil.toSet(-1L, 1L, 3L));
+        checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-1L, 1L, 3L));
     }
 }

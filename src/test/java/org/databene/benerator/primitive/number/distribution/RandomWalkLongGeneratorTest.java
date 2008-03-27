@@ -2,8 +2,7 @@ package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
-import junit.framework.TestCase;
+import org.databene.commons.CollectionUtil;
 
 import java.util.Set;
 
@@ -30,7 +29,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
 
     public void testGreaterOrEquals() throws IllegalGeneratorStateException {
         RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, 0, 2);
-        Set<Long> space = ArrayUtil.toSet(1L, 3L, 5L);
+        Set<Long> space = CollectionUtil.toSet(1L, 3L, 5L);
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
@@ -45,7 +44,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
 
     public void testLessOrEquals() throws IllegalGeneratorStateException {
         RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, -2, 0);
-        Set<Long> space = ArrayUtil.toSet(1L, 3L, 5L);
+        Set<Long> space = CollectionUtil.toSet(1L, 3L, 5L);
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
@@ -60,7 +59,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
 
     public void testLessOrGreater() throws IllegalGeneratorStateException {
         RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, -2, 2);
-        Set<Long> space = ArrayUtil.toSet(1L, 3L, 5L);
+        Set<Long> space = CollectionUtil.toSet(1L, 3L, 5L);
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));
         assertTrue(space.contains(generator.generate()));

@@ -2,7 +2,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.region.Country;
+import org.databene.domain.address.Country;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,9 +21,10 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     }
 
     public void test() throws IllegalGeneratorStateException {
-        PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMANY);
+        PersonGenerator generator = new PersonGenerator(Country.SLOVENIA, Locale.GERMANY);
         for (int i = 0; i < 10; i++) {
-            logger.debug(generator.generate());
+            Person person = generator.generate();
+            logger.info(person);
         }
     }
 }

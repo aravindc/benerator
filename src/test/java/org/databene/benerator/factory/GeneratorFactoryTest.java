@@ -33,18 +33,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.databene.benerator.GeneratorTest;
-import org.databene.benerator.WeightFunction;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.primitive.regex.RegexStringGeneratorTest;
 import org.databene.benerator.primitive.number.adapter.DoubleGenerator;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
-import org.databene.benerator.Sequence;
 import org.databene.benerator.primitive.number.distribution.ConstantFunction;
 import org.databene.benerator.primitive.number.distribution.GaussianFunction;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.model.function.Sequence;
+import org.databene.model.function.WeightFunction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -163,7 +163,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetDateGeneratorFromSource() {
         String url = "org/databene/benerator/factory/dates.csv";
-        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, "dd.MM.yyyy", 0);
+        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, "UTF-8", "dd.MM.yyyy", 0);
         checkGenerator(generator);
     }
 

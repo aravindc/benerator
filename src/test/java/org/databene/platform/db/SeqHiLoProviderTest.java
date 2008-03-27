@@ -50,6 +50,8 @@ public class SeqHiLoProviderTest extends TestCase {
     private PreparedStatement statement;
     private ResultSet[] resultSets;
     
+    // test methods ----------------------------------------------------------------------------------------------------
+    
     public void testMaxLo2() throws SQLException {
         prepare(SELECTOR, 1, 2);
         SeqHiLoIdProvider iterator = new SeqHiLoIdProvider(connection, SELECTOR, 2);
@@ -65,12 +67,13 @@ public class SeqHiLoProviderTest extends TestCase {
         iterator.close();
         assertFalse(iterator.hasNext());
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
 
-    private void prepare(String selector, long ... queryResults) throws SQLException {
-        // TODO v0.4.2 move this to a DB test helper package
+    private void prepare(String sqlQuery, long ... queryResults) throws SQLException {
         connection = EasyMock.createStrictMock(Connection.class);
         statement = EasyMock.createStrictMock(PreparedStatement.class);
-        EasyMock.expect(connection.prepareStatement(selector)).andReturn(statement);
+        EasyMock.expect(connection.prepareStatement(sqlQuery)).andReturn(statement);
         connection.close();
         EasyMock.replay(connection);
 

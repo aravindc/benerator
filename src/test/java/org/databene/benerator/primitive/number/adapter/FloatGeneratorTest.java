@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive.number.adapter;
 
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Created: 11.10.2006 23:04:43
@@ -40,21 +40,21 @@ public class FloatGeneratorTest extends GeneratorClassTest {
 
     public void testSingle() {
         checkEqualDistribution(FloatGenerator.class,
-                (float)0,  (float)0, (float)1, 10, 0.1, ArrayUtil.toSet((float)0));
+                (float)0,  (float)0, (float)1, 10, 0.1, CollectionUtil.toSet((float)0));
         checkEqualDistribution(FloatGenerator.class,
-                (float)1,  (float)1, (float)2, 10, 0.1, ArrayUtil.toSet((float)1));
+                (float)1,  (float)1, (float)2, 10, 0.1, CollectionUtil.toSet((float)1));
         checkEqualDistribution(FloatGenerator.class,
-                (float)-1, (float)-1, (float)1, 10, 0.1, ArrayUtil.toSet((float)-1));
+                (float)-1, (float)-1, (float)1, 10, 0.1, CollectionUtil.toSet((float)-1));
     }
 
     public void testRange() {
         checkEqualDistribution(FloatGenerator.class,
-                (float)-2,  (float)2, (float)1, 10000, 0.1, ArrayUtil.toSet((float)-2, (float)-1, (float)0, (float)1, (float)2));
+                (float)-2,  (float)2, (float)1, 10000, 0.1, CollectionUtil.toSet((float)-2, (float)-1, (float)0, (float)1, (float)2));
     }
 
     public void testPrecision() {
-        checkEqualDistribution(FloatGenerator.class, (float)-2,  (float)2, (float)2, 10000, 0.1, ArrayUtil.toSet((float)-2, (float)0, (float)2));
-        checkEqualDistribution(FloatGenerator.class,  (float)1,  (float)5, (float)2, 10000, 0.1, ArrayUtil.toSet((float)1, (float)3, (float)5));
-        checkEqualDistribution(FloatGenerator.class, (float)-5, (float)-1, (float)2, 10000, 0.1, ArrayUtil.toSet((float)-5, (float)-3, (float)-1));
+        checkEqualDistribution(FloatGenerator.class, (float)-2,  (float)2, (float)2, 10000, 0.1, CollectionUtil.toSet((float)-2, (float)0, (float)2));
+        checkEqualDistribution(FloatGenerator.class,  (float)1,  (float)5, (float)2, 10000, 0.1, CollectionUtil.toSet((float)1, (float)3, (float)5));
+        checkEqualDistribution(FloatGenerator.class, (float)-5, (float)-1, (float)2, 10000, 0.1, CollectionUtil.toSet((float)-5, (float)-3, (float)-1));
     }
 }

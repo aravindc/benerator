@@ -28,7 +28,7 @@ package org.databene.benerator.util;
 
 import junit.framework.TestCase;
 
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Created: 22.07.2007 08:16:23
@@ -36,6 +36,6 @@ import org.databene.commons.ArrayUtil;
 public class LineShufflerTest extends TestCase {
 
     public void test() {
-        LineShuffler.shuffle(ArrayUtil.toList("1", "2", "3"));
+        LineShuffler.shuffle(CollectionUtil.toList("1", "2", "3"));
     }
 }

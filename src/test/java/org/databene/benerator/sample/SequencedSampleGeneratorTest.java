@@ -37,7 +37,7 @@ import org.databene.benerator.GeneratorClassTest;
  */
 public class SequencedSampleGeneratorTest extends GeneratorClassTest {
 
-    // TODO v0.5 test with large data amounts
+    // TODO v0.5.1 test with large data amounts
 
     private static Log logger = LogFactory.getLog(SequencedSampleGeneratorTest.class);
 

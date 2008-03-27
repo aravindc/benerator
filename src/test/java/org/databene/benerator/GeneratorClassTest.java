@@ -30,7 +30,7 @@ import org.databene.commons.ParseUtil;
 import junit.framework.AssertionFailedError;
 
 /**
- * Procides methods for testing generators and standard tests that act on generically created generator instances.<br/>
+ * Provides methods for testing generators and standard tests that act on generically created generator instances.<br/>
  * <br/>
  * Created: 13.11.2007 13:13:07
  */
@@ -60,14 +60,14 @@ public abstract class GeneratorClassTest extends GeneratorTest {
 
     public void testDefaultGenerationIfValid() throws Throwable {
         Generator generator = generatorClass.newInstance();
-        boolean available = true;
+        boolean valid = true;
         try {
             generator.validate();
         } catch (InvalidGeneratorSetupException e) {
             // that's OK, not every Generator is available from default constructor
-            available = false;
+            valid = false;
         }
-        if (available) { // must be outside of catch block, else exceptions would be ignored
+        if (valid) { // must be outside of catch block, else exceptions would be ignored
             assertTrue(generator.available());
             generator.generate();
         }

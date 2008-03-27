@@ -2,7 +2,7 @@ package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.ArrayUtil;
+import org.databene.commons.CollectionUtil;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann
@@ -16,18 +16,18 @@ public class WeightedDoubleGeneratorTest extends GeneratorClassTest {
 
     public void testSingleValueGeneration() throws IllegalGeneratorStateException {
         checkProductSet(
-                new WeightedDoubleGenerator( 0,  0, 0, new ConstantFunction(1)), 300, ArrayUtil.toSet(0.));
+                new WeightedDoubleGenerator( 0,  0, 0, new ConstantFunction(1)), 300, CollectionUtil.toSet(0.));
         checkProductSet(
-                new WeightedDoubleGenerator( 1,  1, 0.5, new ConstantFunction(1)), 300, ArrayUtil.toSet(1.));
+                new WeightedDoubleGenerator( 1,  1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(1.));
         checkProductSet(
-                new WeightedDoubleGenerator(-1, -1, 0, new ConstantFunction(1)), 300, ArrayUtil.toSet(-1.));
+                new WeightedDoubleGenerator(-1, -1, 0, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1.));
     }
 
     public void testDiscreteRangeGeneration() throws IllegalGeneratorStateException {
         checkProductSet(
-                new WeightedDoubleGenerator( -1,  0, 0.5, new ConstantFunction(1)), 300, ArrayUtil.toSet(-1., -0.5, 0.));
+                new WeightedDoubleGenerator( -1,  0, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0.));
         checkProductSet(
-                new WeightedDoubleGenerator(-1, 1, 0.5, new ConstantFunction(1)), 300, ArrayUtil.toSet(-1., -0.5, 0., 0.5, 1.));
+                new WeightedDoubleGenerator(-1, 1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0., 0.5, 1.));
     }
 
     public void testInvalidPrecisions() throws IllegalGeneratorStateException {

@@ -51,7 +51,7 @@ public class FormatFormatGeneratorTest extends GeneratorClassTest {
 
     public void testFormat() throws ParseException {
         Generator<Date> source = new ConstantGenerator<Date>(DATE);
-        FormatFormatGenerator<Date, String> generator = new FormatFormatGenerator(source, FORMAT);
+        FormatFormatGenerator<Date> generator = new FormatFormatGenerator<Date>(source, FORMAT);
         String s = generator.generate();
         assertEquals(DATE_STRING, s);
     }

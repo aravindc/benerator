@@ -31,8 +31,9 @@ import junit.framework.TestCase;
 import java.util.Set;
 import java.util.Collection;
 
-import org.databene.commons.ArrayUtil;
+import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.UniqueValidator;
@@ -109,7 +110,7 @@ public abstract class GeneratorTest extends TestCase {
     public static <T extends Number> void checkEqualDistribution(
             Class<? extends NumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, double tolerance, T ... expectedValues) {
-        Set<T> expectedSet = ArrayUtil.toSet(expectedValues);
+        Set<T> expectedSet = CollectionUtil.toSet(expectedValues);
         checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
     }
 
@@ -222,7 +223,7 @@ public abstract class GeneratorTest extends TestCase {
 
     private <T>void expectGeneratedSetOnce(Generator<T> generator, T... products) {
         generator.validate();
-        Set<T> expectedSet = ArrayUtil.toSet(products);
+        Set<T> expectedSet = CollectionUtil.toSet(products);
         for (int i = 0; i < products.length; i++) {
             assertTrue("Generator has gone unavailable before creating a number of products " +
                     "that matches the expected set.", generator.available());
@@ -235,7 +236,7 @@ public abstract class GeneratorTest extends TestCase {
 
     private <T>void expectUniqueFromSetOnce(Generator<T> generator, T... products) {
         generator.validate();
-        Set<T> expectedSet = ArrayUtil.toSet(products);
+        Set<T> expectedSet = CollectionUtil.toSet(products);
         UniqueValidator<T> validator = new UniqueValidator<T>();
         for (int i = 0; i < products.length; i++) {
             assertTrue("Generator has gone unavailable before creating a number of products " +

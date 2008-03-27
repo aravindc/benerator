@@ -28,6 +28,9 @@ package org.databene.region;
 
 import java.text.ParseException;
 
+import org.databene.domain.address.PhoneNumber;
+import org.databene.domain.address.PhoneNumberFormat;
+
 import junit.framework.TestCase;
 
 /**

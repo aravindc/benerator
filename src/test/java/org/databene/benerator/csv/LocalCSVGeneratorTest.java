@@ -26,14 +26,11 @@
 
 package org.databene.benerator.csv;
 
-import org.databene.commons.ArrayUtil;
-import org.databene.benerator.GeneratorTest;
+import org.databene.commons.CollectionUtil;
 import org.databene.benerator.GeneratorClassTest;
 
 import java.util.Set;
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 /**
  * Created: 14.06.2007 07:01:53
@@ -45,8 +42,8 @@ public class LocalCSVGeneratorTest extends GeneratorClassTest {
     }
 
     public void testEnglish() {
-        Set<String> enNames = ArrayUtil.toSet("Alice", "Bob", "Charly");
-        LocalCSVGenerator enGen = new LocalCSVGenerator("org/databene/benerator/csv/local-names", Locale.ENGLISH, ".csv");
+        Set<String> enNames = CollectionUtil.toSet("Alice", "Bob", "Charly");
+        LocalCSVGenerator enGen = new LocalCSVGenerator("org/databene/benerator/csv/local-names", Locale.ENGLISH, ".csv", "UTF-8");
         for (int i = 0; i < 10; i++) {
             String name = (String) enGen.generate();
             assertTrue(enNames.contains(name));
@@ -54,8 +51,8 @@ public class LocalCSVGeneratorTest extends GeneratorClassTest {
     }
 
     public void testGerman() {
-        Set<String> deNames = ArrayUtil.toSet("Elise", "Robert", "Karl");
-        LocalCSVGenerator deGen = new LocalCSVGenerator("org/databene/benerator/csv/local-names", Locale.GERMAN, ".csv");
+        Set<String> deNames = CollectionUtil.toSet("Elise", "Robert", "Karl");
+        LocalCSVGenerator deGen = new LocalCSVGenerator("org/databene/benerator/csv/local-names", Locale.GERMAN, ".csv", "UTF-8");
         for (int i = 0; i < 10; i++) {
             String name = (String) deGen.generate();
             assertTrue(deNames.contains(name));

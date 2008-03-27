@@ -28,7 +28,7 @@ package org.databene.platform.csv;
 
 import junit.framework.TestCase;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 
 import java.util.Iterator;
 
@@ -57,7 +57,7 @@ public class CSVEntityIterableTest extends TestCase {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private void checkIteration(Iterator iterator) {
-        EntityDescriptor descriptor = new EntityDescriptor("Person", true);
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         assertTrue(iterator.hasNext());
         assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), iterator.next());
         assertTrue(iterator.hasNext());

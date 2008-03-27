@@ -28,7 +28,7 @@ package org.databene.platform.array;
 
 import junit.framework.TestCase;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
+import org.databene.model.data.ComplexTypeDescriptor;
 
 import java.util.Arrays;
 
@@ -39,7 +39,7 @@ import java.util.Arrays;
  */
 public class Entity2ArrayConverterTest extends TestCase {
     public void test() {
-        EntityDescriptor descriptor = new EntityDescriptor("Person", true);
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         Object[] array = new Object[] { "Alice", 23 };
         String[] featureNames = { "name", "age" };
