@@ -26,7 +26,7 @@
 
 package org.databene.domain.product;
 
-import org.databene.benerator.GeneratorProxy;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 

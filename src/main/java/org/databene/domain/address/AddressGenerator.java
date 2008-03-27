@@ -1,8 +1,8 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Creates Addresses.<br/>

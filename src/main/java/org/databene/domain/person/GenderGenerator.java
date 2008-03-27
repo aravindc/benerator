@@ -1,9 +1,9 @@
 package org.databene.domain.person;
 
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann

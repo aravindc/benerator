@@ -1,7 +1,7 @@
 package org.databene.domain.person;
 
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.domain.address.Country;
 
 import java.util.Locale;

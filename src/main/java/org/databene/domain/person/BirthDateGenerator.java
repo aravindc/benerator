@@ -3,12 +3,12 @@ package org.databene.domain.person;
 import java.util.Date;
 import java.util.Calendar;
 
-import org.databene.benerator.primitive.DateGenerator;
-import org.databene.benerator.Sequence;
+import org.databene.benerator.primitive.datetime.DateGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.LightweightGenerator;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Period;
+import org.databene.model.Sequence;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann

@@ -27,8 +27,8 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.Generator;
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 
 /**

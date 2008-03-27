@@ -26,8 +26,8 @@
 
 package org.databene.domain.product;
 
-import org.databene.benerator.GeneratorWrapper;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
  * Generates 8-digit EAN codes.<br/>

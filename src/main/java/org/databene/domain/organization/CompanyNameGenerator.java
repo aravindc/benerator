@@ -27,8 +27,8 @@
 package org.databene.domain.organization;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Generates company names.<br/><br/>
