@@ -26,8 +26,8 @@
 
 package org.databene.benerator.composite;
 
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.commons.Context;
@@ -57,7 +57,7 @@ public class EntityGenerator implements Generator<Entity> {
      * @param descriptor Entity descriptor. 
      * @param componentGenerators Generators that generate values for the entities' components
      */
-    public EntityGenerator(EntityDescriptor descriptor, Map<String, Generator<? extends Object>> componentGenerators, Context context) {
+    public EntityGenerator(ComplexTypeDescriptor descriptor, Map<String, Generator<? extends Object>> componentGenerators, Context context) {
         this(descriptor, new SimpleEntityGenerator(descriptor), componentGenerators, context);
     }
 
@@ -67,7 +67,7 @@ public class EntityGenerator implements Generator<Entity> {
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param componentGenerators Generators that generate values for the entities' components
      */
-    public EntityGenerator(EntityDescriptor descriptor, Generator<Entity> source, Map<String, Generator<? extends Object>> componentGenerators, Context context) {
+    public EntityGenerator(ComplexTypeDescriptor descriptor, Generator<Entity> source, Map<String, Generator<? extends Object>> componentGenerators, Context context) {
         this.entityName = descriptor.getName();
         this.source = source;
         this.componentGenerators = componentGenerators;
@@ -109,7 +109,7 @@ public class EntityGenerator implements Generator<Entity> {
             String componentName = entry.getKey();
             try {
                 Object componentValue = entry.getValue().generate();
-                entity.setComponent(componentName, componentValue);
+                entity.setComponentValue(componentName, componentValue);
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of component '" + componentName + "'", e);
             }

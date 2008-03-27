@@ -27,8 +27,8 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.LightweightGenerator;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntityDescriptor;
 
 /**
  * Instantiates an entity without initializing any components.<br/>
@@ -38,9 +38,9 @@ import org.databene.model.data.EntityDescriptor;
  */
 public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
 
-    private EntityDescriptor descriptor;
+    private ComplexTypeDescriptor descriptor;
 
-    public SimpleEntityGenerator(EntityDescriptor descriptor) {
+    public SimpleEntityGenerator(ComplexTypeDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
