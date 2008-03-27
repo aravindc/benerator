@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.0.dtd"-->
-<setup>
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.2.dtd"-->
+<setup 	xmlns="http://databene.org/benerator-0.5.0.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator-0.5.0.xsd benerator-0.5.0.xsd">
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	     Demonstration file for populating the shop database.
@@ -28,7 +30,6 @@
 	<echo message="{  ${customer_count + 1} customers}" />
 	<echo message="{  ${orders_per_customer} orders per customer}" />
 	<echo message="{  ${items_per_order} items per order}" />
-	<echo message="{  ${total_items} entities in total}" />
 	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
 
 	<!-- define a database that will be referred by the id 'db' later -->
@@ -54,7 +55,7 @@
 	<create-entities source="demo/shop/shop.dbunit.xml" consumer="db" />
 
 	<!-- import some more predefined products from a CSV file -->
-	<create-entities name="db_product" source="demo/shop/products.import.csv" consumer="db" />
+	<create-entities name="db_product" source="demo/shop/products.import.csv" encoding="utf-8" consumer="db" />
 	<!-- you could import them from a flat file as well, e.g. -->
 	<!-- <create-entities name="db_product" source="demo/shop/products.import.flat" 
 		pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /> -->
@@ -67,6 +68,7 @@
 	<!-- create products of random attributes & category -->
 	<create-entities name="db_product" count="{ftl:${product_count}}" consumer="db">
 		<attribute name="ean_code" source="ean_generator" /> <!-- This uses the EAN generator defined above -->
+		<!--  TODO: get rid of ean_generator instance and apply a 'unique' attribute -->
 		<attribute name="category_id" source="db" selector="select id from db_category" distribution="random" />
 		<attribute name="price" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
@@ -78,8 +80,8 @@
 
 	<!-- create customers -->
 	<create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
-		<variable name="person" generator="org.databene.domain.person.PersonGenerator" />
-		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<variable name="person" generator="org.databene.domain.person.PersonGenerator" dataSet="{${country}}" locale="{${locale}}"/>
+		<id name="id" strategy="{${id_strategy}}" param="{${id_param}}" source="db" />
 		<attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
 		<attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)" />
 		<attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
@@ -100,13 +102,13 @@
 	</create-entities>
 
 	<!-- create one default order for each customer based on a DBUnit template -->
-	<create-entities name="db_order" consumer="db">
+	<!-- create-entities name="db_order" consumer="db">
 		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
 		<create-entities name="db_order_item" source="demo/shop/default_order.dbunit.xml" consumer="db">
 			<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
 		</create-entities>
-	</create-entities>
+	</create-entities-->
 
 	<!-- create orders for random customers and random products -->
 	<create-entities name="db_order" count="{ftl:${customer_count * orders_per_customer}}" consumer="db">
