@@ -28,9 +28,6 @@ package org.databene.benerator.util;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.databene.benerator.Generator;
-import org.databene.benerator.Sequence;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.IOUtil;
@@ -69,13 +66,13 @@ public class LineShuffler {
 
     public static void shuffle(List<String> lines) {
         int size = lines.size();
-        Generator<Integer> indexGenerator = GeneratorFactory.getNumberGenerator(Integer.class, 0, size - 1, 1, Sequence.RANDOM, 0);
+        //Generator<Integer> indexGenerator = new IntegerGenerator(0, size - 1, 1, Sequence.RANDOM);
         int iterations = size / 2;
         for (int i = 0; i < iterations; i++) {
-            int i1 = indexGenerator.generate();
+            int i1 = SimpleRandom.randomInt(0, size - 1);
             int i2;
             do {
-                i2 = indexGenerator.generate();
+                i2 = SimpleRandom.randomInt(0, size - 1);
             } while (i1 == i2);
             String tmp = lines.get(i1);
             lines.set(i1, lines.get(i2));
