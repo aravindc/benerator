@@ -26,7 +26,7 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
