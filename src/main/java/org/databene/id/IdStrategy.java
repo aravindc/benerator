@@ -26,6 +26,9 @@
 
 package org.databene.id;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Strategy for ID creation.<br/>
  * <br/>
@@ -36,6 +39,8 @@ package org.databene.id;
 
 public class IdStrategy<E> {
     
+    private static Map<String, IdStrategy> instances = new HashMap<String, IdStrategy>();
+    
     private String name;
     private Class<E> type;
     
@@ -43,6 +48,7 @@ public class IdStrategy<E> {
         super();
         this.name = name;
         this.type = type;
+        instances.put(name, this);
     }
 
     public String getName() {
@@ -87,6 +93,10 @@ public class IdStrategy<E> {
         } else if (!name.equals(other.name))
             return false;
         return true;
+    }
+
+    public static <T> IdStrategy<T> getInstance(String name) {
+        return instances.get(name);
     }
     
 }
