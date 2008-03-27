@@ -37,7 +37,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
-import org.databene.commons.context.ContextStack;
 import org.databene.commons.converter.DefaultEntryConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -185,7 +184,7 @@ public class Parser {
         return renderAttribute(name, value, context);
     }
 
-    public String parseInclude(Element element, ContextStack context) {
+    public String parseInclude(Element element, Context context) {
         String uri = parseAttribute(element, "uri", context);
         try {
             importProperties(uri, context);
