@@ -15,7 +15,9 @@ import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
+import org.databene.commons.context.PropertiesContext;
 import org.databene.commons.converter.MessageConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.Parser;
@@ -36,14 +38,22 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     public XMLFileGenerator(String schemaUri, String root, String... propertiesFiles) throws IOException {
         super(File.class);
         this.root = root;
+        
+        // create context
+        // TODO 0.5.1 simplify & encapsulate
+        ContextStack context = new ContextStack();
+        context.push(new PropertiesContext(java.lang.System.getenv()));
+        context.push(new PropertiesContext(java.lang.System.getProperties()));
+        context.push(new DefaultContext());
+        context.set("benerator", new SimpleGenerationSetup());
+
         // parse schema
-        dataModel.addDescriptorProvider(new XMLSchemaDescriptorProvider(schemaUri));
+        dataModel.addDescriptorProvider(new XMLSchemaDescriptorProvider(schemaUri, context));
         // set up file name generator
         this.fileNameGenerator = new ConvertingGenerator<Long, String>(
                 new IncrementGenerator(), 
                 new MessageConverter<Long>(root + "-{0}.xml", Locale.US));
         // parse properties files
-        DefaultContext context = new DefaultContext();
         Parser parser = new Parser();
         for (String propertiesFile : propertiesFiles)
             parser.importProperties(propertiesFile, context);
