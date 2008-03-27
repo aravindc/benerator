@@ -34,14 +34,7 @@ import java.sql.Types;
  * @author Volker Bergmann
  */
 public class DBColumnType {
-/*
-    TODO v0.5 manage types
-    private static final Map<String, DBColumnType> instances = new HashMap<String, DBColumnType>();
 
-    public static final DBColumnType VARCHAR = new DBColumnType("VARCHAR");
-    public static final DBColumnType DATETIME = new DBColumnType("DATETIME");
-    public static final DBColumnType FLOAT = new DBColumnType("FLOAT");
-*/
     public static DBColumnType getInstance(int jdbcType, String name) {
         return new DBColumnType(jdbcType, name.toUpperCase());
     }
