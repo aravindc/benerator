@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 import java.util.Date;
 

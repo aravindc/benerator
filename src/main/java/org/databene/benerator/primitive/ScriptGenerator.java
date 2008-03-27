@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Context;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;

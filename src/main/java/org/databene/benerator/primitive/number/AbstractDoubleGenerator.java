@@ -1,7 +1,7 @@
 package org.databene.benerator.primitive.number;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Abstract Double genarator that serves as parent class for implementation of custom Sequences.<br/>

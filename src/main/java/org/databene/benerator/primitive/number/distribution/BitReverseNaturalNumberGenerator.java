@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.*;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.NumberUtil;
 import org.databene.model.Distribution;
 import org.databene.model.Sequence;

@@ -28,8 +28,8 @@ package org.databene.benerator.primitive.regex;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.benerator.wrapper.UniqueCompositeGenerator;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;

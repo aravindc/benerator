@@ -28,6 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.distribution.BitReverseNaturalNumberGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.SimpleRandom;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;

@@ -33,8 +33,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.TimeUtil;
 import org.databene.model.Sequence;
 import org.databene.model.String2DistributionConverter;

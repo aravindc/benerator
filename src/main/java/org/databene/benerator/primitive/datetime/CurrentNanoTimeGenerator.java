@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Generates Long objects that represent the current system time in nanoseconds since 1970-01-01.<br/>

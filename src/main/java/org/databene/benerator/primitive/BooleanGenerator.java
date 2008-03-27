@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Generates boolean values with a configurable quota of true values.<br/>
