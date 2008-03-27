@@ -50,11 +50,23 @@
     </category>
 
     <category name="shop">
-       <priority value="debug"/>
+       <priority value="info"/>
     </category>
 
     <category name="org.databene">
-       <priority value="debug"/>
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.benerator">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.commons">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.dataset">
+       <priority value="info"/>
     </category>
 
     <category name="org.databene.benerator.SQL">
@@ -73,11 +85,11 @@
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.commons.converter.AnyConverter">
+    <category name="org.databene.task.RunSqlScriptTask">
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.task.RunSqlScriptTask">
+    <category name="org.databene.platform.xml">
        <priority value="info"/>
     </category>
 
@@ -86,7 +98,7 @@
    <!-- ======================= -->
 
     <root>
-        <priority value="debug"/>
+        <priority value="info"/>
         <appender-ref ref="CONSOLE"/>
         <!--appender-ref ref="FILE"/-->
     </root>
