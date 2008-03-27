@@ -37,14 +37,14 @@ import java.text.Format;
  * <br/>
  * Created: 18.06.2006 11:59:05
  */
-public class FormatFormatGenerator<S, T> extends ConvertingGenerator<S, T> {
+public class FormatFormatGenerator<S> extends ConvertingGenerator<S, String> {
 
     public FormatFormatGenerator() {
         this(null, null);
     }
 
     /**
-     * Initializtes the generator
+     * Initializes the generator
      * @param source the source generator
      * @param format the format to apply
      */
