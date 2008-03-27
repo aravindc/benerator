@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shop 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/shop-0.5.0.xsd shop.xsd"
+		xmlns="http://databene.org/shop-0.5.0.xsd">
+		
+    <category id="DRNK" name="Drinks">
+	    <category id="DRNK/SOFT" name="Soft Drinks" />
+	    <category id="DRNK/ALCO" name="Alcoholic Drinks" />
+    </category>
+
+    <product ean_code="4004768406056" name="Gebirgswasser" category_id="DRNK/SOFT" price="0.87" manufacturer="Stolzenbacher" />
+    <product ean_code="8006550301040" name="Ramazzotti" category_id="DRNK/ALCO" price="8.95" manufacturer="Dist. Fratelli Ramazzotti"/>
+    
+    <admin id="1" name="alice"  password="alice"  email="alice@somewhere.com"/>
+    <clerk id="2" name="bob"    password="bob"    email="bob@somewhere.com"/>
+	<customer id="3" first_name="Volker" last_name="Bergmann" email="info@bergmann-it.de" category="A" password="volker"/>
+	
+	<order id="1" customer_id="3" created_at="2008-02-29T08:10:11">
+		<order_item id="1" product_ean_code="8006550301040" number_of_items="1" total_price="8.95"/>
+	</order>
+	
+	<order id="2" customer_id="3" created_at="2008-02-29T08:15:12">
+		<order_item id="2" product_ean_code="8006550301040" number_of_items="2" total_price="17.90"/>
+		<order_item id="3" product_ean_code="4004768406056" number_of_items="3" total_price="2.61"/>
+	</order>
+</shop>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.0.dtd"-->
+<setup 	xmlns="http://databene.org/benerator-0.4.2.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator-0.4.2.xsd benerator-0.4.2.xsd">
+
+	<bean id="xml" class="org.databene.platform.xml.XMLEntityExporter">
+		<property name="uri" value="customers.xml" />
+	</bean>
+
+	<create-entities name="customers" count="1" consumer="xml">
+	    <create-entities name="customer" count="10" consumer="xml">
+	        <variable  name="person" generator="org.databene.domain.person.PersonGenerator"/>
+	        <attribute name="id" generator="org.databene.benerator.primitive.IncrementGenerator"/>
+			<attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)" />
+			<attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
+			<attribute name="role_id" values="customer" />
+			<attribute name="category" values="A,B,C" />
+			<attribute name="salutation" source="person.salutation" />
+			<attribute name="first_name" source="person.givenName" />
+			<attribute name="last_name" source="person.familyName" />
+			<attribute name="birth_date" type="date" nullable="false" />
+		    <create-entities name="addresses" count="1" consumer="xml">
+			    <create-entities name="address" count="2" consumer="xml">
+			        <variable  name="addr" generator="org.databene.domain.address.AddressGenerator"/>
+					<attribute name="line1" script="{${addr.street} ${addr.houseNumber}}" />
+					<attribute name="line2" script="{${addr.zipCode} ${addr.city}}" />
+					<attribute name="line3" script="{${addr.country}}" />
+			    </create-entities>
+		    </create-entities>
+	    </create-entities>
+    </create-entities>
+</setup>

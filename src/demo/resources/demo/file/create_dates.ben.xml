@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.0.dtd"-->
+<setup>
+
+    <bean id="datetime_gen" class="org.databene.benerator.primitive.datetime.DateTimeGenerator"> 
+    	<property name="datePattern" value="yyyy-MM-dd"/>
+    	<property name="minDate" value="2007-06-21"/>
+    	<property name="maxDate" value="2007-09-21"/>
+    	<property name="datePrecision" value="1970-01-02"/>
+    	<property name="dateDistribution" value="random"/>
+    	<property name="timePattern" value="HH:mm:ss"/>
+    	<property name="minTime" value="09:00:00"/>
+    	<property name="maxTime" value="17:00:00"/>
+    	<property name="timePrecision" value="00:00:01"/>
+    	<property name="timeDistribution" value="cumulated"/>
+	</bean>
+	
+    <create-entities name="test" count="10">
+        <attribute name="date" type="date" source="datetime_gen"/>
+        <consumer class="org.databene.model.consumer.ConsoleExporter"/>
+    </create-entities>
+</setup>
