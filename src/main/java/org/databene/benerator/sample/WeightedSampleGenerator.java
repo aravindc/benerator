@@ -26,10 +26,10 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.WeightFunction;
 import org.databene.benerator.LightweightGenerator;
-import org.databene.benerator.SimpleRandom;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.util.SimpleRandom;
+import org.databene.model.WeightFunction;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -257,7 +257,7 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 
     private class SampleWeightFunction implements WeightFunction {
 
-        /** @see org.databene.benerator.WeightFunction#value(double) */
+        /** @see org.databene.model.WeightFunction#value(double) */
         public double value(double param) {
             return samples.get((int)param).getWeight();
         }

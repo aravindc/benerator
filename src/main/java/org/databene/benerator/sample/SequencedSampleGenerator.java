@@ -27,7 +27,9 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.util.SimpleRandom;
 import org.databene.benerator.*;
+import org.databene.model.Sequence;
 
 import java.util.List;
 import java.util.ArrayList;

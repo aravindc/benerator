@@ -26,8 +26,11 @@
 
 package org.databene.benerator.sample;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
-import static org.databene.benerator.GeneratorUtil.*;
+
+import static org.databene.benerator.util.GeneratorUtil.*;
 
 /**
  * Creates a predefined sequence of objects.<br/>
@@ -35,6 +38,8 @@ import static org.databene.benerator.GeneratorUtil.*;
  * Created: 19.11.2007 15:21:24
  */
 public class SequenceGenerator<E> implements Generator<E> {
+    
+    private static Log logger = LogFactory.getLog(SequenceGenerator.class);
 
     private Class<E> productType;
     private E[] values;
@@ -66,6 +71,8 @@ public class SequenceGenerator<E> implements Generator<E> {
             cursor++;
         else
             cursor = -1;
+        if (logger.isDebugEnabled())
+            logger.debug("created: " + result);
         return result;
     }
 
