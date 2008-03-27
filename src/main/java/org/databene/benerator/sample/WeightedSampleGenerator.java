@@ -26,8 +26,8 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.LightweightGenerator;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.SimpleRandom;
 import org.databene.model.WeightFunction;
 

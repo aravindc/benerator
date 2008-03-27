@@ -27,7 +27,7 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.LightweightGenerator;
+import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Generator implementation that always returns the same value.<br/>
