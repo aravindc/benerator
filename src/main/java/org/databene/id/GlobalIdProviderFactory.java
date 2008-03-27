@@ -36,11 +36,14 @@ import org.databene.commons.ConfigurationError;
 public class GlobalIdProviderFactory implements IdProviderFactory {
 
     public static final IdStrategy<String> UUID = new IdStrategy<String>("uuid", String.class);
+    public static final IdStrategy<Long> INCREMENT = new IdStrategy<Long>("increment", Long.class);
     
-    private static final UUIDProvider uuidProvider = new UUIDProvider();
+    public static final UUIDProvider uuidProvider = new UUIDProvider();
     
     public <T> IdProvider<T> idProvider(IdStrategy<T> strategy, String param, String scope) {
-        if (strategy == UUID) 
+        if (strategy == INCREMENT) 
+            return (IdProvider<T>) createIncrementIdProvider(param);
+        else if (strategy == UUID) 
             return (IdProvider<T>) uuidProvider;
         else
             throw new ConfigurationError(
@@ -48,7 +51,15 @@ public class GlobalIdProviderFactory implements IdProviderFactory {
     }
 
     public IdStrategy<? extends Object>[] getIdStrategies() {
-        return new IdStrategy[] { UUID };
+        return new IdStrategy[] { INCREMENT, UUID };
     }
     
+    private IncrementIdProvider createIncrementIdProvider(String param) {
+        long initialValue = 1;
+        if (param != null)
+            initialValue = Long.parseLong(param);
+        return new IncrementIdProvider(initialValue);
+    }
+
+
 }
