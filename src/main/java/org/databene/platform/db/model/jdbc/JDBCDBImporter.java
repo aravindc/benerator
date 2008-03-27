@@ -26,13 +26,13 @@
 
 package org.databene.platform.db.model.jdbc;
 
+import org.databene.commons.DBUtil;
 import org.databene.commons.Escalator;
 import org.databene.commons.ImportFailedException;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.OrderedMap;
-import org.databene.platform.db.DBUtil;
 import org.databene.platform.db.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -160,7 +160,7 @@ public final class JDBCDBImporter implements DBImporter {
                                 "execute 'PURGE RECYCLEBIN;')", url, tableName);
                 continue;
             }
-            String tableType = tableSet.getString(4); // TODO v0.5 Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+            String tableType = tableSet.getString(4); // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
             String tableRemarks = tableSet.getString(5);
             if (logger.isDebugEnabled())
                 logger.debug("found table: " + tCatalogName + ", " + tSchemaName + ", " + tableName + ", " + tableType + ", " + tableRemarks);
@@ -216,13 +216,8 @@ public final class JDBCDBImporter implements DBImporter {
                         + columnName + ", " + sqlType + ", " + columnType + ", " + columnSize + ", " + decimalDigits
                         + ", " + nullable + ", " + comment + ", " + defaultValue);
 
-            int[] modifiers;
-            if (decimalDigits != 0) {
-                modifiers = new int[] { columnSize, decimalDigits };
-            } else {
-                modifiers = new int[] { columnSize };
-            }
-            DBColumn column = new DBColumn(columnName, DBColumnType.getInstance(sqlType, columnType), modifiers);
+            Integer fractionDigits = (decimalDigits > 0 ? decimalDigits : null);
+            DBColumn column = new DBColumn(columnName, DBColumnType.getInstance(sqlType, columnType), columnSize, fractionDigits);
             if (!StringUtil.isEmpty(comment))
                 column.setDoc(comment);
             if (!StringUtil.isEmpty(defaultValue)) {
@@ -241,7 +236,7 @@ public final class JDBCDBImporter implements DBImporter {
             }
             if (table != null)
                 table.addColumn(column);
-            // TODO v0.5 importVersionColumnInfo(catalogName, table, metaData);
+            // not used: importVersionColumnInfo(catalogName, table, metaData);
         }
     }
 
@@ -317,7 +312,7 @@ public final class JDBCDBImporter implements DBImporter {
                         String indexCatalogName = indexSet.getString(5);
                         indexName = indexSet.getString(6);
                         short indexType = indexSet.getShort(7);
-                        /* TODO v0.5
+                        /* not used: 
                          * tableIndexStatistic - this identifies table statistics that are returned in conjuction with a table's index descriptions
                          * tableIndexClustered - this is a clustered index
                          * tableIndexHashed - this is a hashed index
@@ -426,10 +421,6 @@ public final class JDBCDBImporter implements DBImporter {
             table.addForeignKeyConstraint(foreignKeyConstraint);
         }
     }
-
-    // TODO v0.5 check what this metaData provides: attributes, bestRowIdentifier, columnPrivileges, crossReference
-    // TODO v0.5 check what this metaData provides: exportedKeys, procedures, procedureColumns,
-    // TODO v0.5 check what this metaData provides: superTables, superTypes, tablePrivileges, udts, versionColumns
 
     private static String removeBrackets(String defaultValue) {
         if (StringUtil.isEmpty(defaultValue))
