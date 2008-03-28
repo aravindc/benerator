@@ -34,6 +34,7 @@ import java.util.Stack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.xml.XMLUtil;
@@ -113,7 +114,10 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
         }
         do {
             InstanceDescriptor[] allowedEntities = path.allowedChildren();
-//            System.out.println("allowed: " + ArrayFormat.format(allowedEntities) + " -- " + "fd: " + entityName);
+            if (ArrayUtil.isEmpty(allowedEntities)) {
+                renderElementStart(entity);
+                return;
+            }
             for (InstanceDescriptor allowedEntity : allowedEntities) {
                 String allowedName = allowedEntity.getName();
                 if (allowedName.equalsIgnoreCase(entityName)) {
@@ -132,7 +136,6 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
         if (logger.isDebugEnabled())
             logger.debug("finishConsuming(" + entity + ')');
         InstanceDescriptor[] allowedEntities = path.allowedChildren();
-//      System.out.println("allowed: " + ArrayFormat.format(allowedEntities) + " -- " + "fd: " + entityName);
         for (InstanceDescriptor allowedEntity : allowedEntities) {
             String allowedName = allowedEntity.getName();
             if (path.isKept(allowedName))
@@ -178,8 +181,8 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     }
 
     private void renderElementStart(Entity entity) {
-        path.openElement(entity);
         try {
+            path.openElement(entity);
             if (printer == null)
                 initPrinter();
             markChildren();

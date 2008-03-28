@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.databene.commons.ArrayBuilder;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -69,7 +70,7 @@ public class XMLPath {
     public void closeElement(Entity entity) {
         if (!NullSafeComparator.equals(entity, path.peek().entity))
             throw new IllegalStateException("Closing element failed. " +
-            		"Found: " + path.peek().entity.getName() + ", expected: " + entity.getName());
+            		"Found: " + entity.getName() + ", expected: " + path.peek().entity.getName());
         path.pop();
     }
     
@@ -156,6 +157,8 @@ public class XMLPath {
 
         public void processingChild(String childName) {
             ComponentDescriptor[] allowedChildren = allowedChildren();
+            if (ArrayUtil.isEmpty(allowedChildren))
+                    return;
             for (int i = 0; i < allowedChildren.length; i++) {
                 ComponentDescriptor allowedChild = allowedChildren[i];
                 if (allowedChild.getName().equals(childName)) {
@@ -175,7 +178,10 @@ public class XMLPath {
             throw new IllegalStateException();
         }
 
-
+        @Override
+        public String toString() {
+            return entity.toString();
+        }
     }
 
 }
