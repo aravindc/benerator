@@ -73,9 +73,14 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
             int columnCount = metaData.getColumnCount();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 String columnName = metaData.getColumnName(columnIndex);
-                ComponentDescriptor component = descriptor.getComponent(columnName);
-                SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getType();
-                Object javaValue = javaValue(resultSet, columnIndex, type.getPrimitiveType().getName());
+                String typeName;
+                if (descriptor != null) {
+                    ComponentDescriptor component = descriptor.getComponent(columnName);
+                    SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getType();
+                    typeName = type.getPrimitiveType().getName();
+                } else
+                    typeName = "string";
+                Object javaValue = javaValue(resultSet, columnIndex, typeName);
                 entity.setComponentValue(columnName, javaValue);
             }
             return entity;
