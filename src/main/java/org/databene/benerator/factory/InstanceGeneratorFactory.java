@@ -50,7 +50,7 @@ public class InstanceGeneratorFactory {
 
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private static Escalator escalator = new LoggerEscalator();
+    //private static Escalator escalator = new LoggerEscalator();
 
     // protected constructor for preventing instantiation --------------------------------------------------------------
     
