@@ -41,10 +41,10 @@ import org.databene.commons.converter.DefaultEntryConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
@@ -58,9 +58,9 @@ import org.w3c.dom.Element;
  * Created: 04.03.2008 16:43:09
  * @author Volker Bergmann
  */
-public class Parser {
+public class ModelParser {
    
-    private static final Log logger = LogFactory.getLog(Parser.class);
+    private static final Log logger = LogFactory.getLog(ModelParser.class);
     
     private String defaultScript = Benerator.DEFAULT_SCRIPT;
     
@@ -103,7 +103,6 @@ public class Parser {
             parseVariable(element, descriptor, context);
         else
             throw new UnsupportedOperationException("element type not supported here: " + childName);
-        System.out.println(element.getNodeName());
     }
 
     public PartDescriptor parsePart(Element element, ComplexTypeDescriptor owner, 
@@ -124,8 +123,11 @@ public class Parser {
         if (result.getDeclaredDetailValue("maxCount") == null)
             result.setDetailValue("maxCount", 1);
         if (owner != null) {
-            TypeDescriptor parent = owner.getComponent(result.getName()).getType();
-            result.getLocalType(false).setParent(parent);
+            ComponentDescriptor parentComponent = owner.getComponent(result.getName());
+            if (parentComponent != null) {
+                TypeDescriptor parentType = parentComponent.getType();
+                result.getLocalType(false).setParent(parentType);
+            }
         }
         return result;
     }
@@ -173,7 +175,7 @@ public class Parser {
     public InstanceDescriptor parseVariable(
             Element varElement, ComplexTypeDescriptor parent, Context context) {
         assertElementName(varElement, "variable");
-        InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"), PrimitiveType.OBJECT.getName());
+        InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"));
         InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor, context);
         parent.addVariable(variable);
         return variable;
@@ -214,7 +216,8 @@ public class Parser {
   
     private <T extends InstanceDescriptor> T mapInstanceDetails(Element element, boolean complexType, T descriptor, Context context) {
         TypeDescriptor localType = null;
-        for (Map.Entry<String, String> entry : XMLUtil.getAttributes(element).entrySet()) {
+        Map<String, String> attributes = XMLUtil.getAttributes(element);
+        for (Map.Entry<String, String> entry : attributes.entrySet()) {
             String detailName = entry.getKey();
             if (detailName.equals("type"))
                 continue;
@@ -223,7 +226,18 @@ public class Parser {
                 descriptor.setDetailValue(detailName, detailValue);
             else {
                 if (localType == null)
-                    localType = descriptor.getLocalType(complexType);
+                    localType = descriptor.getLocalType();
+                if (localType == null) {
+                    String instanceType = attributes.get("type");
+                    if (instanceType != null) {
+                        TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(instanceType);
+                        String name = attributes.get("name");
+                        localType = (localTypeParent instanceof ComplexTypeDescriptor ? new ComplexTypeDescriptor(name, instanceType) : new SimpleTypeDescriptor(name, instanceType));
+                    }
+                    descriptor.setLocalType(localType);
+                }
+                if (localType == null)
+                    localType = descriptor.getLocalType(complexType); // create new local type
                 localType.setDetailValue(detailName, detailValue);
             }
         }
