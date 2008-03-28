@@ -29,6 +29,8 @@ package org.databene.benerator.xml;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.xml.XMLUtil;
 
@@ -41,6 +43,8 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 public class XMLFileGeneratorTest extends TestCase {
+    
+    private static final Log logger = LogFactory.getLog(XMLFileGeneratorTest.class);
     
     // todo create createXML.bat
 
@@ -57,7 +61,7 @@ public class XMLFileGeneratorTest extends TestCase {
     public void test() throws IOException {
         XMLFileGenerator generator = new XMLFileGenerator(SCHEMA_FILE, ROOT_ELEMENT);
         File file = generator.generate();
-        System.out.println("Generated " + file);
+        logger.debug("Generated " + file);
         XMLUtil.parse(file.getAbsolutePath()); // validate the generated file
     }
 }
