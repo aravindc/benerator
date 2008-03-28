@@ -28,6 +28,8 @@ package org.databene.platform.xml;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -43,13 +45,15 @@ import junit.framework.TestCase;
  */
 public class XMLDescriptorProviderTest extends TestCase {
     
+    private static final Log logger = LogFactory.getLog(XMLDescriptorProviderTest.class);
+    
     private static final String TEST_FILE = "org/databene/platform/xml/xsdtest.xsd";
 
     public void test() throws IOException {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(TEST_FILE, new DefaultContext());
 
         for (TypeDescriptor descriptor : provider.getTypeDescriptors())
-            System.out.println(descriptor);
+            logger.debug(descriptor);
 
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
