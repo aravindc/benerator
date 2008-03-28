@@ -45,7 +45,7 @@ public class DataModel {
 
     public DataModel() {
         this.providers = new HashMap<String, DescriptorProvider>();
-        addDescriptorProvider(new PrimitiveDescriptorProvider(), false);
+        addDescriptorProvider(new BasicDescriptorProvider(), false);
     }
 
     public void addDescriptorProvider(DescriptorProvider provider) {
