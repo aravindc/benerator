@@ -128,7 +128,7 @@ public class CityManager {
                 city.addZipCode(zipCode);
         }
         if (warnCount > 0)
-            System.out.println(warnCount + " warnings");
+            logger.warn(warnCount + " warnings");
         if (suspectiveNames.size() > 0)
             logger.warn("Suspective names: " + suspectiveNames);
     }
