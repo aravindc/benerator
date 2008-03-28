@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.0.dtd">
-<setup>
+<setup	xmlns="http://databene.org/benerator-0.5.0.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator-0.5.0.xsd org/databene/benerator/benerator-0.5.0.xsd">
     <create-entities name="transaction" count="100">
-        <variable name="product" source="demo/file/products.import.csv" distribution="random"/> <!--cyclic="true"
+        <variable name="product" type="entity" source="demo/file/products.import.csv" distribution="random"/> <!--cyclic="true"
                   proxy="skip" proxy-param1="1" proxy-param2="2"/-->
         <attribute name="comment" pattern="[A-Z][a-z]{5,12}"/>
         <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>

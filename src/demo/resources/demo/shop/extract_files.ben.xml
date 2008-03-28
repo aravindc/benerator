@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.3.dtd"-->
-<setup>
+<setup	xmlns="http://databene.org/benerator-0.5.0.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator-0.5.0.xsd org/databene/benerator/benerator-0.5.0.xsd">
 
     <bean id="db" class="org.databene.platform.db.adapter.DBSystem">
         <property name="url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
