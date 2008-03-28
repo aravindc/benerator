@@ -20,7 +20,7 @@ import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
 import org.databene.commons.converter.MessageConverter;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.Parser;
+import org.databene.model.ModelParser;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
@@ -54,7 +54,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 new MessageConverter<Long>(root + "-{0}.xml", Locale.US));
         // parse properties files
-        Parser parser = new Parser();
+        ModelParser parser = new ModelParser();
         for (String propertiesFile : propertiesFiles)
             parser.importProperties(propertiesFile, context);
 
