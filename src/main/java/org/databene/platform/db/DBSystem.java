@@ -279,7 +279,13 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         if (logger.isDebugEnabled())
             logger.debug("getEntities(" + type + ")");
     	Connection connection = getThreadContext().connection;
-        String sql = "select * from " + type + (StringUtil.isEmpty(selector) ? "" : " WHERE " + selector);
+    	String sql = null;
+    	if (selector == null)
+    	    sql = "select * from " + type;
+    	else if (StringUtil.startsWithIgnoreCase(selector, "select"))
+    	    sql = selector;
+    	else
+    	    sql = "select * from " + type + " WHERE " + selector;
         Iterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize);
         return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
