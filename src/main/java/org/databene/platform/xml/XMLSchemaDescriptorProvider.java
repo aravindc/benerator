@@ -39,7 +39,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.Context;
 import org.databene.commons.xml.NamespaceAlias;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.Parser;
+import org.databene.model.ModelParser;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
@@ -71,7 +71,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private Parser parser = new Parser();
+    private ModelParser parser = new ModelParser();
     private Context context;
     private DataModel dataModel;
     private List<String> propertiesFiles;
