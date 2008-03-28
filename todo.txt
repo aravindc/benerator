@@ -3,12 +3,33 @@ Baustellen
 
 PRIO 1
 -----
-Laptop-Akku
-Visitenkarten
-Artikel: Differenzierung von Last- und Performancetests 
+Interkulturell: Osteuropa
+Working in AU, CH, US
+Artikel: Testdaten 
+Hautarzt-Termin
+
+Check Kündigung ShortBooks
+
+ebay: Verkauf Fotosachen
+
+ICSE-Workshop-Vorschlag
+
+Treffen mit Elmar, Florian + co. wg.
+- Strategie
+- Konferenzvorträgen
+- Schulung
+- Buch
+- Zeitschriften-Artikel
+- Marketing
+
+Einkauf
+-------
+Pullover
 
 Prio 2
 ------
+Termin Worofksy
+Check joinvision.com
 Check CfP-Termine für Herbstkonferenzen
 E-Mail Mirko Novakovic (Multiplikator) novakovic@codecentric.de
 release announcement on 
@@ -33,9 +54,11 @@ Kontakt Tobias Frech wg. JavaForum
 Oracle Performance-Schulung
 Eclipse Metrics Plugin
 Web Site vermarkten per 
-- Google Ads
+- Google AdSense
 - Amazon-Links
-
+tum.edu
+- Check pagerank
+- Get link from elmar jürgens 
 
 
 Profile
@@ -44,119 +67,74 @@ Profile
   - Hibernate
   - Besuchte Schulungen u. Konferenzen
   - Vorträge
-  - Expertise
-  - Speziellere Zieltätigkeiten
-- Gulp, Pentasys, mathema, Xing: Update
+- Pentasys, mathema: Update
 
 bergmann-it.de
 -------------
 Create English version
 
 
-0.4.2
+0.5.0
 -----
-- count code lines
-- finalize
-  - Region concept
-  - finalize capitalization handling
+- QA
+  - Remove dependency: AttributeDescriptor -> Sequence
+- Site
+  - clean up databene.org
+  - explain bans on forum page
+  - 'Download benerator' button
+  - explain seriousness
+- Doc
+  - update custom Sequence demo
+  - How to program workflow like running from setup file
+  - package doc
+  - region concept
+  - new metadata concept
+  - Known issues
+    - halting on errors
+    - no useful error messages in batch mode
+    - speed of metadata import (-> purge recyclebin)
+News
+- Top 10 Visitors: US (24%), Germany (15%), India (8%), UK (7%), France (6%), Canada (3%), Brazil (2%), Poland (2%), Austria (2%), Italy (1%)
+
+0.5.1
+-----
+- legal
+  - choose lawyer
+  - Define Terms and Conditions
+  - define OSI compliant license
+- model
+  - uniqueness/key/identity concept (single/multiple columns)
+  - support multiple parents
+- file format
+  - setup file: unique = true | pk | name
 - features
-  - support DOCTYPE also in offline mode
-  - DTDDecriptorProvider
-  - print deprecation message
-  - id strategy=foreign?
-  - Check why/when Oracle reports 4x the length of varchar2 fields 
-  - make benerator finish on 
-    - SQL script errors
-    - create-entities exceptions
-  - ERROR ommiting entry java.vendor.url.bug=http://java.sun.com/cgi-bin/bugreport.cgi
-  - define XML-Java binding
-  - support inclusion of setup files
   - Support Velocity (check necessity by vls/ftl licenses) 4h
-  - log creation throughput for each top-level entity
   - custom setup file element handler
   - default generators by name (created/inserted/updated_at/by), as part of domain package?
-  - prototype builder
-    - provide shell file (win/unix)
-    - scan existing data for null quota, distinct values and probabilities
-    - Filter DBSystem properties that are exported by PrototypeBuilder
-  - Ant plugin
-  - Maven plugin
-  - Check performance
-    - metadata import (check if unused columns are imported)
-    - SQL script invocation
-    - Snapshot (Entity/OrderedMap)
+  - id strategy=foreign?
+  - define XML-Java binding
+  - support person names of the top 10 visitor countries
+- XML features
+  - minScale
+  - maxScale
+- database features
   - JDBCDBImporter: group tables by prefix
   - parsing of check constraints
-  - Key concept
   - maxLength support for numbers and dates
-  - uniqueness/key/identity concept (single/multiple columns)
-  - setup file: unique = true | pk | name
   - Standard properties
     - benerator.default.key.generator=QName (DB specific)
     - benerator.default.key.source=DB id (only DB)
     - benerator.default.key.selector=SQL Query (DB specific)
   - retrieve Oracle sequence names & auto-map them to tables
   - support <reference values="..." | generator="..."/>
-  - Velocity support
-  - Sybase
   - add execute() element that calls a System.execute(String) method, e.g. for submitting DDL
-  - support jdbc.properties file
-  - introduce (UML) model based testing
-- Build
-  - Auto-create classpath for shell files with current pom version numbers
-  - measure test code coverage
-  - setup Bugzilla
-- QA
-  - create tests for the demo package (esp. each database)
-  - Perform each test for constructor and JavaBean setup
-  - test new features on all DBs
-  - set up linux on Daniela's old computer
-  - measure test coverage
-  - improve tests on shop demo
-  - add check constraints to shop where it is useful
-- demo
-  - use examples of each country for shop products
-- Marketing
-  - Learn more about RSS
-- Site
-  - remove forum from search indexes (robots.txt)
-  - explain bans on forum page
-  - create RSS link for blog on all pages
-  - check internal links on all pages
-  - add tracking to javadoc/source-xref
-  - add delicious tags as html keywords
-  - remove mailing list
-  - link to freshmeat for registering for announcements
-- legal
-  - choose lawyer
-  - Define Terms and Conditions
-  - define OSI compliant license
-- Doc
-  - How to program workflow like running from setup file
-  - package doc
-  - Conventions
-    - *.dbunit.xml
-    - *.ben.xml
-  - anonymization
-  - anonymization demo
-  - describe dynamic aspects of the interfaces
-  - region concept
-  - Uniqueness
-  - Generierung voneinander abhängiger Entities / Daten
-  - include new DistributionDemo snapshot in web site
-  - update Sequence doc for DoubleFromLongGenerator
-  - define SPIs
-  - List converters
-  - cross-link doc pages
-  - Known issues
-    - halting on errors
-    - no useful error messages in batch mode
-    - speed of metadata import (-> purge recyclebin)
-
-0.5.0
------
-- features
-  - benerator XML schema
+  - Ant plugin
+  - Maven plugin
+  - prototype builder
+    - provide shell file (win/unix)
+    - scan existing data for null quota, distinct values and probabilities
+    - Filter DBSystem properties that are exported by PrototypeBuilder
+  - support inclusion of setup files?
   - YAML support
 	  - YAMLWriter
 	  - YAMLEntityExporter
@@ -165,17 +143,60 @@ Create English version
   - config file:
     - separate modeling of entities/builders from invocation
     - compare mule setup with benerator setup
-  - Change Processor interface for supporting 
-    - XML export
-    - updating DB rows
-    - yaml support
+  - support updating of DB rows
   - identity concept
   - context -> repository?
   - protocol handling: file://, http://, ftp://, custom
+  - introduce (UML) model based testing
+- Bugs
+  - Check why/when Oracle reports 4x the length of varchar2 fields 
+  - make benerator finish on 
+    - SQL script errors
+    - create-entities exceptions
+  - ERROR ommiting entry java.vendor.url.bug=http://java.sun.com/cgi-bin/bugreport.cgi
+- Build
+  - measure test code coverage
+  - setup Bugzilla
+- QA
+  - measure test coverage
+  - Check performance
+    - metadata import (check if unused columns are imported)
+    - SQL script invocation
+    - Snapshot (Entity/OrderedMap)
+- demo
+  - weight cities
+  - use examples of each country for shop products
+    - US: ?
+    - Germany: ?
+    - France: ?
+    - UK: ?
+    - Australia: Vegemite
+    - Switzerland: ?
+    - Austria: Stroh-Rum
+    - Spain: ?
 - site
+  - add tracking to javadoc/source-xref
   - online domain test data generator for manual testing?
+	- feature matrix w/ similar products:
+	  - data extraction
+	  - transformation, e.g. anonymization
+	  - im/export db, csv, xml, script
+	  - domain packages
+	  - generation
+	  - version number (nth release)
+	  - last activity
+- doc
+  - anonymization demo
+  - describe dynamic aspects of the interfaces
+  - Uniqueness
+  - Generierung voneinander abhängiger Entities / Daten
+  - include new DistributionDemo snapshot in web site
+  - update Sequence doc for DoubleFromLongGenerator
+  - define SPIs
+  - List converters
+
       
-0.5.1
+0.5.2
 ------
 - features
   - Interaction between setup file and tasks
@@ -194,6 +215,13 @@ Create English version
   - AT: extract phone numbers
 - Dirty check in inheritance hierarchies
 
+1.0.0
+-----
+features
+  - Support Sybase
+
+
+
 release tasks
 -------------
 - Complete/cleanup code
@@ -201,10 +229,10 @@ release tasks
   - check for XML TODOs
   - check for UnsupportedOperationException
   - remove (use of) deprecations, explain deprecations
+  - log warnings in remaining deprecated code
   - remove System.out.print(ln)
-  - provide JavaDoc for anything
+  - provide package JavaDoc 
   - check forums for pending fixes/enhancements
-  - uncomment DTD reference in benerator and check all files if they run
   - Assure that usage of deprecated features is escalated
 - run code checkers
   - JDepend (esp. remove cycles)
@@ -212,6 +240,7 @@ release tasks
   - PMD
   - CPD
 - check demos
+  - assure correct version numbers (XML schema)
   - run all demos
   - test all databases
 - Run tests
@@ -234,7 +263,8 @@ release tasks
 - upload
   - site
   - release files
-  - DTD
+  - Schema
+- release to global maven repo
 - post on 
   - freshmeat.net
   - digg.com
@@ -796,3 +826,8 @@ http://www.fark.com/
 http://www.newsvine.com/
 http://www.dzone.com/
 
+TOOL IDEA:
+----------
+create javadoc on the fly from binary files - as html files or with web server
+analyze dependencies and automatically suggest breakdown into modules
+GUTS: Grand Unified Test System

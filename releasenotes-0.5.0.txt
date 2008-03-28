@@ -4,6 +4,7 @@ release notes benerator 0.5.0
 summary
 -------
 
+
 migration
 ---------
 - in benerator files, replace attributes region=".." with dataSet=".."
@@ -11,6 +12,7 @@ migration
 
 changes
 -------
+- changed from DTD to XML schema for benerator setup file validation
 - upgraded to newest versions of commons and webdecs
 - complete redesign of metadata concept
 - moved IncrementIdGenerator provision from DatabaseSystem to GlobalIdProviderFactory
@@ -59,3 +61,4 @@ bug fixes
 - SequencedSampleCSVGenerator: bug fix in CSV iteration
 - FormatFormatGenerator: Generic target parameter T has been replaced with String
 - AlternativeGenerator: Bug fix in life cycle
+- DBSystem: Bug fix in selector clause evaluation
