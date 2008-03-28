@@ -27,13 +27,12 @@
 package org.databene.benerator.main;
 
 import org.databene.platform.db.DBSystem;
-import org.databene.model.Parser;
+import org.databene.model.ModelParser;
 import org.databene.model.Processor;
 import org.databene.commons.*;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
-import org.databene.commons.converter.DefaultEntryConverter;
 import org.databene.commons.xml.XMLElement2BeanConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.script.ScriptConverter;
@@ -85,7 +84,7 @@ public class Benerator implements GenerationSetup {
     public  static final String  DEFAULT_ENCODING = SystemInfo.fileEncoding();
     public  static final int     DEFAULT_PAGESIZE = 1;
     
-    private Parser parser = new Parser();
+    private ModelParser parser = new ModelParser();
     
     private ExecutorService executor;
     private Escalator escalator;
@@ -96,6 +95,8 @@ public class Benerator implements GenerationSetup {
     private int defaultPagesize;
     
     //private int totalEntityCount = 0;
+    
+    private DataModel dataModel = DataModel.getDefaultInstance();
 
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
@@ -139,7 +140,6 @@ public class Benerator implements GenerationSetup {
             for (Heavyweight resource : resources) {
                 resource.close();
             }
-            //java.lang.System.out.println("context: " + context);
             long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
             logger.info("Created a total of " + ConfiguredEntityGenerator.entityCount() + " entities " +
                     "in " + elapsedTime + " ms " +
@@ -201,7 +201,7 @@ public class Benerator implements GenerationSetup {
                 context.set(beanId, bean);
             }
             if (bean instanceof DescriptorProvider)
-                DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
+                dataModel.addDescriptorProvider((DescriptorProvider) bean);
             if (bean instanceof Heavyweight)
                 resources.add((Heavyweight)bean);
             return bean;
@@ -225,7 +225,7 @@ public class Benerator implements GenerationSetup {
             );
             db.setSchema(parseAttribute(element, "schema", context));
             context.set(id, db);
-            DataModel.getDefaultInstance().addDescriptorProvider(db);
+            dataModel.addDescriptorProvider(db);
             resources.add(db);
         } catch (ConversionException e) {
             throw new ConfigurationError(e);
@@ -370,14 +370,13 @@ public class Benerator implements GenerationSetup {
     private InstanceDescriptor mapEntityDescriptorElement(Element element, Context context) {
         String entityName = parseAttribute(element, "name", context);
         InstanceDescriptor instance = new InstanceDescriptor(entityName, entityName);
-        TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(entityName);
         TypeDescriptor localType = new ComplexTypeDescriptor(entityName);
-        if (parentType == null) 
-            localType.setName("_local");
-        else {
-            localType.setName(entityName);
+        localType.setName(entityName);
+        TypeDescriptor parentType = dataModel.getTypeDescriptor(entityName);
+        if (parentType != null) 
             localType.setParent(parentType);
-        }
+        else
+            localType.setParentName("entity");
         instance.setLocalType(localType);
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
