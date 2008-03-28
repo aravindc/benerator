@@ -200,15 +200,8 @@
 			<xs:extension base="generator-setup">
 			
 				<xs:attribute name="nullable"     type="xs:string"/>
-				<xs:attribute name="mode">
-					<xs:simpleType>
-						<xs:restriction base="xs:string"> <!-- TODO support script expressions -->
-							<xs:enumeration value="normal"/>
-							<xs:enumeration value="ignored"/>
-							<xs:enumeration value="secret"/>
-						</xs:restriction>
-					</xs:simpleType>
-				</xs:attribute>  	
+				<xs:attribute name="mode"         type="xs:string/>
+
 				<!-- boolean generator setup -->
 				<xs:attribute name="trueQuota"    type="xs:string"/>
 				
