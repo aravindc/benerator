@@ -61,7 +61,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
 
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private static Escalator escalator = new LoggerEscalator();
+    //private static Escalator escalator = new LoggerEscalator();
 
     // private constructor for preventing instantiation ----------------------------------------------------------------
     
@@ -92,22 +92,18 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
     private static Generator<Entity> createVariableGenerator(
             ComplexTypeDescriptor type, Context context, GenerationSetup setup, Generator<Entity> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-        if (variables.size() > 0) {
             Map<String, Generator<? extends Object>> varGens = new HashMap<String, Generator<? extends Object>>();
             for (InstanceDescriptor variable : variables) {
                 Generator<? extends Object> varGen = InstanceGeneratorFactory.createInstanceGenerator(variable, context, setup);
                 varGens.put(variable.getName(), varGen);
             }
-            generator = new ConfiguredEntityGenerator((Generator<Entity>) generator, varGens, context);
-        }
-        return generator;
+        return new ConfiguredEntityGenerator((Generator<Entity>) generator, varGens, context);
     }
 
     private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
         Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
         while (type instanceof ComplexTypeDescriptor) {
             variables.addAll(((ComplexTypeDescriptor) type).getVariables());
-            //System.out.println(type.getName() + " -> " + type.getParent());
             type = type.getParent();
         }
         return variables;
