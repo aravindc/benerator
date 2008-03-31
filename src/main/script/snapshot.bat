@@ -1,3 +1,4 @@
+@echo off
 CALL "%~dp0benerator_common.bat" %*
 
 if "%_JAVACMD%"=="" goto end
