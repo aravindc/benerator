@@ -33,6 +33,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.xml.XMLUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import junit.framework.TestCase;
 
@@ -48,20 +50,51 @@ public class XMLFileGeneratorTest extends TestCase {
     
     // todo create createXML.bat
 
-    private static final String ROOT_ELEMENT = "root";
-    private static final String SCHEMA_FILE = "org/databene/platform/xml/xsdtest.xsd";
 /*
     private static final String ROOT_ELEMENT = "product";
     private static final String SCHEMA_FILE = "demo/shop/product-simple.xsd";
     private static final String SCHEMA_FILE = "demo/shop/product-annotated.xsd";
-
-    private static final String OUTPUT_FILE_PREFIX = "setup";
-    private static final String SCHEMA_FILE = "org/databene/benerator/benerator-0.5.0.xsd";
 */
-    public void test() throws IOException {
-        XMLFileGenerator generator = new XMLFileGenerator(SCHEMA_FILE, ROOT_ELEMENT);
+    
+    public void testSimpleTypeElement() throws IOException {
+        createXMLFile("org/databene/platform/xml/simple_type_element_test.xsd", "root", "simple_type_element_test.xml");
+        // TODO v0.5.1 validate content
+    }
+
+    public void testBean() throws IOException {
+        Document document = createXMLFile("org/databene/benerator/xml/bean_test.xsd", "root", "bean_test.xml");
+        Element root = document.getDocumentElement();
+        assertEquals("root", root.getNodeName());
+        Element[] children = XMLUtil.getChildElements(root);
+        assertEquals(1, children.length);
+        assertElementNameAndText(children[0], "result", "OK");
+    }
+
+    public void testVariables() throws IOException {
+        Document document = createXMLFile("org/databene/benerator/xml/variable_test.xsd", "root", "variable_test.xml");
+        Element root = document.getDocumentElement();
+        assertEquals("root", root.getNodeName());
+        assertEquals(0, root.getChildNodes().getLength());
+        assertEquals("OK", root.getAttribute("string_att"));
+        assertEquals("Bob", root.getAttribute("bean_att"));
+        assertEquals("Alice", root.getAttribute("entity_att"));
+    }
+
+    private void assertElementNameAndText(Element child, String name, String text) {
+        assertNotNull(child);
+        assertEquals(name, child.getNodeName());
+        assertEquals(text, XMLUtil.getText(child));
+    }
+
+    private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
+        XMLFileGenerator generator = new XMLFileGenerator(schemaUri, root, filename);
+        assertTrue(generator.available());
         File file = generator.generate();
         logger.debug("Generated " + file);
-        XMLUtil.parse(file.getAbsolutePath()); // validate the generated file
+        generator.close();
+        // validate the generated file
+        Document document = XMLUtil.parse(file.getAbsolutePath());
+        return document;
     }
+
 }
