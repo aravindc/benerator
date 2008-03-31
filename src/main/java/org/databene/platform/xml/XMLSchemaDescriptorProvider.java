@@ -150,6 +150,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             if ("include".equals(childName)) {
                 String filename = parser.parseInclude(child, context);
                 propertiesFiles.add(filename);
+            } else if ("bean".equals(childName)) {
+                parser.parseBean(child, context);
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " + child.getNodeName());
         }
@@ -273,18 +275,23 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         
         Element appInfo = annotation.getAppInfo();
         Element[] infos = XMLUtil.getChildElements(appInfo);
-        if (infos.length > 1)
-            throw new ConfigurationError("Cannot handle more than one appinfo in a simple type");
-        Element info = infos[0];
-
-        if (descriptor instanceof PartDescriptor) {
-            return parser.parsePart(info, null, true, (PartDescriptor) descriptor, context);
-        } else if (descriptor instanceof ComplexTypeDescriptor) {
-            return parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor, context);
-        } else if (descriptor instanceof SimpleTypeDescriptor) {
-            return parser.parseSimpleType(info, (SimpleTypeDescriptor) descriptor, context);
-        } else
-            throw new UnsupportedOperationException("Unsupported type: " + descriptor.getClass().getName());
+        
+        for (Element info : infos) {
+            String childName = XMLUtil.localName(info);
+            if ("bean".equals(childName))
+                parser.parseBean(info, context);
+            else if ("variable".equals(childName))
+                parser.parseVariable(info, (ComplexTypeDescriptor) descriptor, context);
+            else if (descriptor instanceof PartDescriptor) {
+                descriptor = parser.parsePart(info, null, true, (PartDescriptor) descriptor, context);
+            } else if (descriptor instanceof ComplexTypeDescriptor) {
+                descriptor = parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor, context);
+            } else if (descriptor instanceof SimpleTypeDescriptor) {
+                descriptor = parser.parseSimpleType(info, (SimpleTypeDescriptor) descriptor, context);
+            } else
+                throw new UnsupportedOperationException("Unsupported type: " + descriptor.getClass().getName());
+        }
+        return descriptor;
     }
 
     /**
@@ -308,7 +315,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
                 refDesc.setPSInfo(XML_REPRESENTATION, "element");
                 Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
                 if (anno != null)
-                    simpleType = parseSimpleTypeAppinfo(new Annotation(anno), (SimpleTypeDescriptor) simpleType);
+                    refDesc = parseAttributeAppinfo(new Annotation(anno), refDesc);
                 owner.addComponent(refDesc);
             } else
                 addDescriptor(new SimpleTypeDescriptor(name, typeName));
@@ -397,13 +404,13 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         return descriptor;
     }
     
-    private ComponentDescriptor parseAttributeAppinfo(Annotation annotation, ComponentDescriptor descriptor) {
+    private <T extends ComponentDescriptor> T parseAttributeAppinfo(Annotation annotation, T descriptor) {
         Element appInfo = annotation.getAppInfo();
         Element[] infos = XMLUtil.getChildElements(appInfo);
         if (infos.length > 1)
             throw new ConfigurationError("Cannot handle more than one appinfo in a simple type");
         Element info = infos[0];
-        return parser.parseSimpleTypeComponent(info, null, descriptor, context);
+        return (T) parser.parseSimpleTypeComponent(info, null, descriptor, context);
     }
 
     private SimpleTypeDescriptor parseSimpleType(
