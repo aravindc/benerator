@@ -31,13 +31,16 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     
     private String encoding = "UTF-8";
     private String root;
+    private String filenamePattern;
     private Generator<String> fileNameGenerator;
     private Generator<? extends Object> contentGenerator;
     private DataModel dataModel = DataModel.getDefaultInstance();
     
-    public XMLFileGenerator(String schemaUri, String root, String... propertiesFiles) throws IOException {
+    public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
         super(File.class);
+        dataModel.clear();
         this.root = root;
+        this.filenamePattern = filenamePattern;
         
         // create context
         // TODO 0.5.1 simplify & encapsulate
@@ -52,7 +55,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         // set up file name generator
         this.fileNameGenerator = new ConvertingGenerator<Long, String>(
                 new IncrementGenerator(), 
-                new MessageConverter<Long>(root + "-{0}.xml", Locale.US));
+                new MessageConverter<Long>(filenamePattern, Locale.US));
         // parse properties files
         ModelParser parser = new ModelParser();
         for (String propertiesFile : propertiesFiles)
@@ -66,6 +69,17 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 rootDescriptor, false, context, new SimpleGenerationSetup());
     }
 
+    @Override
+    public boolean available() {
+        return super.available() && contentGenerator.available();
+    }
+    
+    @Override
+    public void validate() {
+        super.validate();
+        contentGenerator.validate();
+    }
+    
     public File generate() {
         Object content = contentGenerator.generate();
         return persistContent(content);
@@ -122,4 +136,8 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + filenamePattern + ']';
+    }
 }
