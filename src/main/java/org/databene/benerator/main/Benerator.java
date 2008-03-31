@@ -190,16 +190,7 @@ public class Benerator implements GenerationSetup {
 
     private Object parseBean(Element element, Set<Heavyweight> resources, ContextStack context) {
         try {
-            String beanId = parseAttribute(element, "id", context);
-            if (beanId != null)
-                logger.debug("Instantiating bean with id '" + beanId + "'");
-            else
-                logger.debug("Instantiating bean of class " + parseAttribute(element, "class", context));
-            Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context, defaultScript));
-            if (!StringUtil.isEmpty(beanId)) {
-                BeanUtil.setPropertyValue(bean, "id", beanId, false);
-                context.set(beanId, bean);
-            }
+            Object bean = parser.parseBean(element, context);
             if (bean instanceof DescriptorProvider)
                 dataModel.addDescriptorProvider((DescriptorProvider) bean);
             if (bean instanceof Heavyweight)
