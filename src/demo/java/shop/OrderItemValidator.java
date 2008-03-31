@@ -26,7 +26,6 @@
 
 package shop;
 
-import org.databene.commons.Validator;
 import org.databene.domain.product.EANValidator;
 import org.databene.model.data.Entity;
 
@@ -36,11 +35,21 @@ import org.databene.model.data.Entity;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class OrderItemValidator implements Validator<Entity> {
+public class OrderItemValidator extends EntityValidator {
     
     private EANValidator eanValidator = new EANValidator();
 
+    public OrderItemValidator() {
+        this("order_item");
+    }
+
+    public OrderItemValidator(String entityName) {
+        super(entityName);
+    }
+
     public boolean valid(Entity item) {
+        if (!super.valid(item))
+            return false;
         if ((Number) item.getComponent("id") == null)
             return false;
         if ((Number) item.getComponent("order_id") == null)

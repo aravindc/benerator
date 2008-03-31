@@ -27,17 +27,21 @@
 package shop;
 
 import org.databene.commons.StringUtil;
-import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
  * Validates a user.<br/><br/>
  * Created: 23.03.2008 06:45:59
+ * @since 0.5.0
  * @author Volker Bergmann
  */
-public class UserValidator implements Validator<Entity> {
+public class UserValidator extends EntityValidator {
     
     //private Set<String> supportedRoles = CollectionUtil.toSet("administrator", "clerk", "customer");
+
+    public UserValidator(String entityName) {
+        super(entityName);
+    }
 
     public boolean valid(Entity user) {
         if (user.getComponent("id") == null)

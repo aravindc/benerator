@@ -28,7 +28,6 @@ package shop;
 
 import java.util.Date;
 
-import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
@@ -37,9 +36,19 @@ import org.databene.model.data.Entity;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class OrderValidator implements Validator<Entity> {
+public class OrderValidator extends EntityValidator {
+
+    public OrderValidator() {
+        this("order");
+    }
+
+    public OrderValidator(String entityName) {
+        super(entityName);
+    }
 
     public boolean valid(Entity order) {
+        if (!super.valid(order))
+            return false;
         if ((Number) order.getComponent("id") == null)
             return false;
         if ((Number) order.getComponent("customer_id") == null)

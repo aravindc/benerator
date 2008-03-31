@@ -29,7 +29,6 @@ package shop;
 import java.util.Date;
 
 import org.databene.commons.StringUtil;
-import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
@@ -38,9 +37,19 @@ import org.databene.model.data.Entity;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class CustomerValidator implements Validator<Entity> {
+public class CustomerValidator extends EntityValidator {
+
+    public CustomerValidator() {
+        this("customer");
+    }
+
+    public CustomerValidator(String entityName) {
+        super(entityName);
+    }
 
     public boolean valid(Entity customer) {
+        if (!super.valid(customer))
+            return false;
         if ((Number) customer.getComponent("id") == null)
             return false;
         if (StringUtil.isEmpty((String) customer.getComponent("category")))

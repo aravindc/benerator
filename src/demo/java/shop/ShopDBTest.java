@@ -109,19 +109,19 @@ public class ShopDBTest extends TestCase {
         int expectedOrderCount = (expectedCustomerCount - 1) * ordersPerCustomer + 1;
         int itemsPerOrder = (Integer) genCfg.get("items_per_order");
         int expectedOrderItemCount = (expectedOrderCount - 1) * itemsPerOrder + 1;
-        checkEntities("db_category", new CategoryValidator(), 28, db);
-        checkEntities("db_product", new ProductValidator(), expectedProductCount, db);
-        checkEntities("db_user", new UserValidator(), expectedUserCount, db);
-        checkEntities("db_customer", new CustomerValidator(), expectedCustomerCount, db);
-        checkEntities("db_order", new OrderValidator(), expectedOrderCount, db);
-        checkEntities("db_order_item", new OrderItemValidator(), expectedOrderItemCount, db);
+        checkEntities("db_category", new CategoryValidator("db_category"), 28, db);
+        checkEntities("db_product", new ProductValidator("db_product"), expectedProductCount, db);
+        checkEntities("db_user", new UserValidator("db_user"), expectedUserCount, db);
+        checkEntities("db_customer", new CustomerValidator("db_customer"), expectedCustomerCount, db);
+        checkEntities("db_order", new OrderValidator("db_order"), expectedOrderCount, db);
+        checkEntities("db_order_item", new OrderItemValidator("db_order_item"), expectedOrderItemCount, db);
     }
 
     private void checkEntities(String entityName, Validator<Entity> validator,
             int expectedCount, DBSystem db) {
         assertEquals("Wrong number of '" + entityName + "' instances.", expectedCount, db.countEntities(entityName));
-        for (Entity category : db.queryEntities(entityName, null))
-            assertTrue(validator.valid(category));
+        for (Entity entity : db.queryEntities(entityName, null))
+            assertTrue("Invalid entity: " + entity, validator.valid(entity));
     }
 
     private void runAsClass(String file, String database, String stage) throws IOException {

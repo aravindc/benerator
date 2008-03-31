@@ -93,8 +93,8 @@ public class ShopXMLTest extends TestCase {
         checkComplexType("audited-updateable", provider, new AuditedUpdateableValidator());
         checkComplexType("category", provider, new CategoryValidator());
         checkComplexType("product",  provider, new ProductValidator());
-        checkComplexType("admin",    provider, new UserValidator());
-        checkComplexType("clerk",    provider, new UserValidator());
+        checkComplexType("admin",    provider, new UserValidator("admin"));
+        checkComplexType("clerk",    provider, new UserValidator("clerk"));
         checkComplexType("customer", provider, new CustomerValidator());
     }
 

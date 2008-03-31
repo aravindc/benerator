@@ -26,7 +26,6 @@
 
 package shop;
 
-import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 
 /**
@@ -34,11 +33,21 @@ import org.databene.model.data.Entity;
  * Created: 23.03.2008 06:33:15
  * @author Volker Bergmann
  */
-public class CategoryValidator implements Validator<Entity> {
+public class CategoryValidator extends EntityValidator {
     
     private CategoryIdValidator idValidator = new CategoryIdValidator();
 
+    public CategoryValidator() {
+        this("category");
+    }
+
+    public CategoryValidator(String entityName) {
+        super(entityName);
+    }
+
     public boolean valid(Entity category) {
+        if (!super.valid(category))
+            return false;
         if (!idValidator.valid((String) category.get("id")))
             return false;
         if (category.get("name") == null)
