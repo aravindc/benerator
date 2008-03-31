@@ -214,8 +214,8 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         return this;
     }
 
-    public SimpleTypeDescriptor withDataSet(String dataSet) {
-        setDataSet(dataSet);
+    public SimpleTypeDescriptor withDataset(String dataset) {
+        setDataset(dataset);
         return this;
     }
 
