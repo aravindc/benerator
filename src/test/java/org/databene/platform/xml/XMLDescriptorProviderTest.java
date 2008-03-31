@@ -47,10 +47,10 @@ public class XMLDescriptorProviderTest extends TestCase {
     
     private static final Log logger = LogFactory.getLog(XMLDescriptorProviderTest.class);
     
-    private static final String TEST_FILE = "org/databene/platform/xml/xsdtest.xsd";
+    private static final String NESTING_TEST_FILE = "org/databene/platform/xml/simple_type_element_test.xsd";
 
-    public void test() throws IOException {
-        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(TEST_FILE, new DefaultContext());
+    public void testNesting() throws IOException {
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new DefaultContext());
 
         for (TypeDescriptor descriptor : provider.getTypeDescriptors())
             logger.debug(descriptor);
@@ -73,4 +73,5 @@ public class XMLDescriptorProviderTest extends TestCase {
         ComponentDescriptor c2 = rootDescriptor.getComponent("c2");
         assertNotNull(c2);
     }
+
 }
