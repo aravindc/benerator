@@ -26,27 +26,24 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.csv.DataSetCSVGenerator;
+import org.databene.benerator.csv.DatasetCSVGenerator;
 
 /**
  * Generates a street name for a region.<br/>
  * <br/>
  * Created: 12.06.2006 00:08:28
  */
-public class StreetNameGenerator extends DataSetCSVGenerator<String> {
+public class StreetNameGenerator extends DatasetCSVGenerator<String> {
 
     private static final String REGION = "org/databene/dataset/region";
-    private static final String BASE_NAME = "org/databene/domain/address/street";
+    private static final String FILENAME_PATTERN = "org/databene/domain/address/street_{0}.csv";
 
     public StreetNameGenerator() {
         this("DE");
     }
 
-    public StreetNameGenerator(String dataSetName) {
-        this(REGION, dataSetName, BASE_NAME);
+    public StreetNameGenerator(String datasetName) {
+        super(FILENAME_PATTERN, datasetName, REGION, "UTF-8");
     }
 
-    public StreetNameGenerator(String dataSetType, String dataSetName, String baseName) {
-        super(dataSetType, dataSetName, baseName, ".csv", "UTF-8");
-    }
 }
