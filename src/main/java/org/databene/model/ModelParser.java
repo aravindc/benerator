@@ -33,11 +33,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.main.Benerator;
 import org.databene.commons.ArrayFormat;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.DefaultEntryConverter;
+import org.databene.commons.xml.XMLElement2BeanConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -54,8 +56,9 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 /**
- * Parses benerator files.<br/><br/>
+ * Parses databene model files.<br/><br/>
  * Created: 04.03.2008 16:43:09
+ * @since 0.5.0
  * @author Volker Bergmann
  */
 public class ModelParser {
@@ -70,6 +73,20 @@ public class ModelParser {
 
     public void setDefaultScript(String defaultScript) {
         this.defaultScript = defaultScript;
+    }
+    
+    public Object parseBean(Element element, Context context) {
+        String beanId = parseAttribute(element, "id", context);
+        if (beanId != null)
+            logger.debug("Instantiating bean with id '" + beanId + "'");
+        else
+            logger.debug("Instantiating bean of class " + parseAttribute(element, "class", context));
+        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context, defaultScript));
+        if (!StringUtil.isEmpty(beanId)) {
+            BeanUtil.setPropertyValue(bean, "id", beanId, false);
+            context.set(beanId, bean);
+        }
+        return bean;
     }
 
     public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner, Context context) {
