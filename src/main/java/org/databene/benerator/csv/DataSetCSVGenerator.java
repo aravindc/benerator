@@ -37,12 +37,12 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.dataset.DataSet;
-import org.databene.dataset.DataSetFactory;
+import org.databene.dataset.Dataset;
+import org.databene.dataset.DatasetFactory;
 import org.databene.document.csv.CSVLineIterator;
 
 /**
- * Generates data from a csv file set that is organized as {@link DataSet}.
+ * Generates data from a csv file set that is organized as {@link Dataset}.
  * For different regions, different CSV versions may be provided by appending region suffixes,
  * similar to the JDK ResourceBundle handling.<br/>
  * <br/>
@@ -50,36 +50,38 @@ import org.databene.document.csv.CSVLineIterator;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DataSetCSVGenerator<E> extends GeneratorProxy<E> {
+public class DataSetCSVGenerator<E> extends GeneratorProxy <E> {
+    
+    // TODO v0.5.1 support uniqueness
 
-    private String baseName;
-    private String suffix;
-    private String dataSetType;
-    private String dataSetName;
+    private String filenamePattern;
+    private String datasetName;
+    private String nesting;
 
     // constructors ----------------------------------------------------------------------------------------------------
-    public DataSetCSVGenerator(String dataSetType, String dataSetName, String baseName, String suffix) {
-        this(dataSetType, dataSetName, baseName, suffix, SystemInfo.fileEncoding());
+    public DataSetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
+        this(filenamePattern, datasetName, nesting, SystemInfo.fileEncoding());
     }
 
-    public DataSetCSVGenerator(String dataSetType, String dataSetName, String baseName, String suffix, String encoding) {
-        this(dataSetType, dataSetName, baseName, suffix, encoding, (Converter<String, E>) new NoOpConverter());
+    public DataSetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
+        this(filenamePattern, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    public DataSetCSVGenerator(String dataSetType, String dataSetName, String baseName, String suffix, String encoding, Converter<String, E> converter) {
+    public DataSetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
         super(new WeightedSampleGenerator<E>());
-        ((WeightedSampleGenerator<E>)source).setSamples(createSamples(dataSetType, dataSetName, baseName, suffix, encoding, converter));
-        this.dataSetType = dataSetType;
-        this.dataSetName = dataSetName;
-        this.baseName = baseName;
-        this.suffix = suffix;
+        ((WeightedSampleGenerator<E>)source).setSamples(createSamples(nesting, datasetName, filenamePattern, encoding, converter));
+        this.nesting = nesting;
+        this.filenamePattern = filenamePattern;
+        this.datasetName = datasetName;
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
 
     private static <T> List<WeightedSample<T>> createSamples(
-            String dataSetType, String dataSetName, String baseName, String suffix,
+            String nesting, String dataSetName, String filenamePattern,
             String encoding, Converter<String, T> converter) {
         List<WeightedSample<T>> samples = new ArrayList<WeightedSample<T>>();
-        String[] dataFilenames = DataSetFactory.getDataFiles(dataSetType, dataSetName, baseName, suffix);
+        String[] dataFilenames = DatasetFactory.getDataFiles(filenamePattern, dataSetName, nesting);
         for (String dataFilename : dataFilenames)
             parse(dataFilename, encoding, converter, samples);
         return samples;
@@ -115,6 +117,6 @@ public class DataSetCSVGenerator<E> extends GeneratorProxy<E> {
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return getClass().getSimpleName() + '[' + baseName + ',' + dataSetType + ':' + dataSetName + ',' + suffix + ']';
+        return getClass().getSimpleName() + '[' + filenamePattern + ',' + nesting + ':' + datasetName + ']';
     }
 }
