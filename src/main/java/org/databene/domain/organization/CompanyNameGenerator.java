@@ -50,8 +50,8 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     }
     
     public void setStyle(String style) {
-        gen1 = new SequencedCSVSampleGenerator<String>("org/databene/domain/business/" + style + "1.csv");
-        gen2 = new SequencedCSVSampleGenerator<String>("org/databene/domain/business/" + style + "2.csv");
+        gen1 = new SequencedCSVSampleGenerator<String>("org/databene/domain/organization/" + style + "1.csv");
+        gen2 = new SequencedCSVSampleGenerator<String>("org/databene/domain/organization/" + style + "2.csv");
     }
     
     public String generate() {
