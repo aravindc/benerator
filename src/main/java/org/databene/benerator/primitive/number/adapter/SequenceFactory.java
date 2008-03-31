@@ -42,7 +42,7 @@ import org.databene.commons.StringUtil;
 import org.databene.model.function.Sequence;
 
 /**
- * TODO documentation<br/><br/>
+ * Manages Sequence instances and creates according Generators.<br/><br/>
  * Created: 27.03.2008 13:00:35
  * @author Volker Bergmann
  */
