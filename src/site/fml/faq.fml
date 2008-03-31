@@ -220,7 +220,7 @@
                     ...or integrates it into its $10,000 product for free?
                     ...while I struggle to pay my rent or salaries of my developers?</p>
 
-                <p>The solution was:
+                <p>I chose this solution:
                     <ul>
                         <li>Choosing the GPL license for permitting everybody to use and extend benerator
                             free of charge while preventing him/her to resell it.</li>
@@ -237,29 +237,24 @@
         <faq id="license_intention">
             <question>What does the license mean for me?</question>
             <answer>
-                <p>Free of charge you may do the following under the GNU Public License:
+                <p>The GNU Public License fully applies. You are welcome to do e.g. the following free of charge:
                     <ul>
-                        <li>use and extend benerator for testing your own or a 3rd party application
-                            <b>on a project base</b>
-                            , independent of the license of the tested application.
+                        <li>use and extend benerator without any restriction, 
+                            independent of the license that applies for the tested system. 
+                            You may also use it in consulting services for 3rd parties.
                         </li>
-                        <li>extend benerator or include it in a
-                            <b>product</b>
-                            and redistribute it exclusively
-                            under the GPL license.
+                        <li>redistribute benerator as is, as part of a product or a derivative work
+                            that is redistributed under the GPL license only.
                         </li>
                         <li>publish articles, introductions and tutorials about benerator in printed or electronic
                             form.</li>
                     </ul>
                 </p>
-                <p>For the following activities, acquisition of a commercial license is needed:
-                    <ul>
-                        <li>redistributing benerator, an extended version or a product that uses benerator
-                            under other terms than the GPL</li>
-                        <li>providing trainings on benerator</li>
-                        <li>providing e-mail or phone support for a charge</li>
-                        <li>publishing books or e-books on benerator</li>
-                    </ul>
+                <p>
+	                For redistributing benerator (or derivative works) or selling services 
+	                in a way that is not covered by the GPL you can obtain a commercial license.
+	                Each such license is negotiated individually, a standard gauge for the fee is 10% 
+	                of the gross revenue from your product, service or book.
                 </p>
             </answer>
         </faq>
