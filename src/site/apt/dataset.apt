@@ -1,0 +1,91 @@
+				---------------
+				dataset concept
+				---------------
+
+dataset concept
+
+ You can define datasets and combine them to supersets. 
+ This mechanism lets you also define parallel and overlapping hierarchies of nested datasets.
+ 
+ Definition of a hierarchies is separated from the definition of dataset values for a convrete topic. 
+ So you can define a dataset grouping for regions, mapping continents, countries, states and departments 
+ and apply this grouping to define and combine sets of e.g. cities, person names or products.
+ 
+ We will apply the mechanism here for cities in geographical regions. 
+ You can find the example files in the distribution's directory demo/dataset/ 
+ 
+ A dataset is identified by a code. For a country, its ISO code is an appropriate choice, 
+ but you are free to define and choose what is useful for your application.
+ 
+ Assume you wanted to process some american countries:
+ US (USA), CA (Canada), MX (Mexico), BR (Brazil), AR (Argentina)
+ 
+ You could group them geographically (North America vs. South America) 
+ or by language (Latin America vs. Anglo America). 
+ You could do both in parallel by defining area sets in a file <<area.set.properties>>:
+ 
+------------------------------------------------------------------------ 
+latin_america=MX,BR,AR
+anglo_america=US,CA
+north_america=US,CA,MX
+south_america=BR,AR
+america=north_america,south_america
+------------------------------------------------------------------------ 
+ 
+ cities_US.csv
+------------------------------------------------------------------------ 
+ San Francisco
+ Los Angeles
+ New York
+------------------------------------------------------------------------ 
+ 
+ cities_CA.csv
+------------------------------------------------------------------------ 
+ Ottawa
+ Toronto
+------------------------------------------------------------------------ 
+ 
+ cities_MX.csv
+------------------------------------------------------------------------ 
+ Mexico
+ Villahermosa
+------------------------------------------------------------------------ 
+ 
+ cities_BR.csv
+------------------------------------------------------------------------ 
+ Sao P\u00e3olo
+ Brasilia
+------------------------------------------------------------------------ 
+ 
+ cities_AR.csv
+------------------------------------------------------------------------ 
+ Buenos Aires
+ Rosario
+------------------------------------------------------------------------ 
+ 
+ You can now use this setup to generate city names for any of the specified regions.
+ For north american cities you could specify
+ 
+------------------------------------------------------------------------ 
+ <echo message="north american cities:" />
+ <create-entities name="city" consumer="exporter" count="10">
+     <attribute name="name" unique="true" source="demo/dataset/city_{0}.csv" dataset="north_america" nesting="demo/dataset/area" encoding="UTF-8"/>
+ </create-entities>
+------------------------------------------------------------------------ 
+ 
+ and generate the output:
+ 
+------------------------------------------------------------------------ 
+ north american cities:
+ city[name=Mexico]
+ city[name=Los Angeles]
+ city[name=Los Angeles]
+ city[name=San Francisco]
+ city[name=New York]
+ city[name=Villahermosa]
+ city[name=Ottawa]
+ city[name=New York]
+ city[name=Villahermosa]
+ city[name=New York]
+------------------------------------------------------------------------ 
+ 
