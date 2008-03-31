@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--DOCTYPE setup SYSTEM "http://databene.org/benerator-0.4.2.dtd"-->
+<setup 	xmlns="http://databene.org/benerator-0.5.0.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator-0.5.0.xsd org/databene/benerator/benerator-0.5.0.xsd">
+
+	<bean id="exporter" class="org.databene.model.consumer.ConsoleExporter" />
+
+	<echo message="american cities:" />
+	<create-entities name="city" consumer="exporter" count="10"> <!-- TODO support uniqueness, remove count -->
+	    <attribute name="name" unique="true" 
+	    	source="demo/dataset/city_{0}.csv" dataset="america" nesting="demo/dataset/area" encoding="UTF-8"/>
+	</create-entities>
+
+	<echo message="north american cities:" />
+	<create-entities name="city" consumer="exporter" count="10"> <!-- TODO support uniqueness, remove count -->
+	    <attribute name="name" unique="true" source="demo/dataset/city_{0}.csv" dataset="north_america" nesting="demo/dataset/area" encoding="UTF-8"/>
+	</create-entities>
+
+	<echo message="anglo american cities:" />
+	<create-entities name="city" consumer="exporter" count="10"> <!-- TODO support uniqueness, remove count -->
+	    <attribute name="name" unique="true" source="demo/dataset/city_{0}.csv" dataset="anglo_america" nesting="demo/dataset/area" encoding="UTF-8"/>
+	</create-entities>
+
+</setup>
