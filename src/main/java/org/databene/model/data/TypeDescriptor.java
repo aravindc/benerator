@@ -62,8 +62,9 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String PROXY_PARAM1 = "proxy-param1";
     public static final String PROXY_PARAM2 = "proxy-param2";
 
-    public static final String DATASET      = "dataSet";
     public static final String LOCALE       = "locale";
+    public static final String DATASET      = "dataset";
+    public static final String NESTING      = "nesting";
 
     public static final String DISTRIBUTION = "distribution";
     public static final String VARIATION1   = "variation1";
@@ -101,12 +102,13 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(PROXY_PARAM1,   Long.class,      null);
         addConfig(PROXY_PARAM2,   Long.class,      null);
         // i18n config
-        addConfig(DATASET, String.class,            null);
-        addConfig(LOCALE, Locale.class,            null);
+        addConfig(LOCALE,         Locale.class,    null);
+        addConfig(DATASET,        String.class,    null);
+        addConfig(NESTING,        String.class,    null);
         // distribution
-        addConfig(DISTRIBUTION,       Distribution.class, null);
-        addConfig(VARIATION1,         String.class,        "1");
-        addConfig(VARIATION2,         String.class,        "1");
+        addConfig(DISTRIBUTION,   Distribution.class, null);
+        addConfig(VARIATION1,     String.class,        "1");
+        addConfig(VARIATION2,     String.class,        "1");
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -227,12 +229,20 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         setDetailValue(PROXY_PARAM2, param);
     }
 
-    public String getDataSet() {
+    public String getDataset() {
         return (String) getDetailValue(DATASET);
     }
 
-    public void setDataSet(String dataSet) {
-        setDetailValue(DATASET, dataSet);
+    public void setDataset(String dataset) {
+        setDetailValue(DATASET, dataset);
+    }
+
+    public String getNesting() {
+        return (String) getDetailValue(NESTING);
+    }
+
+    public void setNesting(String nesting) {
+        setDetailValue(NESTING, nesting);
     }
 
     public Locale getLocale() {
