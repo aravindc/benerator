@@ -2,25 +2,26 @@ package org.databene.domain.person;
 
 import java.util.Locale;
 
-import org.databene.benerator.csv.DataSetCSVGenerator;
+import org.databene.benerator.csv.DatasetCSVGenerator;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann
  * Created: 09.06.2006 22:03:56
+ * @author Volker Bergmann
  */
-public class FamilyNameGenerator extends DataSetCSVGenerator<String> {
+public class FamilyNameGenerator extends DatasetCSVGenerator<String> {
 
     public FamilyNameGenerator() {
         this(Locale.getDefault().getCountry());
     }
 
-    public FamilyNameGenerator(String dataSetName) {
-        this("org/databene/dataset/region", 
-                dataSetName, 
-                "org/databene/domain/person/familyName");
+    public FamilyNameGenerator(String datasetName) {
+        this(datasetName, 
+                "org/databene/dataset/region", 
+                "org/databene/domain/person/familyName_{0}.csv");
     }
 
-    public FamilyNameGenerator(String dataSetType, String dataSetName, String baseName) {
-        super(dataSetType, dataSetName, baseName, ".csv", "UTF-8");
+    public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {
+        super(fileNamePattern, datasetName, nesting, "UTF-8");
     }
 }

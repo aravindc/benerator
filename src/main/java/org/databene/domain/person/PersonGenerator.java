@@ -45,10 +45,10 @@ public class PersonGenerator extends LightweightGenerator<Person> {
         salutationProvider.setLocale(locale);
     }
 
-    public void setDataSet(String dataSetName) {
-        maleGivenNameGen = new GivenNameGenerator(dataSetName, Gender.MALE);
-        femaleGivenNameGen = new GivenNameGenerator(dataSetName, Gender.FEMALE);
-        familyNameGen = new FamilyNameGenerator(dataSetName);
+    public void setDataset(String datasetName) {
+        maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
+        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
+        familyNameGen = new FamilyNameGenerator(datasetName);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
