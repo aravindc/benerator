@@ -145,7 +145,7 @@ public class XMLPath {
             ArrayBuilder<ComponentDescriptor> builder = new ArrayBuilder<ComponentDescriptor>(ComponentDescriptor.class);
             ComponentDescriptor next = children.get(position);
             builder.append(next);
-            if (countAtPosition >= next.getMinCount()) {
+            if (countAtPosition >= next.getMinCount() && position < children.size() - 1) {
                 int i = position + 1;
                 do {
                     next = children.get(i++);
@@ -164,7 +164,8 @@ public class XMLPath {
                 if (allowedChild.getName().equals(childName)) {
                     if (i == 0) {
                         countAtPosition++;
-                        if (allowedChild.getMaxCount() == countAtPosition) {
+                        Long maxCount = allowedChild.getMaxCount();
+                        if (maxCount == null || maxCount == countAtPosition) {
                             position++;
                             countAtPosition = 0;
                         }
