@@ -45,7 +45,7 @@ public class DataModel {
 
     public DataModel() {
         this.providers = new HashMap<String, DescriptorProvider>();
-        addDescriptorProvider(new BasicDescriptorProvider(), false);
+        clear();
     }
 
     public void addDescriptorProvider(DescriptorProvider provider) {
@@ -137,6 +137,11 @@ public class DataModel {
         PrimitiveType<? extends Object> primitiveType = desc.getPrimitiveType();
         if (primitiveType == null)
             throw new ConfigurationError("No primitive type defined for simple type: " + desc.getName());
+    }
+
+    public void clear() {
+        providers.clear();
+        addDescriptorProvider(new BasicDescriptorProvider(), false);
     }
 
 }
