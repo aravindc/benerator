@@ -17,7 +17,11 @@
 			<xs:sequence>
 				<xs:element ref="c1" minOccurs="2" maxOccurs="2"/>
 				<xs:element name="number" type="number-regex" minOccurs="1" maxOccurs="1"/>
-				<xs:element ref="c2"/>
+				<xs:element ref="c2" maxOccurs="unbounded">
+					<xs:annotation><xs:appinfo>
+						<ben:part minCount="3" maxCount="5"/>
+					</xs:appinfo></xs:annotation>
+				</xs:element>
 			</xs:sequence>
 			<xs:attribute name="rootAtt1" type="xs:string"/>
 		</xs:complexType>
