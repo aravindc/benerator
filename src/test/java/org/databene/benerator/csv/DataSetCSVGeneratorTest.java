@@ -41,7 +41,7 @@ public class DataSetCSVGeneratorTest extends TestCase {
     private static final String REGION = "org/databene/dataset/region";
 
     public void testDE() {
-        DataSetCSVGenerator<String> generator = new DataSetCSVGenerator<String>(REGION, "DE", FAMILY_NAME, ".csv", "UTF-8");
+        DatasetCSVGenerator<String> generator = new DatasetCSVGenerator<String>(REGION, "DE", FAMILY_NAME + ".csv", "UTF-8");
         boolean mueller = false;
         for (int i = 0; i < 1000; i++) {
             if ("Müller".equals(generator.generate()))
@@ -51,7 +51,7 @@ public class DataSetCSVGeneratorTest extends TestCase {
     }
 
     public void testEurope() {
-        DataSetCSVGenerator<String> generator = new DataSetCSVGenerator<String>(REGION, "europe", FAMILY_NAME, ".csv", "UTF-8");
+        DatasetCSVGenerator<String> generator = new DatasetCSVGenerator<String>(REGION, "europe", FAMILY_NAME + "{0}.csv", "UTF-8");
         boolean mueller = false; // German name
         boolean garcia = false;  // Spanish name
         for (int i = 0; i < 100000 && (!mueller || !garcia); i++) {
