@@ -27,6 +27,7 @@
 package org.databene.dataset;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,18 +53,18 @@ public class DataSetFactory {
         return getDataSet(type, name, sets);
     }
     
-    public static String[] getDataFiles(String dataSetType, String dataSetName, String baseName, String suffix) {
-        DataSet dataSet = getDataSet(dataSetType, dataSetName);
+    public static String[] getDataFiles(String filenamePattern, String dataset, String nesting) {
+        DataSet dataSet = getDataSet(nesting, dataset);
         ArrayBuilder<String> builder = new ArrayBuilder<String>(String.class);
         if (dataSet.getAtomicSubSets().size() == 0) {
-            String filename = baseName + '_' + dataSetName + suffix;
+            String filename = MessageFormat.format(filenamePattern, dataset);
             if (IOUtil.isURIAvailable(filename))
                 builder.append(filename);
             else
                 throw new ConfigurationError("File not found: " + filename);
         } else
             for (DataSet atomicSet : dataSet.getAtomicSubSets()) {
-            String filename = baseName + '_' + atomicSet.getName() + suffix;
+                String filename = MessageFormat.format(filenamePattern, atomicSet);
             if (IOUtil.isURIAvailable(filename))
                 builder.append(filename);
         }
