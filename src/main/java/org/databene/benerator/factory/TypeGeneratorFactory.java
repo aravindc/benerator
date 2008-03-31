@@ -35,6 +35,7 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
+import org.databene.benerator.csv.DatasetCSVGenerator;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
@@ -146,13 +147,21 @@ public class TypeGeneratorFactory {
             String encoding = descriptor.getEncoding();
             if (encoding == null)
                 encoding = SystemInfo.fileEncoding();
+            String dataset = descriptor.getDataset();
+            String nesting = descriptor.getNesting();
             ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
             Iterable iterable = null;
-            if (descriptor instanceof ComplexTypeDescriptor)
+            if (descriptor instanceof ComplexTypeDescriptor) {
                 iterable = new CSVEntityIterable(source, descriptor.getName(), scriptConverter, separator, encoding);
-            else
-                iterable = new CSVCellIterable(source, separator);
-            generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
+                generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
+            } else {
+                if (dataset != null && nesting != null) {
+                    generator = new DatasetCSVGenerator(source, dataset, nesting, encoding);
+                } else {
+                    iterable = new CSVCellIterable(source, separator);
+                    generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
+                }
+            }
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null);
         } else {
