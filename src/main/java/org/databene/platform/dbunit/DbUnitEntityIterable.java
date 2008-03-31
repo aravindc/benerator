@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.io.IOException;
 
 /**
- * Creates DBUnitXmlDataSetIterators.<br/>
+ * Creates DBUnitXmlEntityIterators.<br/>
  * <br/>
  * Created: 28.08.2007 08:53:00
  * @author Volker Bergmann
