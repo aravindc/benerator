@@ -38,6 +38,7 @@ import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
+import org.databene.dataset.DatasetFactory;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileUtil;
 import org.databene.platform.dbunit.DbUnitEntityIterable;
@@ -139,8 +140,19 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
                 if (encoding == null)
                     encoding = setup.getDefaultEncoding();
                 ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-                CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
-                generator = new IteratingGenerator(iterable);
+                String dataset = descriptor.getDataset();
+                String nesting = descriptor.getNesting();
+                if (dataset != null && nesting != null) {
+                    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
+                    Generator<Entity>[] sources = new Generator[dataFiles.length];
+                    for (int i = 0; i < dataFiles.length; i++)
+                        sources[i] = new IteratingGenerator(new CSVEntityIterable(dataFiles[i], descriptor.getName()));
+                    generator = new AlternativeGenerator(Entity.class, sources); 
+                } else {
+                    // iterate over (possibly large) data file
+                    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
+                    generator = new IteratingGenerator(iterable);
+                }
             } else if (sourceName.endsWith(".flat")) {
                 String encoding = descriptor.getEncoding();
                 if (encoding == null)
