@@ -3,7 +3,11 @@ release notes benerator 0.5.0
 
 summary
 -------
-
+benerator now supports the generation of XML files based on XML schema. 
+XML schema annotations permit configuration of the generation within the schema file.
+The region concept has been finally abstracted to a dataset concept.
+New generator classes and name packages have been added for India, Brazil, 
+Canada, Spain, Australia, Austria, Japan, Slovenia and Israel.
 
 migration
 ---------
@@ -55,6 +59,7 @@ enhancements
   
 bug fixes
 ---------
+- order of attribute generation
 - special character handling in person domain
 - Fixed bug in nesting more than two levels of create-entities elements
 - domains: file encodings default to UTF-8
