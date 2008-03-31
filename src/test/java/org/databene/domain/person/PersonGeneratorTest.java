@@ -21,10 +21,10 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     }
 
     public void test() throws IllegalGeneratorStateException {
-        PersonGenerator generator = new PersonGenerator(Country.SLOVENIA, Locale.GERMANY);
+        PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMANY);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
-            logger.info(person);
+            logger.debug(person);
         }
     }
 }
