@@ -87,7 +87,7 @@ xml file generation
 
  You can provide benerator with an XML schema file and have it automatically create XML files that match the schema.
  
- Assume you would use an XML schema file 'product.xsd' with the following definitions:
+ Assume you would use an XML schema file 'demo/shop/product-simple.xsd' with the following definitions:
  
 -----------------------------------------------------------------------------
 <xs:simpleType name="ean13-type">
@@ -114,8 +114,13 @@ xml file generation
 </xs:element>
 -----------------------------------------------------------------------------
 
- you could then create an XML file from it by invoking 'createXML product.xsd product 1', 
- which would result in a file 'product-1.xml' like this
+ you could then create an XML file from it by invoking
+ 
+-----------------------------------------------------------------------------
+ bin/createXML demo/shop/product-simple.xsd product product-{0}.xml 1 
+-----------------------------------------------------------------------------
+
+ from the root directory of your distribution, which would result in a file 'product-1.xml' like this
  
 -----------------------------------------------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>

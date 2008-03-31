@@ -28,9 +28,11 @@ introduction
  
  The 'ben' namespace will be used for benerator-specific schema annotations later.
  
- Assume you would use an XML schema file 'product.xsd' with the following definitions:
+ Assume you would use an XML schema file 'demo/shop/product-simple.xsd' with the following definitions:
  
 -----------------------------------------------------------------------------
+...
+
 <xs:simpleType name="ean13-type">
     <xs:restriction base="xs:string">
         <xs:pattern value="[0-9]{13}" />
@@ -53,10 +55,17 @@ introduction
         <xs:attribute name="manufacturer" type="xs:string" use="required"/>
     </xs:complexType>
 </xs:element>
+
+...
 -----------------------------------------------------------------------------
 
- you could then create an XML file from it by invoking 'createXML product.xsd product 1', 
- which would result in a file 'product-1.xml' like this
+ you could then create an XML file from it by invoking 
+ 
+-----------------------------------------------------------------------------
+ createXML demo/shop/product-simple.xsd product product-{0}.xml 1 
+-----------------------------------------------------------------------------
+
+ from the root directory of your distribution, which would result in a file 'product-1.xml' like this
  
 -----------------------------------------------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
@@ -150,18 +159,20 @@ command line XML generation
  
 *annotated schema files
  
- Use the batch file 'createXML'. It takes three parameters:
+ Use the batch file 'createXML'. It takes four parameters:
  
  # schema file name
  
  # root element name
  
+ # file name pattern (a Java MessageFormat pattern)
+ 
  # numer of files to generate
  
- for creating 500 files for schema 'product.xsd' with root 'product', call
+ for creating 500 files named 'myproduct-#.xml' from schema 'demo/shop/product.xsd' with root 'product', call
 
 -----------------------------------------------------------------------------
-createXML product.xsd product 1
+createXML product.xsd product myproduct-{0}.xml 500
 -----------------------------------------------------------------------------
  
 *benerator files
