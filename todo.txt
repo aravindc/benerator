@@ -74,27 +74,6 @@ bergmann-it.de
 Create English version
 
 
-0.5.0
------
-- QA
-  - Remove dependency: AttributeDescriptor -> Sequence
-- Site
-  - clean up databene.org
-  - explain bans on forum page
-  - 'Download benerator' button
-  - explain seriousness
-- Doc
-  - update custom Sequence demo
-  - How to program workflow like running from setup file
-  - package doc
-  - region concept
-  - new metadata concept
-  - Known issues
-    - halting on errors
-    - no useful error messages in batch mode
-    - speed of metadata import (-> purge recyclebin)
-News
-- Top 10 Visitors: US (24%), Germany (15%), India (8%), UK (7%), France (6%), Canada (3%), Brazil (2%), Poland (2%), Austria (2%), Italy (1%)
 
 0.5.1
 -----
@@ -149,6 +128,7 @@ News
   - protocol handling: file://, http://, ftp://, custom
   - introduce (UML) model based testing
 - Bugs
+  - BOM handling
   - Check why/when Oracle reports 4x the length of varchar2 fields 
   - make benerator finish on 
     - SQL script errors
@@ -175,6 +155,10 @@ News
     - Austria: Stroh-Rum
     - Spain: ?
 - site
+  - clean up databene.org
+  - explain bans on forum page
+  - 'Download benerator' button
+  - explain seriousness
   - add tracking to javadoc/source-xref
   - online domain test data generator for manual testing?
 	- feature matrix w/ similar products:
@@ -186,6 +170,15 @@ News
 	  - version number (nth release)
 	  - last activity
 - doc
+  - update custom Sequence demo
+  - How to program workflow like running from setup file
+  - package doc
+  - dataset concept
+  - new metadata concept
+  - Known issues
+    - halting on errors
+    - no useful error messages in batch mode
+    - speed of metadata import (-> purge recyclebin)
   - anonymization demo
   - describe dynamic aspects of the interfaces
   - Uniqueness
