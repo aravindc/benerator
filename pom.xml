@@ -1,8 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>databene</groupId>
+    <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
     <version>0.5.0</version>
 
@@ -31,16 +32,9 @@
     </description>
 
     <contributors>
-		    <contributor>
-		      <name>Daniela Crescenzio</name>
-		      <email>daniela@databene.org</email>
-		      <url>http://databene.org</url>
-		      <organization>Volker Bergmann IT Consulting</organization>
-		      <organizationUrl>http://www.bergmann-it.de</organizationUrl>
-		      <roles/>
-		      <timezone/>
-		      <properties/>
-		    </contributor>
+		<contributor>
+			<name>Daniela Crescenzio</name>
+		</contributor>
     </contributors>
 
     <licenses>
@@ -69,12 +63,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>databene</groupId>
+            <groupId>org.databene</groupId>
             <artifactId>databene-webdecs</artifactId>
             <version>${webdecs_version}</version>
         </dependency>
         <dependency>
-            <groupId>databene</groupId>
+            <groupId>org.databene</groupId>
             <artifactId>databene-commons</artifactId>
             <version>${commons_version}</version>
         </dependency>
@@ -214,5 +208,9 @@
 <!-- -->
         </plugins>
     </reporting>
+
+	<scm>
+		<url>http://databene.org/databene-benerator/xref/index.html</url>
+	</scm>
 
 </project>
