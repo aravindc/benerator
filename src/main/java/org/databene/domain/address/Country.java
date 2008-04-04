@@ -36,7 +36,7 @@ import java.util.*;
 import java.io.IOException;
 
 /**
- * Represents a country, provides constants for most bigger countries and serves as a generator for city object.
+ * Represents a country and provides constants for most bigger countries.
  * Country information is read from the file org/databene/domain/address/country.csv.<br/>
  * <br/>
  * Created: 11.06.2006 08:15:37
