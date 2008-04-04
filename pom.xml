@@ -209,8 +209,16 @@
         </plugins>
     </reporting>
 
+	<distributionManagement>
+		<repository>
+			<id>databene.repo</id>
+			<name>databene Internal Repository</name>
+			<url>ftp://databene.org/databene.org/m2/</url>
+		</repository>
+	</distributionManagement>
+  
 	<scm>
-		<url>http://databene.org/databene-benerator/xref/index.html</url>
+		<url>https://benerator.svn.sourceforge.net/svnroot/benerator</url>
 	</scm>
 
 </project>
