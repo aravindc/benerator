@@ -3,9 +3,11 @@ release notes benerator 0.5.0
 
 summary
 -------
-benerator now supports the generation of XML files based on XML schema. 
-XML schema annotations permit configuration of the generation within the schema file.
+benerator now can generate XML files directly from XML schema files. 
+Custom generator configuration can be added in XML schema annotations.
 The region concept has been finally abstracted to a dataset concept.
+The core data model has been completely redesigned for supporting a 
+type definition concept. With improved QA, several bugs were found and fixed. 
 New generator classes and name packages have been added for India, Brazil, 
 Canada, Spain, Australia, Austria, Japan, Slovenia and Israel.
 
