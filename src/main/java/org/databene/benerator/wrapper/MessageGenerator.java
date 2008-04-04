@@ -37,7 +37,6 @@ import java.text.MessageFormat;
  * Assembles the output of several source generators by a java.text.MessageFormat.<br/>
  * <br/>
  * Created: 08.06.2006 21:48:08
- * @deprecated use databene-commons' MessageConverter class
  */
 public class MessageGenerator extends ValidatingGenerator<String> {
 
@@ -62,7 +61,11 @@ public class MessageGenerator extends ValidatingGenerator<String> {
 
     /** Sets minLength to 0, maxLength to 30 and all other values empty. */
     public MessageGenerator() {
-        this(null, 0, 30);
+        this(null);
+    }
+
+    public MessageGenerator(String pattern, Generator ... sources) {
+        this(pattern, 0, 30, sources);
     }
 
     /** Initializes Generator */
