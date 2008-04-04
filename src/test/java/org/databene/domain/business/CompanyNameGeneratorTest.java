@@ -27,6 +27,8 @@
 
 package org.databene.domain.business;
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.domain.organization.CompanyNameGenerator;
@@ -42,13 +44,16 @@ public class CompanyNameGeneratorTest extends TestCase {
 
     private static Log logger = LogFactory.getLog(CompanyNameGeneratorTest.class);
     
-    public void test() {
-        check("artificial");
-        check("tech");
+    public void testDE() {
+        check("DE");
     }
-
-    public void check(String style) {
-        CompanyNameGenerator generator = new CompanyNameGenerator(style);
+/* TODO
+    public void testUS() {
+        check("US");
+    }
+*/
+    public void check(String dataset) {
+        CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
         for (int i = 0; i < 10; i++) {
             String name = generator.generate();
             logger.debug(name);
