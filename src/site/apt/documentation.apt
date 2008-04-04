@@ -22,14 +22,15 @@ documentation
  documentation.
 
  Now you can start rolling your own test data. For the first specific data providers you might use 
- some from the {{{domain_packages.html}domain packages}}.
+ some from the {{{domain_packages.html}domain packages}}. You can define own nested 
+ {{{dataset.html}datasets}} for structuring import data.
  
  You will soon face some data constraints that are too special to be handled generically, 
  like e.g. creating data that fits with special checksum algorithms or strange multi-field constraints.
  There are many places at which you can plug in own Java code as described in the 
  {{{customizing_guide.html}customizing guide}}.
  
- Documentation will always be one step behind implementation. If the documentation did not explain well 
+ Documentation will always be a step behind implementation. If the documentation did not explain well 
  enough, ask me in the {{{http://databene.org/phpBB2/viewforum.php?f=2}help forum}}.
  
  Possibly the data format you have to create is too strange to cope with the standard

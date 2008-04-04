@@ -17,9 +17,13 @@ about databene benerator
 
 news
 
-  <<2008-03-31 benerator release 0.5.0:>> benerator now supports the generation of XML files 
-  based on XML schema files. XML schema annotations allow configuration of the generation.
+  <<2008-03-31 benerator release 0.5.0:>> benerator now can generate XML files directly from XML schema files. 
+  Custom generator configuration can be added in XML schema annotations.
   The region concept has been finally abstracted to a dataset concept.
+  The core data model has been completely redesigned for supporting a 
+  type definition concept. With improved QA, several bugs were found and fixed. 
+  New generator classes and name packages have been added for India, Brazil, 
+  Canada, Spain, Australia, Austria, Japan, Slovenia and Israel.
   
   {{{http://databene.org/databene-benerator/download.html}download benerator}}
   
