@@ -30,6 +30,7 @@ import org.databene.platform.array.Array2EntityConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ArrayConverter;
@@ -135,7 +136,7 @@ public class CSVEntityIterator implements Iterator<Entity> {
 			if (cellIterator.hasNext())
 				featureNames = cellIterator.next();
 			else
-				throw new RuntimeException("empty CSV file"); // TODO
+				throw new ConfigurationError("empty CSV file");
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, preprocessor); 
 	        Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
@@ -143,8 +144,7 @@ public class CSVEntityIterator implements Iterator<Entity> {
 		} catch (FileNotFoundException e) {
 			throw e;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException(e);
+			throw new RuntimeException("Error in processing " + uri, e);
 		}
 	}
 
