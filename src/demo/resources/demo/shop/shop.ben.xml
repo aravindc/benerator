@@ -79,7 +79,7 @@
 
 	<!-- create customers -->
 	<create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
-		<variable name="person" generator="org.databene.domain.person.PersonGenerator" dataSet="{${country}}" locale="{${locale}}"/>
+		<variable name="person" generator="org.databene.domain.person.PersonGenerator" dataset="{${country}}" locale="{${locale}}"/>
 		<id name="id" strategy="{${id_strategy}}" param="{${id_param}}" source="db" />
 		<attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
 		<attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)" />
