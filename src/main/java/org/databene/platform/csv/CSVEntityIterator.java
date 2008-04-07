@@ -1,0 +1,151 @@
+/*
+ * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.platform.csv;
+
+import org.databene.platform.array.Array2EntityConverter;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.Entity;
+import org.databene.document.csv.CSVLineIterator;
+import org.databene.commons.Converter;
+import org.databene.commons.SystemInfo;
+import org.databene.commons.converter.ArrayConverter;
+import org.databene.commons.converter.ConverterChain;
+import org.databene.commons.converter.NoOpConverter;
+import org.databene.commons.iterator.ConvertingIterator;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+
+/**
+ * Iterates Entities in a CSV file.<br/>
+ * <br/>
+ * Created: 07.04.2008 09:49:08
+ * @since 0.5.1
+ * @author Volker Bergmann
+ */
+public class CSVEntityIterator implements Iterator<Entity> {
+
+    private String uri;
+    private char   separator;
+    private String encoding;
+
+    private Iterator<Entity> source;
+    
+    private ComplexTypeDescriptor entityDescriptor;
+
+    // constructors ----------------------------------------------------------------------------------------------------
+
+    public CSVEntityIterator(String uri, String entityName) throws FileNotFoundException {
+        this(uri, entityName, ',', SystemInfo.fileEncoding());
+    }
+
+    public CSVEntityIterator(String uri, String entityName, char separator) throws FileNotFoundException {
+        this(uri, entityName, separator, SystemInfo.fileEncoding());
+    }
+
+    public CSVEntityIterator(String uri, String entityName, char separator, String encoding) throws FileNotFoundException {
+        this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
+    }
+
+    public CSVEntityIterator(String uri, String entityName, Converter<String, String> preprocessor, char separator, String encoding) throws FileNotFoundException {
+        this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
+    }
+
+    public CSVEntityIterator(String uri, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) throws FileNotFoundException {
+        this.uri = uri;
+        this.separator = separator;
+        this.encoding = encoding;
+        this.entityDescriptor = descriptor;
+        init(uri, preprocessor, separator, encoding);
+    }
+
+    // Iterator interface ----------------------------------------------------------------------------------------------
+    
+	public void remove() {
+		source.remove();
+	}
+
+    public boolean hasNext() {
+        return source.hasNext();
+    }
+    
+    public Entity next() {
+    	if (!source.hasNext())
+    		throw new IllegalStateException("No more entity to fetch, check hasNext() before calling next()");
+        return source.next();
+    }
+
+    // properties ------------------------------------------------------------------------------------------------------
+
+    public String getUri() {
+        return uri;
+    }
+
+    public char getSeparator() {
+        return separator;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public String getEntityName() {
+        return entityDescriptor.getName();
+    }
+
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
+    public String toString() {
+        return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
+                ", entityName=" + entityDescriptor.getName() + "]";
+    }
+
+    // private helpers -------------------------------------------------------------------------------------------------
+    
+	private void init(String uri, Converter<String, String> preprocessor,
+			char separator, String encoding) throws FileNotFoundException {
+		try {
+        	String[] featureNames;
+			Iterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
+			if (cellIterator.hasNext())
+				featureNames = cellIterator.next();
+			else
+				throw new RuntimeException("empty CSV file"); // TODO
+	        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, preprocessor); 
+	        Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
+	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
+	        this.source = new ConvertingIterator<String[], Entity>(cellIterator, converter);
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		}
+	}
+
+}
