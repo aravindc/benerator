@@ -39,14 +39,23 @@ import java.util.Map;
 public class State {
 
     private String id;
+    private String name;
     private Country country;
     private Map<CityId, City> cities;
+
+    // constructors ----------------------------------------------------------------------------------------------------
+    
+    public State() {
+    	this(null);
+    }
 
     public State(String id) {
         this.id = id;
         this.cities = new OrderedMap<CityId, City>();
     }
 
+    // properties ------------------------------------------------------------------------------------------------------
+    
     public String getId() {
         return id;
     }
@@ -55,13 +64,23 @@ public class State {
         this.id = id;
     }
 
-    public Country getCountry() {
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Country getCountry() {
         return country;
     }
 
     public void setCountry(Country country) {
         this.country = country;
     }
+    
+    // city handling ---------------------------------------------------------------------------------------------------
 
     public City getCity(CityId id) {
         return cities.get(id);
@@ -74,5 +93,12 @@ public class State {
     public void addCity(CityId id, City city) {
         city.setState(this);
         cities.put(id, city);
+    }
+
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    
+    @Override
+    public String toString() {
+    	return (name != null ? name : id);
     }
 }
