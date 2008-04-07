@@ -26,22 +26,19 @@
 
 package org.databene.platform.csv;
 
-import org.databene.platform.array.Array2EntityConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.EntityIterable;
 import org.databene.model.data.Entity;
-import org.databene.document.csv.CSVLineIterable;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.converter.ArrayConverter;
-import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.commons.iterator.ConvertingIterator;
 
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 
 /**
- * Imports Entites from a CSV file.<br/>
+ * Imports Entities from a CSV file.<br/>
  * <br/>
  * Created: 26.08.2007 12:16:08
  * @author Volker Bergmann
@@ -53,7 +50,6 @@ public class CSVEntityIterable implements EntityIterable {
     private String encoding;
     private Converter<String, String> preprocessor;
 
-    private Iterable<String[]> source;
     private ComplexTypeDescriptor entityDescriptor;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -127,14 +123,12 @@ public class CSVEntityIterable implements EntityIterable {
     }
 
     public Iterator<Entity> iterator() {
-        if (source == null)
-            init();
-        Iterator<String[]> arrayIterator = source.iterator();
-        String[] featureNames = arrayIterator.next();
-        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, preprocessor); 
-        Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
-        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
-        return new ConvertingIterator<String[], Entity>(arrayIterator, converter);
+        try {
+			return new CSVEntityIterator(uri, entityDescriptor, preprocessor, separator, encoding);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			throw new ConfigurationError("Cannot create iterator. ", e);
+		}
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -142,11 +136,5 @@ public class CSVEntityIterable implements EntityIterable {
     public String toString() {
         return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
                 ", entityName=" + entityDescriptor.getName() + "]";
-    }
-
-    // private helpers -------------------------------------------------------------------------------------------------
-
-    private void init() {
-        this.source = new CSVLineIterable(uri, separator, true, encoding);
     }
 }
