@@ -58,6 +58,7 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     private String dataset;
     Generator<String> location;
     
+    // TODO v0.5.2 french & italian company names
     public CompanyNameGenerator() {
     }
     
@@ -79,16 +80,17 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
         if (country != null) {
             Generator<String> city = new ConvertingGenerator<City, String>(new CityGenerator(country), new PropertyAccessConverter("name"));
             location = new NullableGenerator<String>(
-                    new AlternativeGenerator<String>(String.class,
-                            new ConstantGenerator<String>(country.getName()), city), 
-                    0.8
+                    	new AlternativeGenerator<String>(String.class, 
+                    			new ConstantGenerator<String>(country.getLocalName()), 
+                    			city), 
+                    	0.8
                 );
             
         } else
             location = new ConstantGenerator<String>(null);
         core = new AlternativeGenerator<String>(String.class, artificial, tech, person);
-        legalForm = new DatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", dataset, REGION);
-        sector = new NullableGenerator<String>(new DatasetCSVGenerator<String>(ORG + "sector_{0}.csv", dataset, REGION), 0.7);
+        legalForm = new DatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", dataset, REGION, "UTF-8");
+        sector = new NullableGenerator<String>(new DatasetCSVGenerator<String>(ORG + "sector_{0}.csv", dataset, REGION, "UTF-8"), 0.7);
     }
     
     public String generate() {
