@@ -26,6 +26,7 @@
 
 package org.databene.benerator.demo;
 
+import org.databene.domain.address.Address;
 import org.databene.domain.address.AddressGenerator;
 import org.databene.domain.address.Country;
 
@@ -34,10 +35,17 @@ import org.databene.domain.address.Country;
  * <br/> 
  * Created: 07.06.2007 16:59:55
  */
-public class AddressDemo {
+public class AddressDemo { 
+	
+	// TODO update doc w/ US code & output
     public static void main(String[] args) {
-        AddressGenerator generator = new AddressGenerator(Country.GERMANY);
-        for (int i = 0; i < 3; i++)
-            System.out.println(generator.generate());
+        AddressGenerator generator = new AddressGenerator(Country.US);
+        for (int i = 0; i < 3; i++) {
+            Address address = generator.generate();
+			System.out.println(address);
+            System.out.println("phone: " + address.getPrivatePhone());
+            System.out.println("fax: " + address.getFax());
+            System.out.println();
+        }
     }
 }
