@@ -126,7 +126,6 @@ public class CSVEntityIterable implements EntityIterable {
         try {
 			return new CSVEntityIterator(uri, entityDescriptor, preprocessor, separator, encoding);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}
     }
