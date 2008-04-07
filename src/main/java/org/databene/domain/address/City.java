@@ -1,19 +1,51 @@
+/*
+ * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.databene.domain.address;
 
 import java.util.*;
+
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
+import org.databene.commons.StringUtil;
 
 /**
  * Represents a city.<br/>
  * <br/>
  * Created: 11.06.2006 08:19:23
+ * @author Volker Bergmann
  */
 public class City {
+	
+	private static final Escalator escalator = new LoggerEscalator();
 
-    // Ort;Zusatz;Plz;Vorwahl;Bundesland
     private String name;
     private String nameExtension;
     private SortedSet<String> zipCodes;
-    private String phoneCode;
+    private String areaCode;
     private State state;
     private int inhabitants;
     private Locale language;
@@ -25,7 +57,7 @@ public class City {
         this.name = name;
         this.nameExtension = addition;
         this.zipCodes = new TreeSet<String>(zipCodes);
-        this.phoneCode = phoneCode;
+        this.areaCode = phoneCode;
     }
 
     public String getNameExtension() {
@@ -49,12 +81,24 @@ public class City {
         zipCodes.add(zipCode);
     }
 
-    public String getPhoneCode() {
-        return phoneCode;
+    public String getAreaCode() {
+        return areaCode;
     }
 
-    public void setPhoneCode(String phoneCode) {
-        this.phoneCode = phoneCode;
+    public void setAreaCode(String phoneCode) {
+        this.areaCode = phoneCode;
+    }
+
+    @Deprecated
+    public String getPhoneCode() {
+    	escalator.escalate("The 'phoneCode' property is deprecated, please use 'areaCode' instead", City.class, "Called setPhoneCode()");
+        return getAreaCode();
+    }
+
+    @Deprecated
+    public void setPhoneCode(String areaCode) {
+    	escalator.escalate("The 'phoneCode' property is deprecated, please use 'areaCode' instead", City.class, "Called getPhoneCode()");
+        setAreaCode(areaCode);
     }
 
     public State getState() {
@@ -88,7 +132,7 @@ public class City {
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return name + (nameExtension.length() > 0 && Character.isLetter(nameExtension.charAt(0)) ? " " : "") + nameExtension;
+        return name + (StringUtil.isEmpty(nameExtension) ? "" : (Character.isLetter(nameExtension.charAt(0)) ? " " : "") + nameExtension);
     }
 
     public boolean equals(Object o) {
@@ -101,7 +145,6 @@ public class City {
         if (nameExtension != null ? !nameExtension.equals(city.nameExtension) : city.nameExtension != null)
             return false;
         return name.equals(city.name);
-
     }
 
     public int hashCode() {
@@ -110,5 +153,4 @@ public class City {
         result = 29 * result + (nameExtension != null ? nameExtension.hashCode() : 0);
         return result;
     }
-
 }
