@@ -36,6 +36,7 @@ import java.util.Iterator;
  * Tests the CSVEntityIterable.<br/>
  * <br/>
  * Created: 26.08.2007 12:45:17
+ * @author Volker Bergmann
  */
 public class CSVEntityIterableTest extends TestCase {
 
@@ -56,7 +57,7 @@ public class CSVEntityIterableTest extends TestCase {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void checkIteration(Iterator iterator) {
+    private void checkIteration(Iterator<Entity> iterator) {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         assertTrue(iterator.hasNext());
         assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), iterator.next());
