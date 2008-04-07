@@ -35,10 +35,11 @@ import java.util.Locale;
  * Demonstrates the use of the PersonGenerator.<br/>
  * <br/>
  * Created: 07.06.2007 17:03:28
+ * @author Volker Bergmann
  */
 public class PersonDemo {
     public static void main(String[] args) {
-        PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMAN);
+        PersonGenerator generator = new PersonGenerator(Country.US, Locale.US);
         for (int i = 0; i < 10; i++)
             System.out.println(generator.generate());
         generator.close();
