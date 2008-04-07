@@ -43,7 +43,7 @@ public class CityGenerator extends WeightedSampleGenerator<City> {
         String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
         try {
             CityManager.readCities(country, filename);
-            for (State state : country.getStates()) // TODO v0.6 group cities by state
+            for (State state : country.getStates())
                 for (City city : state.getCities())
                     addValue(city);
         } catch (IOException e) {
