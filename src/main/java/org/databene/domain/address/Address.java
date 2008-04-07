@@ -12,6 +12,7 @@ public class Address {
     public String houseNumber;
     public String zipCode;
     public String city;
+    public String state;
     public Country country;
     public PhoneNumber privatePhone;
     public PhoneNumber officePhone;
@@ -19,14 +20,15 @@ public class Address {
     public PhoneNumber fax;
 
     public Address() {
-        this(null, null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Address(String street, String houseNumber, String zipCode, String city, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
+    public Address(String street, String houseNumber, String zipCode, String city, String state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.zipCode = zipCode;
         this.city = city;
+        this.state = state;
         this.country = country;
         this.privatePhone = privatePhone;
         this.officePhone = officePhone;
@@ -64,6 +66,14 @@ public class Address {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public Country getCountry() {
@@ -107,7 +117,9 @@ public class Address {
     }
 
     public String toString() {
-        return street + " " + houseNumber + ", " + zipCode + " " + city + ", " + country
-                + " (private:" + privatePhone + ", work:" + officePhone + ", mobile:" + mobilePhone + ", fax:" + fax + ')';
+    	AddressFormat format = AddressFormat.getInstance(country.getIsoCode());
+    	if (format == null)
+    		format = AddressFormat.DE;
+   		return format.format(this);
     }
 }
