@@ -40,9 +40,13 @@ import junit.framework.TestCase;
 public class CompanyNameGeneratorTest extends TestCase {
 
     private static Log logger = LogFactory.getLog(CompanyNameGeneratorTest.class);
-    
-    public void test() {
+
+    public void testDE() {
         check("DE");
+    }
+
+    public void testUS() {
+        check("US");
     }
 
     public void check(String dataset) {
