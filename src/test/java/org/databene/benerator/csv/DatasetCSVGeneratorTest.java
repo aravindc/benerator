@@ -29,7 +29,7 @@ package org.databene.benerator.csv;
 import junit.framework.TestCase;
 
 /**
- * Tests the DataSetCSVGenerator.<br/><br/>
+ * Tests the DatasetCSVGenerator.<br/><br/>
  * Created: 21.03.2008 16:58:20
  * @since 0.5.0
  * @author Volker Bergmann

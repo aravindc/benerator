@@ -36,7 +36,7 @@ import org.databene.commons.ArrayUtil;
 import junit.framework.TestCase;
 
 /**
- * Tests the DataSet features.<br/><br/>
+ * Tests the Dataset features.<br/><br/>
  * Created: 21.03.2008 14:20:59
  * @since 0.5.0
  * @author Volker Bergmann
