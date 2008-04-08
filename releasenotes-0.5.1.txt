@@ -1,0 +1,29 @@
+release notes benerator 0.5.1
+=============================
+
+summary
+-------
+
+changes
+-------
+- major redesign of address handling and generation
+- city_XY.csv: Using regex for mobile phone area codes
+- Renamed MobilePhoneCodeGenerator to MobilePhoneNumberGenerator
+
+enhancements
+------------
+- Domain package for US addresses
+- New class AddressFormat
+- New class CSVEntityIterator
+- Address: supporting state info and rendering via AddressFormat
+- Supporting states
+- Added datePattern property to ConsoleExporter, CSVExporter and FlatFileExporter 
+  according to Request 1937356 'have datePattern in exporters'
+
+bug fixes
+---------
+- bug fix in shop demo
+- 1937344 pattern is ignored when converting date variables to string
+- 1937341 FreeMarker is missing on the classpath
+- 1936931 LiteralParser parses 01234 as number, should be string
+- 1937404 IOUtil.readProperties does not support \n \r \t
