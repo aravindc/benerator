@@ -53,6 +53,7 @@
             <item name="blog" href="../blog"/>
             <item name="contact" href="../contact.html" />
 			<item name="downloads" href="http://sourceforge.net/project/showfiles.php?group_id=222964" />
+            <item name="bug tracking" href="http://sourceforge.net/tracker/?group_id=222964&atid=1057386"/>
         </menu>
 
         <menu name="all products">
