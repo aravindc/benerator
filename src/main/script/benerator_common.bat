@@ -38,7 +38,7 @@ goto endcommon
 
 :setLocalClassPath
 set LOCALCLASSPATH=.;%BENERATOR_HOME%\bin;%BENERATOR_HOME%\databene-benerator-${project.version}.jar;%BENERATOR_HOME%\lib\databene-webdecs-${webdecs_version}.jar;%BENERATOR_HOME%\lib\databene-commons-${commons_version}.jar;%BENERATOR_HOME%\lib\commons-logging-1.0.4.jar
-set LOCALCLASSPATH=%LOCALCLASSPATH%;lib\log4j-1.2.14.jar;lib\ojdbc14.jar
+set LOCALCLASSPATH=%LOCALCLASSPATH%;%BENERATOR_HOME%\lib\log4j-1.2.14.jar;%BENERATOR_HOME%\lib\ojdbc14.jar;%BENERATOR_HOME%\lib\freemarker-2.3.9.jar
 
 :checkJava
 set _JAVACMD=%JAVACMD%
