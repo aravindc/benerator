@@ -19,13 +19,25 @@ domain packages
 |             | family names      | * Switzerland                                 |
 |             |                   | * Austria                                     |
 |             |                   | * USA                                         |
+|             |                   | * Canada                                      |
 |             |                   | * UK                                          |
+|             |                   | * Spain                                       |
 |             |                   | * Ireland                                     |
 |             |                   | * Australia                                   |
 |             |                   | * France                                      |
 |             |                   | * Italy                                       |
+|             |                   | * Brazil                                      |
+|             |                   | * Israel                                      |
+|             |                   | * India                                       |
+|             |                   | * Japan                                       |
+|             |                   | * Poland                                      |
 *-------------+-------------------+-----------------------------------------------+
 | address     | street            | Countries:                                    |
 |             | city, zip code    | * Germany                                     |
-|             | phone numbers     |                                               |
+|             | phone numbers     | * United States                               |
+*-------------+-------------------+-----------------------------------------------+
+| organization| company names     | * United States                               |
+|             |                   | * Germany                                     |
+*-------------+-------------------+-----------------------------------------------+
+| product     | ean code          |                                               |
 *-------------+-------------------+-----------------------------------------------+

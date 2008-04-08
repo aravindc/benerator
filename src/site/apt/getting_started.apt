@@ -525,22 +525,40 @@ AddressGenerator
 --------------------------------------------------------------------------------
   public class AddressDemo {
       public static void main(String[] args) {
-          AddressGenerator generator = new AddressGenerator(Country.GERMANY);
-          for (int i = 0; i < 3; i++)
-              System.out.println(generator.generate());
-      }
+        AddressGenerator generator = new AddressGenerator(Country.US);
+        for (int i = 0; i < 3; i++) {
+            Address address = generator.generate();
+			System.out.println(address);
+            System.out.println("phone: " + address.getPrivatePhone());
+            System.out.println("fax: " + address.getFax());
+            System.out.println();
+        }
   }
 --------------------------------------------------------------------------------
 
   It creates addresses:
 
 --------------------------------------------------------------------------------
- Burgstraße 43, 06369 Riesdorf, Deutschland (private:+49-34978-2563, work:+49-34978-5266, mobile:+49-179-9334291, fax:+49-34978-2491)
- Hauptstraße 19, 47506 Neukirchen-Vluyn, Deutschland (private:+49-2845-46731, work:+49-2845-38948, mobile:+49-175-16238464, fax:+49-2845-53393)
- Dorfstraße 23, 74736 Hardheim, Deutschland (private:+49-6283-28977, work:+49-6283-75058, mobile:+49-179-60232239, fax:+49-6283-29919)
+35 College Street
+Loysville, PA 17047
+United States
+phone: +1-717-3534478
+fax: +1-717-5975441
+
+11 Fourth Street
+Triangle, VA 22172
+United States
+phone: +1-703-6005196
+fax: +1-703-5068030
+
+33 Church Street
+Elkhorn, WI 53121
+United States
+phone: +1-414-5832000
+fax: +1-414-7840306
 --------------------------------------------------------------------------------
 
-  Currrently only German addresses are supported.
+  Currrently only US and German addresses are supported.
 
 
 
