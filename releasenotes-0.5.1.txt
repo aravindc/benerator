@@ -3,6 +3,11 @@ release notes benerator 0.5.1
 
 summary
 -------
+release 0.5.1 fixes some major bugs and adds domain support for the United States in 
+generating US addresses and company names. From now on, benerator will be available 
+on the public maven repository (groupId 'org.databene', artifactId 'databene-benerator'. 
+Users please note the new tracking on sourceforge.net: 
+http://sourceforge.net/tracker/?group_id=222964&atid=1057386.
 
 changes
 -------
