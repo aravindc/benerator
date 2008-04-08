@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,33 +26,21 @@
 
 package org.databene.model.consumer;
 
-import org.databene.commons.CompositeFormatter;
-import org.databene.model.data.Entity;
-
 /**
- * Exports generated objects to the standard output.<br/><br/>
- * Created: 27.02.2008 11:40:37
- * @since 0.5.0
+ * Provides a datePattern property for child classes.<br/><br/>
+ * Created at 08.04.2008 07:18:17
+ * @since 0.5.1
  * @author Volker Bergmann
  */
-public class ConsoleExporter<E> extends FormattingConsumer<E> {
-	
-	private CompositeFormatter formatter;
+public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 
-	public void startConsuming(E object) {
-		if (object instanceof Entity)
-			startEntity((Entity) object);
-		else
-			System.out.println(object);
-    }
+	protected String datePattern;
 	
-	@Override
-	public void setDatePattern(String datePattern) {
-		super.setDatePattern(datePattern);
-		formatter.setDatePattern(datePattern);
+    public String getDatePattern() {
+		return datePattern;
 	}
 
-	private void startEntity(Entity entity) {
-		System.out.println(formatter.render(entity.getName() + '[', entity, "]"));
+	public void setDatePattern(String datePattern) {
+		this.datePattern = datePattern;
 	}
 }

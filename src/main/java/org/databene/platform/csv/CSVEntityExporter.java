@@ -26,7 +26,7 @@
 
 package org.databene.platform.csv;
 
-import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.FormattingConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -36,6 +36,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.IOUtil;
+import org.databene.commons.converter.AnyConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -49,7 +50,7 @@ import java.util.List;
  * Created: 21.08.2007 21:16:59
  * @author Volker Bergmann
  */
-public class CSVEntityExporter extends AbstractConsumer<Entity> {
+public class CSVEntityExporter extends FormattingConsumer<Entity> {
 
     private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
     
@@ -62,6 +63,7 @@ public class CSVEntityExporter extends AbstractConsumer<Entity> {
     // attributes ------------------------------------------------------------------------------------------------------
 
     private String uri;
+    private String datePattern;
     private String[] propertyNames;
     private String encoding;
     private char separator;
@@ -112,7 +114,15 @@ public class CSVEntityExporter extends AbstractConsumer<Entity> {
         this.uri = uri;
     }
 
-    public void setProperties(String attributes) {
+    public String getDatePattern() {
+		return datePattern;
+	}
+
+	public void setDatePattern(String datePattern) {
+		this.datePattern = datePattern;
+	}
+
+	public void setProperties(String attributes) {
         this.propertyNames = StringUtil.tokenize(attributes, ',');
         StringUtil.trimAll(propertyNames);
     }
@@ -137,7 +147,7 @@ public class CSVEntityExporter extends AbstractConsumer<Entity> {
                 if (i > 0)
                     printer.print(separator);
                 Object value = entity.getComponent(propertyNames[i]);
-                String s = String.valueOf(value);
+                String s = AnyConverter.convert(value, String.class, datePattern);
                 if (s.indexOf(separator) >= 0)
                     s = '"' + s + '"';
                 printer.print(s);

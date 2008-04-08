@@ -26,12 +26,13 @@
 
 package org.databene.platform.flat;
 
-import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.FormattingConsumer;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComponentAccessor;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.commons.*;
 import org.databene.commons.converter.AccessingConverter;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
@@ -51,7 +52,7 @@ import java.text.ParseException;
  * Created: 26.08.2007 06:17:41
  * @author Volker Bergmann
  */
-public class FlatFileEntityExporter extends AbstractConsumer<Entity> {
+public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
 
     private static final Log logger = LogFactory.getLog(FlatFileEntityExporter.class);
 
@@ -124,6 +125,7 @@ public class FlatFileEntityExporter extends AbstractConsumer<Entity> {
                 FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(propertyName, width, alignment, padChar);
                 this.converters[i] = new ConverterChain<Entity, String>(
                     new AccessingConverter<Entity, Object>(Object.class, new ComponentAccessor(descriptor.getName())),
+                    new AnyConverter(String.class, datePattern),
                     new FormatFormatConverter(
                         new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar)
                     )
