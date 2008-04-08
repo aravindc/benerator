@@ -28,11 +28,16 @@ package org.databene.domain.address;
 
 import org.databene.document.csv.BeanCSVWriter;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.model.data.Entity;
+import org.databene.platform.bean.Entity2BeanConverter;
+import org.databene.platform.csv.CSVEntityIterator;
 import org.databene.commons.*;
+import org.databene.commons.iterator.ConvertingIterator;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
 import java.util.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.FileWriter;
 
@@ -66,12 +71,37 @@ public class CityManager {
 
     private static Set<String> suspectiveNames = new HashSet<String>();
 
-    public static void readCities(Country country, String filename) throws IOException {
+    public static void readCities(Country country, String filename) throws IOException { // TODO v0.5.2 improve interface
         readCities(country, filename, new HashMap<String, String>());
     }
 
     public static void readCities(Country country, String filename, Map<String, String> defaults) throws IOException {
-        CSVLineIterator iterator = new CSVLineIterator(filename, ';', "UTF-8");
+    	parseStateFile(country);
+        int warnCount = parseCityFile(country, filename, defaults);
+        if (warnCount > 0)
+            logger.warn(warnCount + " warnings");
+/*
+        if (suspectiveNames.size() > 0)
+            logger.info("Suspective names: " + suspectiveNames);
+*/
+    }
+
+	private static void parseStateFile(Country country) {
+		try {
+			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
+					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", "State", ',', "UTF-8"),
+					new Entity2BeanConverter<State>(State.class));
+			while (iterator.hasNext()) {
+				State state = iterator.next();
+				country.addState(state);
+			}
+		} catch (FileNotFoundException e) {
+			logger.warn("No state definition file found:");
+		}
+	}
+
+	private static int parseCityFile(Country country, String filename, Map<String, String> defaults) throws IOException {
+		CSVLineIterator iterator = new CSVLineIterator(filename, ';', "UTF-8");
         String[] header = iterator.next();
         int warnCount = 0;
         while (iterator.hasNext()) {
@@ -94,7 +124,13 @@ public class CityManager {
             State state = country.getState(stateId);
             if (state == null) {
                 state = new State(stateId);
-                country.addState(stateId, state);
+                String stateName = instance.get("state.name");
+				if (stateName != null) {
+					stateName = StringUtil.normalizeName(stateName);
+                	state.setName(stateName);
+				}
+				//System.out.println(state.getId() + "," + state.getName());
+                country.addState(state);
             }
 
             String cityIdString = instance.get("municipality");
@@ -114,30 +150,27 @@ public class CityManager {
             String zipCode = instance.get("zipCode");
             String lang = getValue(instance, "language", defaults);
             if (city == null) {
-                String phoneCode = getValue(instance, "phoneCode", defaults);
-                if (StringUtil.isEmpty(phoneCode)) {
+                String areaCode = getValue(instance, "areaCode", defaults);
+                if (StringUtil.isEmpty(areaCode)) {
                     warnCount++;
-                    logger.warn("Leaving out '" + cityId + "' since its phone code is not specified");
-                    continue;
+                    logger.warn("areaCode is not provided for city: '" + cityId);
                 }
-
-                city = new CityHelper(state, cityId, CollectionUtil.toList(zipCode), phoneCode);
-                city.setLanguage(LocaleUtil.getLocale(lang));
+                city = new CityHelper(state, cityId, CollectionUtil.toList(zipCode), areaCode);
+                if (!StringUtil.isEmpty(lang))
+                	city.setLanguage(LocaleUtil.getLocale(lang));
                 state.addCity(cityId, city);
+                city.setState(state);
             } else
                 city.addZipCode(zipCode);
         }
-        if (warnCount > 0)
-            logger.warn(warnCount + " warnings");
-        if (suspectiveNames.size() > 0)
-            logger.warn("Suspective names: " + suspectiveNames);
-    }
+		return warnCount;
+	}
 
     public static void persistCities(Country country, String filename) throws IOException {
         // persist city data in standard format
         BeanCSVWriter<City> writer = new BeanCSVWriter<City>(new FileWriter(filename), ';',
                 "state.country.isoCode", "state.id", "name", "nameExtension",
-                "zipCode", "phoneCode", "language");
+                "zipCode", "areaCode", "language");
         for (State state : country.getStates()) {
             for (City city : state.getCities())
                 for (String zipCode : city.getZipCodes()) {
@@ -271,10 +304,9 @@ public class CityManager {
             if (!quiet)
                 logger.info("Double name or possible parsing error: " + name);
         }
+        name = StringUtil.normalizeName(name);
         CityId cityId = new CityId(name, extension);
         // check recomposition against original name
-        if (!cityId.toString().equals(cityName))
-            throw new RuntimeException("Error in city name parsing: " + cityName + " -> " + cityId);
         return cityId;
     }
 
@@ -300,8 +332,8 @@ public class CityManager {
 
         private String zipCode;
 
-        public CityHelper(State state, CityId cityId, List<String> zipCodes, String phoneCode) {
-            super(state, cityId.getName(), cityId.getNameExtension(), zipCodes, phoneCode);
+        public CityHelper(State state, CityId cityId, List<String> zipCodes, String areaCode) {
+            super(state, cityId.getName(), cityId.getNameExtension(), zipCodes, areaCode);
         }
 
         public String getZipCode() {
