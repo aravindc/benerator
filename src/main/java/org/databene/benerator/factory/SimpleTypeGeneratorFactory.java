@@ -21,6 +21,7 @@ import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
 import org.databene.commons.validator.StringLengthValidator;
@@ -35,7 +36,9 @@ import static org.databene.model.data.SimpleTypeDescriptor.*;
 
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
-    public static Generator<? extends Object> create(SimpleTypeDescriptor descriptor, boolean unique,
+    private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'hh:mm:ss";
+
+	public static Generator<? extends Object> create(SimpleTypeDescriptor descriptor, boolean unique,
             Context context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
@@ -73,13 +76,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         return createTypeGenerator(targetType, partDescriptor);
     }
 */
-    private static <T> Generator<T> createTypeConvertingGenerator(
-            SimpleTypeDescriptor descriptor, Generator<? extends Object> generator) {
+    private static <S, T> Generator<T> createTypeConvertingGenerator(
+            SimpleTypeDescriptor descriptor, Generator<S> generator) {
         if (descriptor.getPrimitiveType() == null)
             return (Generator<T>) generator;
         PrimitiveType<T> primitiveType = descriptor.getPrimitiveType();
         Class<T> targetType = primitiveType.getJavaType();
-        Converter<Object, T> converter = null;
+        Converter<S, T> converter = null;
         if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
             // String needs to be converted to Date
             if (descriptor.getPattern() != null) {
@@ -90,10 +93,19 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 // we need to expect the standard date format
                 converter = new String2DateConverter();
             }
-        }
-        if (converter == null)
-            converter = new AnyConverter<Object, T>(targetType);
-        return new ConvertingGenerator<Object, T>((Generator<Object>)generator, converter);
+        } else if (String.class.equals(targetType) && generator.getGeneratedType() == Date.class) {
+            // String needs to be converted to Date
+            if (descriptor.getPattern() != null) {
+                // We can use the SimpleDateFormat with a pattern
+                String pattern = descriptor.getPattern();
+                converter = new FormatFormatConverter(new SimpleDateFormat(pattern));
+            } else {
+                // we need to expect the standard date format
+                converter = (Converter<S, T>) new FormatFormatConverter(new SimpleDateFormat(DEFAULT_DATE_PATTERN));
+            }
+        } else
+        	converter = new AnyConverter<S, T>(targetType, descriptor.getPattern());
+        return new ConvertingGenerator<S, T>(generator, converter);
     }
 
 
