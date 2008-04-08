@@ -132,7 +132,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
     public String toString() {
         if (componentMap.size() == 0)
             return super.toString();
-        return CompositeFormatter.render(super.toString() + '{', new CompositeAdapter(), "}", false, false);
+        return new CompositeFormatter(false, false).render(super.toString() + '{', new CompositeAdapter(), "}");
     }
     
     // helper for rendering --------------------------------------------------------------------------------------------

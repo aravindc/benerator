@@ -43,6 +43,7 @@ public class Entity implements Composite<Object> {
 
     private OrderedMap<String, Object> components;
     private ComplexTypeDescriptor descriptor;
+    private CompositeFormatter formatter;
 
     /**
      *
@@ -118,7 +119,7 @@ public class Entity implements Composite<Object> {
     }
 
     public String toString() {
-        return CompositeFormatter.render(getName() + '[', this, "]", true, true);
+        return new CompositeFormatter(true, true).render(getName() + '[', this, "]");
     }
 
     // helper methods --------------------------------------------------------------------------------------------------
