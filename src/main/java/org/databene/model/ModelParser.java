@@ -232,7 +232,7 @@ public class ModelParser {
     }
   
     private <T extends InstanceDescriptor> T mapInstanceDetails(Element element, boolean complexType, T descriptor, Context context) {
-        TypeDescriptor localType = null;
+        TypeDescriptor localType = descriptor.getLocalType();
         Map<String, String> attributes = XMLUtil.getAttributes(element);
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
             String detailName = entry.getKey();
@@ -242,14 +242,14 @@ public class ModelParser {
             if (descriptor.supportsDetail(detailName))
                 descriptor.setDetailValue(detailName, detailValue);
             else {
-                if (localType == null)
-                    localType = descriptor.getLocalType();
                 if (localType == null) {
-                    String instanceType = attributes.get("type");
-                    if (instanceType != null) {
-                        TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(instanceType);
+                    String partType = attributes.get("type");
+                    if (partType == null)
+                    	partType = descriptor.getTypeName();
+                    if (partType != null) {
+                        TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(partType);
                         String name = attributes.get("name");
-                        localType = (localTypeParent instanceof ComplexTypeDescriptor ? new ComplexTypeDescriptor(name, instanceType) : new SimpleTypeDescriptor(name, instanceType));
+                        localType = (localTypeParent instanceof ComplexTypeDescriptor ? new ComplexTypeDescriptor(name, partType) : new SimpleTypeDescriptor(name, partType));
                     }
                     descriptor.setLocalType(localType);
                 }
