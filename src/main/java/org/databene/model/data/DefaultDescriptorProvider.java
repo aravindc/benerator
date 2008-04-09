@@ -44,7 +44,7 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
     
     private static Log logger = LogFactory.getLog(DefaultDescriptorProvider.class);
     
-    private Map<String, TypeDescriptor> typeMap;
+    protected Map<String, TypeDescriptor> typeMap;
     private final String id;
     
     public DefaultDescriptorProvider(String id) {
