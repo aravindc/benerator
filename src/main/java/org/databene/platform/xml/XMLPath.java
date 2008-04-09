@@ -93,11 +93,23 @@ public class XMLPath {
         return path.peek().isKept(key);
     }
 
-    public Object getKept(String key) {
+    public Object unkeep(String key) {
         if (path.isEmpty())
             throw new UnsupportedOperationException();
-        return path.peek().getKept(key);
+        return path.peek().unkeep(key);
     }
+
+	public Map getKepts() {
+        if (path.isEmpty())
+            return null;
+        return path.peek().getKepts();
+	}
+
+	public boolean hasKepts() {
+        if (path.isEmpty())
+            return false;
+        return path.peek().hatKepts();
+	}
 
     public InstanceDescriptor[] allowedChildren() {
         if (path.isEmpty())
@@ -125,10 +137,16 @@ public class XMLPath {
             }
         }
 
-        public Object getKept(String key) {
-            Object object = kept.get(key);
-            kept.remove(key);
-            return object;
+        public Map getKepts() {
+			return kept;
+		}
+
+		public boolean hatKepts() {
+			return kept.size() > 0;
+		}
+
+		public Object unkeep(String key) {
+            return kept.remove(key);
         }
 
         public boolean isKept(String key) {
@@ -150,7 +168,7 @@ public class XMLPath {
                 do {
                     next = children.get(i++);
                     builder.append(next);
-                } while (next.getMinCount() == 0);
+                } while (next.getMinCount() == 0 && i < children.size());
             }
             return builder.toArray();
         }
@@ -171,7 +189,11 @@ public class XMLPath {
                         }
                     } else {
                         position += i;
-                        countAtPosition = 0;
+                        Long maxCount = allowedChild.getMaxCount();
+                        if (maxCount == null || maxCount == 1) {
+                            position++;
+                            countAtPosition = 0;
+                        }
                     }
                     return;
                 }
