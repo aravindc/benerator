@@ -34,9 +34,11 @@ import java.util.Stack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -60,6 +62,8 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     private static String DEFAULT_INDENT_STEP = "\t";
     private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
     private static final String DEFAULT_URI       = "export.xml";
+    
+    private static final ToStringConverter<Object> converter = new ToStringConverter<Object>("", "yyyy-MM-dd");
 
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -118,16 +122,19 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
                 renderElementStart(entity);
                 return;
             }
+            boolean renderedSimple = false;
             for (InstanceDescriptor allowedEntity : allowedEntities) {
                 String allowedName = allowedEntity.getName();
                 if (allowedName.equalsIgnoreCase(entityName)) {
                     renderElementStart(entity);
                     return;
-                } else if (path.isKept(allowedName))
-                    renderSimpleElement(allowedName, path.getKept(allowedName));
-                else
-                    throw new ConfigurationError();
+                } else if (path.isKept(allowedName)) {
+                    renderSimpleElement(allowedName, path.unkeep(allowedName));
+                    renderedSimple = true;
+                }
             }
+            if (!renderedSimple)
+            	throw new ConfigurationError("Found '" + entityName + "' while expecting one of these: " + ArrayFormat.format(allowedEntities));
         } while (true);
     }
 
@@ -135,12 +142,20 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     public void finishConsuming(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("finishConsuming(" + entity + ')');
-        InstanceDescriptor[] allowedEntities = path.allowedChildren();
-        for (InstanceDescriptor allowedEntity : allowedEntities) {
-            String allowedName = allowedEntity.getName();
-            if (path.isKept(allowedName))
-                renderSimpleElement(allowedName, path.getKept(allowedName));
-        }
+        InstanceDescriptor[] allowedEntities;
+        boolean unkept = false;
+        do {
+            allowedEntities = path.allowedChildren();
+	        for (InstanceDescriptor allowedEntity : allowedEntities) {
+	            String allowedName = allowedEntity.getName();
+	            if (path.isKept(allowedName)) {
+	                renderSimpleElement(allowedName, path.unkeep(allowedName));
+	                unkept = true;
+	            }
+	        }
+        } while (unkept && allowedEntities.length > 0 && path.hasKepts());
+        if (path.hasKepts())
+        	throw new IllegalStateException("Some components could not be exported: " + path.getKepts());
         Boolean hadChildren = childFlag.pop();
         indent = indent.substring(0, indent.length() - DEFAULT_INDENT_STEP.length());
         if (hadChildren)
@@ -168,7 +183,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     private void renderSimpleElement(String name, Object value) {
         markChildren();
         path.emptyElement(name);
-        printer.println(indent + '<' + name + '>' + value + "</" + name + '>');
+        printer.println(indent + '<' + name + '>' + converter.convert(value) + "</" + name + '>');
     }
 
     private void markChildren() {
@@ -204,7 +219,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
                 if (isXmlElement(descriptor, key))
                     path.keep(key, value);
                 else
-                    printer.print(' ' + key + "=\"" + value + '"');
+                    printer.print(' ' + key + "=\"" + converter.convert(value) + '"');
         }
     }
 
