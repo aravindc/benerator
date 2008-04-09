@@ -37,7 +37,6 @@ import org.databene.domain.address.Country;
  */
 public class AddressDemo { 
 	
-	// TODO update doc w/ US code & output
     public static void main(String[] args) {
         AddressGenerator generator = new AddressGenerator(Country.US);
         for (int i = 0; i < 3; i++) {
