@@ -12,13 +12,13 @@
 	    <commons_version>0.4.1</commons_version>
     </properties>
 
+<!--
     <parent>
         <groupId>databene</groupId>
         <artifactId>databene.org</artifactId>
         <version>1.0</version>
-        <!--relativePath>..</relativePath-->
     </parent>
-
+-->
     <packaging>jar</packaging>
     <name>databene benerator</name>
     <url>http://databene.org/databene-benerator</url>
