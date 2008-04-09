@@ -68,7 +68,7 @@ if [ ! -x "$JAVACMD" ] ; then
 fi
 
 # set local classpath, don't overwrite the user's
-LOCALCLASSPATH=.:$BENERATOR_HOME/bin/:$BENERATOR_HOME/databene-benerator-${project.version}.jar:$BENERATOR_LIB/databene-webdecs-${webdecs_version}.jar:$BENERATOR_LIB/databene-commons-${commons_version}.jar:$BENERATOR_LIB/commons-logging-1.0.4.jar
+LOCALCLASSPATH=.:$BENERATOR_HOME/bin/:$BENERATOR_HOME/lib/databene-benerator-${project.version}.jar:$BENERATOR_LIB/databene-webdecs-${webdecs_version}.jar:$BENERATOR_LIB/databene-commons-${commons_version}.jar:$BENERATOR_LIB/commons-logging-1.0.4.jar
 LOCALCLASSPATH=$LOCALCLASSPATH:$BENERATOR_LIB/log4j-1.2.14.jar:$BENERATOR_LIB/ojdbc14.jar:$BENERATOR_LIB/freemarker-2.3.9.jar
 
 # if CLASSPATH_OVERRIDE env var is set, LOCALCLASSPATH will be
