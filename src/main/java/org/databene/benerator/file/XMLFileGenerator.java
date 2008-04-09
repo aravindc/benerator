@@ -15,6 +15,7 @@ import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
@@ -29,7 +30,7 @@ import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
 public class XMLFileGenerator extends LightweightGenerator<File> {
 	
-    private String encoding = "UTF-8";
+    private String encoding = SystemInfo.fileEncoding();
     private String root;
     private String filenamePattern;
     private Generator<String> fileNameGenerator;
