@@ -28,7 +28,7 @@ import org.databene.platform.xml.XMLEntityExporter;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
 public class XMLFileGenerator extends LightweightGenerator<File> {
-    
+	
     private String encoding = "UTF-8";
     private String root;
     private String filenamePattern;
@@ -43,7 +43,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         this.filenamePattern = filenamePattern;
         
         // create context
-        // TODO 0.5.1 simplify & encapsulate
+        // TODO v0.5.2 simplify & encapsulate
         ContextStack context = new ContextStack();
         context.push(new PropertiesContext(java.lang.System.getenv()));
         context.push(new PropertiesContext(java.lang.System.getProperties()));
@@ -51,7 +51,8 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         context.set("benerator", new SimpleGenerationSetup());
 
         // parse schema
-        dataModel.addDescriptorProvider(new XMLSchemaDescriptorProvider(schemaUri, context));
+        XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
+		dataModel.addDescriptorProvider(xsdProvider);
         // set up file name generator
         this.fileNameGenerator = new ConvertingGenerator<Long, String>(
                 new IncrementGenerator(), 
@@ -95,7 +96,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     }
 
     private void persistRootEntity(Entity entity, File file) {
-        //entity.setComponentValue("xmlns", "http://databene.org/shop-0.5.0.xsd");
+        //entity.setComponentValue("xmlns", "http://databene.org/shop-0.5.1.xsd");
         entity.setComponentValue("elementFormDefault", "unqualified");
         XMLEntityExporter exporter = null;
         try {
@@ -110,9 +111,11 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     private void process(Entity entity, XMLEntityExporter exporter) {
         exporter.startConsuming(entity);
         for (Object component : entity.getComponents().values()) {
+        	if (component == null)
+        		continue;
             if (component instanceof Entity)
                 process((Entity) component, exporter);
-            else if (component != null && component.getClass().isArray()) {
+            else if (component.getClass().isArray()) {
                 Object[] array = (Object[]) component;
                 for (Object element : array)
                     if (element instanceof Entity)
