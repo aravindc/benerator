@@ -48,8 +48,6 @@ public class XMLFileGeneratorTest extends TestCase {
     
     private static final Log logger = LogFactory.getLog(XMLFileGeneratorTest.class);
     
-    // todo create createXML.bat
-
 /*
     private static final String ROOT_ELEMENT = "product";
     private static final String SCHEMA_FILE = "demo/shop/product-simple.xsd";
@@ -57,12 +55,12 @@ public class XMLFileGeneratorTest extends TestCase {
 */
     
     public void testSimpleTypeElement() throws IOException {
-        createXMLFile("org/databene/platform/xml/simple_type_element_test.xsd", "root", "simple_type_element_test.xml");
+        createXMLFile("org/databene/platform/xml/simple_type_element_test.xsd", "root", "target/simple_type_element_test.xml");
         // TODO v0.5.1 validate content
     }
 
     public void testBean() throws IOException {
-        Document document = createXMLFile("org/databene/benerator/xml/bean_test.xsd", "root", "bean_test.xml");
+        Document document = createXMLFile("org/databene/benerator/xml/bean_test.xsd", "root", "target/bean_test.xml");
         Element root = document.getDocumentElement();
         assertEquals("root", root.getNodeName());
         Element[] children = XMLUtil.getChildElements(root);
@@ -71,7 +69,7 @@ public class XMLFileGeneratorTest extends TestCase {
     }
 
     public void testVariables() throws IOException {
-        Document document = createXMLFile("org/databene/benerator/xml/variable_test.xsd", "root", "variable_test.xml");
+        Document document = createXMLFile("org/databene/benerator/xml/variable_test.xsd", "root", "target/variable_test.xml");
         Element root = document.getDocumentElement();
         assertEquals("root", root.getNodeName());
         assertEquals(0, root.getChildNodes().getLength());
@@ -79,6 +77,8 @@ public class XMLFileGeneratorTest extends TestCase {
         assertEquals("Bob", root.getAttribute("bean_att"));
         assertEquals("Alice", root.getAttribute("entity_att"));
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
 
     private void assertElementNameAndText(Element child, String name, String text) {
         assertNotNull(child);
