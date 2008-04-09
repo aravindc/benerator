@@ -28,6 +28,7 @@ package org.databene.benerator.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,6 +59,12 @@ public class XmlCreator {
         String pattern = args[2];
         long fileCount = Long.parseLong(args[3]);
         String[] propertiesFiles = (args.length > 4 ? ArrayUtil.copyOfRange(args, 4, args.length - 4) : new String[0]);
+        if (logger.isDebugEnabled()) {
+        	if (fileCount > 1)
+        		logger.debug("Creating " + fileCount + " XML files for schema " + schemaUri + " with root " + root + " and pattern " + pattern);
+        	else
+        		logger.debug("Creating XML file " + MessageFormat.format(pattern, fileCount) + " for schema " + schemaUri + " with root " + root);
+        }
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
         for (long i = 0; i < fileCount && fileGenerator.available(); i++) {
             File file = fileGenerator.generate();
