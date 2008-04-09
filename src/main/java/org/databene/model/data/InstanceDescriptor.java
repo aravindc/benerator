@@ -132,6 +132,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public TypeDescriptor getLocalType(boolean complexType) {
         if (localType != null)
             return localType;
+        typeName = null;
         if (complexType)
             localType = new ComplexTypeDescriptor(getName(), getTypeName());
         else
@@ -141,6 +142,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     public void setLocalType(TypeDescriptor localType) {
         this.localType = localType;
+        if (localType != null)
+        	typeName = null;
     }
     
     public Boolean isUnique() {
