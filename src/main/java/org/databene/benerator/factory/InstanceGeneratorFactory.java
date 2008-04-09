@@ -77,11 +77,11 @@ public class InstanceGeneratorFactory {
             generator = createNullGenerator(descriptor, setup);
         if (generator == null) {
             boolean unique = isUnique(descriptor);
-            TypeDescriptor typeDescriptor = descriptor.getType();
-            if (typeDescriptor instanceof ComplexTypeDescriptor)
-                generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) typeDescriptor, context, setup);
+            TypeDescriptor type = descriptor.getType();
+            if (type instanceof ComplexTypeDescriptor)
+                generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) type, context, setup);
             else
-                generator = SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) typeDescriptor, unique, context, setup);
+                generator = SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) type, unique, context, setup);
             // by now, we must have created a generator
             if (generator == null)
                 throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
