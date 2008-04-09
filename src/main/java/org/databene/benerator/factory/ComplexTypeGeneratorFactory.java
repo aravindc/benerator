@@ -171,18 +171,18 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     private static Generator<Entity> createGeneratingGenerator(
-            ComplexTypeDescriptor descriptor, Context context, GenerationSetup setup) {
+            ComplexTypeDescriptor complexType, Context context, GenerationSetup setup) {
         Map<String, Generator<? extends Object>> componentGenerators = new OrderedMap<String, Generator<? extends Object>>();
-        Collection<ComponentDescriptor> descriptors = descriptor.getComponents();
-        for (ComponentDescriptor component : descriptors) {
-            if (descriptor.getName().equals(component.getName()))
+        Collection<ComponentDescriptor> components = complexType.getComponents();
+        for (ComponentDescriptor component : components) {
+            if (complexType.equals(component.getType()))
                 continue; // avoid recursion
             if (component.getMode() != Mode.ignored) {
                 Generator<? extends Object> componentGenerator = ComponentGeneratorFactory.createComponentGenerator(component, context, setup);
                 componentGenerators.put(component.getName(), componentGenerator);
             }
         }
-        return new EntityGenerator(descriptor, componentGenerators, context);
+        return new EntityGenerator(complexType, componentGenerators, context);
     }
 
     private static Generator<Entity> createMutatingEntityGenerator(
