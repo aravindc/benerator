@@ -17,15 +17,14 @@ about databene benerator
 
 news
 
-  <<2008-03-31 benerator release 0.5.0:>> benerator now can generate XML files directly from XML schema files. 
-  Custom generator configuration can be added in XML schema annotations.
-  The region concept has been finally abstracted to a dataset concept.
-  The core data model has been completely redesigned for supporting a 
-  type definition concept. With improved QA, several bugs were found and fixed. 
-  New generator classes and name packages have been added for India, Brazil, 
-  Canada, Spain, Australia, Austria, Japan, Slovenia and Israel.
-  
-  {{{http://databene.org/databene-benerator/download.html}download benerator}}
+ <<2008-04-09 benerator release 0.5.1:>> release 0.5.1 fixes some major bugs and 
+ adds domain support for the United States in 
+ generating US addresses and company names. From now on, benerator will be available 
+ on the public maven repository (groupId 'org.databene', artifactId 'databene-benerator'. 
+ Users please note the new tracking on sourceforge.net: 
+ http://sourceforge.net/tracker/?group_id=222964&atid=1057386.
+
+ {{{http://databene.org/databene-benerator/download.html}download benerator}}
   
 participate
 
