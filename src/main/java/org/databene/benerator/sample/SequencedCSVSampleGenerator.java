@@ -31,6 +31,8 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.Generator;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVLineIterator;
 
@@ -56,8 +58,8 @@ import java.util.ArrayList;
  */
 public class SequencedCSVSampleGenerator<E> implements Generator<E> {
 
-    /** The URL to read the samples from */
-    private String url;
+    /** The URI to read the samples from */
+    private String uri;
 
     /** The converter to create instances from the CSV cell strings */
     private Converter<String, E> converter;
@@ -67,6 +69,8 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
 
     /** flag that indicates if the generator needs to be initialized */
     private boolean dirty;
+    
+    private static Escalator escalator = new LoggerEscalator();
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -74,30 +78,42 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
         this((String)null);
     }
 
-    public SequencedCSVSampleGenerator(String url) {
-        this(url, new NoOpConverter());
+    public SequencedCSVSampleGenerator(String uri) {
+        this(uri, new NoOpConverter());
     }
 
     public SequencedCSVSampleGenerator(Converter<String, E> converter) {
         this(null, converter);
     }
 
-    public SequencedCSVSampleGenerator(String url, Converter<String, E> converter) {
+    public SequencedCSVSampleGenerator(String uri, Converter<String, E> converter) {
         this.source = new SequencedSampleGenerator<E>(converter.getTargetType());
         this.converter = converter;
-        if (url != null && url.trim().length() > 0)
-            setUrl(url);
+        if (uri != null && uri.trim().length() > 0)
+            setUri(uri);
     }
 
     // configuration properties ----------------------------------------------------------------------------------------
 
-    public void setUrl(String url) {
-        this.url = url;
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
         this.dirty = true;
     }
 
+    @Deprecated
     public String getUrl() {
-        return url;
+    	escalator.escalate("The 'url' property is deprecated, use 'uri' instead", getClass(), "getUrl() called");
+        return getUri();
+    }
+
+    @Deprecated
+    public void setUrl(String url) {
+    	escalator.escalate("The 'url' property is deprecated, use 'uri' instead", getClass(), "setUrl() called");
+        setUri(url);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -115,7 +131,7 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
     public void validate() {
         if (dirty) {
             try {
-                CSVLineIterator parser = new CSVLineIterator(url);
+                CSVLineIterator parser = new CSVLineIterator(uri);
                 String[] tokens;
                 List<E> samples = new ArrayList<E>();
                 while (parser.hasNext()) {
@@ -126,11 +142,11 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
                 source.setValues(samples);
                 dirty = false;
             } catch (FileNotFoundException e) {
-                throw new InvalidGeneratorSetupException("url", "not found: " + url);
+                throw new InvalidGeneratorSetupException("uri", "not found: " + uri);
             } catch (IOException e) {
                 throw new IllegalGeneratorStateException(e); // file access was interrupted, no fail-over
             } catch (ConversionException e) {
-                throw new InvalidGeneratorSetupException("URL content not valid", e);
+                throw new InvalidGeneratorSetupException("URI content not valid", e);
             }
         }
     }
