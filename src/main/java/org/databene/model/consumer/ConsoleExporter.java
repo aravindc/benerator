@@ -27,6 +27,7 @@
 package org.databene.model.consumer;
 
 import org.databene.commons.CompositeFormatter;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.data.Entity;
 
 /**
@@ -37,22 +38,25 @@ import org.databene.model.data.Entity;
  */
 public class ConsoleExporter<E> extends FormattingConsumer<E> {
 	
-	private CompositeFormatter formatter = new CompositeFormatter(true, true);
+	private CompositeFormatter compositeFormatter;
+	private ToStringConverter<Object> simpleFormatter;
+	
+	public ConsoleExporter() {
+		compositeFormatter = new CompositeFormatter(true, true, datePattern, timestampPattern);
+		simpleFormatter = new ToStringConverter<Object>("", datePattern, timestampPattern);
+	}
 
 	public void startConsuming(E object) {
 		if (object instanceof Entity)
-			startEntity((Entity) object);
+			System.out.println(compositeFormatter.render(((Entity) object).getName() + '[', (Entity) object, "]"));
 		else
-			System.out.println(object);
+			System.out.println(simpleFormatter.convert(object));
     }
 	
 	@Override
 	public void setDatePattern(String datePattern) {
 		super.setDatePattern(datePattern);
-		formatter.setDatePattern(datePattern);
+		compositeFormatter.setDatePattern(datePattern);
 	}
 
-	private void startEntity(Entity entity) {
-		System.out.println(formatter.render(entity.getName() + '[', entity, "]"));
-	}
 }
