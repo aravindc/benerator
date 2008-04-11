@@ -34,7 +34,8 @@ package org.databene.model.consumer;
  */
 public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 
-	protected String datePattern;
+	protected String datePattern = "yyyy-MM-dd";
+	protected String timestampPattern = "yyyy-MM-dd'T'hh:mm:ss.SSS";
 	
     public String getDatePattern() {
 		return datePattern;
@@ -42,5 +43,13 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 
 	public void setDatePattern(String datePattern) {
 		this.datePattern = datePattern;
+	}
+
+	public String getTimestampPattern() {
+		return timestampPattern;
+	}
+
+	public void setTimestampPattern(String timestampPattern) {
+		this.timestampPattern = timestampPattern;
 	}
 }

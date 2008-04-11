@@ -53,7 +53,7 @@ import java.text.ParseException;
  * @author Volker Bergmann
  */
 public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
-
+	// TODO assure that dates are rendered properly
     private static final Log logger = LogFactory.getLog(FlatFileEntityExporter.class);
 
     private String uri;

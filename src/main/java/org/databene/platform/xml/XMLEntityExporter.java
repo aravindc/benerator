@@ -63,7 +63,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
     private static final String DEFAULT_URI       = "export.xml";
     
-    private static final ToStringConverter<Object> converter = new ToStringConverter<Object>("", "yyyy-MM-dd");
+    private static final ToStringConverter<Object> converter = new ToStringConverter<Object>("", "yyyy-MM-dd", "yyyy-MM-dd'T'hh:mm:ss.SSS");
 
     // attributes ------------------------------------------------------------------------------------------------------
 
