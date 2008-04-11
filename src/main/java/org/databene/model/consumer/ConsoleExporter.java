@@ -37,7 +37,7 @@ import org.databene.model.data.Entity;
  */
 public class ConsoleExporter<E> extends FormattingConsumer<E> {
 	
-	private CompositeFormatter formatter;
+	private CompositeFormatter formatter = new CompositeFormatter(true, true);
 
 	public void startConsuming(E object) {
 		if (object instanceof Entity)
