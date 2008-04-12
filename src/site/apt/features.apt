@@ -68,7 +68,7 @@ features
       Generated data can be converted with different formats (like time values) or different
       languages (like salutations or titles).
 
-    * <<region concept>>:
+    * <<dataset concept>>:
       Data can be categorized and grouped hierarchically (e.g. cities of a state, country or continent).
 
   <<customizability>>

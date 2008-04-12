@@ -252,7 +252,7 @@ imposing multi-field-constraints
 
 --------------------------------------------------------------------------------
     <create-entities name="db_customer">
-        <variable name="person" generator="org.databene.domain.person.PersonGenerator" region="DE"/>
+        <variable name="person" generator="org.databene.domain.person.PersonGenerator" dataset="DE"/>
         <attribute name="salutation" source="person.salutation"/>
         <attribute name="first_name" source="person.givenName"/>
         <attribute name="last_name" source="person.familyName"/>
@@ -374,7 +374,7 @@ all supported generator attributes
 
     [converter] the class name of a Converter to apply to the generated objects
 
-    [region] a region to create data for, e.g. reion="DE"
+    [dataset] a (nestable) set to create data for, e.g. dataset="US" for the United States
 
     [locale] a locale to create data for, e.g. locale="de"
 

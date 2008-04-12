@@ -7,7 +7,7 @@ dataset concept
  You can define datasets and combine them to supersets. 
  This mechanism lets you also define parallel and overlapping hierarchies of nested datasets.
  
- Definition of a hierarchies is separated from the definition of dataset values for a convrete topic. 
+ Definition of a hierarchies is separated from the definition of dataset values for a concrete topic. 
  So you can define a dataset grouping for regions, mapping continents, countries, states and departments 
  and apply this grouping to define and combine sets of e.g. cities, person names or products.
  

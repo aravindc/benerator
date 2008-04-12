@@ -6,12 +6,12 @@ domain packages
 
 
   <<benerator>> includes domain packages. Domain packages support for business domain and may be localized by language
-  (locale) or region.
+  (locale) or dataset (e.g. country or region).
 
   The follwing domain packages are available for these domains
 
 *-------------+-------------------+-----------------------------------------------+
-| <<domain>>  | <<topics>>        | <<regions/locales>>                           |
+| <<domain>>  | <<topics>>        | <<datasets/locales>>                          |
 *-------------+-------------------+-----------------------------------------------+
 | personal    | titles            | Locales: German, English, French, Italian     |
 |             | salutations       | Countries:                                    |
