@@ -38,6 +38,7 @@ import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.dataset.DatasetFactory;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileUtil;
@@ -172,7 +173,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static Generator<Entity> createGeneratingGenerator(
             ComplexTypeDescriptor complexType, Context context, GenerationSetup setup) {
-        Map<String, Generator<? extends Object>> componentGenerators = new OrderedMap<String, Generator<? extends Object>>();
+        Map<String, Generator<? extends Object>> componentGenerators = new OrderedNameMap<Generator<? extends Object>>();
         Collection<ComponentDescriptor> components = complexType.getComponents();
         for (ComponentDescriptor component : components) {
             if (complexType.equals(component.getType()))
@@ -187,7 +188,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static Generator<Entity> createMutatingEntityGenerator(
             ComplexTypeDescriptor descriptor, Context context, GenerationSetup setup, Generator<Entity> generator) {
-        Map<String, Generator<? extends Object>> componentGenerators = new OrderedMap<String, Generator<? extends Object>>();
+        Map<String, Generator<? extends Object>> componentGenerators = new OrderedNameMap<Generator<? extends Object>>();
         Collection<ComponentDescriptor> descriptors = descriptor.getDeclaredComponents();
         for (ComponentDescriptor component : descriptors) {
             if (component.getMode() != Mode.ignored) {

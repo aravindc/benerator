@@ -30,7 +30,7 @@ import org.databene.benerator.primitive.number.AbstractLongGenerator;
 import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.benerator.primitive.number.distribution.*;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.converter.NumberConverter;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
 import org.databene.model.function.WeightFunction;
@@ -67,7 +67,7 @@ public class IntegralNumberGenerator<E extends Number> extends AbstractNumberGen
             validate();
         Long n = source.generate();
         try {
-            return AnyConverter.convert(n, type);
+            return NumberConverter.convert(n, type);
         } catch (ConversionException e) {
             throw new RuntimeException("Unexpected exception", e);
         }

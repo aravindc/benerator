@@ -75,7 +75,8 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 		if (!variablesInitialized) {
 	        for (Generator<? extends Object> varGen : variables.values()) {
 	            if (!varGen.available()) {
-	                logger.debug("No more available: " + varGen);
+	            	if (logger.isDebugEnabled())
+	            		logger.debug("No more available: " + varGen);
 	                return false;
 	            }
 	        }
@@ -94,7 +95,8 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 //        for (String variableName : variables.keySet())
 //            context.remove(variableName);
         variablesInitialized = false;
-        logger.debug("Generated " + entity);
+        if (logger.isDebugEnabled())
+        	logger.debug("Generated " + entity);
         entityCount++;
         return entity;
 	}

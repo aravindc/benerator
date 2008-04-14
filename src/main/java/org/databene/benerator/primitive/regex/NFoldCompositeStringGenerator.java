@@ -60,12 +60,12 @@ class NFoldCompositeStringGenerator extends GeneratorProxy<String> {
 
     /** Determines a quantity, invokes the pattern as many times and assembles the products to a String */
     public String generate() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         int count = quantityGenerator.generate();
         for (int i = 0; i < count; i++)
             if (source.available())
-                buffer.append(source.generate());
-        return buffer.toString();
+                builder.append(source.generate());
+        return builder.toString();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

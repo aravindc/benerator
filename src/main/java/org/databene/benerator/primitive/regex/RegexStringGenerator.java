@@ -35,6 +35,7 @@ import org.databene.benerator.wrapper.UniqueCompositeGenerator;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.regex.*;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.NullSafeComparator;
 
 import java.util.Locale;
 import java.text.ParseException;
@@ -124,9 +125,11 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
 
     /** Returns the String representation of the regular expression */
     public void setPattern(String pattern) {
-        this.dirty = true;
-        this.pattern = pattern;
-        this.regex = null;
+    	if (!NullSafeComparator.equals(this.pattern, pattern)) {
+	        this.dirty = true;
+	        this.pattern = pattern;
+	        this.regex = null;
+    	}
     }
 
     public Locale getLocale() {
@@ -183,11 +186,11 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
             validate();
         if (regex == null)
             return null;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         Object[] parts = partsGenerator.generate();
         for (Object part : parts)
-            buffer.append(part);
-        return buffer.toString();
+            builder.append(part);
+        return builder.toString();
     }
 
     public Class<String> getGeneratedType() {
