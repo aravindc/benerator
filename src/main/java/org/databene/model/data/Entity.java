@@ -28,7 +28,7 @@ package org.databene.model.data;
 
 import org.databene.commons.Composite;
 import org.databene.commons.CompositeFormatter;
-import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 
 import java.util.Map;
 
@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class Entity implements Composite<Object> {
 
-    private OrderedMap<String, Object> components;
+    private OrderedNameMap<Object> components;
     private ComplexTypeDescriptor descriptor;
     private CompositeFormatter formatter;
 
@@ -52,9 +52,9 @@ public class Entity implements Composite<Object> {
      */
     public Entity(ComplexTypeDescriptor descriptor, Object ... componentKeyValuePairs) {
         this.descriptor = descriptor;
-        this.components = new OrderedMap<String, Object>();
+        this.components = new OrderedNameMap<Object>(false);
         for (int i = 0; i < componentKeyValuePairs.length; i += 2)
-            setComponentValue((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
+            setComponent((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
     }
 
     public String getName() {
@@ -76,13 +76,7 @@ public class Entity implements Composite<Object> {
     }
 
     public Object getComponent(String componentName) {
-        Object component = components.get(componentName);
-        if (component == null) {
-            Map.Entry<String, Object> entry = getComponentEntry(componentName);
-            if (entry != null)
-                component = entry.getValue();
-        }
-        return component;
+        return components.get(componentName);
     }
     
     public boolean componentIsSet(String componentName) {
@@ -93,12 +87,8 @@ public class Entity implements Composite<Object> {
         return components;
     }
 
-    public void setComponentValue(String componentName, Object component) {
-        Map.Entry<String, Object> entry = getComponentEntry(componentName);
-        if (entry != null)
-            entry.setValue(component);
-        else
-            this.components.put(componentName, component);
+    public void setComponent(String componentName, Object component) {
+        components.put(componentName, component);
     }
     
     // java.lang.overrides ---------------------------------------------------------------------------------------------
@@ -121,14 +111,4 @@ public class Entity implements Composite<Object> {
     public String toString() {
         return new CompositeFormatter(true, true).render(getName() + '[', this, "]");
     }
-
-    // helper methods --------------------------------------------------------------------------------------------------
-
-    protected Map.Entry<String, Object> getComponentEntry(String componentName) {
-        for (Map.Entry<String, Object> entry : components.entrySet())
-            if (entry.getKey().equalsIgnoreCase(componentName))
-                return entry;
-        return null;
-    }
-
 }
