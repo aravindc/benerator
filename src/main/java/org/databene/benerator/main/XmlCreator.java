@@ -65,11 +65,14 @@ public class XmlCreator {
         	else
         		logger.debug("Creating XML file " + MessageFormat.format(pattern, fileCount) + " for schema " + schemaUri + " with root " + root);
         }
+        long start = System.currentTimeMillis();
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
         for (long i = 0; i < fileCount && fileGenerator.available(); i++) {
             File file = fileGenerator.generate();
             logger.info("created file: " + file);
         }
+        long duration = System.currentTimeMillis() - start;
+        logger.info("Finished after " + duration + " ms");
     }
 
     private static void printHelp() {
