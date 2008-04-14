@@ -81,7 +81,7 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
                 } else
                     typeName = "string";
                 Object javaValue = javaValue(resultSet, columnIndex, typeName);
-                entity.setComponentValue(columnName, javaValue);
+                entity.setComponent(columnName, javaValue);
             }
             return entity;
         } catch (SQLException e) {
