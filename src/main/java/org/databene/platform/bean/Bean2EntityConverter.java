@@ -61,7 +61,7 @@ public class Bean2EntityConverter<E> implements Converter<E, Entity> {
         Entity entity = new Entity(descriptor != null ? descriptor : createBeanDescriptor(bean.getClass()));
         for (PropertyDescriptor descriptor : BeanUtil.getPropertyDescriptors(bean.getClass()))
             if (!"class".equals(descriptor.getName()))
-                entity.setComponentValue(descriptor.getName(), BeanUtil.getPropertyValue(bean, descriptor.getName()));
+                entity.setComponent(descriptor.getName(), BeanUtil.getPropertyValue(bean, descriptor.getName()));
         return entity;
     }
 

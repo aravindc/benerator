@@ -53,7 +53,7 @@ public class Array2EntityConverter<E> implements Converter<E[], Entity> {
         Entity entity = new Entity(descriptor);
         for (int i = 0; i < sourceValue.length; i++) {
             String featureName = featureNames[i];
-            entity.setComponentValue(featureName, sourceValue[i]);
+            entity.setComponent(featureName, sourceValue[i]);
         }
         return entity;
     }
