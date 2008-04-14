@@ -98,7 +98,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
 
     private void persistRootEntity(Entity entity, File file) {
         //entity.setComponentValue("xmlns", "http://databene.org/shop-0.5.1.xsd");
-        entity.setComponentValue("elementFormDefault", "unqualified");
+        entity.setComponent("elementFormDefault", "unqualified");
         XMLEntityExporter exporter = null;
         try {
             exporter = new XMLEntityExporter(file.getAbsolutePath(), encoding);
