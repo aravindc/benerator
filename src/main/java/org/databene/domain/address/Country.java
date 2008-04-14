@@ -27,8 +27,8 @@
 package org.databene.domain.address;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
-import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.document.csv.CSVLineIterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -205,7 +205,7 @@ public class Country {
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
         //this.region = new BasicRegion(isoCode);
         this.mobileCodePattern = mobilCodePattern;
-        this.states = new OrderedMap<String, State>();
+        this.states = new OrderedNameMap<State>();
         instances.put(isoCode, this);
     }
 
