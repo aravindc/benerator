@@ -109,7 +109,7 @@ public class EntityGenerator implements Generator<Entity> {
             String componentName = entry.getKey();
             try {
                 Object componentValue = entry.getValue().generate();
-                entity.setComponentValue(componentName, componentValue);
+                entity.setComponent(componentName, componentValue);
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of component '" + componentName + "'", e);
             }
