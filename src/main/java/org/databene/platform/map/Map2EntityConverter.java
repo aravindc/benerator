@@ -52,7 +52,7 @@ public class Map2EntityConverter implements Converter<Map<String, Object>, Entit
     public Entity convert(Map<String, Object> map) {
         Entity entity = new Entity(descriptor);
         for (Map.Entry<String, Object> entry : map.entrySet())
-            entity.setComponentValue((String) entry.getKey(), entry.getValue());
+            entity.setComponent((String) entry.getKey(), entry.getValue());
         return entity;
     }
 
