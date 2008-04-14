@@ -26,7 +26,7 @@
 
 package org.databene.platform.db.model;
 
-import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 
 import java.util.List;
 
@@ -37,8 +37,8 @@ public class DBCatalog {
 
     private String name;
     private Database database;
-    private OrderedMap<String, DBTable> tables;
-    private OrderedMap<String, DBIndex> indexes;
+    private OrderedNameMap<DBTable> tables;
+    private OrderedNameMap<DBIndex> indexes;
     private String doc;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -49,8 +49,8 @@ public class DBCatalog {
 
     public DBCatalog(String name) {
         this.name = name;
-        this.tables = new OrderedMap<String, DBTable>();
-        this.indexes = new OrderedMap<String, DBIndex>();
+        this.tables = new OrderedNameMap<DBTable>();
+        this.indexes = new OrderedNameMap<DBIndex>();
     }
 
     // properties ------------------------------------------------------------------------------------------------------

@@ -26,7 +26,7 @@
 
 package org.databene.platform.db.model;
 
-import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 
 import java.util.List;
 
@@ -36,8 +36,8 @@ import java.util.List;
 public class Database {
 
     private String name;
-    private OrderedMap<String, DBCatalog> catalogs;
-    private OrderedMap<String, DBSchema> schemas;
+    private OrderedNameMap<DBCatalog> catalogs;
+    private OrderedNameMap<DBSchema> schemas;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -45,12 +45,12 @@ public class Database {
         this(null, null);
     }
 
-    public Database(String name, OrderedMap<String, DBCatalog> catalogs) {
+    public Database(String name, OrderedNameMap<DBCatalog> catalogs) {
         this.name = name;
-        this.catalogs = new OrderedMap<String, DBCatalog>();
+        this.catalogs = new OrderedNameMap<DBCatalog>();
         if (catalogs != null)
             this.catalogs.putAll(catalogs);
-        this.schemas = new OrderedMap<String, DBSchema>();
+        this.schemas = new OrderedNameMap<DBSchema>();
     }
 
     // properties ------------------------------------------------------------------------------------------------------

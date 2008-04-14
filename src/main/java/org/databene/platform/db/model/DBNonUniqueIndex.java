@@ -26,18 +26,18 @@
 
 package org.databene.platform.db.model;
 
-import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 
 /**
  * Created: 11.01.2007 00:32:53
  */
 public class DBNonUniqueIndex extends DBIndex {
 
-    private OrderedMap<String, DBColumn> columns;
+    private OrderedNameMap<DBColumn> columns;
 
     public DBNonUniqueIndex(String name, DBColumn ... columns) {
         super(name);
-        this.columns = new OrderedMap<String, DBColumn>();
+        this.columns = new OrderedNameMap<DBColumn>();
         for (DBColumn column : columns)
             this.columns.put(column.getName(), column);
     }

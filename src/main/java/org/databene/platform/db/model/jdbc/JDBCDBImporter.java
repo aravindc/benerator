@@ -33,6 +33,7 @@ import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.platform.db.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -302,7 +303,7 @@ public final class JDBCDBImporter implements DBImporter {
         for (DBCatalog catalog : database.getCatalogs()) {
             for (DBTable table : catalog.getTables()) {
                 logger.debug("Importing indexes for table '" + table.getName() + "'");
-                OrderedMap<String, DBIndexInfo> tableIndexes = new OrderedMap<String, DBIndexInfo>();
+                OrderedNameMap<DBIndexInfo> tableIndexes = new OrderedNameMap<DBIndexInfo>();
                 ResultSet indexSet = metaData.getIndexInfo(catalog.getName(), null, table.getName(), false, false);
                 //DBUtil.print(indexSet);
                 while (indexSet.next()) {

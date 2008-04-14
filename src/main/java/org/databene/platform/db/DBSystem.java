@@ -34,6 +34,7 @@ import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
 import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.model.data.*;
@@ -384,7 +385,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 	private void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
-            this.typeDescriptors = new OrderedMap<String, TypeDescriptor>();
+            this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, false);
             database = importer.importDatabase();

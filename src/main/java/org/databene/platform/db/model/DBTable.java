@@ -27,7 +27,7 @@
 package org.databene.platform.db.model;
 
 import org.databene.commons.ObjectNotFoundException;
-import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.model.depend.Dependent;
 
 import java.util.List;
@@ -42,11 +42,11 @@ public class DBTable implements Dependent<DBTable>{
     private DBSchema schema;
     private String name;
     private String doc;
-    private OrderedMap<String, DBColumn> columns;
+    private OrderedNameMap<DBColumn> columns;
     private DBPrimaryKeyConstraint primaryKeyConstraint;
     private List<DBUniqueConstraint> uniqueConstraints;
     private List<DBForeignKeyConstraint> foreignKeyConstraints;
-    private OrderedMap<String, DBIndex> indexes;
+    private OrderedNameMap<DBIndex> indexes;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -61,11 +61,11 @@ public class DBTable implements Dependent<DBTable>{
     public DBTable(DBCatalog catalog, String name) {
         this.name = name;
         this.catalog = catalog;
-        this.columns = new OrderedMap<String, DBColumn>();
+        this.columns = new OrderedNameMap<DBColumn>();
         this.primaryKeyConstraint = null;
         this.doc = null;
         this.schema = null;
-        this.indexes = new OrderedMap<String, DBIndex>();
+        this.indexes = new OrderedNameMap<DBIndex>();
         this.uniqueConstraints = new ArrayList<DBUniqueConstraint>();
         this.foreignKeyConstraints = new ArrayList<DBForeignKeyConstraint>();
     }
