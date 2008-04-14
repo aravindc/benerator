@@ -88,7 +88,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
             String[] rowValues = row.getValues();
             Entity result = new Entity(getType(row));
             for (int i = 0; i < rowValues.length; i++)
-                result.setComponentValue(row.getColumnName(i), rowValues[i]);
+                result.setComponent(row.getColumnName(i), rowValues[i]);
             nextRowNum++;
             return result;
         } else
