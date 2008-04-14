@@ -3,8 +3,8 @@ package org.databene.model.data;
 import org.databene.commons.Converter;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
-import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.String2ConverterConverter;
@@ -28,12 +28,12 @@ public class FeatureDescriptor {
         converterManager.register(new String2ConverterConverter());
     }
 
-    protected OrderedMap<String, FeatureDetail<? extends Object>> details;
+    protected OrderedNameMap<FeatureDetail<? extends Object>> details;
 
     // constructor -----------------------------------------------------------------------------------------------------
 
     public FeatureDescriptor(String name) {
-        this.details = new OrderedMap<String, FeatureDetail<? extends Object>>();
+        this.details = new OrderedNameMap<FeatureDetail<? extends Object>>();
         addConfig(NAME, String.class, null);
         setName(name);
     }

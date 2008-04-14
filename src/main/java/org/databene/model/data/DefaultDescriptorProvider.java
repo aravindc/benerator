@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.OrderedMap;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.xml.XMLUtil;
 
 /**
@@ -48,7 +48,7 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
     private final String id;
     
     public DefaultDescriptorProvider(String id) {
-        typeMap = new OrderedMap<String, TypeDescriptor>();
+        typeMap = new OrderedNameMap<TypeDescriptor>();
         this.id = id;
     }
 

@@ -32,9 +32,9 @@ import java.util.Set;
 
 import org.databene.commons.Composite;
 import org.databene.commons.CompositeFormatter;
-import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.ListBasedSet;
+import org.databene.commons.collection.OrderedNameMap;
 
 /**
  * Describes a type that aggregates {@link ComponentDescriptor}s.<br/>
@@ -54,8 +54,8 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
 
     public ComplexTypeDescriptor(String name, String parent) {
         super(name, parent);
-        this.componentMap = new OrderedMap<String, ComponentDescriptor>();
-        this.variables = new OrderedMap<String, InstanceDescriptor>();
+        this.componentMap = new OrderedNameMap<ComponentDescriptor>();
+        this.variables = new OrderedNameMap<InstanceDescriptor>();
     }
     
     // component handling ----------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
 
     public Collection<ComponentDescriptor> getComponents() {
         Set<String> componentNames = componentMap.keySet();
-        Map<String, ComponentDescriptor> tmp = new OrderedMap<String, ComponentDescriptor>();
+        Map<String, ComponentDescriptor> tmp = new OrderedNameMap<ComponentDescriptor>();
         if (getParent() != null) {
             for (ComponentDescriptor d : ((ComplexTypeDescriptor)getParent()).getComponents()) {
                 String name = d.getName();
@@ -143,7 +143,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
             return componentMap.get(key);
         }
 
-        public void setComponentValue(String key, ComponentDescriptor value) {
+        public void setComponent(String key, ComponentDescriptor value) {
             componentMap.put(key, value);
         }
 
