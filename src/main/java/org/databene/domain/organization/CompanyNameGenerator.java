@@ -60,6 +60,7 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     
     // TODO v0.5.2 french & italian company names
     public CompanyNameGenerator() {
+    	this(Country.getDefault().getIsoCode());
     }
     
     public CompanyNameGenerator(String dataset) {
