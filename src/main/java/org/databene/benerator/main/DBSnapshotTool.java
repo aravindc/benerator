@@ -45,7 +45,7 @@ import org.databene.platform.dbunit.DbUnitEntityExporter;
  */
 public class DBSnapshotTool {
     
-    // TODO 0.5.1 test with each database
+    // TODO v0.6.0 test with each database
     private static final Log logger = LogFactory.getLog(DBSnapshotTool.class);
     
     public static void main(String[] args) {
@@ -85,13 +85,13 @@ public class DBSnapshotTool {
             logger.info("Starting export");
             for (TypeDescriptor descriptor : descriptors) {
                 logger.info("Exporting table " + descriptor.getName());
-                for (Entity entity : db.queryEntities(descriptor.getName(), "")) {
+                for (Entity entity : db.queryEntities(descriptor.getName(), null)) {
                     exporter.startConsuming(entity);
                     count++;
                 }
             }
             long duration = System.currentTimeMillis() - startTime;
-            logger.info("Created " + NumberUtil.format(count, 0) + " entities in " + RoundedNumberFormat.format(duration, 0) + " ms (" + RoundedNumberFormat.format(count * 3600000L / duration, 0) + " p.h.)");
+            logger.info("Exported " + NumberUtil.format(count, 0) + " entities in " + RoundedNumberFormat.format(duration, 0) + " ms (" + RoundedNumberFormat.format(count * 3600000L / duration, 0) + " p.h.)");
         } finally {
             exporter.close();
             if (db != null)
