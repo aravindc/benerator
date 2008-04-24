@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.benerator.factory.TypeGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
@@ -16,9 +17,6 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.context.ContextStack;
-import org.databene.commons.context.DefaultContext;
-import org.databene.commons.context.PropertiesContext;
 import org.databene.commons.converter.MessageConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.ModelParser;
@@ -44,12 +42,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         this.filenamePattern = filenamePattern;
         
         // create context
-        // TODO v0.5.2 simplify & encapsulate
-        ContextStack context = new ContextStack();
-        context.push(new PropertiesContext(java.lang.System.getenv()));
-        context.push(new PropertiesContext(java.lang.System.getProperties()));
-        context.push(new DefaultContext());
-        context.set("benerator", new SimpleGenerationSetup());
+        BeneratorContext context = new BeneratorContext();
 
         // parse schema
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
