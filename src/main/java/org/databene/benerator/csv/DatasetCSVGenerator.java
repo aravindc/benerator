@@ -52,13 +52,14 @@ import org.databene.document.csv.CSVLineIterator;
  */
 public class DatasetCSVGenerator<E> extends GeneratorProxy <E> {
     
-    // TODO v0.5.1 support uniqueness
+    // TODO v0.5.2 support uniqueness
 
     private String filenamePattern;
     private String datasetName;
     private String nesting;
 
     // constructors ----------------------------------------------------------------------------------------------------
+    
     public DatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
         this(filenamePattern, datasetName, nesting, SystemInfo.fileEncoding());
     }
@@ -75,6 +76,10 @@ public class DatasetCSVGenerator<E> extends GeneratorProxy <E> {
         this.datasetName = datasetName;
     }
     
+	public String getDataset() {
+		return datasetName;
+	}
+
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static <T> List<WeightedSample<T>> createSamples(
