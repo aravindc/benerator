@@ -132,11 +132,11 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public TypeDescriptor getLocalType(boolean complexType) {
         if (localType != null)
             return localType;
-        typeName = null;
         if (complexType)
             localType = new ComplexTypeDescriptor(getName(), getTypeName());
         else
             localType = new SimpleTypeDescriptor(getName(), getTypeName());
+        typeName = null;
         return localType;
     }
     
