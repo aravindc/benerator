@@ -30,9 +30,6 @@ import org.databene.platform.db.DBSystem;
 import org.databene.model.ModelParser;
 import org.databene.model.Processor;
 import org.databene.commons.*;
-import org.databene.commons.context.ContextStack;
-import org.databene.commons.context.DefaultContext;
-import org.databene.commons.context.PropertiesContext;
 import org.databene.commons.xml.XMLElement2BeanConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.script.ScriptConverter;
@@ -41,6 +38,7 @@ import org.databene.task.TaskRunner;
 import org.databene.task.Task;
 import org.databene.task.PageListener;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.GenerationSetup;
 import org.databene.benerator.Generator;
@@ -122,11 +120,7 @@ public class Benerator implements GenerationSetup {
     public void processFile(String uri) throws IOException {
         try {
             long startTime = java.lang.System.currentTimeMillis();
-            ContextStack context = new ContextStack();
-            context.push(new PropertiesContext(java.lang.System.getenv()));
-            context.push(new PropertiesContext(java.lang.System.getProperties()));
-            context.push(new DefaultContext());
-            context.set("benerator", this);
+            BeneratorContext context = new BeneratorContext();
             Document document = XMLUtil.parse(uri);
             Element root = document.getDocumentElement();
             NodeList nodes = root.getChildNodes();
@@ -151,7 +145,7 @@ public class Benerator implements GenerationSetup {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void parseRootChild(Element element, Set<Heavyweight> resources, ContextStack context) {
+    private void parseRootChild(Element element, Set<Heavyweight> resources, Context context) {
         String elementType = element.getNodeName();
         if ("bean".equals(elementType))
             parseBean(element, resources, context);
@@ -171,7 +165,7 @@ public class Benerator implements GenerationSetup {
             throw new ConfigurationError("Unknown element: " + elementType);
     }
 
-    private void parseProperty(Element element, ContextStack context) {
+    private void parseProperty(Element element, Context context) {
         String propertyName = element.getAttribute("name");
         Object propertyValue;
         if (element.hasAttribute("value"))
@@ -183,12 +177,12 @@ public class Benerator implements GenerationSetup {
         context.set(propertyName, propertyValue);
     }
 
-    private void parseEcho(Element element, ContextStack context) {
+    private void parseEcho(Element element, Context context) {
         String message = parseAttribute(element, "message", context);
         System.out.println(ScriptUtil.render(message, context, defaultScript));
     }
 
-    private Object parseBean(Element element, Set<Heavyweight> resources, ContextStack context) {
+    private Object parseBean(Element element, Set<Heavyweight> resources, Context context) {
         try {
             Object bean = parser.parseBean(element, context);
             if (bean instanceof DescriptorProvider)
@@ -201,7 +195,7 @@ public class Benerator implements GenerationSetup {
         }
     }
 
-    private void parseDatabase(Element element, Set<Heavyweight> resources, ContextStack context) {
+    private void parseDatabase(Element element, Set<Heavyweight> resources, Context context) {
         try {
             String id = parseAttribute(element, "id", context);
             if (id == null)
@@ -223,7 +217,7 @@ public class Benerator implements GenerationSetup {
         }
     }
 
-    private void parseRunTask(Element element, ContextStack context) {
+    private void parseRunTask(Element element, Context context) {
         try {
             String beanName = parseAttribute(element, "name", context);
             logger.debug("Instantiating task '" + beanName + "'");
@@ -239,7 +233,7 @@ public class Benerator implements GenerationSetup {
         }
     }
 
-    private PageListener parsePager(Element element, ContextStack context) {
+    private PageListener parsePager(Element element, Context context) {
         String pagerSetup = parseAttribute(element, "pager", context);
         if (StringUtil.isEmpty(pagerSetup))
             return null;
@@ -255,7 +249,7 @@ public class Benerator implements GenerationSetup {
         return pager;
     }
 
-    private void parseAndRunCreateEntities(Element element, Set<Heavyweight> resources, ContextStack context) {
+    private void parseAndRunCreateEntities(Element element, Set<Heavyweight> resources, Context context) {
         PagedCreateEntityTask task = parseCreateEntities(element, resources, context, false);
         long t0 = System.currentTimeMillis();
         long count0 = ConfiguredEntityGenerator.entityCount();
@@ -273,7 +267,7 @@ public class Benerator implements GenerationSetup {
             logger.info("Created " + dc + " entities from '" + task.getEntityName() + "' setup in no time");
     }
 
-    private PagedCreateEntityTask parseCreateEntities(Element element, Set<Heavyweight> resources, ContextStack context, boolean isSubTask) {
+    private PagedCreateEntityTask parseCreateEntities(Element element, Set<Heavyweight> resources, Context context, boolean isSubTask) {
         InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
         descriptor.setNullable(false);
         logger.info(descriptor);
@@ -301,7 +295,7 @@ public class Benerator implements GenerationSetup {
                 configuredGenerator, consumers, executor, isSubTask);
     }
 
-    private Collection<Consumer<Entity>> parseConsumers(Element parent, Set<Heavyweight> resources, ContextStack context) {
+    private Collection<Consumer<Entity>> parseConsumers(Element parent, Set<Heavyweight> resources, Context context) {
         String entityName = parseAttribute(parent, "name", context);
         List<Consumer<Entity>> consumers = new ArrayList<Consumer<Entity>>();
         Consumer<Entity> consumer;
