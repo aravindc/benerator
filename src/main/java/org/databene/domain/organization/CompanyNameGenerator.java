@@ -52,22 +52,49 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     private static final String PERS = "org/databene/domain/person/";
     private static final String REGION  = "org/databene/dataset/region";
     
+    private String datasetName;
     private Generator<String> core;
-    private Generator<String> sector;
-    private Generator<String> legalForm;
-    private String dataset;
-    Generator<String> location;
+    private Generator<String> sectorGenerator;
+    private Generator<String> legalFormGenerator;
+    private Generator<String> locationGenerator;
     
-    // TODO v0.5.2 french & italian company names
     public CompanyNameGenerator() {
-    	this(Country.getDefault().getIsoCode());
+    	this(true, true, true);
     }
     
+    public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm) {
+    	this(sector, location, legalForm, Country.getDefault().getIsoCode());
+    }
+
     public CompanyNameGenerator(String dataset) {
-        this.dataset = dataset;
+    	this(true, true, true, dataset);
+    }
+
+    public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
+        this.datasetName = datasetName;
+        setDataset(datasetName);
+        Country country = Country.getInstance(datasetName);
+        if (location && country != null) {
+            Generator<String> city = new ConvertingGenerator<City, String>(new CityGenerator(country), new PropertyAccessConverter("name"));
+            locationGenerator = new NullableGenerator<String>(
+                    	new AlternativeGenerator<String>(String.class, 
+                    			new ConstantGenerator<String>(country.getLocalName()), 
+                    			city), 
+                    	0.8
+                );
+            
+        } else
+            locationGenerator = new ConstantGenerator<String>(null);
+        if (legalForm)
+        	legalFormGenerator = new DatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
+        if (sector)
+        	sectorGenerator = new NullableGenerator<String>(new DatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
+    }
+    
+	public void setDataset(String datasetName) {
         Generator<String> person = new MessageGenerator("{0} {1}", 
-                new DatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", dataset, REGION),
-                new DatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", dataset, REGION)
+                new DatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
+                new DatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
             );
         Generator<String> artificial = new MessageGenerator("{0}{1}", 
                 new SequencedCSVSampleGenerator<String>(ORG + "artificial1.csv"),
@@ -77,37 +104,30 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
                 new SequencedCSVSampleGenerator<String>(ORG + "tech1.csv"),
                 new SequencedCSVSampleGenerator<String>(ORG + "tech2.csv")
             );
-        Country country = Country.getInstance(dataset);
-        if (country != null) {
-            Generator<String> city = new ConvertingGenerator<City, String>(new CityGenerator(country), new PropertyAccessConverter("name"));
-            location = new NullableGenerator<String>(
-                    	new AlternativeGenerator<String>(String.class, 
-                    			new ConstantGenerator<String>(country.getLocalName()), 
-                    			city), 
-                    	0.8
-                );
-            
-        } else
-            location = new ConstantGenerator<String>(null);
         core = new AlternativeGenerator<String>(String.class, artificial, tech, person);
-        legalForm = new DatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", dataset, REGION, "UTF-8");
-        sector = new NullableGenerator<String>(new DatasetCSVGenerator<String>(ORG + "sector_{0}.csv", dataset, REGION, "UTF-8"), 0.7);
-    }
-    
-    public String generate() {
+	}
+
+	public String generate() {
         StringBuilder builder = new StringBuilder(core.generate());
-        String sec = sector.generate();
-        if (sec != null)
-            builder.append(' ').append(sec);
-        String loc = location.generate();
-        if (loc != null)
-            builder.append(' ').append(loc);
-        builder.append(' ').append(legalForm.generate());
+        if (sectorGenerator != null) {
+	        String sec = sectorGenerator.generate();
+	        if (sec != null)
+	            builder.append(' ').append(sec);
+        }
+        if (locationGenerator != null) {
+	        String loc = locationGenerator.generate();
+	        if (loc != null)
+	            builder.append(' ').append(loc);
+        }
+        if (legalFormGenerator != null) {
+        	builder.append(' ').append(legalFormGenerator.generate());
+        }
         return builder.toString();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + '[' + dataset + ']';
+        return getClass().getSimpleName() + '[' + datasetName + ']';
     }
+
 }
