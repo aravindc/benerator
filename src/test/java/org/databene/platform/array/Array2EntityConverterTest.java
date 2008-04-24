@@ -26,7 +26,14 @@
 
 package org.databene.platform.array;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
+
+import org.databene.commons.Escalation;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 
@@ -36,11 +43,36 @@ import org.databene.model.data.ComplexTypeDescriptor;
  * Created: 29.08.2007 19:09:05
  */
 public class Array2EntityConverterTest extends TestCase {
-    public void test() {
+	
+    public void testSimple() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
-        Object[] array = new Object[] { "Alice", 23 };
         String[] featureNames = { "name", "age" };
+        Object[] array = new Object[] { "Alice", 23 };
         assertEquals(entity, new Array2EntityConverter<Object>(descriptor, featureNames).convert(array));
+    }
+	
+    public void testOverflow() {
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
+        String[] featureNames = { "name", "age" };
+        Object[] array = new Object[] { "Alice", 23, "superfluous" };
+        Array2EntityConverter<Object> converter = new Array2EntityConverter<Object>(descriptor, featureNames);
+        EscalatorMock escalator = new EscalatorMock();
+        converter.escalator = escalator;
+		assertEquals(entity, converter.convert(array));
+		assertEquals(1, escalator.escalations.size());
+    }
+    
+    public static final class EscalatorMock implements Escalator {
+    	
+    	private static LoggerEscalator loggerEscalator = new LoggerEscalator();
+
+    	List<Escalation> escalations = new ArrayList<Escalation>();
+
+		public void escalate(String message, Object originator, Object cause) {
+			escalations.add(new Escalation(message, originator, cause));
+			loggerEscalator.escalate(message, originator, cause);
+		}
     }
 }
