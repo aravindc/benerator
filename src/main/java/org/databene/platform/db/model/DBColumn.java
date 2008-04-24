@@ -26,8 +26,6 @@
 
 package org.databene.platform.db.model;
 
-import org.databene.commons.ArrayFormat;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -164,11 +162,6 @@ public class DBColumn {
             }
         }
     }
-/*
-    public DBForeignKeyConstraint getFkConstraint() {
-        return fkConstraint;
-    }
-*/
 
     public boolean isVersionColumn() {
         return versionColumn;
@@ -177,13 +170,7 @@ public class DBColumn {
     public void setVersionColumn(boolean versionColumn) {
         this.versionColumn = versionColumn;
     }
-/*
-    public int size() {
-        if (size != null)
-            return size; // TODO v0.5.1 evaluate if byte or char
-        return 1;
-    }
-*/
+
     // java.lang.overrides ---------------------------------------------------------------------------------------------
 
     @Override
