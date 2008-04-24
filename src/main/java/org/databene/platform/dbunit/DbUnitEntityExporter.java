@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 
@@ -105,8 +106,9 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
                 Object value = entry.getValue();
                 if (value == null)
                     continue;
-                String s = AnyConverter.convert(value, String.class);
-                printer.print(' ' + entry.getKey() + "=\"" + s + '"');
+                String s = ToStringConverter.convert(value, null);
+                if (s != null)
+                	printer.print(' ' + entry.getKey() + "=\"" + s + '"');
             }
             printer.println("/>");
         } catch (IOException e) {
