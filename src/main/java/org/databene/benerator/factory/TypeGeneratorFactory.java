@@ -79,6 +79,8 @@ public class TypeGeneratorFactory {
     private static final Log logger = LogFactory.getLog(TypeGeneratorFactory.class);
 
     public static Generator<? extends Object> createTypeGenerator(TypeDescriptor descriptor, boolean unique, Context context, GenerationSetup setup) {
+    	if (logger.isDebugEnabled())
+    		logger.debug(descriptor + ", " + unique);
         if (descriptor instanceof SimpleTypeDescriptor)
             return SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) descriptor, unique, context, setup);
         else if (descriptor instanceof ComplexTypeDescriptor)
@@ -201,8 +203,7 @@ public class TypeGeneratorFactory {
             if (!NAME.equals(name) && detail.getValue() != null
                     && !usedDetails.contains(name))
                 logger.debug("Ignored detail: " + detail + " in descriptor "
-                        + descriptor); // TODO v0.5.1 improve tracking of
-                                        // unused features
+                        + descriptor); // TODO v1.0 improve tracking of unused features
         }
     }
 */
