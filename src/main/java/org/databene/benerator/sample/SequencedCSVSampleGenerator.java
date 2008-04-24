@@ -28,7 +28,7 @@ package org.databene.benerator.sample;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.Generator;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
@@ -56,7 +56,7 @@ import java.util.ArrayList;
  * <br/>
  * Created: 26.07.2007 18:10:33
  */
-public class SequencedCSVSampleGenerator<E> implements Generator<E> {
+public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     /** The URI to read the samples from */
     private String uri;
@@ -64,12 +64,6 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
     /** The converter to create instances from the CSV cell strings */
     private Converter<String, E> converter;
 
-    /** the SampleGenerator utilized for selecting among the samples */
-    private SequencedSampleGenerator<E> source;
-
-    /** flag that indicates if the generator needs to be initialized */
-    private boolean dirty;
-    
     private static Escalator escalator = new LoggerEscalator();
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -87,7 +81,7 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
     }
 
     public SequencedCSVSampleGenerator(String uri, Converter<String, E> converter) {
-        this.source = new SequencedSampleGenerator<E>(converter.getTargetType());
+        super(new SequencedSampleGenerator<E>(converter.getTargetType()));
         this.converter = converter;
         if (uri != null && uri.trim().length() > 0)
             setUri(uri);
@@ -115,22 +109,21 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
     	escalator.escalate("The 'url' property is deprecated, use 'uri' instead", getClass(), "setUrl() called");
         setUri(url);
     }
+    
+    /** test support method */
+    void addValue(E value) {
+        ((SequencedSampleGenerator<E>) source).addValue(value);
+        // do not set dirty flag, otherwise this value would be cöeared
+    }
 
     // Generator interface ---------------------------------------------------------------------------------------------
-
-    public Class<E> getGeneratedType() {
-        return source.getGeneratedType();
-    }
-
-    public E generate() {
-        if (dirty)
-            validate();
-        return source.generate();
-    }
 
     public void validate() {
         if (dirty) {
             try {
+            	super.validate();
+            	if (uri == null)
+            		throw new InvalidGeneratorSetupException("uri is not set");
                 CSVLineIterator parser = new CSVLineIterator(uri);
                 String[] tokens;
                 List<E> samples = new ArrayList<E>();
@@ -139,7 +132,7 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
                     if (tokens.length > 0)
                         samples.add(converter.convert(tokens[0]));
                 }
-                source.setValues(samples);
+                ((SequencedSampleGenerator<E>) source).setValues(samples);
                 dirty = false;
             } catch (FileNotFoundException e) {
                 throw new InvalidGeneratorSetupException("uri", "not found: " + uri);
@@ -149,18 +142,6 @@ public class SequencedCSVSampleGenerator<E> implements Generator<E> {
                 throw new InvalidGeneratorSetupException("URI content not valid", e);
             }
         }
-    }
-
-    public void reset() {
-        source.reset();
-    }
-
-    public void close() {
-        source.close();
-    }
-
-    public boolean available() {
-        return source.available();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
