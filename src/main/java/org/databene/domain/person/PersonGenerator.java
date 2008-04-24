@@ -28,11 +28,14 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     }
 
     public PersonGenerator(Country country, Locale locale) {
+        this(country.getIsoCode(), locale);
+    }
+
+    public PersonGenerator(String datasetName, Locale locale) {
         genderGen = new GenderGenerator();
-        String countryCode = country.getIsoCode();
-        maleGivenNameGen = new GivenNameGenerator(countryCode, Gender.MALE);
-        femaleGivenNameGen = new GivenNameGenerator(countryCode, Gender.FEMALE);
-        familyNameGen = new FamilyNameGenerator(countryCode);
+        maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
+        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
+        familyNameGen = new FamilyNameGenerator(datasetName);
         titleGen = new TitleGenerator(locale);
         salutationProvider = new SalutationProvider(locale);
         birthDateGenerator = new BirthDateGenerator(15, 105);
@@ -40,10 +43,18 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setLocale(Locale locale) {
+	public Locale getLocale() {
+		return titleGen.getLocale();
+	}
+
+	public void setLocale(Locale locale) {
         titleGen.setLocale(locale);
         salutationProvider.setLocale(locale);
     }
+
+	public String getDataset() {
+		return familyNameGen.getDataset();
+	}
 
     public void setDataset(String datasetName) {
         maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
