@@ -281,7 +281,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             logger.debug("getEntities(" + type + ")");
     	Connection connection = getThreadContext().connection;
     	String sql = null;
-    	if (selector == null)
+    	if (StringUtil.isEmpty(selector))
     	    sql = "select * from " + type;
     	else if (StringUtil.startsWithIgnoreCase(selector, "select"))
     	    sql = selector;
