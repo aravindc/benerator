@@ -148,7 +148,9 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
                     printer.print(separator);
                 Object value = entity.getComponent(propertyNames[i]);
                 String s = AnyConverter.convert(value, String.class, datePattern, timestampPattern);
-                if (s.indexOf(separator) >= 0)
+                if (s == null)
+                	s = "";
+                else if (s.indexOf(separator) >= 0)
                     s = '"' + s + '"';
                 printer.print(s);
             }
