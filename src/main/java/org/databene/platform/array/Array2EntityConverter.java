@@ -26,7 +26,10 @@
 
 package org.databene.platform.array;
 
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.Converter;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -36,13 +39,15 @@ import org.databene.model.data.Entity;
  * Created: 26.08.2007 12:27:45
  */
 public class Array2EntityConverter<E> implements Converter<E[], Entity> {
-
+	
     private ComplexTypeDescriptor descriptor;
-    private String[] featureNames;
+    private String[] attributeNames;
+    
+    Escalator escalator = new LoggerEscalator();
 
     public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames) {
         this.descriptor = descriptor;
-        this.featureNames = featureNames;
+        this.attributeNames = featureNames;
     }
 
     public Class<Entity> getTargetType() {
@@ -51,10 +56,21 @@ public class Array2EntityConverter<E> implements Converter<E[], Entity> {
 
     public Entity convert(E[] sourceValue) {
         Entity entity = new Entity(descriptor);
-        for (int i = 0; i < sourceValue.length; i++) {
-            String featureName = featureNames[i];
+        int length;
+        if (sourceValue.length > attributeNames.length) {
+        	escalator.escalate("Row has more columns than specified in the file header", this, sourceValue);
+        	length = attributeNames.length;
+        } else
+        	length = sourceValue.length;
+        for (int i = 0; i < length; i++) {
+            String featureName = attributeNames[i];
             entity.setComponent(featureName, sourceValue[i]);
         }
         return entity;
+    }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + ArrayFormat.format(", ", attributeNames) + ']';
     }
 }
