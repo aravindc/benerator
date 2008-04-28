@@ -31,13 +31,11 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.commons.Validator;
-import org.databene.commons.context.ContextStack;
-import org.databene.commons.context.DefaultContext;
-import org.databene.commons.context.PropertiesContext;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.domain.product.EAN13Validator;
 import org.databene.domain.product.EAN8Validator;
@@ -64,13 +62,7 @@ public class ShopXMLTest extends TestCase {
         String schemaUri = "demo/shop/shop.xsd";
         System.setProperty("stage", "test");
         
-        // TODO 0.5.1 simplify & encapsulate
-        ContextStack context = new ContextStack();
-        context.push(new PropertiesContext(java.lang.System.getenv()));
-        context.push(new PropertiesContext(java.lang.System.getProperties()));
-        context.push(new DefaultContext());
-        context.set("benerator", new SimpleGenerationSetup());
-
+        BeneratorContext context = new BeneratorContext();
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(schemaUri, context);
         DataModel.getDefaultInstance().addDescriptorProvider(provider);
         DataModel.getDefaultInstance().validate();
