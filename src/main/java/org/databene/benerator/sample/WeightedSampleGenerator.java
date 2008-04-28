@@ -29,10 +29,12 @@ package org.databene.benerator.sample;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.SimpleRandom;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.IndividualWeight;
 import org.databene.model.function.WeightFunction;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collection;
 
 /**
@@ -41,9 +43,11 @@ import java.util.Collection;
  * Created: 07.06.2006 19:04:08
  */
 public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
-
+	
     /** Keeps the Sample information */
     private List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
+    
+    private IndividualWeight<E> individualWeight;
 
     /** Generator for choosing a List index of the sample list */
     private IntegerGenerator indexGenerator = new IntegerGenerator(0, 0, 1, new SampleWeightFunction());
@@ -55,44 +59,52 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 
     /** Initializes the generator to an empty sample list */
     public WeightedSampleGenerator() {
-        this((E[]) null);
+        this((Class<E>) Object.class);
+    }
+
+    /** Initializes the generator to an empty sample list */
+    public WeightedSampleGenerator(Class<E> generatedType) {
+        this(generatedType, (E[]) null);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(E ... values) {
+    public WeightedSampleGenerator(Class<E> generatedType, E ... values) {
+    	super(generatedType);
         setValues(values);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(WeightFunction distribution, E ... values) {
-        setValues(values);
-        setDistribution(distribution);
-    }
-
-    /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(Collection<E> values) {
-        setValues(values);
-    }
-
-    /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(WeightFunction distribution, Collection<E> values) {
+    public WeightedSampleGenerator(Class<E> generatedType, Distribution distribution, E ... values) {
+    	super(generatedType);
         setValues(values);
         setDistribution(distribution);
     }
 
-//    /** Initializes the generator to a weighted sample list */
-//    public SampleGenerator(Sample<E> ... samples) {
-//        setSamples(samples);
-//    }
+    /** Initializes the generator to an unweighted sample list */
+    public WeightedSampleGenerator(Class<E> generatedType, Collection<E> values) {
+    	super(generatedType);
+        setValues(values);
+    }
+
+    /** Initializes the generator to an unweighted sample list */
+    public WeightedSampleGenerator(Class<E> generatedType, Distribution distribution, Collection<E> values) {
+    	super(generatedType);
+        setValues(values);
+        setDistribution(distribution);
+    }
 
     // config properties -----------------------------------------------------------------------------------------------
 
-    public WeightFunction getDistribution() {
-        return (WeightFunction) indexGenerator.getDistribution();
+    public Distribution getDistribution() {
+        return indexGenerator.getDistribution();
     }
 
-    public void setDistribution(WeightFunction distribution) {
-        indexGenerator.setDistribution(distribution);
+    public void setDistribution(Distribution distribution) {
+    	if (distribution instanceof IndividualWeight)
+    		this.individualWeight = (IndividualWeight<E>) distribution;
+    	else
+    		indexGenerator.setDistribution(distribution);
+    	this.dirty = true;
     }
 
     public Integer getVariation1() {
@@ -101,6 +113,7 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 
     public void setVariation1(Integer varation1) {
         indexGenerator.setVariation1(varation1);
+    	this.dirty = true;
     }
 
     public Integer getVariation2() {
@@ -109,6 +122,7 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 
     public void setVariation2(Integer variation2) {
         indexGenerator.setVariation2(variation2);
+    	this.dirty = true;
     }
 
     // samples property ------------------------------------------------------------------------------------------------
@@ -200,9 +214,9 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
     public void validate() {
         if (dirty) {
             if (samples.size() > 0) {
+                normalize();
                 indexGenerator.setMax(samples.size() - 1);
                 indexGenerator.validate();
-                normalize();
             }
             this.dirty = false;
         }
@@ -235,6 +249,10 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 
     /** normalizes the sample weights to a sum of 1 */
     private void normalize() {
+    	if (individualWeight != null) {
+            for (WeightedSample<E> sample : samples)
+                sample.setWeight(individualWeight.weight(sample.getValue()));
+    	}
         double totalWeight = totalWeight();
         for (WeightedSample<E> sample : samples) {
             if (totalWeight == 0) {
@@ -248,7 +266,7 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
     /** Calculates the total weight of all samples */
     private double totalWeight() {
         double total = 0;
-        for (WeightedSample sample : samples)
+        for (WeightedSample<E> sample : samples)
             total += sample.getWeight();
         return total;
     }
@@ -259,7 +277,7 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 
         /** @see org.databene.model.function.WeightFunction#value(double) */
         public double value(double param) {
-            return samples.get((int)param).getWeight();
+            return samples.get((int) param).getWeight();
         }
 
         /** creates a String representation */
