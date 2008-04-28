@@ -55,7 +55,7 @@ public class UnionSimpleTypeDescriptor extends SimpleTypeDescriptor {
         return alternatives;
     }
     
-    public <T> PrimitiveType<T> getPrimitiveType() {
+    public PrimitiveType getPrimitiveType() {
         SimpleTypeDescriptor firstAlternative = alternatives.get(0);
         TypeDescriptor firstType = alternatives.get(0);
         if (firstType == null)
