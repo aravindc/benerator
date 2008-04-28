@@ -42,8 +42,6 @@ import java.util.Collection;
  */
 public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
 
-    private Class<E> targetType;
-
     /** Keeps the Sample information */
     private List<E> samples = new ArrayList<E>();
 
@@ -60,32 +58,32 @@ public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
     }
 
     /** Initializes the generator to an empty sample list */
-    public SequencedSampleGenerator(Class<E> targetType) {
-        this(targetType, new ArrayList<E>());
+    public SequencedSampleGenerator(Class<E> generatedType) {
+        this(generatedType, new ArrayList<E>());
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> targetType, E ... values) {
-        this.targetType = targetType;
+    public SequencedSampleGenerator(Class<E> generatedType, E ... values) {
+    	super(generatedType);
         setValues(values);
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> targetType, Sequence distribution, E ... values) {
-        this.targetType = targetType;
+    public SequencedSampleGenerator(Class<E> generatedType, Sequence distribution, E ... values) {
+    	super(generatedType);
         setDistribution(distribution);
         setValues(values);
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> targetType, Collection<E> values) {
-        this.targetType = targetType;
+    public SequencedSampleGenerator(Class<E> generatedType, Collection<E> values) {
+    	super(generatedType);
         setValues(values);
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> targetType, Sequence distribution, Collection<E> values) {
-        this.targetType = targetType;
+    public SequencedSampleGenerator(Class<E> generatedType, Sequence distribution, Collection<E> values) {
+    	super(generatedType);
         setDistribution(distribution);
         setValues(values);
     }
@@ -156,7 +154,13 @@ public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @Override
+    public boolean available() {
+    	return indexGenerator.available();
+    }
+    
     /** Initializes all attributes */
+    @Override
     public void validate() {
         if (dirty) {
             if (samples.size() > 0) {
@@ -167,10 +171,6 @@ public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
         }
     }
 
-    public Class<E> getGeneratedType() {
-        return targetType;
-    }
-
     /** @see org.databene.benerator.Generator#generate() */
     public E generate() {
         if (dirty)
@@ -179,6 +179,16 @@ public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
             return null;
         int index = indexGenerator.generate();
         return samples.get(index);
+    }
+    
+    @Override
+    public void reset() {
+    	indexGenerator.reset();
+    }
+    
+    @Override
+    public void close() {
+    	indexGenerator.close();
     }
 
     // static interface ------------------------------------------------------------------------------------------------
