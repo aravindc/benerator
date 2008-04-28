@@ -155,7 +155,7 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
                                     "or implement the Parallelizable interface");
                     }
                 }
-                task = new LoopedTask(task, loopSize); // TODO v0.5.1 leave the loop if generator has become unavailable 
+                task = new LoopedTask(task, loopSize); // TODO v0.6.0 leave the loop if generator has become unavailable 
                 TaskRunnable thread = new TaskRunnable(task, (realTask instanceof ThreadSafe ? null : context), latch);
                 executor.execute(thread);
                 localInvocationCount += loopSize;
