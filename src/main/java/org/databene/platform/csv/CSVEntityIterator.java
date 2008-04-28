@@ -40,7 +40,9 @@ import org.databene.commons.iterator.ConvertingIterator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Iterates Entities in a CSV file.<br/>
@@ -99,6 +101,14 @@ public class CSVEntityIterator implements Iterator<Entity> {
     	if (!source.hasNext())
     		throw new IllegalStateException("No more entity to fetch, check hasNext() before calling next()");
         return source.next();
+    }
+    
+    public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor) throws FileNotFoundException {
+    	List<Entity> list = new ArrayList<Entity>();
+    	CSVEntityIterator iterator = new CSVEntityIterator(uri, descriptor, preprocessor, separator, encoding);
+    	while (iterator.hasNext())
+    		list.add(iterator.next());
+    	return list;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
