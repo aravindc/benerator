@@ -89,7 +89,15 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.platform.db">
+       <priority value="info"/>
+    </category>
+
     <category name="org.databene.platform.xml">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.domain">
        <priority value="info"/>
     </category>
 
