@@ -147,7 +147,7 @@ public class CharacterGenerator implements Generator<Character> {
             try {
                 if (pattern != null)
                     values = new RegexParser(locale).parseCharSet(new RegexTokenizer(pattern));
-                this.source = new WeightedSampleGenerator<Character>(values);
+                this.source = new WeightedSampleGenerator<Character>(Character.class, values);
                 source.validate();
                 this.dirty = false;
             } catch (ParseException e) {
