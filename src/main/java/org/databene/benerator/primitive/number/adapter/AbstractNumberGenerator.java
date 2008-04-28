@@ -26,7 +26,6 @@
 
 package org.databene.benerator.primitive.number.adapter;
 
-import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.converter.NumberToNumberConverter;
