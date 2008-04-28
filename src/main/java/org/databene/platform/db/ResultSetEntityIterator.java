@@ -34,7 +34,6 @@ import java.util.Iterator;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.bean.BeanDescriptorProvider;
@@ -95,6 +94,7 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
 
     // private helpers ----------------------------------------------------------------------------------------
     
+    // TODO v0.5.3 perf: use a dedicated converter for each column
     private Object javaValue(ResultSet resultSet, int columnIndex, String primitiveType) throws SQLException {
         if ("date".equals(primitiveType))
             return resultSet.getDate(columnIndex);
