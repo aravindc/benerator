@@ -51,8 +51,12 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
     public Class<E> getGeneratedType() {
         return generatedType;
     }
+    
+	public void setGeneratedType(Class<E> generatedType) {
+		this.generatedType = generatedType;
+	}
 
-    public void validate() {
+	public void validate() {
     }
 
     /** Empty implementation */
