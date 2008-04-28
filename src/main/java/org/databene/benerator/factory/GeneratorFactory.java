@@ -214,7 +214,22 @@ public class GeneratorFactory {
      * @return a generator that selects from the listed sample values
      */
     public static <T> Generator<T> getSampleGenerator(Collection<T> values) {
-        return new WeightedSampleGenerator<T>(values);
+    	Class<T> generatedType = (Class<T>) Object.class;
+    	if (values.size() > 0) {
+    		T first = values.iterator().next();
+			generatedType = (Class<T>) first.getClass();
+    	}
+        return new WeightedSampleGenerator<T>(generatedType, values);
+    }
+
+    /**
+     * Creates a Generator that chooses from a set of values with equal weights.
+     *
+     * @param values A collection of values to choose from
+     * @return a generator that selects from the listed sample values
+     */
+    public static <T> Generator<T> getSampleGenerator(Class<T> generatedType, Collection<T> values) {
+        return new WeightedSampleGenerator<T>(generatedType, values);
     }
 
     /**
@@ -224,7 +239,18 @@ public class GeneratorFactory {
      * @return a generator that selects from the listed sample values
      */
     public static <T> Generator<T> getSampleGenerator(T ... values) {
-        return new WeightedSampleGenerator<T>(values);
+    	Class<T> generatedType = (values.length > 0 ? (Class<T>) values[0].getClass() : (Class<T>) Object.class);
+    	return getSampleGenerator(generatedType, values);
+    }
+
+    /**
+     * Creates a Generator that chooses from an array of values with equal weights.
+     *
+     * @param values An array of values to choose from
+     * @return a generator that selects from the listed sample values
+     */
+    public static <T> Generator<T> getSampleGenerator(Class<T> generatedType, T ... values) {
+        return new WeightedSampleGenerator<T>(generatedType, values);
     }
 
     /**
