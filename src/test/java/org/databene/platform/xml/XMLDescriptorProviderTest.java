@@ -27,13 +27,14 @@
 package org.databene.platform.xml;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.file.XMLFileGenerator;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 
 import junit.framework.TestCase;
 
@@ -45,16 +46,11 @@ import junit.framework.TestCase;
  */
 public class XMLDescriptorProviderTest extends TestCase {
     
-    private static final Log logger = LogFactory.getLog(XMLDescriptorProviderTest.class);
-    
     private static final String NESTING_TEST_FILE = "org/databene/platform/xml/simple_type_element_test.xsd";
+    private static final String ANNOTATION_TEST_FILE = "org/databene/platform/xml/annotation-test.xsd";
 
     public void testNesting() throws IOException {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new DefaultContext());
-
-        for (TypeDescriptor descriptor : provider.getTypeDescriptors())
-            logger.debug(descriptor);
-
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
         assertNotNull(rootDescriptor);
@@ -74,4 +70,33 @@ public class XMLDescriptorProviderTest extends TestCase {
         assertNotNull(c2);
     }
 
+    public void testAnnotations() throws IOException {
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(ANNOTATION_TEST_FILE, new DefaultContext());
+        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+        // check root
+        assertNotNull(rootDescriptor);
+        assertEquals(2, rootDescriptor.getComponents().size());
+        
+        // check component root.simple-type
+        ComponentDescriptor simpleTypeComponent = rootDescriptor.getComponent("simple-type");
+        assertNotNull(simpleTypeComponent);
+        
+        // check simple-type
+        SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) provider.getTypeDescriptor("simple-type");
+        assertNotNull(simpleType);
+        assertTrue(Arrays.equals(ArrayUtil.toArray("Alice", "Bob"), simpleType.getValues()));
+        
+        // check component root.complex-type
+        ComponentDescriptor complexTypeComponent = rootDescriptor.getComponent("complex-type");
+        assertNotNull(complexTypeComponent);
+        
+        // check complex-type
+        ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) provider.getTypeDescriptor("complex-type");
+        assertNotNull(complexType);
+        assertEquals("org/databene/platform/xml/person.csv", complexType.getSource());
+        
+        XMLFileGenerator g = new XMLFileGenerator(ANNOTATION_TEST_FILE, "root", "test{0}.xml");
+        g.generate();
+        g.generate();
+    }
 }
