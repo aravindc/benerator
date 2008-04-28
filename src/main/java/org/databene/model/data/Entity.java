@@ -56,7 +56,7 @@ public class Entity implements Composite<Object> {
      */
     public Entity(ComplexTypeDescriptor descriptor, Object ... componentKeyValuePairs) {
         this.descriptor = descriptor;
-        this.components = new OrderedNameMap<Object>(false);
+        this.components = new OrderedNameMap<Object>();
         for (int i = 0; i < componentKeyValuePairs.length; i += 2)
             setComponent((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
     }
