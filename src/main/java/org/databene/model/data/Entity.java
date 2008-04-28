@@ -45,6 +45,10 @@ public class Entity implements Composite<Object> {
     private ComplexTypeDescriptor descriptor;
     private CompositeFormatter formatter;
 
+    public Entity(String name, Object ... componentKeyValuePairs) {
+        this(new ComplexTypeDescriptor(name), componentKeyValuePairs);
+    }
+
     /**
      *
      * @param descriptor the name of the entity, it may be null
