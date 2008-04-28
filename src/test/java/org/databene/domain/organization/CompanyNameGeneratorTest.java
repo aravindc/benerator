@@ -28,18 +28,23 @@ package org.databene.domain.organization;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorClassTest;
 import org.databene.domain.organization.CompanyNameGenerator;
 
-import junit.framework.TestCase;
 
 /**
  * Tests the CompanyNameGenerator.<br/><br/>
  * Created: 14.03.2008 08:31:26
  * @author Volker Bergmann
  */
-public class CompanyNameGeneratorTest extends TestCase {
+public class CompanyNameGeneratorTest extends GeneratorClassTest {
 
-    private static Log logger = LogFactory.getLog(CompanyNameGeneratorTest.class);
+	private static Log logger = LogFactory.getLog(CompanyNameGeneratorTest.class);
+
+    public CompanyNameGeneratorTest() {
+		super(CompanyNameGenerator.class);
+	}
 
     public void testDE() {
         check("DE");
