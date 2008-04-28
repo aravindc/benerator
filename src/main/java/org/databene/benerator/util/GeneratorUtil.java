@@ -26,8 +26,13 @@
 
 package org.databene.benerator.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.commons.ConfigurationError;
+import org.databene.model.data.Entity;
 
 /**
  * Provides general utility methods for generation.<br/>
@@ -35,8 +40,21 @@ import org.databene.benerator.IllegalGeneratorStateException;
  * Created: 19.11.2007 15:27:50
  */
 public class GeneratorUtil {
+	
+	private static final int MAX_SIZE = 100000;
 
-    public static IllegalGeneratorStateException stateException(Generator generator) {
+    public static <T> IllegalGeneratorStateException stateException(Generator<T> generator) {
         return new IllegalGeneratorStateException("Generator is not available: " + generator);        
     }
+
+	public static List<Entity> allProducts(Generator<Entity> generator) {
+		List<Entity> list = new ArrayList<Entity>();
+		int count = 0;
+		while (generator.available()) {
+			list.add(generator.generate());
+			if (count++ > MAX_SIZE)
+				throw new ConfigurationError("Dataset is to large");
+		}
+		return list;
+	}
 }
