@@ -52,8 +52,6 @@ import org.databene.document.csv.CSVLineIterator;
  */
 public class DatasetCSVGenerator<E> extends GeneratorProxy <E> {
     
-    // TODO v0.5.2 support uniqueness
-
     private String filenamePattern;
     private String datasetName;
     private String nesting;
