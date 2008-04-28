@@ -46,14 +46,20 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
     
     protected Map<String, TypeDescriptor> typeMap;
     private final String id;
+    private boolean redefinable;
     
     public DefaultDescriptorProvider(String id) {
-        typeMap = new OrderedNameMap<TypeDescriptor>();
+        this(id, false);
+    }
+
+    public DefaultDescriptorProvider(String id, boolean redefinable) {
+        this.typeMap = new OrderedNameMap<TypeDescriptor>();
         this.id = id;
+        this.redefinable = redefinable;
     }
 
     protected void addDescriptor(TypeDescriptor descriptor) {
-        if (typeMap.get(descriptor.getName()) != null)
+        if (!redefinable && typeMap.get(descriptor.getName()) != null)
             throw new ConfigurationError("Type has already been defined: " + descriptor.getName());
         typeMap.put(descriptor.getName(), descriptor);
         logger.debug("added type descriptor: " + descriptor);
