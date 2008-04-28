@@ -56,7 +56,6 @@ public class XMLFileGeneratorTest extends TestCase {
     
     public void testSimpleTypeElement() throws IOException {
         createXMLFile("org/databene/platform/xml/simple_type_element_test.xsd", "root", "target/simple_type_element_test.xml");
-        // TODO v0.5.1 validate content
     }
 
     public void testBean() throws IOException {
