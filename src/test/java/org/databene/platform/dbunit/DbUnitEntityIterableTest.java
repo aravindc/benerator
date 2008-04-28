@@ -71,14 +71,14 @@ public class DbUnitEntityIterableTest extends TestCase {
 
     private Entity createPerson(String name, String age) {
         Entity person = new Entity(new ComplexTypeDescriptor("PERSON"));
-        person.setComponentValue("name", name);
-        person.setComponentValue("age", age);
+        person.setComponent("name", name);
+        person.setComponent("age", age);
         return person;
     }
 
     private Entity createRole(String name) {
         Entity role = new Entity(new ComplexTypeDescriptor("ROLE"));
-        role.setComponentValue("name", name);
+        role.setComponent("name", name);
         return role;
     }
 
