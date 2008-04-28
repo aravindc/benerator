@@ -108,7 +108,7 @@ public class TypeGeneratorFactory {
             if (distribution instanceof Sequence)
                 generator = new SequencedSampleGenerator<String>(String.class, (Sequence) distribution, values);
             else if (distribution instanceof WeightFunction)
-                generator = new WeightedSampleGenerator<String>((WeightFunction) distribution, values);
+                generator = new WeightedSampleGenerator<String>(String.class, (WeightFunction) distribution, values);
             else
                 throw new ConfigurationError("Unsupported distribution type: " + distribution.getClass());
         }
@@ -181,7 +181,7 @@ public class TypeGeneratorFactory {
             if (distribution instanceof Sequence)
                 generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
             else if (distribution instanceof WeightFunction)
-                generator = new WeightedSampleGenerator((WeightFunction) distribution, values);
+                generator = new WeightedSampleGenerator(generator.getGeneratedType(), (WeightFunction) distribution, values);
             else
                 throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
         }
