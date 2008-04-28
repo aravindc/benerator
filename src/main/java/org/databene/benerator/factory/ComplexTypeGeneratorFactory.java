@@ -32,10 +32,17 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.function.Distribution;
+import org.databene.model.function.IndividualWeight;
+import org.databene.model.function.Sequence;
+import org.databene.model.function.WeightFunction;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
+import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.collection.OrderedNameMap;
@@ -167,6 +174,21 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
                 generator = new IteratingGenerator(iterable);
             } else
                 throw new UnsupportedOperationException("Unknown source type: " + sourceName);
+        }
+        if (descriptor.getDistribution() != null) {
+        	List<Entity> values = GeneratorUtil.allProducts(generator);
+        	Distribution distribution = descriptor.getDistribution();
+        	if (distribution instanceof Sequence) {
+        		generator = new SequencedSampleGenerator<Entity>(Entity.class, (Sequence) distribution, values);
+        	} else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
+            	generator = new WeightedSampleGenerator<Entity>(Entity.class, distribution, values);
+        	else
+        		throw new ConfigurationError("Not a supported distribution: " + distribution);
+        	if (descriptor.getVariation1() != null)
+        		BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
+        	if (descriptor.getVariation2() != null)
+        		BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
+        	return generator;
         }
         return createProxy(descriptor, generator);
     }
