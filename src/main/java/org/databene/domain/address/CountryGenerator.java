@@ -36,7 +36,7 @@ import org.databene.benerator.sample.WeightedSampleGenerator;
 public class CountryGenerator extends WeightedSampleGenerator<Country> {
 
     public CountryGenerator() {
-        super(Country.getInstances());
+        super(Country.class, Country.getInstances());
     }
 
     public String toString() {
