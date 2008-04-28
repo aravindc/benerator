@@ -40,7 +40,7 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
     }
 
     public void test() {
-        Generator<String> source = new WeightedSampleGenerator<String>("Alice", "Bob");
+        Generator<String> source = new WeightedSampleGenerator<String>(String.class, "Alice", "Bob");
         check(source, 0, 0);
         check(source, 3, 3);
         check(source, 0, 1);
