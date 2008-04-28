@@ -58,6 +58,10 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public static final String LENGTH_DISTRIBUTION = "lengthDistribution";
     
     private PrimitiveType primitiveType = null;
+
+    public SimpleTypeDescriptor(String name) {
+    	this(name, null);
+    }
     
     public SimpleTypeDescriptor(String name, String parent) {
         super(name, parent);
@@ -80,12 +84,12 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public <T> PrimitiveType<T> getPrimitiveType() {
+    public PrimitiveType getPrimitiveType() {
     	if (primitiveType != null)
     		return primitiveType;
         SimpleTypeDescriptor parent = this;
         while (parent.getParent() != null) {
-            PrimitiveType<T> primitiveType = PrimitiveType.getInstance(parent.getParentName());
+            PrimitiveType primitiveType = PrimitiveType.getInstance(parent.getParentName());
             if (primitiveType != null) {
             	this.primitiveType = primitiveType;
                 return primitiveType;
