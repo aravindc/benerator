@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.GeneratorClassTest;
 
@@ -46,21 +47,31 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
         super(SequencedCSVSampleGenerator.class);
     }
 
-    // TODO v0.5.1 test with large data amounts
-
-    private static final String FILE_PATH = "org/databene/benerator/csv/dates.csv";
+    private static final String DATE_FILE_PATH = "org/databene/benerator/csv/dates.csv";
+    private static final String EMPTY_FILE_PATH = "org/databene/benerator/csv/empty.csv";
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
-    public void test() throws ParseException {
+    public void testSmallSet() throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
-        SequencedCSVSampleGenerator<Date> generator = new SequencedCSVSampleGenerator<Date>(FILE_PATH, converter);
+        SequencedCSVSampleGenerator<Date> generator = new SequencedCSVSampleGenerator<Date>(DATE_FILE_PATH, converter);
         List<Date> expectedDates = CollectionUtil.toList(sdf.parse("01.02.2003"), sdf.parse("02.02.2003"), sdf.parse("03.02.2003"));
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             Date generatedDate = generator.generate();
             assertTrue("generated date not in expected value set: " + sdf.format(generatedDate),
                     expectedDates.contains(generatedDate));
+        }
+    }
+
+    public void testBigSet() throws ParseException {
+        SequencedCSVSampleGenerator<Integer> generator = new SequencedCSVSampleGenerator<Integer>(EMPTY_FILE_PATH, new AnyConverter<String,Integer>(Integer.class));
+        generator.validate();
+        for (int i = 0; i < 200000; i++)
+        	generator.addValue(i % 100);
+        for (int i = 0; i < 100; i++) {
+            int product = generator.generate();
+            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
         }
     }
 }

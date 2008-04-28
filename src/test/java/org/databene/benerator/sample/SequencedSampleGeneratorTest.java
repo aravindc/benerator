@@ -26,6 +26,8 @@
 
 package org.databene.benerator.sample;
 
+import java.text.ParseException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.GeneratorClassTest;
@@ -37,17 +39,10 @@ import org.databene.benerator.GeneratorClassTest;
  */
 public class SequencedSampleGeneratorTest extends GeneratorClassTest {
 
-    // TODO v0.5.1 test with large data amounts
-
     private static Log logger = LogFactory.getLog(SequencedSampleGeneratorTest.class);
 
     public SequencedSampleGeneratorTest() {
         super(SequencedSampleGenerator.class);
-    }
-
-    public void testInstantiation() throws Exception {
-        new SequencedSampleGenerator<Integer>(Integer.class);
-        new SequencedSampleGenerator<String>(String.class);
     }
 
     public void testDistribution() throws Exception {
@@ -66,6 +61,17 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
             double ratio = measuredProbability / expectedProbability;
             logger.debug(i + " " + count + " " + ratio);
             assertTrue(ratio > 0.9 && ratio < 1.1);
+        }
+    }
+
+    public void testBigSet() throws ParseException {
+        SequencedSampleGenerator<Integer> generator = new SequencedSampleGenerator<Integer>(Integer.class);
+        for (int i = 0; i < 200000; i++)
+        	generator.addValue(i % 100);
+        generator.validate();
+        for (int i = 0; i < 100; i++) {
+            int product = generator.generate();
+            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
         }
     }
 }
