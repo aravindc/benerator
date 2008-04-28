@@ -33,8 +33,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.databene.benerator.GeneratorTest;
-import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
+import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGeneratorTest;
 import org.databene.benerator.primitive.number.adapter.DoubleGenerator;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
@@ -269,9 +269,9 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetMessageGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        WeightedSampleGenerator<String> salutationGenerator = new WeightedSampleGenerator<String>(salutations);
+        WeightedSampleGenerator<String> salutationGenerator = new WeightedSampleGenerator<String>(String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        WeightedSampleGenerator<String> nameGenerator = new WeightedSampleGenerator<String>(names);
+        WeightedSampleGenerator<String> nameGenerator = new WeightedSampleGenerator<String>(String.class, names);
         String pattern = "{0} {1}";
         Generator<String> generator = GeneratorFactory.getMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
         for (int i = 0; i < 10; i++) {
@@ -327,9 +327,9 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        WeightedSampleGenerator<String> salutationGenerator = new WeightedSampleGenerator<String>(salutations);
+        WeightedSampleGenerator<String> salutationGenerator = new WeightedSampleGenerator<String>(String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        WeightedSampleGenerator<String> nameGenerator = new WeightedSampleGenerator<String>(names);
+        WeightedSampleGenerator<String> nameGenerator = new WeightedSampleGenerator<String>(String.class, names);
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
         Generator<Object[]> generator = GeneratorFactory.getArrayGenerator(Object.class, sources);
         for (int i = 0; i < 10; i++) {
