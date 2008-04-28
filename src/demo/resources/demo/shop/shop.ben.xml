@@ -93,11 +93,11 @@
 			<attribute name="last_name" source="person.familyName" />
 			<attribute name="birth_date" nullable="false" />
 			<!-- Export the customers not only to the database, but there names and passwords to a CSV file -->
-			<consumer class="org.databene.platform.csv.CSVEntityExporter">
-				<property name="uri" value="customers.csv" />
-				<property name="properties" value="name,password" />
-			</consumer>
 		</create-entities>
+		<consumer class="org.databene.platform.csv.CSVEntityExporter">
+			<property name="uri" value="customers.csv" />
+			<property name="properties" value="id,password" />
+		</consumer>
 	</create-entities>
 
 	<!-- create one default order for each customer based on a DBUnit template -->
