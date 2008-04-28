@@ -40,8 +40,6 @@ public class StepLongGenerator extends AbstractLongGenerator {
 
     private long next;
 
-    private long increment;
-
     // constructors ----------------------------------------------------------------------------------------------------
 
     public StepLongGenerator() {
@@ -54,7 +52,7 @@ public class StepLongGenerator extends AbstractLongGenerator {
 
     public StepLongGenerator(long min, long max, long increment) {
         super(min, max, Math.abs(increment));
-        this.increment = increment;
+        this.variation1 = increment;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -75,28 +73,40 @@ public class StepLongGenerator extends AbstractLongGenerator {
 
     public void validate() {
         if (dirty) {
-            if (increment < 0)
-                next = max;
-            else
-                next = min;
-            super.validate();
+            reset();
+    		super.validate();
         }
     }
 
     public Class<Long> getGeneratedType() {
         return Long.class;
     }
+    
+    @Override
+    public boolean available() {
+    	validate();
+        return (variation1 == 0 || (variation1 > 0 && next <= max) || (variation1 < 0 && next >= min));
+    }
 
     public Long generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+        if (!available())
+        	throw new IllegalGeneratorStateException(
+        			"Generator " + this + " is not available. Check this by calling available() before generate()");
         long value = next;
-        next += increment;
-        if (next > max)
-            next = max;
-        else if (next < min)
-            next = min;
+        next += variation1;
         return value;
     }
 
+    @Override
+	public void reset() {
+		if (variation1 < 0)
+		    next = max;
+		else
+		    next = min;
+	}
+
+    @Override
+    public void close() {
+    	// nothing to do
+    }
 }
