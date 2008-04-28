@@ -18,7 +18,9 @@ import java.awt.*;
  */
 public class ScatterplotDemo extends Component {
 
-    public void paint(Graphics g) {
+	private static final long serialVersionUID = 5264230937667632984L;
+
+	public void paint(Graphics g) {
         Generator<Integer> xGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getWidth(), 1, new XFunction(), 0);
         Generator<Integer> yGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getHeight(), 1, Sequence.CUMULATED, 0.);
         int n = getWidth() * getHeight() / 16;
