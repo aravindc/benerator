@@ -29,7 +29,7 @@ package org.databene.platform.xml;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,14 +46,12 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.FeatureDescriptor;
-import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
-import org.databene.model.data.UnresolvedTypeDescriptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -87,7 +85,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     }
     
     public XMLSchemaDescriptorProvider(String schemaUri, Context context, DataModel dataModel) {
-        super(schemaUri);
+        super(schemaUri, true);
         this.context = context;
         this.dataModel = dataModel;
         this.propertiesFiles = new ArrayList<String>();
@@ -100,62 +98,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         try {
             Document document = parse(schemaUri);
             parseDocument(document);
-            resolveTypes();
         } catch (IOException e) {
             throw new ConfigurationError("Error parsing schemaUri: " + schemaUri, e);
         }
     }
     
-    private void resolveTypes() {
-    	// resolve global types
-    	logger.debug("resolving global types");
-    	Stack<UnresolvedTypeDescriptor> unresolvedTypes = new Stack<UnresolvedTypeDescriptor>();
-		for (TypeDescriptor type : typeMap.values())
-			if (type instanceof UnresolvedTypeDescriptor)
-				unresolvedTypes.add((UnresolvedTypeDescriptor) type);
-		while (!unresolvedTypes.isEmpty()) {
-			TypeDescriptor resolvedType = resolve(unresolvedTypes.pop());
-			typeMap.put(resolvedType.getName(), resolvedType);
-		}
-		// resolve local types
-    	logger.debug("resolving component types");
-		for (TypeDescriptor type : typeMap.values())
-			if (type instanceof ComplexTypeDescriptor)
-				resolveComponents((ComplexTypeDescriptor) type);
-	}
-
-	private void resolveComponents(ComplexTypeDescriptor type) {
-		for (ComponentDescriptor component : type.getComponents()) {
-			TypeDescriptor componentType = component.getType();
-			if (componentType instanceof UnresolvedTypeDescriptor) {
-				TypeDescriptor resolvedType = resolve((UnresolvedTypeDescriptor) componentType);
-				componentType = resolvedType;
-				component.setLocalType(componentType);
-			}
-			if (componentType instanceof ComplexTypeDescriptor)
-				resolveComponents((ComplexTypeDescriptor) componentType);
-		}
-	}
-
-	private TypeDescriptor resolve(UnresolvedTypeDescriptor type) {
-		String parentName = type.getParentName();
-		TypeDescriptor parentType = getTypeDescriptor(parentName);
-		if (parentType instanceof UnresolvedTypeDescriptor)
-			parentType = resolve((UnresolvedTypeDescriptor) parentType);
-		TypeDescriptor resolvedType;
-		if (parentType instanceof SimpleTypeDescriptor)
-			resolvedType = new SimpleTypeDescriptor(type.getName(), parentName);
-		else if (parentType instanceof ComplexTypeDescriptor)
-			resolvedType = new ComplexTypeDescriptor(type.getName(), parentName);
-		else if (parentType == null)
-			throw new UnsupportedOperationException("Undefined type: " + parentName);
-		else
-			throw new UnsupportedOperationException("Unsupported Type: " + parentType.getClass());
-		for (FeatureDetail<? extends Object> detail : type.getDetails())
-			resolvedType.setDetailValue(detail.getName(), detail.getValue());
-		return resolvedType;
-	}
-
 	public String[] getPropertiesFiles() {
         return CollectionUtil.toArray(propertiesFiles);
     }
@@ -168,9 +115,39 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     private void parseDocument(Document document) {
         logger.debug("parseDocument()");
-        NamespaceAlias schemaAlias = XMLUtil.namespaceAlias(document, SCHEMA_NAMESPACE);
+		NamespaceAlias schemaAlias = XMLUtil.namespaceAlias(document, SCHEMA_NAMESPACE);
         dataModel.addDescriptorProvider(new XMLSchemaNativeTypeProvider(schemaAlias.getAliasName()));
         dataModel.addDescriptorProvider(this);
+        parseStructure(document);
+        parseDetails(document);
+    }
+
+	private void parseStructure(Document document) {
+        logger.debug("parseStructure()");
+        Element root = document.getDocumentElement();
+        Element[] childElements = XMLUtil.getChildElements(root);
+        for (Element element : childElements) {
+            String nodeName = localName(element);
+            String nameAttribute = element.getAttribute("name");
+            Set<String> COMPLEX_ELEMENTS = CollectionUtil.toSet(COMPLEX_TYPE, GROUP, ATTRIBUTE_GROUP);
+            if (COMPLEX_ELEMENTS.contains(nodeName))
+            	addDescriptor(new ComplexTypeDescriptor(nameAttribute));
+            else if (SIMPLE_TYPE.equals(nodeName))
+            	addDescriptor(new SimpleTypeDescriptor(nameAttribute));
+            else if (ELEMENT.equals(nodeName)) {
+            	if (XMLUtil.getChildElements(element, false, "complexType").length > 0)
+                	addDescriptor(new ComplexTypeDescriptor(nameAttribute));
+            	else
+                	addDescriptor(new SimpleTypeDescriptor(nameAttribute));
+            } else if (ANNOTATION.equals(nodeName))
+                parseDocumentAnnotation(element);
+            else if ("import".equals(nodeName))
+                parseImport(element);
+        }
+	}
+
+	private void parseDetails(Document document) {
+        logger.debug("parseDetails()");
         Element root = document.getDocumentElement();
         Element[] childElements = XMLUtil.getChildElements(root);
         for (Element element : childElements) {
@@ -181,18 +158,14 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
                 parseComplexType(element, null, true);
             else if (SIMPLE_TYPE.equals(nodeName))
                 addDescriptor(parseSimpleType(null, element));
-            else if (ANNOTATION.equals(nodeName))
-                parseDocumentAnnotation(element);
-            else if ("group".equals(nodeName))
+            else if (GROUP.equals(nodeName))
                 parseGroup(element);
-            else if ("import".equals(nodeName))
-                parseImport(element);
-            else if ("attributeGroup".equals(nodeName))
+            else if (ATTRIBUTE_GROUP.equals(nodeName))
                 parseAttributeGroup(element);
-            else
+            else if (!ANNOTATION.equals(nodeName))
                 throw unsupportedElementType(element);
         }
-    }
+	}
 
     private void parseDocumentAnnotation(Element element) {
         Annotation annotation = new Annotation(element);
@@ -413,53 +386,42 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     private TypeDescriptor parseTopLevelElementWithType(Element element) {
         String name = element.getAttribute(NAME);
         String typeName = element.getAttribute("type");
-        TypeDescriptor parentType = dataModel.getTypeDescriptor(typeName);
-        if (parentType != null) {
-            SimpleTypeDescriptor simpleType = new SimpleTypeDescriptor(name, typeName);
-            Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
-            if (anno != null)
-            	simpleType = parseSimpleTypeAppinfo(new Annotation(anno), simpleType);
-            return simpleType;
-        } else {
-            TypeDescriptor type = new UnresolvedTypeDescriptor(name, typeName);
-/* TODO
-            Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
-            if (anno != null)
-            	type = parseSimpleTypeAppinfo(new Annotation(anno), type);
-*/
-            return type;
-        }
+        TypeDescriptor type = dataModel.getTypeDescriptor(typeName);
+        if (type == null)
+        	type = dataModel.getTypeDescriptor(name);
+        if (type != null) {
+        	if (type instanceof SimpleTypeDescriptor)
+        		return new SimpleTypeDescriptor(name, typeName);
+        	else if (type instanceof ComplexTypeDescriptor)
+        		return new ComplexTypeDescriptor(name, typeName);
+//        	else if (parentType instanceof UnresolvedTypeDescriptor)
+//        		return new UnresolvedTypeDescriptor(name, typeName);
+        	else
+        		throw new UnsupportedOperationException("Unsupported descriptor: " + type);
+        } else
+        	throw new UnsupportedOperationException("Unsupported type: " + typeName);
     }
 
     private PartDescriptor parseElementWithType(Element element) {
         String name = element.getAttribute(NAME);
         String typeName = element.getAttribute("type");
         TypeDescriptor type = dataModel.getTypeDescriptor(typeName);
-        if (type != null) {
-            PartDescriptor refDesc;
-        	if (type instanceof SimpleTypeDescriptor) {
-	            SimpleTypeDescriptor localType = new SimpleTypeDescriptor(name, typeName);
-	            refDesc = new PartDescriptor(name, localType);
-	            refDesc.setPSInfo(XML_REPRESENTATION, "element");
-        	} else {
-	            ComplexTypeDescriptor localType = new ComplexTypeDescriptor(name, typeName);
-	            refDesc = new PartDescriptor(name, localType);
-        	}
-            parseOccurrences(element, refDesc);
-            Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
-            if (anno != null)
-                refDesc = parseAttributeAppinfo(new Annotation(anno), refDesc);
-            return refDesc;
-        } else {
-            PartDescriptor partDescriptor = new PartDescriptor(name, new UnresolvedTypeDescriptor(name, typeName));
-            parseOccurrences(element, partDescriptor);
-/* TODO
-            Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
-            if (anno != null)
-            	type = parseSimpleTypeAppinfo(new Annotation(anno), type);
-*/
-            return partDescriptor;
-        }
+        if (type == null)
+        	throw new ConfigurationError("Undefined type: " + typeName);
+        PartDescriptor refDesc;
+    	if (type instanceof SimpleTypeDescriptor) {
+            SimpleTypeDescriptor localType = new SimpleTypeDescriptor(name, typeName);
+            refDesc = new PartDescriptor(name, localType);
+            refDesc.setPSInfo(XML_REPRESENTATION, "element");
+    	} else {
+            ComplexTypeDescriptor localType = new ComplexTypeDescriptor(name, typeName);
+            refDesc = new PartDescriptor(name, localType);
+    	}
+        parseOccurrences(element, refDesc);
+        Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
+        if (anno != null)
+            refDesc = parseAttributeAppinfo(new Annotation(anno), refDesc);
+        return refDesc;
     }
 
     private void parseOccurrences(Element element, InstanceDescriptor descriptor) {
@@ -622,12 +584,12 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 
     private void parseImport(Element importElement) {
         logger.debug("parseImport()");
-        throw unsupportedElementType(importElement); // TODO v0.5.1 implement parseImport()
+        throw unsupportedElementType(importElement); // TODO v0.5.3 implement parseImport()
     }
 
     private void parseGroup(Element group) {
         logger.debug("parseGroup()");
-        throw unsupportedElementType(group); // TODO v0.5.1 implement parseGroup()
+        throw unsupportedElementType(group); // TODO v0.5.3 implement parseGroup()
     }
 
     private ComplexTypeDescriptor parseAttributeGroup(Element group) {
@@ -648,7 +610,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             String elType = XMLUtil.localName(child);
             if ("attribute".equals(elType)) 
                 type.addComponent(parseAttribute(child));
-            else if ("attributeGroup".equals(elType)) { // TODO v0.5.1 map as parent relationship (could be several ones)
+            else if ("attributeGroup".equals(elType)) { // TODO v0.5.3 map as parent relationship (could be several ones)
                 ComplexTypeDescriptor childGroup = parseAttributeGroup(child);
                 for (ComponentDescriptor component : childGroup.getComponents())
                     type.addComponent(component);
@@ -664,7 +626,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     }
 
     private void parseSequence(Element sequence, ComplexTypeDescriptor owner) {
-        logger.debug("parseSequence()"); // TODO v0.5.1 evaluate minCount/maxCount for sequence
+        logger.debug("parseSequence()"); // TODO v0.5.3 evaluate minCount/maxCount for sequence
         Element[] children = XMLUtil.getChildElements(sequence);
         for (Element child : children) {
             String nodeName = localName(child);
@@ -680,7 +642,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     }
     
     private static final String SIMPLE_TYPE = "simpleType";
-
     private static final String COMPLEX_TYPE = "complexType";
 
     public static final String ANNOTATION = "annotation";
@@ -688,6 +649,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     public static final String UNION = "union";
     
     public static final String ELEMENT = "element";
+    public static final String GROUP = "group";
+    public static final String ATTRIBUTE_GROUP = "attributeGroup";
     public static final String NAME = "name";
 
     public static final String RESTRICTION = "restriction";
