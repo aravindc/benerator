@@ -56,7 +56,7 @@ public class FeatureDetail<E> {
     }
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter) {
-        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(type), new FirstArgSelector<E>());
+        this(name, type, restriction, defaultValue, converter, new FirstArgSelector<E>());
     }
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter, Operation<E, E> combinator) {
