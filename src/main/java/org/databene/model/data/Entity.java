@@ -43,20 +43,18 @@ public class Entity implements Composite<Object> {
 
     private OrderedNameMap<Object> components;
     private ComplexTypeDescriptor descriptor;
-    private CompositeFormatter formatter;
 
     public Entity(String name, Object ... componentKeyValuePairs) {
         this(new ComplexTypeDescriptor(name), componentKeyValuePairs);
     }
 
     /**
-     *
      * @param descriptor the name of the entity, it may be null
      * @param componentKeyValuePairs
      */
     public Entity(ComplexTypeDescriptor descriptor, Object ... componentKeyValuePairs) {
         this.descriptor = descriptor;
-        this.components = new OrderedNameMap<Object>();
+        this.components = OrderedNameMap.createCaseInsensitiveMap();
         for (int i = 0; i < componentKeyValuePairs.length; i += 2)
             setComponent((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
     }
