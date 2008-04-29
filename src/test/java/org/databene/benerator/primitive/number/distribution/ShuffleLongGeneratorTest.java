@@ -1,9 +1,7 @@
 package org.databene.benerator.primitive.number.distribution;
 
-import junit.framework.TestCase;
 import org.databene.benerator.primitive.number.distribution.ShuffleLongGenerator;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.benerator.Generator;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann

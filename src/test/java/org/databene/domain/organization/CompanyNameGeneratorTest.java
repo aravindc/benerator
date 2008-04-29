@@ -28,7 +28,6 @@ package org.databene.domain.organization;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.domain.organization.CompanyNameGenerator;
 

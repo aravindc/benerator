@@ -1,6 +1,5 @@
 package org.databene.domain.person;
 
-import junit.framework.TestCase;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
