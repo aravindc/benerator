@@ -37,7 +37,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.dataset.Dataset;
 import org.databene.dataset.DatasetFactory;
 import org.databene.document.csv.CSVLineIterator;
 

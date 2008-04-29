@@ -68,14 +68,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         return generator;
     }
     
-/*
-    private static Generator<? extends Object> createTypeGenerator(PartDescriptor partDescriptor, Generator<? extends Object> generator) {
-        if (partDescriptor.getType() == null)
-            return generator;
-        Class<? extends Object> targetType = javaClassFor(partDescriptor.getType());
-        return createTypeGenerator(targetType, partDescriptor);
-    }
-*/
     private static <S, T> Generator<T> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<S> generator) {
         if (descriptor.getPrimitiveType() == null)
@@ -304,10 +296,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static final BeanDescriptorProvider beanDescriptorProvider = new BeanDescriptorProvider();
     
-    private static <T> T javaClassFor(String type) {
-        return (T)beanDescriptorProvider.concreteType(type);
-    }
-
     private SimpleTypeGeneratorFactory() {}
     
     private static final Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
