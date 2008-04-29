@@ -25,13 +25,11 @@ import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
-import org.databene.platform.bean.BeanDescriptorProvider;
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
@@ -130,7 +128,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static Generator<? extends Object> createUnionTypeGenerator(
             UnionSimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
         int n = descriptor.getAlternatives().size();
-        DataModel dataModel = DataModel.getDefaultInstance();
         Generator[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
@@ -294,8 +291,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         }
     }
 
-    private static final BeanDescriptorProvider beanDescriptorProvider = new BeanDescriptorProvider();
-    
     private SimpleTypeGeneratorFactory() {}
     
     private static final Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
