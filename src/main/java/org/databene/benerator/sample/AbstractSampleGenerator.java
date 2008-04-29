@@ -31,9 +31,10 @@ import org.databene.benerator.util.LightweightGenerator;
 import java.util.Collection;
 
 /**
- * Generates values from an unweighted list of samples.<br/>
- * <br/>
- * Created: 07.06.2006 19:04:08
+ * Generates values from an unweighted list of samples.<br/><br/>
+ * Created: 29.04.2008 07:30:08
+ * @since v0.5.2
+ * @author Volker Bergmann
  */
 public abstract class AbstractSampleGenerator<E> extends LightweightGenerator<E> {
 
