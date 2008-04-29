@@ -38,7 +38,9 @@ import java.util.Arrays;
  */
 public class InvalidGeneratorSetupException extends ConfigurationError {
 
-    private List<PropertyMessage> propertyMessages;
+	private static final long serialVersionUID = 7613352958748575041L;
+	
+	private List<PropertyMessage> propertyMessages;
 
     // constructors ----------------------------------------------------------------------------------------------------
 

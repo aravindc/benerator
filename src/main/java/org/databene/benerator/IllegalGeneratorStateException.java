@@ -34,7 +34,9 @@ package org.databene.benerator;
  */
 public class IllegalGeneratorStateException extends RuntimeException {
 
-    public IllegalGeneratorStateException(String message) {
+	private static final long serialVersionUID = -1403141408933329080L;
+
+	public IllegalGeneratorStateException(String message) {
         super("Illegal Generator state: " + message);
     }
 
