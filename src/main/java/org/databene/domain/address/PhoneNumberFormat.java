@@ -54,7 +54,9 @@ import java.text.ParsePosition;
  */
 public class PhoneNumberFormat extends Format {
     
-    private String pattern;
+    private static final long serialVersionUID = -7235352934060711517L;
+    
+	private String pattern;
     
     public PhoneNumberFormat(String pattern) {
         this.pattern = pattern;

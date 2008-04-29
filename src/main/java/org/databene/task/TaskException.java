@@ -33,7 +33,9 @@ package org.databene.task;
  */
 public class TaskException extends RuntimeException {
     
-    public TaskException() {
+	private static final long serialVersionUID = 5922654543378249601L;
+
+	public TaskException() {
     }
 
     public TaskException(String message) {

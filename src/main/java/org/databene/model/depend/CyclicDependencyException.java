@@ -33,7 +33,9 @@ package org.databene.model.depend;
  */
 public class CyclicDependencyException extends RuntimeException {
 
-    public CyclicDependencyException() {
+	private static final long serialVersionUID = 3462929902648133425L;
+
+	public CyclicDependencyException() {
         super();
     }
 

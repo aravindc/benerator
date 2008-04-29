@@ -224,7 +224,7 @@ public class CityManager {
             if (ParseUtil.isPositiveNumber(nameParts[i])) {
                 //district = nameParts[i];
                 if (i < nameParts.length - 1) {
-                    String[] institutionParts = ArrayUtil.copyOfRange(nameParts, i + 1, nameParts.length - i - 1);
+                    //String[] institutionParts = ArrayUtil.copyOfRange(nameParts, i + 1, nameParts.length - i - 1);
                     //institution = ArrayFormat.format(" ", institutionParts);
                     nameParts = ArrayUtil.copyOfRange(nameParts, 0, i);
                 } else

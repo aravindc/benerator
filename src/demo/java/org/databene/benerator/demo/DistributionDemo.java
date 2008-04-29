@@ -42,7 +42,9 @@ public class DistributionDemo {
     /** Pane that displays a title and a visualization of the Sequence's products */
     private static class DistributionPane extends Component {
 
-        /** The title to display on top of the pane */
+		private static final long serialVersionUID = -437124282866811738L;
+
+		/** The title to display on top of the pane */
         private String title;
 
         /** The number generator to use */
