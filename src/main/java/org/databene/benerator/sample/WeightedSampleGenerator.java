@@ -27,7 +27,6 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.SimpleRandom;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.IndividualWeight;
@@ -42,7 +41,7 @@ import java.util.Collection;
  * <br/>
  * Created: 07.06.2006 19:04:08
  */
-public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
+public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 	
     /** Keeps the Sample information */
     private List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
@@ -168,42 +167,16 @@ public class WeightedSampleGenerator<E> extends LightweightGenerator<E> {
 //
     // values property -------------------------------------------------------------------------------------------------
 
-    /** Adds unweighted values to the sample list */
-    public void setValues(Collection<E> values) {
-        this.samples.clear();
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
-    /** Sets the sample list to the specified unweighted values */
-    public void setValues(E ... values) {
-        this.samples.clear();
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
-    /** Adds unweighted values to the sample list */
-    public void addValues(E ... values) {
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
-    /** Adds unweighted values to the sample list */
-    public void addValues(Collection<E> values) {
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
     /** Adds an unweighted value to the sample list */
     public void addValue(E value) {
         samples.add(new WeightedSample<E>(value, 1));
         this.dirty = true;
     }
 
+    public void clear() {
+    	this.samples.clear();
+    }
+    
     // Generator implementation ----------------------------------------------------------------------------------------
 
     public Class<E> getGeneratedType() {

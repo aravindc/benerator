@@ -27,7 +27,6 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.SimpleRandom;
 import org.databene.model.function.Sequence;
 
@@ -40,7 +39,7 @@ import java.util.Collection;
  * <br/>
  * Created: 07.06.2006 19:04:08
  */
-public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
+public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Keeps the Sample information */
     private List<E> samples = new ArrayList<E>();
@@ -116,42 +115,17 @@ public class SequencedSampleGenerator<E> extends LightweightGenerator<E> {
 
     // values property -------------------------------------------------------------------------------------------------
 
-    /** Adds values to the sample list */
-    public void setValues(Collection<E> values) {
-        this.samples.clear();
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
-    /** Sets the sample list to the specified values */
-    public void setValues(E ... values) {
-        this.samples.clear();
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
-    /** Adds values to the sample list */
-    public void addValues(E ... values) {
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
-    /** Adds values to the sample list */
-    public void addValues(Collection<E> values) {
-        if (values != null)
-            for (E value : values)
-                addValue(value);
-    }
-
     /** Adds a value to the sample list */
     public void addValue(E value) {
         samples.add(value);
         this.dirty = true;
     }
 
+    public void clear() {
+    	this.samples.clear();
+    	this.dirty = true;
+    }
+    
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
