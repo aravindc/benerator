@@ -60,7 +60,6 @@ public class SequenceFactory {
                 String setup = entry.getValue();
                 String[] generatorClasses = StringUtil.tokenize(setup, ',');
                 Class<AbstractDoubleGenerator> dgClass = BeanUtil.forName(generatorClasses[0]);
-                SequenceDef def;
                 if (generatorClasses.length == 1) {
                     defineSequence(name, dgClass);
                 } else {

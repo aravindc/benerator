@@ -32,7 +32,6 @@ import org.databene.commons.ImportFailedException;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.OrderedMap;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.platform.db.model.*;
 import org.apache.commons.logging.Log;

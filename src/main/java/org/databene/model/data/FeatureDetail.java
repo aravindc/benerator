@@ -66,6 +66,7 @@ public class FeatureDetail<E> {
         this.value = null;
         this.restriction = restriction;
         this.combinator = combinator;
+        this.converter = converter;
     }
     
     // interface -------------------------------------------------------------------------------------------------------

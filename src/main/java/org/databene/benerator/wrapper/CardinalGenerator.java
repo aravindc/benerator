@@ -28,7 +28,6 @@ package org.databene.benerator.wrapper;
 
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.*;
 

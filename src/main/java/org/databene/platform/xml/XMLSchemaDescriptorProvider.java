@@ -246,7 +246,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 
     private void parseExtension(Element extension, ComplexTypeDescriptor descriptor) {
         String base = extension.getAttribute("base");
-        ComplexTypeDescriptor baseDescriptor = (ComplexTypeDescriptor) getTypeDescriptor(base);
         descriptor.setParentName(base);
         Element[] children = XMLUtil.getChildElements(extension);
         for (Element child : children) {

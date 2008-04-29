@@ -52,7 +52,6 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 /**
@@ -275,7 +274,7 @@ public class ModelParser {
             		"found: " + elementName;
         throw new IllegalArgumentException(message);
     }
-
+/*
     private String parseAttribute(Attr attribute, Context context) {
         String name = attribute.getName();
         String value = attribute.getValue();
@@ -289,7 +288,7 @@ public class ModelParser {
         text = ScriptUtil.render(text, context, defaultScript);
         return Integer.parseInt(text);
     }
-    
+*/    
     private String renderAttribute(String name, String value, Context context) {
         if ("script".equals(name))
             return value;

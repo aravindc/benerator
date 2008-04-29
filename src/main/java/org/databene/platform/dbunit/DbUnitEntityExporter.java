@@ -34,7 +34,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;

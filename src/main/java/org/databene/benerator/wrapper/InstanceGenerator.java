@@ -28,8 +28,6 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Creates a stochastic number of instances in subsequent calls before it becomes unavailable.
@@ -41,8 +39,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Volker Bergmann
  */
 public class InstanceGenerator<S> extends CardinalGenerator<S, S> {
-
-    private static final Log logger = LogFactory.getLog(InstanceGenerator.class);
 
     private long countAvailable;
     private long countUsed;

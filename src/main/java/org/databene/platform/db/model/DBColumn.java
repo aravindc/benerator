@@ -64,7 +64,7 @@ public class DBColumn {
     }
     
     public DBColumn(String name, DBColumnType type, Integer size, Integer fractionDigits) {
-        this(null, name, type, size, null);
+        this(null, name, type, size, fractionDigits);
     }
 
     public DBColumn(DBTable table, String name, DBColumnType type, Integer size, Integer fractionDigits) {
