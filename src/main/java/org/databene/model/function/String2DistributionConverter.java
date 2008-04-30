@@ -29,6 +29,7 @@ package org.databene.model.function;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
+import org.databene.commons.StringUtil;
 import org.databene.commons.converter.BidirectionalConverter;
 
 /**
@@ -60,11 +61,12 @@ public class String2DistributionConverter implements BidirectionalConverter<Stri
     }
 
     public static Distribution parse(String sourceValue) throws ConversionException {
-    	if (sourceValue == null)
+    	if (StringUtil.isEmpty(sourceValue))
     		return null;
-    	if (sourceValue.startsWith("weighted[") && sourceValue.endsWith("]")) {
+    	if (sourceValue.startsWith("weighted[") && sourceValue.endsWith("]"))
     		return new FeatureWeight(sourceValue.substring("weighted[".length(), sourceValue.length() - 1));
-    	}
+    	else if ("weighted".equals(sourceValue))
+    		return new FeatureWeight(null);
         Distribution result = Sequence.getInstance(sourceValue, false);
         if (result == null)
             result = BeanUtil.newInstance(sourceValue);
