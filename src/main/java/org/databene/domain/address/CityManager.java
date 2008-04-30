@@ -129,7 +129,7 @@ public class CityManager {
 					stateName = StringUtil.normalizeName(stateName);
                 	state.setName(stateName);
 				}
-				//System.out.println(state.getId() + "," + state.getName());
+				//logger.debug(state.getId() + "," + state.getName());
                 country.addState(state);
             }
 
