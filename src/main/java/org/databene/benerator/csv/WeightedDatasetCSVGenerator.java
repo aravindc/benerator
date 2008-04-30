@@ -49,7 +49,7 @@ import org.databene.document.csv.CSVLineIterator;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DatasetCSVGenerator<E> extends GeneratorProxy <E> {
+public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     
     private String filenamePattern;
     private String datasetName;
@@ -57,15 +57,15 @@ public class DatasetCSVGenerator<E> extends GeneratorProxy <E> {
 
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public DatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
+    public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
         this(filenamePattern, datasetName, nesting, SystemInfo.fileEncoding());
     }
 
-    public DatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
+    public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
         this(filenamePattern, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    public DatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
+    public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
         super(new WeightedSampleGenerator<E>());
         ((WeightedSampleGenerator<E>)source).setSamples(createSamples(datasetName, nesting, filenamePattern, encoding, converter));
         this.nesting = nesting;
@@ -82,8 +82,12 @@ public class DatasetCSVGenerator<E> extends GeneratorProxy <E> {
     private static <T> List<WeightedSample<T>> createSamples(
             String datasetName, String nesting, String filenamePattern,
             String encoding, Converter<String, T> converter) {
+        String[] dataFilenames;
+        if (nesting == null || datasetName == null)
+        	dataFilenames = new String[] { filenamePattern };
+        else
+        	dataFilenames = DatasetFactory.getDataFiles(filenamePattern, datasetName, nesting);
         List<WeightedSample<T>> samples = new ArrayList<WeightedSample<T>>();
-        String[] dataFilenames = DatasetFactory.getDataFiles(filenamePattern, datasetName, nesting);
         for (String dataFilename : dataFilenames)
             parse(dataFilename, encoding, converter, samples);
         return samples;
