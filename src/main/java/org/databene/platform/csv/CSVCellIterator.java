@@ -75,6 +75,8 @@ public class CSVCellIterator implements HeavyweightIterator<String> {
     }
 
     public String next() {
+    	if (!hasNext())
+    		throw new IllegalStateException("No 'next' element available. Check availability by hasNext() before calling next().");
         if (tokenizer.ttype == CSVTokenType.EOF)
             throw new IllegalStateException("Ieration is finished");
         try {
