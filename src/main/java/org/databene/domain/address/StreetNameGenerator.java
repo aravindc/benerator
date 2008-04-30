@@ -26,14 +26,14 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.csv.DatasetCSVGenerator;
+import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 
 /**
  * Generates a street name for a region.<br/>
  * <br/>
  * Created: 12.06.2006 00:08:28
  */
-public class StreetNameGenerator extends DatasetCSVGenerator<String> {
+public class StreetNameGenerator extends WeightedDatasetCSVGenerator<String> {
 
     private static final String REGION = "org/databene/dataset/region";
     private static final String FILENAME_PATTERN = "org/databene/domain/address/street_{0}.csv";
