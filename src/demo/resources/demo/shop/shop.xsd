@@ -83,15 +83,23 @@
 		<xs:complexType>
 			<xs:sequence maxOccurs="unbounded">
 				<xs:element ref="category" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="product"  minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:appinfo><ben:part source="demo/shop/products.import.csv" /></xs:appinfo>
-					</xs:annotation>
-				</xs:element>
+				<xs:element ref="product"  minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="admin"    minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="clerk"    minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="customer" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="order"    minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="customer" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:appinfo>
+							<ben:part count="{ftl:${customer_count}}" />
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="order"    minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:appinfo>
+							<ben:part count="{ftl:${customer_count * orders_per_customer}}" />
+						</xs:appinfo>
+					</xs:annotation>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 		<xs:key name="category_id">
@@ -137,6 +145,9 @@
 	</xs:element>
 
 	<xs:element name="product">
+		<xs:annotation>
+			<xs:appinfo><ben:type source="demo/shop/products.import.csv" /></xs:appinfo>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="description" type="xs:string" minOccurs="0"/>
@@ -235,11 +246,6 @@
 	</xs:element>
 
 	<xs:element name="customer">
-		<xs:annotation>
-			<xs:appinfo>
-				<ben:entity count="{ftl:${customer_count}}" />
-			</xs:appinfo>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="user-base">
@@ -280,11 +286,6 @@
 	</xs:element>
 
 	<xs:element name="order">
-		<xs:annotation>
-			<xs:appinfo>
-				<ben:entity count="{ftl:${customer_count * orders_per_customer}}" />
-			</xs:appinfo>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="order_item" minOccurs="1" maxOccurs="unbounded">
@@ -313,11 +314,12 @@
 			</xs:attribute>
 			<xs:attribute name="product_ean_code" type="ean-type" use="required"/> <!-- TODO refer only existing products -->
 			<xs:attribute name="total_price" type="price-type" use="required">
+				<!-- TODO calculate total price 
 				<xs:annotation>
 					<xs:appinfo>
 						<ben:part script="{${(product[1] * order_item.number_of_items)?c}}" />
 					</xs:appinfo>
-				</xs:annotation>
+				</xs:annotation> -->
 			</xs:attribute>
 			<xs:attributeGroup ref="audited-updateable"/>
 		</xs:complexType>
