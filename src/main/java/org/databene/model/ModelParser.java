@@ -107,6 +107,7 @@ public class ModelParser {
 
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor, Context context) {
         assertElementName(ctElement, "entity", "type");
+        descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptor);
         mapTypeDetails(ctElement, descriptor, context);
         for (Element child : XMLUtil.getChildElements(ctElement))
             parseComplexTypeChild(child, descriptor, context);
