@@ -78,13 +78,22 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     // constructors ----------------------------------------------------------------------------------------------------
     
     public TypeDescriptor(String name) {
-        this(name, null);
+        this(name, (String) null);
     }
-    
+
+    public TypeDescriptor(String name, TypeDescriptor parent) {
+    	this(name, parent.getName());
+    	this.parent = parent;
+    }
+
     public TypeDescriptor(String name, String parentName) {
         super(name);
         this.parentName = parentName;
-        // restrictions
+        init();
+    }
+
+	protected void init() {
+		// restrictions
         addRestriction(VALUES,    String[].class,  null, new ArrayIntersectionOperation<String>());
         addRestriction(VALIDATOR, String.class,    null, new FirstNonNullSelector<String>()); 
             // For performance reasons, retain only the first non-null validator
@@ -109,7 +118,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(DISTRIBUTION,   Distribution.class, null);
         addConfig(VARIATION1,     String.class,        "1");
         addConfig(VARIATION2,     String.class,        "1");
-    }
+	}
     
     // properties ------------------------------------------------------------------------------------------------------
 

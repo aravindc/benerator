@@ -49,11 +49,21 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
     private Map<String, InstanceDescriptor> variables;
 
     public ComplexTypeDescriptor(String name) {
-        this(name, null);
+        this(name, (String) null);
     }
 
-    public ComplexTypeDescriptor(String name, String parent) {
-        super(name, parent);
+    public ComplexTypeDescriptor(String name, ComplexTypeDescriptor parent) {
+    	super(name, parent);
+        init();
+    }
+    
+    public ComplexTypeDescriptor(String name, String parentName) {
+        super(name, parentName);
+        init();
+    }
+    
+    protected void init() {
+    	super.init();
         this.componentMap = new OrderedNameMap<ComponentDescriptor>();
         this.variables = new OrderedNameMap<InstanceDescriptor>();
     }
