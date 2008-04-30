@@ -82,21 +82,21 @@ public class DatasetFactory {
         return dataset;
     }
 
-    private synchronized static Map<String, Dataset> parseDatasetTypeConfig(String type) {
+    private synchronized static Map<String, Dataset> parseDatasetTypeConfig(String nesting) {
         try {
             Map<String, Dataset> sets = new HashMap<String, Dataset>();
-            Map<String, String> properties = IOUtil.readProperties(type + ".set.properties");
+            Map<String, String> properties = IOUtil.readProperties(nesting + ".set.properties");
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 String name = entry.getKey();
-                Dataset dataset = getDataset(type, name, sets);
+                Dataset dataset = getDataset(nesting, name, sets);
                 String[] subSetNames = StringUtil.tokenize(entry.getValue(), ',');
                 for (String subSetName : subSetNames)
-                    dataset.addSubSet(getDataset(type, subSetName, sets));
+                    dataset.addSubSet(getDataset(nesting, subSetName, sets));
             }
-            types.put(type, sets);
+            types.put(nesting, sets);
             return sets;
         } catch (IOException e) {
-            throw new ConfigurationError("Setup for Dataset type failed: " + type, e);
+            throw new ConfigurationError("Setup for Dataset type failed: " + nesting, e);
         }
     }
 }
