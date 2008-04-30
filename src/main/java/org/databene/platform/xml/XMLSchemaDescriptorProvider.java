@@ -365,12 +365,12 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
                 descriptor = (T) parser.parsePart(info, null, false, (PartDescriptor) descriptor, context);
             else if ("part".equals(childName))
                 descriptor = (T) parser.parsePart(info, null, true, (PartDescriptor) descriptor, context);
-            else if (descriptor instanceof ComplexTypeDescriptor)
+            else if (descriptor instanceof ComplexTypeDescriptor) // TODO v0.6 remove the following two branches
                 descriptor = (T) parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor, context);
             else if (descriptor instanceof SimpleTypeDescriptor)
                 descriptor = (T) parser.parseSimpleType(info, (SimpleTypeDescriptor) descriptor, context);
             else
-                throw new UnsupportedOperationException("Unsupported type: " + descriptor.getClass().getName());
+                throw new UnsupportedOperationException("Unsupported element (" + childName + ") or type: " + descriptor.getClass().getName());
         }
         return descriptor;
     }
