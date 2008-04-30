@@ -4,37 +4,55 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
+import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
+import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
+import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
+import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.function.Distribution;
+import org.databene.model.function.FeatureWeight;
+import org.databene.model.function.IndividualWeight;
 import org.databene.model.function.Sequence;
+import org.databene.model.function.WeightFunction;
+import org.databene.model.storage.StorageSystem;
+import org.databene.platform.csv.CSVCellIterable;
+
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'hh:mm:ss";
+    private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
 	public static Generator<? extends Object> create(SimpleTypeDescriptor descriptor, boolean unique,
             Context context, GenerationSetup setup) {
@@ -66,6 +84,71 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         return generator;
     }
     
+    protected static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
+    	// TODO v0.5.3 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
+    	// this and CTGenFact only add wrappers
+        String source = descriptor.getSource();
+        if (source == null)
+            return null;
+        String lcn = source.toLowerCase();
+        String selector = descriptor.getSelector();
+        Distribution distribution = descriptor.getDistribution();
+        Generator<? extends Object> generator;
+        if (context.get(source) != null) {
+            Object sourceObject = context.get(source);
+            if (sourceObject instanceof StorageSystem)
+                generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector));
+            else if (sourceObject instanceof Generator)
+                generator = (Generator) sourceObject;
+            else
+                throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
+        } else if (lcn.endsWith(".csv")) {
+            char separator = ',';
+            if (descriptor.getSelector() != null && descriptor.getSelector().length() == 1) {
+                separator = descriptor.getSelector().charAt(0);
+            }
+            String encoding = descriptor.getEncoding();
+            if (encoding == null)
+                encoding = SystemInfo.fileEncoding();
+            String dataset = descriptor.getDataset();
+            String nesting = descriptor.getNesting();
+            // TODO v0.5.3 support scripts in CSV simpleType import
+            // ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+            Iterable<String> iterable = null;
+            if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {
+                generator = new WeightedDatasetCSVGenerator(source, dataset, nesting, encoding);
+            } else {
+                iterable = new CSVCellIterable(source, separator);
+                generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
+            }
+        } else if (lcn.endsWith(".txt")) {
+            generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null);
+        } else {
+            generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);
+        }
+
+        // check distribution
+        if (distribution != null && !EMPTY_WEIGHT.equals(distribution)) {
+            List<Object> values = new ArrayList<Object>();
+            while (generator.available()) {
+                Object value = generator.generate();
+                values.add(value);
+            }
+            if (distribution instanceof Sequence)
+                generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
+            else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
+                generator = new WeightedSampleGenerator(generator.getGeneratedType(), distribution, values);
+            else
+                throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
+        	if (descriptor.getVariation1() != null)
+        		BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
+        	if (descriptor.getVariation2() != null)
+        		BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
+        }
+//        generator = createConvertingGenerator(descriptor, generator);
+        return createProxy(descriptor, generator);
+    }
+
     private static <S, T> Generator<T> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<S> generator) {
         if (descriptor.getPrimitiveType() == null)

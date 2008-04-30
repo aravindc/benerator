@@ -28,19 +28,14 @@ package org.databene.benerator.factory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
-import org.databene.benerator.csv.DatasetCSVGenerator;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
-import org.databene.benerator.wrapper.AccessingGenerator;
-import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
@@ -48,10 +43,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
-import org.databene.commons.SystemInfo;
 import org.databene.commons.Validator;
-import org.databene.commons.accessor.GraphAccessor;
-import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Iteration;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -59,11 +51,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
 import org.databene.model.function.WeightFunction;
-import org.databene.model.storage.StorageSystem;
-import org.databene.platform.csv.CSVCellIterable;
-import org.databene.platform.csv.CSVEntityIterable;
 import org.databene.script.Script;
-import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
 import static org.databene.model.data.TypeDescriptor.*;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
@@ -124,69 +112,6 @@ public class TypeGeneratorFactory {
             generator = new ScriptGenerator(script, context);
         }
         return generator;
-    }
-
-    protected static Generator<? extends Object> createSourceAttributeGenerator(TypeDescriptor descriptor, Context context, GenerationSetup setup) {
-        String source = descriptor.getSource();
-        if (source == null)
-            return null;
-        String lcn = source.toLowerCase();
-        String selector = descriptor.getSelector();
-        Generator<? extends Object> generator;
-        if (context.get(source) != null) {
-            Object sourceObject = context.get(source);
-            if (sourceObject instanceof StorageSystem)
-                generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector));
-            else if (sourceObject instanceof Generator)
-                generator = (Generator) sourceObject;
-            else
-                throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
-        } else if (lcn.endsWith(".csv")) {
-            char separator = ',';
-            if (descriptor.getSelector() != null && descriptor.getSelector().length() == 1) {
-                separator = descriptor.getSelector().charAt(0);
-            }
-            String encoding = descriptor.getEncoding();
-            if (encoding == null)
-                encoding = SystemInfo.fileEncoding();
-            String dataset = descriptor.getDataset();
-            String nesting = descriptor.getNesting();
-            ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-            Iterable iterable = null;
-            if (descriptor instanceof ComplexTypeDescriptor) {
-                iterable = new CSVEntityIterable(source, descriptor.getName(), scriptConverter, separator, encoding);
-                generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
-            } else {
-                if (dataset != null && nesting != null) {
-                    generator = new DatasetCSVGenerator(source, dataset, nesting, encoding);
-                } else {
-                    iterable = new CSVCellIterable(source, separator);
-                    generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
-                }
-            }
-        } else if (lcn.endsWith(".txt")) {
-            generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null);
-        } else {
-            generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);
-        }
-
-        // check distribution
-        Distribution distribution = descriptor.getDistribution();
-        if (distribution != null) {
-            List<Object> values = new ArrayList<Object>();
-            while (generator.available()) {
-                Object value = generator.generate();
-                values.add(value);
-            }
-            if (distribution instanceof Sequence)
-                generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
-            else if (distribution instanceof WeightFunction)
-                generator = new WeightedSampleGenerator(generator.getGeneratedType(), (WeightFunction) distribution, values);
-            else
-                throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
-        }
-//        generator = createConvertingGenerator(descriptor, generator);
-        return createProxy(descriptor, generator);
     }
 
     private static <S, T> Converter<S, T> getConverter(TypeDescriptor descriptor) {
