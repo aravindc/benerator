@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Example architecture definition for JUnit. 
+  This architecture definition is not based on the official documentation of JUnit, but has been built to demonstrate 
+  the architecture analysis feature of ConQAT.
+  
+  Its purpose is thus merely demonstrative. -->
+<conqat-architecture xmlns="http://conqat.cs.tum.edu/ns/architecture" policy="deny" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <component id="Root">
+	  <component id="benerator">
+	    <component id="benerator interface">
+	      <element-group regex="org.databene.benerator\.[^\.]*" />
+	    </component>
+	    <component id="benerator core">
+	      <element-group regex="org.databene.benerator\.[^\.]*\..*" />
+	    </component>
+	    <component id="databene domains">
+	      <element-group regex="org.databene.domain.*" />
+	    </component>
+	    <component id="model">
+	      <element-group regex="org.databene.model.*" />
+	    </component>
+	    <component id="platform">
+	      <element-group regex="org.databene.platform.*" />
+	    </component>
+	    <component id="id">
+	      <element-group regex="org.databene.id.*" />
+	    </component>
+	    <component id="measure">
+	      <element-group regex="org.databene.measure.*" />
+	    </component>
+	    <component id="task">
+	      <element-group regex="org.databene.task.*" />
+	    </component>
+	    <component id="dataset">
+	      <element-group regex="org.databene.dataset.*" />
+	    </component>
+	  </component>
+	
+	  <component id="webdecs">
+	      <element-group regex="org.databene.document.*" />
+	      <element-group regex="org.databene.html.*" />
+	      <element-group regex="org.databene.regex.*" />
+	      <element-group regex="org.databene.script.*" />
+	      <element-group regex="org.databene.text.*" />
+	      <element-group regex="org.databene.webdecs.demo.*" />
+	      <element-group regex="org.databene.xslt.*" />
+	  </component>
+	
+	  <component id="commons">
+	      <element-group regex="org.databene.commons.*" />
+	  </component>
+	  
+	  <component id="lib">
+	    <element-group regex="org.w3c.*" />
+	    <element-group regex="org.apache.commons.*" />
+	  </component>
+  </component>
+
+  <!-- Policies that specifiy allowed any denied dependencies between components -->
+  <policies>
+  
+    <!-- benerator -->
+    <allow from="benerator" to="webdecs" />
+    <allow from="benerator" to="commons" />
+    <allow from="benerator" to="lib" />
+    <allow from="databene domains" to="benerator core" />
+    <allow from="databene domains" to="benerator interface" />
+    <allow from="databene domains" to="model" />
+    <allow from="databene domains" to="platform" />
+    <allow from="benerator core" to="benerator interface" />
+    <allow from="benerator core" to="platform" />
+    <allow from="benerator core" to="model" />
+    <allow from="benerator core" to="id" />
+    <allow from="benerator core" to="task" />
+    <allow from="benerator core" to="dataset" />
+    <allow from="platform" to="model" />
+    <allow from="platform" to="id" />
+    <allow from="platform" to="task" />
+    <allow from="benerator interface" to="model" />
+    
+    <!-- webdecs -->
+    <allow from="webdecs" to="commons" />
+    <allow from="webdecs" to="lib" />
+    
+    <!-- webdecs -->
+    <allow from="commons" to="lib" />
+    
+  </policies>
+
+</conqat-architecture>
