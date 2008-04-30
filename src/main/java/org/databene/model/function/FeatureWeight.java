@@ -27,6 +27,7 @@
 package org.databene.model.function;
 
 import org.databene.commons.Converter;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.accessor.FeatureAccessor;
 import org.databene.commons.converter.AnyConverter;
 
@@ -61,5 +62,27 @@ public class FeatureWeight<E> implements IndividualWeight<E> {
 
 	public double weight(E object) {
 		return converter.convert(accessor.getValue(object));
+	}
+
+	@Override
+	public int hashCode() {
+		return accessor.getFeatureName().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final FeatureWeight that = (FeatureWeight) obj;
+		return NullSafeComparator.equals(this.getWeightFeature(), that.getWeightFeature());
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + (accessor != null ? accessor.getFeatureName() : "null") + ']';
 	}
 }
