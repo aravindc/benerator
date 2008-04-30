@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.TypedIterable;
@@ -82,9 +83,13 @@ public class IteratingGenerator<E> implements Generator<E> {
     }
 
     public E generate() {
-        if (dirty)
-            validate();
-        return iterator.next();
+        try {
+	        if (dirty)
+	            validate();
+        	return iterator.next();
+        } catch (Exception e) {
+        	throw new IllegalGeneratorStateException("Generation failed: ", e);
+        }
     }
 
     public void reset() {
