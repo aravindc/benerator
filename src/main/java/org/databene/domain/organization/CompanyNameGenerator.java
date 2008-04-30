@@ -27,7 +27,7 @@
 package org.databene.domain.organization;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.csv.DatasetCSVGenerator;
+import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
 import org.databene.benerator.util.LightweightGenerator;
@@ -86,15 +86,15 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
         } else
             locationGenerator = new ConstantGenerator<String>(null);
         if (legalForm)
-        	legalFormGenerator = new DatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
+        	legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
         if (sector)
-        	sectorGenerator = new NullableGenerator<String>(new DatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
+        	sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
     }
     
 	public void setDataset(String datasetName) {
         Generator<String> person = new MessageGenerator("{0} {1}", 
-                new DatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
-                new DatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
+                new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
+                new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
             );
         Generator<String> artificial = new MessageGenerator("{0}{1}", 
                 new SequencedCSVSampleGenerator<String>(ORG + "artificial1.csv"),

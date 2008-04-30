@@ -2,14 +2,14 @@ package org.databene.domain.person;
 
 import java.util.Locale;
 
-import org.databene.benerator.csv.DatasetCSVGenerator;
+import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann
  * Created: 09.06.2006 22:03:56
  * @author Volker Bergmann
  */
-public class FamilyNameGenerator extends DatasetCSVGenerator<String> {
+public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> {
 
     public FamilyNameGenerator() {
         this(Locale.getDefault().getCountry());
