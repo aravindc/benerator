@@ -195,12 +195,12 @@ public abstract class GeneratorTest extends TestCase {
                 fail("When generator " + generator + " is unavailable, a generate() call is expected " +
                         "to cause an " + IllegalGeneratorStateException.class.getSimpleName());
             } catch (IllegalGeneratorStateException e) {
-                // exception is required
+                // exception is expected
             } catch (Throwable t) {
+                t.printStackTrace();
                 fail("When generator " + generator + " is unavailable, a generate() call is expected " +
                         "to cause an " + IllegalGeneratorStateException.class.getSimpleName() + ". " +
                         "Instead this exception was thrown: " + t);
-                t.printStackTrace();
             } finally {
                 generator.close();
             }
