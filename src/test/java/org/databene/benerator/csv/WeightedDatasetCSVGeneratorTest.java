@@ -34,13 +34,13 @@ import junit.framework.TestCase;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DatasetCSVGeneratorTest extends TestCase {
+public class WeightedDatasetCSVGeneratorTest extends TestCase {
 
     private static final String FAMILY_NAME = "org/databene/domain/person/familyName";
     private static final String REGION = "org/databene/dataset/region";
 
     public void testDE() {
-        DatasetCSVGenerator<String> generator = new DatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, "UTF-8");
+        WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, "UTF-8");
         boolean mueller = false;
         for (int i = 0; i < 1000; i++) {
             if ("Müller".equals(generator.generate()))
@@ -50,7 +50,7 @@ public class DatasetCSVGeneratorTest extends TestCase {
     }
 
     public void testEurope() {
-        DatasetCSVGenerator<String> generator = new DatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, "UTF-8");
+        WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, "UTF-8");
         boolean mueller = false; // German name
         boolean garcia = false;  // Spanish name
         for (int i = 0; i < 100000 && (!mueller || !garcia); i++) {
