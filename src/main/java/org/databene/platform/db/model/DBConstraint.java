@@ -60,7 +60,8 @@ public abstract class DBConstraint {
         if (o == null || getClass() != o.getClass())
             return false;
         final DBConstraint that = (DBConstraint) o;
-        return (this.getOwner().equals(that.getOwner()) && Arrays.equals(getColumns(), that.getColumns()));
+        return (this.getOwner().equals(that.getOwner()) 
+        		&& Arrays.equals(this.getColumns(), that.getColumns()));
     }
 
     public int hashCode() {
