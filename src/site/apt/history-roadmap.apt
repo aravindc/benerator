@@ -22,6 +22,9 @@ Before version 1.0, all releases have beta status.
 *-------------+-------------------+-----------------------------------------------+
 | <<release>> | <<release date>>  | <<features>>                                  |
 *-------------+-------------------+-----------------------------------------------+
+| 0.5.2       | 2000-04-30        | Major bug fixes                               |
+|             |                   | performance tuned, several enhancements       |
+*-------------+-------------------+-----------------------------------------------+
 | 0.5.1       | 2000-04-08        | Major bug fixes in the new XML support        |
 |             |                   | US support in address and company name generation |
 *-------------+-------------------+-----------------------------------------------+

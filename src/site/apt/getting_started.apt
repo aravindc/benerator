@@ -339,7 +339,7 @@ database population sample
   
   * Install benerator, the database and an appropriate jdbc driver
   
-  * create or select a schema in your database
+  * start the database and create or select a schema
 
   * edit the file BENERATOR_HOME/demo/shop/oracle/shop.oracle.properties and set the 
     correct database url, driver, schema, user and password:
@@ -358,7 +358,12 @@ database population sample
     (from the command line): 
   
 --------------------------------------------------------------------------------
-  bin/benerator -Dstage=development -Ddatabase=oracle shop.ben.xml
+Windows:
+  set BENERATOR_OPTS=-Dstage=development -Ddatabase=hsql
+  bin\benerator demo\shop\shop.ben.xml
+*ix:
+  export BENERATOR_OPTS=-Dstage=development -Ddatabase=hsql
+  bin/benerator demo/shop/shop.ben.xml
 --------------------------------------------------------------------------------
   
   If you've done everything right, benerator will now populate your schema with some entities.
