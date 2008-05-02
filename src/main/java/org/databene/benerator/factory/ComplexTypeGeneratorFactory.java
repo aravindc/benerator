@@ -144,54 +144,77 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
             if (sourceName.endsWith(".xml"))
                 generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(sourceName, context, setup.getDefaultScript()));
             else if (sourceName.endsWith(".csv")) {
-                String encoding = descriptor.getEncoding();
-                if (encoding == null)
-                    encoding = setup.getDefaultEncoding();
-                ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-                String dataset = descriptor.getDataset();
-                String nesting = descriptor.getNesting();
-                if (dataset != null && nesting != null) {
-                    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
-                    Generator<Entity>[] sources = new Generator[dataFiles.length];
-                    for (int i = 0; i < dataFiles.length; i++)
-                        sources[i] = new IteratingGenerator(new CSVEntityIterable(dataFiles[i], descriptor.getName()));
-                    generator = new AlternativeGenerator(Entity.class, sources); 
-                } else {
-                    // iterate over (possibly large) data file
-                    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
-                    generator = new IteratingGenerator(iterable);
-                }
+                generator = createCSVSourceGenerator(descriptor, context,
+						setup, sourceName);
             } else if (sourceName.endsWith(".flat")) {
-                String encoding = descriptor.getEncoding();
-                if (encoding == null)
-                    encoding = setup.getDefaultEncoding();
-                String pattern = descriptor.getPattern();
-                if (pattern == null)
-                    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
-                FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
-                ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-                FlatFileEntityIterable iterable = new FlatFileEntityIterable(sourceName, descriptor, scriptConverter, encoding, ffcd);
-                generator = new IteratingGenerator(iterable);
+                generator = createFlatSourceGenerator(descriptor, context,
+						setup, sourceName);
             } else
                 throw new UnsupportedOperationException("Unknown source type: " + sourceName);
         }
-        if (descriptor.getDistribution() != null) {
-        	List<Entity> values = GeneratorUtil.allProducts(generator);
-        	Distribution distribution = descriptor.getDistribution();
-        	if (distribution instanceof Sequence) {
-        		generator = new SequencedSampleGenerator<Entity>(Entity.class, (Sequence) distribution, values);
-        	} else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
-            	generator = new WeightedSampleGenerator<Entity>(Entity.class, distribution, values);
-        	else
-        		throw new ConfigurationError("Not a supported distribution: " + distribution);
-        	if (descriptor.getVariation1() != null)
-        		BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
-        	if (descriptor.getVariation2() != null)
-        		BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
-        	return generator;
-        }
-        return createProxy(descriptor, generator);
+        if (descriptor.getDistribution() != null)
+        	return applyDistribution(descriptor, generator);
+        else
+        	return createProxy(descriptor, generator);
     }
+
+	private static Generator<Entity> applyDistribution(
+			ComplexTypeDescriptor descriptor, Generator<Entity> generator) {
+		List<Entity> values = GeneratorUtil.allProducts(generator);
+		Distribution distribution = descriptor.getDistribution();
+		if (distribution instanceof Sequence) {
+			generator = new SequencedSampleGenerator<Entity>(Entity.class, (Sequence) distribution, values);
+		} else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
+			generator = new WeightedSampleGenerator<Entity>(Entity.class, distribution, values);
+		else
+			throw new ConfigurationError("Not a supported distribution: " + distribution);
+		if (descriptor.getVariation1() != null)
+			BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
+		if (descriptor.getVariation2() != null)
+			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
+		return generator;
+	}
+
+	private static Generator<Entity> createFlatSourceGenerator(
+			ComplexTypeDescriptor descriptor, Context context,
+			GenerationSetup setup, String sourceName) {
+		Generator<Entity> generator;
+		String encoding = descriptor.getEncoding();
+		if (encoding == null)
+		    encoding = setup.getDefaultEncoding();
+		String pattern = descriptor.getPattern();
+		if (pattern == null)
+		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
+		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
+		ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+		FlatFileEntityIterable iterable = new FlatFileEntityIterable(sourceName, descriptor, scriptConverter, encoding, ffcd);
+		generator = new IteratingGenerator(iterable);
+		return generator;
+	}
+
+	private static Generator<Entity> createCSVSourceGenerator(
+			ComplexTypeDescriptor descriptor, Context context,
+			GenerationSetup setup, String sourceName) {
+		Generator<Entity> generator;
+		String encoding = descriptor.getEncoding();
+		if (encoding == null)
+		    encoding = setup.getDefaultEncoding();
+		ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+		String dataset = descriptor.getDataset();
+		String nesting = descriptor.getNesting();
+		if (dataset != null && nesting != null) {
+		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
+		    Generator<Entity>[] sources = new Generator[dataFiles.length];
+		    for (int i = 0; i < dataFiles.length; i++)
+		        sources[i] = new IteratingGenerator(new CSVEntityIterable(dataFiles[i], descriptor.getName()));
+		    generator = new AlternativeGenerator(Entity.class, sources); 
+		} else {
+		    // iterate over (possibly large) data file
+		    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
+		    generator = new IteratingGenerator(iterable);
+		}
+		return generator;
+	}
 
     private static Generator<Entity> createGeneratingGenerator(
             ComplexTypeDescriptor complexType, Context context, GenerationSetup setup) {

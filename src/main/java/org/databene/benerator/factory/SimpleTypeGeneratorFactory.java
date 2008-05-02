@@ -103,24 +103,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             else
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
-            char separator = ',';
-            if (descriptor.getSelector() != null && descriptor.getSelector().length() == 1) {
-                separator = descriptor.getSelector().charAt(0);
-            }
-            String encoding = descriptor.getEncoding();
-            if (encoding == null)
-                encoding = SystemInfo.fileEncoding();
-            String dataset = descriptor.getDataset();
-            String nesting = descriptor.getNesting();
-            // TODO v0.5.3 support scripts in CSV simpleType import
-            // ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-            Iterable<String> iterable = null;
-            if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {
-                generator = new WeightedDatasetCSVGenerator(source, dataset, nesting, encoding);
-            } else {
-                iterable = new CSVCellIterable(source, separator);
-                generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
-            }
+            generator = createCSVSourceGenerator(descriptor, source, distribution);
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null);
         } else {
@@ -128,26 +111,56 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         }
 
         // check distribution
-        if (distribution != null && !EMPTY_WEIGHT.equals(distribution)) {
-            List<Object> values = new ArrayList<Object>();
-            while (generator.available()) {
-                Object value = generator.generate();
-                values.add(value);
-            }
-            if (distribution instanceof Sequence)
-                generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
-            else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
-                generator = new WeightedSampleGenerator(generator.getGeneratedType(), distribution, values);
-            else
-                throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
-        	if (descriptor.getVariation1() != null)
-        		BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
-        	if (descriptor.getVariation2() != null)
-        		BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
-        }
-//        generator = createConvertingGenerator(descriptor, generator);
-        return createProxy(descriptor, generator);
+        if (distribution != null && !EMPTY_WEIGHT.equals(distribution))
+            return applyDistribution(descriptor, distribution, generator);
+        else
+        	return createProxy(descriptor, generator);
     }
+
+	private static Generator<? extends Object> applyDistribution(SimpleTypeDescriptor descriptor,
+			Distribution distribution, Generator<? extends Object> generator) {
+		List<Object> values = new ArrayList<Object>();
+		while (generator.available()) {
+		    Object value = generator.generate();
+		    values.add(value);
+		}
+		if (distribution instanceof Sequence)
+		    generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
+		else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
+		    generator = new WeightedSampleGenerator(generator.getGeneratedType(), distribution, values);
+		else
+		    throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
+		if (descriptor.getVariation1() != null)
+			BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
+		if (descriptor.getVariation2() != null)
+			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
+		return generator;
+	}
+
+	private static Generator<? extends Object> createCSVSourceGenerator(
+			SimpleTypeDescriptor descriptor, String source,
+			Distribution distribution) {
+		Generator<? extends Object> generator;
+		char separator = ',';
+		if (descriptor.getSelector() != null && descriptor.getSelector().length() == 1) {
+		    separator = descriptor.getSelector().charAt(0);
+		}
+		String encoding = descriptor.getEncoding();
+		if (encoding == null)
+		    encoding = SystemInfo.fileEncoding();
+		String dataset = descriptor.getDataset();
+		String nesting = descriptor.getNesting();
+		// TODO v0.5.3 support scripts in CSV simpleType import
+		// ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+		Iterable<String> iterable = null;
+		if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {
+		    generator = new WeightedDatasetCSVGenerator(source, dataset, nesting, encoding);
+		} else {
+		    iterable = new CSVCellIterable(source, separator);
+		    generator = new IteratingGenerator<String>(new DefaultTypedIterable<String>(String.class, iterable));
+		}
+		return generator;
+	}
 
     private static <S, T> Generator<T> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<S> generator) {
