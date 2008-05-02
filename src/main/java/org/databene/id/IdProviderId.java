@@ -39,8 +39,8 @@ public class IdProviderId {
     private String param;
     private String systemId;
 
-    public IdProviderId(
-            String strategyName, String param, String scope, String systemId) {
+    public IdProviderId(String strategyName, String param, String scope, String systemId) {
+    	assert strategyName != null;
         this.strategyName = strategyName;
         this.scope = scope;
         this.param = param;
@@ -56,10 +56,8 @@ public class IdProviderId {
         int result = 1;
         result = prime * result + ((param == null) ? 0 : param.hashCode());
         result = prime * result + ((scope == null) ? 0 : scope.hashCode());
-        result = prime * result
-                + ((strategyName == null) ? 0 : strategyName.hashCode());
-        result = prime * result
-                + ((systemId == null) ? 0 : systemId.hashCode());
+        result = prime * result + strategyName.hashCode();
+        result = prime * result + ((systemId == null) ? 0 : systemId.hashCode());
         return result;
     }
 
@@ -85,10 +83,7 @@ public class IdProviderId {
                 return false;
         } else if (!scope.equals(other.scope))
             return false;
-        if (strategyName == null) {
-            if (other.strategyName != null)
-                return false;
-        } else if (!strategyName.equals(other.strategyName))
+        if (!strategyName.equals(other.strategyName))
             return false;
         if (systemId == null) {
             if (other.systemId != null)

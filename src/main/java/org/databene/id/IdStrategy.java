@@ -43,13 +43,24 @@ public class IdStrategy<E> {
     
     private String name;
     private Class<E> type;
+
+    // factory methods -------------------------------------------------------------------------------------------------
     
     public IdStrategy(String name, Class<E> type) {
-        super();
+    	// check preconditions
+    	assert name != null;
+    	assert type != null;
+    	// construct object
         this.name = name;
         this.type = type;
         instances.put(name, this);
     }
+
+    public static <T> IdStrategy<T> getInstance(String name) {
+        return instances.get(name);
+    }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     public String getName() {
         return name;
@@ -59,14 +70,13 @@ public class IdStrategy<E> {
         return type;
     }
     
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    
     @Override
     public String toString() {
         return name;
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -75,9 +85,6 @@ public class IdStrategy<E> {
         return result;
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -86,17 +93,7 @@ public class IdStrategy<E> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final IdStrategy other = (IdStrategy) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
+        final IdStrategy that = (IdStrategy) obj;
+        return this.name.equals(that.name);
     }
-
-    public static <T> IdStrategy<T> getInstance(String name) {
-        return instances.get(name);
-    }
-    
 }
