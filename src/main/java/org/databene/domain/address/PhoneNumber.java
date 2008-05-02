@@ -28,6 +28,7 @@ package org.databene.domain.address;
 
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.NullSafeComparator;
 
 /**
  * Represents a phone number.<br/>
@@ -163,23 +164,12 @@ public class PhoneNumber {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final PhoneNumber other = (PhoneNumber) obj;
-        if (areaCode == null) {
-            if (other.areaCode != null)
-                return false;
-        } else if (!areaCode.equals(other.areaCode))
+        final PhoneNumber that = (PhoneNumber) obj;
+        if (!this.areaCode.equals(that.areaCode))
             return false;
-        if (countryCode == null) {
-            if (other.countryCode != null)
-                return false;
-        } else if (!countryCode.equals(other.countryCode))
+        if (!NullSafeComparator.equals(this.countryCode, that.countryCode))
             return false;
-        if (localNumber == null) {
-            if (other.localNumber != null)
-                return false;
-        } else if (!localNumber.equals(other.localNumber))
-            return false;
-        return true;
+        return (this.localNumber.equals(that.localNumber));
     }
     
 }

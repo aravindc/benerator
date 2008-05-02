@@ -30,6 +30,7 @@ import java.util.*;
 
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 
 /**
@@ -50,14 +51,14 @@ public class City {
     private int inhabitants;
     private Locale language;
 
-    public City(State state, String name, String addition, Collection<String> zipCodes, String phoneCode) {
-        if (phoneCode == null)
-            throw new IllegalArgumentException("Phone Code is null for " + name);
+    public City(State state, String name, String addition, Collection<String> zipCodes, String areaCode) {
+        if (areaCode == null)
+            throw new IllegalArgumentException("Area Code is null for " + name);
         this.state = state;
         this.name = name;
         this.nameExtension = addition;
         this.zipCodes = new TreeSet<String>(zipCodes);
-        this.areaCode = phoneCode;
+        this.areaCode = areaCode;
     }
 
     public String getNameExtension() {
@@ -140,11 +141,10 @@ public class City {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-
-        final City city = (City) o;
-        if (nameExtension != null ? !nameExtension.equals(city.nameExtension) : city.nameExtension != null)
-            return false;
-        return name.equals(city.name);
+        final City that = (City) o; // TODO v0.5.3 include state check
+        if (!this.name.equals(that.name))
+        	return false;
+        return NullSafeComparator.equals(this.nameExtension, that.nameExtension);
     }
 
     public int hashCode() {
