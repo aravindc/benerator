@@ -43,4 +43,22 @@ public class DBUniqueConstraintTest extends TestCase {
         DBUniqueConstraint constraint = new DBUniqueConstraint("constraintname", column1, column2);
         assertEquals("DBUniqueConstraint[tablename[column1, column2]]", constraint.toString());
     }
+    
+    public void testEquals() {
+        DBTable table = new DBTable("tablename");
+        DBColumnType charType = DBColumnType.getInstance("char");
+    	DBColumn col1 = new DBColumn(table, "col1", charType, 0, 0);
+    	DBColumn col2 = new DBColumn(table, "col2", charType, 0, 0);
+    	// simple checks
+    	DBUniqueConstraint uc1 = new DBUniqueConstraint("uc1", col1);
+    	assertFalse(uc1.equals(null));
+    	assertFalse(uc1.equals(""));
+    	assertTrue(uc1.equals(uc1));
+    	// real comparisons
+    	DBUniqueConstraint uc2 = new DBUniqueConstraint("uc2", col2);
+    	DBUniqueConstraint uc3 = new DBUniqueConstraint("uc3", col1, col2);
+    	assertFalse(uc1.equals(uc2));
+    	assertFalse(uc1.equals(uc3));
+    	assertFalse(uc3.equals(uc1));
+    }
 }
