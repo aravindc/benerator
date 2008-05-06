@@ -58,7 +58,7 @@ public class LineShuffler {
 
     public static void shuffle(String inFilename, String outFilename, int bufferSize) throws IOException {
         logger.info("shuffling " + inFilename + " and writing to " + outFilename + " (max. " + bufferSize + " lines)");
-        ReaderLineIterator iterator = new ReaderLineIterator(new BufferedReader(new FileReader(inFilename)));
+        ReaderLineIterator iterator = new ReaderLineIterator(new BufferedReader(IOUtil.getReaderForURI(inFilename)));
         List<String> lines = read(bufferSize, iterator);
         shuffle(lines);
         save(lines, outFilename);
@@ -90,7 +90,7 @@ public class LineShuffler {
             if (!StringUtil.isEmpty(line)) {
                 lines.add(line);
                 lineCount++;
-                if (lineCount % 100000 == 100000)
+                if (lineCount % 100000 == 99999)
                     logger.info("parsed " + lineCount + " lines");
             }
         }
