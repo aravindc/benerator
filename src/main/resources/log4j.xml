@@ -69,7 +69,7 @@
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.benerator.SQL">
+    <category name="org.databene.SQL">
        <priority value="info"/>
     </category>
 
