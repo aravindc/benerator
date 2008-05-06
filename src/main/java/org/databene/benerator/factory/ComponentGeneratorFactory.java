@@ -70,16 +70,26 @@ public class ComponentGeneratorFactory extends InstanceGeneratorFactory {
     protected static Generator<Object> createComponentGeneratorWrapper(
             ComponentDescriptor descriptor, Generator<? extends Object> elementGenerator, Context context) {
         ComponentGenerator wrapper = new ComponentGenerator(elementGenerator);
-        // set count limits
-        if (descriptor.getCount() != null) {
-            long count = descriptor.getCount();
-            wrapper.setMinCount(count);
-            wrapper.setMaxCount(count);
-            mapDetailToBeanProperty(descriptor, COUNT_DISTRIBUTION, wrapper, context);
-        } else {
-            mapDetailsToBeanProperties(descriptor, wrapper, context);
-        }
+        mapDetailsToBeanProperties(descriptor, wrapper, context);
+        wrapper.setMaxCount(getMaxCount(descriptor));
+        wrapper.setMinCount(getMinCount(descriptor));
         return (Generator<Object>) wrapper;
     }
+
+	private static long getMaxCount(ComponentDescriptor descriptor) {
+		if (descriptor.getCount() != null)
+			return descriptor.getCount();
+        if (descriptor.getMaxCount() != null)
+        	return descriptor.getMaxCount();
+        return 1;
+	}
+
+	private static long getMinCount(ComponentDescriptor descriptor) {
+		if (descriptor.getCount() != null)
+			return descriptor.getCount();
+        if (descriptor.getMinCount() != null)
+        	return descriptor.getMinCount();
+        return 1;
+	}
 
 }
