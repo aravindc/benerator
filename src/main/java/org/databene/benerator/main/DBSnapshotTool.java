@@ -33,6 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
+import org.databene.commons.StringUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
@@ -45,33 +46,44 @@ import org.databene.platform.dbunit.DbUnitEntityExporter;
  */
 public class DBSnapshotTool {
     
-    // TODO v0.6.0 test with each database
+	public static final String DB_PASSWORD = "db.password";
+	public static final String DB_URL = "db.url";
+	public static final String DB_DRIVER = "db.driver";
+	public static final String DB_SCHEMA = "db.schema";
+	public static final String DB_USER = "db.user";
+	
+	// TODO v0.6.0 test with each database
     private static final Log logger = LogFactory.getLog(DBSnapshotTool.class);
     
     public static void main(String[] args) {
         logger.info("Starting " + DBSnapshotTool.class.getSimpleName());
         String filename = (args.length > 0 ? args[0] : "snapshot.dbunit.xml");
-        String fileEncoding = System.getProperty("file.encoding");
         
-        String dbUrl = System.getProperty("db.url");
-        if (dbUrl == null)
+        String dbUrl = System.getProperty(DB_URL);
+        if (StringUtil.isEmpty(dbUrl))
             throw new IllegalArgumentException("No database URL specified. " +
             		"Please provide the JDBC URL as an environment property like '-Ddb.url=jdbc:...'");
-        String dbDriver = System.getProperty("db.driver");
-        if (dbDriver == null)
+        String dbDriver = System.getProperty(DB_DRIVER);
+        if (StringUtil.isEmpty(dbDriver))
             throw new IllegalArgumentException("No database driver specified. " +
                     "Please provide the JDBC driver class name as an environment property like '-Ddb.driver=...'");
-        String dbUser = System.getProperty("db.user");
+        String dbUser = System.getProperty(DB_USER);
+        String dbPassword = System.getProperty(DB_PASSWORD);
+        String dbSchema = System.getProperty(DB_SCHEMA);
+        
+        logger.info("Exporting data of database '" + dbUrl + "' with driver '" + dbDriver + "' as user '" + dbUser 
+                + "'" + (dbSchema != null ? " using schema '" + dbSchema + "'" : "") 
+                + " to file " + filename);
+
+        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename);
+    }
+
+	private static void export(String dbUrl, String dbDriver, String dbSchema,
+			String dbUser, String dbPassword, String filename) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");
-        String dbPassword = System.getProperty("db.password");
-        String dbSchema = System.getProperty("db.schema");
-        
-        logger.info("Exporting data of database " + dbUrl + " with driver " + dbDriver + " as user " + dbUser 
-                + (dbSchema != null ? " using schema " + dbSchema : "") 
-                + " to file " + filename + " using " + fileEncoding);
-
-        long startTime = System.currentTimeMillis();
+        String fileEncoding = System.getProperty("file.encoding");
+		long startTime = System.currentTimeMillis();
         DbUnitEntityExporter exporter = new DbUnitEntityExporter(filename, fileEncoding);
 
         DBSystem db = null;
@@ -87,6 +99,7 @@ public class DBSnapshotTool {
                 logger.info("Exporting table " + descriptor.getName());
                 for (Entity entity : db.queryEntities(descriptor.getName(), null)) {
                     exporter.startConsuming(entity);
+                    exporter.finishConsuming(entity);
                     count++;
                 }
             }
@@ -97,5 +110,5 @@ public class DBSnapshotTool {
             if (db != null)
                 db.close();
         }
-    }
+	}
 }
