@@ -79,8 +79,10 @@ public class JdbcMetaTypeMapper {
 
     public static String abstractType(DBColumnType columnType) {
         int jdbcType = columnType.getJdbcType();
-        String result = ((PrimitiveType) TYPE_MAP.get(jdbcType)).getName();
-        if (result == null) {
+        PrimitiveType primitiveType = (PrimitiveType) TYPE_MAP.get(jdbcType);
+        if (primitiveType != null)
+			return primitiveType.getName();
+        else {
             String lcName = columnType.getName().toLowerCase();
             if (lcName.startsWith("timestamp"))
                 return PrimitiveType.TIMESTAMP.getName();
@@ -89,7 +91,6 @@ public class JdbcMetaTypeMapper {
             else
                 throw new ConfigurationError("Platform specific SQL type (" + jdbcType + ") not mapped: " + jdbcType);
         }
-        return result;
     }
 
 }
