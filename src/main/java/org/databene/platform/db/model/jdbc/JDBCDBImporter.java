@@ -26,13 +26,14 @@
 
 package org.databene.platform.db.model.jdbc;
 
-import org.databene.commons.DBUtil;
+import org.databene.commons.ConnectFailedException;
 import org.databene.commons.Escalator;
 import org.databene.commons.ImportFailedException;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
+import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,30 +49,34 @@ import java.util.*;
 public final class JDBCDBImporter implements DBImporter {
 
     private static final Log logger = LogFactory.getLog(JDBCDBImporter.class);
-
+/*
     private final String url;
-    private final String user;
     private final String password;
     private final String driverClassname;
+*/    
+    private final Connection connection;
 
-    private String catalogName;
-    private String schemaName;
+    private final String user;
+    
+    private String  catalogName;
+    private String  schemaName;
     private boolean importingIndexes;
     private boolean acceptingErrors;
 
     private String productName;
     private Escalator escalator = new LoggerEscalator();
 
-
-    public JDBCDBImporter(String url, String driverClassname, String user, String password) {
+    public JDBCDBImporter(String url, String driverClassname, String user, String password) throws ConnectFailedException {
         this(url, driverClassname, user, password, null, true);
     }
 
-    public JDBCDBImporter(String url, String driverClassname, String user, String password, String schemaName, boolean importingIndexes) {
-        this.url = url;
-        this.driverClassname = driverClassname;
+    public JDBCDBImporter(String url, String driver, String user, String password, String schemaName, boolean importingIndexes) throws ConnectFailedException {
+    	this(DBUtil.connect(url, driver, user, password), user, schemaName, importingIndexes);
+    }
+
+    public JDBCDBImporter(Connection connection, String user, String schemaName, boolean importingIndexes) {
+    	this.connection = connection;
         this.user = user;
-        this.password = password;
         this.schemaName = schemaName;
         this.importingIndexes = importingIndexes;
         this.acceptingErrors = false;
@@ -80,11 +85,7 @@ public final class JDBCDBImporter implements DBImporter {
     public Database importDatabase() throws ImportFailedException {
         logger.info("Importing database metadata. Be patient, this may take some time...");
         long startTime = System.currentTimeMillis();
-        Connection connection = null;
         try {
-            Class.forName(driverClassname);
-            //DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            connection = DriverManager.getConnection(url, user, password);
             DatabaseMetaData metaData = connection.getMetaData();
             productName = metaData.getDatabaseProductName();
             if (logger.isDebugEnabled())
@@ -101,8 +102,6 @@ public final class JDBCDBImporter implements DBImporter {
             return database;
         } catch (SQLException e) {
             throw new ImportFailedException(e);
-        } catch (ClassNotFoundException e) {
-            throw new ImportFailedException("Database driver not found. ", e);
         } finally {
             DBUtil.close(connection);
             long duration = System.currentTimeMillis() - startTime;
@@ -116,8 +115,7 @@ public final class JDBCDBImporter implements DBImporter {
         int catalogCount = 0;
         while (catalogSet.next()) {
             String catalogName = catalogSet.getString(1);
-            if (logger.isDebugEnabled())
-                logger.debug("found catalog " + catalogName);
+            logger.debug("found catalog " + catalogName);
             if ((schemaName == null && user.equalsIgnoreCase(catalogName)) || (schemaName != null && schemaName.equalsIgnoreCase(catalogName)))
                 this.catalogName = catalogName;
             database.addCatalog(new DBCatalog(catalogName));
@@ -132,8 +130,7 @@ public final class JDBCDBImporter implements DBImporter {
         ResultSet schemaSet = metaData.getSchemas();
         while (schemaSet.next()) {
             String schemaName = schemaSet.getString(1);
-            if (logger.isDebugEnabled())
-                logger.debug("found schema " + schemaName);
+            logger.debug("found schema " + schemaName);
             if (!user.equalsIgnoreCase(schemaName) && !schemaName.equalsIgnoreCase(this.schemaName))
                 continue;
             this.schemaName = schemaName;
@@ -157,7 +154,7 @@ public final class JDBCDBImporter implements DBImporter {
             if (tableName.startsWith("BIN$")) {
                 if (productName.toLowerCase().startsWith("oracle") && tableName.startsWith("BIN$"))
                     escalator.escalate("BIN$ table found (for improved performance " +
-                                "execute 'PURGE RECYCLEBIN;')", url, tableName);
+                                "execute 'PURGE RECYCLEBIN;')", this, tableName);
                 continue;
             }
             String tableType = tableSet.getString(4); // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
