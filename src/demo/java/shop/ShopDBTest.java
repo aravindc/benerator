@@ -59,10 +59,13 @@ public class ShopDBTest extends TestCase {
         checkGeneration("derby");
     }
 */
+    public void testHSQLInMem() throws IOException, InterruptedException {
+        checkGeneration("hsqlmem");
+    }
+/*
     public void testHSQL() throws IOException, InterruptedException {
         checkGeneration("hsql");
     }
-/*
     public void testSQLServer() throws IOException, InterruptedException {
         checkGeneration("ms_sql_server");
     }
