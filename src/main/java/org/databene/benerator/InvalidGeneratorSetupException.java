@@ -44,16 +44,12 @@ public class InvalidGeneratorSetupException extends ConfigurationError {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public InvalidGeneratorSetupException(PropertyMessage propertyMessage) {
-        this(new PropertyMessage[] { propertyMessage });
+    public InvalidGeneratorSetupException(String propertyName, String propertyMessage) {
+        this(new PropertyMessage(propertyName, propertyMessage));
     }
 
     public InvalidGeneratorSetupException(PropertyMessage... propertyMessages) {
-        this(propertyMessages, null, null);
-    }
-
-    public InvalidGeneratorSetupException(String propertyName, String propertyMessage) {
-        this(new PropertyMessage(propertyName, propertyMessage));
+        this(null, null, propertyMessages);
     }
 
     public InvalidGeneratorSetupException(String textMessage) {
@@ -65,11 +61,11 @@ public class InvalidGeneratorSetupException extends ConfigurationError {
     }
 
     public InvalidGeneratorSetupException(String textMessage, Throwable cause) {
-        this(new PropertyMessage[0], textMessage, cause);
+        this(textMessage, cause, new PropertyMessage[0]);
     }
 
-    public InvalidGeneratorSetupException(PropertyMessage[] propertyMessages, String textMessage, Throwable cause) {
-        super(textMessage, cause);
+    public InvalidGeneratorSetupException(String textMessage, Throwable cause, PropertyMessage... propertyMessages) {
+        super(formatMessage(textMessage, propertyMessages), cause);
         this.propertyMessages = Arrays.asList(propertyMessages);
     }
 
@@ -80,19 +76,16 @@ public class InvalidGeneratorSetupException extends ConfigurationError {
         return propertyMessages.toArray(array);
     }
 
-    public String toString() {
-        StringBuilder buffer = new StringBuilder(this.getClass().getName()).append(": ");
-        String textMessage = getMessage();
+	private static String formatMessage(String textMessage, PropertyMessage ... propertyMessages) {
+		StringBuilder buffer = new StringBuilder();
         if (textMessage != null)
-            buffer.append(textMessage);
-        if (propertyMessages.size() > 0)
-            buffer.append(": ");
-        for (int i = 0; i < propertyMessages.size(); i++) {
-            PropertyMessage propertyMessage = propertyMessages.get(i);
+            buffer.append(textMessage).append(": ");
+        for (int i = 0; i < propertyMessages.length; i++) {
+            PropertyMessage propertyMessage = propertyMessages[i];
             buffer.append(propertyMessage);
-            if (i < propertyMessages.size())
+            if (i < propertyMessages.length - 1)
                 buffer.append(", ");
         }
         return buffer.toString();
-    }
+	}
 }
