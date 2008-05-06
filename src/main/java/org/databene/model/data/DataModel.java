@@ -29,6 +29,7 @@ package org.databene.model.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -59,6 +60,7 @@ public class DataModel {
     }
     
     public TypeDescriptor getTypeDescriptor(String typeId) {
+    	Assert.notNull(typeId, "typeId");
         String ns = null;
         String name = typeId;
         if (typeId.contains(":")) {
