@@ -43,7 +43,7 @@ import java.util.Iterator;
  */
 public class QueryIterable implements Iterable<ResultSet> {
     
-    private static final Log sqlLogger = LogFactory.getLog("org.databene.benerator.SQL"); 
+    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
 
     private Connection connection;
     private String query;
