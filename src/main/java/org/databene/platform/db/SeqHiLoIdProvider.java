@@ -33,7 +33,7 @@ import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.DBUtil;
+import org.databene.commons.db.DBUtil;
 import org.databene.id.IdProvider;
 
 /**
@@ -118,5 +118,5 @@ public class SeqHiLoIdProvider implements IdProvider<Long> {
     }
 
     private static final Log logger = LogFactory.getLog(SeqHiLoIdProvider.class);
-    private static final Log sqlLogger = LogFactory.getLog("org.databene.benerator.SQL"); 
+    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
 }

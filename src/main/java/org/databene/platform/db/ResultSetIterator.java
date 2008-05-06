@@ -26,7 +26,7 @@
 
 package org.databene.platform.db;
 
-import org.databene.commons.DBUtil;
+import org.databene.commons.db.DBUtil;
 import org.databene.commons.HeavyweightIterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
