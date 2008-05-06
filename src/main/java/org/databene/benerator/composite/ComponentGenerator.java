@@ -57,7 +57,7 @@ public class ComponentGenerator<S> extends CardinalGenerator<S, Object> {
         if (count == 1)
             return source.generate();
         else {
-            Object[] result = new Object[count];
+            Object[] result = ArrayUtil.newInstance(source.getGeneratedType(), count);
             for (int i = 0; i < count; i++) {
                 if (source.available())
                     result[i] = source.generate();
