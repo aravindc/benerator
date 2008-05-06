@@ -60,6 +60,6 @@ public class PropertyMessage {
 
     @Override
     public String toString() {
-        return property + ": " + message;
+        return "'" + property + "' " + message;
     }
 }
