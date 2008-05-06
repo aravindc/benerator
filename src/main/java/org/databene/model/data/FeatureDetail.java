@@ -27,6 +27,7 @@
 package org.databene.model.data;
 
 import org.databene.commons.Converter;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.operation.FirstArgSelector;
@@ -122,9 +123,8 @@ public class FeatureDetail<E> {
         if (o == null || getClass() != o.getClass())
             return false;
         final FeatureDetail<E> that = (FeatureDetail<E>) o;
-        if (!name.equals(that.name))
-            return false;
-        return !(value != null ? !value.equals(that.value) : that.value != null);
+        return (name.equals(that.name) 
+        	&& NullSafeComparator.equals(this.value, that.value));
     }
 
     public int hashCode() {
