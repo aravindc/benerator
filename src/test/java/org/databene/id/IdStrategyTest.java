@@ -29,7 +29,7 @@ package org.databene.id;
 import junit.framework.TestCase;
 
 /**
- * TODO documentation.<br/><br/>
+ * Tests the {@link IdStrategy}.<br/><br/>
  * Created at 02.05.2008 13:22:05
  * @since 0.5.3
  * @author Volker Bergmann

@@ -26,16 +26,37 @@
 
 package org.databene.benerator.util;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.IOUtil;
+import org.databene.commons.ReaderLineIterator;
 
 /**
  * Created: 22.07.2007 08:16:23
  */
 public class LineShufflerTest extends TestCase {
 
-    public void test() {
+    public void testShuffleList() {
         LineShuffler.shuffle(CollectionUtil.toList("1", "2", "3"));
+    }
+
+    public void testShuffleFile() throws IOException {
+    	boolean[] check = new boolean[3];
+        String outFile = "target/LineShufflerTest.txt";
+		LineShuffler.shuffle("org/databene/benerator/util/test.txt", outFile, 3);
+		ReaderLineIterator iterator = new ReaderLineIterator(IOUtil.getReaderForURI(outFile));
+		int count = 0;
+		while (iterator.hasNext()) {
+			count++;
+			int value = Integer.parseInt(iterator.next());
+			assertFalse(check[value]);
+			check[value] = true;
+		}
+		assertEquals(3, count);
+		for (boolean c : check)
+			assertTrue(c);
     }
 }

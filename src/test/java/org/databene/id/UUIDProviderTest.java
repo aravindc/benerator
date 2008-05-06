@@ -1,6 +1,6 @@
 package org.databene.id;
 
-import org.databene.test.IteratorTest;
+import org.databene.commons.iterator.IteratorTest;
 
 /**
  * Tests the {@link UUIDProvider}.<br/><br/>
