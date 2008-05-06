@@ -38,6 +38,7 @@ import org.databene.model.function.Sequence;
 import org.databene.model.function.WeightFunction;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
+import org.databene.benerator.composite.ComponentTypeConverter;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
@@ -213,6 +214,7 @@ public class ComplexTypeGeneratorFactory extends TypeGeneratorFactory {
 		    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
 		    generator = new IteratingGenerator(iterable);
 		}
+		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(descriptor));
 		return generator;
 	}
 
