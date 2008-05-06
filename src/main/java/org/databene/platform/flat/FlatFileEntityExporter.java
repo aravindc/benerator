@@ -119,8 +119,10 @@ public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
                 }
                 // parse pad char
                 char padChar = ' ';
-                if (pos.getIndex() < rbIndex)
+                if (pos.getIndex() < rbIndex) {
                     padChar = propertyFormat.charAt(pos.getIndex());
+                    pos.setIndex(pos.getIndex() + 1);
+                }
                 assert pos.getIndex() == rbIndex;
                 FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(propertyName, width, alignment, padChar);
                 this.converters[i] = new ConverterChain<Entity, String>(
