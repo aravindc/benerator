@@ -37,6 +37,7 @@ import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
+import org.databene.commons.db.DBUtil;
 import org.databene.model.data.*;
 import org.databene.model.depend.DependencyModel;
 import org.databene.model.storage.StorageSystem;
@@ -56,7 +57,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.sql.DriverManager;
 import java.sql.Statement;
 
 /**
@@ -324,7 +324,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     public <T> TypedIterable<T> query(String query) {
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
-    	Connection connection = getThreadContext().connection;
+        Connection connection = getThreadContext().connection;
         QueryIterable resultSetIterable = new QueryIterable(connection, query);
         return (TypedIterable<T>)new ConvertingIterable<ResultSet, Object>(resultSetIterable, new ResultSetConverter(true));
     }
@@ -357,17 +357,20 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     public Connection createConnection() {
 		try {
-            Class.forName(driver);
-            Connection connection = new PooledConnection(DriverManager.getConnection(url, user, password));
+            Connection connection = new PooledConnection(DBUtil.connect(url, driver, user, password));
             connection.setAutoCommit(false);
             return connection;
-        } catch (ClassNotFoundException e) {
-            throw new ConfigurationError("JDBC driver not found: " + driver, e);
-        } catch (SQLException e) {
+        } catch (ConnectFailedException e) {
             throw new RuntimeException("Connecting the database failed. URL: " + url, e);
-        }
+		} catch (SQLException e) {
+			throw new ConfigurationError("Turning off auto-commit failed", e);
+		}
 	}
 	
+	public void invalidate() {
+		typeDescriptors = null;
+	} 
+
 	// java.lang.Object overrides ------------------------------------------------------------------
 	
     @Override
@@ -394,9 +397,11 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             List<DBTable> tables = dependencyOrderedTables(database);
             for (DBTable table : tables)
                 parseTable(table);
+        } catch (ConnectFailedException e) {
+			throw new ConfigurationError("Database not available. ", e);
         } catch (ImportFailedException e) {
             throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
-        }
+		}
     }
 
     private void mapStrategy(String productName) { 
@@ -687,7 +692,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     private static final Log logger = LogFactory.getLog(DBSystem.class);
-//    private static final Log sqlLogger = LogFactory.getLog("org.databene.benerator.SQL"); 
-    private static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC"); 
+//    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
+    private static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC");
 
 }
