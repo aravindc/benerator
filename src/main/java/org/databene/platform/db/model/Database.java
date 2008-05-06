@@ -47,10 +47,10 @@ public class Database {
 
     public Database(String name, OrderedNameMap<DBCatalog> catalogs) {
         this.name = name;
-        this.catalogs = new OrderedNameMap<DBCatalog>();
+        this.catalogs = OrderedNameMap.createCaseInsensitiveMap();
         if (catalogs != null)
             this.catalogs.putAll(catalogs);
-        this.schemas = new OrderedNameMap<DBSchema>();
+        this.schemas = OrderedNameMap.createCaseInsensitiveMap();
     }
 
     // properties ------------------------------------------------------------------------------------------------------
