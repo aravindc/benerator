@@ -26,17 +26,28 @@
 
 package org.databene.platform.dbunit;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.util.Map;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Exports entities in DbUnit XML file format.
@@ -55,7 +66,9 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     private String uri;
     private String encoding;
 
-    private PrintWriter printer;
+    private OutputStream out;
+    private TransformerHandler handler;
+
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -98,42 +111,74 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
         try {
             if (logger.isDebugEnabled())
                 logger.debug("exporting " + entity);
-            if (printer == null)
+            if (out == null)
                 initPrinter();
-            printer.print("    <" + entity.getName());
+            AttributesImpl atts = new AttributesImpl();
             for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
                 Object value = entry.getValue();
                 if (value == null)
                     continue;
                 String s = ToStringConverter.convert(value, null);
                 if (s != null)
-                	printer.print(' ' + entry.getKey() + "=\"" + s + '"');
+                	atts.addAttribute("", "", entry.getKey(), "CDATA", s);
             }
-            printer.println("/>");
+            handler.startElement("", "", entity.getName(), atts);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        } catch (SAXException e) {
+			throw new ConfigurationError("Error in processing element: " + entity, e);
+		}
+    }
+    
+    @Override
+    public void finishConsuming(Entity entity) {
+        try {
+			handler.endElement("", "", entity.getName());
+		} catch (SAXException e) {
+			throw new ConfigurationError("Error in processing element: " + entity, e);
+		}
     }
 
     public void flush() {
-        if (printer != null)
-            printer.flush();
+       	IOUtil.flush(out);
     }
 
     public void close() {
-        if (printer != null) { 
-            printer.print("</dataset>");
-            printer.close();
+        if (out != null) { 
+            try {
+            	handler.endElement("", "", "dataset");
+				handler.endDocument();
+				handler = null;
+			} catch (SAXException e) {
+				throw new ConfigurationError("Error closing XML file.", e);
+			} finally {
+				IOUtil.close(out);
+			}
         }
     }
 
 // java.lang.String overrides --------------------------------------------------------------------------------------
 
     private void initPrinter() throws IOException {
-        // create file and write header
-        printer = IOUtil.getPrinterForURI(uri, encoding);
-        printer.println("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>");
-        printer.println("<dataset>");
+        try {
+			// create file and write header
+			SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+			handler = tf.newTransformerHandler();
+			
+			Transformer serializer = handler.getTransformer();
+			serializer.setOutputProperty(OutputKeys.ENCODING, encoding);
+			serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+        	out = new FileOutputStream(uri);
+			handler.setResult(new StreamResult(out));
+			handler.startDocument();
+            handler.startElement("", "", "dataset", null);
+			
+		} catch (TransformerConfigurationException e) {
+			throw new ConfigurationError(e);
+		} catch (SAXException e) {
+			throw new ConfigurationError("Error in initializing XML file", e);
+		}
     }
 
     public String toString() {
