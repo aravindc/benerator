@@ -194,7 +194,7 @@ public class CityManager {
         return parseCityName(cityName, stateId, false);
     }
 */
-    private static CityId parseCityName(String cityName, String stateId, boolean quiet) {
+    static CityId parseCityName(String cityName, String stateId, boolean quiet) {
         // parse city id by pattern
         // Cityname = [Prefix] Name [Extension] [district] [institution]
         // Prefix = 'St.' | 'S.' | 'La' | 'Le' | 'Les' ...
@@ -203,6 +203,8 @@ public class CityManager {
 
         // TODO v0.6 check for double names like Frantschach-St. Gertraud
         // TODO v0.6 make use of district and institution info
+    	
+    	Assert.notNull(StringUtil.isEmpty(cityName), "name");
 
         String[] nameParts = StringUtil.tokenize(cityName, ' ');
         // check prefix
