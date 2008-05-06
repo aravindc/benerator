@@ -46,33 +46,36 @@ import org.databene.model.storage.StorageSystem;
  * Created: 03.03.2008 15:45:50
  * @author Volker Bergmann
  */
-public class ReferenceGeneratorFactory extends ComponentGeneratorFactory {
+public class ReferenceGeneratorFactory {
+	
+    private static final Log logger = LogFactory.getLog(ReferenceGeneratorFactory.class);
+
+    private static DataModel dataModel = DataModel.getDefaultInstance();
 
     public static Generator<? extends Object> createReferenceGenerator(ReferenceDescriptor descriptor, Context context, GenerationSetup setup) {
         Generator<? extends Object> generator = null;
         TypeDescriptor typeDescriptor = descriptor.getType();
         String targetTypeName = descriptor.getTargetTye();
-        ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(targetTypeName);
+		ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
         if (targetType == null)
             throw new ConfigurationError("Type not defined: " + targetTypeName);
-        if (targetTypeName != null) {
-            String selector = typeDescriptor.getSelector();
+        else {
             String sourceName = typeDescriptor.getSource();
             if (sourceName == null)
                 throw new ConfigurationError("'source' is not set for " + descriptor);
             Object sourceObject = context.get(sourceName);
             if (sourceObject instanceof StorageSystem) {
                 StorageSystem sourceSystem = (StorageSystem) sourceObject;
+                String selector = typeDescriptor.getSelector();
                 TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector);
                 generator = new IteratingGenerator<Object>(entityIds);
-            }
-        } else
-            generator = new ConstantGenerator<Object>(null);
-        generator = createComponentGeneratorWrapper(descriptor, generator, context);
+            } else
+            	throw new ConfigurationError("Not a supported source type: " + sourceName);
+        }
+        generator = ComponentGeneratorFactory.createComponentGeneratorWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
     }
 
-    private static final Log logger = LogFactory.getLog(ReferenceGeneratorFactory.class);
 }
