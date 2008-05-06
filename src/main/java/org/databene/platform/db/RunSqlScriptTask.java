@@ -28,16 +28,11 @@ package org.databene.platform.db;
 
 import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
-import org.databene.commons.DBUtil;
-import org.databene.commons.IOUtil;
-import org.databene.commons.ReaderLineIterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.db.DBUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Statement;
 import java.sql.SQLException;
 
 /**
@@ -47,9 +42,6 @@ import java.sql.SQLException;
  * @author Volker Bergmann
  */
 public class RunSqlScriptTask extends AbstractTask {
-
-    private static final Log logger = LogFactory.getLog(RunSqlScriptTask.class);
-    private static final Log sqlLogger = LogFactory.getLog("org.databene.benerator.SQL"); 
 
     private String uri;
     private DBSystem db;
@@ -113,84 +105,34 @@ public class RunSqlScriptTask extends AbstractTask {
 
     public void run() {
         Connection connection = null;
-        Exception exception = null;
         try {
             connection = db.createConnection();
-            BufferedReader reader = IOUtil.getReaderForURI(uri);
-            ReaderLineIterator iterator = new ReaderLineIterator(reader);
-            StringBuilder cmd = new StringBuilder();
-            while (iterator.hasNext()) {
-                String line = iterator.next();
-                if (line.startsWith("--"))
-                    continue;
-                if (cmd.length() > 0)
-                    cmd.append('\r');
-                cmd.append(line.trim());
-                if (line.endsWith(";"))
-                    execute(connection, cmd);
-            }
-            iterator.close();
+            DBUtil.runScript(uri, connection, haltOnError, ignoreComments);
+            db.invalidate();
+            connection.commit();
         } catch (IOException e) {
-            exception = e;
-            if (haltOnError)
-                throw new TaskException(e);
-            else
-                logger.error(e.getMessage());
-        } finally {
+			throw new ConfigurationError(e);
+		} catch (SQLException sqle) {
             if (connection != null) {
                 try {
-                    if (exception != null && haltOnError)
+                    if (haltOnError)
                         connection.rollback();
                     else
                         connection.commit();
                 } catch (SQLException e) {
-                    exception = e;
+                    // ignore this 2nd exception, we have other problems now (sqle)
                 }
-                DBUtil.close(connection);
             }
+            throw new TaskException(sqle);
+		} finally {
+            DBUtil.close(connection);
         }
-        if (exception != null)
-            throw new RuntimeException(exception);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
         return getClass().getSimpleName() + '[' + uri + "->" + db.getId() + ']';
-    }
-
-    // private helpers -------------------------------------------------------------------------------------------------
-
-    private void execute(Connection connection, StringBuilder cmd) {
-        // delete the trailing ';'
-        cmd.delete(cmd.length() - 1, cmd.length());
-        try {
-            executeUpdate(cmd.toString(), connection);
-        } catch (SQLException e) {
-            if (haltOnError)
-                throw new TaskException(e);
-            else
-                logger.error(e.getMessage() + ":\n" + cmd);
-        } finally {
-            cmd.delete(0, cmd.length());
-        }
-    }
-
-    private int executeUpdate(String sql, Connection connection) throws SQLException {
-        if (ignoreComments && sql.trim().toUpperCase().startsWith("COMMENT"))
-            return 0;
-        if (sqlLogger.isDebugEnabled())
-            sqlLogger.debug(sql);
-        int result = 0;
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-            result = statement.executeUpdate(sql);
-        } finally {
-            if (statement != null)
-                statement.close();
-        }
-        return result;
     }
 
 }
