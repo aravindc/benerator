@@ -66,6 +66,8 @@
     <info name="LOC" description="Lines of Code" />
   </processor>
 
+  <!-- CLONE DETECTION  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  
   <!-- Perform clone detection -->
   <block name="clonedetection" spec="edu.tum.cs.conqat.blocklib.JavaCloneChain">
     <input scope="@src" />
