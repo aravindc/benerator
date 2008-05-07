@@ -7,7 +7,7 @@
 <conqat-architecture xmlns="http://conqat.cs.tum.edu/ns/architecture" policy="deny" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <component id="Root">
-	  <component id="benerator">
+	  <component id="databene benerator">
 	    <component id="benerator interface">
 	      <element-group regex="org.databene.benerator\.[^\.]*" />
 	    </component>
@@ -37,7 +37,7 @@
 	    </component>
 	  </component>
 	
-	  <component id="webdecs">
+	  <component id="databene webdecs">
 	      <element-group regex="org.databene.document.*" />
 	      <element-group regex="org.databene.html.*" />
 	      <element-group regex="org.databene.regex.*" />
@@ -47,14 +47,21 @@
 	      <element-group regex="org.databene.xslt.*" />
 	  </component>
 	
-	  <component id="commons">
+	  <component id="databene commons">
 	      <element-group regex="org.databene.commons.*" />
 	  </component>
 	  
-	  <component id="lib">
+	  <component id="JDK">
 	    <element-group regex="org.w3c.*" />
 	    <element-group regex="org.xml.*" />
-	    <element-group regex="org.apache.commons.*" />
+	  </component>
+	  
+	  <component id="poi">
+	    <element-group regex="org.apache.poi.*" />
+	  </component>
+	  
+	  <component id="commons logging">
+	    <element-group regex="org.apache.commons.logging.*" />
 	  </component>
   </component>
 
@@ -62,9 +69,10 @@
   <policies>
   
     <!-- benerator -->
-    <allow from="benerator" to="webdecs" />
-    <allow from="benerator" to="commons" />
-    <allow from="benerator" to="lib" />
+    <allow from="databene benerator" to="databene webdecs" />
+    <allow from="databene benerator" to="databene commons" />
+    <allow from="databene benerator" to="JDK" />
+    <allow from="databene benerator" to="commons logging" />
     <allow from="databene domains" to="benerator core" />
     <allow from="databene domains" to="benerator interface" />
     <allow from="databene domains" to="model" />
@@ -75,17 +83,20 @@
     <allow from="benerator core" to="id" />
     <allow from="benerator core" to="task" />
     <allow from="benerator core" to="dataset" />
+    <allow from="platform" to="poi" />
     <allow from="platform" to="model" />
     <allow from="platform" to="id" />
     <allow from="platform" to="task" />
     <allow from="benerator interface" to="model" />
     
     <!-- webdecs -->
-    <allow from="webdecs" to="commons" />
-    <allow from="webdecs" to="lib" />
+    <allow from="databene webdecs" to="databene commons" />
+    <allow from="databene webdecs" to="JDK" />
+    <allow from="databene webdecs" to="commons logging" />
     
     <!-- webdecs -->
-    <allow from="commons" to="lib" />
+    <allow from="databene commons" to="JDK" />
+    <allow from="databene commons" to="commons logging" />
     
   </policies>
 
