@@ -51,10 +51,6 @@
     </category>
 
     <category name="org.databene">
-       <priority value="DEBUG"/>
-    </category>
-
-    <category name="org.databene.model.converter" additivity="false">
        <priority value="INFO"/>
     </category>
 
@@ -63,7 +59,7 @@
    <!-- ======================= -->
 
     <root>
-        <priority value="DEBUG"/>
+        <priority value="INFO"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
