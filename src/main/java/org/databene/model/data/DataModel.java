@@ -29,9 +29,7 @@ package org.databene.model.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.StringUtil;
 
 /**
  * Merges and organizes entity definitions of different systems.<br/><br/>

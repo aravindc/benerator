@@ -36,7 +36,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import static org.databene.model.data.ComponentDescriptor.*;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
 
 /**
