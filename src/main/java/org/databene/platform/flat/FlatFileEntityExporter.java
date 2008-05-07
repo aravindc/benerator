@@ -32,7 +32,6 @@ import org.databene.model.data.ComponentAccessor;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.commons.*;
 import org.databene.commons.converter.AccessingConverter;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
@@ -127,7 +126,7 @@ public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
                 FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(propertyName, width, alignment, padChar);
                 this.converters[i] = new ConverterChain<Entity, String>(
                     new AccessingConverter<Entity, Object>(Object.class, new ComponentAccessor(descriptor.getName())),
-                    new AnyConverter(String.class, datePattern),
+                    plainConverter,
                     new FormatFormatConverter(
                         new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar)
                     )

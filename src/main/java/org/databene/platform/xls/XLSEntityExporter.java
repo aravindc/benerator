@@ -44,7 +44,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.model.consumer.FormattingConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -130,9 +129,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
             HSSFRow row = sheet.createRow(rowCount++);
             for (int i = 0; i < propertyNames.length; i++) {
                 Object value = entity.getComponent(propertyNames[i]);
-                String s = AnyConverter.convert(value, String.class, datePattern, timestampPattern);
-                if (s == null)
-                	s = "";
+                String s = plainConverter.convert(value);
                 row.createCell((short)i).setCellValue(new HSSFRichTextString(s));
             }
         } catch (IOException e) {

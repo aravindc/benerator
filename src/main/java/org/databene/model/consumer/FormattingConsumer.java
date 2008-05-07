@@ -26,6 +26,8 @@
 
 package org.databene.model.consumer;
 
+import org.databene.commons.converter.ToStringConverter;
+
 /**
  * Provides a datePattern property for child classes.<br/><br/>
  * Created at 08.04.2008 07:18:17
@@ -34,22 +36,29 @@ package org.databene.model.consumer;
  */
 public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 
-	protected String datePattern = "yyyy-MM-dd";
-	protected String timestampPattern = "yyyy-MM-dd'T'hh:mm:ss.SSS";
-	
-    public String getDatePattern() {
-		return datePattern;
+	protected ToStringConverter<Object> plainConverter = new ToStringConverter<Object>();
+
+	public String getDatePattern() {
+		return plainConverter.getDatePattern();
 	}
 
-	public void setDatePattern(String datePattern) {
-		this.datePattern = datePattern;
+	public String getNullString() {
+		return plainConverter.getNullString();
 	}
 
 	public String getTimestampPattern() {
-		return timestampPattern;
+		return plainConverter.getTimestampPattern();
+	}
+
+	public void setDatePattern(String datePattern) {
+		plainConverter.setDatePattern(datePattern);
+	}
+
+	public void setNullString(String nullResult) {
+		plainConverter.setNullString(nullResult);
 	}
 
 	public void setTimestampPattern(String timestampPattern) {
-		this.timestampPattern = timestampPattern;
+		plainConverter.setTimestampPattern(timestampPattern);
 	}
 }

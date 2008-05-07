@@ -26,8 +26,9 @@
 
 package org.databene.model.consumer;
 
+import java.io.PrintStream;
+
 import org.databene.commons.CompositeFormatter;
-import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.data.Entity;
 
 /**
@@ -39,19 +40,11 @@ import org.databene.model.data.Entity;
 public class ConsoleExporter<E> extends FormattingConsumer<E> {
 	
 	private CompositeFormatter compositeFormatter;
-	private ToStringConverter<Object> simpleFormatter;
+	PrintStream out = System.out;
 	
 	public ConsoleExporter() {
-		compositeFormatter = new CompositeFormatter(true, true, datePattern, timestampPattern);
-		simpleFormatter = new ToStringConverter<Object>("", datePattern, timestampPattern);
+		compositeFormatter = new CompositeFormatter(true, true, getDatePattern(), getTimestampPattern());
 	}
-
-	public void startConsuming(E object) {
-		if (object instanceof Entity)
-			System.out.println(compositeFormatter.render(((Entity) object).getName() + '[', (Entity) object, "]"));
-		else
-			System.out.println(simpleFormatter.convert(object));
-    }
 	
 	@Override
 	public void setDatePattern(String datePattern) {
@@ -59,4 +52,22 @@ public class ConsoleExporter<E> extends FormattingConsumer<E> {
 		compositeFormatter.setDatePattern(datePattern);
 	}
 
+	@Override
+	public void setNullString(String nullString) {
+		super.setNullString(nullString);
+	}
+
+	@Override
+	public void setTimestampPattern(String timestampPattern) {
+		super.setTimestampPattern(timestampPattern);
+		compositeFormatter.setTimestampPattern(timestampPattern);
+	}
+
+	public void startConsuming(E object) {
+		if (object instanceof Entity)
+			out.println(compositeFormatter.render(((Entity) object).getName() + '[', (Entity) object, "]"));
+		else
+			out.println(plainConverter.convert(object));
+    }
+	
 }
