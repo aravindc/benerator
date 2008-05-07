@@ -23,7 +23,7 @@ overview
 installation
 
  * download the lastest version of databene benerator at the 
-   {{{http://databene.org/databene-benerator/download.html}download page}}
+   {{{http://sourceforge.net/project/showfiles.php?group_id=222964}download page}}
 
  * unzip the downloaded file into a directory. It will be called 'root' below
 
@@ -297,7 +297,7 @@ database population sample
 
 [images/shop_er.gif]
 
-  You can find it in the {{{download.html}benerator distribution}}. 
+  You can find it in the {{{http://sourceforge.net/project/showfiles.php?group_id=222964}benerator distribution}}. 
   It supports seven major databases:
 
    * Oracle (oracle)

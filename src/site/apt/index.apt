@@ -17,13 +17,12 @@ about databene benerator
 
 news
 
-  <<2008-04-30 benerator release 0.5.2:>> This release fixes all known bugs 
-  and improves XML file generation performance by 100%, DB snapshot creation 
-  by 20%. 
-  Support for individual weighting for CSV-imported data, rendering of date 
-  values and several generators have been improved.
+  <<2008-05-07 benerator release 0.5.3:>> This release fixes all known bugs 
+  and adds an Excel Sheet Exporter.
 
- {{{http://databene.org/databene-benerator/download.html}download benerator}}
+  {{{http://sourceforge.net/project/showfiles.php?group_id=222964}download benerator}}
+  
+  <<2008-04-26 2,000 downloads:>> databene proudly counts the 2,000th download of benerator.
   
 participate
 

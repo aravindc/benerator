@@ -15,7 +15,8 @@ documentation
  Now you should be keen on seeing how benerator works: the {{{gettings_started.html}getting started}} 
  document will introduce you to syntax, usage and API of benerator.
  
- Now, that you have reached this point, it is time to {{{download.html}download}} the current benerator 
+ Now, that you have reached this point, it is time to 
+ {{{http://sourceforge.net/project/showfiles.php?group_id=222964}download}} the current benerator 
  distribution. Looking at the examples provided in the <<demo>> directory will give you a detailed 
  view on how to use benerator. If you are primarily populating databases, cross-check it with the 
  {{{file_format.html}file format}} documentation. For XML file generation, check the {{{xml.html}XML}} 
