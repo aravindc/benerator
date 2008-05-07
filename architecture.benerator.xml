@@ -53,6 +53,7 @@
 	  
 	  <component id="lib">
 	    <element-group regex="org.w3c.*" />
+	    <element-group regex="org.xml.*" />
 	    <element-group regex="org.apache.commons.*" />
 	  </component>
   </component>
