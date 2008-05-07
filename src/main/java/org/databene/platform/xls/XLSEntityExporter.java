@@ -30,10 +30,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -129,15 +133,33 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
             HSSFRow row = sheet.createRow(rowCount++);
             for (int i = 0; i < propertyNames.length; i++) {
                 Object value = entity.getComponent(propertyNames[i]);
-                String s = plainConverter.convert(value);
-                row.createCell((short)i).setCellValue(new HSSFRichTextString(s));
+                render(row, (short) i, value);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void flush() {
+    private void render(HSSFRow row, short column, Object value) {
+    	HSSFCell cell = row.createCell(column);
+		if (value instanceof Number)
+    		cell.setCellValue(((Number) value).doubleValue());
+    	else if (value instanceof Date) {
+			HSSFCellStyle cellStyle = workbook.createCellStyle();
+			HSSFDataFormat format = workbook.createDataFormat();
+			short dateFormat = format.getFormat(getDatePattern());
+			cellStyle.setDataFormat(dateFormat);
+			cell.setCellStyle(cellStyle);
+    		cell.setCellValue((Date) value);
+    	} else if (value instanceof Boolean)
+    		cell.setCellValue((Boolean) value);
+    	else {
+	        String s = plainConverter.convert(value);
+	        cell.setCellValue(new HSSFRichTextString(s));
+    	}
+	}
+
+	public void flush() {
     }
 
     public void close() {
