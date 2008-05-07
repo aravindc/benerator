@@ -26,8 +26,13 @@
 
 package org.databene.model.consumer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.databene.commons.SystemInfo;
 
 import junit.framework.TestCase;
 
@@ -40,30 +45,32 @@ import junit.framework.TestCase;
 public class ConsoleExporterTest extends TestCase {
 	
 	public void testSimpleTypes() {
-		ConsoleExporter<Object> exporter = new ConsoleExporter<Object>();
-		try {
-			exporter.startConsuming("Test");
-			exporter.finishConsuming("Test");
+		check("Test", "Test");
+		check(1, "1");
+		check(1., "1.0");
+		check(true, "true");
+	}
 
-			exporter.startConsuming(1);
-			exporter.finishConsuming(1);
-			
-			exporter.startConsuming(1.);
-			exporter.finishConsuming(1.);
-			
-			exporter.startConsuming(true);
-			exporter.finishConsuming(true);
-			
-			Date date = new Date();
-			exporter.startConsuming(date);
-			exporter.finishConsuming(date);
-			
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			exporter.startConsuming(timestamp);
-			exporter.finishConsuming(timestamp);
-			
-		} finally {
+	public void testDate() {
+		Date date = new Date(((60 + 2) * 60 + 3) * 1000);
+		check(date, new SimpleDateFormat("yyyy-MM-dd").format(date));
+	}
+
+	public void testTimestamp() {
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		check(timestamp, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(timestamp));
+	}
+
+	private void check(Object in, String expectedOut) {
+		ConsoleExporter<Object> exporter = new ConsoleExporter<Object>();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		exporter.out = new PrintStream(stream);
+		try {
+			exporter.startConsuming(in);
+			exporter.finishConsuming(in);
 			exporter.flush();
+			assertEquals(expectedOut + SystemInfo.lineSeparator(), stream.toString());
+		} finally {
 			exporter.close();
 		}
 	}
