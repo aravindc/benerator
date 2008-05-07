@@ -41,7 +41,7 @@ import org.databene.model.function.Sequence;
  * @author Volker Bergmann
  */
 public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
-	// TODO v0.5.2 resolve TODOs from area_demo.ben.xml
+	// TODO v0.5.4 resolve TODOs from area_demo.ben.xml
 
 	public void testSimpleCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");

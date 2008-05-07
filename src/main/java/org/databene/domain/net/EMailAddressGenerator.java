@@ -50,7 +50,7 @@ import org.databene.text.DelocalizingConverter;
  */
 public class EMailAddressGenerator extends LightweightGenerator<String> { 
 
-	// TODO v0.5.3 improve email generation algorithm
+	// TODO v0.5.4 improve email generation algorithm
 	private PersonGenerator personGenerator;
 	private DomainGenerator domainGenerator;
 	private CaseConverter caseConverter;  

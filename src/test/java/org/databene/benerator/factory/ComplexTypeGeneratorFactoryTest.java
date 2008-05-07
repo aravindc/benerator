@@ -115,7 +115,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 
 /*
-	public void testUniqueCSVImport() { // TODO v0.5.3 uniqueness?
+	public void testUniqueCSVImport() { // TODO v0.5.4 uniqueness?
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource("org/databene/benerator/factory/person.csv");
 		type.setUnique(true);

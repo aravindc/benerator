@@ -71,7 +71,7 @@ public class CityManager {
 
     private static Set<String> suspectiveNames = new HashSet<String>();
 
-    public static void readCities(Country country, String filename) throws IOException { // TODO v0.5.3 improve interface
+    public static void readCities(Country country, String filename) throws IOException { // TODO v0.5.4 improve interface
         readCities(country, filename, new HashMap<String, String>());
     }
 

@@ -85,7 +85,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
     
     protected static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
-    	// TODO v0.5.3 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
+    	// TODO v0.5.4 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();
         if (source == null)
@@ -150,7 +150,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		    encoding = SystemInfo.fileEncoding();
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
-		// TODO v0.5.3 support scripts in CSV simpleType import
+		// TODO v0.5.4 support scripts in CSV simpleType import
 		// ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
 		Iterable<String> iterable = null;
 		if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {

@@ -38,7 +38,7 @@ import org.databene.domain.address.Country;
  */
 public class DomainGenerator extends AlternativeGenerator<String> {
 	
-	// TODO v0.5.3 improve domain name generation algorithm
+	// TODO v0.5.4 improve domain name generation algorithm
 	public DomainGenerator() {
 		this(Country.getDefault().getIsoCode());
 	}

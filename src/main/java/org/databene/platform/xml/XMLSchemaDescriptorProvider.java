@@ -583,12 +583,12 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 
     private void parseImport(Element importElement) {
         logger.debug("parseImport()");
-        throw unsupportedElementType(importElement); // TODO v0.5.3 implement parseImport()
+        throw unsupportedElementType(importElement); // TODO v0.5.4 implement parseImport()
     }
 
     private void parseGroup(Element group) {
         logger.debug("parseGroup()");
-        throw unsupportedElementType(group); // TODO v0.5.3 implement parseGroup()
+        throw unsupportedElementType(group); // TODO v0.5.4 implement parseGroup()
     }
 
     private ComplexTypeDescriptor parseAttributeGroup(Element group) {
@@ -609,7 +609,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             String elType = XMLUtil.localName(child);
             if ("attribute".equals(elType)) 
                 type.addComponent(parseAttribute(child));
-            else if ("attributeGroup".equals(elType)) { // TODO v0.5.3 map as parent relationship (could be several ones)
+            else if ("attributeGroup".equals(elType)) { // TODO v0.5.4 map as parent relationship (could be several ones)
                 ComplexTypeDescriptor childGroup = parseAttributeGroup(child);
                 for (ComponentDescriptor component : childGroup.getComponents())
                     type.addComponent(component);
@@ -625,7 +625,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     }
 
     private void parseSequence(Element sequence, ComplexTypeDescriptor owner) {
-        logger.debug("parseSequence()"); // TODO v0.5.3 evaluate minCount/maxCount for sequence
+        logger.debug("parseSequence()"); // TODO v0.5.4 evaluate minCount/maxCount for sequence
         Element[] children = XMLUtil.getChildElements(sequence);
         for (Element child : children) {
             String nodeName = localName(child);
