@@ -178,4 +178,8 @@ public class DateGenerator implements Generator<Date> {
         return new Date();
     }
 
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + getMin() + '-' + getMax() + ']';
+    }
 }
