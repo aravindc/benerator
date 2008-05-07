@@ -10,7 +10,7 @@
         <attribute name="ean_code" source="product.ean_code"/>
         <attribute name="price" source="product.price"/>
         <attribute name="items" type="short" min="1" max="27"/>
-        <consumer id="csv" class="org.databene.platform.csv.CSVEntityExporter">
+        <consumer class="org.databene.platform.csv.CSVEntityExporter">
             <property name="uri" value="transactions.csv"/>
             <property name="properties" value="id,ean_code,comment,price,items"/>
         </consumer>
