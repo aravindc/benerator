@@ -36,7 +36,6 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.IOUtil;
-import org.databene.commons.converter.AnyConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -138,10 +137,8 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
                 if (i > 0)
                     printer.print(separator);
                 Object value = entity.getComponent(propertyNames[i]);
-                String s = AnyConverter.convert(value, String.class, datePattern, timestampPattern);
-                if (s == null)
-                	s = "";
-                else if (s.indexOf(separator) >= 0)
+                String s = plainConverter.convert(value);
+                if (s.indexOf(separator) >= 0)
                     s = '"' + s + '"';
                 printer.print(s);
             }
