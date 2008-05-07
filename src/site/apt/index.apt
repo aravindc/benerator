@@ -17,8 +17,7 @@ about databene benerator
 
 news
 
-  <<2008-05-07 benerator release 0.5.3:>> This release fixes all known bugs 
-  and adds an Excel Sheet Exporter.
+  <<2008-05-07 benerator release 0.5.3>> fixes all known bugs and adds an Excel Sheet Exporter.
 
   {{{http://sourceforge.net/project/showfiles.php?group_id=222964}download benerator}}
   
