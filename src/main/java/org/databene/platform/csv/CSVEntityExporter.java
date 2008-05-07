@@ -63,7 +63,6 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
     // attributes ------------------------------------------------------------------------------------------------------
 
     private String uri;
-    private String datePattern;
     private String[] propertyNames;
     private String encoding;
     private char separator;
@@ -113,14 +112,6 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
     public void setUri(String uri) {
         this.uri = uri;
     }
-
-    public String getDatePattern() {
-		return datePattern;
-	}
-
-	public void setDatePattern(String datePattern) {
-		this.datePattern = datePattern;
-	}
 
 	public void setProperties(String attributes) {
         this.propertyNames = StringUtil.tokenize(attributes, ',');
