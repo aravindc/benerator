@@ -6,12 +6,17 @@ summary
 
 changes
 -------
+replaced ComponentFactory concept with ComponentBuilder concept
 
 enhancements
 ------------
 - improved namespace support
+- new method GeneratorUtil.commonTargetTypeOf()
 
 bug fixes
 ---------
 (Find the tracker at http://sourceforge.net/tracker/?group_id=222964&atid=1057386)
 - using entities without descriptor
+- type handling in AlternativeGenerator
+- XMLCreator: Assuring resources are closed in case of an exception
+- TypeGeneratorFactory: createTypeGenerator() ignored uniqueness parameter
