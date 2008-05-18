@@ -34,18 +34,24 @@ package org.databene.model.data;
 public class PartDescriptor extends ComponentDescriptor {
 
     public PartDescriptor(String name) {
-        this(name, null, null);
+        this(name, (TypeDescriptor) null);
     }
     
     public PartDescriptor(String name, String type) {
-        this(name, type, null);
+        this(name, type, null, null, null);
     }
     
     public PartDescriptor(String name, TypeDescriptor localType) {
-        this(name, null, localType);
+        this(name, localType, null, null);
     }
     
-    public PartDescriptor(String name, String type, TypeDescriptor localType) {
+    public PartDescriptor(String name, TypeDescriptor localType, Long minCount, Long maxCount) {
+    	this(name, null, localType, minCount, maxCount);
+    }
+    	
+    public PartDescriptor(String name, String type, TypeDescriptor localType, Long minCount, Long maxCount) {
         super(name, type, localType);
+        setMinCount(minCount);
+        setMaxCount(maxCount);
     }
 }
