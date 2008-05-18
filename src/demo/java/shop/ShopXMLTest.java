@@ -110,7 +110,7 @@ public class ShopXMLTest extends TestCase {
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
-                descriptor, provider.getContext(), new SimpleGenerationSetup());
+                descriptor, false, provider.getContext(), new SimpleGenerationSetup());
         for (int i = 0; i < 10; i++)
             if (generator.available()) {
                 Entity entity = generator.generate();
