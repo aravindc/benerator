@@ -27,13 +27,12 @@
 package org.databene.model.data;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.databene.commons.Composite;
-import org.databene.commons.CompositeFormatter;
-import org.databene.commons.StringUtil;
 import org.databene.commons.collection.ListBasedSet;
+import org.databene.commons.collection.NamedValueList;
 import org.databene.commons.collection.OrderedNameMap;
 
 /**
@@ -45,8 +44,12 @@ import org.databene.commons.collection.OrderedNameMap;
  */
 public class ComplexTypeDescriptor extends TypeDescriptor {
 
-    private Map<String, ComponentDescriptor> componentMap;
+	public static final String __SIMPLE_CONTENT = "__SIMPLE_CONTENT";
+
+    private NamedValueList<ComponentDescriptor> components;
     private Map<String, InstanceDescriptor> variables;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public ComplexTypeDescriptor(String name) {
         this(name, (String) null);
@@ -62,60 +65,44 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
         init();
     }
     
-    protected void init() {
-    	super.init();
-        this.componentMap = new OrderedNameMap<ComponentDescriptor>();
-        this.variables = new OrderedNameMap<InstanceDescriptor>();
-    }
-    
     // component handling ----------------------------------------------------------------------------------------------
 
     public void addComponent(ComponentDescriptor descriptor) {
-        String name = descriptor.getName();
-/*
-        ComponentDescriptor parentsDescriptor = null;
-        if (parent != null)
-            parentsDescriptor = ((EntityDescriptor) parent).getComponent(name);
-        if (parentsDescriptor != null) {
-            if (descriptor.getClass() == parentsDescriptor.getClass())
-                descriptor.setParent(parentsDescriptor);
-            descriptor.setName(parentsDescriptor.getName());
-        }
-*/
-        componentMap.put(name, descriptor);
+        components.add(descriptor.getName(), descriptor);
     }
 
     public ComponentDescriptor getComponent(String name) {
-        ComponentDescriptor descriptor = componentMap.get(name);
-        if (descriptor == null)
-            for (ComponentDescriptor candidate : componentMap.values())
-                if (candidate.getName().equalsIgnoreCase(name)) {
-                    descriptor = candidate;
-                    break;
-                }
+        ComponentDescriptor descriptor = components.someValueOfName(name);
         if (descriptor == null && getParent() != null)
             descriptor = ((ComplexTypeDescriptor)getParent()).getComponent(name);
         return descriptor;
     }
 
-    public Collection<ComponentDescriptor> getComponents() {
-        Set<String> componentNames = componentMap.keySet();
-        Map<String, ComponentDescriptor> tmp = new OrderedNameMap<ComponentDescriptor>();
+    public List<ComponentDescriptor> getComponents() {
+        NamedValueList<ComponentDescriptor> result = NamedValueList.createCaseInsensitiveList();
+        NamedValueList<ComponentDescriptor> parentComponents = NamedValueList.createCaseInsensitiveList();
         if (getParent() != null) {
-            for (ComponentDescriptor d : ((ComplexTypeDescriptor)getParent()).getComponents()) {
-                String name = d.getName();
-                if (!StringUtil.containsIgnoreCase(componentNames, name))
-                    tmp.put(name, d);
+        	parentComponents = ((ComplexTypeDescriptor) getParent()).components;
+			for (ComponentDescriptor pcd : parentComponents.values()) {
+                String name = pcd.getName();
+                ComponentDescriptor ccd = components.someValueOfName(name);
+                if (ccd != null)
+                    result.add(name, ccd);
+                else
+                	result.add(name, pcd);
             }
         }
-        for (ComponentDescriptor d : componentMap.values())
-            tmp.put(d.getName(), d);
-        return tmp.values();
+        for (ComponentDescriptor ccd : components.values()) {
+        	String name = ccd.getName();
+        	if (!parentComponents.containsName(name))
+        		result.add(ccd.getName(), ccd);
+        }
+        return result.values();
     }
 
     public Collection<ComponentDescriptor> getDeclaredComponents() {
-        Set<ComponentDescriptor> declaredDescriptors = new ListBasedSet<ComponentDescriptor>(componentMap.size());
-        for (ComponentDescriptor d : componentMap.values())
+        Set<ComponentDescriptor> declaredDescriptors = new ListBasedSet<ComponentDescriptor>(components.size());
+        for (ComponentDescriptor d : components.values())
             declaredDescriptors.add(d);
         return declaredDescriptors;
     }
@@ -137,29 +124,44 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
         return this;
     }
 
+    protected void init() {
+    	super.init();
+        this.components = new NamedValueList<ComponentDescriptor>(NamedValueList.INSENSITIVE);
+        this.variables = new OrderedNameMap<InstanceDescriptor>();
+    }
+    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        if (componentMap.size() == 0)
+        if (components.size() == 0)
             return super.toString();
-        return new CompositeFormatter(false, false).render(super.toString() + '{', new CompositeAdapter(), "}");
+        //return new CompositeFormatter(false, false).render(super.toString() + '{', new CompositeAdapter(), "}");
+        return getName() + getComponents().toString();
     }
     
     // helper for rendering --------------------------------------------------------------------------------------------
-
+/*
     public class CompositeAdapter implements Composite<ComponentDescriptor> {
 
-        public ComponentDescriptor getComponent(String key) {
-            return componentMap.get(key);
-        }
-
         public void setComponent(String key, ComponentDescriptor value) {
-            componentMap.put(key, value);
+            throw new UnsupportedOperationException();
         }
 
-        public Map<String, ComponentDescriptor> getComponents() {
-            return componentMap;
-        }
+		public ComponentDescriptor getComponent(int index) {
+			return components.getValue(index);
+		}
 
+		public void setComponent(int index, ComponentDescriptor value) {
+			throw new UnsupportedOperationException("Not supported");
+		}
+
+		public int size() {
+			return components.size();
+		}
+
+		public List<ComponentDescriptor> getComponents() {
+			return components.values();
+		}
     }
+    */
 }
