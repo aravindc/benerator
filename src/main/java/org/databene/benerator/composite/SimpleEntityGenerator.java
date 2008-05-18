@@ -27,6 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.Assert;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -41,6 +42,7 @@ public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
     private ComplexTypeDescriptor descriptor;
 
     public SimpleEntityGenerator(ComplexTypeDescriptor descriptor) {
+    	Assert.notNull(descriptor, "descriptor");
         this.descriptor = descriptor;
     }
 
