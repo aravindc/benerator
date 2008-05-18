@@ -26,9 +26,6 @@
 
 package org.databene.model.data;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.operation.AndOperation;
 import org.databene.commons.operation.MaxOperation;
@@ -61,7 +58,6 @@ public class InstanceDescriptor extends FeatureDescriptor {
 
     private String typeName;
     private TypeDescriptor localType;
-    private Map<String, Object> psInfo;
 
     public InstanceDescriptor(String name) {
         this(name, null, null);
@@ -79,7 +75,6 @@ public class InstanceDescriptor extends FeatureDescriptor {
         super(name);
         this.typeName = typeName;
         this.localType = localType;
-        this.psInfo = new HashMap<String, Object>();
 
         // restrictions
         addRestriction(UNIQUE,        Boolean.class, false, new OrOperation());
@@ -92,16 +87,6 @@ public class InstanceDescriptor extends FeatureDescriptor {
         addConfig(COUNT_VARIATION1,   Long.class,         null);
         addConfig(COUNT_VARIATION2,   Long.class,         null);
         addConfig(NULL_QUOTA,         Double.class,       null);
-    }
-
-    // ps operations ---------------------------------------------------------------------------------------------------
-
-    public Object getPSInfo(String name) {
-        return psInfo.get(name);
-    }
-    
-    public void setPSInfo(String name, String value) {
-        psInfo.put(name, value);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
