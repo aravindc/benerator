@@ -134,7 +134,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         return (String[]) getDetailValue(VALUES);
     }
 
-    public void setValues(String[] values) {
+    public void setValues(String... values) {
         setDetailValue(VALUES, values);
     }
 
@@ -287,6 +287,11 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     }
 
     // literal construction helpers ------------------------------------------------------------------------------------
+    
+    public FeatureDescriptor withValues(String... values) {
+    	this.setValues(values);
+    	return this;
+    }
 /*
     public FeatureDescriptor withParent(DefaultFeatureDescriptor parent) {
         this.parent = parent;
