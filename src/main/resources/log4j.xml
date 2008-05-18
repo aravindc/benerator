@@ -69,6 +69,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.model">
+       <priority value="info"/>
+    </category>
+
     <category name="org.databene.SQL">
        <priority value="info"/>
     </category>
