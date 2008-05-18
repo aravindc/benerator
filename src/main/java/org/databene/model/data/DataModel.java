@@ -29,6 +29,8 @@ package org.databene.model.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -38,6 +40,8 @@ import org.databene.commons.ConfigurationError;
  * @author Volker Bergmann
  */
 public class DataModel {
+	
+	private Log logger = LogFactory.getLog(DataModel.class);
     
     private static final DataModel defaultInstance = new DataModel();
 
@@ -61,39 +65,43 @@ public class DataModel {
     public TypeDescriptor getTypeDescriptor(String typeId) {
     	if (typeId == null)
     		return null;
-        String ns = null;
+        String namespace = null;
         String name = typeId;
         if (typeId.contains(":")) {
             int i = typeId.indexOf(':');
-            ns = typeId.substring(0, i);
+            namespace = typeId.substring(0, i);
             name = typeId.substring(i + 1);
         }
-        
-        if (ns != null) {
-            DescriptorProvider provider = providers.get(ns);
-            if (provider == null)
-                throw new ConfigurationError("No provider found for namespace: " + ns);
-            // first, search case-sensitive
-            TypeDescriptor typeDescriptor = provider.getTypeDescriptor(name);
-            if (typeDescriptor != null)
-                return typeDescriptor;
-            else {
-                // not found yet, try it case-insensitive
-                return searchCaseInsensitive(provider, name);
+        return getTypeDescriptor(namespace, name);
+    }
+    
+    public TypeDescriptor getTypeDescriptor(String namespace, String name) {
+    	if (name == null)
+    		return null;
+        if (namespace != null) {
+            DescriptorProvider provider = providers.get(namespace);
+            if (provider != null) {
+	            // first, search case-sensitive
+	            TypeDescriptor typeDescriptor = provider.getTypeDescriptor(name);
+	            if (typeDescriptor != null)
+	                return typeDescriptor;
+	            else {
+	                // not found yet, try it case-insensitive
+	                return searchCaseInsensitive(provider, name);
+	            }
             }
-        } else {
-            // first, search case-sensitive
-            for (DescriptorProvider provider : providers.values()) {
-                TypeDescriptor descriptor = provider.getTypeDescriptor(name);
-                if (descriptor != null)
-                    return descriptor;
-            }
-            // not found yet, try it case-insensitive
-            for (DescriptorProvider provider : providers.values()) {
-                TypeDescriptor descriptor = searchCaseInsensitive(provider, name);
-                if (descriptor != null)
-                    return descriptor;
-            }
+        }
+        // first, search case-sensitive
+        for (DescriptorProvider provider : providers.values()) {
+            TypeDescriptor descriptor = provider.getTypeDescriptor(name);
+            if (descriptor != null)
+                return descriptor;
+        }
+        // not found yet, try it case-insensitive
+        for (DescriptorProvider provider : providers.values()) {
+            TypeDescriptor descriptor = searchCaseInsensitive(provider, name);
+            if (descriptor != null)
+                return descriptor;
         }
         return null;
     }
@@ -119,6 +127,7 @@ public class DataModel {
     }
 
     private void validate(TypeDescriptor type) {
+    	logger.debug("validating " + type);
         if (type instanceof SimpleTypeDescriptor) {
             validate((SimpleTypeDescriptor) type);
         } else if (type instanceof ComplexTypeDescriptor) {
