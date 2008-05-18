@@ -24,51 +24,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.wrapper.CardinalGenerator;
-import org.databene.commons.ArrayUtil;
+import org.databene.benerator.wrapper.IdGenerator;
+import org.databene.model.data.Entity;
 
 /**
- * Creates a stochastic number of instances of a type. The number of elements is determined by the values 
- * minCount, maxCount, countDistribution, countVariation1 and countVariation2. 
- * If the number of items is not one, an array of respective size is returned, 
- * otherwise a single object.<br/><br/>
- * Created: 06.03.2008 15:43:54
- * @since 0.5.0
+ * Builds a plain (atomic) component that is supposed to have a name.<br/><br/>
+ * Created at 09.05.2008 07:20:43
+ * @since 0.5.4
  * @author Volker Bergmann
  */
-public class ComponentGenerator<S> extends CardinalGenerator<S, Object> {
-    
-    public ComponentGenerator(Generator<S> source) {
-        super(source);
-    }
-    
-    public Class<Object> getGeneratedType() {
-        return Object.class;
-    }
+public class PlainComponentBuilder implements ComponentBuilder {
+	
+	private String name;
+	private Generator<? extends Object> source;
+	
+	public PlainComponentBuilder(String name, Generator<? extends Object> source) {
+		this.name = name;
+		this.source = source;
+	}
 
-    public Object generate() {
-        int count = countGenerator.generate().intValue();
-        if (count == 0)
-            return new Object[0];
-        if (count == 1)
-            return source.generate();
-        else {
-            Object[] result = ArrayUtil.newInstance(source.getGeneratedType(), count);
-            for (int i = 0; i < count; i++) {
-                if (source.available())
-                    result[i] = source.generate();
-                else {
-                    // source generator went unavailable, 
-                    // let's repack generated stuff to an array of appropriate length
-                    return ArrayUtil.copyOfRange(result, 0, i);
-                }
-            }
-            return result;
-        }
-    }
+	public String getName() {
+		return name;
+	}
+	
+	public void buildComponentFor(Entity entity) {
+		entity.setComponent(name, source.generate());
+	}
+	
+	public void close() {
+        if (!(source instanceof IdGenerator))
+        	source.close();
+	}
 
+	public boolean available() {
+		return source.available();
+	}
+
+	public void validate() {
+		source.validate();
+	}
+
+	public void reset() {
+		source.reset();
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + name + ',' + source + ']';
+	}
 }
