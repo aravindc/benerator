@@ -26,26 +26,31 @@
 
 package org.databene.platform.xml;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Map;
-import java.util.Stack;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.databene.commons.ArrayFormat;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.IOUtil;
+import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.InstanceDescriptor;
-import org.databene.model.data.TypeDescriptor;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Writes Entities to an XML file.<br/><br/>
@@ -59,7 +64,6 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     
     // defaults --------------------------------------------------------------------------------------------------------
     
-    private static String DEFAULT_INDENT_STEP = "\t";
     private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
     private static final String DEFAULT_URI       = "export.xml";
     
@@ -70,10 +74,8 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     private String uri;
     private String encoding;
 
-    private PrintWriter printer;
-    private String indent;
-    private Stack<Boolean> childFlag;
-    private XMLPath path;
+    private OutputStream out;
+    private TransformerHandler handler;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -88,9 +90,6 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     public XMLEntityExporter(String uri, String encoding) {
         this.uri = uri;
         this.encoding = encoding;
-        this.indent = "";
-        this.childFlag = new Stack<Boolean>();
-        this.path = null;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -112,136 +111,95 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     public void startConsuming(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("startConsuming(" + entity + ')');
-        String entityName = entity.getName();
-        if (path == null) {
-            path = new XMLPath(entityName);
-        }
-        do {
-            InstanceDescriptor[] allowedEntities = path.allowedChildren();
-            if (ArrayUtil.isEmpty(allowedEntities)) {
-                renderElementStart(entity);
-                return;
-            }
-            boolean renderedSimple = false;
-            for (InstanceDescriptor allowedEntity : allowedEntities) {
-                String allowedName = allowedEntity.getName();
-                if (allowedName.equalsIgnoreCase(entityName)) {
-                    renderElementStart(entity);
-                    return;
-                } else if (path.isKept(allowedName)) {
-                    renderSimpleElement(allowedName, path.unkeep(allowedName));
-                    renderedSimple = true;
-                }
-            }
-            if (!renderedSimple)
-            	throw new ConfigurationError("Found '" + entityName + "' while expecting one of these: " + ArrayFormat.format(allowedEntities));
-        } while (true);
+        if (out == null)
+            initHandler();
+        renderElementStart(entity);
     }
 
     @Override
     public void finishConsuming(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("finishConsuming(" + entity + ')');
-        InstanceDescriptor[] allowedEntities;
-        boolean unkept = false;
-        do {
-            allowedEntities = path.allowedChildren();
-	        for (InstanceDescriptor allowedEntity : allowedEntities) {
-	            String allowedName = allowedEntity.getName();
-	            if (path.isKept(allowedName)) {
-	                renderSimpleElement(allowedName, path.unkeep(allowedName));
-	                unkept = true;
-	            }
-	        }
-        } while (unkept && allowedEntities.length > 0 && path.hasKepts());
-        if (path.hasKepts())
-        	throw new IllegalStateException("Some components could not be exported: " + path.getKepts());
-        Boolean hadChildren = childFlag.pop();
-        indent = indent.substring(0, indent.length() - DEFAULT_INDENT_STEP.length());
-        if (hadChildren)
-            printer.println(indent + "</" + entity.getName() + ">");
-        else
-            printer.println("/>");
-        super.finishConsuming(entity);
-        path.closeElement(entity);
+        try {
+			handler.endElement("", "", entity.getName());
+		} catch (SAXException e) {
+			throw new ConfigurationError("Error in processing element: " + entity, e);
+		}
     }
 
     public void flush() {
-        if (printer != null)
-            printer.flush();
+       	IOUtil.flush(out);
     }
 
     public void close() {
-        if (printer != null) {
-            printer.close();
-            printer = null;
+        if (out != null) { 
+            try {
+				handler.endDocument();
+				handler = null;
+			} catch (SAXException e) {
+				throw new ConfigurationError("Error closing XML file.", e);
+			} finally {
+				IOUtil.close(out);
+			}
         }
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
     
-    private void renderSimpleElement(String name, Object value) {
-        markChildren();
-        path.emptyElement(name);
-        printer.println(indent + '<' + name + '>' + converter.convert(value) + "</" + name + '>');
-    }
-
-    private void markChildren() {
-        if (!childFlag.isEmpty()) {
-            Boolean hasSiblings = childFlag.pop();
-            if (!hasSiblings)
-                printer.println(">");
-            childFlag.push(Boolean.TRUE);
-        }
-    }
+	private void renderSimpleType(Object value) throws SAXException {
+		String s = converter.convert(value);
+		char[] cc = StringUtil.getChars(s);
+		handler.characters(cc, 0, cc.length);
+	}
 
     private void renderElementStart(Entity entity) {
         try {
-            path.openElement(entity);
-            if (printer == null)
-                initPrinter();
-            markChildren();
-            childFlag.push(Boolean.FALSE);
-            printer.print(indent + '<' + entity.getName());
-            renderAttributes(entity);
-            indent += DEFAULT_INDENT_STEP;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void renderAttributes(Entity entity) {
-        ComplexTypeDescriptor descriptor = entity.getDescriptor();
-        for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (value != null && hasSimpleType(value)) 
-                if (isXmlElement(descriptor, key))
-                    path.keep(key, value);
-                else
-                    printer.print(' ' + key + "=\"" + converter.convert(value) + '"');
-        }
+            AttributesImpl atts = new AttributesImpl();
+            for (Map.Entry<String, Object> entry : entity.getComponents().entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (value == null)
+                	continue;
+                if (key != null && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(key) 
+                		&& value != null && hasSimpleType(value)) 
+               		atts.addAttribute("", "", entry.getKey(), "CDATA", converter.convert(value));
+            }
+            handler.startElement("", "", entity.getName(), atts);
+            Object content = entity.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
+            if (content != null) {
+            	renderSimpleType(content);
+            }
+        } catch (SAXException e) {
+			throw new ConfigurationError("Error in processing element: " + entity, e);
+		}
     }
 
     private boolean hasSimpleType(Object value) {
-        return !(value instanceof Entity) && !value.getClass().isArray();
+    	return (!value.getClass().isArray() && !(value instanceof Entity));
     }
 
-    private boolean isXmlElement(ComplexTypeDescriptor elementDescriptor, String componentName) {
-        ComponentDescriptor componentDescriptor = elementDescriptor.getComponent(componentName);
-        if (componentDescriptor == null)
-            return false; // assume it's an attribute (applicable for e.g. xmlns)
-        TypeDescriptor type = componentDescriptor.getType();
-        if (type instanceof ComplexTypeDescriptor)
-            return true;
-        Object style = componentDescriptor.getPSInfo(XMLSchemaDescriptorProvider.XML_REPRESENTATION);
-        return "element".equals(style);
-    }
-    
-    private void initPrinter() throws IOException {
+    private void initHandler() {
         logger.debug("Initializing " + uri);
         // create file
-        printer = XMLUtil.createXMLFile(uri, encoding);
+        try {
+			// create file and write header
+			SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+			handler = tf.newTransformerHandler();
+			
+			Transformer serializer = handler.getTransformer();
+			serializer.setOutputProperty(OutputKeys.ENCODING, encoding);
+			serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+        	out = new FileOutputStream(uri);
+			handler.setResult(new StreamResult(out));
+			handler.startDocument();
+		} catch (TransformerConfigurationException e) {
+			throw new ConfigurationError(e);
+		} catch (SAXException e) {
+			throw new ConfigurationError("Error in initializing XML file", e);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Error writing file " + uri, e);
+		}
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
