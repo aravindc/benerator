@@ -1,0 +1,17 @@
+release notes benerator 0.5.4
+=============================
+
+summary
+-------
+
+changes
+-------
+
+enhancements
+------------
+- improved namespace support
+
+bug fixes
+---------
+(Find the tracker at http://sourceforge.net/tracker/?group_id=222964&atid=1057386)
+- using entities without descriptor
