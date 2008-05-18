@@ -28,12 +28,15 @@ package org.databene.platform.xml;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.context.DefaultContext;
+import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 import junit.framework.TestCase;
@@ -42,12 +45,27 @@ import junit.framework.TestCase;
  * Tests the XMLDescriptorProvider.<br/><br/>
  * Created: 26.02.2008 21:05:23
  * @since 0.5.0
+
  * @author Volker Bergmann
  */
-public class XMLDescriptorProviderTest extends TestCase {
+public class XMLSchemaDescriptorProviderTest extends TestCase {
     
-    private static final String NESTING_TEST_FILE = "org/databene/platform/xml/simple_type_element_test.xsd";
+    private static final String SIMPLE_ELEMENT_TEST_FILE = "org/databene/platform/xml/simple-element-test.xsd";
+    private static final String NESTING_TEST_FILE = "org/databene/platform/xml/nesting-test.xsd";
     private static final String ANNOTATION_TEST_FILE = "org/databene/platform/xml/annotation-test.xsd";
+    private static final String CHOICE_TEST_FILE = "org/databene/platform/xml/choice-test.xsd";
+
+    public void testSimpleTypeElement() throws IOException {
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, new DefaultContext());
+        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+        // check root
+        assertNotNull(rootDescriptor);
+        assertEquals(2, rootDescriptor.getComponents().size());
+        // check inline 
+        assertComplexComponentWithSimpleContent("inline", rootDescriptor);
+        // check external
+        assertComplexComponentWithSimpleContent("external", rootDescriptor);
+    }
 
     public void testNesting() throws IOException {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new DefaultContext());
@@ -99,4 +117,40 @@ public class XMLDescriptorProviderTest extends TestCase {
         g.generate();
         g.generate();
     }
+
+    public void testChoice() throws IOException {
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, new DefaultContext());
+        ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
+        // check root
+        assertNotNull(rootDescriptor);
+        List<ComponentDescriptor> components = rootDescriptor.getComponents();
+		assertEquals(2, components.size());
+        
+        // check choice a/b
+        ComponentDescriptor choiceAB = components.get(0);
+        assertNotNull(choiceAB);
+        assertEquals(1, choiceAB.getMinCount().intValue());
+        assertEquals(1, choiceAB.getMaxCount().intValue());
+        AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getType();
+        assertEquals(2, choiceABType.getComponents().size());
+        
+        // check choice x/y/z
+        ComponentDescriptor choiceXYZ = components.get(1);
+        assertNotNull(choiceXYZ);
+        assertEquals(0, choiceXYZ.getMinCount().intValue());
+        assertEquals(2, choiceXYZ.getMaxCount().intValue());
+        AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getType();
+        assertEquals(3, choiceXYZType.getComponents().size());
+    }
+
+	private void assertComplexComponentWithSimpleContent(String name, ComplexTypeDescriptor rootDescriptor) {
+		ComponentDescriptor stComponent = rootDescriptor.getComponent(name);
+        assertNotNull(stComponent);
+        assertTrue(stComponent instanceof PartDescriptor);
+        ComplexTypeDescriptor stType = (ComplexTypeDescriptor) stComponent.getType();
+		ComponentDescriptor content = stType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
+        assertNotNull(content);
+        SimpleTypeDescriptor contentType = (SimpleTypeDescriptor) content.getType();
+        assertEquals("string", contentType.getPrimitiveType().getName());
+	}
 }
