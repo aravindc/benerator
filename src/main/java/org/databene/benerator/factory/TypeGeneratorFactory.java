@@ -72,7 +72,7 @@ public class TypeGeneratorFactory {
         if (descriptor instanceof SimpleTypeDescriptor)
             return SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) descriptor, unique, context, setup);
         else if (descriptor instanceof ComplexTypeDescriptor)
-            return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, context, setup);
+            return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context, setup);
         else
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
     }
