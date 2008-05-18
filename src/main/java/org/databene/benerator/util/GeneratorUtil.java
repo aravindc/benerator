@@ -57,4 +57,17 @@ public class GeneratorUtil {
 		}
 		return list;
 	}
+	
+    public static <T> Class<T> commonTargetTypeOf(Generator<T>... sources) {
+    	if (sources.length == 0)
+    		return (Class<T>) Object.class;
+    	Class<T> type = sources[0].getGeneratedType();
+    	for (int i = 1; i < sources.length; i++) {
+    		Class<T> tmp = sources[i].getGeneratedType();
+    		if (tmp.isAssignableFrom(type))
+    			type = tmp;
+    	}
+		return type;
+	}
+
 }
