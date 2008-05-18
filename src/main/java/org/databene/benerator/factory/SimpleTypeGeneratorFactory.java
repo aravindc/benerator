@@ -389,6 +389,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private SimpleTypeGeneratorFactory() {}
     
-    private static final Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
+    private static final Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
 
 }
