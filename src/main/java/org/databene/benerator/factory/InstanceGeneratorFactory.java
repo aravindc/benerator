@@ -78,10 +78,12 @@ public class InstanceGeneratorFactory {
         if (generator == null) {
             boolean unique = isUnique(descriptor);
             TypeDescriptor type = descriptor.getType();
-            if (type instanceof ComplexTypeDescriptor)
-                generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) type, context, setup);
+            if (type instanceof SimpleTypeDescriptor)
+				generator = SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) type, unique, context, setup);
+			else if (type instanceof ComplexTypeDescriptor)
+        		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) type, unique, context, setup);
             else
-                generator = SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) type, unique, context, setup);
+                throw new UnsupportedOperationException("Not supported type: " + type.getClass());
             // by now, we must have created a generator
             if (generator == null)
                 throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
@@ -91,7 +93,7 @@ public class InstanceGeneratorFactory {
         return generator;
     }
     
-    protected static boolean isUnique(InstanceDescriptor descriptor) {
+	protected static boolean isUnique(InstanceDescriptor descriptor) {
         Boolean unique = descriptor.isUnique();
         if (unique == null)
             unique = false;
