@@ -45,10 +45,15 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public AlternativeGenerator() {
-        this(null);
+        this((Class<E>) Object.class);
     }
 
     /** Initializes the generator to a collection of source generators */
+    public AlternativeGenerator(Generator<E>... sources) {
+        this(GeneratorUtil.commonTargetTypeOf(sources));
+    }
+
+	/** Initializes the generator to a collection of source generators */
     public AlternativeGenerator(Class<E> targetType, Generator<E>... sources) {
         super(sources);
         this.targetType = targetType;
