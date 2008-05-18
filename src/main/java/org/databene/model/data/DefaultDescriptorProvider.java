@@ -45,7 +45,7 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
     private static Log logger = LogFactory.getLog(DefaultDescriptorProvider.class);
     
     protected Map<String, TypeDescriptor> typeMap;
-    private final String id;
+    protected String id;
     private boolean redefinable;
     
     public DefaultDescriptorProvider(String id) {
@@ -62,7 +62,7 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
         if (!redefinable && typeMap.get(descriptor.getName()) != null)
             throw new ConfigurationError("Type has already been defined: " + descriptor.getName());
         typeMap.put(descriptor.getName(), descriptor);
-        logger.debug("added type descriptor: " + descriptor);
+        logger.debug("added " + descriptor.getClass().getSimpleName() + ": " + descriptor);
     }
     
     public String getId() {
