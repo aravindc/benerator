@@ -26,19 +26,13 @@
 
 package org.databene.benerator.factory;
 
-import java.util.Set;
-
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.primitive.BooleanGenerator;
-import org.databene.benerator.primitive.number.distribution.ConstantFunction;
-import org.databene.benerator.Generator;
-import org.databene.benerator.factory.ComponentGeneratorFactory;
-import org.databene.commons.CollectionUtil;
-import org.databene.commons.ConfigurationError;
+import org.databene.benerator.composite.ComponentBuilder;
+import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.commons.context.DefaultContext;
+import org.databene.model.data.AlternativeGroupDescriptor;
+import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 
@@ -47,15 +41,33 @@ import org.databene.model.data.SimpleTypeDescriptor;
  * <br/>
  * Created: 10.08.2007 12:40:41
  */
-public class ComponentGeneratorFactoryTest extends TestCase {
-
-    private static Log logger = LogFactory.getLog(ComponentGeneratorFactory.class);
+public class ComponentBuilderFactoryTest extends TestCase {
+/*
+    private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
     private static Set<String> componentFeatures = CollectionUtil.toSet(
             "type", "unique", "nullable", "minCount", "maxCount", "count", "nullQuota");
     
     private static int testCount = 0;
+*/
+    public void testAlternative() {
+    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
+    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
+		alternativeType.addComponent(new PartDescriptor("a", typeA));
+    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
+		alternativeType.addComponent(new PartDescriptor("b", typeB));
+		DefaultContext context = new DefaultContext();
+		SimpleGenerationSetup setup = new SimpleGenerationSetup();
+		PartDescriptor part = new PartDescriptor(null, alternativeType);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);
+		Entity entity = new Entity("Entity");
+		builder.buildComponentFor(entity);
+		System.out.println(entity);
+    }
+    
+    // TODO v0.5.5 add tests
 
+/*
     public void testGenerator() {
         createGenerator("test", "generator", BooleanGenerator.class.getName());
         createGenerator("test",
@@ -304,15 +316,15 @@ public class ComponentGeneratorFactoryTest extends TestCase {
                 "max", "1",
                 "distribution", "cumulated");
     }
-
+*/
     // private helpers -------------------------------------------------------------------------------------------------
-
-    private Generator createGenerator(String name, String ... featureDetails) {
+/*
+    private ComponentBuilder createGenerator(String name, String ... featureDetails) {
         GenerationSetup setup = new SimpleGenerationSetup();
         logger.debug("Test #" + (++testCount));
         if (featureDetails.length % 2 != 0)
             throw new ConfigurationError("Illegal setup: need an even number of parameters (name/value pairs)");
-        SimpleTypeDescriptor type = new SimpleTypeDescriptor(name, null);
+        SimpleTypeDescriptor type = new SimpleTypeDescriptor(name, (String) null);
         PartDescriptor part = new PartDescriptor(name, type);
         for (int i = 0; i < featureDetails.length; i += 2)
             if (componentFeatures.contains(featureDetails[i]))
@@ -322,11 +334,14 @@ public class ComponentGeneratorFactoryTest extends TestCase {
                     part.setDetailValue(featureDetails[i], featureDetails[i + 1]);
             else
                 type.setDetailValue(featureDetails[i], featureDetails[i + 1]);
-        Generator generator = ComponentGeneratorFactory.createComponentGenerator(part, new DefaultContext(), setup);
+        ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, new DefaultContext(), setup);
+        Entity entity = new Entity("Entity");
         for (int i = 0; i < 10; i++) {
-            Object value = generator.generate();
-            logger.debug(value);
+            builder.buildComponentFor(entity);
+            logger.debug(entity.getComponent(name));
+            System.out.println(entity.getComponent(name));
         }
-        return generator;
+        return builder;
     }
+*/
 }

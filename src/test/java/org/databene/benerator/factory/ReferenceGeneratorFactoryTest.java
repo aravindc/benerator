@@ -28,7 +28,7 @@ package org.databene.benerator.factory;
 
 import junit.framework.TestCase;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.TypedIterable;
@@ -71,24 +71,29 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 
 	public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
-		Generator<? extends Object> generator = createGenerator(ref);
+		ref.setCount(1L);
+		ComponentBuilder generator = createGenerator(ref);
 		assertTrue(generator != null);
 		assertTrue(generator.available());
-		assertEquals("Alice", generator.generate());
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals("Alice", entity.get("ref"));
 	}
-	
+
 	public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(2L);
-		Generator<? extends Object> generator = createGenerator(ref);
+		ComponentBuilder generator = createGenerator(ref);
 		assertTrue(generator != null);
 		assertTrue(generator.available());
-		String[] product = (String[]) generator.generate();
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		String[] product = (String[]) entity.get("ref");
 		assertEquals(2, product.length);
 		assertEquals("Alice", product[0]);
 		assertEquals("Bob", product[1]);
 	}
-	
+
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private ReferenceDescriptor createDescriptor(String refName, String targetType, String source) {
@@ -99,13 +104,13 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		return descriptor;
 	}
 
-	private Generator<? extends Object> createGenerator(ReferenceDescriptor ref) {
+	private ComponentBuilder createGenerator(ReferenceDescriptor ref) {
 		DefaultContext context = new DefaultContext();
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
 		SimpleGenerationSetup setup = new SimpleGenerationSetup();
-		return ReferenceGeneratorFactory.createReferenceGenerator(ref, context, setup);
+		return ComponentBuilderFactory.createReferenceGenerator(ref, context, setup);
 	}
 	
 	public static class StorageSystemMock extends DefaultDescriptorProvider implements StorageSystem {
