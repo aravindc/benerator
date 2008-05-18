@@ -60,7 +60,7 @@ public class Entity implements Composite<Object> {
     }
 
     public String getName() {
-        return descriptor.getName();
+        return (descriptor != null ? descriptor.getName() : null);
     }
 
     public ComplexTypeDescriptor getDescriptor() {
