@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/demo/resources"/>
-	<classpathentry kind="src" path="import/main/resources"/>
-	<classpathentry kind="src" path="import/main/java"/>
 	<classpathentry kind="src" path="src/main/script"/>
 	<classpathentry kind="src" path="src/site/apt"/>
 	<classpathentry kind="src" path="src/demo/java"/>
@@ -17,7 +15,7 @@
 	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/log4j/log4j/1.2.14/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/junit/junit/3.8.2/junit-3.8.2.jar"/>
-	<classpathentry kind="lib" path="C:/dev/jdk1.5.0_09/jre/lib/rt.jar"/>
+	<classpathentry kind="lib" path="C:/dev/jdk1.5.0_09/jre/lib/rt.jar" sourcepath="C:/dev/jdk1.5.0_09/src.zip"/>
 	<classpathentry kind="lib" path="C:/dev/hsqldb/lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="C:/dev/mysql-connector-java-5.0.3/mysql-connector-java-5.0.3-bin.jar"/>
 	<classpathentry kind="lib" path="C:/dev/oracle/ojdbc14.jar"/>
@@ -27,5 +25,8 @@
 	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc.jar"/>
 	<classpathentry kind="lib" path="C:/dev/Microsoft SQL Server/sqljdbc_1.1/deu/sqljdbc.jar"/>
 	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/org/easymock/easymock/2.0/easymock-2.0.jar"/>
+	<classpathentry kind="var" path="AGITAR_TEST_LIB"/>
+	<classpathentry kind="var" path="AGITAR_MOCK_OBJECTS5"/>
+	<classpathentry kind="lib" path="C:/dev/poi-3.0.2-FINAL/poi-3.0.2-FINAL-20080204.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
