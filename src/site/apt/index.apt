@@ -4,14 +4,21 @@
 
 about databene benerator
 
-  <<benerator>> is a framework for creating realistic and valid high-volume test data, used for
-  testing (unit/integration/load) and showcase setup.
+  <<benerator>> supports you in performing realistic load and performance tests. 
+  It is a framework for generating realistic and valid high-volume 
+  test data for your system under test (avoiding the Datalite anti-pattern).
+  benerator actually reduces the amount of time for creating a useful data setup 
+  of a medium sized enterprise application or XML Schema from 2-4 weeks to 1-2 days!
 
-  Metadata constraints are imported from systems and/or configuration files. Data can be imported from
-  and exported to files and systems, anonymized or generated from scratch. Domain packages provide
-  reusable generators for creating domain-specific data as names and addresses internationalizable
-  in language and region (via nestable datasets). It is strongly customizable with plugins and configuration options.
-
+  Since data representation and constraints are platform independent, benerator 
+  can provide you with a rich set of plugin interfaces for custom extensions and 
+  mappings, allowing virtually any platform to be targeted with data generation.
+  
+  Out of the box benerator supports database systems, XML, XML Schema, CSV, Flat 
+  Files and Excel(TM) sheets. Domain packages provide reusable generators for creating 
+  domain-specific data as names and addresses internationalizable in language and 
+  region (via nestable datasets). 
+  
   <<benerator>> is released under a {{{license.html}dual license}} - GPL and commercial.
   For quick details check the {{{faq.html#license_intention}FAQ}}.
 
