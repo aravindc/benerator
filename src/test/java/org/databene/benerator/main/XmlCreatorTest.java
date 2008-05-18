@@ -41,7 +41,7 @@ import org.w3c.dom.Document;
  */
 public class XmlCreatorTest extends TestCase {
 
-	private static final String SCHEMA_FILE = "org/databene/platform/xml/simple_type_element_test.xsd";
+	private static final String SCHEMA_FILE = "org/databene/platform/xml/simple-element-test.xsd";
 
 	public void testSimpleTypeElement() throws IOException {
         createXMLFile(SCHEMA_FILE, "root", "target/" + getClass().getSimpleName() + ".xml");
