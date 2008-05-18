@@ -62,9 +62,13 @@ public class XmlCreator {
         logParams(schemaUri, root, pattern, fileCount);
         long start = System.currentTimeMillis();
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
-        for (long i = 0; i < fileCount && fileGenerator.available(); i++) {
-            File file = fileGenerator.generate();
-            logger.info("created file: " + file);
+        try {
+	        for (long i = 0; i < fileCount && fileGenerator.available(); i++) {
+	            File file = fileGenerator.generate();
+	            logger.info("created file: " + file);
+	        }
+        } finally {
+        	fileGenerator.close();
         }
         long duration = System.currentTimeMillis() - start;
         logger.info("Finished after " + duration + " ms");
