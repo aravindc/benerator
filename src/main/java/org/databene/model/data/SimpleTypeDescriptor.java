@@ -60,11 +60,16 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     private PrimitiveType primitiveType = null;
 
     public SimpleTypeDescriptor(String name) {
-    	this(name, null);
+    	this(name, (String) null);
     }
     
-    public SimpleTypeDescriptor(String name, String parent) {
-        super(name, parent);
+    public SimpleTypeDescriptor(String name, SimpleTypeDescriptor parent) {
+    	this(name, parent.getName());
+    	this.parent = parent;
+    }
+    
+    public SimpleTypeDescriptor(String name, String parentName) {
+        super(name, parentName);
         // number setup
         addRestriction(MIN,             String.class,   "1", new MaxNumberLiteral());
         addRestriction(MAX,             String.class,   "9", new MinNumberLiteral());
