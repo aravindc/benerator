@@ -181,7 +181,7 @@ public class ModelParser {
 
     public SimpleTypeDescriptor parseSimpleType(Element element, Context context) {
         assertElementName(element, "type");
-        return parseSimpleType(element, new SimpleTypeDescriptor(null, null), context);
+        return parseSimpleType(element, new SimpleTypeDescriptor(null, (String) null), context);
     }
 
     public SimpleTypeDescriptor parseSimpleType(
