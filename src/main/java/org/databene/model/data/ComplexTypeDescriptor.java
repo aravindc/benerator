@@ -68,7 +68,10 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
     // component handling ----------------------------------------------------------------------------------------------
 
     public void addComponent(ComponentDescriptor descriptor) {
-        components.add(descriptor.getName(), descriptor);
+    	String componentName = descriptor.getName();
+		if (parent != null && ((ComplexTypeDescriptor)parent).getComponent(componentName) != null) // TODO possibly this should be placed in the benerator parser
+			descriptor.setParent(((ComplexTypeDescriptor)parent).getComponent(componentName));
+        components.add(componentName, descriptor);
     }
 
     public ComponentDescriptor getComponent(String name) {
