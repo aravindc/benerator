@@ -278,7 +278,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     public TypedIterable<Entity> queryEntities(String type, String selector) {
         if (logger.isDebugEnabled())
-            logger.debug("getEntities(" + type + ")");
+            logger.debug("queryEntities(" + type + ")");
     	Connection connection = getThreadContext().connection;
     	String sql = null;
     	if (StringUtil.isEmpty(selector))
@@ -315,6 +315,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         DBColumn[] columns = pkConstraint.getColumns();
         String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
+        if (pkColumnNames.length == 0)
+        	throw new ConfigurationError("Cannot create reference to table " + tableName + " since it does not define a primary key");
         String query = "select " + ArrayFormat.format(pkColumnNames) + " from " + tableName;
         if (selector != null)
             query += " where " + selector;
@@ -437,7 +439,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         String tableName = table.getName();
         if (tableName.startsWith("BIN$"))
             return;
-        ComplexTypeDescriptor td = new ComplexTypeDescriptor(tableName);
+        ComplexTypeDescriptor complexType = new ComplexTypeDescriptor(tableName);
+        
         // process foreign keys
         for (DBForeignKeyConstraint constraint : table.getForeignKeyConstraints()) {
             List<DBForeignKeyColumn> foreignKeyColumns = constraint.getForeignKeyColumns();
@@ -453,7 +456,10 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                         abstractType,
                         targetTable.getName());
                 descriptor.getLocalType(false).setSource(id);
-                td.addComponent(descriptor); // overwrite attribute descriptor
+                descriptor.setMinCount(1L);
+                descriptor.setMaxCount(1L);
+                descriptor.setNullable(foreignKeyColumn.getForeignKeyColumn().isNullable());
+                complexType.addComponent(descriptor); // overwrite attribute descriptor
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
                 logger.error("Not implemented: Don't know how to handle composite foreign keys");
@@ -464,7 +470,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             if (logger.isDebugEnabled())
                 logger.debug("parsing column: " + column);
             String columnName = column.getName();
-            if (td.getComponent(columnName) != null)
+            if (complexType.getComponent(columnName) != null)
                 continue; // skip columns that were already parsed (fk)
             String columnId = table.getName() + '.' + columnName;
             if (column.isVersionColumn()) {
@@ -498,10 +504,10 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 }
             }
             logger.debug("parsed attribute " + columnId + ": " + descriptor);
-            td.addComponent(descriptor);
+            complexType.addComponent(descriptor);
         }
 
-        typeDescriptors.put(td.getName(), td);
+        typeDescriptors.put(complexType.getName(), complexType);
     }
 
     private String createSQLInsert(String tableName, ColumnInfo[] columnInfos) {
@@ -638,7 +644,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                     String sql = createSQLInsert(descriptor.getName(), columnInfos);
                     if (jdbcLogger.isDebugEnabled())
                         jdbcLogger.debug("Creating prepared statement: " + sql);
-                    statement = connection.prepareStatement(sql);
+                    statement = DBUtil.prepareStatement(connection, sql);
                     insertStatements.put(descriptor, statement);
                 } else {
                     statement.clearParameters();
@@ -648,7 +654,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 throw new RuntimeException(e);
             }
         }
-        
+
         public void close() {
             commit();
             DBUtil.close(connection);
@@ -692,7 +698,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     private static final Log logger = LogFactory.getLog(DBSystem.class);
-//    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
+    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
     private static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC");
 
 }
