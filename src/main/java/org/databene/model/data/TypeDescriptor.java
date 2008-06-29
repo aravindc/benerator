@@ -56,6 +56,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String SOURCE       = "source";
     public static final String SELECTOR     = "selector";
     public static final String ENCODING     = "encoding";
+    public static final String SEPARATOR    = "separator";
     
     public static final String CYCLIC       = "cyclic";
     public static final String PROXY        = "proxy";
@@ -99,21 +100,22 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
             // For performance reasons, retain only the first non-null validator
         
         // config
-        addConfig(GENERATOR,      String.class,    null);
-        addConfig(CONVERTER,      String.class,    null);
-        addConfig(PATTERN,        String.class,    null);
-        addConfig(SCRIPT,         String.class,    null);
-        addConfig(SOURCE,         String.class,    null);
-        addConfig(SELECTOR,       String.class,    null);
-        addConfig(ENCODING,       String.class,    null);
-        addConfig(CYCLIC,         Boolean.class,   null);
-        addConfig(PROXY,          Iteration.class, null);
-        addConfig(PROXY_PARAM1,   Long.class,      null);
-        addConfig(PROXY_PARAM2,   Long.class,      null);
+        addConfig(GENERATOR,      String.class,       null);
+        addConfig(CONVERTER,      String.class,       null);
+        addConfig(PATTERN,        String.class,       null);
+        addConfig(SCRIPT,         String.class,       null);
+        addConfig(SOURCE,         String.class,       null);
+        addConfig(SELECTOR,       String.class,       null);
+        addConfig(SEPARATOR,      String.class,       null);
+        addConfig(ENCODING,       String.class,       null);
+        addConfig(CYCLIC,         Boolean.class,      null);
+        addConfig(PROXY,          Iteration.class,    null);
+        addConfig(PROXY_PARAM1,   Long.class,         null);
+        addConfig(PROXY_PARAM2,   Long.class,         null);
         // i18n config
-        addConfig(LOCALE,         Locale.class,    null);
-        addConfig(DATASET,        String.class,    null);
-        addConfig(NESTING,        String.class,    null);
+        addConfig(LOCALE,         Locale.class,       null);
+        addConfig(DATASET,        String.class,       null);
+        addConfig(NESTING,        String.class,       null);
         // distribution
         addConfig(DISTRIBUTION,   Distribution.class, null);
         addConfig(VARIATION1,     String.class,        "1");
@@ -196,6 +198,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setSelector(String selector) {
         setDetailValue(SELECTOR, selector);
+    }
+
+    public String getSeparator() {
+        return (String) getDetailValue(SEPARATOR);
+    }
+
+    public void setSeparator(String separator) {
+        setDetailValue(SEPARATOR, separator);
     }
 
     public String getEncoding() {
@@ -358,7 +368,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     @Override
     public Object getDetailValue(String name) {
         Object value = super.getDetailValue(name);
-        if (value == null && parentName != null && PrimitiveType.getInstance(parentName) == null) {
+        if (value == null && getParent() != null && PrimitiveType.getInstance(parentName) == null) {
             TypeDescriptor parentDescriptor = getParent();
             if (parentDescriptor == null)
                 throw new ConfigurationError("Unknown type: " + parentName);
