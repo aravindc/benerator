@@ -44,6 +44,7 @@ import java.util.Iterator;
 public class QueryIterable implements Iterable<ResultSet> {
     
     private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
+    private static final Log logger = LogFactory.getLog(QueryIterable.class); 
 
     private Connection connection;
     private String query;
@@ -61,6 +62,8 @@ public class QueryIterable implements Iterable<ResultSet> {
         this.connection = connection;
         this.query = query;
         this.fetchSize = fetchSize;
+        if (logger.isDebugEnabled())
+        	logger.debug("Constructed QueryIterable: " + query);
     }
 
     public String getQuery() {
