@@ -198,28 +198,39 @@ public class ComplexTypeGeneratorFactory {
 	}
 
 	private static Generator<Entity> createCSVSourceGenerator(
-			ComplexTypeDescriptor descriptor, Context context,
+			ComplexTypeDescriptor complexType, Context context,
 			GenerationSetup setup, String sourceName) {
 		Generator<Entity> generator;
-		String encoding = descriptor.getEncoding();
+		String encoding = complexType.getEncoding();
 		if (encoding == null)
 		    encoding = setup.getDefaultEncoding();
 		ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-		String dataset = descriptor.getDataset();
-		String nesting = descriptor.getNesting();
+		String dataset = complexType.getDataset();
+		String nesting = complexType.getNesting();
+		char separator = getSeparator(complexType, setup);
 		if (dataset != null && nesting != null) {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
 		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator(new CSVEntityIterable(dataFiles[i], descriptor.getName()));
+		        sources[i] = new IteratingGenerator(new CSVEntityIterable(dataFiles[i], complexType.getName(), separator, encoding));
 		    generator = new AlternativeGenerator(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
-		    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, descriptor.getName(), scriptConverter, ',', encoding);
+		    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, complexType.getName(), scriptConverter, separator, encoding);
 		    generator = new IteratingGenerator(iterable);
 		}
-		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(descriptor));
+		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
 		return generator;
+	}
+
+	private static char getSeparator(ComplexTypeDescriptor descriptor, GenerationSetup setup) {
+		String separatorString = descriptor.getSeparator();
+		char separator = setup.getDefaultSeparator();
+		if (!StringUtil.isEmpty(separatorString)) {
+			Assert.length(separatorString, 1);
+			separator = separatorString.charAt(0);
+		}
+		return separator;
 	}
 
     private static Generator<Entity> createGeneratingGenerator(
@@ -229,11 +240,10 @@ public class ComplexTypeGeneratorFactory {
         	return new SimpleTypeEntityGenerator(complexType, unique, context, setup);
         Collection<ComponentDescriptor> components = complexType.getComponents();
         for (ComponentDescriptor component : components) {
-            if (complexType.equals(component.getType()) // avoid recursion 
-            		|| component.getMode() == Mode.ignored)
-                continue; 
-			ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context, setup);
-			componentGenerators.add(builder);
+            if (!complexType.equals(component.getType()) && component.getMode() != Mode.ignored) {
+				ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context, setup);
+				componentGenerators.add(builder);
+            }
         }
     	return new EntityGenerator(complexType, componentGenerators, context);
     }
