@@ -43,6 +43,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         
         // create context
         BeneratorContext context = new BeneratorContext();
+        SimpleGenerationSetup setup = new SimpleGenerationSetup();
 
         // parse schema
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
@@ -52,7 +53,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 new MessageConverter<Long>(filenamePattern, Locale.US));
         // parse properties files
-        ModelParser parser = new ModelParser();
+        ModelParser parser = new ModelParser(setup);
         for (String propertiesFile : propertiesFiles)
             parser.importProperties(propertiesFile, context);
 
@@ -60,8 +61,8 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
-        contentGenerator = TypeGeneratorFactory.createTypeGenerator(
-                rootDescriptor, false, context, new SimpleGenerationSetup());
+		contentGenerator = TypeGeneratorFactory.createTypeGenerator(
+                rootDescriptor, false, context, setup);
     }
 
     @Override
