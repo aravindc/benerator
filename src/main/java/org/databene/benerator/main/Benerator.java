@@ -40,7 +40,7 @@ import org.databene.task.PageListener;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
-import org.databene.benerator.factory.GenerationSetup;
+import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.benerator.Generator;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ProcessorToConsumerAdapter;
@@ -67,7 +67,7 @@ import java.util.concurrent.Executors;
  * Created: 14.08.2007 19:14:28
  * @author Volker Bergmann
  */
-public class Benerator implements GenerationSetup {
+public class Benerator extends SimpleGenerationSetup {
 
     private static final Log logger = LogFactory.getLog(Benerator.class);
     
@@ -76,21 +76,10 @@ public class Benerator implements GenerationSetup {
     
     private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil.toSet("pagesize", "threads", "consumer");
 
-    
-    public  static final String  DEFAULT_SCRIPT   = "ftl";
-    public  static final boolean DEFAULT_NULL     = true;
-    public  static final String  DEFAULT_ENCODING = SystemInfo.fileEncoding();
-    public  static final int     DEFAULT_PAGESIZE = 1;
-    
     private ModelParser parser = new ModelParser();
     
     private ExecutorService executor;
     private Escalator escalator;
-    
-    private String defaultScript;
-    private boolean defaultNull;
-    private String defaultEncoding;
-    private int defaultPagesize;
     
     //private int totalEntityCount = 0;
     
@@ -111,16 +100,13 @@ public class Benerator implements GenerationSetup {
     public Benerator() {
         this.executor = Executors.newCachedThreadPool();
         this.escalator = new LoggerEscalator();
-        this.defaultScript = DEFAULT_SCRIPT;
-        this.defaultNull = DEFAULT_NULL;
-        this.defaultEncoding = DEFAULT_ENCODING;
-        this.defaultPagesize = DEFAULT_PAGESIZE;
     }
 
     public void processFile(String uri) throws IOException {
         try {
             long startTime = java.lang.System.currentTimeMillis();
             BeneratorContext context = new BeneratorContext();
+            context.set("benerator", this);
             Document document = XMLUtil.parse(uri);
             Element root = document.getDocumentElement();
             NodeList nodes = root.getChildNodes();
@@ -435,64 +421,6 @@ public class Benerator implements GenerationSetup {
     @Override
     public String toString() {
         return getClass().getSimpleName();
-    }
-
-    // properties ------------------------------------------------------------------------------------------------------
-    
-    /**
-     * @return the defaultScript
-     */
-    public String getDefaultScript() {
-        return defaultScript;
-    }
-
-    /**
-     * @param defaultScript the defaultScript to set
-     */
-    public void setDefaultScript(String defaultScript) {
-        this.defaultScript = defaultScript;
-    }
-
-    /**
-     * @return the defaultNull
-     */
-    public boolean isDefaultNull() {
-        return defaultNull;
-    }
-
-    /**
-     * @param defaultNull the defaultNull to set
-     */
-    public void setDefaultNull(boolean defaultNull) {
-        this.defaultNull = defaultNull;
-    }
-
-    /**
-     * @return the defaultEncoding
-     */
-    public String getDefaultEncoding() {
-        return defaultEncoding;
-    }
-
-    /**
-     * @param defaultEncoding the defaultEncoding to set
-     */
-    public void setDefaultEncoding(String defaultEncoding) {
-        this.defaultEncoding = defaultEncoding;
-    }
-
-    /**
-     * @return the defaultPageSize
-     */
-    public int getDefaultPagesize() {
-        return defaultPagesize;
-    }
-
-    /**
-     * @param defaultPageSize the defaultPageSize to set
-     */
-    public void setDefaultPagesize(int defaultPageSize) {
-        this.defaultPagesize = defaultPageSize;
     }
 
 }

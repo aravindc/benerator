@@ -37,4 +37,5 @@ public interface GenerationSetup {
     String getDefaultScript();
     int getDefaultPagesize();
     String getDefaultEncoding();
+    char getDefaultSeparator();
 }

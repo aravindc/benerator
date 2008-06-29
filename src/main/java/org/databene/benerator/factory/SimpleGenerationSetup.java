@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.benerator.factory;
 
 import org.databene.commons.SystemInfo;
@@ -37,33 +36,46 @@ import org.databene.commons.SystemInfo;
  */
 public class SimpleGenerationSetup implements GenerationSetup {
     
-    private String defaultEncoding = SystemInfo.fileEncoding();
-    private int defaultPagesize = 1;
-    private String defaultScript = "ftl";
-    private boolean defaultNull = true;
+    protected String  defaultEncoding  = SystemInfo.fileEncoding();
+    protected int     defaultPagesize  = 1;
+    protected String  defaultScript    = "ftl";
+    protected boolean defaultNull      = true;
+    protected char    defaultSeparator = ',';
+    	
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
+    
     public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
     }
+    
     public int getDefaultPagesize() {
         return defaultPagesize;
     }
+    
     public void setDefaultPagesize(int defaultPagesize) {
         this.defaultPagesize = defaultPagesize;
     }
+    
     public String getDefaultScript() {
         return defaultScript;
     }
+    
     public void setDefaultScript(String defaultScript) {
         this.defaultScript = defaultScript;
     }
+    
     public boolean isDefaultNull() {
         return defaultNull;
     }
+    
     public void setDefaultNull(boolean defaultNull) {
         this.defaultNull = defaultNull;
     }
+    
+	public char getDefaultSeparator() {
+		return defaultSeparator;
+	}
 
 }
