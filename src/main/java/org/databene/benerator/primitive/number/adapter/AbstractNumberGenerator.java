@@ -160,13 +160,16 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
     }
 
     public void reset() {
+        if (dirty)
+            validate();
         super.reset();
         source.reset();
     }
 
     public void close() {
+    	if (source != null)
+    		source.close();
         super.close();
-        source.close();
     }
     // specific implementation -----------------------------------------------------------------------------------------
 
