@@ -49,6 +49,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String NULLABLE           = "nullable";
     public static final String MIN_COUNT          = "minCount";
     public static final String MAX_COUNT          = "maxCount";
+    
     // configs
     public static final String COUNT_DISTRIBUTION = "countDistribution";
     public static final String COUNT_VARIATION1   = "countVariation1";
@@ -56,8 +57,11 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
 
+    private InstanceDescriptor parent;
     private String typeName;
     private TypeDescriptor localType;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public InstanceDescriptor(String name) {
         this(name, null, null);
@@ -81,6 +85,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         addRestriction(NULLABLE,      Boolean.class, false, new AndOperation());
         addRestriction(MIN_COUNT,     Long.class,    null, new MaxOperation<Long>());
         addRestriction(MAX_COUNT,     Long.class,    null, new MinOperation<Long>());
+        
         // configs
         addConfig(COUNT,              Long.class,         null);
         addConfig(COUNT_DISTRIBUTION, Distribution.class, null);
@@ -91,8 +96,12 @@ public class InstanceDescriptor extends FeatureDescriptor {
 
     // properties ------------------------------------------------------------------------------------------------------
 
+    public void setParent(InstanceDescriptor parent) {
+    	this.parent = parent;
+    }
+    
     public String getTypeName() {
-        return typeName;
+        return (typeName == null && parent != null ? parent.getTypeName() : typeName);
     }
     
     public void setTypeName(String typeName) {
@@ -100,9 +109,9 @@ public class InstanceDescriptor extends FeatureDescriptor {
     }
     
     public TypeDescriptor getType() {
-        if (localType != null)
-            return localType;
-        if (typeName == null)
+        if (getLocalType() != null)
+            return getLocalType();
+        if (getTypeName() == null)
             throw new ConfigurationError("Type not defined for " + getName());
         TypeDescriptor type = DataModel.getDefaultInstance().getTypeDescriptor(typeName);
         if (type == null)
@@ -111,7 +120,9 @@ public class InstanceDescriptor extends FeatureDescriptor {
     }
     
     public TypeDescriptor getLocalType() {
-        return localType;
+    	if (localType == null && parent != null && parent.getLocalType() != null)
+    		localType = getLocalType(parent.getLocalType() instanceof ComplexTypeDescriptor);
+    	return localType;
     }
     
     public TypeDescriptor getLocalType(boolean complexType) {
@@ -206,6 +217,13 @@ public class InstanceDescriptor extends FeatureDescriptor {
     @Override
     public Object getDetailValue(String name) {
         Object value = super.getDetailValue(name);
+        if (value == null && parent != null) {
+            if (parent.supportsDetail(name)) {
+                FeatureDetail<? extends Object> detail = parent.getDetail(name);
+                if (detail.isRestriction())
+                    value = detail.getValue();
+            }
+        }
         if (value == null)
             value = getDetailDefault(name);
         return value;
