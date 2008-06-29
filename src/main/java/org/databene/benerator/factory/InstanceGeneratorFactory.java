@@ -79,7 +79,7 @@ public class InstanceGeneratorFactory {
             boolean unique = isUnique(descriptor);
             TypeDescriptor type = descriptor.getType();
             if (type instanceof SimpleTypeDescriptor)
-				generator = SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) type, unique, context, setup);
+				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) type, unique, context, setup);
 			else if (type instanceof ComplexTypeDescriptor)
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) type, unique, context, setup);
             else

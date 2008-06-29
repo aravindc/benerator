@@ -28,6 +28,8 @@ package org.databene.benerator.factory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -44,11 +46,13 @@ import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.Validator;
+import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Iteration;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
+import org.databene.model.function.IndividualWeight;
 import org.databene.model.function.Sequence;
 import org.databene.model.function.WeightFunction;
 import org.databene.script.Script;
@@ -70,7 +74,7 @@ public class TypeGeneratorFactory {
     	if (logger.isDebugEnabled())
     		logger.debug(descriptor + ", " + unique);
         if (descriptor instanceof SimpleTypeDescriptor)
-            return SimpleTypeGeneratorFactory.create((SimpleTypeDescriptor) descriptor, unique, context, setup);
+            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, unique, context, setup);
         else if (descriptor instanceof ComplexTypeDescriptor)
             return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context, setup);
         else
@@ -115,10 +119,13 @@ public class TypeGeneratorFactory {
     }
 
     private static <S, T> Converter<S, T> getConverter(TypeDescriptor descriptor) {
-        String converterClass = descriptor.getConverter();
+        String converterClass = descriptor.getConverter(); // TODO support multiple comma-separated Converters and join them to a ConverterChain
         if (converterClass == null)
             return null;
-        return BeanUtil.newInstance(converterClass);
+        Object converter = BeanUtil.newInstance(converterClass);
+        if (converter instanceof java.text.Format)
+        	converter = new FormatFormatConverter((java.text.Format) converter);
+		return (Converter<S, T>) converter;
     }
 /*
     public static void checkUsedDetails(TypeDescriptor descriptor,
@@ -195,4 +202,25 @@ public class TypeGeneratorFactory {
             distribution = (unique ? Sequence.BIT_REVERSE : Sequence.RANDOM);
         return distribution;
     }
+
+	public static Generator<? extends Object> applyDistribution(TypeDescriptor descriptor,
+			Distribution distribution, Generator<? extends Object> generator) {
+		List<Object> values = new ArrayList<Object>();
+		while (generator.available()) {
+		    Object value = generator.generate();
+		    values.add(value);
+		}
+		if (distribution instanceof Sequence)
+		    generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
+		else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
+		    generator = new WeightedSampleGenerator(generator.getGeneratedType(), distribution, values);
+		else
+		    throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
+		if (descriptor.getVariation1() != null)
+			BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
+		if (descriptor.getVariation2() != null)
+			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
+		return generator;
+	}
+
 }
