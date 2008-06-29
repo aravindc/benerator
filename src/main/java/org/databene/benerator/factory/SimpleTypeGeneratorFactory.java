@@ -54,7 +54,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'hh:mm:ss";
     private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
-	public static Generator<? extends Object> create(SimpleTypeDescriptor descriptor, boolean unique,
+	public static Generator<? extends Object> createSimpleTypeGenerator(SimpleTypeDescriptor descriptor, boolean unique,
             Context context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
@@ -112,30 +112,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
         // check distribution
         if (distribution != null && !EMPTY_WEIGHT.equals(distribution))
-            return applyDistribution(descriptor, distribution, generator);
+            return TypeGeneratorFactory.applyDistribution(descriptor, distribution, generator);
         else
-        	return createProxy(descriptor, generator);
+        	return TypeGeneratorFactory.createProxy(descriptor, generator);
     }
-
-	private static Generator<? extends Object> applyDistribution(SimpleTypeDescriptor descriptor,
-			Distribution distribution, Generator<? extends Object> generator) {
-		List<Object> values = new ArrayList<Object>();
-		while (generator.available()) {
-		    Object value = generator.generate();
-		    values.add(value);
-		}
-		if (distribution instanceof Sequence)
-		    generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
-		else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
-		    generator = new WeightedSampleGenerator(generator.getGeneratedType(), distribution, values);
-		else
-		    throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
-		if (descriptor.getVariation1() != null)
-			BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
-		if (descriptor.getVariation2() != null)
-			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
-		return generator;
-	}
 
 	private static Generator<? extends Object> createCSVSourceGenerator(
 			SimpleTypeDescriptor descriptor, String source,
@@ -227,7 +207,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Generator[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
-            sources[i] = create(alternative, false, context, setup);
+            sources[i] = createSimpleTypeGenerator(alternative, false, context, setup);
         }
         Class<Object> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);
