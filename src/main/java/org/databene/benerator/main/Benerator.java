@@ -76,7 +76,7 @@ public class Benerator extends SimpleGenerationSetup {
     
     private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil.toSet("pagesize", "threads", "consumer");
 
-    private ModelParser parser = new ModelParser();
+    private ModelParser parser = new ModelParser(this);
     
     private ExecutorService executor;
     private Escalator escalator;
