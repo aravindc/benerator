@@ -42,6 +42,7 @@ import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.function.Distribution;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
@@ -146,6 +147,14 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             } else
             	throw new ConfigurationError("Not a supported source type: " + sourceName);
         }
+        
+        // check distribution
+        Distribution distribution = descriptor.getType().getDistribution();
+        if (distribution != null)
+            generator = TypeGeneratorFactory.applyDistribution(descriptor.getType(), distribution, generator);
+        else
+        	generator = TypeGeneratorFactory.createProxy(descriptor.getType(), generator);
+        
         generator = ComponentBuilderFactory.createComponentGeneratorWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
