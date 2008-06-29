@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.main.Benerator;
+import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -64,14 +64,18 @@ public class ModelParser {
    
     private static final Log logger = LogFactory.getLog(ModelParser.class);
     
-    private String defaultScript = Benerator.DEFAULT_SCRIPT;
-    
-    public String getDefaultScript() {
-        return defaultScript;
+    private SimpleGenerationSetup setup;
+
+    public ModelParser(SimpleGenerationSetup setup) {
+		this.setup = setup;
+	}
+
+	public String getDefaultScript() {
+        return setup.getDefaultScript();
     }
 
     public void setDefaultScript(String defaultScript) {
-        this.defaultScript = defaultScript;
+        setup.setDefaultScript(defaultScript);
     }
     
     public Object parseBean(Element element, Context context) {
@@ -80,7 +84,7 @@ public class ModelParser {
             logger.debug("Instantiating bean with id '" + beanId + "'");
         else
             logger.debug("Instantiating bean of class " + parseAttribute(element, "class", context));
-        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context, defaultScript));
+        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context, getDefaultScript()));
         if (!StringUtil.isEmpty(beanId)) {
             BeanUtil.setPropertyValue(bean, "id", beanId, false);
             context.set(beanId, bean);
@@ -168,7 +172,7 @@ public class ModelParser {
 
     private ReferenceDescriptor parseReference(Element element,
             ComponentDescriptor descriptor, Context context) {
-        assertElementName(element, "id");
+        assertElementName(element, "reference");
         ReferenceDescriptor result;
         if (descriptor instanceof ReferenceDescriptor)
             result = (ReferenceDescriptor) descriptor;
@@ -216,7 +220,7 @@ public class ModelParser {
 
     public void importProperties(String uri, Context context) throws IOException {
         logger.debug("reading properties: " + uri);
-        ScriptConverter preprocessor = new ScriptConverter(context, defaultScript);
+        ScriptConverter preprocessor = new ScriptConverter(context, setup.getDefaultScript());
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
         IOUtil.readProperties(uri, converter);
     }
@@ -294,7 +298,7 @@ public class ModelParser {
         if ("script".equals(name))
             return value;
         else
-            return ScriptUtil.render(value, context, defaultScript);
+            return ScriptUtil.render(value, context, setup.getDefaultScript());
     }
 
 }
