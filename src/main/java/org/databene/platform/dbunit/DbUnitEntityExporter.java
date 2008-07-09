@@ -63,6 +63,11 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     private static final String DEFAULT_FILE_ENCODING = "UTF-8";
     private static final String DEFAULT_URI = "data.dbunit.xml";
 
+	private static final String DATE_PATTERN = "yyyy-MM-dd";
+	private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+	
+    private ToStringConverter<Object> toStringConverter;
+
     private String uri;
     private String encoding;
 
@@ -83,6 +88,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     public DbUnitEntityExporter(String uri, String encoding) {
         setUri(uri);
         setEncoding(encoding);
+        this.toStringConverter = new ToStringConverter<Object>(null, DATE_PATTERN, TIMESTAMP_PATTERN);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -118,7 +124,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
                 Object value = entry.getValue();
                 if (value == null)
                     continue;
-                String s = ToStringConverter.convert(value, null);
+                String s = toStringConverter.convert(value);
                 if (s != null)
                 	atts.addAttribute("", "", entry.getKey(), "CDATA", s);
             }
