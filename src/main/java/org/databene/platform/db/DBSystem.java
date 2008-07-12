@@ -485,8 +485,12 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 typeDescriptor.setDetailValue("values", defaultValue);
             if (column.getSize() != null)
                 typeDescriptor.setMaxLength(column.getSize());
-            if (column.getFractionDigits() != null)
-                typeDescriptor.setPrecision(precision(column.getFractionDigits()));
+            if (column.getFractionDigits() != null) {
+            	if ("timestamp".equals(type))
+            		typeDescriptor.setPrecision("1970-01-02");
+            	else
+            		typeDescriptor.setPrecision(decimalPrecision(column.getFractionDigits()));
+            }
             //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
             PartDescriptor descriptor = new PartDescriptor(columnName);
             descriptor.setLocalType(typeDescriptor);
@@ -499,7 +503,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                     assert constraint.getColumns()[0].equals(column); // consistence check
                     descriptor.setUnique(true);
                 } else {
-                    logger.error("Uniqueness assurance on multiple columns is not supported yet: " + constraint);
+                    logger.warn("Uniqueness assurance on multiple columns is not supported yet: " + constraint);
                     // TODO v0.6 support uniqueness constraints on combination of columns
                 }
             }
@@ -510,7 +514,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         typeDescriptors.put(complexType.getName(), complexType);
     }
 
-    private String createSQLInsert(String tableName, ColumnInfo[] columnInfos) {
+    String createSQLInsert(String tableName, ColumnInfo[] columnInfos) {
         StringBuilder builder = new StringBuilder("insert into ").append(tableName).append("(");
         if (columnInfos.length > 0)
             builder.append(columnInfos[0].name);
@@ -547,7 +551,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 */
     
-    private ColumnInfo[] writeColumnInfos(Entity entity) {
+    ColumnInfo[] writeColumnInfos(Entity entity) {
         String tableName = entity.getName();
         DBTable table = getTable(tableName);
         ComplexTypeDescriptor typeDescriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
@@ -661,7 +665,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         }
     }
 
-    private String precision(int scale) {
+    private String decimalPrecision(int scale) {
         if (scale == 0)
             return "1";
         StringBuilder builder = new StringBuilder("0.");
