@@ -89,10 +89,6 @@
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.task.RunSqlScriptTask">
-       <priority value="info"/>
-    </category>
-
     <category name="org.databene.platform.db">
        <priority value="info"/>
     </category>
