@@ -29,6 +29,7 @@ package org.databene.domain.finance;
 import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.StringUtil;
 
 /**
  * Generates {@link BankAccount}s.<br/><br/>
@@ -57,12 +58,11 @@ public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
 	}
 
 	private String createIban(Bank bank, String accountNumber) {
-		StringBuilder ibanBuilder = new StringBuilder("DE68000000000000000000");
-		String bankCode = bank.getBankCode();
-		ibanBuilder.replace(4, 4 + bankCode.length(), bankCode);
-		ibanBuilder.replace(22 - accountNumber.length(), 22, bankCode);
-		String iban = ibanBuilder.toString();
-		return iban;
+		// format a German IBAN
+		StringBuilder builder = new StringBuilder("DE00");
+		builder.append(bank.getBankCode());
+		builder.append(StringUtil.padLeft(accountNumber, 10, '0'));
+		return IBANUtil.fixChecksum(builder.toString());
 	}
 
 }
