@@ -42,11 +42,17 @@ public class ConstantGenerator<E> extends LightweightGenerator<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public ConstantGenerator() {
-        this(null);
+        this((E) null);
     }
 
     /** Initializes the generator to generate the specified value */
+
     public ConstantGenerator(E value) {
+    	this(value, (Class<E>) (value != null ? value.getClass() : Object.class));
+    }
+
+    public ConstantGenerator(E value, Class<E> generatedType) {
+        super(generatedType);
         this.value = value;
     }
 
@@ -71,10 +77,6 @@ public class ConstantGenerator<E> extends LightweightGenerator<E> {
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
-
-    public Class<E> getGeneratedType() {
-        return (Class<E>) value.getClass();
-    }
 
     /** Returns the value of property 'value' */
     public E generate() {
