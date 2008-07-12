@@ -38,27 +38,31 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 
 	protected ToStringConverter<Object> plainConverter = new ToStringConverter<Object>();
 
-	public String getDatePattern() {
-		return plainConverter.getDatePattern();
-	}
-
 	public String getNullString() {
 		return plainConverter.getNullString();
-	}
-
-	public String getTimestampPattern() {
-		return plainConverter.getTimestampPattern();
-	}
-
-	public void setDatePattern(String datePattern) {
-		plainConverter.setDatePattern(datePattern);
 	}
 
 	public void setNullString(String nullResult) {
 		plainConverter.setNullString(nullResult);
 	}
 
+	public String getDatePattern() {
+		return plainConverter.getDatePattern();
+	}
+
+	public void setDatePattern(String datePattern) {
+		plainConverter.setDatePattern(datePattern);
+	}
+
+	public String getTimestampPattern() {
+		return plainConverter.getTimestampPattern();
+	}
+
 	public void setTimestampPattern(String timestampPattern) {
 		plainConverter.setTimestampPattern(timestampPattern);
+	}
+	
+	protected String format(Object o) {
+		return plainConverter.convert(o);
 	}
 }
