@@ -284,14 +284,19 @@ public class Benerator extends SimpleGenerationSetup {
     private Collection<Consumer<Entity>> parseConsumers(Element parent, Set<Heavyweight> resources, Context context) {
         String entityName = parseAttribute(parent, "name", context);
         List<Consumer<Entity>> consumers = new ArrayList<Consumer<Entity>>();
-        Consumer<Entity> consumer;
         if (parent.hasAttribute("consumer")) {
-            consumer = getConsumerFromContext(context, parseAttribute(parent, "consumer", context));
-            consumers.add(consumer);
+        	String consumerConfig = parseAttribute(parent, "consumer", context);
+        	String[] consumerNames = StringUtil.tokenize(consumerConfig, ',');
+            Consumer<Entity> consumer;
+        	for (String consumerName : consumerNames) {
+	            consumer = getConsumerFromContext(context, consumerName);
+	            consumers.add(consumer);
+        	}
         }
         List<Element> consumerElements = getChildElements(parent, "consumer");
         for (int i = 0; i < consumerElements.size(); i++) {
             Element consumerElement = (Element) consumerElements.get(i);
+            Consumer<Entity> consumer;
             if (consumerElement.hasAttribute("ref")) {
                 consumer = getConsumerFromContext(context, parseAttribute(consumerElement, "ref", context));
             } else if (consumerElement.hasAttribute("class")) {
