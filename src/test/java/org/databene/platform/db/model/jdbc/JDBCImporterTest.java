@@ -55,7 +55,7 @@ public class JDBCImporterTest extends TestCase {
 	public void testImportDatabase() throws ImportFailedException, ConnectFailedException, IOException, SQLException {
 		// prepare database
 		Connection connection = HSQLUtil.connectInMemoryDB(getClass().getSimpleName());
-		DBUtil.runScript("org/databene/platform/db/model/jdbc/create_tables.hsql.sql", connection, true, true);
+		DBUtil.runScript("org/databene/platform/db/model/jdbc/create_tables.hsql.sql", "ISO-8859-1", connection, true, true);
 		// run importer
 		JDBCDBImporter importer = new JDBCDBImporter(connection, "sa", "public", true);
 		Database db = importer.importDatabase();
