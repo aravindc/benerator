@@ -77,7 +77,7 @@ public class DBSnaphotToolTest extends TestCase {
 		// prepare DB
 		String db = getClass().getSimpleName();
 		Connection connection = HSQLUtil.connectInMemoryDB(db);
-		DBUtil.runScript(SCRIPT, connection, true, false);
+		DBUtil.runScript(SCRIPT, ENCODING, connection, true, false);
 		// prepare snapshot
 		System.setProperty(DBSnapshotTool.DB_URL, HSQLUtil.IN_MEMORY_URL_PREFIX + db);
 		System.setProperty(DBSnapshotTool.DB_DRIVER, HSQLUtil.DRIVER);
