@@ -38,7 +38,7 @@ public class ConstantGeneratorTest extends GeneratorClassTest {
     }
 
     public void testNull() {
-        ConstantGenerator<String> generator = new ConstantGenerator<String>(null);
+        ConstantGenerator<String> generator = new ConstantGenerator<String>(null, String.class);
         for (int i = 0; i < 100; i++)
             assertNull(generator.generate());
     }
