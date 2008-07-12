@@ -26,20 +26,17 @@
 
 package org.databene.platform.csv;
 
-import org.databene.model.consumer.FormattingConsumer;
+import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
-import org.databene.commons.ArrayFormat;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.IOUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,7 +46,7 @@ import java.util.List;
  * Created: 21.08.2007 21:16:59
  * @author Volker Bergmann
  */
-public class CSVEntityExporter extends FormattingConsumer<Entity> {
+public class CSVEntityExporter extends TextFileExporter<Entity> {
 
     private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
     
@@ -61,12 +58,8 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
 
     // attributes ------------------------------------------------------------------------------------------------------
 
-    private String uri;
     private String[] propertyNames;
-    private String encoding;
     private char separator;
-
-    private PrintWriter printer;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -79,10 +72,9 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
     }
 
     public CSVEntityExporter(String uri, String attributes, char separator, String encoding) {
-        this.uri = uri;
+    	super(uri, encoding);
         setProperties(attributes);
         this.separator = separator;
-        this.encoding = encoding;
     }
 
     public CSVEntityExporter(ComplexTypeDescriptor descriptor) {
@@ -94,23 +86,14 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor, char separator, String encoding) {
-        this.uri = uri;
+        super(uri, encoding);
         Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponents();
         List<String> componentNames = BeanUtil.extractProperties(componentDescriptors, "name");
         this.propertyNames = CollectionUtil.toArray(componentNames, String.class);
         this.separator = separator;
-        this.encoding = encoding;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 
 	public void setProperties(String attributes) {
         this.propertyNames = StringUtil.tokenize(attributes, ',');
@@ -125,44 +108,24 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
         this.encoding = encoding;
     }
 
-    // Consumer interface ----------------------------------------------------------------------------------------------
+    // Callback methods for parent class functionality -----------------------------------------------------------------
 
-    public void startConsuming(Entity entity) {
-        try {
-            if (logger.isDebugEnabled())
-                logger.debug("exporting " + entity);
-            if (printer == null)
-                initPrinter();
-            for (int i = 0; i < propertyNames.length; i++) {
-                if (i > 0)
-                    printer.print(separator);
-                Object value = entity.getComponent(propertyNames[i]);
-                String s = plainConverter.convert(value);
-                if (s.indexOf(separator) >= 0)
-                    s = '"' + s + '"';
-                printer.print(s);
-            }
-            printer.println();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    protected void startConsumingImpl(Entity entity) {
+        if (logger.isDebugEnabled())
+            logger.debug("exporting " + entity);
+        for (int i = 0; i < propertyNames.length; i++) {
+            if (i > 0)
+                printer.print(separator);
+            Object value = entity.getComponent(propertyNames[i]);
+            String s = plainConverter.convert(value);
+            if (s.indexOf(separator) >= 0)
+                s = '"' + s + '"';
+            printer.print(s);
         }
+        printer.println();
     }
 
-    public void flush() {
-        if (printer != null)
-            printer.flush();
-    }
-
-    public void close() {
-        if (printer != null)
-            printer.close();
-    }
-
-    // private helpers -------------------------------------------------------------------------------------------------
-    
-    private void initPrinter() throws IOException {
-        // create file
-        printer = IOUtil.getPrinterForURI(uri, encoding);
+    protected void postInitPrinter() {
         // write header
         for (int i = 0; i < propertyNames.length; i++) {
             if (i > 0)
@@ -171,11 +134,4 @@ public class CSVEntityExporter extends FormattingConsumer<Entity> {
         }
         printer.println();
     }
-
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    public String toString() {
-        return getClass().getSimpleName() + '(' + ArrayFormat.format(propertyNames) + ") -> " + uri;
-    }
-
 }
