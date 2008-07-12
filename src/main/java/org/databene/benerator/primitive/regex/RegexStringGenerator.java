@@ -166,7 +166,7 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
                         sources[i] = RegexPartGeneratorFactory.createRegexPartGenerator(parts[i], maxQuantity, unique);
                     partsGenerator.setSources(sources);
                 } else
-                    partsGenerator.setSources(new ConstantGenerator<String>(null));
+                    partsGenerator.setSources(new ConstantGenerator<String>(null, String.class));
             } catch (Exception e) {
                 throw new InvalidGeneratorSetupException(e);
             }
