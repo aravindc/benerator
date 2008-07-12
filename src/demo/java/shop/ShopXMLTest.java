@@ -95,7 +95,7 @@ public class ShopXMLTest extends TestCase {
         logger.debug("");
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
-        Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.create(
+        Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
             descriptor, false, provider.getContext(), new SimpleGenerationSetup());
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
