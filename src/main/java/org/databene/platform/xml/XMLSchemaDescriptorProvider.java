@@ -467,7 +467,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         if ("false".equals(element.getAttribute("nillable")))
         	descriptor.setNullable(false);
         if (descriptor == null)
-            descriptor = new PartDescriptor(name, "string"); // TODO find out appropriate default type
+            descriptor = new PartDescriptor(name, "string"); // TODO v0.5.5 find out appropriate default type
         owner.addComponent(descriptor);
         return descriptor;
     }
@@ -831,7 +831,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 	}
 
     private void parseAll(Element all, ComplexTypeDescriptor owner) {
-        logger.debug("parseAll()"); // TODO test
+        logger.debug("parseAll()"); // TODO v0.5.5 test
         parseComponentGroupChildren(all, owner);	
 	}
 
