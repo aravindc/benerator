@@ -302,7 +302,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     }
 
     private void parseComplexRestriction(Element restrictionElement, ComplexTypeDescriptor owner) {
-    	// TODO test this
+    	// TODO v0.5.5 test this
         Element[] children = XMLUtil.getChildElements(restrictionElement);
         for (Element child : children) {
             String nodeName = localName(child);
