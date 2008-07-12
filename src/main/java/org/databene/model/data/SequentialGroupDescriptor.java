@@ -32,7 +32,7 @@ package org.databene.model.data;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class SequentialGroupDescriptor extends ComplexTypeDescriptor { // TODO support this class
+public class SequentialGroupDescriptor extends ComplexTypeDescriptor { // TODO v0.5.5 support this class
 
 	public SequentialGroupDescriptor(String name) {
 		super(name);
