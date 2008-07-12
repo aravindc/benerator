@@ -29,6 +29,7 @@ package org.databene.platform.db;
 import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.db.DBUtil;
 
 import java.io.IOException;
@@ -43,7 +44,10 @@ import java.sql.SQLException;
  */
 public class RunSqlScriptTask extends AbstractTask {
 
+	private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
+	
     private String uri;
+    private String encoding;
     private DBSystem db;
     private boolean haltOnError;
     private boolean ignoreComments;
@@ -51,11 +55,12 @@ public class RunSqlScriptTask extends AbstractTask {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public RunSqlScriptTask() {
-        this(null, null);
+        this(null, DEFAULT_ENCODING, null);
     }
 
-    public RunSqlScriptTask(String uri, DBSystem db) {
+    public RunSqlScriptTask(String uri, String encoding, DBSystem db) {
         this.uri = uri;
+        this.encoding = encoding;
         this.db = db;
         this.haltOnError = true;
         this.ignoreComments = false;
@@ -71,7 +76,15 @@ public class RunSqlScriptTask extends AbstractTask {
         this.uri = uri;
     }
 
-    public DBSystem getDb() {
+    public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+
+	public DBSystem getDb() {
         return db;
     }
 
@@ -107,7 +120,7 @@ public class RunSqlScriptTask extends AbstractTask {
         Connection connection = null;
         try {
             connection = db.createConnection();
-            DBUtil.runScript(uri, connection, haltOnError, ignoreComments);
+            DBUtil.runScript(uri, encoding, connection, haltOnError, ignoreComments);
             db.invalidate();
             connection.commit();
         } catch (IOException e) {
