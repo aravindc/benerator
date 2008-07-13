@@ -442,7 +442,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 				descriptor = new PartDescriptor(name, type);
             } else if (SIMPLE_TYPE.equals(nodeName)) {
         		SimpleTypeDescriptor simpleType = parseSimpleType(name, child);
-            	ComplexTypeDescriptor complexType = wrapSingleTypeWithComplexType(simpleType);
+            	ComplexTypeDescriptor complexType = wrapSimpleTypeWithComplexType(simpleType);
             	descriptor = new PartDescriptor(name, complexType);
             } else if (KEY.equals(nodeName))
                 parseKey(child);
@@ -460,19 +460,19 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             String type = element.getAttribute("type");
             if (!StringUtil.isEmpty(type))
             	descriptor = parseElementWithType(element);
-        }
-        if (descriptor != null)
-        	parseOccurrences(element, descriptor);
-        descriptor = parseElementAppInfo(descriptor, annotation);
+        } else
+        	descriptor = parseElementAppInfo(descriptor, annotation);
         if ("false".equals(element.getAttribute("nillable")))
         	descriptor.setNullable(false);
         if (descriptor == null)
             descriptor = new PartDescriptor(name, "string"); // TODO v0.5.5 find out appropriate default type
+        if (descriptor != null)
+        	parseOccurrences(element, descriptor);
         owner.addComponent(descriptor);
         return descriptor;
     }
 
-	private ComplexTypeDescriptor wrapSingleTypeWithComplexType(SimpleTypeDescriptor simpleType) {
+	private ComplexTypeDescriptor wrapSimpleTypeWithComplexType(SimpleTypeDescriptor simpleType) {
 		ComplexTypeDescriptor complexType = new ComplexTypeDescriptor(simpleType.getName());
 		complexType.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, simpleType));
 		return complexType;
@@ -561,17 +561,21 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         	throw new ConfigurationError("Undefined type: " + typeName);
         PartDescriptor refDesc;
     	if (type instanceof SimpleTypeDescriptor) {
+    		// the element wraps a simple type
             SimpleTypeDescriptor localType = new SimpleTypeDescriptor(name, typeName); 
-            ComplexTypeDescriptor contentType = wrapSingleTypeWithComplexType(localType);
+            ComplexTypeDescriptor contentType = wrapSimpleTypeWithComplexType(localType);
             refDesc = new PartDescriptor(name, contentType);
+            Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
+            if (anno != null)
+                parseSimpleTypeAppinfo(new Annotation(anno), localType);
     	} else {
             ComplexTypeDescriptor localType = new ComplexTypeDescriptor(name, typeName);
             refDesc = new PartDescriptor(name, localType);
+            Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
+            if (anno != null)
+                refDesc = parseAttributeAppinfo(new Annotation(anno), refDesc);
     	}
         parseOccurrences(element, refDesc);
-        Element anno = XMLUtil.getChildElement(element, false, false, "annotation");
-        if (anno != null)
-            refDesc = parseAttributeAppinfo(new Annotation(anno), refDesc);
         return refDesc;
     }
 
