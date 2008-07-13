@@ -141,7 +141,7 @@ public class City {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        final City that = (City) o; // TODO v0.5.4 include state check
+        final City that = (City) o;
         if (!this.name.equals(that.name))
         	return false;
         if (!NullSafeComparator.equals(this.nameExtension, that.nameExtension))
