@@ -59,7 +59,13 @@ public class XmlCreator {
         String pattern = args[2];
         long fileCount = Long.parseLong(args[3]);
         String[] propertiesFiles = (args.length > 4 ? ArrayUtil.copyOfRange(args, 4, args.length - 4) : new String[0]);
-        logParams(schemaUri, root, pattern, fileCount);
+        createXMLFiles(schemaUri, root, pattern, fileCount, propertiesFiles);
+    }
+
+	public static void createXMLFiles(String schemaUri, String root,
+			String pattern, long fileCount, String[] propertiesFiles)
+			throws IOException {
+		logParams(schemaUri, root, pattern, fileCount);
         long start = System.currentTimeMillis();
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
         try {
@@ -72,7 +78,7 @@ public class XmlCreator {
         }
         long duration = System.currentTimeMillis() - start;
         logger.info("Finished after " + duration + " ms");
-    }
+	}
 
 	private static void logParams(String schemaUri, String root, String pattern, long fileCount) {
 		if (logger.isDebugEnabled()) {
