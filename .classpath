@@ -12,21 +12,14 @@
 	<classpathentry kind="src" path="src/site/fml"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
-	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/log4j/log4j/1.2.14/log4j-1.2.14.jar"/>
-	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/junit/junit/3.8.2/junit-3.8.2.jar"/>
-	<classpathentry kind="lib" path="C:/dev/jdk1.5.0_09/jre/lib/rt.jar" sourcepath="C:/dev/jdk1.5.0_09/src.zip"/>
-	<classpathentry kind="lib" path="C:/dev/hsqldb/lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="C:/dev/mysql-connector-java-5.0.3/mysql-connector-java-5.0.3-bin.jar"/>
-	<classpathentry kind="lib" path="C:/dev/oracle/ojdbc14.jar"/>
-	<classpathentry kind="lib" path="C:/dev/db-derby-10.3.1.4-bin/lib/derbyclient.jar"/>
-	<classpathentry kind="lib" path="C:/dev/PostgreSQL-8.2/jdbc/postgresql-8.2-506.jdbc3.jar"/>
-	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc_license_cu.jar"/>
-	<classpathentry kind="lib" path="C:/dev/db2/java/db2jcc.jar"/>
-	<classpathentry kind="lib" path="C:/dev/Microsoft SQL Server/sqljdbc_1.1/deu/sqljdbc.jar"/>
-	<classpathentry kind="lib" path="C:/Dokumente und Einstellungen/vbergmann/.m2/repository/org/easymock/easymock/2.0/easymock-2.0.jar"/>
 	<classpathentry kind="var" path="AGITAR_TEST_LIB"/>
 	<classpathentry kind="var" path="AGITAR_MOCK_OBJECTS5"/>
-	<classpathentry kind="lib" path="C:/dev/poi-3.0.2-FINAL/poi-3.0.2-FINAL-20080204.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org/easymock/easymock/2.0/easymock-2.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/junit/junit/3.8.2/junit-3.8.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/org/apache/poi/poi/3.0.2-FINAL/poi-3.0.2-FINAL.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/oracle/ojdbc/1.4/ojdbc-1.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
