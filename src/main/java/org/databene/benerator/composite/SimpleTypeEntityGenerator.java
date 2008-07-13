@@ -75,7 +75,7 @@ public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> 
 		Assert.notNull(complexType, "complexType");
 		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
 		if (contentType instanceof SimpleTypeDescriptor)
-			return (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) contentType, unique, context, setup);
+			return (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) contentType, false, unique, context, setup);
 		else
 			throw new UnsupportedOperationException("Expected simple type as content, found: " + contentType.getName());
 	}
