@@ -48,3 +48,4 @@ bug fixes
 - 2004099 benerator.encoding is ignored
 - configuration of XML elements that wrap simple types
 - Type handling in ConstantGenerator
+- Character mapping on Mac/Linux/Unix systems
