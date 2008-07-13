@@ -44,7 +44,8 @@ import junit.framework.TestCase;
 public class SimpleTypeEntityGeneratorTest extends TestCase {
 	
 	public void test() {
-		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(createComplexType(), false, new DefaultContext(), new SimpleGenerationSetup());
+		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(
+				createComplexType(), false, new DefaultContext(), new SimpleGenerationSetup());
 		assertTrue(generator.available());
 		Entity entity = generator.generate();
 		String content = (String) entity.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
