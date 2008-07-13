@@ -99,7 +99,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	private Generator<? extends Object> createGenerator(SimpleTypeDescriptor type, boolean unique) {
 		Context context = new DefaultContext();
 		GenerationSetup setup = new SimpleGenerationSetup();
-		Generator<? extends Object> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, unique, context, setup);
+		Generator<? extends Object> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context, setup);
 		return generator;
 	}
 }
