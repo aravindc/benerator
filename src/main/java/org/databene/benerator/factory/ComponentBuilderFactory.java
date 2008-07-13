@@ -43,6 +43,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
@@ -82,11 +83,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         	if (type instanceof AlternativeGroupDescriptor) {
 				return createAlternativeGroupGenerator((AlternativeGroupDescriptor) type, context, setup);
 			} else
-				return createPartGenerator((PartDescriptor)descriptor, context, setup);
+				return createPartBuilder((PartDescriptor)descriptor, context, setup);
         } else if (descriptor instanceof ReferenceDescriptor)
-            return createReferenceGenerator((ReferenceDescriptor)descriptor, context, setup);
+            return createReferenceBuilder((ReferenceDescriptor)descriptor, context, setup);
         else if (descriptor instanceof IdDescriptor)
-            return createIdGenerator((IdDescriptor)descriptor, context);
+            return createIdBuilder((IdDescriptor)descriptor, context);
         else 
             throw new ConfigurationError("Unsupported element: " + descriptor.getClass());
     }
@@ -117,67 +118,73 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             throw new ConfigurationError("Unsupported element: " + descriptor.getClass());
     }
 */
-    public static ComponentBuilder createPartGenerator(
-            PartDescriptor descriptor, Context context, GenerationSetup setup) {
+    public static ComponentBuilder createPartBuilder(
+            PartDescriptor part, Context context, GenerationSetup setup) {
         Generator<? extends Object> generator = createSingleInstanceGenerator(
-                descriptor, context, setup);
-        generator = createComponentGeneratorWrapper(descriptor, generator, context);
+                part, context, setup);
+        generator = createMultiplicityWrapper(part, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
-        return new PlainComponentBuilder(descriptor.getName(), generator);
+        return new PlainComponentBuilder(part.getName(), generator);
     }
 
-    public static ComponentBuilder createReferenceGenerator(ReferenceDescriptor descriptor, Context context, GenerationSetup setup) {
-        Generator<? extends Object> generator = null;
+    public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, Context context, GenerationSetup setup) {
         TypeDescriptor typeDescriptor = descriptor.getType();
+        
+        // check target type
         String targetTypeName = descriptor.getTargetTye();
 		ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
+        Generator<? extends Object> generator = null;
         if (targetType == null)
             throw new ConfigurationError("Type not defined: " + targetTypeName);
-        else {
-            String sourceName = typeDescriptor.getSource();
-            if (sourceName == null)
-                throw new ConfigurationError("'source' is not set for " + descriptor);
-            Object sourceObject = context.get(sourceName);
-            if (sourceObject instanceof StorageSystem) {
-                StorageSystem sourceSystem = (StorageSystem) sourceObject;
-                String selector = typeDescriptor.getSelector();
-                TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector);
-                generator = new IteratingGenerator<Object>(entityIds);
-            } else
-            	throw new ConfigurationError("Not a supported source type: " + sourceName);
-        }
+        
+        // check source
+        String sourceName = typeDescriptor.getSource();
+        if (sourceName == null)
+            throw new ConfigurationError("'source' is not set for " + descriptor);
+        Object sourceObject = context.get(sourceName);
+        if (sourceObject instanceof StorageSystem) {
+            StorageSystem sourceSystem = (StorageSystem) sourceObject;
+            String selector = typeDescriptor.getSelector();
+            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector);
+            generator = new IteratingGenerator<Object>(entityIds);
+        } else
+        	throw new ConfigurationError("Not a supported source type: " + sourceName);
         
         // check distribution
         Distribution distribution = descriptor.getType().getDistribution();
         if (distribution != null)
             generator = TypeGeneratorFactory.applyDistribution(descriptor.getType(), distribution, generator);
         else
-        	generator = TypeGeneratorFactory.createProxy(descriptor.getType(), generator);
+        	generator = TypeGeneratorFactory.wrapWithProxy(generator, descriptor.getType());
         
-        generator = ComponentBuilderFactory.createComponentGeneratorWrapper(descriptor, generator, context);
+        generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return new PlainComponentBuilder(descriptor.getName(), generator);
     }
     
-    public static ComponentBuilder createIdGenerator(IdDescriptor descriptor, Context context) {
+    public static ComponentBuilder createIdBuilder(IdDescriptor descriptor, Context context) {
+    	// check type
         TypeDescriptor typeDescriptor = descriptor.getType();
+
+        // check source
         IdProviderFactory source = null;
+        String sourceId = typeDescriptor.getSource();
+        if (sourceId != null) {
+            source = (IdProviderFactory) context.get(sourceId);
+        }
+        
         // check strategy
         String strategyName = descriptor.getStrategy();
         if (strategyName == null)
             throw new ConfigurationError("No strategy defined for key: " + descriptor.getName());
 
-        // check scope
-        String scope = descriptor.getScope();
-        // check source
-        String sourceId = typeDescriptor.getSource();
-        if (sourceId != null) {
-            source = (IdProviderFactory) context.get(sourceId);
-        }
         // check param
         String param = descriptor.getParam();
+
+        // check scope
+        String scope = descriptor.getScope();
 
         //checkUsedDetails(descriptor, usedDetails);
         IdStrategy idStrategy = IdStrategy.getInstance(strategyName);
@@ -196,13 +203,14 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     // non-public helpers ----------------------------------------------------------------------------------------------
 
-    static Generator<Object> createComponentGeneratorWrapper(
-            ComponentDescriptor descriptor, Generator<? extends Object> elementGenerator, Context context) {
+    static Generator<Object> createMultiplicityWrapper(
+            ComponentDescriptor instance, Generator<? extends Object> elementGenerator, Context context) {
         InstanceGenerator wrapper = new InstanceGenerator(elementGenerator);
-        mapDetailsToBeanProperties(descriptor, wrapper, context);
-        wrapper.setMaxCount(getMaxCount(descriptor));
-        wrapper.setMinCount(getMinCount(descriptor));
-        return (Generator<Object>) wrapper;
+        mapDetailsToBeanProperties(instance, wrapper, context);
+        wrapper.setCountDistribution(getCountDistribution(instance));
+        wrapper.setMaxCount(getMaxCount(instance));
+        wrapper.setMinCount(getMinCount(instance));
+        return (Generator<Object>) GeneratorFactory.wrapNullQuota(wrapper, getNullQuota(instance));
     }
 
 	private static long getMaxCount(ComponentDescriptor descriptor) {
@@ -219,6 +227,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (descriptor.getMinCount() != null)
         	return descriptor.getMinCount();
         return 1;
+	}
+
+	private static Distribution getCountDistribution(ComponentDescriptor descriptor) {
+		if (descriptor.getCountDistribution() != null)
+			return descriptor.getCountDistribution();
+        return Sequence.RANDOM;
 	}
 
 }

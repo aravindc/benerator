@@ -29,6 +29,7 @@ package org.databene.benerator.factory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +39,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
@@ -45,10 +47,15 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.commons.converter.ParseFormatConverter;
+import org.databene.commons.converter.String2DateConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Iteration;
+import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
@@ -74,7 +81,7 @@ public class TypeGeneratorFactory {
     	if (logger.isDebugEnabled())
     		logger.debug(descriptor + ", " + unique);
         if (descriptor instanceof SimpleTypeDescriptor)
-            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, unique, context, setup);
+            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, unique, context, setup);
         else if (descriptor instanceof ComplexTypeDescriptor)
             return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context, setup);
         else
@@ -119,8 +126,8 @@ public class TypeGeneratorFactory {
     }
 
     private static <S, T> Converter<S, T> getConverter(TypeDescriptor descriptor) {
-        String converterClass = descriptor.getConverter(); // TODO support multiple comma-separated Converters and join them to a ConverterChain
-        if (converterClass == null)
+        String converterClass = descriptor.getConverter(); // TODO v0.5.5 support multiple comma-separated Converters and join them to a ConverterChain
+        if (converterClass == null)						   // TODO v0.5.5 support beans from context
             return null;
         Object converter = BeanUtil.newInstance(converterClass);
         if (converter instanceof java.text.Format)
@@ -139,8 +146,8 @@ public class TypeGeneratorFactory {
         }
     }
 */
-    protected static <T> Generator<T> createProxy(TypeDescriptor descriptor,
-            Generator<T> generator) {
+    protected static <T> Generator<T> wrapWithProxy(Generator<T> generator,
+            TypeDescriptor descriptor) {
         // check cyclic flag
         Boolean cyclic = descriptor.isCyclic();
         if (cyclic == null)
@@ -182,7 +189,8 @@ public class TypeGeneratorFactory {
         String pattern = descriptor.getPattern();
         if (pattern != null)
             return new SimpleDateFormat(pattern);
-        return DateFormat.getDateInstance(DateFormat.SHORT, getLocale(descriptor));
+        else
+        	return TimeUtil.createDefaultDateFormat();
     }
 
     protected static Generator createConvertingGenerator(TypeDescriptor descriptor, Generator generator) {
@@ -222,5 +230,45 @@ public class TypeGeneratorFactory {
 			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
 		return generator;
 	}
+
+	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor) {
+		generator = createConvertingGenerator(descriptor, generator);
+		if (descriptor instanceof SimpleTypeDescriptor)
+			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
+        generator = createValidatingGenerator(descriptor, generator);
+		return generator;
+	}
+    
+    private static <S, T> Generator<T> createTypeConvertingGenerator(
+            SimpleTypeDescriptor descriptor, Generator<S> generator) {
+        if (descriptor.getPrimitiveType() == null)
+            return (Generator<T>) generator;
+        PrimitiveType<T> primitiveType = descriptor.getPrimitiveType();
+        Class<T> targetType = primitiveType.getJavaType();
+        Converter<S, T> converter = null;
+        if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
+            // String needs to be converted to Date
+            if (descriptor.getPattern() != null) {
+                // We can use the SimpleDateFormat with a pattern
+                String pattern = descriptor.getPattern();
+                converter = new ParseFormatConverter(Date.class, new SimpleDateFormat(pattern));
+            } else {
+                // we need to expect the standard date format
+                converter = new String2DateConverter();
+            }
+        } else if (String.class.equals(targetType) && generator.getGeneratedType() == Date.class) {
+            // String needs to be converted to Date
+            if (descriptor.getPattern() != null) {
+                // We can use the SimpleDateFormat with a pattern
+                String pattern = descriptor.getPattern();
+                converter = new FormatFormatConverter(new SimpleDateFormat(pattern));
+            } else {
+                // we need to expect the standard date format
+                converter = (Converter<S, T>) new FormatFormatConverter(TimeUtil.createDefaultDateFormat());
+            }
+        } else
+        	converter = new AnyConverter<S, T>(targetType, descriptor.getPattern());
+        return new ConvertingGenerator<S, T>(generator, converter);
+    }
 
 }

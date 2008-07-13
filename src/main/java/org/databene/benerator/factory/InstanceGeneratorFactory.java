@@ -73,22 +73,16 @@ public class InstanceGeneratorFactory {
         Generator<? extends Object> generator = null;
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
-        if (generator == null)
-            generator = createNullGenerator(descriptor, setup);
         if (generator == null) {
             boolean unique = isUnique(descriptor);
             TypeDescriptor type = descriptor.getType();
             if (type instanceof SimpleTypeDescriptor)
-				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) type, unique, context, setup);
-			else if (type instanceof ComplexTypeDescriptor)
+				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) type, false, unique, context, setup);
+            else if (type instanceof ComplexTypeDescriptor)
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) type, unique, context, setup);
             else
-                throw new UnsupportedOperationException("Not supported type: " + type.getClass());
-            // by now, we must have created a generator
-            if (generator == null)
-                throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
-            // create wrappers
-            generator = createNullQuotaGenerator(descriptor, generator);
+                throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
+            generator = wrapWithNullQuota(generator, descriptor);
         }
         return generator;
     }
@@ -99,14 +93,7 @@ public class InstanceGeneratorFactory {
             unique = false;
         return unique;
     }
-/*
-    protected static double getNullQuota(InstanceDescriptor descriptor) {
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota == null)
-            nullQuota = 0.;
-        return nullQuota;
-    }
-*/
+
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static <T> Generator<Object> createInstanceGeneratorWrapper(
@@ -132,21 +119,8 @@ public class InstanceGeneratorFactory {
         return null;
     }
 
-    private static Generator<? extends Object> createNullGenerator(
-            InstanceDescriptor descriptor, GenerationSetup setup) {
-        Boolean nullable = descriptor.isNullable();
-        if (nullable != null) {
-            if (nullable.booleanValue()) {
-                Boolean defaultNull = setup.isDefaultNull();
-                if (defaultNull != null && defaultNull.booleanValue())
-                    return new ConstantGenerator<Object>(null);
-            }
-        }
-        return null;
-    }
-
-    private static <T> Generator<T> createNullQuotaGenerator(
-            InstanceDescriptor descriptor, Generator<T> generator) {
+    private static <T> Generator<T> wrapWithNullQuota(
+            Generator<T> generator, InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null) {
             if (nullQuota > 0) {
@@ -159,6 +133,27 @@ public class InstanceGeneratorFactory {
         }
         return generator;
     }
+
+    protected static double getNullQuota(InstanceDescriptor descriptor) {
+        Double nullQuota = descriptor.getNullQuota();
+        if (nullQuota == null)
+            nullQuota = 0.;
+        return nullQuota;
+    }
+
+    protected static Generator<? extends Object> createNullGenerator(
+            InstanceDescriptor descriptor, GenerationSetup setup) {
+        Boolean nullable = descriptor.isNullable();
+        if (nullable != null) {
+            if (nullable.booleanValue()) {
+                Boolean defaultNull = setup.isDefaultNull();
+                if (defaultNull != null && defaultNull.booleanValue())
+                    return new ConstantGenerator<Object>(null);
+            }
+        }
+        return null;
+    }
+
 /*
     private static Generator createLimitCountGenerator(InstanceDescriptor descriptor, Generator generator) {
         if (descriptor.getCount() != null)

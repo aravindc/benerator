@@ -3,7 +3,6 @@ package org.databene.benerator.factory;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
@@ -20,20 +19,15 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
-import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.commons.converter.ParseFormatConverter;
-import org.databene.commons.converter.String2DateConverter;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.FeatureWeight;
@@ -45,37 +39,39 @@ import static org.databene.model.data.SimpleTypeDescriptor.*;
 
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
-    private static final String DEFAULT_DATE_PATTERN = "yyyy-MM-dd'T'hh:mm:ss";
     private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
-	public static Generator<? extends Object> createSimpleTypeGenerator(SimpleTypeDescriptor descriptor, boolean unique,
+	public static Generator<? extends Object> createSimpleTypeGenerator(SimpleTypeDescriptor descriptor, boolean nullable, boolean unique,
             Context context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
-        // create a configured generator
-        Generator<? extends Object> generator = createConfiguredGenerator(descriptor, unique, context, setup);
+        // try constructive setup
+        Generator<? extends Object> generator = createConstructiveGenerator(descriptor, unique, context, setup);
+        // fall back to descriptive setup
+        if (generator == null)
+        	generator = createSampleGenerator(descriptor, unique);
+		if (generator == null && nullable) {
+	        Class<Object> javaType = descriptor.getPrimitiveType().getJavaType();
+			generator = new ConstantGenerator(null, javaType);
+		}
+		// fall back to default setup
         if (generator == null)
         	generator = createDefaultGenerator(descriptor, unique, context, setup);
         // by now, we must have created a generator
         if (generator == null)
             throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
         // create wrappers
-        generator = wrapGenerator(generator, descriptor);
+        generator = wrapWithPostprocessors(generator, descriptor);
+        generator = wrapWithProxy(generator, descriptor);
+        // done
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
     }
+	
+	// private helpers -------------------------------------------------------------------------------------------------
 
-	public static Generator<? extends Object> createDefaultGenerator(
-			SimpleTypeDescriptor descriptor, boolean unique, Context context,
-			GenerationSetup setup) {
-		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context, setup);
-        if (generator == null)
-            generator = createStringGenerator(descriptor, unique);
-		return generator;
-	}
-
-	public static Generator<? extends Object> createConfiguredGenerator(
+	private static Generator<? extends Object> createConstructiveGenerator(
 			SimpleTypeDescriptor descriptor, boolean unique, Context context,
 			GenerationSetup setup) {
 		Generator<? extends Object> generator;
@@ -84,24 +80,20 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             generator = createSourceAttributeGenerator(descriptor, context, setup);
         if (generator == null)
             generator = createScriptGenerator(descriptor, context, setup.getDefaultScript());
-        if (generator == null)
-            generator = createSampleGenerator(descriptor, unique);
 		return generator;
 	}
 
-	static Generator<? extends Object> wrapGenerator(
-			Generator<? extends Object> generator,
-			TypeDescriptor descriptor) {
-		generator = createConvertingGenerator(descriptor, generator);
-		if (descriptor instanceof SimpleTypeDescriptor)
-			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
-        generator = createValidatingGenerator(descriptor, generator);
-        generator = createProxy(descriptor, generator);
+	private static Generator<? extends Object> createDefaultGenerator(
+			SimpleTypeDescriptor descriptor, boolean unique, Context context,
+			GenerationSetup setup) {
+		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context, setup);
+        if (generator == null)
+            generator = createStringGenerator(descriptor, unique);
 		return generator;
 	}
-    
-    protected static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
-    	// TODO v0.5.4 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
+
+    private static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
+    	// TODO v0.5.5 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();
         if (source == null)
@@ -130,7 +122,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (distribution != null && !EMPTY_WEIGHT.equals(distribution))
             return TypeGeneratorFactory.applyDistribution(descriptor, distribution, generator);
         else
-        	return TypeGeneratorFactory.createProxy(descriptor, generator);
+        	return TypeGeneratorFactory.wrapWithProxy(generator, descriptor);
     }
 
 	private static Generator<? extends Object> createCSVSourceGenerator(
@@ -158,40 +150,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		return generator;
 	}
 
-    private static <S, T> Generator<T> createTypeConvertingGenerator(
-            SimpleTypeDescriptor descriptor, Generator<S> generator) {
-        if (descriptor.getPrimitiveType() == null)
-            return (Generator<T>) generator;
-        PrimitiveType<T> primitiveType = descriptor.getPrimitiveType();
-        Class<T> targetType = primitiveType.getJavaType();
-        Converter<S, T> converter = null;
-        if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
-            // String needs to be converted to Date
-            if (descriptor.getPattern() != null) {
-                // We can use the SimpleDateFormat with a pattern
-                String pattern = descriptor.getPattern();
-                converter = new ParseFormatConverter(Date.class, new SimpleDateFormat(pattern));
-            } else {
-                // we need to expect the standard date format
-                converter = new String2DateConverter();
-            }
-        } else if (String.class.equals(targetType) && generator.getGeneratedType() == Date.class) {
-            // String needs to be converted to Date
-            if (descriptor.getPattern() != null) {
-                // We can use the SimpleDateFormat with a pattern
-                String pattern = descriptor.getPattern();
-                converter = new FormatFormatConverter(new SimpleDateFormat(pattern));
-            } else {
-                // we need to expect the standard date format
-                converter = (Converter<S, T>) new FormatFormatConverter(new SimpleDateFormat(DEFAULT_DATE_PATTERN));
-            }
-        } else
-        	converter = new AnyConverter<S, T>(targetType, descriptor.getPattern());
-        return new ConvertingGenerator<S, T>(generator, converter);
-    }
 
-
-    public static Generator<? extends Object> createTypeGenerator(
+    private static Generator<? extends Object> createTypeGenerator(
             SimpleTypeDescriptor descriptor, boolean unique, Context context, GenerationSetup setup) {
         if (descriptor instanceof UnionSimpleTypeDescriptor)
             return createUnionTypeGenerator((UnionSimpleTypeDescriptor) descriptor, context, setup);
@@ -223,7 +183,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Generator[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
-            sources[i] = createSimpleTypeGenerator(alternative, false, context, setup);
+            sources[i] = createSimpleTypeGenerator(alternative, false, false, context, setup);
         }
         Class<Object> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);
@@ -298,7 +258,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 targetType, min, max, totalDigits, fractionDigits, precision, distribution, variation1, variation2, 0);
     }
 
-    public static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, boolean unique) {
+    private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, boolean unique) {
         // evaluate max length
         Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
         if (maxLength == null) {
@@ -335,8 +295,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         else
             return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, locale, 0);
     }
-    
-    // constuction helpers ---------------------------------------------------------------------------------------------
     
     protected static <T> Validator<T> createRestrictionValidator(
             SimpleTypeDescriptor descriptor, boolean nullable) {

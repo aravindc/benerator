@@ -88,7 +88,7 @@ public class GeneratorFactory {
     // boolean generator -----------------------------------------------------------------------------------------------
 
     /**
-     * Creates a generator for boolean values of a trueQuots [0-1] and a nullQuota [0-1]
+     * Creates a generator for boolean values of a trueQuota [0-1] and a nullQuota [0-1]
      *
      * @param trueQuota a value from 0 to 1, indicating the quota of true values to generate among the non-null values
      * @param nullQuota a value from 0 to 1, indicating the quota of true values to generate

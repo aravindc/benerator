@@ -90,18 +90,20 @@ public class ComplexTypeGeneratorFactory {
         if (generator == null)
             generator = createSourceGenerator(type, context, setup);
         if (generator == null)
-            generator = createGeneratingGenerator(type, unique, context, setup);
+            generator = createSyntheticEntityGenerator(type, unique, context, setup);
         else
             generator = createMutatingEntityGenerator(type, context, setup, generator);
         // create wrappers
-        generator = TypeGeneratorFactory.createValidatingGenerator(type, generator);
-        generator = createVariableGenerator(type, context, setup, generator);
+        generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type);
+        generator = wrapGeneratorWithVariables(type, context, setup, generator);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
 
-    private static Generator<Entity> createVariableGenerator(
+    private static Generator<Entity> wrapGeneratorWithVariables(
             ComplexTypeDescriptor type, Context context, GenerationSetup setup, Generator<Entity> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
             Map<String, Generator<? extends Object>> varGens = new HashMap<String, Generator<? extends Object>>();
@@ -160,7 +162,7 @@ public class ComplexTypeGeneratorFactory {
         if (descriptor.getDistribution() != null)
         	return applyDistribution(descriptor, generator);
         else
-        	return TypeGeneratorFactory.createProxy(descriptor, generator);
+        	return TypeGeneratorFactory.wrapWithProxy(generator, descriptor);
     }
 
 	private static Generator<Entity> applyDistribution(
@@ -233,7 +235,7 @@ public class ComplexTypeGeneratorFactory {
 		return separator;
 	}
 
-    private static Generator<Entity> createGeneratingGenerator(
+    private static Generator<Entity> createSyntheticEntityGenerator(
             ComplexTypeDescriptor complexType, boolean unique, Context context, GenerationSetup setup) {
         List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
         if (DescriptorUtil.isWrappedSimpleType(complexType))
