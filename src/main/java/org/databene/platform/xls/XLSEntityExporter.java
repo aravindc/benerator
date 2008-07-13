@@ -117,7 +117,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
         this.uri = uri;
     }
 
-	public void setProperties(String attributes) { // TODO v0.5.4 support column formatting, e.g. alignment
+	public void setProperties(String attributes) { // TODO v0.5.x support column formatting, e.g. alignment
         this.propertyNames = StringUtil.tokenize(attributes, ',');
         StringUtil.trimAll(propertyNames);
     }
