@@ -106,7 +106,7 @@ public class ModelParser {
             return parseReference(element, descriptor, context);
         else
             throw new ConfigurationError("Expected one of these element names: " +
-            		"'part', 'id', 'descriptor'. Found: " + name);
+            		"'id', 'attribute', 'reference' or 'part'. Found: " + name);
     }
 
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor, Context context) {
