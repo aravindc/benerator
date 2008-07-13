@@ -41,7 +41,7 @@ import java.io.BufferedReader;
 public class BeanGraphDemo {
 
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = IOUtil.getReaderForURI("org/databene/benerator/demo/products.csv");
+        BufferedReader reader = IOUtil.getReaderForURI("demo/shop/products.import.csv");
         CSVToJavaBeanMapper<Product> mapper = new CSVToJavaBeanMapper<Product>(reader, Product.class);
         while (mapper.hasNext())
             System.out.println(mapper.next());
