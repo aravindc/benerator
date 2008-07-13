@@ -26,6 +26,7 @@
 
 package org.databene.domain.address;
 
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.OrderedMap;
 
 import java.util.Collection;
@@ -101,4 +102,24 @@ public class State {
     public String toString() {
     	return (name != null ? name : id);
     }
+
+	@Override
+	public int hashCode() {
+		return NullSafeComparator.hashCode(country) * 31 + name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final State that = (State) obj;
+		if (!NullSafeComparator.equals(this.country, that.country))
+			return false;
+		return name.equals(that.name);
+	}
+    
 }

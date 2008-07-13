@@ -144,13 +144,16 @@ public class City {
         final City that = (City) o; // TODO v0.5.4 include state check
         if (!this.name.equals(that.name))
         	return false;
-        return NullSafeComparator.equals(this.nameExtension, that.nameExtension);
+        if (!NullSafeComparator.equals(this.nameExtension, that.nameExtension))
+        	return false;
+        return NullSafeComparator.equals(this.state, that.state);
     }
 
     public int hashCode() {
         int result;
         result = name.hashCode();
-        result = 29 * result + (nameExtension != null ? nameExtension.hashCode() : 0);
+        result = 29 * result + NullSafeComparator.hashCode(nameExtension);
+        result = 29 * result + NullSafeComparator.hashCode(state);
         return result;
     }
 }

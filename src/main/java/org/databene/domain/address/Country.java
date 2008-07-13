@@ -275,4 +275,21 @@ public class Country {
         return defaultCountry;
     }
 
+	@Override
+	public int hashCode() {
+		return isoCode.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Country other = (Country) obj;
+		return isoCode.equals(other.isoCode);
+	}
+    
 }
