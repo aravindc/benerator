@@ -354,7 +354,19 @@ querying information from a system
     </create-entities>
 --------------------------------------------------------------------------------
 
-all supported generator attributes
+entity definition
+
+[images/entity-syntax.gif]
+
+id definition
+
+[images/id-syntax.gif]
+
+attribute definition
+
+[images/attribute-syntax.gif]
+
+*all supported generator attributes
 
     [name] name of the feature to generate
 
@@ -411,6 +423,12 @@ all supported generator attributes
     [proxy-param1] sets the minimum skip size / repeat count of the proxy
 
     [proxy-param2] sets the maximum skip size / repeat count of the proxy
+
+reference definition
+
+[images/reference-syntax.gif]
+
+
 
 
 
