@@ -36,6 +36,7 @@ import org.databene.commons.context.DefaultContext;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.function.Sequence;
 
 /**
@@ -113,12 +114,12 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
-
 /*
-	public void testUniqueCSVImport() { // TODO v0.5.4 uniqueness?
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+	public void testUniqueCSVImport() { // TODO v0.6.0 uniqueness
+		ComplexTypeDescriptor type = new ComplexTypeDescriptor("Person");
 		type.setSource("org/databene/benerator/factory/person.csv");
-		type.setUnique(true);
+		InstanceDescriptor instance = new InstanceDescriptor("person", type);
+		instance.setUnique(true);
 		Generator<Entity> generator = createGenerator(type);
 		Entity person1 = generator.generate();
 		Entity person2 = generator.generate();
