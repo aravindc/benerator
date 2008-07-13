@@ -31,7 +31,7 @@
 			<xs:sequence>
 				<xs:element name="name" type="xs:string">
 					<xs:annotation><xs:appinfo>
-						<ben:type values="Apples,Bananas,Cherries"/>
+						<ben:part values="{Apples,Bananas,Cherries,${bb}}"/>
 					</xs:appinfo></xs:annotation>
 				</xs:element>
 			</xs:sequence>
@@ -39,7 +39,7 @@
 			<xs:attribute name="price" type="price-type" use="required"/>
 			<xs:attribute name="manufacturer" type="xs:string" use="required">
 				<xs:annotation><xs:appinfo>
-					<ben:part pattern="[BDFGH][aeiou][lr][tpmn] (Inc\.|Corp\.)"/>
+					<ben:attribute pattern="[BDFGH][aeiou][lr][tpmn] (Inc\.|Corp\.)"/>
 				</xs:appinfo></xs:annotation>
 			</xs:attribute>
 		</xs:complexType>
