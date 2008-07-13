@@ -31,7 +31,7 @@
 			<xs:sequence>
 				<xs:element name="name" type="xs:string">
 					<xs:annotation><xs:appinfo>
-						<ben:part values="Apples,Bananas,Cherries"/>
+						<ben:type values="Apples,Bananas,Cherries"/>
 					</xs:appinfo></xs:annotation>
 				</xs:element>
 			</xs:sequence>
