@@ -115,11 +115,11 @@ public class TypeGeneratorFactory {
     }
 
     protected static Generator<? extends Object> createScriptGenerator(
-            TypeDescriptor descriptor, Context context, String defaultEngineId) {
+            TypeDescriptor descriptor, Context context) {
         Generator<String> generator = null;
         String scriptText = descriptor.getScript();
         if (scriptText != null) {
-            Script script = ScriptUtil.parseUnspecificText(scriptText, defaultEngineId);
+            Script script = ScriptUtil.parseUnspecificText(scriptText);
             generator = new ScriptGenerator(script, context);
         }
         return generator;

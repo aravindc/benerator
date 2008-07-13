@@ -53,11 +53,6 @@ public class ConsoleExporter<E> extends FormattingConsumer<E> {
 	}
 
 	@Override
-	public void setNullString(String nullString) {
-		super.setNullString(nullString);
-	}
-
-	@Override
 	public void setTimestampPattern(String timestampPattern) {
 		super.setTimestampPattern(timestampPattern);
 		compositeFormatter.setTimestampPattern(timestampPattern);

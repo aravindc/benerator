@@ -26,8 +26,7 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.factory.SimpleGenerationSetup;
-import org.databene.commons.context.DefaultContext;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -44,8 +43,7 @@ import junit.framework.TestCase;
 public class SimpleTypeEntityGeneratorTest extends TestCase {
 	
 	public void test() {
-		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(
-				createComplexType(), false, new DefaultContext(), new SimpleGenerationSetup());
+		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(new ConstantGenerator<String>("hi"), createComplexType());
 		assertTrue(generator.available());
 		Entity entity = generator.generate();
 		String content = (String) entity.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);

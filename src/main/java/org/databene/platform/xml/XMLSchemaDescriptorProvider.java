@@ -35,7 +35,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
@@ -91,7 +90,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private ModelParser parser = new ModelParser(new SimpleGenerationSetup());
+    private ModelParser parser = new ModelParser();
     private Context context;
     private DataModel dataModel;
     private List<String> propertiesFiles;
@@ -635,12 +634,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
                 throw unsupportedElementType(child, attributeElement);
         }
         String type = attributeElement.getAttribute("type");
-        if (descriptor == null)
-            if (type != null) {
+        if (descriptor == null && type != null) {
                 descriptor = new PartDescriptor(name, type);
                 if (nullable != null && !nullable)
                     descriptor.setNullable(false);
-            }
+        }
         if (annotation != null && annotation.getAppInfo() != null)
             descriptor = parseAttributeAppinfo(annotation, descriptor);
         String fixed = attributeElement.getAttribute("fixed");

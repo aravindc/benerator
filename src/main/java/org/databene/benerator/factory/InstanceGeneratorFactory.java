@@ -122,14 +122,12 @@ public class InstanceGeneratorFactory {
     private static <T> Generator<T> wrapWithNullQuota(
             Generator<T> generator, InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota != null) {
-            if (nullQuota > 0) {
-                if (descriptor.isNullable() != null && !descriptor.isNullable())
-                    logger.error("nullQuota is set to " + nullQuota + " but the value is not nullable. " +
-                            "Ignoring nullQuota for: " + descriptor);
-                else
-                    generator = new NullableGenerator<T>(generator, nullQuota);
-            }
+        if (nullQuota != null && nullQuota > 0) {
+            if (descriptor.isNullable() != null && !descriptor.isNullable())
+                logger.error("nullQuota is set to " + nullQuota + " but the value is not nullable. " +
+                        "Ignoring nullQuota for: " + descriptor);
+            else
+                generator = new NullableGenerator<T>(generator, nullQuota);
         }
         return generator;
     }
@@ -144,12 +142,10 @@ public class InstanceGeneratorFactory {
     protected static Generator<? extends Object> createNullGenerator(
             InstanceDescriptor descriptor, GenerationSetup setup) {
         Boolean nullable = descriptor.isNullable();
-        if (nullable != null) {
-            if (nullable.booleanValue()) {
-                Boolean defaultNull = setup.isDefaultNull();
-                if (defaultNull != null && defaultNull.booleanValue())
-                    return new ConstantGenerator<Object>(null);
-            }
+        if (nullable != null && nullable.booleanValue()) {
+            Boolean defaultNull = setup.isDefaultNull();
+            if (defaultNull != null && defaultNull.booleanValue())
+                return new ConstantGenerator<Object>(null);
         }
         return null;
     }

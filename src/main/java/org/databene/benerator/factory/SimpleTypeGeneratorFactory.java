@@ -46,7 +46,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
         // try constructive setup
-        Generator<? extends Object> generator = createConstructiveGenerator(descriptor, unique, context, setup);
+        Generator<? extends Object> generator = createConstructiveGenerator(descriptor, context);
         // fall back to descriptive setup
         if (generator == null)
         	generator = createSampleGenerator(descriptor, unique);
@@ -72,14 +72,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private static Generator<? extends Object> createConstructiveGenerator(
-			SimpleTypeDescriptor descriptor, boolean unique, Context context,
-			GenerationSetup setup) {
+			SimpleTypeDescriptor descriptor, Context context) {
 		Generator<? extends Object> generator;
 		generator = createByGeneratorName(descriptor, context);
         if (generator == null)
-            generator = createSourceAttributeGenerator(descriptor, context, setup);
+            generator = createSourceAttributeGenerator(descriptor, context);
         if (generator == null)
-            generator = createScriptGenerator(descriptor, context, setup.getDefaultScript());
+            generator = createScriptGenerator(descriptor, context);
 		return generator;
 	}
 
@@ -92,7 +91,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		return generator;
 	}
 
-    private static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
+    private static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context) {
     	// TODO v0.5.5 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();

@@ -43,12 +43,10 @@ public class DbUnitEntityIterable implements EntityIterable {
 
     private String uri;
     private Context context;
-    private String defaultScriptEngine;
 
-    public DbUnitEntityIterable(String uri, Context context, String defaultScriptEngine) {
+    public DbUnitEntityIterable(String uri, Context context) {
         this.uri = uri;
         this.context = context;
-        this.defaultScriptEngine = defaultScriptEngine;
     }
 
     public Class<Entity> getType() {
@@ -57,7 +55,7 @@ public class DbUnitEntityIterable implements EntityIterable {
 
     public Iterator<Entity> iterator() {
         try {
-            return new DbUnitEntityIterator(uri, context, defaultScriptEngine);
+            return new DbUnitEntityIterator(uri, context);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

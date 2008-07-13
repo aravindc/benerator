@@ -76,7 +76,7 @@ public class Benerator extends SimpleGenerationSetup {
     
     private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil.toSet("pagesize", "threads", "consumer");
 
-    private ModelParser parser = new ModelParser(this);
+    private ModelParser parser = new ModelParser();
     
     private ExecutorService executor;
     private Escalator escalator;
@@ -165,7 +165,7 @@ public class Benerator extends SimpleGenerationSetup {
 
     private void parseEcho(Element element, Context context) {
         String message = parseAttribute(element, "message", context);
-        System.out.println(ScriptUtil.render(message, context, defaultScript));
+        System.out.println(ScriptUtil.render(message, context));
     }
 
     private Object parseBean(Element element, Set<Heavyweight> resources, Context context) {
@@ -207,7 +207,7 @@ public class Benerator extends SimpleGenerationSetup {
         try {
             String beanName = parseAttribute(element, "name", context);
             logger.debug("Instantiating task '" + beanName + "'");
-            ScriptConverter scriptConverter = new ScriptConverter(context, defaultScript);
+            ScriptConverter scriptConverter = new ScriptConverter(context);
             Task task = (Task) XMLElement2BeanConverter.convert(element, context, scriptConverter);
             int count = parseIntAttribute(element, "count", context, 1);
             int pageSize = parseIntAttribute(element, "pagesize", context, defaultPagesize);
@@ -410,7 +410,7 @@ public class Benerator extends SimpleGenerationSetup {
         String text = parseAttribute(element, name, context);
         if (StringUtil.isEmpty(text))
             return defaultValue;
-        text = ScriptUtil.render(text, context, defaultScript);
+        text = ScriptUtil.render(text, context);
         return Integer.parseInt(text);
     }
     
@@ -418,7 +418,7 @@ public class Benerator extends SimpleGenerationSetup {
         if ("script".equals(name))
             return value;
         else
-            return ScriptUtil.render(value, context, defaultScript);
+            return ScriptUtil.render(value, context);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

@@ -47,7 +47,6 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
-import org.databene.commons.SystemInfo;
 import org.databene.model.consumer.FormattingConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -66,8 +65,6 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
     
     // defaults --------------------------------------------------------------------------------------------------------
     
-    private static final char   DEFAULT_SEPARATOR = ',';
-    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
     private static final String DEFAULT_URI       = "export.csv";
 
     // attributes ------------------------------------------------------------------------------------------------------
@@ -86,10 +83,6 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
     }
     
     public XLSEntityExporter(String uri, String attributes) {
-        this(uri, attributes, DEFAULT_SEPARATOR, DEFAULT_ENCODING);
-    }
-
-    public XLSEntityExporter(String uri, String attributes, char separator, String encoding) {
         this.uri = uri;
         setProperties(attributes);
     }

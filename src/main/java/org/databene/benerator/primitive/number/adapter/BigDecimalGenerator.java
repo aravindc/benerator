@@ -61,7 +61,7 @@ public class BigDecimalGenerator extends IntegralNumberGenerator<BigDecimal> {
 
     /** Initializes the generator to create uniformly distributed random BigDecimals with the specified precision */
     public BigDecimalGenerator(BigDecimal min, BigDecimal max, BigDecimal precision, Distribution distribution) {
-        this(min, max, precision, distribution, new BigDecimal(1), new BigDecimal(1));
+        this(min, max, precision, distribution, BigDecimal.valueOf(1), BigDecimal.valueOf(1));
     }
 
     /** Initializes the generator to create BigDecimals */

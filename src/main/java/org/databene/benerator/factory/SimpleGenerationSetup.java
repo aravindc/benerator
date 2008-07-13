@@ -27,6 +27,7 @@
 package org.databene.benerator.factory;
 
 import org.databene.commons.SystemInfo;
+import org.databene.script.ScriptUtil;
 
 /**
  * Simple implementation of the GenerationSetup interface.<br/><br/>
@@ -38,7 +39,6 @@ public class SimpleGenerationSetup implements GenerationSetup {
     
     protected String  defaultEncoding  = SystemInfo.fileEncoding();
     protected int     defaultPagesize  = 1;
-    protected String  defaultScript    = "ftl";
     protected boolean defaultNull      = true;
     protected char    defaultSeparator = ',';
     	
@@ -59,11 +59,11 @@ public class SimpleGenerationSetup implements GenerationSetup {
     }
     
     public String getDefaultScript() {
-        return defaultScript;
+        return ScriptUtil.getDefaultScriptEngine();
     }
     
     public void setDefaultScript(String defaultScript) {
-        this.defaultScript = defaultScript;
+        ScriptUtil.setDefaultScriptEngine(defaultScript);
     }
     
     public boolean isDefaultNull() {

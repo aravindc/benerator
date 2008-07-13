@@ -27,8 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
 
@@ -37,10 +35,7 @@ import org.databene.model.function.Sequence;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class ByteArrayGenerator extends GeneratorWrapper<Byte, byte[]> {
-
-    /** The generator that creates the array length */
-    private IntegerGenerator sizeGenerator;
+public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -53,65 +48,6 @@ public class ByteArrayGenerator extends GeneratorWrapper<Byte, byte[]> {
     }
 
     public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength, Distribution distribution) {
-        super(source);
-        this.sizeGenerator = new IntegerGenerator(minLength, maxLength, 1, distribution);
+        super(source, byte.class, byte[].class, minLength, maxLength, distribution);
     }
-
-    // configuration properties ----------------------------------------------------------------------------------------
-
-    /** Returns the minimum array length to generate */
-    public long getMinLength() {
-        return sizeGenerator.getMin();
-    }
-
-    /** Sets the minimum array length to generate */
-    public void setMinLength(int minLength) {
-        sizeGenerator.setMin(minLength);
-    }
-
-    /** Returns the maximum array length to generate */
-    public long getMaxLength() {
-        return sizeGenerator.getMin();
-    }
-
-    /** Sets the maximum array length to generate */
-    public void setMaxLength(int maxLength) {
-        sizeGenerator.setMax(maxLength);
-    }
-
-    public Distribution getLengthDistribution() {
-        return sizeGenerator.getDistribution();
-    }
-
-    public void setLengthDistribution(Distribution distribution) {
-        sizeGenerator.setDistribution(distribution);
-    }
-
-    // generator implementation ----------------------------------------------------------------------------------------
-
-    public Class<byte[]> getGeneratedType() {
-        return byte[].class;
-    }
-
-    public void validate() {
-        if (dirty) {
-            super.validate();
-            sizeGenerator.validate();
-            if (source == null)
-                throw new InvalidGeneratorSetupException("source", " is null");
-            dirty = false;
-        }
-    }
-
-    /** @see org.databene.benerator.Generator#generate() */
-    public byte[] generate() {
-        int length = sizeGenerator.generate();
-        byte[] array = new byte[length];
-        for (int i = 0; i < length; i++)
-            array[i] = source.generate();
-        return array;
-    }
-
-    // implementation --------------------------------------------------------------------------------------------------
-
 }

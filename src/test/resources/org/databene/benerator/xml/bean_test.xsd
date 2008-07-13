@@ -16,7 +16,7 @@
 			<xs:sequence>
 				<xs:element name="result" type="xs:string" minOccurs="1" maxOccurs="1">
 					<xs:annotation><xs:appinfo>
-						<ben:part source="result_generator" />
+						<ben:type source="result_generator" />
 					</xs:appinfo></xs:annotation>
 				</xs:element>
 			</xs:sequence>

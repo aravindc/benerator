@@ -27,15 +27,9 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.factory.GenerationSetup;
-import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.benerator.wrapper.GeneratorWrapper;
-import org.databene.commons.Assert;
-import org.databene.commons.Context;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.model.data.TypeDescriptor;
 
 /**
  * Generates Entities that wrap a content of simple type.<br/><br/>
@@ -46,11 +40,7 @@ import org.databene.model.data.TypeDescriptor;
 public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> {
 	
 	private ComplexTypeDescriptor complexType;
-	
-	public SimpleTypeEntityGenerator(ComplexTypeDescriptor complexType, boolean unique, Context context, GenerationSetup setup) {
-		this(createSource(complexType, unique, context, setup), complexType);
-	}
-	
+
 	public SimpleTypeEntityGenerator(Generator source, ComplexTypeDescriptor complexType) {
 		super(source);
 		this.complexType = complexType;
@@ -69,15 +59,4 @@ public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> 
 		return Entity.class;
 	}
 	
-	// private helpers -------------------------------------------------------------------------------------------------
-
-	private static Generator<Object> createSource(ComplexTypeDescriptor complexType, boolean unique, Context context, GenerationSetup setup) {
-		Assert.notNull(complexType, "complexType");
-		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
-		if (contentType instanceof SimpleTypeDescriptor)
-			return (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) contentType, false, unique, context, setup);
-		else
-			throw new UnsupportedOperationException("Expected simple type as content, found: " + contentType.getName());
-	}
-
 }

@@ -702,7 +702,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     private static final Log logger = LogFactory.getLog(DBSystem.class);
-    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
+//    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
     private static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC");
 
 }

@@ -145,15 +145,13 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
                 loopSize--;
             if (loopSize > 0) {
                 Task task = realTask;
-                if (threadCount > 1) {
-                    if (!(task instanceof ThreadSafe)) {
-                        if (task instanceof Parallelizable)
-                            task = cloneTask((Parallelizable) task);
-                        else
-                            throw new ConfigurationError("Since the task is not marked as thread-safe," +
-                                    "it must either be used single-threaded " +
-                                    "or implement the Parallelizable interface");
-                    }
+                if (threadCount > 1 && !(task instanceof ThreadSafe)) {
+                    if (task instanceof Parallelizable)
+                        task = cloneTask((Parallelizable) task);
+                    else
+                        throw new ConfigurationError("Since the task is not marked as thread-safe," +
+                                "it must either be used single-threaded " +
+                                "or implement the Parallelizable interface");
                 }
                 task = new LoopedTask(task, loopSize); // TODO v0.6.0 leave the loop if generator has become unavailable 
                 TaskRunnable thread = new TaskRunnable(task, (realTask instanceof ThreadSafe ? null : context), latch);

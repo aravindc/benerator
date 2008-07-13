@@ -53,7 +53,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 new MessageConverter<Long>(filenamePattern, Locale.US));
         // parse properties files
-        ModelParser parser = new ModelParser(setup);
+        ModelParser parser = new ModelParser();
         for (String propertiesFile : propertiesFiles)
             parser.importProperties(propertiesFile, context);
 

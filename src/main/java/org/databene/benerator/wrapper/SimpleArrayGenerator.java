@@ -26,7 +26,6 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
 import org.databene.benerator.*;
 import org.databene.commons.ArrayUtil;
 import org.databene.model.function.Distribution;
@@ -37,87 +36,20 @@ import org.databene.model.function.Sequence;
  * <br/>
  * Created: 26.08.2006 09:37:55
  */
-public class SimpleArrayGenerator <E> extends GeneratorWrapper<E, E[]> {
-
-    /** The generator that creates the array length */
-    private IntegerGenerator sizeGenerator;
-
-    private Class<E> componentType;
-    private Class<E[]> generatedType;
+public class SimpleArrayGenerator<E> extends AbstractArrayGenerator<E, E[]> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
     public SimpleArrayGenerator() {
-        this(null, null, 0, 30, Sequence.RANDOM);
+        this(null, (Class<E>) Object.class, 0, 30, Sequence.RANDOM);
     }
 
-    public SimpleArrayGenerator(Generator<E> source, Class<E> productType, int minLength, int maxLength) {
-        this(source, productType, minLength, maxLength, Sequence.RANDOM);
+    public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength) {
+        this(source, componentType, minLength, maxLength, Sequence.RANDOM);
     }
 
-    public SimpleArrayGenerator(Generator<E> source, Class<E> productType, int minLength, int maxLength, Distribution distribution) {
-        super(source);
-        this.componentType = productType;
-        this.sizeGenerator = new IntegerGenerator(minLength, maxLength, 1, distribution);
+    public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength, Distribution distribution) {
+        super(source, componentType, ArrayUtil.arrayType(componentType), minLength, maxLength, distribution);
     }
-
-    // configuration properties ----------------------------------------------------------------------------------------
-
-    /** Returns the minimum array length to generate */
-    public long getMinLength() {
-        return sizeGenerator.getMin();
-    }
-
-    /** Sets the minimum array length to generate */
-    public void setMinLength(int minLength) {
-        sizeGenerator.setMin(minLength);
-    }
-
-    /** Returns the maximum array length to generate */
-    public long getMaxLength() {
-        return sizeGenerator.getMin();
-    }
-
-    /** Sets the maximum array length to generate */
-    public void setMaxLength(int maxLength) {
-        sizeGenerator.setMax(maxLength);
-    }
-
-    public Distribution getLengthDistribution() {
-        return sizeGenerator.getDistribution();
-    }
-
-    public void setLengthDistribution(Distribution distribution) {
-        sizeGenerator.setDistribution(distribution);
-    }
-
-    // generator implementation ----------------------------------------------------------------------------------------
-
-    public Class<E[]> getGeneratedType() {
-        return generatedType;
-    }
-
-    public void validate() {
-        if (dirty) {
-            super.validate();
-            sizeGenerator.validate();
-            if (source == null)
-                throw new InvalidGeneratorSetupException("source", " is null");
-            Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
-            this.generatedType = ArrayUtil.arrayType(cType);
-            dirty = false;
-        }
-    }
-
-    /** @see org.databene.benerator.Generator#generate() */
-    public E[] generate() {
-        int length = sizeGenerator.generate();
-        E[] array = ArrayUtil.newInstance(componentType, length);
-        for (int i = 0; i < length; i++)
-            array[i] = source.generate();
-        return array;
-    }
-
-    // implementation --------------------------------------------------------------------------------------------------
 
 }

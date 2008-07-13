@@ -64,7 +64,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
 
     private int nextRowNum;
 
-    public DbUnitEntityIterator(String uri, Context context, String defaultScriptEngine) throws IOException {
+    public DbUnitEntityIterator(String uri, Context context) throws IOException {
         this.context = context;
         this.rows = new ArrayList<Row>();
         Document document = readDocument(uri);
@@ -72,7 +72,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
             parseFlatDataset(document);
         else
             parseDataset(document);
-        processScripts(defaultScriptEngine);
+        processScripts();
         this.nextRowNum = 0;
     }
     
@@ -115,11 +115,11 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
         return type;
     }
 
-    private void processScripts(String defaultScriptEngine) {
+    private void processScripts() {
         for (Row row : rows) {
             String[] cells = row.getValues();
             for (int i = 0; i < cells.length; i++) {
-                cells[i] = ScriptUtil.render(cells[i], context, defaultScriptEngine);
+                cells[i] = ScriptUtil.render(cells[i], context);
             }
         }
     }

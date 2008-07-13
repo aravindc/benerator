@@ -33,6 +33,7 @@ import java.io.IOException;
 import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.script.ScriptUtil;
 
 /**
  * Tests the DBUnitXmlEntityImporter with a standard and a flat dataset file.<br/>
@@ -54,7 +55,8 @@ public class DbUnitEntityIterableTest extends TestCase {
     // helpers ---------------------------------------------------------------------------------------------------------
 
     private void check(String uri) throws IOException {
-        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new DefaultContext(), "qsc");
+    	ScriptUtil.setDefaultScriptEngine("qsc");
+        DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new DefaultContext());
         assertTrue(iterator.hasNext());
         assertEquals(createPerson("Alice", "23"), iterator.next());
         assertTrue(iterator.hasNext());

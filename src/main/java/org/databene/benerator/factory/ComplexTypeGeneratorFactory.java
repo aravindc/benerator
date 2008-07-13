@@ -32,6 +32,7 @@ import org.databene.model.data.DescriptorUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.IndividualWeight;
@@ -147,13 +148,11 @@ public class ComplexTypeGeneratorFactory {
                 throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
         } else {
             if (sourceName.endsWith(".xml"))
-                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(sourceName, context, setup.getDefaultScript()));
+                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(sourceName, context));
             else if (sourceName.endsWith(".csv")) {
-                generator = createCSVSourceGenerator(descriptor, context,
-						setup, sourceName);
+                generator = createCSVSourceGenerator(descriptor, context, setup, sourceName);
             } else if (sourceName.endsWith(".flat")) {
-                generator = createFlatSourceGenerator(descriptor, context,
-						setup, sourceName);
+                generator = createFlatSourceGenerator(descriptor, context, setup, sourceName);
             } else
                 throw new UnsupportedOperationException("Unknown source type: " + sourceName);
         }
@@ -193,7 +192,7 @@ public class ComplexTypeGeneratorFactory {
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
-		ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+		ScriptConverter scriptConverter = new ScriptConverter(context);
 		FlatFileEntityIterable iterable = new FlatFileEntityIterable(sourceName, descriptor, scriptConverter, encoding, ffcd);
 		generator = new IteratingGenerator(iterable);
 		return generator;
@@ -206,7 +205,7 @@ public class ComplexTypeGeneratorFactory {
 		String encoding = complexType.getEncoding();
 		if (encoding == null)
 		    encoding = setup.getDefaultEncoding();
-		ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
+		ScriptConverter scriptConverter = new ScriptConverter(context);
 		String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
 		char separator = getSeparator(complexType, setup);
@@ -238,8 +237,11 @@ public class ComplexTypeGeneratorFactory {
     private static Generator<Entity> createSyntheticEntityGenerator(
             ComplexTypeDescriptor complexType, boolean unique, Context context, GenerationSetup setup) {
         List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
-        if (DescriptorUtil.isWrappedSimpleType(complexType))
-        	return new SimpleTypeEntityGenerator(complexType, unique, context, setup);
+        if (DescriptorUtil.isWrappedSimpleType(complexType)) {
+    		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
+    		Generator<Object> generator = (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) contentType, false, unique, context, setup);
+        	return new SimpleTypeEntityGenerator(generator, complexType);
+        }
         Collection<ComponentDescriptor> components = complexType.getComponents();
         for (ComponentDescriptor component : components) {
             if (!complexType.equals(component.getType()) && component.getMode() != Mode.ignored) {
@@ -250,7 +252,7 @@ public class ComplexTypeGeneratorFactory {
     	return new EntityGenerator(complexType, componentGenerators, context);
     }
 
-    private static Generator<Entity> createMutatingEntityGenerator(
+	private static Generator<Entity> createMutatingEntityGenerator(
             ComplexTypeDescriptor descriptor, Context context, GenerationSetup setup, Generator<Entity> generator) {
     	List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
         Collection<ComponentDescriptor> descriptors = descriptor.getDeclaredComponents();

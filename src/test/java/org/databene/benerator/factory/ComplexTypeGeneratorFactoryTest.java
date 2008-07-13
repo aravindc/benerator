@@ -36,7 +36,6 @@ import org.databene.commons.context.DefaultContext;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.function.Sequence;
 
 /**
