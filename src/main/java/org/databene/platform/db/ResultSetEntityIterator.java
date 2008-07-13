@@ -94,7 +94,7 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
 
     // private helpers ----------------------------------------------------------------------------------------
     
-    // TODO v0.5.4 perf: use a dedicated converter for each column
+    // TODO v0.5.x perf: use a dedicated converter for each column
     private Object javaValue(ResultSet resultSet, int columnIndex, String primitiveType) throws SQLException {
         if ("date".equals(primitiveType))
             return resultSet.getDate(columnIndex);
