@@ -4,9 +4,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -14,14 +12,11 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.sample.SequencedSampleGenerator;
-import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
-import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
@@ -38,12 +33,11 @@ import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.FeatureWeight;
-import org.databene.model.function.IndividualWeight;
 import org.databene.model.function.Sequence;
-import org.databene.model.function.WeightFunction;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.csv.CSVCellIterable;
 
@@ -58,31 +52,53 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             Context context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
-        Generator<? extends Object> generator = null;
-        // create a source generator
-        generator = createByGeneratorName(descriptor, context);
+        // create a configured generator
+        Generator<? extends Object> generator = createConfiguredGenerator(descriptor, unique, context, setup);
+        if (generator == null)
+        	generator = createDefaultGenerator(descriptor, unique, context, setup);
+        // by now, we must have created a generator
+        if (generator == null)
+            throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
+        // create wrappers
+        generator = wrapGenerator(generator, descriptor);
+        if (logger.isDebugEnabled())
+            logger.debug("Created " + generator);
+        return generator;
+    }
+
+	public static Generator<? extends Object> createDefaultGenerator(
+			SimpleTypeDescriptor descriptor, boolean unique, Context context,
+			GenerationSetup setup) {
+		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context, setup);
+        if (generator == null)
+            generator = createStringGenerator(descriptor, unique);
+		return generator;
+	}
+
+	public static Generator<? extends Object> createConfiguredGenerator(
+			SimpleTypeDescriptor descriptor, boolean unique, Context context,
+			GenerationSetup setup) {
+		Generator<? extends Object> generator;
+		generator = createByGeneratorName(descriptor, context);
         if (generator == null)
             generator = createSourceAttributeGenerator(descriptor, context, setup);
         if (generator == null)
             generator = createScriptGenerator(descriptor, context, setup.getDefaultScript());
         if (generator == null)
             generator = createSampleGenerator(descriptor, unique);
-        if (generator == null)
-            generator = createTypeGenerator(descriptor, unique, context, setup);
-        if (generator == null)
-            generator = createStringGenerator(descriptor, unique);
-        // by now, we must have created a generator
-        if (generator == null)
-            throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
-        // create wrappers
-        generator = createConvertingGenerator(descriptor, generator);
-        generator = createTypeConvertingGenerator(descriptor, generator);
+		return generator;
+	}
+
+	static Generator<? extends Object> wrapGenerator(
+			Generator<? extends Object> generator,
+			TypeDescriptor descriptor) {
+		generator = createConvertingGenerator(descriptor, generator);
+		if (descriptor instanceof SimpleTypeDescriptor)
+			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
         generator = createValidatingGenerator(descriptor, generator);
         generator = createProxy(descriptor, generator);
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
-        return generator;
-    }
+		return generator;
+	}
     
     protected static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
     	// TODO v0.5.4 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
@@ -130,7 +146,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		    encoding = SystemInfo.fileEncoding();
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
-		// TODO v0.5.4 support scripts in CSV simpleType import
+		// TODO v0.5.x support scripts in CSV simpleType import
 		// ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
 		Iterable<String> iterable = null;
 		if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {
