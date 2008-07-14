@@ -78,7 +78,7 @@ public class DBSnapshotTool {
         export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename);
     }
 
-	private static void export(String dbUrl, String dbDriver, String dbSchema,
+	public static void export(String dbUrl, String dbDriver, String dbSchema,
 			String dbUser, String dbPassword, String filename) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");

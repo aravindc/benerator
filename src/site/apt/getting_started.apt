@@ -25,12 +25,15 @@ installation
  * download the lastest version of databene benerator at the 
    {{{http://sourceforge.net/project/showfiles.php?group_id=222964}download page}}
 
- * unzip the downloaded file into a directory. It will be called 'root' below
+ * unzip the downloaded file into a directory.
+   Create an environment variable BENERATOR_HOME that points to this path.
 
  * if you want to use a database, download the jdbc driver appropriate for your database 
    and put it into a directory, e.g. root/lib
+   
+ * edit the file root/benerator_common[.bat] and add the necessary file to the classpath setup
  
- * edit the file root/benerator_common[.bat] and add the necessary file to the classpath setup, e.g.
+ * under Unix/Linux/Mac, open a shell and call chmod a+x bin/*.sh
  
  []
 

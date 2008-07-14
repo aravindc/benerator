@@ -50,4 +50,13 @@ public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
     public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength, Distribution distribution) {
         super(source, byte.class, byte[].class, minLength, maxLength, distribution);
     }
+
+    /** @see org.databene.benerator.Generator#generate() */
+    public byte[] generate() {
+        int length = sizeGenerator.generate();
+        byte[] array = new byte[length];
+        for (int i = 0; i < length; i++)
+            array[i] = source.generate();
+        return array;
+    }
 }

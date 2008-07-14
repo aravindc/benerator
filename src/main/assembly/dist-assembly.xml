@@ -31,7 +31,7 @@
             </includes>
             <excludes>
                 <exclude>benerator_common.bat</exclude>
-                <exclude>benerator_common</exclude>
+                <exclude>benerator_common.sh</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -55,6 +55,7 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>*.bat</include>
+                <include>*.sh</include>
             </includes>
         </fileSet>
         <!-- tests -->
@@ -90,7 +91,7 @@
 			<filtered>true</filtered>
 		</file>
 		<file>
-			<source>src/main/script/benerator_common</source>
+			<source>src/main/script/benerator_common.sh</source>
 			<outputDirectory>bin</outputDirectory>
 			<filtered>true</filtered>
 		</file>

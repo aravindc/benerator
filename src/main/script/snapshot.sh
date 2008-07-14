@@ -5,6 +5,6 @@ if [ -z "$BENERATOR_HOME" ]; then
   echo "to the location of your benerator installation."
   exit 1
 fi
-. $BENERATOR_HOME/bin/benerator_common
+. $BENERATOR_HOME/bin/benerator_common.sh
 snapshot_exec_command="exec \"$JAVACMD\" $BENERATOR_OPTS -classpath \"$LOCALCLASSPATH\" $* org.databene.benerator.main.DBSnapshotTool snapshot.dbunit.xml"
 eval $snapshot_exec_command

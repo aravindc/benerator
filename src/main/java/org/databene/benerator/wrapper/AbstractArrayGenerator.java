@@ -43,7 +43,7 @@ import org.databene.model.function.Distribution;
 public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A>{
 
     /** The generator that creates the array length */
-    private IntegerGenerator sizeGenerator;
+    protected IntegerGenerator sizeGenerator;
 
     private Class<E> componentType;
     private Class<A> generatedType;
