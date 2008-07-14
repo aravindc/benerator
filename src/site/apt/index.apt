@@ -24,6 +24,14 @@ about databene benerator
 
 news
 
+  <<2008-07-14 benerator release 0.5.4>> 
+  With release 0.5.4 all known bugs are fixed and convenience is improved
+  with the new <reference> descriptor, configurable CSV separators, improved 
+  distribution support and a new 'finance' domain with generators and validators for 
+  bank account numbers with IBANs. The descriptor syntax and semantic has been 
+  clarified and unified (see http://databene.org/databene-benerator/file_format.html).
+  Some more XML Schema features are supported, but there is still work to do.
+
   <<2008-05-07 benerator release 0.5.3>> fixes all known bugs and adds an Excel Sheet Exporter.
 
   {{{http://sourceforge.net/project/showfiles.php?group_id=222964}download benerator}}
