@@ -74,6 +74,13 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
         components.add(componentName, descriptor);
     }
 
+	public void setComponent(ComponentDescriptor component) {
+    	String componentName = component.getName();
+		if (parent != null && ((ComplexTypeDescriptor)parent).getComponent(componentName) != null) // TODO v0.5.5 possibly this should be placed in the benerator parser
+			component.setParent(((ComplexTypeDescriptor)parent).getComponent(componentName));
+        components.set(componentName, component);
+	}
+   
     public ComponentDescriptor getComponent(String name) {
         ComponentDescriptor descriptor = components.someValueOfName(name);
         if (descriptor == null && getParent() != null)
@@ -83,22 +90,21 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
 
     public List<ComponentDescriptor> getComponents() {
         NamedValueList<ComponentDescriptor> result = NamedValueList.createCaseInsensitiveList();
-        NamedValueList<ComponentDescriptor> parentComponents = NamedValueList.createCaseInsensitiveList();
+        
+        for (ComponentDescriptor ccd : components.values())
+        	result.add(ccd.getName(), ccd);
         if (getParent() != null) {
-        	parentComponents = ((ComplexTypeDescriptor) getParent()).components;
+            NamedValueList<ComponentDescriptor> parentComponents = ((ComplexTypeDescriptor) getParent()).components;
 			for (ComponentDescriptor pcd : parentComponents.values()) {
                 String name = pcd.getName();
-                ComponentDescriptor ccd = components.someValueOfName(name);
-                if (ccd != null)
-                    result.add(name, ccd);
-                else
-                	result.add(name, pcd);
+				if (!components.containsName(name)) {
+	                ComponentDescriptor ccd = components.someValueOfName(name);
+	                if (ccd != null)
+	                    result.add(name, ccd);
+	                else
+	                	result.add(name, pcd);
+				}
             }
-        }
-        for (ComponentDescriptor ccd : components.values()) {
-        	String name = ccd.getName();
-        	if (!parentComponents.containsName(name))
-        		result.add(ccd.getName(), ccd);
         }
         return result.values();
     }
@@ -141,7 +147,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
         //return new CompositeFormatter(false, false).render(super.toString() + '{', new CompositeAdapter(), "}");
         return getName() + getComponents().toString();
     }
-    
+
     // helper for rendering --------------------------------------------------------------------------------------------
 /*
     public class CompositeAdapter implements Composite<ComponentDescriptor> {
