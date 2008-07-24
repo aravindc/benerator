@@ -28,7 +28,9 @@ package org.databene.platform.db;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.commons.Context;
 import org.databene.commons.StringUtil;
+import org.databene.script.ScriptUtil;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -49,6 +51,7 @@ public class QueryIterable implements Iterable<ResultSet> {
     private Connection connection;
     private String query;
     private int fetchSize;
+    private Context context;
 
     public QueryIterable(Connection connection) {
         this(connection, null, 100);
@@ -59,9 +62,14 @@ public class QueryIterable implements Iterable<ResultSet> {
     }
 
     public QueryIterable(Connection connection, String query, int fetchSize) {
+        this(connection, query, fetchSize, null);
+    }
+
+    public QueryIterable(Connection connection, String query, int fetchSize, Context context) {
         this.connection = connection;
         this.query = query;
         this.fetchSize = fetchSize;
+        this.context = context;
         if (logger.isDebugEnabled())
         	logger.debug("Constructed QueryIterable: " + query);
     }
@@ -79,15 +87,16 @@ public class QueryIterable implements Iterable<ResultSet> {
             throw new IllegalStateException("'connection' is null");
         if (StringUtil.isEmpty(query))
             throw new IllegalStateException("'query' is empty or null");
+        String renderedQuery = ScriptUtil.render(query, context);
         try {
             if (sqlLogger.isDebugEnabled())
                 sqlLogger.debug(query);
             Statement statement = connection.createStatement();
             statement.setFetchSize(fetchSize);
-            ResultSet resultSet = statement.executeQuery(query);
-            return new ResultSetIterator(resultSet, query);
+            ResultSet resultSet = statement.executeQuery(renderedQuery);
+            return new ResultSetIterator(resultSet, renderedQuery);
         } catch (SQLException e) {
-            throw new RuntimeException("Error in query: " + query, e);
+            throw new RuntimeException("Error in query: " + renderedQuery, e);
         }
     }
     
