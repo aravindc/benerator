@@ -47,29 +47,29 @@ public class EntityGenerator implements Generator<Entity> {
 
     private String entityName;
     private Generator<Entity> source;
-    private List<ComponentBuilder> componentGenerators;
+    private List<ComponentBuilder> componentBuilders;
     private Context context;
 
     // constructors --------------------------------------------------------------------------------------
 
     /**
      * @param descriptor Entity descriptor. 
-     * @param componentGenerators Generators that generate values for the entities' components
+     * @param componentBuilders Generators that generate values for the entities' components
      */
-    public EntityGenerator(ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentGenerators, Context context) {
-        this(descriptor, new SimpleEntityGenerator(descriptor), componentGenerators, context);
+    public EntityGenerator(ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
+        this(descriptor, new SimpleEntityGenerator(descriptor), componentBuilders, context);
     }
 
     /**
      * @param descriptor Entity descriptor. 
      * @param source another Generator of entities that serves as Entity builder. 
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
-     * @param componentGenerators Generators that generate values for the entities' components
+     * @param componentBuilders Generators that generate values for the entities' components
      */
-    public EntityGenerator(ComplexTypeDescriptor descriptor, Generator<Entity> source, List<ComponentBuilder> componentGenerators, Context context) {
+    public EntityGenerator(ComplexTypeDescriptor descriptor, Generator<Entity> source, List<ComponentBuilder> componentBuilders, Context context) {
         this.entityName = descriptor.getName();
         this.source = source;
-        this.componentGenerators = componentGenerators;
+        this.componentBuilders = componentBuilders;
         this.context = context;
     }
 
@@ -81,7 +81,7 @@ public class EntityGenerator implements Generator<Entity> {
 
     public void validate() {
         source.validate();
-        for (ComponentBuilder compGen : componentGenerators)
+        for (ComponentBuilder compGen : componentBuilders)
             compGen.validate();
     }
 
@@ -91,7 +91,7 @@ public class EntityGenerator implements Generator<Entity> {
                 stateLogger.debug("Source for entity '" + entityName + "' is not available any more: " + source);
             return false;
         }
-        for (ComponentBuilder compGen : componentGenerators) {
+        for (ComponentBuilder compGen : componentBuilders) {
             if (!compGen.available()) {
                 if (stateLogger.isDebugEnabled())
                     stateLogger.debug("Generator for entity '" + entityName + "' is not available any more: " + compGen);
@@ -104,9 +104,9 @@ public class EntityGenerator implements Generator<Entity> {
     public Entity generate() {
         Entity entity = source.generate();
         context.set(this.entityName, entity);
-        for (ComponentBuilder componentGenerator : componentGenerators) {
+        for (ComponentBuilder componentBuilder : componentBuilders) {
             try {
-                componentGenerator.buildComponentFor(entity);
+                componentBuilder.buildComponentFor(entity);
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of entity '" + entityName + "'", e);
             }
@@ -116,20 +116,20 @@ public class EntityGenerator implements Generator<Entity> {
 
     public void close() {
         source.close();
-        for (ComponentBuilder compGen : componentGenerators)
+        for (ComponentBuilder compGen : componentBuilders)
             compGen.close();
     }
     
     public void reset() {
         source.reset();
-        for (ComponentBuilder compGen : componentGenerators)
+        for (ComponentBuilder compGen : componentBuilders)
             compGen.reset();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     public String toString() {
-        return getClass().getSimpleName() + '[' + entityName + ']' + componentGenerators;
+        return getClass().getSimpleName() + '[' + entityName + ']' + componentBuilders;
     }
 
 }
