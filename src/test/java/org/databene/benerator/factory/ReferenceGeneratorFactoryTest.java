@@ -31,6 +31,7 @@ import junit.framework.TestCase;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.iterator.DefaultTypedIterable;
@@ -126,15 +127,15 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		public void flush() {
 		}
 
-		public <T> TypedIterable<T> query(String selector) {
+		public <T> TypedIterable<T> query(String selector, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public TypedIterable<Entity> queryEntities(String type, String selector) {
+		public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
 			throw new UnsupportedOperationException("queryEntities() not implemented");
 		}
 
-		public <T> TypedIterable<T> queryEntityIds(String entityName, String selector) {
+		public <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
 			return (TypedIterable<T>) new DefaultTypedIterable<String>(String.class, CollectionUtil.toList("Alice", "Bob"));
 		}
 

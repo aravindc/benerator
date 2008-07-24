@@ -27,7 +27,7 @@ public class CSVTableExporterDemo {
     }
 
     private static void exportTableAsCSV(StorageSystem db) {
-        TypedIterable<Entity> entities = db.queryEntities("db_product", null);
+        TypedIterable<Entity> entities = db.queryEntities("db_product", null, null);
         Iterator<Entity> iterator = entities.iterator();
         if (iterator.hasNext()) {
             Entity cursor = iterator.next();

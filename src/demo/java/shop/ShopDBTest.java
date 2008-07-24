@@ -123,7 +123,7 @@ public class ShopDBTest extends TestCase {
     private void checkEntities(String entityName, Validator<Entity> validator,
             int expectedCount, DBSystem db) {
         assertEquals("Wrong number of '" + entityName + "' instances.", expectedCount, db.countEntities(entityName));
-        for (Entity entity : db.queryEntities(entityName, null))
+        for (Entity entity : db.queryEntities(entityName, null, null))
             assertTrue("Invalid entity: " + entity, validator.valid(entity));
     }
 
