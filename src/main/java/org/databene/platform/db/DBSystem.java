@@ -276,10 +276,15 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         }
     }
 
-    public TypedIterable<Entity> queryEntities(String type, String selector) {
+    public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("queryEntities(" + type + ")");
+        boolean script = false;
     	Connection connection = getThreadContext().connection;
+    	if (selector.startsWith("{") && selector.endsWith("}")) {
+    		selector = selector.substring(1, selector.length() - 1);
+    		script = true;
+    	}
     	String sql = null;
     	if (StringUtil.isEmpty(selector))
     	    sql = "select * from " + type;
@@ -287,7 +292,9 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     	    sql = selector;
     	else
     	    sql = "select * from " + type + " WHERE " + selector;
-        Iterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize);
+    	if (script)
+    		sql = '{' + sql + '}';
+        Iterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize, context);
         return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
 
@@ -307,7 +314,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         }
     }
 
-    public <T> TypedIterable<T> queryEntityIds(String tableName, String selector) {
+    public <T> TypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("getIds(" + tableName + ", " + selector + ")");
         
@@ -320,14 +327,14 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         String query = "select " + ArrayFormat.format(pkColumnNames) + " from " + tableName;
         if (selector != null)
             query += " where " + selector;
-        return query(query);
+        return query(query, context);
     }
 
-    public <T> TypedIterable<T> query(String query) {
+    public <T> TypedIterable<T> query(String query, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
         Connection connection = getThreadContext().connection;
-        QueryIterable resultSetIterable = new QueryIterable(connection, query);
+        QueryIterable resultSetIterable = new QueryIterable(connection, query, fetchSize, context);
         return (TypedIterable<T>)new ConvertingIterable<ResultSet, Object>(resultSetIterable, new ResultSetConverter(true));
     }
       
