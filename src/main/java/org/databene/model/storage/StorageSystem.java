@@ -27,6 +27,7 @@
 package org.databene.model.storage;
 
 
+import org.databene.commons.Context;
 import org.databene.commons.Heavyweight;
 import org.databene.commons.TypedIterable;
 import org.databene.model.data.DescriptorProvider;
@@ -45,13 +46,13 @@ public interface StorageSystem extends DescriptorProvider, Heavyweight {
     String getId();
     
     /** Creates an iterator that provides all entities of given type. */
-    TypedIterable<Entity> queryEntities(String type, String selector);
+    TypedIterable<Entity> queryEntities(String type, String selector, Context context);
     
     /** Queries for entity ids */
-    <T> TypedIterable<T> queryEntityIds(String entityName, String selector);
+    <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context);
 
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
-    <T> TypedIterable<T> query(String selector);
+    <T> TypedIterable<T> query(String selector, Context context);
     
     /** Enqueues an entity for {@link #flush()}ing. */
     void store(Entity entity);
