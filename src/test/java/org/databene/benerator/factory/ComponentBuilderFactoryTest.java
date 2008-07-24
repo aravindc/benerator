@@ -29,11 +29,13 @@ package org.databene.benerator.factory;
 import junit.framework.TestCase;
 
 import org.databene.benerator.composite.ComponentBuilder;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 /**
@@ -42,6 +44,8 @@ import org.databene.model.data.SimpleTypeDescriptor;
  * Created: 10.08.2007 12:40:41
  */
 public class ComponentBuilderFactoryTest extends TestCase {
+	
+	// TODO v0.5.5 define tests for all syntax paths
 /*
     private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
@@ -50,21 +54,18 @@ public class ComponentBuilderFactoryTest extends TestCase {
     
     private static int testCount = 0;
 */
-    public void testAlternative() {
-    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
-    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
-		alternativeType.addComponent(new PartDescriptor("a", typeA));
-    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
-		alternativeType.addComponent(new PartDescriptor("b", typeB));
-		DefaultContext context = new DefaultContext();
-		SimpleGenerationSetup setup = new SimpleGenerationSetup();
-		PartDescriptor part = new PartDescriptor(null, alternativeType);
-		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);
-		Entity entity = new Entity("Entity");
-		builder.buildComponentFor(entity);
-		System.out.println(entity);
-    }
-    
+	public void testNullQuotaOneReference() {
+		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor("ref").withNullQuota(1);
+		ComponentBuilder builder = createComponentBuilder(reference);
+		expectNulls(builder, "ref", 10);
+	}
+
+	public void testNullQuotaOneAttribute() {
+		ReferenceDescriptor attribute = (ReferenceDescriptor) new PartDescriptor("part").withNullQuota(1);
+		ComponentBuilder builder = createComponentBuilder(attribute);
+		expectNulls(builder, "part", 10);
+	}
+
     // TODO v0.5.5 add tests
 
 /*
@@ -344,4 +345,33 @@ public class ComponentBuilderFactoryTest extends TestCase {
         return builder;
     }
 */
+	// private helpers -------------------------------------------------------------------------------------------------
+	
+	private ComponentBuilder createComponentBuilder(ReferenceDescriptor reference) {
+		return ComponentBuilderFactory.createComponentBuilder(reference, new BeneratorContext(), new SimpleGenerationSetup());
+	}
+	
+    public void testAlternative() {
+    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
+    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
+		alternativeType.addComponent(new PartDescriptor("a", typeA));
+    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
+		alternativeType.addComponent(new PartDescriptor("b", typeB));
+		DefaultContext context = new DefaultContext();
+		SimpleGenerationSetup setup = new SimpleGenerationSetup();
+		PartDescriptor part = new PartDescriptor(null, alternativeType);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);
+		Entity entity = new Entity("Entity");
+		builder.buildComponentFor(entity);
+		System.out.println(entity);
+    }
+    
+	private void expectNulls(ComponentBuilder builder, String componentName, int invocations) {
+		Entity entity = new Entity("Test");
+		for (int i = 0; i < invocations; i++) {
+			builder.buildComponentFor(entity);
+			assertNull(entity.get(componentName));
+		}
+	}
+
 }
