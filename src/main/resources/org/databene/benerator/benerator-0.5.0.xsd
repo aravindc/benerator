@@ -200,7 +200,7 @@
 			<xs:extension base="generator-setup">
 			
 				<xs:attribute name="nullable"     type="xs:string"/>
-				<xs:attribute name="mode"         type="xs:string/>
+				<xs:attribute name="mode"         type="xs:string"/>
 
 				<!-- boolean generator setup -->
 				<xs:attribute name="trueQuota"    type="xs:string"/>
