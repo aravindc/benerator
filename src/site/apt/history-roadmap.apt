@@ -22,23 +22,23 @@ Before version 1.0, all releases have beta status.
 *-----------------+-------------------+-----------------------------------------------+
 | <<release>>     | <<release date>>  | <<features>>                                  |
 *-----------------+-------------------+-----------------------------------------------+
-| 0.5.3 (stable)  | 2000-05-07        | Major bug fixes                               |
+| 0.5.3 (stable)  | 2008-05-07        | Major bug fixes                               |
 |                 |                   | Added Excel Sheet Exporter                    |
 *-----------------+-------------------+-----------------------------------------------+
-| 0.5.2           | 2000-04-30        | Major bug fixes                               |
+| 0.5.2           | 2008-04-30        | Major bug fixes                               |
 |                 |                   | performance tuned, several enhancements       |
 *-----------------+-------------------+-----------------------------------------------+
-| 0.5.1           | 2000-04-08        | Major bug fixes in the new XML support        |
+| 0.5.1           | 2008-04-08        | Major bug fixes in the new XML support        |
 |                 |                   | US support in address+company name generation |
 *-----------------+-------------------+-----------------------------------------------+
-| 0.5.0           | 2000-03-31        | XML schema import and XML file generation     |
+| 0.5.0           | 2008-03-31        | XML schema import and XML file generation     |
 |                 |                   | finalized region concept (-> nested datasets) |
 |                 |                   | template & script support                     |
 |                 |                   | recursion                                     |
 *-----------------+-------------------+-----------------------------------------------+
-| 0.4.1 (stable)  | 2000-02-19        | major bug fixes                               |
+| 0.4.1 (stable)  | 2008-02-19        | major bug fixes                               |
 *-----------------+-------------------+-----------------------------------------------+
-| 0.4.0           | 2000-02-03        | staging                                       |
+| 0.4.0           | 2008-02-03        | staging                                       |
 |                 |                   | properties file support                       |
 |                 |                   | template & script support                     |
 |                 |                   | recursion                                     |
