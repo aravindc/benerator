@@ -1,0 +1,49 @@
+release notes benerator 0.5.5
+=============================
+
+summary
+-------
+With the new benerator release, database data generation is strongly simplified:
+A syntax extension provides selector expressions that are evaluated dynamically
+and you may inline SQL code in benerator descriptor files. With the consumer 
+org.databene.platform.db.SQLEntityExporter, you can now export data to SQL files.
+
+changes
+-------
+- softened dependency to POI (you need to explicitly define the dependency in your maven client project)
+- Java 6
+
+enhancements
+------------
+- added createxml.sh
+- supporting dynamic queries in selectors, e.g. selector="{{owner_fk = ${user.id}}}"
+- improved convenience with new <execute> tag. It replaces the former use of RunSQLScriptTask
+  usage: <execute uri="drop.sql" target="db" onError="warn" />
+- inlining of SQL, e.g.
+	<execute uri="create.sql" target="db" onError="fatal"><![CDATA[
+		CREATE TABLE TT (
+			ID NUMBER(10) NOT NULL,
+			NAME VARCHAR2(100) NOT NULL
+		);]]>
+	</execute>
+- new common error handling mechanism, strategies: ignore, trace, debug, info, warn, error, fatal
+- support for default component settings, e.g. for creating id and created_at for any entity the same way:
+	<defaultComponents>
+        <id name="ID" type="long" source="db" strategy="sequence" param="my_sequence"/>
+        <attribute name="CREATED_AT" generator="org.databene.benerator.primitive.datetime.CurrentDateGenerator"/>
+	</defaultComponents>
+- simplified configuration
+  - type specification not necessary any more for any component with nullQuota="1"
+  - type specification for id only necessary for custom id-strategies
+- script/program invocation
+  - inline SQL
+  - shell
+- Defining default generators of attributes for all entities
+
+bug fixes
+---------
+(Find the tracker at http://sourceforge.net/tracker/?group_id=222964&atid=1057386)
+- Fixed resource leak in IteratingGenerator
+- Printing error messages also if RunSQLScriptTask.haltOnError=false
+- bugfix in attribute generation order
+
