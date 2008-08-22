@@ -27,6 +27,8 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.model.data.ComponentDescriptor;
+
 /**
  * General setup for a generation run.<br/><br/>
  * Created: 30.01.2008 15:14:38
@@ -38,4 +40,5 @@ public interface GenerationSetup {
     int getDefaultPagesize();
     String getDefaultEncoding();
     char getDefaultSeparator();
+    ComponentDescriptor getDefaultComponentConfig(String name);
 }
