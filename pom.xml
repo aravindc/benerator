@@ -5,11 +5,11 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.4</version>
+    <version>0.5.5</version>
 
     <properties>
-	    <webdecs_version>0.4.4</webdecs_version>
-	    <commons_version>0.4.4</commons_version>
+	    <webdecs_version>0.4.5</webdecs_version>
+	    <commons_version>0.4.5</commons_version>
     </properties>
 
 <!--
@@ -76,6 +76,7 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>3.0.2-FINAL</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
