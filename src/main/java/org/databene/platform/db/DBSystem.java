@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.io.IOException;
+import java.lang.reflect.Proxy;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -58,6 +59,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import javax.sql.PooledConnection;
 
 /**
  * RDBMS implementation of the {@link StorageSystem} interface.<br/>
@@ -281,7 +284,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             logger.debug("queryEntities(" + type + ")");
         boolean script = false;
     	Connection connection = getThreadContext().connection;
-    	if (selector.startsWith("{") && selector.endsWith("}")) {
+    	if (selector != null && selector.startsWith("{") && selector.endsWith("}")) {
     		selector = selector.substring(1, selector.length() - 1);
     		script = true;
     	}
@@ -366,7 +369,11 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     public Connection createConnection() {
 		try {
-            Connection connection = new PooledConnection(DBUtil.connect(url, driver, user, password));
+            Connection connection = DBUtil.connect(url, driver, user, password);
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			connection = (Connection) Proxy.newProxyInstance(classLoader, 
+					new Class[] { Connection.class, PooledConnection.class }, 
+					new PooledConnectionHandler(connection));
             connection.setAutoCommit(false);
             return connection;
         } catch (ConnectFailedException e) {
