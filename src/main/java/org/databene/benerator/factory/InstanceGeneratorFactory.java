@@ -57,8 +57,7 @@ public class InstanceGeneratorFactory {
     protected InstanceGeneratorFactory() {}
 
     public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, Context context, GenerationSetup setup) {
-        Generator<? extends Object> generator = createSingleInstanceGenerator(
-                descriptor, context, setup);
+        Generator<? extends Object> generator = createSingleInstanceGenerator(descriptor, context, setup);
         generator = createInstanceGeneratorWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -111,7 +110,7 @@ public class InstanceGeneratorFactory {
         return (Generator<Object>) generator;
     }
     
-    private static Generator<? extends Object> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
+    public static Generator<? extends Object> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null && nullQuota.doubleValue() == 1) {
             return new ConstantGenerator<Object>(null);
