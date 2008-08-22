@@ -279,11 +279,19 @@ public class ModelParser {
         return Integer.parseInt(text);
     }
 */    
+    public static String renderAttribute(String name, String value, Context context) {
+        if (value == null || "script".equals(name))
+            return value;
+		else
+			return ScriptUtil.render(value, context);
+    }
+/*
     private String renderAttribute(String name, String value, Context context) {
         if ("script".equals(name))
             return value;
         else
             return ScriptUtil.render(value, context);
     }
+*/
 
 }
