@@ -26,13 +26,11 @@
 
 package org.databene.platform.db.model.jdbc;
 
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
-import org.databene.commons.ConnectFailedException;
-import org.databene.commons.ImportFailedException;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.ErrorHandler.Level;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.platform.db.model.DBIndex;
@@ -52,10 +50,10 @@ import junit.framework.TestCase;
  */
 public class JDBCImporterTest extends TestCase {
 	
-	public void testImportDatabase() throws ImportFailedException, ConnectFailedException, IOException, SQLException {
+	public void testImportDatabase() throws Exception {
 		// prepare database
 		Connection connection = HSQLUtil.connectInMemoryDB(getClass().getSimpleName());
-		DBUtil.runScript("org/databene/platform/db/model/jdbc/create_tables.hsql.sql", "ISO-8859-1", connection, true, true);
+		DBUtil.runScript("org/databene/platform/db/model/jdbc/create_tables.hsql.sql", "ISO-8859-1", connection, true, new ErrorHandler(getClass()));
 		// run importer
 		JDBCDBImporter importer = new JDBCDBImporter(connection, "sa", "public", true);
 		Database db = importer.importDatabase();
