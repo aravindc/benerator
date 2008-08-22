@@ -26,48 +26,118 @@
 
 package org.databene.benerator.factory;
 
-import junit.framework.TestCase;
-
+import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
+import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.AlternativeGroupDescriptor;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.function.Sequence;
 
 /**
  * Tests the ComponentGeneratorFactory class for all useful setups.<br/>
  * <br/>
  * Created: 10.08.2007 12:40:41
  */
-public class ComponentBuilderFactoryTest extends TestCase {
+public class ComponentBuilderFactoryTest extends GeneratorTest {
 	
-	// TODO v0.5.5 define tests for all syntax paths
+	// TODO v0.5.6 define tests for all syntax paths
 /*
     private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
     private static Set<String> componentFeatures = CollectionUtil.toSet(
             "type", "unique", "nullable", "minCount", "maxCount", "count", "nullQuota");
     
-    private static int testCount = 0;
 */
+	// csv string source -----------------------------------------------------------------------------------------------
+	
+	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
+
+	public void testCSVStringAttribute() {
+		PartDescriptor name = createCSVStringAttributeBuilder();
+		expectGeneratedSequence(name, "Alice", "Bob", "Charly");
+	}
+
+	public void testCSVStringAttributeStep() {
+		PartDescriptor name = createCSVStringAttributeBuilder();
+		SimpleTypeDescriptor localType = (SimpleTypeDescriptor) name.getLocalType(false);
+		localType.setDistribution(Sequence.STEP);
+		localType.setMin("0");
+		expectGeneratedSequence(name, "Alice", "Bob", "Charly");
+	}
+	
+	public void testCSVStringAttributeUnique() {
+		PartDescriptor name = createCSVStringAttributeBuilder();
+		name.setUnique(true);
+		expectGeneratedSet(name, "Alice", "Bob", "Charly");
+	}
+
+	public void testCSVStringAttributeRandomUnique() {
+		PartDescriptor name = createCSVStringAttributeBuilder();
+		name.getLocalType().setDistribution(Sequence.RANDOM);
+		name.setUnique(true);
+		expectGeneratedSet(name, "Alice", "Bob", "Charly");
+	}
+
+	private PartDescriptor createCSVStringAttributeBuilder() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		name.setMinCount(1L);
+		name.setMaxCount(1L);
+		name.getLocalType(false).setSource(NAMES_CSV);
+		return name;
+	}
+	
+	// nullQuota == 1 evaluation ---------------------------------------------------------------------------------------
+	
 	public void testNullQuotaOneReference() {
-		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor("ref").withNullQuota(1);
+		String componentName = "id";
+		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(reference);
-		expectNulls(builder, "ref", 10);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectNulls(helper, 10);
 	}
 
 	public void testNullQuotaOneAttribute() {
-		ReferenceDescriptor attribute = (ReferenceDescriptor) new PartDescriptor("part").withNullQuota(1);
+		String componentName = "part";
+		PartDescriptor attribute = (PartDescriptor) new PartDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(attribute);
-		expectNulls(builder, "part", 10);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectNulls(helper, 10);
 	}
 
-    // TODO v0.5.5 add tests
-
+	// Id Descriptor tests ---------------------------------------------------------------------------------------------
+	
+	public void testUuid() {
+		String componentName = "id";
+		IdDescriptor id = new IdDescriptor(componentName).withStrategy("uuid");
+		ComponentBuilder builder = createComponentBuilder(id);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectUniqueGenerations(helper, 10);
+	}
+	
+	public void testIncrementId() {
+		String componentName = "id";
+		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
+		// test with unspecified type
+		ComponentBuilder builder = createComponentBuilder(id);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectUniqueGenerations(helper, 10);
+		// test int type
+		id.setTypeName("byte");
+		builder = createComponentBuilder(id);
+		helper = new ComponentBuilderGenerator(builder, componentName);
+		expectUniqueGenerations(helper, 10);
+	}
+	
 /*
     public void testGenerator() {
         createGenerator("test", "generator", BooleanGenerator.class.getName());
@@ -347,8 +417,8 @@ public class ComponentBuilderFactoryTest extends TestCase {
 */
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-	private ComponentBuilder createComponentBuilder(ReferenceDescriptor reference) {
-		return ComponentBuilderFactory.createComponentBuilder(reference, new BeneratorContext(), new SimpleGenerationSetup());
+	private ComponentBuilder createComponentBuilder(ComponentDescriptor component) {
+		return ComponentBuilderFactory.createComponentBuilder(component, new BeneratorContext(), new SimpleGenerationSetup());
 	}
 	
     public void testAlternative() {
@@ -366,12 +436,48 @@ public class ComponentBuilderFactoryTest extends TestCase {
 		System.out.println(entity);
     }
     
-	private void expectNulls(ComponentBuilder builder, String componentName, int invocations) {
-		Entity entity = new Entity("Test");
-		for (int i = 0; i < invocations; i++) {
+	private static final class ComponentBuilderGenerator<E> extends LightweightGenerator<E> {
+		
+		private ComponentBuilder builder;
+		private String componentName;
+
+		public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
+			this.builder = builder;
+			this.componentName = componentName;
+		}
+
+		@Override
+		public boolean available() {
+			return builder.available();
+		}
+		
+		public E generate() {
+			Entity entity = new Entity("Test");
 			builder.buildComponentFor(entity);
-			assertNull(entity.get(componentName));
+			return (E) entity.get(componentName);
+		}
+		
+		@Override
+		public void reset() {
+			builder.reset();
+		}
+		
+		@Override
+		public void close() {
+			builder.close();
 		}
 	}
 
+	private <T> void expectGeneratedSequence(PartDescriptor name, T... products) {
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		expectGeneratedSequence(helper, products).withCeasedAvailability();
+	}
+
+	private <T> void expectGeneratedSet(PartDescriptor name, T... products) {
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		expectGeneratedSet(helper, products).withCeasedAvailability();
+	}
+	
 }
