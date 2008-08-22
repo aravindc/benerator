@@ -133,6 +133,13 @@ public abstract class GeneratorTest extends TestCase {
         checkDistribution(counter, equalDistribution, tolerance, expectedSet);
     }
 
+	public static void expectNulls(Generator<String> generator, int n) {
+		for (int i = 0; i < n; i++) {
+			assertTrue(generator.available());
+			assertNull(generator.generate());
+		}
+	}
+
     // unspecific generator tests --------------------------------------------------------------------------------------
 
     public static <E> void checkEqualDistribution(
@@ -200,7 +207,8 @@ public abstract class GeneratorTest extends TestCase {
                 t.printStackTrace();
                 fail("When generator " + generator + " is unavailable, a generate() call is expected " +
                         "to cause an " + IllegalGeneratorStateException.class.getSimpleName() + ". " +
-                        "Instead this exception was thrown: " + t);
+                        "Instead an exception of different type was thrown");
+                t.printStackTrace();
             } finally {
                 generator.close();
             }
