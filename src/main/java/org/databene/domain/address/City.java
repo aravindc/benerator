@@ -50,6 +50,7 @@ public class City {
     private State state;
     private int inhabitants;
     private Locale language;
+    private int population;
 
     public City(State state, String name, String addition, Collection<String> zipCodes, String areaCode) {
         if (areaCode == null)
@@ -129,10 +130,18 @@ public class City {
     public void setInhabitants(int inhabitants) {
         this.inhabitants = inhabitants;
     }
-
+    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    public int getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(int population) {
+		this.population = population;
+	}
+
+	public String toString() {
         return name + (StringUtil.isEmpty(nameExtension) ? "" : (Character.isLetter(nameExtension.charAt(0)) ? " " : "") + nameExtension);
     }
 
