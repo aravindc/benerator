@@ -27,6 +27,7 @@
 package org.databene.task;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 
 /**
  * Simple abstract implementation of the Task interface.<br/>
@@ -38,15 +39,29 @@ public abstract class AbstractTask implements Task {
 
     protected String taskName;
     protected Context context;
+    protected ErrorHandler errorHandler;
     
     // constructor -----------------------------------------------------------------------------------------------------
 
     protected AbstractTask() {
-        setTaskName(getClass().getSimpleName());
+        this(null, null);
+    }
+
+    protected AbstractTask(ErrorHandler errorHandler) {
+        this(null, errorHandler);
     }
 
     protected AbstractTask(String taskName) {
+        this(taskName, null);
+    }
+    
+    protected AbstractTask(String taskName, ErrorHandler errorHandler) {
+    	if (taskName == null)
+    		taskName = getClass().getSimpleName();
         setTaskName(taskName);
+        if (errorHandler == null)
+        	errorHandler = new ErrorHandler(taskName);
+        this.errorHandler = errorHandler;
     }
     
     // Task interface --------------------------------------------------------------------------------------------------
@@ -59,7 +74,15 @@ public abstract class AbstractTask implements Task {
         this.taskName = taskName;
     }
 
-    public void init(Context context) {
+    public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
+
+	public void init(Context context) {
         this.context = context;
     }
     
