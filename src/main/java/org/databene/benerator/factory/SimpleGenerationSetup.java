@@ -27,6 +27,8 @@
 package org.databene.benerator.factory;
 
 import org.databene.commons.SystemInfo;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -41,7 +43,10 @@ public class SimpleGenerationSetup implements GenerationSetup {
     protected int     defaultPagesize  = 1;
     protected boolean defaultNull      = true;
     protected char    defaultSeparator = ',';
-    	
+    protected String  defaultErrorHandler = "fatal";
+    
+    protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
+
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
@@ -76,6 +81,22 @@ public class SimpleGenerationSetup implements GenerationSetup {
     
 	public char getDefaultSeparator() {
 		return defaultSeparator;
+	}
+
+	public void setDefaultSeparator(char defaultSeparator) {
+		this.defaultSeparator = defaultSeparator;
+	}
+
+	public ComponentDescriptor getDefaultComponentConfig(String name) {
+		return defaultComponent.getComponent(name);
+	}
+
+	public String getDefaultErrorHandler() {
+		return defaultErrorHandler;
+	}
+
+	public void setDefaultErrorHandler(String defaultErrorHandler) {
+		this.defaultErrorHandler = defaultErrorHandler;
 	}
 
 }
