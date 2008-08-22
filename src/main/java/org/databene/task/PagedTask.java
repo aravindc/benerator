@@ -116,16 +116,20 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
             logger.debug("Running PagedTask[" + getTaskName() + "]");
         int currentPageNo = 0;
         while (workPending(currentPageNo)) {
-            pageStarting(currentPageNo);
-            long currentPageSize = (totalInvocations < 0 ? pageSize : Math.min(pageSize, totalInvocations - invocationCount));
-            if (threadCount > 1)
-                invocationCount += runMultiThreaded(currentPageNo, currentPageSize);
-            else
-                invocationCount += runSingleThreaded(currentPageSize);
-            pageFinished(currentPageNo);
-            if (exception != null)
-                throw new RuntimeException(exception);
-            currentPageNo++;
+        	try {
+	            pageStarting(currentPageNo);
+	            long currentPageSize = (totalInvocations < 0 ? pageSize : Math.min(pageSize, totalInvocations - invocationCount));
+	            if (threadCount > 1)
+	                invocationCount += runMultiThreaded(currentPageNo, currentPageSize);
+	            else
+	                invocationCount += runSingleThreaded(currentPageSize);
+	            pageFinished(currentPageNo);
+	            if (exception != null)
+	                throw new RuntimeException(exception);
+	            currentPageNo++;
+        	} catch (Exception e) {
+        		errorHandler.handleError("Error in execution of task " + getTaskName(), e);
+        	}
         }
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
