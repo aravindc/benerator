@@ -139,7 +139,7 @@ public class ComplexTypeGeneratorFactory {
             if (sourceObject instanceof StorageSystem) {
                 StorageSystem storage = (StorageSystem) sourceObject;
                 String selector = descriptor.getSelector();
-                generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector));
+                generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
             } else if (sourceObject instanceof TypedIterable) {
                 generator = new IteratingGenerator((TypedIterable) sourceObject);
             } else if (sourceObject instanceof Generator) {
@@ -236,7 +236,7 @@ public class ComplexTypeGeneratorFactory {
 
     private static Generator<Entity> createSyntheticEntityGenerator(
             ComplexTypeDescriptor complexType, boolean unique, Context context, GenerationSetup setup) {
-        List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
+        List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
         if (DescriptorUtil.isWrappedSimpleType(complexType)) {
     		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
     		Generator<Object> generator = (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) contentType, false, unique, context, setup);
@@ -245,18 +245,22 @@ public class ComplexTypeGeneratorFactory {
         Collection<ComponentDescriptor> components = complexType.getComponents();
         for (ComponentDescriptor component : components) {
             if (!complexType.equals(component.getType()) && component.getMode() != Mode.ignored) {
-				ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context, setup);
-				componentGenerators.add(builder);
+            	String componentName = component.getName();
+				ComponentDescriptor defaultComponentConfig = setup.getDefaultComponentConfig(componentName);
+				if (!complexType.isDeclaredComponent(componentName) && defaultComponentConfig != null)
+					component = defaultComponentConfig;
+            	ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context, setup);
+				componentBuilders.add(builder); 
             }
         }
-    	return new EntityGenerator(complexType, componentGenerators, context);
+    	return new EntityGenerator(complexType, componentBuilders, context);
     }
 
 	private static Generator<Entity> createMutatingEntityGenerator(
             ComplexTypeDescriptor descriptor, Context context, GenerationSetup setup, Generator<Entity> generator) {
     	List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
-        Collection<ComponentDescriptor> descriptors = descriptor.getDeclaredComponents();
-        for (ComponentDescriptor component : descriptors)
+        Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
+        for (ComponentDescriptor component : components)
             if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName()))
             	componentGenerators.add(ComponentBuilderFactory.createComponentBuilder(component, context, setup));
         return new EntityGenerator(descriptor, generator, componentGenerators, context);
