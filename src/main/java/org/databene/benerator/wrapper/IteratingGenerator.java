@@ -29,6 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.util.GeneratorUtil;
+import org.databene.commons.Heavyweight;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.TypedIterable;
 
@@ -41,10 +43,17 @@ import java.util.Iterator;
  */
 public class IteratingGenerator<E> implements Generator<E> {
 
+	private static final int NEW       = -1;
+	private static final int AVAILABLE =  0;
+	private static final int UTILIZED  =  1;
+	private static final int CLOSED    =  2;
+	
     private TypedIterable<E> iterable;
 
     private Iterator<E> iterator;
-    private boolean dirty;
+    private int state;
+
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public IteratingGenerator() {
         this(null);
@@ -52,68 +61,93 @@ public class IteratingGenerator<E> implements Generator<E> {
 
     public IteratingGenerator(TypedIterable<E> iterable) {
         this.iterable = iterable;
-        this.dirty = true;
+        this.state = NEW;
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     public TypedIterable<E> getIterable() {
         return iterable;
     }
 
     public void setIterable(TypedIterable<E> iterable) {
+        if (state != NEW)
+        	throw new IllegalGeneratorStateException("Mutating an initialized generator");
         this.iterable = iterable;
-        this.dirty = true;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
     public void validate() {
-        if (dirty) {
-            if (iterable == null)
-                throw new InvalidGeneratorSetupException("iterable", "is null");
-            close();
-            this.iterator = iterable.iterator();
-            dirty = false;
-        }
+    	if (iterable == null)
+    		throw new InvalidGeneratorSetupException("iterable", "is null");
     }
 
     public Class<E> getGeneratedType() {
-        if (dirty)
-            validate();
         return iterable.getType();
+    }
+
+    public boolean available() {
+    	if (state == NEW)
+    		initialize();
+        return (iterator != null && iterator.hasNext());
     }
 
     public E generate() {
         try {
-	        if (dirty)
-	            validate();
-        	return iterator.next();
+        	if (state == NEW)
+        		initialize();
+        	if (state != AVAILABLE)
+        		throw GeneratorUtil.stateException(this);
+        	E result = iterator.next();
+        	if (!iterator.hasNext())
+        		closeIterator(UTILIZED);
+			return result;
         } catch (Exception e) {
         	throw new IllegalGeneratorStateException("Generation failed: ", e);
         }
     }
 
-    public void reset() {
-        close();
-        iterator = iterable.iterator();
+	public void reset() {
+        closeIterator(AVAILABLE);
+        initialize();
     }
 
     public void close() {
-        if (iterator != null) {
-            if (iterator instanceof HeavyweightIterator)
-                ((HeavyweightIterator)iterator).close();
-            iterator = null;
-        }
-    }
-
-    public boolean available() {
-        if (dirty)
-            validate();
-        return (iterator != null && iterator.hasNext());
+        closeIterator(CLOSED);
+        if (iterable instanceof Heavyweight)
+        	((Heavyweight) iterable).close();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public String toString() {
-        return "IteratingGenerator[" + iterable + ']';
+        return getClass().getSimpleName() + "[" + iterable + ']';
     }
+    
+    // private helpers -------------------------------------------------------------------------------------------------    
+    
+    private void initialize() {
+    	switch (state) {
+	    	case NEW: 
+	    	case AVAILABLE:
+	    	case UTILIZED:
+	    		if (iterator == null)
+    				iterator = iterable.iterator();
+				state = AVAILABLE;
+				break;
+	    	case CLOSED:
+	    		throw new IllegalGeneratorStateException("Generator is not available");
+    	}
+	}
+
+	private void closeIterator(int state) {
+		if (iterator != null) {
+            if (iterator instanceof HeavyweightIterator)
+                ((HeavyweightIterator)iterator).close();
+            iterator = null;
+        }
+		this.state = state;
+	}
+
 }
