@@ -104,7 +104,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (context.get(source) != null) {
             Object sourceObject = context.get(source);
             if (sourceObject instanceof StorageSystem)
-                generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector));
+                generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator) sourceObject;
             else
