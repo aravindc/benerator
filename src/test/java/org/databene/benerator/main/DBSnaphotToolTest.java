@@ -27,10 +27,9 @@
 package org.databene.benerator.main;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.commons.xml.XMLUtil;
@@ -73,11 +72,11 @@ public class DBSnaphotToolTest extends TestCase {
 		}
 	}
 	
-	public void testSuccess() throws SQLException, IOException {
+	public void testSuccess() throws Exception {
 		// prepare DB
 		String db = getClass().getSimpleName();
 		Connection connection = HSQLUtil.connectInMemoryDB(db);
-		DBUtil.runScript(SCRIPT, ENCODING, connection, true, false);
+		DBUtil.runScript(SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
 		// prepare snapshot
 		System.setProperty(DBSnapshotTool.DB_URL, HSQLUtil.IN_MEMORY_URL_PREFIX + db);
 		System.setProperty(DBSnapshotTool.DB_DRIVER, HSQLUtil.DRIVER);
