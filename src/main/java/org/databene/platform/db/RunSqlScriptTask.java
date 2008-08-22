@@ -26,13 +26,14 @@
 
 package org.databene.platform.db;
 
+import org.databene.LogCategories;
 import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
-import org.databene.commons.ConfigurationError;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.ErrorHandler.Level;
 import org.databene.commons.db.DBUtil;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -48,9 +49,10 @@ public class RunSqlScriptTask extends AbstractTask {
 	
     private String uri;
     private String encoding;
+    private String text;
     private DBSystem db;
-    private boolean haltOnError;
     private boolean ignoreComments;
+    private ErrorHandler errorHandler;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -60,10 +62,47 @@ public class RunSqlScriptTask extends AbstractTask {
 
     public RunSqlScriptTask(String uri, String encoding, DBSystem db) {
         this.uri = uri;
-        this.encoding = encoding;
+        this.encoding = (encoding != null ? encoding : DEFAULT_ENCODING);
         this.db = db;
-        this.haltOnError = true;
-        this.ignoreComments = false;
+        initDefaults();
+    }
+
+    public RunSqlScriptTask(String text, DBSystem db) {
+        this.text = text;
+        this.db = db;
+        initDefaults();
+    }
+
+	private void initDefaults() {
+		this.ignoreComments = false;
+        this.errorHandler = new ErrorHandler(LogCategories.SQL);
+        this.errorHandler.setLoggingStackTrace(false);
+	}
+
+    // Task implementation ---------------------------------------------------------------------------
+
+	public void run() {
+        Connection connection = null;
+        try {
+            connection = db.createConnection();
+            if (text != null)
+            	DBUtil.runScript(text, connection, ignoreComments, errorHandler);
+            else
+            	DBUtil.runScript(uri, encoding, connection, ignoreComments, errorHandler);
+            db.invalidate();
+            connection.commit();
+		} catch (Exception sqle) { 
+            if (connection != null) {
+            	try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    // ignore this 2nd exception, we have other problems now (sqle)
+                }
+            }
+            throw new TaskException(sqle);
+		} finally {
+            DBUtil.close(connection);
+        }
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -92,12 +131,20 @@ public class RunSqlScriptTask extends AbstractTask {
         this.db = db;
     }
 
+    /**
+     * @deprecated Use the errorHandler property
+     */
+    @Deprecated
     public boolean isHaltOnError() {
-        return haltOnError;
+        return (errorHandler.getLevel() == Level.fatal);
     }
 
+    /**
+     * @deprecated Use the errorHandler property
+     */
     public void setHaltOnError(boolean haltOnError) {
-        this.haltOnError = haltOnError;
+        this.errorHandler = new ErrorHandler(LogCategories.SQL, haltOnError ? Level.fatal : Level.error);
+        this.errorHandler.setLoggingStackTrace(false);
     }
     
     /**
@@ -114,33 +161,13 @@ public class RunSqlScriptTask extends AbstractTask {
         this.ignoreComments = ignoreComments;
     }
 
-    // Task implementation ---------------------------------------------------------------------------
+    public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
 
-    public void run() {
-        Connection connection = null;
-        try {
-            connection = db.createConnection();
-            DBUtil.runScript(uri, encoding, connection, haltOnError, ignoreComments);
-            db.invalidate();
-            connection.commit();
-        } catch (IOException e) {
-			throw new ConfigurationError(e);
-		} catch (SQLException sqle) {
-            if (connection != null) {
-                try {
-                    if (haltOnError)
-                        connection.rollback();
-                    else
-                        connection.commit();
-                } catch (SQLException e) {
-                    // ignore this 2nd exception, we have other problems now (sqle)
-                }
-            }
-            throw new TaskException(sqle);
-		} finally {
-            DBUtil.close(connection);
-        }
-    }
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
