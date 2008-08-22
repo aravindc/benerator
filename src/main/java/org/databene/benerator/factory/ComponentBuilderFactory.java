@@ -78,10 +78,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             ComponentDescriptor descriptor, Context context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("addComponentGenerator(" + descriptor.getName() + ')');
+        ComponentBuilder builder = createNullQuotaOneBuilder(descriptor);
+        if (builder != null)
+        	return builder;
         if (descriptor instanceof PartDescriptor) {
         	TypeDescriptor type = descriptor.getType();
         	if (type instanceof AlternativeGroupDescriptor) {
-				return createAlternativeGroupGenerator((AlternativeGroupDescriptor) type, context, setup);
+				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, context, setup);
 			} else
 				return createPartBuilder((PartDescriptor)descriptor, context, setup);
         } else if (descriptor instanceof ReferenceDescriptor)
@@ -92,7 +95,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             throw new ConfigurationError("Unsupported element: " + descriptor.getClass());
     }
 
-    private static ComponentBuilder createAlternativeGroupGenerator(AlternativeGroupDescriptor type, 
+    private static ComponentBuilder createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
+    	Generator<? extends Object> generator = InstanceGeneratorFactory.createNullQuotaOneGenerator(descriptor);
+    	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
+	}
+
+	private static ComponentBuilder createAlternativeGroupBuilder(AlternativeGroupDescriptor type, 
     		Context context, GenerationSetup setup) {
     	int i = 0;
 		Collection<ComponentDescriptor> components = type.getComponents();
@@ -146,7 +154,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (sourceObject instanceof StorageSystem) {
             StorageSystem sourceSystem = (StorageSystem) sourceObject;
             String selector = typeDescriptor.getSelector();
-            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector);
+            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
             generator = new IteratingGenerator<Object>(entityIds);
         } else
         	throw new ConfigurationError("Not a supported source type: " + sourceName);
@@ -166,14 +174,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     
     public static ComponentBuilder createIdBuilder(IdDescriptor descriptor, Context context) {
     	// check type
-        TypeDescriptor typeDescriptor = descriptor.getType();
+        TypeDescriptor type = descriptor.getType();
 
         // check source
         IdProviderFactory source = null;
-        String sourceId = typeDescriptor.getSource();
-        if (sourceId != null) {
-            source = (IdProviderFactory) context.get(sourceId);
-        }
+        if (type != null && type.getSource() != null)
+            source = (IdProviderFactory) context.get(type.getSource());
         
         // check strategy
         String strategyName = descriptor.getStrategy();
