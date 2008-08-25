@@ -301,7 +301,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     }
 
     private void parseComplexRestriction(Element restrictionElement, ComplexTypeDescriptor owner) {
-    	// TODO v0.5.5 test this
+    	// TODO v0.6 test this
         Element[] children = XMLUtil.getChildElements(restrictionElement);
         for (Element child : children) {
             String nodeName = localName(child);
@@ -464,7 +464,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         if ("false".equals(element.getAttribute("nillable")))
         	descriptor.setNullable(false);
         if (descriptor == null)
-            descriptor = new PartDescriptor(name, "string"); // TODO v0.5.5 find out appropriate default type
+            descriptor = new PartDescriptor(name, "string"); // possibly there i a more useful default type
         if (descriptor != null)
         	parseOccurrences(element, descriptor);
         owner.addComponent(descriptor);
@@ -833,7 +833,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 	}
 
     private void parseAll(Element all, ComplexTypeDescriptor owner) {
-        logger.debug("parseAll()"); // TODO v0.5.5 test
+        logger.debug("parseAll()"); // TODO v0.6 test
         parseComponentGroupChildren(all, owner);	
 	}
 
