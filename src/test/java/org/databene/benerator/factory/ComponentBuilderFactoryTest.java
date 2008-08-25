@@ -49,7 +49,7 @@ import org.databene.model.function.Sequence;
  */
 public class ComponentBuilderFactoryTest extends GeneratorTest {
 	
-	// TODO v0.5.6 define tests for all syntax paths
+	// TODO v0.6 define tests for all syntax paths
 /*
     private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
