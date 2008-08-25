@@ -89,6 +89,10 @@ public class Entity implements Composite<Object> {
         return components;
     }
 
+    public void set(String componentName, Object component) {
+        setComponent(componentName, component);
+    }
+    
     public void setComponent(String componentName, Object component) {
         components.put(componentName, component);
     }
