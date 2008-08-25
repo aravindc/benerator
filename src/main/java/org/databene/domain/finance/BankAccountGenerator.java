@@ -29,7 +29,9 @@ package org.databene.domain.finance;
 import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
+import org.databene.domain.address.Country;
 
 /**
  * Generates {@link BankAccount}s.<br/><br/>
@@ -39,15 +41,18 @@ import org.databene.commons.StringUtil;
  */
 public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
 	
-	// TODO v0.5.5 support Country/Region
-	// TODO v0.5.5 support uniqueness
-	// TODO v0.5.5 improve validity
+	// TODO v0.6 support Country/Region
+	// TODO v0.6 support uniqueness
+	// TODO v0.6 improve validity
 	
 	private Generator<Bank> bankGenerator = new BankGenerator();
 	private Generator<String> accountNumberGenerator = new RegexStringGenerator("[0-9]{8}");
+	private String countryCode;
 
 	public BankAccountGenerator() {
 		super(BankAccount.class);
+		LocaleUtil.getFallbackLocale();
+		this.countryCode = Country.getDefault().getIsoCode();
 	}
 	
 	public BankAccount generate() {
@@ -58,11 +63,11 @@ public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
 	}
 
 	private String createIban(Bank bank, String accountNumber) {
-		// format a German IBAN
-		StringBuilder builder = new StringBuilder("DE00");
+		StringBuilder builder = new StringBuilder(countryCode);
+		builder.append("00");
 		builder.append(bank.getBankCode());
 		builder.append(StringUtil.padLeft(accountNumber, 10, '0'));
 		return IBANUtil.fixChecksum(builder.toString());
 	}
-
+	
 }
