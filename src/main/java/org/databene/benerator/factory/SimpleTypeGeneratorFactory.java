@@ -61,7 +61,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (generator == null)
             throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
         // create wrappers
-        generator = wrapWithPostprocessors(generator, descriptor);
+        generator = wrapWithPostprocessors(generator, descriptor, context);
         generator = wrapWithProxy(generator, descriptor);
         // done
         if (logger.isDebugEnabled())
@@ -92,7 +92,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	}
 
     private static Generator<? extends Object> createSourceAttributeGenerator(SimpleTypeDescriptor descriptor, Context context) {
-    	// TODO v0.5.5 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
+    	// TODO v0.6 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();
         if (source == null)

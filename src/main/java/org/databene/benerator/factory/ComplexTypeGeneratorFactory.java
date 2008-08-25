@@ -95,7 +95,7 @@ public class ComplexTypeGeneratorFactory {
         else
             generator = createMutatingEntityGenerator(type, context, setup, generator);
         // create wrappers
-        generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type);
+        generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
         generator = wrapGeneratorWithVariables(type, context, setup, generator);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);

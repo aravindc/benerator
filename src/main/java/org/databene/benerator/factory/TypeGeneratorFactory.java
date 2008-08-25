@@ -47,9 +47,11 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
@@ -125,15 +127,35 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-    private static <S, T> Converter<S, T> getConverter(TypeDescriptor descriptor) {
-        String converterClass = descriptor.getConverter(); // TODO v0.5.5 support multiple comma-separated Converters and join them to a ConverterChain
-        if (converterClass == null)						   // TODO v0.5.5 support beans from context
+    static Converter getConverter(TypeDescriptor descriptor, Context context) {
+        String converterSpec = descriptor.getConverter();
+        if (StringUtil.isEmpty(converterSpec))
             return null;
-        Object converter = BeanUtil.newInstance(converterClass);
+        String[] specs = StringUtil.tokenize(converterSpec, ',');
+        if (specs.length == 1) {
+        	return parseConverterSpec(converterSpec, context);
+        } else {
+        	Converter[] converters = new Converter[specs.length];
+        	for (int i = 0; i < specs.length; i++)
+        		converters[i] = parseConverterSpec(specs[i], context);
+			return new ConverterChain(converters);
+        }
+    }
+
+	private static Converter parseConverterSpec(String converterSpec,
+			Context context) {
+		Object converter = null;
+        // first try to resolve the converterSpec from the context
+        converter = context.get(converterSpec);
+        // if the converter is not in the context, interpret the converterSpec as classname
+        if (converter == null)
+        	converter = BeanUtil.newInstance(converterSpec);
         if (converter instanceof java.text.Format)
         	converter = new FormatFormatConverter((java.text.Format) converter);
-		return (Converter<S, T>) converter;
-    }
+        if (!(converter instanceof Converter))
+        	throw new ConfigurationError(converterSpec + " is not an instance of " + Converter.class);
+		return (Converter) converter;
+	}
 /*
     public static void checkUsedDetails(TypeDescriptor descriptor,
             Set<String> usedDetails) {
@@ -193,9 +215,9 @@ public class TypeGeneratorFactory {
         	return TimeUtil.createDefaultDateFormat();
     }
 
-    protected static Generator createConvertingGenerator(TypeDescriptor descriptor, Generator generator) {
-        if (getConverter(descriptor) != null) {
-            Converter converter = getConverter(descriptor);
+    protected static Generator createConvertingGenerator(TypeDescriptor descriptor, Generator generator, Context context) {
+        Converter converter = getConverter(descriptor, context);
+        if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
             }
@@ -231,8 +253,8 @@ public class TypeGeneratorFactory {
 		return generator;
 	}
 
-	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor) {
-		generator = createConvertingGenerator(descriptor, generator);
+	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, Context context) {
+		generator = createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor)
 			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
         generator = createValidatingGenerator(descriptor, generator);
