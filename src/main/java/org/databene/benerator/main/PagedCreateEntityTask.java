@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.Generator;
+import org.databene.commons.ErrorHandler;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.task.PagedTask;
@@ -49,8 +50,8 @@ public class PagedCreateEntityTask extends PagedTask {
 	public PagedCreateEntityTask(
 			String entityName, int count, int pageSize, int threads, List<? extends Task> subTasks, 
 			Generator<Entity> generator, Collection<Consumer<Entity>> consumers, ExecutorService executor, 
-			boolean isSubTask) {
-		super(new CreateEntityTask(entityName, generator, consumers, subTasks, isSubTask), count, null, pageSize, threads, executor);
+			boolean isSubTask, ErrorHandler errorHandler) {
+		super(new CreateEntityTask(entityName, generator, consumers, subTasks, isSubTask, errorHandler), count, null, pageSize, threads, executor);
 		this.generator = generator;
 		this.consumers = consumers;
 	}
@@ -61,7 +62,8 @@ public class PagedCreateEntityTask extends PagedTask {
 
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
-	public void pageFinished(int currentPageNo, long totalPages) {
+	@Override
+	public void pageFinished(int currentPageNo) {
 		for (Consumer<Entity> consumer : consumers)
 			consumer.flush();
 	}
