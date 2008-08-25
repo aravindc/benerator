@@ -97,7 +97,7 @@ public class DBSnapshotTool {
             logger.info("Starting export");
             for (TypeDescriptor descriptor : descriptors) {
                 logger.info("Exporting table " + descriptor.getName());
-                for (Entity entity : db.queryEntities(descriptor.getName(), null)) {
+                for (Entity entity : db.queryEntities(descriptor.getName(), null, null)) {
                     exporter.startConsuming(entity);
                     exporter.finishConsuming(entity);
                     count++;
