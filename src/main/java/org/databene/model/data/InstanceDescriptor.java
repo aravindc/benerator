@@ -111,11 +111,10 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public TypeDescriptor getType() {
         if (getLocalType() != null)
             return getLocalType();
-        if (getTypeName() == null)
-            throw new ConfigurationError("Type not defined for " + getName());
-        TypeDescriptor type = DataModel.getDefaultInstance().getTypeDescriptor(typeName);
-        if (type == null)
-            throw new ConfigurationError("Type of " + getName() + " not found: " + typeName);
+        TypeDescriptor type = null;
+        if (getTypeName() != null) {
+            type = DataModel.getDefaultInstance().getTypeDescriptor(typeName);
+        }
         return type;
     }
     
@@ -234,4 +233,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
         return this;
     }
     
+    public InstanceDescriptor withNullQuota(double nullQuota) {
+    	setNullQuota(nullQuota);
+    	return this;
+    }
 }
