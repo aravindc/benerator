@@ -69,14 +69,14 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
 
     public void addComponent(ComponentDescriptor descriptor) {
     	String componentName = descriptor.getName();
-		if (parent != null && ((ComplexTypeDescriptor)parent).getComponent(componentName) != null) // TODO v0.5.5 possibly this should be placed in the benerator parser
+		if (parent != null && ((ComplexTypeDescriptor)parent).getComponent(componentName) != null) // TODO v0.6 possibly this should be placed in the benerator parser
 			descriptor.setParent(((ComplexTypeDescriptor)parent).getComponent(componentName));
         components.add(componentName, descriptor);
     }
 
 	public void setComponent(ComponentDescriptor component) {
     	String componentName = component.getName();
-		if (parent != null && ((ComplexTypeDescriptor)parent).getComponent(componentName) != null) // TODO v0.5.5 possibly this should be placed in the benerator parser
+		if (parent != null && ((ComplexTypeDescriptor)parent).getComponent(componentName) != null) // TODO v0.6 possibly this should be placed in the benerator parser
 			component.setParent(((ComplexTypeDescriptor)parent).getComponent(componentName));
         components.set(componentName, component);
 	}
@@ -115,6 +115,10 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
             declaredDescriptors.add(d);
         return declaredDescriptors;
     }
+
+	public boolean isDeclaredComponent(String componentName) {
+		return components.containsName(componentName);
+	}
 
     // variable handling -----------------------------------------------------------------------------------------------
     
