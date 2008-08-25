@@ -191,7 +191,6 @@ public class Country {
     }
 
     private String isoCode;
-//    private Region region;
     private String phoneCode;
     private String mobileCodePattern;
     private Locale countryLocale;
@@ -203,7 +202,6 @@ public class Country {
         this.defaultLanguage = LocaleUtil.getLocale(defaultLanguage);
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
-        //this.region = new BasicRegion(isoCode);
         this.mobileCodePattern = mobilCodePattern;
         this.states = new OrderedNameMap<State>();
         instances.put(isoCode, this);
@@ -232,11 +230,7 @@ public class Country {
     public String getMobileCodePattern() {
         return mobileCodePattern;
     }
-/*
-    public Region getDataset() {
-        return region;
-    }
-*/
+
     public State getState(String stateId) {
         return states.get(stateId);
     }
