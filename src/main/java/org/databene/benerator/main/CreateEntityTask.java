@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
 import org.databene.model.consumer.Consumer;
@@ -54,7 +55,8 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
     private boolean isSubTask;
     
     public CreateEntityTask(String entityName, Generator<Entity> generator, 
-            Collection<Consumer<Entity>> consumers, List<? extends Task> subTasks, boolean isSubTask) {
+            Collection<Consumer<Entity>> consumers, List<? extends Task> subTasks, boolean isSubTask, ErrorHandler errorHandler) {
+    	super(errorHandler);
         this.entityName = entityName;
         this.generator = generator;
         this.consumers = consumers;
@@ -74,30 +76,32 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
     }
     
     public void run() {
-        Entity entity = null;
-        synchronized (generator) {
-            if (generator.available())
-                entity = generator.generate();
-            else
-                return;
-        }
-        if (consumers.size() == 0)
-            noConsumerHandler.escalate("No consumers defined ", this, null);
-        if (entity != null) {
-            context.set(entityName, entity);
-//            generationCount++;
-            for (Consumer<Entity> consumer : consumers)
-                consumer.startConsuming(entity);
-            for (Task subTask : subTasks) {
-                if (subTask instanceof PagedCreateEntityTask)
-                    ((PagedCreateEntityTask)subTask).reset();
-                subTask.init(context);
-                subTask.run();
-                subTask.destroy();
-            }
-            for (Consumer<Entity> consumer : consumers)
-                consumer.finishConsuming(entity);
-        }
+    	try {
+	        Entity entity = null;
+	        synchronized (generator) {
+	            if (generator.available())
+	                entity = generator.generate();
+	            else
+	                return;
+	        }
+	        if (entity != null) {
+	            context.set(entityName, entity);
+	//            generationCount++;
+	            for (Consumer<Entity> consumer : consumers)
+	                consumer.startConsuming(entity);
+	            for (Task subTask : subTasks) {
+	                if (subTask instanceof PagedCreateEntityTask)
+	                    ((PagedCreateEntityTask)subTask).reset();
+	                subTask.init(context);
+	                subTask.run();
+	                subTask.destroy();
+	            }
+	            for (Consumer<Entity> consumer : consumers)
+	                consumer.finishConsuming(entity);
+	        }
+    	} catch (Exception e) {
+    		errorHandler.handleError("Error in execution of task " + getTaskName(), e);
+    	}
     }
     
     @Override
