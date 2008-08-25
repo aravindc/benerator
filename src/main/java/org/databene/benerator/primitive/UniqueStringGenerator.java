@@ -101,6 +101,8 @@ public class UniqueStringGenerator implements Generator<String> {
     public boolean available() {
         if (dirty)
             validate();
+        if (subGens == null)
+        	return false;
         for (int i = maxLength - minLength; i >= 0; i--)
             if (subGens[i].available())
                 return true;
@@ -118,15 +120,18 @@ public class UniqueStringGenerator implements Generator<String> {
     }
 
     public void reset() {
-        for (Generator<String> generator : subGens)
-            generator.reset();
+    	if (subGens != null)
+	        for (Generator<String> generator : subGens)
+	            generator.reset();
         dirty = true;
     }
 
     public void close() {
-        for (Generator<String> generator : subGens)
-            generator.close();
-        subGens = null;
+    	if (subGens != null) {
+	        for (Generator<String> generator : subGens)
+	            generator.close();
+	        subGens = null;
+    	}
         dirty = true;
     }
 
