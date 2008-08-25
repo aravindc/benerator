@@ -38,9 +38,9 @@ import org.databene.benerator.util.LightweightGenerator;
  */
 public class BankGenerator extends LightweightGenerator<Bank> {
 	
-	// TODO v0.5.5 support Country/Region
-	// TODO v0.5.5 support uniqueness
-	// TODO v0.5.5 improve validity
+	// TODO v0.6 support Country/Region
+	// TODO v0.6 support uniqueness
+	// TODO v0.6 improve validity
 	
 	private Generator<String> bankCodeGenerator;
 	private Generator<String> nameGenerator;
