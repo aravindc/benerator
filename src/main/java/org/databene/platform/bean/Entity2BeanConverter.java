@@ -60,7 +60,7 @@ public class Entity2BeanConverter<E> implements Converter<Entity, E> {
         else
             result = (E) BeanUtil.newInstance(entity.getName());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet())
-            BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue());
+            BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue(), false);
         return result;
     }
 
