@@ -41,8 +41,10 @@ public class CountryCode2Validator implements Validator<String> {
 	public boolean valid(String countryCode) {
 		if (countryCode == null || countryCode.length() != 2)
 			return false;
-		return (Character.isLetter(countryCode.charAt(0)) // TODO v0.5.5 improve according to ISO 3166-1 alpha-2 standard
-				&& Character.isLetter(countryCode.charAt(1)));
+		if (!Character.isLetter(countryCode.charAt(0))
+				|| !Character.isLetter(countryCode.charAt(1)))
+			return false;
+		return (Country.getInstance(countryCode) != null);
 	}
 
 }
