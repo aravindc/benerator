@@ -36,7 +36,7 @@ import org.databene.benerator.util.LightweightGenerator;
  * Created: 11.06.2006 08:07:40
  * @author Volker Bergmann
  */
-public class AddressGenerator extends LightweightGenerator<Address> {
+public class AddressGenerator extends LightweightGenerator<Address> { // TODO v0.6 make country/region configurable from descriptor file
 
     private Country country;
     private CityGenerator cityGenerator;
