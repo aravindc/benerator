@@ -20,14 +20,15 @@
 	<xs:element name="setup">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="include"         minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="property"        minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="database"        minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="bean"            minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="run-task"        minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="execute"         minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="echo"            minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="include"           minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="property"          minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="database"          minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="bean"              minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="defaultAttributes" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="create-entities"   minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="run-task"          minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="execute"           minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="echo"              minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="default-script" type="xs:string"/>
 			<xs:attribute name="default-null"   type="xs:string"/>
@@ -147,14 +148,31 @@
 		</xs:complexType>
 	</xs:element>
 
+	<xs:element name="defaultAttributes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="id"              minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name"     type="xs:string"/>
+			<xs:attribute name="count"    type="xs:string"/>
+			<xs:attribute name="pagesize" type="xs:string"/>
+			<xs:attribute name="threads"  type="xs:string"/>
+			<xs:attribute name="source"   type="xs:string"/>
+			<xs:attribute name="encoding" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
 	<!-- Creates entities. If a 'count' is provided the corresponding number of entities is created.
 	     If no count is provided, entities are created as long as each involved generator is available. -->
 	<xs:element name="create-entities">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="id"              minOccurs="0" maxOccurs="1"/>
-				<xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
@@ -174,6 +192,19 @@
 			<xs:attribute name="strategy" type="xs:string"/>
 			<xs:attribute name="source"   type="xs:string"/>
 			<xs:attribute name="param"    type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Defines a reference generator. -->
+	<xs:element name="reference">
+		<xs:complexType>
+			<xs:attribute name="name"         type="xs:string"/>
+			<xs:attribute name="type"         type="xs:string"/>
+			<xs:attribute name="nullable"     type="xs:string"/>
+			<xs:attribute name="nullQuota"    type="xs:string"/>
+			<xs:attribute name="target-type"  type="xs:string"/>
+			<xs:attribute name="distribution" type="xs:string"/>
+			<xs:attribute name="mode"         type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 
