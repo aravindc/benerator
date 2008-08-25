@@ -68,7 +68,7 @@
 	<create-entities name="db_product" count="{ftl:${product_count}}" consumer="db">
 		<attribute name="ean_code" source="ean_generator" unique="true"/> <!-- This uses the EAN generator defined above -->
 		<attribute name="category_id" source="db" selector="select id from db_category" distribution="random" />
-		<attribute name="price" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
+		<attribute name="price" type="big_decimal" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
 		<consumer class="org.databene.platform.flat.FlatFileEntityExporter">
 			<property name="uri" value="products.flat" />
