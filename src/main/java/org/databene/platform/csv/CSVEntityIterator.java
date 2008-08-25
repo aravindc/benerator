@@ -32,6 +32,7 @@ import org.databene.model.data.Entity;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
@@ -51,13 +52,13 @@ import java.util.List;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CSVEntityIterator implements Iterator<Entity> {
+public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 
     private String uri;
     private char   separator;
     private String encoding;
 
-    private Iterator<Entity> source;
+    private HeavyweightIterator<Entity> source;
     
     private ComplexTypeDescriptor entityDescriptor;
 
@@ -87,7 +88,7 @@ public class CSVEntityIterator implements Iterator<Entity> {
         init(uri, preprocessor, separator, encoding);
     }
 
-    // Iterator interface ----------------------------------------------------------------------------------------------
+    // HeavyweightIterator interface -----------------------------------------------------------------------------------
     
 	public void remove() {
 		source.remove();
@@ -103,6 +104,10 @@ public class CSVEntityIterator implements Iterator<Entity> {
         return source.next();
     }
     
+	public void close() {
+		 source.close();
+	}
+
     public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor) throws FileNotFoundException {
     	List<Entity> list = new ArrayList<Entity>();
     	CSVEntityIterator iterator = new CSVEntityIterator(uri, descriptor, preprocessor, separator, encoding);
