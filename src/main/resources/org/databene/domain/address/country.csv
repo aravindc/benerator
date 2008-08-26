@@ -1,89 +1,246 @@
-DE,de_DE,49,1[5-7][0-9]
-AT,de_AT,43,(650|660|664|676|680|681|688|699)
-CH,de_CH,41,7[46-9]
-LI,de_LI,423,7
-
-BE,fr_BE,32,4[7-9]
-NL,nl_NL,31,6[0-9]
-LU,fr_LU,352,6[269][18]
-
-DK,da_DK,45,[34]0
-FI,fi_FI,358,(4[0-9]|50)
-IE,en_IE,353,8[0-9]
-IS,is_IS,354,[68]
-NO,no_NO,47,[49]
-SE,sv_SE,46,7[0-9]
-UK,en_GB,44,7[57-9]
-
-IT,it_IT,39,3[0-9][0-9]
-SM,it_SM,378,66
-MT,mt_MT,[79]9
-FR,fr_FR,33,6[0-9]
-MC,fr_MC,377,[46]
-AD,,376
-ES,es_ES,34,6
-PT,pt_PT,351,9
-
-GR,el_GR,30,69[3479]
-CY,el_CY,357,9[679]
-TR,tr_TR,90,5[0-9][0-9]
-
-AL,,355,6[0-9]
-BA,,387,6[1235]
-BG,bg_BG,359,(8[789]|48)
-BY,,375,
-CZ,cs_CZ,420,(60|7[237])
-EE,et_EE,372,5[0-9]
-HR,hr_HR,385,9[0-9]
-HU,hu_HU,36,[237]0
-LT,lt_LT,370,6[0-9][0-9]
-LV,lv_LV,371
-PL,pl_PL,48,(5[01][0-9]|6[069][0-9]|7[289][0-9]|88[0-9])
-RO,ro_RO,40,7[0-9][0-9]
-RU,ru_RU,7,9[0-9][0-9]
-SI,sl_SI,386
-UA,,380,(39|50|6[3678]|97)
-
-AE,,971,5[05]
-AF,,91,75
-BH,,973,3
-IL,he_IL,972,5[0-9]
-IR,,98,9[0-9][0-9]
-IQ,,964
-JO,,962,7
-KZ,,7,(300|333|70[0-9]|777)
-PK,,92,3[0-6]
-QA,,974,[56]
-SA,,966,5[04-6]
-
-DZ,,213
-EG,,20,1[0-9]
-GH,,233,28
-KE,,254,7[0-9]
-ZA,en_ZA,27,[78][0-9]
-
-US,en_US,1
-CA,en_CA,1
-
-MX,es_MX,52,1
-BS,en_BS,1242,[3-5]5[0-9]
-
-AR,es_AR,54
-BR,pt_BR,55,[7-9]
-EC,es_EC,593,[89]
-CL,es_CL,56,9[89]
-
-CN,zh_CN,86,1[35][0-9]
-ID,,62,8
-IN,hi_IN,91,9[2-47-9]
-JP,ja_JP,81,[7-9]0[0-9]
-KP,,850
-KR,ko_KR,82,1[016-9]
-MY,,60,1[0-9]
-SG,,65,[89]
-TH,th_TH_TH,66,[19]
-TW,zh_TW,886,9
-VN,vi_VN,84,9[0-9]
-
-AU,en_AU,61,4
-NZ,en_NZ,64,2[01457-9]
+AD,,376,,Andorra
+AE,,971,5[05],United Arab Emirates
+AF,,91,75,Afghanistan
+AG,,,,Antigua and Barbuda
+AI,,,,Anguilla
+AL,,355,6[0-9],Albania
+AM,,,,Armenia
+AN,,,,Netherlands Antilles
+AO,,,,Angola
+AQ,,,,Antarctica
+AR,es_AR,54,,Argentina
+AS,,,,American Samoa
+AT,de_AT,43,(650|660|664|676|680|681|688|699),Austria
+AU,en_AU,61,4,Australia
+AW,,,,Aruba
+AX,,,,Åland Islands
+AZ,,,,Azerbaijan
+BA,,387,6[1235],Bosnia and Herzegovina
+BB,,,,Barbados
+BD,,,,Bangladesh
+BE,fr_BE,32,4[7-9],Belgium
+BF,,,,Burkina Faso
+BG,bg_BG,359,(8[789]|48),Bulgaria
+BH,,973,3,Bahrain
+BI,,,,Burundi
+BJ,,,,Benin
+BL,,,,Saint Barthélemy
+BM,,,,Bermuda
+BN,,,,Brunei Darussalam
+BO,,,,Bolivia
+BR,pt_BR,55,[7-9],Brazil
+BS,en_BS,1242,[3-5]5[0-9],Bahamas
+BT,,,,Bhutan
+BV,,,,Bouvet Island
+BW,,,,Botswana
+BY,,375,,Belarus
+BZ,,,,Belize
+CA,en_CA,1,,Canada
+CC,,,,Cocos (Keeling) Islands
+CD,,,,"Congo, The Democratic Republic of the"
+CF,,,,Central African Republic
+CG,,,,Congo 
+CH,de_CH,41,7[46-9],Switzerland
+CI,,,,Côte d'Ivoire 
+CK,,,,Cook Islands
+CL,es_CL,56,9[89],Chile
+CM,,,,Cameroon
+CN,zh_CN,86,1[35][0-9],China
+CO,,,,Colombia
+CR,,,,Costa Rica
+CU,,,,Cuba
+CV,,,,Cape Verde
+CX,,,,Christmas Island
+CY,el_CY,357,9[679],Cyprus
+CZ,cs_CZ,420,(60|7[237]),Czech Republic
+DE,de_DE,49,1[5-7][0-9],Germany
+DJ,,,,Djibouti
+DK,da_DK,45,[34]0,Denmark
+DM,,,,Dominica
+DO,,,,Dominican Republic
+DZ,,213,,Algeria
+EC,es_EC,593,[89],Ecuador
+EE,et_EE,372,5[0-9],Estonia
+EG,,20,1[0-9],Egypt
+EH,,,,Western Sahara
+ER,,,,Eritrea
+ES,es_ES,34,6,Spain
+ET,,,,Ethiopia
+FI,fi_FI,358,(4[0-9]|50),Finland
+FJ,,,,Fiji
+FK,,,,Falkland Islands (Malvinas) 
+FM,,,,"Micronesia, Federated States of"
+FO,,,,Faroe Islands
+FR,fr_FR,33,6[0-9],France
+GA,,,,Gabon
+GB,en_GB,44,7[57-9],United Kingdom
+GD,,,,Grenada
+GE,,,,Georgia
+GF,,,,French Guiana
+GG,,,,Guernsey
+GH,,233,28,Ghana
+GI,,,,Gibraltar
+GL,,,,Greenland
+GM,,,,Gambia
+GN,,,,BGuinea
+GP,,,,Guadeloupe
+GQ,,,,Equatorial Guinea
+GR,el_GR,30,69[3479],Greece
+GS,,,,South Georgia and the South Sandwich Islands
+GT,,,,Guatemala
+GU,,,,Guam
+GW,,,,Guinea-Bissau
+GY,,,,Guyana
+HK,,,,Hong Kong
+HM,,,,Heard Island and McDonald Islands 
+HN,,,,Honduras
+HR,hr_HR,385,9[0-9],Croatia
+HT,,,,Haiti
+HU,hu_HU,36,[237]0,Hungary
+ID,,62,8,Indonesia
+IE,en_IE,353,8[0-9],Ireland
+IL,he_IL,972,5[0-9],Israel
+IM,,,,Isle of Man
+IN,hi_IN,91,9[2-47-9],India
+IO,,,,British Indian Ocean Territory 
+IQ,,964,,Iraq
+IR,,98,9[0-9][0-9],"Iran, Islamic Rrepublic of "
+IS,is_IS,354,[68],Iceland
+IT,it_IT,39,3[0-9][0-9],Italy
+JE,,,,Jersey
+JM,,,,Jamaica
+JO,,962,7,Jordan
+JP,ja_JP,81,[7-9]0[0-9],Japan
+KE,,254,7[0-9],Kenya
+KG,,,,Kyrgyzstan
+KH,,,,Cambodia
+KI,,,,Kiribati
+KM,,,,Comoros
+KN,,,,Saint Kitts and Nevis
+KP,,850,,"Korea, Democratic People's Republic of"
+KR,ko_KR,82,1[016-9],"Korea, Republic of"
+KW,,,,Kuwait
+KY,,,,Cayman Islands
+KZ,,7,(300|333|70[0-9]|777),Kazakhstan
+LA,,,,Lao People's Democratic Republic 
+LB,,,,Lebanon
+LC,,,,Saint Lucia
+LI,de_LI,423,7,Liechtenstein
+LK,,,,Sri Lanka
+LR,,,,Liberia
+LS,,,,Lesotho
+LT,lt_LT,370,6[0-9][0-9],Lithuania
+LU,fr_LU,352,6[269][18],Luxembourg
+LV,lv_LV,371,,Latvia
+MC,fr_MC,377,[46],Libyan Arab Jamahiriya
+MA,,,,Morocco
+MC,,,,Monaco
+MD,,,,Moldovia
+ME,,,,Montenegro
+MF,,,,Saint Martin
+MG,,,,Madagascar
+MH,,,,Marshall Islands
+MK,,,,"Macedonia, The former Yugoslav Republic of"
+ML,,,,Mali
+MM,,,,Myanmar
+MN,,,,Mongolia
+MO,,,,Macao
+MP,,,,Northern Mariana Islands
+MQ,,,,Martinique
+MR,,,,Mauritania
+MS,,,,Motserrat
+MT,mt_MT,[79]9,,Malta
+MU,,,,Mauritius
+MV,,,,Maldives
+MW,,,,Malawi
+MX,es_MX,52,1,Mexico
+MY,,60,1[0-9],Malaysia
+MZ,,,,Mozambique
+NA,,,,Namibia
+NC,,,,New Caledonia
+NE,,,,Niger
+NF,,,,Norfolk Island
+NG,,,,Nigeria
+NI,,,,Nicaragua
+NL,nl_NL,31,6[0-9],Netherlands
+NO,no_NO,47,[49],Norway
+NP,,,,Nepal
+NR,,,,Nauru
+NU,,,,Niue
+NZ,en_NZ,64,2[01457-9],New Zealand
+OM,,,,Oman
+PA,,,,Panama
+PE,,,,Peru
+PF,,,,French Polynesia
+PG,,,,Papua New Guinea
+PH,,,,Philippines
+PK,,92,3[0-6],Pakistan
+PL,pl_PL,48,(5[01][0-9]|6[069][0-9]|7[289][0-9]|88[0-9]),Poland
+PM,,,,Saint Pierre and Miquelon
+PN,,,,Pitcairn
+PR,,,,Puerto Rico
+PS,,,,"Palestinian Territory, Occupied"
+PT,pt_PT,351,9,Portugal
+PW,,,,Palau
+PY,,,,Paraguay
+QA,,974,[56],Qatar
+RE,,,,Réunion
+RO,ro_RO,40,7[0-9][0-9],Romania
+RS,,,,Serbia
+RU,ru_RU,7,9[0-9][0-9],Russian Federation
+RW,,,,Rwanda
+SA,,966,5[04-6],Saudi Arabia
+SB,,,,Solomon Islands
+SC,,,,Seychelles
+SD,,,,Sudan
+SE,sv_SE,46,7[0-9],Sweden
+SG,,65,[89],Singapore
+SH,,,,Saint Helena
+SI,sl_SI,386,,Slovenia
+SJ,,,,Svalbard and Jan Mayen
+SK,,,,Slovakia
+SL,,,,Sierra Leone
+SM,it_SM,378,66,San Marino
+SN,,,,Senegal
+SO,,,,Somalia
+SR,,,,Suriname
+ST,,,,Sao Tome and Principe
+SV,,,,El Salvador
+SY,,,,Syrian Arab Republic
+SZ,,,,Swaziland
+TC,,,,Turks and Caicos Islands
+TD,,,,Chad
+TF,,,,French Southern Territories
+TG,,,,Togo
+TH,th_TH_TH,66,[19],Thailand
+TJ,,,,Tajikistan
+TK,,,,Tokelau
+TL,,,,Timor-Leste
+TM,,,,Turkmenistan
+TN,,,,Tunisia
+TO,,,,Tonga
+TR,tr_TR,90,5[0-9][0-9],Turkey
+TT,,,,Trinidad and Tobago
+TV,,,,Tuvalu
+TW,zh_TW,886,9,"Taiwan, Province of China"
+TZ,,,,"Tanzania, United Republic of"
+UA,,380,(39|50|6[3678]|97),Ukraine
+UG,,,,Uganda
+UM,,,,United States Minor Outlying Islands
+US,en_US,1,,United States
+UY,,,,Uruguay
+UZ,,,,Uzbekistan
+VA,,,,Vatican City State
+VC,,,,Saint Vincent and the Grenadines
+VE,,,,Venezuela
+VG,,,,"VIRGIN ISLANDS, BRITISH "
+VI,,,,"VIRGIN ISLANDS, U.S. "
+VN,vi_VN,84,9[0-9],Viet Nam 
+VU,,,,Vanuatu
+WF,,,,Wallis and Futuna
+WS,,,,Samoa
+YE,,,,Yemen
+YT,,,,Mayotte
+ZA,en_ZA,27,[78][0-9],South Africa
+ZM,,,,Zambia
+ZW,,,,Zimbabwe
