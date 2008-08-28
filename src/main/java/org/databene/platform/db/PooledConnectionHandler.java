@@ -81,7 +81,7 @@ public class PooledConnectionHandler implements InvocationHandler {
 		else if ("removeConnectionEventListener".equals(methodName))
 			this.removeConnectionEventListener((ConnectionEventListener) args[0]);
 		else
-			return BeanUtil.invoke(realConnection, methodName, args);
+			return BeanUtil.invoke(realConnection, method, args);
 		return null;
 	}
 
