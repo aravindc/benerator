@@ -74,7 +74,8 @@ public class Country {
     public static final Country ICELAND = getInstance("IS");
     public static final Country NORWAY = getInstance("NO");
     public static final Country SWEDEN = getInstance("SE");
-    public static final Country UNITED_KINGDOM = getInstance("UK");
+    public static final Country UNITED_KINGDOM = getInstance("GB");
+    public static final Country GREAT_BRITAIN = getInstance("GB");
 
     // Southern Europe
     public static final Country ITALY = getInstance("IT");
