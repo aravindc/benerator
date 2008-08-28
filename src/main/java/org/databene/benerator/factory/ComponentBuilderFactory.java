@@ -178,14 +178,18 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
         // check source
         IdProviderFactory source = null;
-        if (type != null && type.getSource() != null)
-            source = (IdProviderFactory) context.get(type.getSource());
+        String sourceName = null;
+		if (type != null) {
+			sourceName = type.getSource();
+			if (source != null)
+	            source = (IdProviderFactory) context.get(sourceName);
+		}
         
         // check strategy
         String strategyName = descriptor.getStrategy();
         if (strategyName == null)
-            throw new ConfigurationError("No strategy defined for key: " + descriptor.getName());
-
+        	strategyName = GLOBAL_ID_PROVIDER_FACTORY.INCREMENT.getName();
+        
         // check param
         String param = descriptor.getParam();
 
@@ -194,11 +198,16 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
         //checkUsedDetails(descriptor, usedDetails);
         IdStrategy idStrategy = IdStrategy.getInstance(strategyName);
-        IdProvider idProvider;
-        if (source != null)
+        IdProvider idProvider = null;
+        if (source != null) {
             idProvider = source.idProvider(idStrategy, param, scope);
-        else
+            if (idProvider == null)
+            	logger.error("IdProvider " + sourceName + " does not support IdStrategy " + strategyName); // TODO escalate instead of log
+        }
+        if (idProvider == null)
             idProvider = GLOBAL_ID_PROVIDER_FACTORY.idProvider(idStrategy, param, scope);
+        if (idProvider == null)
+            throw new ConfigurationError("unknown id generation strategy: " + idStrategy);
         Generator<Object> generator = new IdGenerator(idProvider);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
