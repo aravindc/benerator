@@ -131,10 +131,9 @@ public final class JDBCDBImporter implements DBImporter {
         while (schemaSet.next()) {
             String schemaName = schemaSet.getString(1);
             logger.debug("found schema " + schemaName);
-            if (this.schemaName == null && this.user.equalsIgnoreCase(schemaName))
-            	this.schemaName = schemaName;
-            if (!schemaName.equalsIgnoreCase(this.schemaName))
+            if (!schemaName.equalsIgnoreCase(this.schemaName) && !(this.schemaName == null && this.user.equalsIgnoreCase(schemaName)))
                 continue;
+            this.schemaName = schemaName;
             DBSchema schema = new DBSchema(schemaName);
             database.addSchema(schema);
         }
