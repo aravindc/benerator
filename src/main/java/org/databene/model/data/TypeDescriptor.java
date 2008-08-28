@@ -302,6 +302,12 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     	this.setValues(values);
     	return this;
     }
+
+    public FeatureDescriptor withSource(String source) {
+        setSource(source);
+        return this;
+    }
+
 /*
     public FeatureDescriptor withParent(DefaultFeatureDescriptor parent) {
         this.parent = parent;
@@ -345,11 +351,6 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public FeatureDescriptor withValidator(String validatorName) {
         setValidator(validatorName);
-        return this;
-    }
-
-    public FeatureDescriptor withSource(String source) {
-        setSource(source);
         return this;
     }
 
