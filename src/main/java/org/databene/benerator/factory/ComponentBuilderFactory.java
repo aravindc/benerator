@@ -181,8 +181,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         String sourceName = null;
 		if (type != null) {
 			sourceName = type.getSource();
-			if (source != null)
-	            source = (IdProviderFactory) context.get(sourceName);
+			if (sourceName != null) {
+				source = (IdProviderFactory) context.get(sourceName);
+			}
 		}
         
         // check strategy
