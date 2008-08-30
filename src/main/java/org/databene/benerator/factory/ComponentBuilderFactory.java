@@ -41,6 +41,7 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
@@ -54,6 +55,8 @@ import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.TypedIterable;
 
 import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
@@ -71,6 +74,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     private static final Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
     private static DataModel dataModel = DataModel.getDefaultInstance();
+
+	private static Escalator escalator = new LoggerEscalator();
     
     // factory methods for component generators ------------------------------------------------------------------------
 
@@ -189,7 +194,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         // check strategy
         String strategyName = descriptor.getStrategy();
         if (strategyName == null)
-        	strategyName = GLOBAL_ID_PROVIDER_FACTORY.INCREMENT.getName();
+        	strategyName = GlobalIdProviderFactory.INCREMENT.getName();
         
         // check param
         String param = descriptor.getParam();
@@ -203,13 +208,15 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (source != null) {
             idProvider = source.idProvider(idStrategy, param, scope);
             if (idProvider == null)
-            	logger.error("IdProvider " + sourceName + " does not support IdStrategy " + strategyName); // TODO escalate instead of log
+            	escalator.escalate("IdProvider " + sourceName + " does not support IdStrategy " 
+            			+ strategyName, ComponentBuilderFactory.class, idStrategy);
         }
         if (idProvider == null)
             idProvider = GLOBAL_ID_PROVIDER_FACTORY.idProvider(idStrategy, param, scope);
         if (idProvider == null)
             throw new ConfigurationError("unknown id generation strategy: " + idStrategy);
         Generator<Object> generator = new IdGenerator(idProvider);
+        generator = TypeGeneratorFactory.createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor.getType(), generator);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return new PlainComponentBuilder(descriptor.getName(), generator);
