@@ -60,10 +60,16 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class ModelParser {
-   
+	
     private static final Log logger = LogFactory.getLog(ModelParser.class);
     
-    public Object parseBean(Element element, Context context) {
+	private String contextUri;
+	
+    public ModelParser(String contextUri) {
+		this.contextUri = contextUri;
+	}
+
+	public Object parseBean(Element element, Context context) {
         String beanId = parseAttribute(element, "id", context);
         if (beanId != null)
             logger.debug("Instantiating bean with id '" + beanId + "'");
@@ -139,35 +145,6 @@ public class ModelParser {
         return result;
     }
 
-    private String normalizeNull(String text) {
-        return ("".equals(text) ? null : text);
-    }
-
-    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor, Context context) {
-        assertElementName(element, "id");
-        IdDescriptor result;
-        if (descriptor instanceof IdDescriptor)
-            result = (IdDescriptor) descriptor;
-        else if (descriptor != null)
-            result = new IdDescriptor(descriptor.getName(), descriptor.getTypeName());
-        else
-            result = new IdDescriptor(element.getAttribute("name"), element.getAttribute("type"));
-        return mapInstanceDetails(element, false, result, context);
-    }
-
-    private ReferenceDescriptor parseReference(Element element,
-            ComponentDescriptor descriptor, Context context) {
-        assertElementName(element, "reference");
-        ReferenceDescriptor result;
-        if (descriptor instanceof ReferenceDescriptor)
-            result = (ReferenceDescriptor) descriptor;
-        else if (descriptor != null)
-            result = new ReferenceDescriptor(descriptor.getName(), descriptor.getTypeName());
-        else
-            result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
-        return mapInstanceDetails(element, false, result, context);
-    }
-
     public SimpleTypeDescriptor parseSimpleType(Element element, Context context) {
         assertElementName(element, "type");
         return parseSimpleType(element, new SimpleTypeDescriptor(null, (String) null), context);
@@ -195,6 +172,7 @@ public class ModelParser {
 
     public String parseInclude(Element element, Context context) {
         String uri = parseAttribute(element, "uri", context);
+        uri = IOUtil.resolveLocalUri(uri, contextUri);
         try {
             importProperties(uri, context);
             return uri;
@@ -293,5 +271,34 @@ public class ModelParser {
             return ScriptUtil.render(value, context);
     }
 */
+
+    private String normalizeNull(String text) {
+        return ("".equals(text) ? null : text);
+    }
+
+    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor, Context context) {
+        assertElementName(element, "id");
+        IdDescriptor result;
+        if (descriptor instanceof IdDescriptor)
+            result = (IdDescriptor) descriptor;
+        else if (descriptor != null)
+            result = new IdDescriptor(descriptor.getName(), descriptor.getTypeName());
+        else
+            result = new IdDescriptor(element.getAttribute("name"), element.getAttribute("type"));
+        return mapInstanceDetails(element, false, result, context);
+    }
+
+    private ReferenceDescriptor parseReference(Element element,
+            ComponentDescriptor descriptor, Context context) {
+        assertElementName(element, "reference");
+        ReferenceDescriptor result;
+        if (descriptor instanceof ReferenceDescriptor)
+            result = (ReferenceDescriptor) descriptor;
+        else if (descriptor != null)
+            result = new ReferenceDescriptor(descriptor.getName(), descriptor.getTypeName());
+        else
+            result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
+        return mapInstanceDetails(element, false, result, context);
+    }
 
 }
