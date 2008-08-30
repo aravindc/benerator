@@ -130,7 +130,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
 		Context context = new DefaultContext();
-		GenerationSetup setup = new SimpleGenerationSetup();
+		GenerationSetup setup = new SimpleGenerationSetup(null);
 		Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(type, false, context, setup);
 		return generator;
 	}

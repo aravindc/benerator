@@ -110,7 +110,7 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
-		SimpleGenerationSetup setup = new SimpleGenerationSetup();
+		SimpleGenerationSetup setup = new SimpleGenerationSetup(null);
 		return ComponentBuilderFactory.createReferenceBuilder(ref, context, setup);
 	}
 	

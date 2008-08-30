@@ -42,6 +42,8 @@ import org.databene.model.function.Sequence;
  */
 public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	// TODO v0.5.x resolve TODOs from area_demo.ben.xml
+	
+	String contextUri = ".";
 
 	public void testSimpleCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
@@ -98,7 +100,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	private Generator<? extends Object> createGenerator(SimpleTypeDescriptor type, boolean unique) {
 		Context context = new DefaultContext();
-		GenerationSetup setup = new SimpleGenerationSetup();
+		GenerationSetup setup = new SimpleGenerationSetup(contextUri);
 		Generator<? extends Object> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context, setup);
 		return generator;
 	}
