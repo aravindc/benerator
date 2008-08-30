@@ -67,7 +67,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -87,7 +86,7 @@ public class Benerator extends SimpleGenerationSetup {
     
     private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil.toSet("pagesize", "threads", "consumer", "onError");
 
-    private ModelParser parser = new ModelParser();
+    private ModelParser parser;
     
     private ExecutorService executor;
     private Escalator escalator;
@@ -112,10 +111,9 @@ public class Benerator extends SimpleGenerationSetup {
     }
 
     public Benerator() {
+    	super(null);
         this.executor = Executors.newCachedThreadPool();
         this.escalator = new LoggerEscalator();
-        context = new BeneratorContext();
-        context.set("benerator", this);
         beans = new HashMap<String, Object>();
     }
     
@@ -125,6 +123,10 @@ public class Benerator extends SimpleGenerationSetup {
     
     public void processFile(String uri) throws IOException {
         try {
+        	contextUri = IOUtil.getContextUri(uri);
+            context = new BeneratorContext(contextUri);
+            context.set("benerator", this);
+			parser = new ModelParser(contextUri);
             long startTime = java.lang.System.currentTimeMillis();
             Document document = XMLUtil.parse(uri);
             Element root = document.getDocumentElement();
@@ -256,7 +258,10 @@ public class Benerator extends SimpleGenerationSetup {
 	        	// check for JavaScript file URI
 	        	if (lcUri.endsWith(".js"))
 	        		type = "js";
+	        	uri = IOUtil.resolveLocalUri(uri, contextUri);
         	}
+        	if (type == null && targetObject instanceof DBSystem)
+        		type="sql";
         	// run
         	String text = XMLUtil.getText(element);
         	if ("sql".equals(type))
