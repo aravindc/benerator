@@ -33,6 +33,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.context.DefaultContext;
+import org.databene.id.IdProviderFactory;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -50,6 +51,8 @@ import org.databene.model.function.Sequence;
 public class ComponentBuilderFactoryTest extends GeneratorTest {
 	
 	// TODO v0.6 define tests for all syntax paths
+	
+	private String contextUri = "./";
 /*
     private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
@@ -80,12 +83,14 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		expectGeneratedSet(name, "Alice", "Bob", "Charly");
 	}
 
+	/** TODO v0.5.x support random unique
 	public void testCSVStringAttributeRandomUnique() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
 		name.getLocalType().setDistribution(Sequence.RANDOM);
 		name.setUnique(true);
 		expectGeneratedSet(name, "Alice", "Bob", "Charly");
 	}
+	*/
 
 	private PartDescriptor createCSVStringAttributeBuilder() {
 		String componentName = "name";
@@ -116,6 +121,10 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 
 	// Id Descriptor tests ---------------------------------------------------------------------------------------------
 	
+	/**
+	 * Tests UUID generation
+	 * <id name="id" strategy="uuid"/>
+	 */
 	public void testUuid() {
 		String componentName = "id";
 		IdDescriptor id = new IdDescriptor(componentName).withStrategy("uuid");
@@ -124,20 +133,75 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		expectUniqueGenerations(helper, 10);
 	}
 	
+	/**
+	 * Tests 'increment' id generation with unspecified type
+	 * <id name="id" strategy="increment"/>
+	 */
+	public void testIncrementIdWithoutType() {
+		String componentName = "id";
+		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
+		ComponentBuilder builder = createComponentBuilder(id);
+		Generator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
+	}
+	
+	/**
+	 * Tests id generation with unspecified type and strategy
+	 * <id name="id"/>
+	 */
+	public void testDefaultIdGeneration() {
+		String componentName = "id";
+		IdDescriptor id = new IdDescriptor(componentName);
+		ComponentBuilder builder = createComponentBuilder(id);
+		Generator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
+	}
+	
+	/**
+	 * Tests 'increment' id generation with 'byte' type
+	 * <id name="id" type="byte" strategy="increment"/>
+	 */
 	public void testIncrementId() {
 		String componentName = "id";
 		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
-		// test with unspecified type
-		ComponentBuilder builder = createComponentBuilder(id);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
-		expectUniqueGenerations(helper, 10);
-		// test int type
 		id.setTypeName("byte");
-		builder = createComponentBuilder(id);
-		helper = new ComponentBuilderGenerator(builder, componentName);
+		ComponentBuilder builder = createComponentBuilder(id);
+		Generator<Byte> helper2 = new ComponentBuilderGenerator(builder, componentName);
+		expectGeneratedSequenceOnce(helper2, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
+	}
+	
+	/**
+	 * Assures that, if an IdStragtegy is requested from a source and the source does not know it,
+	 * a fallback to the global {@link IdProviderFactory} happens.
+	 */
+	public void testIncrementIdOnSource() {
+		IdProviderFactory storage = new DummyIdProviderFactory();
+		BeneratorContext context = new BeneratorContext(contextUri);
+		context.set("sts", storage);
+		String componentName = "id";
+		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
+		id.setLocalType((SimpleTypeDescriptor) new SimpleTypeDescriptor("int").withSource("sts"));
+		// test with unspecified type
+		ComponentBuilder builder = createComponentBuilder(id, context);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		expectUniqueGenerations(helper, 10);
 	}
 	
+    public void testAlternative() {
+    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
+    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
+		alternativeType.addComponent(new PartDescriptor("a", typeA));
+    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
+		alternativeType.addComponent(new PartDescriptor("b", typeB));
+		DefaultContext context = new DefaultContext();
+		SimpleGenerationSetup setup = new SimpleGenerationSetup(null);
+		PartDescriptor part = new PartDescriptor(null, alternativeType);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);
+		Entity entity = new Entity("Entity");
+		builder.buildComponentFor(entity);
+		System.out.println(entity);
+    }
+    
 /*
     public void testGenerator() {
         createGenerator("test", "generator", BooleanGenerator.class.getName());
@@ -418,24 +482,13 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private ComponentBuilder createComponentBuilder(ComponentDescriptor component) {
-		return ComponentBuilderFactory.createComponentBuilder(component, new BeneratorContext(), new SimpleGenerationSetup());
+		return createComponentBuilder(component, new BeneratorContext(contextUri));
 	}
 	
-    public void testAlternative() {
-    	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
-    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
-		alternativeType.addComponent(new PartDescriptor("a", typeA));
-    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
-		alternativeType.addComponent(new PartDescriptor("b", typeB));
-		DefaultContext context = new DefaultContext();
-		SimpleGenerationSetup setup = new SimpleGenerationSetup();
-		PartDescriptor part = new PartDescriptor(null, alternativeType);
-		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);
-		Entity entity = new Entity("Entity");
-		builder.buildComponentFor(entity);
-		System.out.println(entity);
-    }
-    
+	private ComponentBuilder createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
+		return ComponentBuilderFactory.createComponentBuilder(component, context, context.getGenerationSetup());
+	}
+	
 	private static final class ComponentBuilderGenerator<E> extends LightweightGenerator<E> {
 		
 		private ComponentBuilder builder;
