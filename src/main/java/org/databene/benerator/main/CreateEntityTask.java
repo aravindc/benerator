@@ -31,8 +31,6 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.task.AbstractTask;
@@ -49,7 +47,6 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
     private String entityName;
     private Generator<Entity> generator;
     private Collection<Consumer<Entity>> consumers;
-    private Escalator noConsumerHandler;
 //    private int generationCount;
     private List<? extends Task> subTasks;
     private boolean isSubTask;
@@ -60,7 +57,6 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
         this.entityName = entityName;
         this.generator = generator;
         this.consumers = consumers;
-        this.noConsumerHandler = new LoggerEscalator();
 //        this.generationCount = 0;
         this.subTasks = subTasks;
         this.isSubTask = isSubTask;
