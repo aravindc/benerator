@@ -4,9 +4,17 @@ release notes benerator 0.5.5
 summary
 -------
 With the new benerator release, database data generation is strongly simplified:
+As a minimal setting you just need to define table name, database and the desired
+number of entries.
 A syntax extension provides selector expressions that are evaluated dynamically
-and you may inline SQL code in benerator descriptor files. With the consumer 
-org.databene.platform.db.SQLEntityExporter, you can now export data to SQL files.
+and you may inline SQL code in benerator descriptor files. You can specify 
+default generation for columns that appear in several tables (e.g. id, uuid, 
+created_at, created_by...) and export generated data to SQL files too.
+For all file references, relative URLs are now supported.
+You can now inline scripts in SQL, Java, JavaScript, Java, Ruby, Python, Groovy, 
+FreeMarker, Velocity, Tcl and many more. New name packages are included for 
+Finnland, Sweden, Norway, Netherlands, Turkey and the Czech Republic. 
+Finally, some resource leaks and other bugs were removed.
 
 changes
 -------
@@ -15,6 +23,9 @@ changes
 
 enhancements
 ------------
+- minimum setup requirements for creating entities (defaulting to increment id generator):
+  	<database id="db" url="url" driver="driver" user="user" />
+	<create-entities name="table_name" count="10" consumer="db" />
 - added createxml.sh
 - supporting dynamic queries in selectors, e.g. selector="{{owner_fk = ${user.id}}}"
 - improved convenience with new <execute> tag. It replaces the former use of RunSQLScriptTask
@@ -39,11 +50,29 @@ enhancements
   - inline SQL
   - shell
 - Defining default generators of attributes for all entities
+- JavaBeans may be referenced as converters, several converters may be used in a comma separated list - they will be chained
+	<bean id="theConverter" class="my.SpecialConverter"/>
+	....
+	<create-entities name="user" source="myfile.csv" converter="org.my.Converter,theConverter"/>
+- Validators now can be configured the same way like converters (see above) 
+- completed country database
+- simplified id configuration, now even <id name="id/> is enough:
+  - default type: long
+  - default strategy: increment
+  - fallback to global IdProviderFactory if a specified IdProviderFactory does not support the specified strategy
+- new name packages for:
+  - Finnland
+  - Netherlands
+  - Norway
+  - Sweden
+  - Turkey
+  - Czech Republic
+- Generator and Validator for German tax id numbers (Steueridentifikationsnummer)
 
 bug fixes
 ---------
 (Find the tracker at http://sourceforge.net/tracker/?group_id=222964&atid=1057386)
-- Fixed resource leak in IteratingGenerator
+- Several resource leaks
 - Printing error messages also if RunSQLScriptTask.haltOnError=false
-- bugfix in attribute generation order
-
+- bug fix in attribute generation order
+- bug fix for Oracle schemas which are accessed by a user of another name
