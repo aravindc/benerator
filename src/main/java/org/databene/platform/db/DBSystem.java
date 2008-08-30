@@ -360,7 +360,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 provider = (IdProvider<T>) new LongQueryIdProvider(getConnection(), dialect.sequenceAccessorSql(param));
             else if (QUERY.equals(strategy))
                 provider = (IdProvider<T>) new QueryIdProvider(getConnection(), param);
-            idProviders.put(pId, provider);
+            if (provider != null)
+            	idProviders.put(pId, provider);
         }
         return provider;
     }
