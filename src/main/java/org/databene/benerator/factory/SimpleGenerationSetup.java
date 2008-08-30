@@ -39,14 +39,19 @@ import org.databene.script.ScriptUtil;
  */
 public class SimpleGenerationSetup implements GenerationSetup {
     
-    protected String  defaultEncoding  = SystemInfo.fileEncoding();
-    protected int     defaultPagesize  = 1;
-    protected boolean defaultNull      = true;
-    protected char    defaultSeparator = ',';
+    protected String  defaultEncoding     = SystemInfo.fileEncoding();
+    protected int     defaultPagesize     = 1;
+    protected boolean defaultNull         = true;
+    protected char    defaultSeparator    = ',';
     protected String  defaultErrorHandler = "fatal";
+    protected String  contextUri          = "./";
     
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
 
+    public SimpleGenerationSetup(String contextUri) {
+    	this.contextUri = contextUri;
+    }
+    
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
@@ -97,6 +102,14 @@ public class SimpleGenerationSetup implements GenerationSetup {
 
 	public void setDefaultErrorHandler(String defaultErrorHandler) {
 		this.defaultErrorHandler = defaultErrorHandler;
+	}
+
+	public String getContextUri() {
+		return contextUri;
+	}
+
+	public void setContextUri(String contextUri) {
+		this.contextUri = contextUri;
 	}
 
 }
