@@ -53,5 +53,10 @@ public class IdGenerator<E> implements Generator<E> {
     public void reset() {
         // ignored
     }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + source + ']';
+    }
 
 }
