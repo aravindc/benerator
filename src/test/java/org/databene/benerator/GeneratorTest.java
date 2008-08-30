@@ -221,7 +221,7 @@ public abstract class GeneratorTest extends TestCase {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private static <T>void expectGeneratedSequenceOnce(Generator<T> generator, T... products) {
+    protected static <T>void expectGeneratedSequenceOnce(Generator<T> generator, T... products) {
         generator.validate();
         for (T expectedProduct : products) {
             assertTrue("Generator is unexpectedly unavailable: " + generator, generator.available());
