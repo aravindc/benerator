@@ -41,4 +41,5 @@ public interface GenerationSetup {
     String getDefaultEncoding();
     char getDefaultSeparator();
     ComponentDescriptor getDefaultComponentConfig(String name);
+	String getContextUri();
 }
