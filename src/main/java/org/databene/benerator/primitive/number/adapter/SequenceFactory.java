@@ -87,6 +87,8 @@ public class SequenceFactory {
 
     static AbstractLongGenerator createLongGenerator(Sequence sequence) {
         SequenceDef def = defs.get(sequence.getName());
+        if (def == null)
+        	throw new ConfigurationError("Sequence not defined: " + sequence.getName());
         if (LongFromDoubleGenerator.class.equals(def.longGeneratorClass))
             return new LongFromDoubleGenerator(createDoubleGenerator(sequence));
         else
