@@ -55,6 +55,7 @@ import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
+import org.databene.commons.validator.AndValidator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Iteration;
 import org.databene.model.data.PrimitiveType;
@@ -127,7 +128,35 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-    static Converter getConverter(TypeDescriptor descriptor, Context context) {
+    static Validator getValidator(TypeDescriptor descriptor, Context context) {
+        String validatorSpec = descriptor.getValidator();
+        if (StringUtil.isEmpty(validatorSpec))
+            return null;
+        String[] specs = StringUtil.tokenize(validatorSpec, ',');
+        if (specs.length == 1) {
+        	return parseValidatorSpec(validatorSpec, context);
+        } else {
+        	Validator[] validators = new Validator[specs.length];
+        	for (int i = 0; i < specs.length; i++)
+        		validators[i] = parseValidatorSpec(specs[i], context);
+			return new AndValidator(validators);
+        }
+    }
+
+	private static Validator parseValidatorSpec(String validatorSpec,
+			Context context) {
+		Object validator = null;
+        // first try to resolve the converterSpec from the context
+        validator = context.get(validatorSpec);
+        // if the converter is not in the context, interpret the converterSpec as classname
+        if (validator == null)
+        	validator = BeanUtil.newInstance(validatorSpec);
+        if (!(validator instanceof Validator))
+        	throw new ConfigurationError(validatorSpec + " is not an instance of " + Validator.class);
+		return (Validator) validator;
+	}
+	
+	static Converter getConverter(TypeDescriptor descriptor, Context context) {
         String converterSpec = descriptor.getConverter();
         if (StringUtil.isEmpty(converterSpec))
             return null;
@@ -188,13 +217,10 @@ public class TypeGeneratorFactory {
     }
 
     protected static <T> Generator<T> createValidatingGenerator(
-            TypeDescriptor descriptor, Generator<T> generator) {
-        Validator<T> validator = null;
-        String validatorName = descriptor.getValidator();
-        if (validatorName != null) {
-            validator = BeanUtil.newInstance(validatorName);
+            TypeDescriptor descriptor, Generator<T> generator, Context context) {
+        Validator<T> validator = getValidator(descriptor, context);
+        if (validator != null)
             generator = new ValidatingGeneratorProxy<T>(generator, validator);
-        }
         return generator;
     }
 
@@ -257,13 +283,13 @@ public class TypeGeneratorFactory {
 		generator = createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor)
 			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
-        generator = createValidatingGenerator(descriptor, generator);
+        generator = createValidatingGenerator(descriptor, generator, context);
 		return generator;
 	}
     
-    private static <S, T> Generator<T> createTypeConvertingGenerator(
+    static <S, T> Generator<T> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<S> generator) {
-        if (descriptor.getPrimitiveType() == null)
+        if (descriptor == null || descriptor.getPrimitiveType() == null)
             return (Generator<T>) generator;
         PrimitiveType<T> primitiveType = descriptor.getPrimitiveType();
         Class<T> targetType = primitiveType.getJavaType();
