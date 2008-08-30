@@ -98,6 +98,13 @@ public class FlatFileEntityIterable extends ConvertingIterable<String[], Entity>
 
     // Iterable interface ----------------------------------------------------------------------------------------------
 
+    @Override
+    public Class<Entity> getType() {
+    	if (!initialized)
+    		init();
+    	return super.getType(); // TODO implement FlatFileEntityIterable.getType()
+    }
+    
     public Iterator<Entity> iterator() {
         if (!initialized)
             init();
