@@ -28,22 +28,24 @@ import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
 public class XMLFileGenerator extends LightweightGenerator<File> {
 	
-    private String encoding = SystemInfo.fileEncoding();
+    private String encoding;
     private String root;
     private String filenamePattern;
     private Generator<String> fileNameGenerator;
     private Generator<? extends Object> contentGenerator;
-    private DataModel dataModel = DataModel.getDefaultInstance();
+    private DataModel dataModel;
     
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
         super(File.class);
+        this.encoding = SystemInfo.fileEncoding();
+        this.dataModel = DataModel.getDefaultInstance();
         dataModel.clear();
         this.root = root;
         this.filenamePattern = filenamePattern;
         
         // create context
-        BeneratorContext context = new BeneratorContext();
-        SimpleGenerationSetup setup = new SimpleGenerationSetup();
+        BeneratorContext context = new BeneratorContext(IOUtil.getContextUri(schemaUri));
+        SimpleGenerationSetup setup = new SimpleGenerationSetup(IOUtil.getContextUri(schemaUri));
 
         // parse schema
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
@@ -53,7 +55,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 new MessageConverter<Long>(filenamePattern, Locale.US));
         // parse properties files
-        ModelParser parser = new ModelParser();
+        ModelParser parser = new ModelParser(IOUtil.getContextUri(schemaUri));
         for (String propertiesFile : propertiesFiles)
             parser.importProperties(propertiesFile, context);
 
