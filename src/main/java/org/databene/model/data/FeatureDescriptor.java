@@ -122,7 +122,7 @@ public class FeatureDescriptor {
         final FeatureDescriptor that = (FeatureDescriptor) o;
         for (FeatureDetail<? extends Object> detail : details.values()) {
             String detailName = detail.getName();
-            if (!"name".equals(detailName) && !NullSafeComparator.equals(detail.getValue(), that.getDetailValue(detailName)))
+            if (!NullSafeComparator.equals(detail.getValue(), that.getDetailValue(detailName)))
                 return false;
         }
         return true;
