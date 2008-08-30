@@ -82,7 +82,8 @@ public class ComplexTypeGeneratorFactory {
     
     // public utility methods ------------------------------------------------------------------------------------------
 
-    public static Generator<Entity> createComplexTypeGenerator(ComplexTypeDescriptor type, boolean unique, Context context, GenerationSetup setup) {
+    public static Generator<Entity> createComplexTypeGenerator(ComplexTypeDescriptor type, boolean unique, Context context, 
+    		GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
         // create original generator
@@ -147,12 +148,13 @@ public class ComplexTypeGeneratorFactory {
             } else
                 throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
         } else {
-            if (sourceName.endsWith(".xml"))
-                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(sourceName, context));
-            else if (sourceName.endsWith(".csv")) {
-                generator = createCSVSourceGenerator(descriptor, context, setup, sourceName);
-            } else if (sourceName.endsWith(".flat")) {
-                generator = createFlatSourceGenerator(descriptor, context, setup, sourceName);
+        	String uri = IOUtil.resolveLocalUri(sourceName, setup.getContextUri());
+            if (uri.endsWith(".xml")) {
+                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(uri, context));
+            } else if (uri.endsWith(".csv")) {
+                generator = createCSVSourceGenerator(descriptor, context, setup, uri);
+            } else if (uri.endsWith(".flat")) {
+                generator = createFlatSourceGenerator(descriptor, context, setup, uri);
             } else
                 throw new UnsupportedOperationException("Unknown source type: " + sourceName);
         }
