@@ -53,7 +53,6 @@ public class PooledConnectionHandler implements InvocationHandler {
     private static long nextId = 0;
 
     private Connection realConnection;
-    private Class<? extends Connection> realConnectionClass;
     private long id;
     
     // construction ----------------------------------------------------------------------------------------------------
@@ -61,7 +60,6 @@ public class PooledConnectionHandler implements InvocationHandler {
     public PooledConnectionHandler(Connection realConnection) {
         this.id = nextId();
         this.realConnection = realConnection;
-        this.realConnectionClass = realConnection.getClass();
         this.listeners = new ArrayList<ConnectionEventListener>();
         if (jdbcLogger.isDebugEnabled())
             jdbcLogger.debug("Created connection #" + id + ": " + realConnection);
