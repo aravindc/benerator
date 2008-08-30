@@ -39,6 +39,7 @@ import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.Context;
 import org.databene.commons.xml.XMLUtil;
@@ -90,11 +91,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private ModelParser parser = new ModelParser();
+    private ModelParser parser;
     private Context context;
     private DataModel dataModel;
     private List<String> propertiesFiles;
-	Map<String, String> namespaces = new HashMap<String, String>();
+	private Map<String, String> namespaces;
 
     
     // constructors ----------------------------------------------------------------------------------------------------
@@ -105,6 +106,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     public XMLSchemaDescriptorProvider(String schemaUri, Context context, DataModel dataModel) {
         super(schemaUri, true);
+        this.namespaces = new HashMap<String, String>();
+        parser = new ModelParser(IOUtil.getContextUri(schemaUri));
         this.context = context;
         this.dataModel = dataModel;
         this.propertiesFiles = new ArrayList<String>();
@@ -357,8 +360,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 			complexType.setParentName(baseName);
 		else
 			throw new UnsupportedOperationException("not a supported type: " + base.getClass());
-//		if (contentDescriptor instanceof SimpleTypeDescriptor)
-//			System.out.println(((SimpleTypeDescriptor) contentDescriptor).getPrimitiveType());
 		parseAttributes(extension, complexType);
 	}
 
@@ -367,16 +368,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         descriptor.setParentName(base);
         parseAttributes(extension, descriptor);
     }
-/*
-	private <T extends TypeDescriptor> T deriveType(T base) {
-		if (base instanceof SimpleTypeDescriptor)
-			return (T) new SimpleTypeDescriptor(null, (SimpleTypeDescriptor) base);
-		else if (base instanceof ComplexTypeDescriptor)
-			return (T) new ComplexTypeDescriptor(null, (ComplexTypeDescriptor) base);
-		else
-			throw new UnsupportedOperationException("not a supported type: " + base.getClass());
-	}
-*/
+
 	private void parseAttributes(Element extension, ComplexTypeDescriptor owner) {
 		Element[] children = XMLUtil.getChildElements(extension);
         for (Element child : children) {
