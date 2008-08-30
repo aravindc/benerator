@@ -26,7 +26,6 @@
 
 package org.databene.model.function;
 
-import org.databene.model.function.Sequence;
 import org.databene.model.function.String2DistributionConverter;
 
 import junit.framework.TestCase;
@@ -40,11 +39,12 @@ import junit.framework.TestCase;
 public class String2DistributionConverterTest extends TestCase {
 
 	String2DistributionConverter converter = new String2DistributionConverter();
-
+/* TODO v0.5.x finalize design of Sequence and SequenceFactory
 	public void testSequence() {
 		Distribution distribution = converter.convert(MySequence.class.getName());
 		assertTrue(distribution instanceof Sequence);
 	}
+	*/
 	
 	public void testFunction() {
 		Distribution distribution = converter.convert(MyFunction.class.getName());
@@ -56,13 +56,13 @@ public class String2DistributionConverterTest extends TestCase {
 		assertTrue(distribution instanceof FeatureWeight);
 		assertEquals("age", ((FeatureWeight) distribution).getWeightFeature());
 	}
-	
+	/*
 	public static class MySequence extends Sequence {
 		public MySequence() {
 			super("mysec");
 		}
 	}
-	
+	*/
 	public static class MyFunction implements WeightFunction {
 		public double value(double param) {
 			return param;
