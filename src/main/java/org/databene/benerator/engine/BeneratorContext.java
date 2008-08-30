@@ -28,6 +28,7 @@ package org.databene.benerator.engine;
 
 import java.util.Set;
 
+import org.databene.benerator.factory.GenerationSetup;
 import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.commons.Context;
 import org.databene.commons.context.ContextStack;
@@ -45,12 +46,12 @@ public class BeneratorContext implements Context {
 	
 	private ContextStack stack;
 	
-	public BeneratorContext() {
+	public BeneratorContext(String contextUri) {
 		stack = new ContextStack();
 		stack.push(new PropertiesContext(java.lang.System.getenv()));
 		stack.push(new PropertiesContext(java.lang.System.getProperties()));
 		stack.push(new DefaultContext());
-		stack.set("benerator", new SimpleGenerationSetup());
+		stack.set("benerator", new SimpleGenerationSetup(contextUri));
 	}
 
 	public Object get(String key) {
@@ -71,5 +72,9 @@ public class BeneratorContext implements Context {
 
 	public String toString() {
 		return stack.toString();
+	}
+	
+	public GenerationSetup getGenerationSetup() {
+		return (GenerationSetup) get("benerator");
 	}
 }
