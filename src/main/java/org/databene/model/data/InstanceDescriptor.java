@@ -26,7 +26,6 @@
 
 package org.databene.model.data;
 
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.operation.AndOperation;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinOperation;
