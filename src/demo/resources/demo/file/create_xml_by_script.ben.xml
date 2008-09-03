@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<setup	xmlns="http://databene.org/benerator-0.5.0.xsd"
+<setup	xmlns="http://databene.org/benerator-0.5.5.xsd"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator-0.5.0.xsd org/databene/benerator/benerator-0.5.0.xsd">
+		xsi:schemaLocation="http://databene.org/benerator-0.5.5.xsd org/databene/benerator/benerator-0.5.5.xsd">
     <create-entities name="transaction" count="10">
         <variable name="product" type="entity" source="demo/file/products.import.csv" distribution="random"/>
         <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
