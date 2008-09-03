@@ -35,6 +35,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
+import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.domain.product.EAN13Validator;
@@ -58,11 +59,14 @@ public class ShopXMLTest extends TestCase {
     
     private static final Log logger = LogFactory.getLog(ShopXMLTest.class);
     
+    String schemaUri = "demo/shop/shop.xsd";
+    String contextUri = IOUtil.getContextUri(schemaUri);
+    
     public void test() throws IOException {
-        String schemaUri = "demo/shop/shop.xsd";
+        
         System.setProperty("stage", "test");
         
-        BeneratorContext context = new BeneratorContext();
+        BeneratorContext context = new BeneratorContext(contextUri);
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(schemaUri, context);
         DataModel.getDefaultInstance().addDescriptorProvider(provider);
         DataModel.getDefaultInstance().validate();
@@ -96,7 +100,7 @@ public class ShopXMLTest extends TestCase {
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-            descriptor, false, false, provider.getContext(), new SimpleGenerationSetup());
+            descriptor, false, false, provider.getContext(), new SimpleGenerationSetup(contextUri));
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
             logger.debug(object);
@@ -110,7 +114,7 @@ public class ShopXMLTest extends TestCase {
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
-                descriptor, false, provider.getContext(), new SimpleGenerationSetup());
+                descriptor, false, provider.getContext(), new SimpleGenerationSetup(contextUri));
         for (int i = 0; i < 10; i++)
             if (generator.available()) {
                 Entity entity = generator.generate();
