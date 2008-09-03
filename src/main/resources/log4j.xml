@@ -9,7 +9,7 @@
    <!-- A time/date based rolling appender -->
    <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
       <!--errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/-->
-      <param name="File" value=".\databene-generator.log"/>
+      <param name="File" value="benerator.log"/>
       <param name="Append" value="false"/>
 
       <layout class="org.apache.log4j.PatternLayout">
@@ -77,7 +77,7 @@
        <priority value="info"/>
     </category>
 
-    <category name="org.databene.benerator.JDBC">
+    <category name="org.databene.JDBC">
        <priority value="info"/>
     </category>
 
@@ -90,6 +90,10 @@
     </category>
 
     <category name="org.databene.platform.db">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.platform.db.DBSystem">
        <priority value="info"/>
     </category>
 
