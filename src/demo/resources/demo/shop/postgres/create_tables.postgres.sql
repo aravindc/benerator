@@ -39,7 +39,7 @@ CREATE TABLE db_role (
 CREATE TABLE db_user (
   id       integer     NOT NULL DEFAULT nextval('seq_id_gen'),
   name     varchar(30) NOT NULL,
-  email    varchar(30) NOT NULL,
+  email    varchar(50) NOT NULL,
   password varchar(16) NOT NULL,
   role_id  varchar(16) NOT NULL,
   active   smallint    NOT NULL default 1,

@@ -14,5 +14,3 @@ DROP TABLE db_category;
 COMMIT;
 DROP SEQUENCE seq_id_gen;
 COMMIT;
-DROP TABLE dual;
-COMMIT;

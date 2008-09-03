@@ -29,7 +29,7 @@ CREATE TABLE db_role (
 CREATE TABLE db_user (
   id       int(10)     NOT NULL auto_increment,
   name     varchar(30) NOT NULL,
-  email    varchar(30) NOT NULL,
+  email    varchar(50) NOT NULL,
   password varchar(16) NOT NULL,
   role_id  varchar(16) NOT NULL,
   active   boolean     NOT NULL default '1',

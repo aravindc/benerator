@@ -42,7 +42,7 @@ COMMENT ON TABLE db_role IS 'roles of the shop users';
 CREATE TABLE db_user (
   id       number(10)   NOT NULL,
   name     varchar2(30) NOT NULL,
-  email    varchar2(30) NOT NULL,
+  email    varchar2(50) NOT NULL,
   password varchar2(16) NOT NULL,
   role_id  varchar2(16) NOT NULL,
   active   number(1)    default 1 NOT NULL,
