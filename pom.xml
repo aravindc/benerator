@@ -5,11 +5,11 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.5</version>
+    <version>0.5.6-alpha</version>
 
     <properties>
-	    <webdecs_version>0.4.5</webdecs_version>
-	    <commons_version>0.4.5</commons_version>
+	    <webdecs_version>0.4.6-alpha</webdecs_version>
+	    <commons_version>0.4.6-alpha</commons_version>
     </properties>
 
 <!--
