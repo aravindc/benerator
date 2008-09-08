@@ -84,7 +84,8 @@ public class Benerator extends SimpleGenerationSetup {
     private static final Collection<String> COMPONENT_TYPES 
         = CollectionUtil.toSet("attribute", "part", "id", "reference");
     
-    private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil.toSet("pagesize", "threads", "consumer", "onError");
+    private static final Collection<String> CREATE_ENTITIES_EXT_SETUP 
+    	= CollectionUtil.toSet("pagesize", "threads", "consumer", "onError");
 
     private ModelParser parser;
     
@@ -223,6 +224,8 @@ public class Benerator extends SimpleGenerationSetup {
                 parseAttribute(element, "password", context)
             );
             db.setSchema(parseAttribute(element, "schema", context));
+            db.setBatch(parseBooleanAttribute(element, "batch", context, false));
+            db.setFetchSize(parseIntAttribute(element, "fetchSize", context, 100));
             context.set(id, db);
             beans.put(id, db);
             dataModel.addDescriptorProvider(db);
@@ -391,6 +394,8 @@ public class Benerator extends SimpleGenerationSetup {
         ErrorHandler errorHandler = parseOnError(element, getClass().getName());
         if (!isSubTask)
         	logger.info(descriptor);
+        else if (logger.isDebugEnabled())
+        	logger.debug(descriptor);
         // parse consumers
         Collection<Consumer<Entity>> consumers = parseConsumers(element);
         // create generator
@@ -548,6 +553,14 @@ public class Benerator extends SimpleGenerationSetup {
             return defaultValue;
         text = ScriptUtil.render(text, context);
         return Integer.parseInt(text);
+    }
+    
+    private boolean parseBooleanAttribute(Element element, String name, Context context, boolean defaultValue) {
+        String text = parseAttribute(element, name, context);
+        if (StringUtil.isEmpty(text))
+            return defaultValue;
+        text = ScriptUtil.render(text, context);
+        return Boolean.parseBoolean(text);
     }
     
     private ErrorHandler parseOnError(Element element, String category) {
