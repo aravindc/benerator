@@ -29,6 +29,8 @@ package org.databene.model.data;
 import org.databene.commons.Composite;
 import org.databene.commons.CompositeFormatter;
 import org.databene.commons.collection.OrderedNameMap;
+import org.databene.commons.converter.AnyConverter;
+import org.databene.platform.bean.BeanDescriptorProvider;
 
 import java.util.Map;
 
@@ -41,6 +43,8 @@ import java.util.Map;
  */
 public class Entity implements Composite<Object> {
 
+	private static final BeanDescriptorProvider BEAN_DESCRIPTOR_PROVIDER = new BeanDescriptorProvider();
+	
     private OrderedNameMap<Object> components;
     private ComplexTypeDescriptor descriptor;
 
@@ -94,6 +98,13 @@ public class Entity implements Composite<Object> {
     }
     
     public void setComponent(String componentName, Object component) {
+    	ComponentDescriptor componentDescriptor = descriptor.getComponent(componentName);
+    	if (componentDescriptor != null && componentDescriptor.getType() instanceof SimpleTypeDescriptor) {
+    		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) componentDescriptor.getType();
+    		PrimitiveType primitiveType = componentType.getPrimitiveType();
+			Class<? extends Object> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName());
+			component = AnyConverter.convert(component, javaType);
+    	}
         components.put(componentName, component);
     }
     
