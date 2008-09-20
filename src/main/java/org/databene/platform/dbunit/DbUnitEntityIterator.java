@@ -63,6 +63,8 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
     private List<Row> rows;
 
     private int nextRowNum;
+    
+    private DataModel dataModel = DataModel.getDefaultInstance();
 
     public DbUnitEntityIterator(String uri, Context context) throws IOException {
         this.context = context;
@@ -86,9 +88,12 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
         if (nextRowNum < rows.size()) {
             Row row = rows.get(nextRowNum);
             String[] rowValues = row.getValues();
-            Entity result = new Entity(getType(row));
-            for (int i = 0; i < rowValues.length; i++)
-                result.setComponent(row.getColumnName(i), rowValues[i]);
+            ComplexTypeDescriptor descriptor = getType(row);
+			Entity result = new Entity(descriptor);
+            for (int i = 0; i < rowValues.length; i++) {
+                String rowValue = rowValues[i];
+				result.setComponent(row.getColumnName(i), rowValue);
+            }
             nextRowNum++;
             return result;
         } else
@@ -109,7 +114,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
 
     private ComplexTypeDescriptor getType(Row row) {
         String name = row.getTableName();
-        ComplexTypeDescriptor type = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(name);
+        ComplexTypeDescriptor type = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(name);
         if (type == null)
             type = new ComplexTypeDescriptor(name);
         return type;
