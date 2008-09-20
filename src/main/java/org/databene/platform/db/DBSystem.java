@@ -454,6 +454,19 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             return;
         ComplexTypeDescriptor complexType = new ComplexTypeDescriptor(tableName);
         
+        // process primary keys
+        DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
+        DBColumn[] columns = pkConstraint.getColumns();
+        String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
+        if (pkColumnNames.length == 1) { // TODO support composite primary keys
+        	String columnName = pkColumnNames[0];
+        	DBColumn column = table.getColumn(columnName);
+			table.getColumn(columnName);
+            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType());
+        	IdDescriptor idDescriptor = new IdDescriptor(columnName, abstractType);
+			complexType.addComponent(idDescriptor);
+        }
+
         // process foreign keys
         for (DBForeignKeyConstraint constraint : table.getForeignKeyConstraints()) {
             List<DBForeignKeyColumn> foreignKeyColumns = constraint.getForeignKeyColumns();
@@ -472,7 +485,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 descriptor.setMinCount(1L);
                 descriptor.setMaxCount(1L);
                 descriptor.setNullable(foreignKeyColumn.getForeignKeyColumn().isNullable());
-                complexType.addComponent(descriptor); // overwrite attribute descriptor
+                complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
                 logger.error("Not implemented: Don't know how to handle composite foreign keys");
@@ -516,7 +529,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                     assert constraint.getColumns()[0].equals(column); // consistence check
                     descriptor.setUnique(true);
                 } else {
-                    logger.warn("Uniqueness assurance on multiple columns is not supported yet: " + constraint);
+                    logger.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
                     // TODO v0.6 support uniqueness constraints on combination of columns
                 }
             }
