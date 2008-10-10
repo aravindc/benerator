@@ -86,7 +86,7 @@ public class ShuffleLongGenerator extends AbstractLongGenerator {
         if (cursor + increment <= max)
             cursor += increment;
         else
-            cursor = min + ((cursor - min + 1) % increment);
+            cursor = min + ((cursor - min + 1) % increment); // TODO check life cycle
         return result;
     }
 
