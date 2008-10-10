@@ -102,7 +102,9 @@ public class Entity implements Composite<Object> {
     	if (componentDescriptor != null && componentDescriptor.getType() instanceof SimpleTypeDescriptor) {
     		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) componentDescriptor.getType();
     		PrimitiveType primitiveType = componentType.getPrimitiveType();
-			Class<? extends Object> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName()); // TODO if the type is unknown/mistyped a NullPointerException will be caused here
+    		if (primitiveType == null)
+    			primitiveType = PrimitiveType.STRING;
+			Class<? extends Object> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName());
 			component = AnyConverter.convert(component, javaType);
     	}
         components.put(componentName, component);
