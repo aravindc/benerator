@@ -35,19 +35,23 @@ import org.databene.model.function.WeightFunction;
  */
 public class ExponentialFunction implements WeightFunction {
 
-    private double a;
-    private double b;
+    private double scale;
+    private double frequency;
 
-    public ExponentialFunction(double a, double b) {
-        this.a = a;
-        this.b = b;
+    public ExponentialFunction(double frequency) {
+        this(1, frequency);
+    }
+
+    public ExponentialFunction(double scale, double frequency) {
+        this.frequency = frequency;
+        this.scale = scale;
     }
 
     public double value(double param) {
-        return a * Math.exp(b * param);
+        return scale * Math.exp(frequency * param);
     }
 
     public String toString() {
-        return getClass().getSimpleName() + '[' + a + "*e^(" + b + "x)]";
+        return scale + "e^(" + frequency + "x)";
     }
 }
