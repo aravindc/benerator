@@ -73,7 +73,7 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
     public void reset() {
         if (dirty)
             validate();
-        source.reset();
+        source.reset(); // TODO: A NullPoinerException happens here
     }
 
     public void close() {
