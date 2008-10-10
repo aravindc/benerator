@@ -205,7 +205,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Date precisionDate = parseDate(descriptor, PRECISION, TimeUtil.date(1970, 0, 2));
         long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
         Distribution distribution = getDistribution(descriptor, unique);
-        return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
+        if (distribution instanceof Sequence) { // TODO finalize Sequence concept and adapt this 
+	        Date variation1 = parseDate(descriptor, VARIATION1, precisionDate);
+	        Date variation2 = parseDate(descriptor, VARIATION2, precisionDate);
+	        return GeneratorFactory.getDateGenerator(min, max, precision, (Sequence) distribution, variation1, variation2, 0);
+        } else
+	        return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
+
     }
 
     private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, boolean unique) {

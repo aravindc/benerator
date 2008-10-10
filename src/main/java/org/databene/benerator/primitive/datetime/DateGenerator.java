@@ -34,6 +34,7 @@ import org.databene.model.function.Sequence;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * creates date values by a LongGenerator.
@@ -65,6 +66,18 @@ public class DateGenerator implements Generator<Date> {
                 (max != null ? max.getTime() : Long.MAX_VALUE),
                 precision,
                 distribution
+        );
+    }
+
+    // TODO make the sequence contain the variation params and remove this method
+    public DateGenerator(Date min, Date max, long precision, Distribution distribution, Date variation1, Date variation2) {
+        source = new LongGenerator(
+                (min != null ? min.getTime() : Long.MIN_VALUE),
+                (max != null ? max.getTime() : Long.MAX_VALUE),
+                precision,
+                distribution,
+                (variation1 != null ? variation1.getTime() + TimeZone.getDefault().getRawOffset() : 1000L),
+                (variation2 != null ? variation2.getTime() + TimeZone.getDefault().getRawOffset() : 1000L)
         );
     }
 

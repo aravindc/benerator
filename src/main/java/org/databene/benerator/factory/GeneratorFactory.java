@@ -42,6 +42,7 @@ import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.model.data.Iteration;
 import org.databene.model.function.Distribution;
+import org.databene.model.function.Sequence;
 import org.databene.document.csv.CSVLineIterable;
 import org.databene.platform.csv.CSVCellIterable;
 import org.databene.regex.RegexParser;
@@ -285,6 +286,17 @@ public class GeneratorFactory {
     public static Generator<Date> getDateGenerator(
             Date min, Date max, long precision, Distribution distribution, double nullQuota) {
         DateGenerator generator = new DateGenerator(min, max, precision, distribution);
+        return wrapNullQuota(generator, nullQuota);
+    }
+
+    /**
+     * TODO make Sequence hold the variation info and remove this method.
+     * @deprecated
+     */
+    @Deprecated
+    public static Generator<Date> getDateGenerator(
+            Date min, Date max, long precision, Sequence sequence, Date variation1, Date variation2, double nullQuota) {
+        DateGenerator generator = new DateGenerator(min, max, precision, sequence, variation1, variation2);
         return wrapNullQuota(generator, nullQuota);
     }
 
