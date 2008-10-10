@@ -55,4 +55,10 @@ public class LongGenerator extends IntegralNumberGenerator<Long> {
     public LongGenerator(Long min, Long max, Long precision, Distribution distribution) {
         super(Long.class, min, max, precision, distribution);
     }
+
+    /** Initializes the generator to create Longs */
+    public LongGenerator(Long min, Long max, Long precision, Distribution distribution, Long variation1, Long variation2) {
+    	// TODO make the sequence contain the variation params and remove this method
+        super(Long.class, min, max, precision, distribution, variation1, variation2);
+    }
 }
