@@ -71,7 +71,7 @@ public class BitReverseLongGenerator extends AbstractLongGenerator {
     public boolean available() {
         if (dirty)
             validate();
-        return indexGenerator.available();
+        return indexGenerator.available(); // TODO check life cycle
     }
 
     public Long generate() throws IllegalGeneratorStateException {
