@@ -48,8 +48,12 @@ public class DbUnitEntityIterable implements EntityIterable {
         this.uri = uri;
         this.context = context;
     }
+    
+    public void setUri(String uri) {
+		this.uri = uri;
+	}
 
-    public Class<Entity> getType() {
+	public Class<Entity> getType() {
         return Entity.class;
     }
 

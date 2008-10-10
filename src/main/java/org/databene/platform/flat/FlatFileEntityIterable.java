@@ -83,8 +83,12 @@ public class FlatFileEntityIterable extends ConvertingIterable<String[], Entity>
     public void setUri(String uri) {
         this.uri = uri;
     }
+    
+    public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
 
-    public String getEntity() {
+	public String getEntity() {
         return entityDescriptor.getName();
     }
 

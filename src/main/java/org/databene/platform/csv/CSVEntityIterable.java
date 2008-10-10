@@ -50,7 +50,7 @@ public class CSVEntityIterable implements EntityIterable {
     private String encoding;
     private Converter<String, String> preprocessor;
 
-    private ComplexTypeDescriptor entityDescriptor;
+    private ComplexTypeDescriptor entityDescriptor; // TODO is this used/useful?
 
     // constructors ----------------------------------------------------------------------------------------------------
 
