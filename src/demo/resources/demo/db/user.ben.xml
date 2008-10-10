@@ -33,5 +33,7 @@
 	</execute> 
 
 	<create-entities name="db_role" count="10" consumer="db" />
-	<create-entities name="db_user" count="100" consumer="db" />
+	<create-entities name="db_user" count="10000" consumer="db" pagesize="1000">
+  		<reference name="role_fk" source="db" targetType="db_role" distribution="random"/>
+	</create-entities>
 </setup>
