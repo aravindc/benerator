@@ -26,7 +26,6 @@
 
 package org.databene.benerator.primitive.number.distribution;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.number.AbstractLongGenerator;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
@@ -38,6 +37,7 @@ import org.databene.model.function.Sequence;
  */
 public class RandomWalkLongGenerator extends AbstractLongGenerator {
 
+    private long initial;
     private long next;
 
     private RandomLongGenerator incrementGenerator;
@@ -77,6 +77,7 @@ public class RandomWalkLongGenerator extends AbstractLongGenerator {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @Override
     public void validate() {
         if (dirty) {
             long minIncrement = variation1;
@@ -85,17 +86,18 @@ public class RandomWalkLongGenerator extends AbstractLongGenerator {
             incrementGenerator.setMax(maxIncrement);
             incrementGenerator.setPrecision(precision);
             if (minIncrement < 0 && maxIncrement <= 0)
-                next = max;
+                initial = max;
             else if (minIncrement >= 0 && maxIncrement > 0)
-                next = min;
+                initial = min;
             else
-                next = (min + max) / 2;
+                initial = (min + max) / 2;
+            next = initial;
             incrementGenerator.validate();
             super.validate();
         }
     }
 
-    public Long generate() throws IllegalGeneratorStateException {
+    public Long generate() {
         if (dirty)
             validate();
         long value = next;
@@ -107,4 +109,15 @@ public class RandomWalkLongGenerator extends AbstractLongGenerator {
         return value;
     }
 
+    @Override
+    public void reset() {
+    	super.reset();
+    	next = initial;
+    }
+    
+    @Override
+    public void close() {
+    	super.close();
+    	next = initial;
+    }
 }
