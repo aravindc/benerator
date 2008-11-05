@@ -33,14 +33,16 @@ import org.databene.commons.ConfigurationError;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class GlobalIdProviderFactory implements IdProviderFactory {
+public class GlobalIdProviderFactory extends AbstractIdProviderFactory {
 
     public static final IdStrategy<String> UUID = new IdStrategy<String>("uuid", String.class);
     public static final IdStrategy<Long> INCREMENT = new IdStrategy<Long>("increment", Long.class);
     
     public static final UUIDProvider uuidProvider = new UUIDProvider();
     
-    public <T> IdProvider<T> idProvider(IdStrategy<T> strategy, String param, String scope) {
+    // AbstractIdProviderFactory interface -----------------------------------------------------------------------------
+    
+    public <T> IdProvider<T> createIdProvider(IdStrategy<T> strategy, String param) {
         if (strategy == INCREMENT) 
             return (IdProvider<T>) createIncrementIdProvider(param);
         else if (strategy == UUID) 
@@ -54,12 +56,13 @@ public class GlobalIdProviderFactory implements IdProviderFactory {
         return new IdStrategy[] { INCREMENT, UUID };
     }
     
+    // private helpers -------------------------------------------------------------------------------------------------
+    
     private IncrementIdProvider createIncrementIdProvider(String param) {
         long initialValue = 1;
         if (param != null)
             initialValue = Long.parseLong(param);
         return new IncrementIdProvider(initialValue);
     }
-
 
 }
