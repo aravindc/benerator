@@ -70,6 +70,8 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
 				Object componentValue = entry.getValue();
 				if (componentType instanceof SimpleTypeDescriptor) {
 					PrimitiveType primitive = ((SimpleTypeDescriptor) componentType).getPrimitiveType();
+					if (primitive == null)
+						primitive = PrimitiveType.STRING;
 			        Class<? extends Object> javaType = primitive.getJavaType();
 			        Object javaValue = AnyConverter.convert(componentValue, javaType);
 			        components.put(componentName, javaValue);
