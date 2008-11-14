@@ -53,9 +53,9 @@ import org.databene.commons.*;
 import org.databene.dataset.DatasetFactory;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileUtil;
-import org.databene.platform.dbunit.DbUnitEntityIterable;
-import org.databene.platform.flat.FlatFileEntityIterable;
-import org.databene.platform.csv.CSVEntityIterable;
+import org.databene.platform.dbunit.DbUnitEntitySource;
+import org.databene.platform.flat.FlatFileEntitySource;
+import org.databene.platform.csv.CSVEntitySource;
 import org.databene.script.ScriptConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -150,7 +150,7 @@ public class ComplexTypeGeneratorFactory {
         } else {
         	String uri = IOUtil.resolveLocalUri(sourceName, setup.getContextUri());
             if (uri.endsWith(".xml")) {
-                generator = new IteratingGenerator<Entity>(new DbUnitEntityIterable(uri, context));
+                generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(uri, context));
             } else if (uri.endsWith(".csv")) {
                 generator = createCSVSourceGenerator(descriptor, context, setup, uri);
             } else if (uri.endsWith(".flat")) {
@@ -195,7 +195,7 @@ public class ComplexTypeGeneratorFactory {
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
 		ScriptConverter scriptConverter = new ScriptConverter(context);
-		FlatFileEntityIterable iterable = new FlatFileEntityIterable(sourceName, descriptor, scriptConverter, encoding, ffcd);
+		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, ffcd);
 		generator = new IteratingGenerator(iterable);
 		return generator;
 	}
@@ -215,11 +215,11 @@ public class ComplexTypeGeneratorFactory {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
 		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator(new CSVEntityIterable(dataFiles[i], complexType.getName(), separator, encoding));
+		        sources[i] = new IteratingGenerator(new CSVEntitySource(dataFiles[i], complexType.getName(), separator, encoding));
 		    generator = new AlternativeGenerator(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
-		    CSVEntityIterable iterable = new CSVEntityIterable(sourceName, complexType.getName(), scriptConverter, separator, encoding);
+			CSVEntitySource iterable = new CSVEntitySource(sourceName, complexType.getName(), scriptConverter, separator, encoding);
 		    generator = new IteratingGenerator(iterable);
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
