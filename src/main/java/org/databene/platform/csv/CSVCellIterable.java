@@ -27,9 +27,8 @@
 package org.databene.platform.csv;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.TypedIterable;
-
-import java.util.Iterator;
 
 /**
  * Creates Iterators that iterate through the cells of a CSV file.<br/>
@@ -42,16 +41,24 @@ public class CSVCellIterable implements TypedIterable<String> {
     private String uri;
     private char separator;
 
+    public CSVCellIterable() {
+        this(null, ',');
+    }
+
     public CSVCellIterable(String uri, char separator) {
         this.uri = uri;
         this.separator = separator;
     }
+    
+    public void setUri(String uri) {
+		this.uri = uri;
+	}
 
-    public Class<String> getType() {
+	public Class<String> getType() {
         return String.class;
     }
 
-    public Iterator<String> iterator() {
+    public HeavyweightIterator<String> iterator() {
         try {
             return new CSVCellIterator(uri, separator);
         } catch (Exception e) {
