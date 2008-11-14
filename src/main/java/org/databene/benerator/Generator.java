@@ -63,13 +63,13 @@ public interface Generator<E> {
      * is expected to return a valid product and available() is expected to return true.
      * Be aware that this method does not need to be called by the user.
      */
-    void validate();
+    void validate() throws InvalidGeneratorSetupException;
 
     /**
      * Returns an instance of the generic tpe P. If the method is called in an inappropriate state
      * (<i>constructing</i> or <i>unavailable</i>), it will throw an IllegalGeneratorStateException.
      */
-    E generate();
+    E generate() throws IllegalGeneratorStateException;
 
     /**
      * Resets the generator to the initial state.
