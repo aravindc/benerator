@@ -29,6 +29,8 @@ package org.databene.platform.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Context;
+import org.databene.commons.HeavyweightIterable;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.script.ScriptUtil;
 
@@ -36,14 +38,13 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.util.Iterator;
 
 /**
  * Creates Iterators for stepping through query results.<br/>
  * <br/>
  * Created: 17.08.2007 18:48:20
  */
-public class QueryIterable implements Iterable<ResultSet> {
+public class QueryIterable implements HeavyweightIterable<ResultSet> {
     
     private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
     private static final Log logger = LogFactory.getLog(QueryIterable.class); 
@@ -52,6 +53,8 @@ public class QueryIterable implements Iterable<ResultSet> {
     private String query;
     private int fetchSize;
     private Context context;
+    
+    private String renderedQuery;
 
     public QueryIterable(Connection connection) {
         this(connection, null, 100);
@@ -82,15 +85,15 @@ public class QueryIterable implements Iterable<ResultSet> {
         this.query = query;
     }
 
-    public Iterator<ResultSet> iterator() {
+    public HeavyweightIterator<ResultSet> iterator() {
         if (connection == null)
             throw new IllegalStateException("'connection' is null");
         if (StringUtil.isEmpty(query))
             throw new IllegalStateException("'query' is empty or null");
-        String renderedQuery = ScriptUtil.render(query, context);
+        renderedQuery = ScriptUtil.render(query, context);
         try {
             if (sqlLogger.isDebugEnabled())
-                sqlLogger.debug(query);
+                sqlLogger.debug(renderedQuery);
             Statement statement = connection.createStatement();
             statement.setFetchSize(fetchSize);
             ResultSet resultSet = statement.executeQuery(renderedQuery);
@@ -102,6 +105,6 @@ public class QueryIterable implements Iterable<ResultSet> {
     
     @Override
     public String toString() {
-    	return getClass().getSimpleName() + '[' + query + ']';
+    	return getClass().getSimpleName() + '[' + (renderedQuery != null ? renderedQuery : query) + ']';
     }
 }
