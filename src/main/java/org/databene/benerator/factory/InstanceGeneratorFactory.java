@@ -97,7 +97,7 @@ public class InstanceGeneratorFactory {
 
     private static <T> Generator<Object> createInstanceGeneratorWrapper(
             InstanceDescriptor descriptor, Generator<T> typeGenerator, Context context) {
-        InstanceGenerator<T> generator = new InstanceGenerator<T>(typeGenerator);
+        InstanceSequenceGenerator<T> generator = new InstanceSequenceGenerator<T>(typeGenerator);
         // set count limits
         if (descriptor.getCount() != null) {
             long count = descriptor.getCount();
