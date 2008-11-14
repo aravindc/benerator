@@ -123,6 +123,7 @@ public final class JDBCDBImporter implements DBImporter {
         }
         if (catalogCount == 0)
             database.addCatalog(new DBCatalog(null));
+        catalogSet.close();
     }
 
     private void importSchemas(Database database, DatabaseMetaData metaData) throws SQLException {
@@ -137,6 +138,7 @@ public final class JDBCDBImporter implements DBImporter {
             DBSchema schema = new DBSchema(schemaName);
             database.addSchema(schema);
         }
+        schemaSet.close();
     }
 
     private void importTables(Database database, DatabaseMetaData metaData) throws SQLException {
@@ -170,6 +172,7 @@ public final class JDBCDBImporter implements DBImporter {
             if (catalog != null)
                 catalog.addTable(table);
         }
+        tableSet.close();
     }
 
     private void importColumns(Database database, DatabaseMetaData metaData) throws SQLException {
@@ -232,6 +235,7 @@ public final class JDBCDBImporter implements DBImporter {
                 table.addColumn(column);
             // not used: importVersionColumnInfo(catalogName, table, metaData);
         }
+        columnSet.close();
     }
 
 /*
@@ -283,6 +287,7 @@ public final class JDBCDBImporter implements DBImporter {
             if (logger.isDebugEnabled())
                 logger.debug("found pk column " + column + ", " + keySeq + ", " + pkName);
         }
+        pkset.close();
         DBColumn[] columnArray = new DBColumn[pkComponents.size()];
         columnArray = pkComponents.values().toArray(columnArray);
         DBPrimaryKeyConstraint constraint = new DBPrimaryKeyConstraint(pkName, columnArray);
@@ -343,6 +348,7 @@ public final class JDBCDBImporter implements DBImporter {
                             throw e;
                     }
                 }
+                indexSet.close();
                 for (DBIndexInfo indexInfo : tableIndexes.values()) {
                     try {
                         DBIndex index;
@@ -407,6 +413,7 @@ public final class JDBCDBImporter implements DBImporter {
                 importedKeys.add(cursor);
             recent = cursor;
         }
+        resultSet.close();
         for (ImportedKey key : importedKeys) {
             DBForeignKeyConstraint foreignKeyConstraint = new DBForeignKeyConstraint(key.FK_NAME);
             for (DBForeignKeyColumn foreignKeyColumn : key.getForeignKeyColumns()) {
