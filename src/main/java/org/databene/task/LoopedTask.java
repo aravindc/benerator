@@ -46,4 +46,8 @@ public class LoopedTask extends TaskProxy {
         for (int i = 0; i < loopSize && realTask.wantsToRun(); i++)
             super.run();
     }
+
+	public void setLoopSize(long loopSize) {
+		this.loopSize = loopSize;
+	}
 }
