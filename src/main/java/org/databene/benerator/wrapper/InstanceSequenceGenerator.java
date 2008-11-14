@@ -38,14 +38,14 @@ import org.databene.benerator.IllegalGeneratorStateException;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class InstanceGenerator<S> extends CardinalGenerator<S, S> {
+public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
 
     private long countAvailable;
     private long countUsed;
     private boolean limited;
     private boolean dirty;
     
-    public InstanceGenerator(Generator<S> source) {
+    public InstanceSequenceGenerator(Generator<S> source) {
         super(source);
         limited = false;
         dirty = true;
