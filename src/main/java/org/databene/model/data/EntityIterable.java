@@ -26,12 +26,11 @@
 
 package org.databene.model.data;
 
-import org.databene.commons.TypedIterable;
-
 /**
- * Common interface for all Entity importers.<br/>
+ * Common interface for all Entity sources.<br/>
  * <br/>
  * Created: 06.09.2007 20:03:25
+ * @deprecated use {@link EntitySource} instead
  */
-public interface EntityIterable extends TypedIterable<Entity> {
+public interface EntityIterable extends EntitySource {
 }
