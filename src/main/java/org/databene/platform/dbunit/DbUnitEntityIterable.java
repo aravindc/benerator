@@ -26,47 +26,26 @@
 
 package org.databene.platform.dbunit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Context;
-import org.databene.model.data.Entity;
-import org.databene.model.data.EntityIterable;
-
-import java.util.Iterator;
-import java.io.IOException;
 
 /**
  * Creates DBUnitXmlEntityIterators.<br/>
  * <br/>
  * Created: 28.08.2007 08:53:00
  * @author Volker Bergmann
+ * @deprecated use org.databene.platform.dbunit.DbUnitEntitySource
  */
-public class DbUnitEntityIterable implements EntityIterable {
+@Deprecated
+public class DbUnitEntityIterable extends DbUnitEntitySource {
+	
+	private static final Log logger = LogFactory.getLog(DbUnitEntityIterable.class);
 
-    private String uri;
-    private Context context;
-
-    public DbUnitEntityIterable(String uri, Context context) {
-        this.uri = uri;
-        this.context = context;
-    }
-    
-    public void setUri(String uri) {
-		this.uri = uri;
+	public DbUnitEntityIterable(String uri, Context context) {
+		super(uri, context);
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + DbUnitEntitySource.class.getName() + " instead.");
 	}
-
-	public Class<Entity> getType() {
-        return Entity.class;
-    }
-
-    public Iterator<Entity> iterator() {
-        try {
-            return new DbUnitEntityIterator(uri, context);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + uri + ']';
-    }
+	
 }

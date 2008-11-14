@@ -26,16 +26,10 @@
 
 package org.databene.platform.csv;
 
-import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.EntityIterable;
-import org.databene.model.data.Entity;
-import org.databene.commons.ConfigurationError;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Converter;
-import org.databene.commons.SystemInfo;
-import org.databene.commons.converter.NoOpConverter;
-
-import java.io.FileNotFoundException;
-import java.util.Iterator;
+import org.databene.model.data.ComplexTypeDescriptor;
 
 /**
  * Imports Entities from a CSV file.<br/>
@@ -43,97 +37,49 @@ import java.util.Iterator;
  * Created: 26.08.2007 12:16:08
  * @author Volker Bergmann
  */
-public class CSVEntityIterable implements EntityIterable {
+public class CSVEntityIterable extends CSVEntitySource {
 
-    private String uri;
-    private char   separator;
-    private String encoding;
-    private Converter<String, String> preprocessor;
+	private static final Log logger = LogFactory.getLog(CSVEntityIterable.class);
 
-    private ComplexTypeDescriptor entityDescriptor; // TODO is this used/useful?
+	public CSVEntityIterable() {
+		super();
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + CSVEntitySource.class.getName() + " instead.");
+	}
 
-    // constructors ----------------------------------------------------------------------------------------------------
+	public CSVEntityIterable(String uri, ComplexTypeDescriptor descriptor,
+			Converter<String, String> preprocessor, char separator,
+			String encoding) {
+		super(uri, descriptor, preprocessor, separator, encoding);
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + CSVEntitySource.class.getName() + " instead.");
+	}
 
-    public CSVEntityIterable() {
-        this(null, null);
-    }
+	public CSVEntityIterable(String uri, String entityName, char separator,
+			String encoding) {
+		super(uri, entityName, separator, encoding);
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + CSVEntitySource.class.getName() + " instead.");
+	}
 
-    public CSVEntityIterable(String uri, String entityName) {
-        this(uri, entityName, ',', SystemInfo.fileEncoding());
-    }
+	public CSVEntityIterable(String uri, String entityName, char separator) {
+		super(uri, entityName, separator);
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + CSVEntitySource.class.getName() + " instead.");
+	}
 
-    public CSVEntityIterable(String uri, String entityName, char separator) {
-        this(uri, entityName, separator, SystemInfo.fileEncoding());
-    }
+	public CSVEntityIterable(String uri, String entityName,
+			Converter<String, String> preprocessor, char separator,
+			String encoding) {
+		super(uri, entityName, preprocessor, separator, encoding);
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + CSVEntitySource.class.getName() + " instead.");
+	}
 
-    public CSVEntityIterable(String uri, String entityName, char separator, String encoding) {
-        this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
-    }
+	public CSVEntityIterable(String uri, String entityName) {
+		super(uri, entityName);
+		logger.warn(getClass().getName() + " is deprecated. " +
+				"Use " + CSVEntitySource.class.getName() + " instead.");
+	}
 
-    public CSVEntityIterable(String uri, String entityName, Converter<String, String> preprocessor, char separator, String encoding) {
-        this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
-    }
-
-    public CSVEntityIterable(String uri, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) {
-        this.uri = uri;
-        this.separator = separator;
-        this.encoding = encoding;
-        this.entityDescriptor = descriptor;
-        this.preprocessor = preprocessor;
-    }
-
-    // properties ------------------------------------------------------------------------------------------------------
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public char getSeparator() {
-        return separator;
-    }
-
-    public void setSeparator(char separator) {
-        this.separator = separator;
-    }
-
-    public String getEncoding() {
-        return encoding;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    public String getEntityName() {
-        return entityDescriptor.getName();
-    }
-
-    public void setEntityName(String entityName) {
-        this.entityDescriptor = new ComplexTypeDescriptor(entityName);
-    }
-
-    // EntityIterable interface ----------------------------------------------------------------------------------------
-
-    public Class<Entity> getType() {
-        return Entity.class;
-    }
-
-    public Iterator<Entity> iterator() {
-        try {
-			return new CSVEntityIterator(uri, entityDescriptor, preprocessor, separator, encoding);
-		} catch (FileNotFoundException e) {
-			throw new ConfigurationError("Cannot create iterator. ", e);
-		}
-    }
-
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    public String toString() {
-        return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
-                ", entityName=" + entityDescriptor.getName() + "]";
-    }
 }
