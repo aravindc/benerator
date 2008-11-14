@@ -34,7 +34,7 @@ public class FeatureDescriptor {
 
     public FeatureDescriptor(String name) {
         this.details = new OrderedNameMap<FeatureDetail<? extends Object>>();
-        addConfig(NAME, String.class, null);
+        addRestriction(NAME, String.class, null, null);
         setName(name);
     }
     
