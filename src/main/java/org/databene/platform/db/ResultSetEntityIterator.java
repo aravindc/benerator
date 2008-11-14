@@ -29,8 +29,8 @@ package org.databene.platform.db;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Iterator;
 
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -44,15 +44,15 @@ import org.databene.platform.bean.BeanDescriptorProvider;
  * @author Volker Bergmann
  * |since 0.3.04
  */
-public class ResultSetEntityIterator implements Iterator<Entity> {
+public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
 
-    private Iterator<ResultSet> resultSetIterator;
+    private HeavyweightIterator<ResultSet> resultSetIterator;
     
     private BeanDescriptorProvider beanDescriptorProvider;
     
     private ComplexTypeDescriptor descriptor;
 
-    public ResultSetEntityIterator(Iterator<ResultSet> resultSetIterator, ComplexTypeDescriptor descriptor) {
+    public ResultSetEntityIterator(HeavyweightIterator<ResultSet> resultSetIterator, ComplexTypeDescriptor descriptor) {
         this.resultSetIterator = resultSetIterator;
         this.descriptor = descriptor;
         this.beanDescriptorProvider = new BeanDescriptorProvider();
@@ -91,6 +91,10 @@ public class ResultSetEntityIterator implements Iterator<Entity> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
+
+	public void close() {
+		 resultSetIterator.close();
+	}
 
     // private helpers ----------------------------------------------------------------------------------------
     
