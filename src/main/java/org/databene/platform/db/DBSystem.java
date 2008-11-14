@@ -297,7 +297,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     	    sql = "select * from " + type + " WHERE " + selector;
     	if (script)
     		sql = '{' + sql + '}';
-        Iterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize, context);
+        HeavyweightIterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize, context);
         return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
 
@@ -311,6 +311,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             ResultSet resultSet = statement.executeQuery(sql);
             resultSet.next();
             long count = resultSet.getLong(1);
+            resultSet.close();
+            statement.close();
             return count;
         } catch (SQLException e) {
             throw new RuntimeException("Error in counting rows of table " + tableName + ". SQL = " + sql, e);
@@ -333,7 +335,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         return query(query, context);
     }
 
-    public <T> TypedIterable<T> query(String query, Context context) {
+    public <T> TypedIterable<T> query(String query, Context context) { // TODO use HeavyweightTypedIterable
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
         Connection connection = getThreadContext().connection;
@@ -343,6 +345,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
       
     // IdProviderFactory interface -------------------------------------------------------------------------------------
     
+    // TODO merge with AbstractIdProviderFactory
     private Map<IdProviderId, IdProvider> idProviders = new HashMap<IdProviderId, IdProvider>();
     
     public IdStrategy<? extends Object>[] getIdStrategies() {
