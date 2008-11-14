@@ -19,6 +19,7 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
+import org.databene.commons.HeavyweightIterable;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
@@ -139,7 +140,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		String nesting = descriptor.getNesting();
 		// TODO v0.5.x support scripts in CSV simpleType import
 		// ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
-		Iterable<String> iterable = null;
+		HeavyweightIterable<String> iterable = null;
 		if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {
 		    generator = new WeightedDatasetCSVGenerator(source, dataset, nesting, encoding);
 		} else {
