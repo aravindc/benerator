@@ -26,7 +26,7 @@
 
 package org.databene.platform.flat;
 
-import org.databene.model.consumer.FormattingConsumer;
+import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComponentAccessor;
 import org.databene.document.flat.FlatFileColumnDescriptor;
@@ -39,9 +39,6 @@ import org.databene.commons.format.PadFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParsePosition;
 import java.text.ParseException;
 
@@ -51,21 +48,22 @@ import java.text.ParseException;
  * Created: 26.08.2007 06:17:41
  * @author Volker Bergmann
  */
-public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
+public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 	
     private static final Log logger = LogFactory.getLog(FlatFileEntityExporter.class);
 
-    private String uri;
     private Converter<Entity, String> converters[];
-
-    private PrintWriter printer;
 
     public FlatFileEntityExporter() {
         this(null, null);
     }
 
     public FlatFileEntityExporter(String uri, String propertyFormatList) {
-        super();
+        this(uri, null, propertyFormatList);
+    }
+
+    public FlatFileEntityExporter(String uri, String encoding, String propertyFormatList) {
+        super(uri, encoding);
         this.uri = uri;
         setProperties(propertyFormatList);
     }
@@ -139,27 +137,6 @@ public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Entity entity) {
-        try {
-            if (printer == null) {
-                // it's the first call, we need to create the PrintWriter
-                if (this.uri == null)
-                    throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
-                if (this.converters == null)
-                    throw new ConfigurationError("Property 'properties' not set on bean " + getClass().getName());
-                printer = new PrintWriter(new FileWriter(uri));
-            }
-            if (logger.isDebugEnabled())
-                logger.debug("exporting " + entity);
-            for (Converter<Entity, String> converter : converters) {
-                printer.print(converter.convert(entity));
-            }
-            printer.println();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void flush() {
         if (printer != null)
             printer.flush();
@@ -168,10 +145,29 @@ public class FlatFileEntityExporter extends FormattingConsumer<Entity> {
     public void close() {
         IOUtil.close(printer);
     }
+    
+    // Callback methods for TextFileExporter ---------------------------------------------------------------------------
+    
+	@Override
+	protected void postInitPrinter() {
+        if (this.converters == null)
+            throw new ConfigurationError("Property 'properties' not set on bean " + getClass().getName());
+	}
+
+	@Override
+	protected void startConsumingImpl(Entity entity) {
+        if (logger.isDebugEnabled())
+            logger.debug("exporting " + entity);
+        for (Converter<Entity, String> converter : converters) {
+            printer.print(converter.convert(entity));
+        }
+        printer.println();
+	}
 
     // java.lang.Object overrrides -------------------------------------------------------------------------------------
 
     public String toString() {
         return getClass().getSimpleName() + '[' + ArrayFormat.format() + ']';
     }
+
 }
