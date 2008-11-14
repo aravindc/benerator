@@ -33,7 +33,6 @@ import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
-import org.databene.commons.SystemInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -53,7 +52,6 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     // defaults --------------------------------------------------------------------------------------------------------
     
     private static final char   DEFAULT_SEPARATOR = ',';
-    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
     private static final String DEFAULT_URI       = "export.csv";
 
     // attributes ------------------------------------------------------------------------------------------------------
@@ -68,7 +66,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
     
     public CSVEntityExporter(String uri, String attributes) {
-        this(uri, attributes, DEFAULT_SEPARATOR, DEFAULT_ENCODING);
+        this(uri, attributes, DEFAULT_SEPARATOR, null);
     }
 
     public CSVEntityExporter(String uri, String attributes, char separator, String encoding) {
@@ -82,7 +80,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor) {
-        this(uri, descriptor, DEFAULT_SEPARATOR, DEFAULT_ENCODING);
+        this(uri, descriptor, DEFAULT_SEPARATOR, null);
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor, char separator, String encoding) {
@@ -102,10 +100,6 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 
     public void setSeparator(char separator) {
         this.separator = separator;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
     }
 
     // Callback methods for parent class functionality -----------------------------------------------------------------
