@@ -27,8 +27,9 @@
 package org.databene.platform.db;
 
 import java.sql.ResultSet;
-import java.util.Iterator;
 
+import org.databene.commons.HeavyweightIterable;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.TypedIterable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -40,10 +41,10 @@ import org.databene.model.data.Entity;
  */
 public class EntityResultSetIterable implements TypedIterable<Entity> {
 
-    private Iterable<ResultSet> iterable;
+    private HeavyweightIterable<ResultSet> iterable;
     private ComplexTypeDescriptor entityDescriptor;
     
-    public EntityResultSetIterable(Iterable<ResultSet> iterable,
+    public EntityResultSetIterable(HeavyweightIterable<ResultSet> iterable,
             ComplexTypeDescriptor entityDescriptor) {
         this.iterable = iterable;
         this.entityDescriptor = entityDescriptor;
@@ -53,7 +54,7 @@ public class EntityResultSetIterable implements TypedIterable<Entity> {
         return Entity.class;
     }
 
-    public Iterator<Entity> iterator() {
+    public HeavyweightIterator<Entity> iterator() {
         return new ResultSetEntityIterator(iterable.iterator(), entityDescriptor);
     }
 
