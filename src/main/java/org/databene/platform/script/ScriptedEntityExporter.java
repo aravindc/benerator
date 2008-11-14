@@ -26,14 +26,13 @@
 
 package org.databene.platform.script;
 
-import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.script.ScriptedDocumentWriter;
 import org.databene.commons.ConfigurationError;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -43,16 +42,15 @@ import java.io.IOException;
  * Created: 01.09.2007 18:05:04
  * @author Volker Bergmann
  */
-public class ScriptedEntityExporter extends AbstractConsumer<Entity> {
+public class ScriptedEntityExporter extends TextFileExporter<Entity> {
 
     private static final Log logger = LogFactory.getLog(ScriptedEntityExporter.class);
 
-    private String uri;
     private String headerScript;
     private String partScript;
     private String footerScript;
 
-    private ScriptedDocumentWriter<Entity> writer;
+    private ScriptedDocumentWriter<Entity> docWriter;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -61,25 +59,17 @@ public class ScriptedEntityExporter extends AbstractConsumer<Entity> {
     }
 
     public ScriptedEntityExporter(String uri, String partScript) {
-        this(uri, null, partScript, null);
+        this(uri, null, null, partScript, null);
     }
 
-    public ScriptedEntityExporter(String uri, String headerScript, String partScript, String footerScript) {
-        this.uri = uri;
+    public ScriptedEntityExporter(String uri, String encoding, String headerScript, String partScript, String footerScript) {
+    	super(uri, encoding);
         this.headerScript = headerScript;
         this.partScript = partScript;
         this.footerScript = footerScript;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 
     public String getHeaderScript() {
         return headerScript;
@@ -107,32 +97,24 @@ public class ScriptedEntityExporter extends AbstractConsumer<Entity> {
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(Entity entity) {
+	@Override
+	protected void postInitPrinter() {
+		try {
+			docWriter = new ScriptedDocumentWriter<Entity>(printer, headerScript, partScript, footerScript);
+		} catch (IOException e) {
+            throw new ConfigurationError(e);
+		}
+	}
+
+	@Override
+	protected void startConsumingImpl(Entity entity) {
         try {
-            if (writer == null) {
-                writer = new ScriptedDocumentWriter<Entity>(
-                        new FileWriter(uri), headerScript, partScript, footerScript);
-            }
             if (logger.isDebugEnabled())
                 logger.debug("Exporting " + entity);
-            writer.writeElement(entity);
+            docWriter.writeElement(entity);
         } catch (IOException e) {
             throw new ConfigurationError(e);
         }
-    }
-
-    public void flush() {
-        // ScriptedDocumentWriter does not support flushing
-    }
-
-    public void close() {
-        if (writer != null) {
-            try {
-                writer.close();
-            } catch (IOException e) {
-                logger.error(e, e);
-            }
-        }
-    }
+	}
 
 }
