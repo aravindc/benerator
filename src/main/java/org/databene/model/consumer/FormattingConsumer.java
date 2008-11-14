@@ -42,8 +42,8 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 		return plainConverter.getNullString();
 	}
 
-	public void setNullString(String nullResult) {
-		plainConverter.setNullString(nullResult);
+	public void setNullString(String nullString) {
+		plainConverter.setNullString(nullString);
 	}
 
 	public String getDatePattern() {
