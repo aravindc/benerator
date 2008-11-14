@@ -29,7 +29,7 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
- * Generates Long values that represent the cirrent time in milliseconds.<br/>
+ * Generates Long values that represent the current time in milliseconds.<br/>
  * <br/>
  * Created: 17.11.2007 13:14:55
  */
