@@ -35,7 +35,7 @@ import org.databene.regex.SubPattern;
 import org.databene.regex.Group;
 
 /**
- * Creates a unique string of variable length from am character set.<br/>
+ * Composes the output of different unique String generators in a unique way.<br/>
  * <br/>
  * Created: 17.11.2007 19:21:58
  */
