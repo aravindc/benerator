@@ -49,7 +49,7 @@ import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
-import org.databene.benerator.composite.InstanceGenerator;
+import org.databene.benerator.composite.InstanceArrayGenerator;
 import org.databene.benerator.composite.PlainComponentBuilder;
 import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
@@ -227,13 +227,18 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     // non-public helpers ----------------------------------------------------------------------------------------------
 
     static Generator<Object> createMultiplicityWrapper(
-            ComponentDescriptor instance, Generator<? extends Object> elementGenerator, Context context) {
-        InstanceGenerator wrapper = new InstanceGenerator(elementGenerator);
-        mapDetailsToBeanProperties(instance, wrapper, context);
-        wrapper.setCountDistribution(getCountDistribution(instance));
-        wrapper.setMaxCount(getMaxCount(instance));
-        wrapper.setMinCount(getMinCount(instance));
-        return (Generator<Object>) GeneratorFactory.wrapNullQuota(wrapper, getNullQuota(instance));
+            ComponentDescriptor instance, Generator<? extends Object> generator, Context context) {
+        long maxCount = getMaxCount(instance);
+        long minCount = getMinCount(instance);
+        if (maxCount != 1 && minCount != 1) {
+        	InstanceArrayGenerator wrapper = new InstanceArrayGenerator(generator);
+	        mapDetailsToBeanProperties(instance, wrapper, context);
+	        wrapper.setCountDistribution(getCountDistribution(instance));
+			wrapper.setMaxCount(maxCount);
+			wrapper.setMinCount(minCount);
+			generator = wrapper;
+        }
+        return (Generator<Object>) GeneratorFactory.wrapNullQuota(generator, getNullQuota(instance));
     }
 
 	private static long getMaxCount(ComponentDescriptor descriptor) {
