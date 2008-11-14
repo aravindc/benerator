@@ -40,6 +40,7 @@ import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
+import org.databene.benerator.wrapper.DistributingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
@@ -261,22 +262,7 @@ public class TypeGeneratorFactory {
 
 	public static Generator<? extends Object> applyDistribution(TypeDescriptor descriptor,
 			Distribution distribution, Generator<? extends Object> generator) {
-		List<Object> values = new ArrayList<Object>();
-		while (generator.available()) {
-		    Object value = generator.generate();
-		    values.add(value);
-		}
-		if (distribution instanceof Sequence)
-		    generator = new SequencedSampleGenerator(generator.getGeneratedType(), (Sequence) distribution, values);
-		else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
-		    generator = new WeightedSampleGenerator(generator.getGeneratedType(), distribution, values);
-		else
-		    throw new UnsupportedOperationException("Distribution type not supported: " + distribution.getClass());
-		if (descriptor.getVariation1() != null)
-			BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
-		if (descriptor.getVariation2() != null)
-			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
-		return generator;
+		return new DistributingGenerator(generator, distribution, descriptor.getVariation1(), descriptor.getVariation2());
 	}
 
 	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, Context context) {
