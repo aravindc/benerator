@@ -26,10 +26,13 @@
 
 package org.databene.model.consumer;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.databene.commons.SystemInfo;
 
 /**
  * Parent class for Exporters that export data to a text file.<br/>
@@ -39,6 +42,8 @@ import org.databene.commons.IOUtil;
  * @author Volker Bergmann
  */
 public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
+
+    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
 
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -50,8 +55,8 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public TextFileExporter(String uri, String encoding) {
-        this.uri = uri;
-        this.encoding = encoding;
+    	this.uri = uri;
+        this.encoding = (encoding != null ? encoding : DEFAULT_ENCODING);
     }
     
     // callback interface for child classes ----------------------------------------------------------------------------
@@ -103,6 +108,9 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
     // private helpers -------------------------------------------------------------------------------------------------
     
     protected void initPrinter() throws IOException {
+        if (uri == null)
+            throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
+        printer = new PrintWriter(new FileWriter(uri));
         printer = IOUtil.getPrinterForURI(uri, encoding);
         postInitPrinter();
     }
