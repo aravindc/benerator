@@ -5,11 +5,11 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.6-alpha</version>
+    <version>0.5.6-alpha3</version>
 
     <properties>
-	    <webdecs_version>0.4.6-alpha</webdecs_version>
-	    <commons_version>0.4.6-alpha</commons_version>
+	    <webdecs_version>0.4.6-alpha3</webdecs_version>
+	    <commons_version>0.4.6-alpha3</commons_version>
     </properties>
 
 <!--
@@ -235,7 +235,7 @@
 		<repository>
 			<id>databene.repo</id>
 			<name>databene Internal Repository</name>
-			<url>ftp://databene.org/databene.org/m2/</url>
+			<url>ftp://databene.org/databene/m2</url>
 		</repository>
 	</distributionManagement>
   
