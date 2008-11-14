@@ -131,6 +131,7 @@ public class Benerator extends SimpleGenerationSetup {
             long startTime = java.lang.System.currentTimeMillis();
             Document document = XMLUtil.parse(uri);
             Element root = document.getDocumentElement();
+            // TODO map root element attributes to benerator properties
             NodeList nodes = root.getChildNodes();
             for (int i = 0; i < nodes.getLength(); i++) {
                 Node node = nodes.item(i);
@@ -185,7 +186,7 @@ public class Benerator extends SimpleGenerationSetup {
             propertyValue = context.get(parseAttribute(element, "ref", context));
         else 
             throw new ConfigurationError("Syntax error");
-        context.set(propertyName, propertyValue);
+        context.set(propertyName, propertyValue); // TODO set bean properties?
     }
 
     private void parseEcho(Element element) {
@@ -244,6 +245,7 @@ public class Benerator extends SimpleGenerationSetup {
         	if (onError == null)
         		onError = "fatal";
         	String encoding = parseAttribute(element, "encoding", context);
+        	boolean optimize = parseBooleanAttribute(element, "optimize", context, false);
         	String type = parseAttribute(element, "type", context);
         	// if type is not defined, derive it from the file extension
         	if (type == null && uri != null) {
@@ -268,7 +270,7 @@ public class Benerator extends SimpleGenerationSetup {
         	// run
         	String text = XMLUtil.getText(element);
         	if ("sql".equals(type))
-        		runSqlTask(uri, targetObject, onError, encoding, text);
+        		runSqlTask(uri, targetObject, onError, encoding, text, optimize);
         	//else if ("jar".equals(type)) // TODO v0.6 support .jar files
         	//	runJar(text);
         	else if ("shell".equals(type))
@@ -311,7 +313,7 @@ public class Benerator extends SimpleGenerationSetup {
         	throw new ConfigurationError("At least uri or text must be provided in <execute>");
     }
 
-	private void runSqlTask(String uri, Object targetObject, String onError, String encoding, String text) {
+	private void runSqlTask(String uri, Object targetObject, String onError, String encoding, String text, boolean optimize) {
 		Assert.instanceOf(targetObject, DBSystem.class, "targetObject");
 		RunSqlScriptTask task;
 		DBSystem db = (DBSystem) targetObject;
@@ -323,6 +325,7 @@ public class Benerator extends SimpleGenerationSetup {
 			task = new RunSqlScriptTask(text, db);
 		} else
 			throw new TaskException("No uri or content");
+		task.setIgnoreComments(optimize);
 		task.setErrorHandler(new ErrorHandler(LogCategories.SQL, Level.valueOf(onError)));
 		task.run();
 	}
@@ -428,7 +431,7 @@ public class Benerator extends SimpleGenerationSetup {
         	String[] consumerNames = StringUtil.tokenize(consumerConfig, ',');
             Consumer<Entity> consumer;
         	for (String consumerName : consumerNames) {
-	            consumer = getConsumerFromContext(consumerName);
+	            consumer = getConsumer(consumerName);
 	            consumers.add(consumer);
         	}
         }
@@ -437,7 +440,7 @@ public class Benerator extends SimpleGenerationSetup {
             Element consumerElement = (Element) consumerElements.get(i);
             Consumer<Entity> consumer;
             if (consumerElement.hasAttribute("ref")) {
-                consumer = getConsumerFromContext(parseAttribute(consumerElement, "ref", context));
+                consumer = getConsumer(parseAttribute(consumerElement, "ref", context));
             } else if (consumerElement.hasAttribute("class")) {
                 consumer = (Consumer<Entity>) parseBean(consumerElement);
             } else
@@ -464,20 +467,25 @@ public class Benerator extends SimpleGenerationSetup {
         return children;
     }
 
-    private Consumer<Entity> getConsumerFromContext(String consumerId) {
-        Consumer<Entity> consumer;
+    private Consumer<Entity> getConsumer(String consumerId) {
+    	// look up or create consumer
         Object tmp = context.get(consumerId);
-        if (tmp instanceof StorageSystem)
+        if (tmp == null)
+        	tmp = BeanUtil.newInstance(consumerId);
+        if (tmp == null)
+            throw new ConfigurationError("Consumer not found: " + consumerId);
+
+        // check consumer type
+        Consumer<Entity> consumer = null;
+        if (StringUtil.isEmpty(consumerId))
+            throw new ConfigurationError("Empty consumer id");
+        else if (tmp instanceof StorageSystem)
             consumer = new StorageSystemConsumer((StorageSystem) tmp);
         else if (tmp instanceof Consumer)
             consumer = (Consumer<Entity>) tmp;
         else if (tmp instanceof Processor)
             consumer = new ProcessorToConsumerAdapter((Processor<Entity>) tmp);
-        else if (StringUtil.isEmpty(consumerId))
-            throw new ConfigurationError("Empty consumer id");
-        else if (tmp == null)
-            throw new ConfigurationError("Consumer not found: " + consumerId);
-        else
+        else 
             throw new UnsupportedOperationException("Consumer type not supported: " + tmp.getClass());
         return consumer;
     }
