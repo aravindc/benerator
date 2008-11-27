@@ -26,6 +26,7 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
@@ -57,7 +58,7 @@ public class TypeGeneratorFactoryTest extends TestCase {
 	// private helpers ------------------------------------------------------------------------
 
 	private void checkGetConverter(String contextKey, TestConverter contextValue, String converterSpec, int expectedValue) {
-		Context context = new DefaultContext();
+		BeneratorContext context = new BeneratorContext(null);
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");

@@ -194,7 +194,7 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		alternativeType.addComponent(new PartDescriptor("a", typeA));
     	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
 		alternativeType.addComponent(new PartDescriptor("b", typeB));
-		DefaultContext context = new DefaultContext();
+		BeneratorContext context = new BeneratorContext(null);
 		SimpleGenerationSetup setup = new SimpleGenerationSetup(null);
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);

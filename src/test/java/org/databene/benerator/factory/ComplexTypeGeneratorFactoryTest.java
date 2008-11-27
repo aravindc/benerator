@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorTest;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Context;
 import org.databene.commons.context.DefaultContext;
@@ -129,7 +130,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
-		Context context = new DefaultContext();
+		BeneratorContext context = new BeneratorContext(null);
 		GenerationSetup setup = new SimpleGenerationSetup(null);
 		Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(type, false, context, setup);
 		return generator;
