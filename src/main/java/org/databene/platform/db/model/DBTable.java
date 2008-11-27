@@ -27,6 +27,7 @@
 package org.databene.platform.db.model;
 
 import org.databene.commons.ObjectNotFoundException;
+import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.model.depend.Dependent;
 
@@ -222,5 +223,12 @@ public class DBTable implements Dependent<DBTable>{
     public boolean requiresProvider(int index) {
         return !foreignKeyConstraints.get(index).getForeignKeyColumns().get(0).getForeignKeyColumn().isNullable();
     }
+
+	public String[] getPKColumnNames() {
+		DBPrimaryKeyConstraint pkConstraint = getPrimaryKeyConstraint();
+        DBColumn[] columns = pkConstraint.getColumns();
+        String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
+		return pkColumnNames;
+	}
 
 }
