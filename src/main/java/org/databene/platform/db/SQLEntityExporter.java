@@ -26,6 +26,8 @@
 
 package org.databene.platform.db;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Assert;
@@ -79,31 +81,33 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
 
     // Callback methods for parent class functionality -----------------------------------------------------------------
 
+	@Override
     protected void startConsumingImpl(Entity entity) {
     	Assert.notNull(database, "database");
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
-        ColumnInfo[] columnInfos = database.writeColumnInfos(entity);
+        List<ColumnInfo> columnInfos = database.getWriteColumnInfos(entity, true);
         String sql = createSQLInsert(entity, columnInfos);
         printer.println(sql);
     }
 
+	@Override
     protected void postInitPrinter() {
     	// nothing special to do
     }
 
-    String createSQLInsert(Entity entity, ColumnInfo[] columnInfos) {
+    String createSQLInsert(Entity entity, List<ColumnInfo> columnInfos) {
     	String table = entity.getName();
         StringBuilder builder = new StringBuilder("insert into ").append(table).append(" (");
-        if (columnInfos.length > 0)
-            builder.append(columnInfos[0].name);
-        for (int i = 1; i < columnInfos.length; i++)
-            builder.append(',').append(columnInfos[i].name);
+        if (columnInfos.size() > 0)
+            builder.append(columnInfos.get(0).name);
+        for (int i = 1; i < columnInfos.size(); i++)
+            builder.append(',').append(columnInfos.get(i).name);
         builder.append(") values (");
-        for (int i = 0; i < columnInfos.length; i++) {
+        for (int i = 0; i < columnInfos.size(); i++) {
 			if (i > 0)
 				builder.append(", ");
-            Object value = entity.get(columnInfos[i].name);
+            Object value = entity.get(columnInfos.get(i).name);
 			String text = format(value);
 			text = DBUtil.escape(text);
             if (value instanceof CharSequence || value instanceof Character)
