@@ -31,13 +31,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.DefaultEntryConverter;
 import org.databene.commons.xml.XMLElement2BeanConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -69,13 +69,13 @@ public class ModelParser {
 		this.contextUri = contextUri;
 	}
 
-	public Object parseBean(Element element, Context context) {
+	public Object parseBean(Element element, BeneratorContext context) {
         String beanId = parseAttribute(element, "id", context);
         if (beanId != null)
             logger.debug("Instantiating bean with id '" + beanId + "'");
         else
             logger.debug("Instantiating bean of class " + parseAttribute(element, "class", context));
-        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context));
+        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
         if (!StringUtil.isEmpty(beanId)) {
             BeanUtil.setPropertyValue(bean, "id", beanId, false);
             context.set(beanId, bean);
@@ -83,11 +83,12 @@ public class ModelParser {
         return bean;
     }
 
-    public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner, Context context) {
+    public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner, BeneratorContext context) {
         return parseSimpleTypeComponent(element, owner, null, context);
     }
 
-    public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor, Context context) {
+    public ComponentDescriptor parseSimpleTypeComponent(
+    		Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor, BeneratorContext context) {
         String name = XMLUtil.localName(element);
         if ("part".equals(name) || "attribute".equals(name))
             return parsePart(element, owner, false, descriptor, context);
@@ -100,7 +101,7 @@ public class ModelParser {
             		"'id', 'attribute', 'reference' or 'part'. Found: " + name);
     }
 
-    public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor, Context context) {
+    public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor, BeneratorContext context) {
         assertElementName(ctElement, "entity", "type");
         descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptor);
         mapTypeDetails(ctElement, descriptor, context);
@@ -110,7 +111,7 @@ public class ModelParser {
     }
 
     public void parseComplexTypeChild(Element element, 
-            ComplexTypeDescriptor descriptor, Context context) {
+            ComplexTypeDescriptor descriptor, BeneratorContext context) {
         String childName = XMLUtil.localName(element);
         if ("variable".equals(childName))
             parseVariable(element, descriptor, context);
@@ -119,7 +120,7 @@ public class ModelParser {
     }
 
     public PartDescriptor parsePart(Element element, ComplexTypeDescriptor owner, 
-            boolean complex, ComponentDescriptor descriptor, Context context) {
+            boolean complex, ComponentDescriptor descriptor, BeneratorContext context) {
         assertElementName(element, "part", "attribute");
         PartDescriptor result;
         if (descriptor instanceof PartDescriptor)
@@ -157,7 +158,7 @@ public class ModelParser {
     }
 
     public InstanceDescriptor parseVariable(
-            Element varElement, ComplexTypeDescriptor parent, Context context) {
+            Element varElement, ComplexTypeDescriptor parent, BeneratorContext context) {
         assertElementName(varElement, "variable");
         InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"));
         InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor, context);
@@ -170,7 +171,7 @@ public class ModelParser {
         return renderAttribute(name, value, context);
     }
 
-    public String parseInclude(Element element, Context context) {
+    public String parseInclude(Element element, BeneratorContext context) {
         String uri = parseAttribute(element, "uri", context);
         uri = IOUtil.resolveLocalUri(uri, contextUri);
         try {
@@ -181,7 +182,7 @@ public class ModelParser {
         }
     }
 
-    public void importProperties(String uri, Context context) throws IOException {
+    public void importProperties(String uri, BeneratorContext context) throws IOException {
         logger.debug("reading properties: " + uri);
         ScriptConverter preprocessor = new ScriptConverter(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
@@ -199,7 +200,8 @@ public class ModelParser {
         return descriptor;
     }
   
-    private <T extends InstanceDescriptor> T mapInstanceDetails(Element element, boolean complexType, T descriptor, Context context) {
+    private <T extends InstanceDescriptor> T mapInstanceDetails(
+    		Element element, boolean complexType, T descriptor, BeneratorContext context) {
         TypeDescriptor localType = descriptor.getLocalType();
         Map<String, String> attributes = XMLUtil.getAttributes(element);
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -214,6 +216,15 @@ public class ModelParser {
                     String partType = attributes.get("type");
                     if (partType == null)
                     	partType = descriptor.getTypeName();
+                    if (partType == null) {
+                    	String source = attributes.get("source");
+                    	if (source != null) {
+                    		if (source.endsWith(".ent.csv") || source.endsWith(".flat.csv") || source.endsWith(".dbunit.xml"))
+                    			partType = "entity";
+                    		// TODO handle source beans
+                    	}
+                    }
+                    // TODO handle types of generators
                     if (partType != null) {
                         TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(partType);
                         String name = attributes.get("name");
@@ -276,7 +287,7 @@ public class ModelParser {
         return ("".equals(text) ? null : text);
     }
 
-    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor, Context context) {
+    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor, BeneratorContext context) {
         assertElementName(element, "id");
         IdDescriptor result;
         if (descriptor instanceof IdDescriptor)
@@ -289,7 +300,7 @@ public class ModelParser {
     }
 
     private ReferenceDescriptor parseReference(Element element,
-            ComponentDescriptor descriptor, Context context) {
+            ComponentDescriptor descriptor, BeneratorContext context) {
         assertElementName(element, "reference");
         ReferenceDescriptor result;
         if (descriptor instanceof ReferenceDescriptor)
@@ -300,5 +311,30 @@ public class ModelParser {
             result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
         return mapInstanceDetails(element, false, result, context);
     }
+
+	public void parseImport(Element element, BeneratorContext context) {
+		String attribute = element.getAttribute("class");
+		if (!StringUtil.isEmpty(attribute))
+			context.importClass(attribute);
+		attribute = element.getAttribute("domain");
+		if (!StringUtil.isEmpty(attribute))
+			importDomain(attribute, context);
+		attribute = element.getAttribute("defaults");
+		if ("true".equals(attribute)) {
+			// import defaults
+			context.importPackage("org.databene.benerator.primitive.datetime");
+			context.importPackage("org.databene.platform.flat");
+			context.importPackage("org.databene.platform.csv");
+			context.importPackage("org.databene.platform.dbunit");
+			context.importPackage("org.databene.model.consumer");
+		}
+	}
+
+	public void importDomain(String domain, BeneratorContext context) {
+		if (domain.indexOf('.') < 0)
+			context.importPackage("org.databene.domain." + domain);
+		else
+			context.importPackage(domain);
+	}
 
 }
