@@ -134,6 +134,11 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
     }
+    
+    @Override
+    public String getTaskName() {
+    	return realTask.getTaskName();
+    }
 
     private long runMultiThreaded(int currentPageNo, long currentPageSize) {
         long localInvocationCount = 0;
@@ -222,4 +227,5 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
     public void uncaughtException(Thread t, Throwable e) {
         this.exception = e;
     }
+    
 }

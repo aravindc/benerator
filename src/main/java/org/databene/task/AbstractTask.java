@@ -92,4 +92,9 @@ public abstract class AbstractTask implements Task {
 
     public void destroy() { }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + taskName + ']';
+    }
+
 }
