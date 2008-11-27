@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
@@ -92,7 +93,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     // attributes ------------------------------------------------------------------------------------------------------
     
     private ModelParser parser;
-    private Context context;
+    private BeneratorContext context;
     private DataModel dataModel;
     private List<String> propertiesFiles;
 	private Map<String, String> namespaces;
@@ -100,11 +101,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     // constructors ----------------------------------------------------------------------------------------------------
     
-    public XMLSchemaDescriptorProvider(String schemaUri, Context context) {
+    public XMLSchemaDescriptorProvider(String schemaUri, BeneratorContext context) {
         this(schemaUri, context, DataModel.getDefaultInstance());
     }
     
-    public XMLSchemaDescriptorProvider(String schemaUri, Context context, DataModel dataModel) {
+    public XMLSchemaDescriptorProvider(String schemaUri, BeneratorContext context, DataModel dataModel) {
         super(schemaUri, true);
         this.namespaces = new HashMap<String, String>();
         parser = new ModelParser(IOUtil.getContextUri(schemaUri));
@@ -134,7 +135,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         return CollectionUtil.toArray(propertiesFiles);
     }
 
-    public Context getContext() {
+    public BeneratorContext getContext() {
         return context;
     }
     
