@@ -35,8 +35,8 @@ import org.databene.domain.address.CountryCode2Validator;
  * Created at 12.07.2008 14:58:39
  * @since 0.5.4
  * @author Volker Bergmann
- * @see http://en.wikipedia.org/wiki/IBAN
- * @see http://de.wikipedia.org/wiki/International_Bank_Account_Number
+ * @see "http://en.wikipedia.org/wiki/IBAN"
+ * @see "http://de.wikipedia.org/wiki/International_Bank_Account_Number"
  */
 public class IBANValidator implements Validator<String> {
 
