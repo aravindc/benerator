@@ -45,6 +45,7 @@ public class SimpleGenerationSetup implements GenerationSetup {
     protected char    defaultSeparator    = ',';
     protected String  defaultErrorHandler = "fatal";
     protected String  contextUri          = "./";
+    public    boolean validate            = true;
     
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
 
@@ -110,6 +111,14 @@ public class SimpleGenerationSetup implements GenerationSetup {
 
 	public void setContextUri(String contextUri) {
 		this.contextUri = contextUri;
+	}
+
+	public boolean isValidate() {
+		return validate;
+	}
+
+	public void setValidate(boolean validate) {
+		this.validate = validate;
 	}
 
 }
