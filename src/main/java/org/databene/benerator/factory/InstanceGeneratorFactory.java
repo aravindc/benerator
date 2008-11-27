@@ -31,6 +31,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.benerator.*;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
@@ -56,7 +57,7 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
-    public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, Context context, GenerationSetup setup) {
+    public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context, GenerationSetup setup) {
         Generator<? extends Object> generator = createSingleInstanceGenerator(descriptor, context, setup);
         generator = createInstanceGeneratorWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
@@ -67,7 +68,7 @@ public class InstanceGeneratorFactory {
     // protected helpers for child classes -----------------------------------------------------------------------------
 
     protected static Generator<? extends Object> createSingleInstanceGenerator(
-            InstanceDescriptor descriptor, Context context,
+            InstanceDescriptor descriptor, BeneratorContext context,
             GenerationSetup setup) {
         Generator<? extends Object> generator = null;
         // create a source generator
@@ -112,7 +113,15 @@ public class InstanceGeneratorFactory {
     
     public static Generator<? extends Object> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota != null && nullQuota.doubleValue() == 1) {
+        if (nullQuota != null && nullQuota.doubleValue() == 1.)
+            return new ConstantGenerator<Object>(null);
+        return null;
+    }
+
+    public static Generator<? extends Object> createNullGenerator(InstanceDescriptor descriptor) {
+        Boolean nullable = descriptor.isNullable();
+        if (nullable != null && nullable.booleanValue()) { 
+        	// TODO cross-check with benerator-setting default-null
             return new ConstantGenerator<Object>(null);
         }
         return null;
