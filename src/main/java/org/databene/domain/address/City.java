@@ -48,7 +48,6 @@ public class City {
     private SortedSet<String> zipCodes;
     private String areaCode;
     private State state;
-    private int inhabitants;
     private Locale language;
     private int population;
 
@@ -123,14 +122,6 @@ public class City {
         this.language = language;
     }
 
-    public int getInhabitants() {
-        return inhabitants;
-    }
-
-    public void setInhabitants(int inhabitants) {
-        this.inhabitants = inhabitants;
-    }
-    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     public int getPopulation() {
