@@ -42,12 +42,12 @@ import org.databene.platform.db.model.Database;
 import junit.framework.TestCase;
 
 /**
- * Tests the {@link JDBCImporter}.<br/><br/>
+ * Tests the {@link JDBCDBImporter}.<br/><br/>
  * Created at 03.05.2008 08:59:20
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class JDBCImporterTest extends TestCase {
+public class JDBCDBImporterTest extends TestCase {
 	
 	public void testImportDatabase() throws Exception {
 		// prepare database
