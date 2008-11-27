@@ -27,10 +27,14 @@
 package org.databene.benerator.wrapper;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
+import org.databene.commons.HeavyweightIterable;
+import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.iterator.DefaultTypedIterable;
+import org.databene.commons.iterator.HeavyweightIterableAdapter;
 
 /**
  * Tests the IteratingGenerator.<br/>
@@ -44,7 +48,9 @@ public class IteratingGeneratorTest extends GeneratorClassTest {
     }
 
     public void testBehaviour() {
-        Generator<Integer> gen = new IteratingGenerator<Integer>(new DefaultTypedIterable<Integer>(Integer.class, Arrays.asList(1, 2)));
+        HeavyweightIterableAdapter iterable = new HeavyweightIterableAdapter(Arrays.asList(1, 2));
+		DefaultTypedIterable<Integer> hwIterable = new DefaultTypedIterable<Integer>(Integer.class, iterable);
+		Generator<Integer> gen = new IteratingGenerator<Integer>(hwIterable);
         assertTrue(gen.available());
         assertEquals(1, (int)gen.generate());
         assertTrue(gen.available());
@@ -57,4 +63,5 @@ public class IteratingGeneratorTest extends GeneratorClassTest {
         assertEquals(2, (int)gen.generate());
         assertFalse(gen.available());
     }
+    
 }
