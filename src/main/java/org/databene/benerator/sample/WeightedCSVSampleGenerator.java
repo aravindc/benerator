@@ -50,11 +50,10 @@ import java.util.ArrayList;
  *   Bravo,4
  *   Charly,2
  * </pre>
- *
- * @see WeightedSampleGenerator<br/>
  * <br/>
  * Created: 11.06.2006 20:49:33
  * @author Volker Bergmann
+ * @see WeightedSampleGenerator
  */
 public class WeightedCSVSampleGenerator<E> implements Generator<E> {
 
