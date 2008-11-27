@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-		targetNamespace="http://databene.org/benerator-0.5.6"
-		xmlns="http://databene.org/benerator-0.5.6"
+		targetNamespace="http://databene.org/benerator/0.5.6"
+		xmlns="http://databene.org/benerator/0.5.6"
 		elementFormDefault="qualified">
 		
 	<xs:annotation>
@@ -32,12 +32,14 @@
 	<xs:element name="setup">
 		<xs:complexType>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="import"            minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="include"           minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="property"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="database"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="bean"              minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="defaultAttributes" minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="create-entities"   minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="create-entities"   minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="update-entities"   minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="run-task"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="execute"           minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="echo"              minOccurs="0" maxOccurs="unbounded"/>
@@ -54,6 +56,15 @@
 		</xs:complexType>
 	</xs:element>
 
+	<!-- Imports classes. -->
+	<xs:element name="import">
+		<xs:complexType>
+			<xs:attribute name="class" type="xs:string"/>
+			<xs:attribute name="domain" type="xs:string"/>
+			<xs:attribute name="defaults" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
 	<!-- Includes a properties file. -->
 	<xs:element name="include">
 		<xs:complexType>
@@ -178,27 +189,52 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!-- Creates entities. If a 'count' is provided the corresponding number of entities is created.
-	     If no count is provided, entities are created as long as each involved generator is available. -->
-	<xs:element name="create-entities">
-		<xs:complexType>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="id"              minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="name"     type="xs:string"/>
-			<xs:attribute name="count"    type="xs:string"/>
-			<xs:attribute name="pagesize" type="xs:string"/>
-			<xs:attribute name="threads"  type="xs:string"/>
-			<xs:attribute name="source"   type="xs:string"/>
-			<xs:attribute name="encoding" type="xs:string"/>
-			<xs:attribute name="consumer" type="xs:string"/>
-		</xs:complexType>
-	</xs:element>
+    <!-- Creates entities. If a 'count' is provided the corresponding number of entities is created.
+         If no count is provided, entities are created as long as each involved generator is available. -->
+    <xs:element name="create-entities">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="id"              minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="name"     type="xs:string"/>
+            <xs:attribute name="count"    type="xs:string"/>
+            <xs:attribute name="pagesize" type="xs:string"/>
+            <xs:attribute name="threads"  type="xs:string"/>
+            <xs:attribute name="source"   type="xs:string"/>
+            <xs:attribute name="selector" type="xs:string"/>
+            <xs:attribute name="encoding" type="xs:string"/>
+            <xs:attribute name="consumer" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Updates entities. -->
+    <xs:element name="update-entities">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="id"              minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="name"     type="xs:string"/>
+            <xs:attribute name="count"    type="xs:string"/>
+            <xs:attribute name="pagesize" type="xs:string"/>
+            <xs:attribute name="threads"  type="xs:string"/>
+            <xs:attribute name="source"   type="xs:string"/>
+            <xs:attribute name="selector" type="xs:string"/>
+            <xs:attribute name="encoding" type="xs:string"/>
+            <xs:attribute name="consumer" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
 
 	<!-- Defines an ID generator that can be reused in different scopes. -->
 	<xs:element name="id">
