@@ -38,9 +38,9 @@ import java.util.TimeZone;
 
 /**
  * creates date values by a LongGenerator.
- * @see LongGenerator<br/>
  * <br/>
  * Created: 07.06.2006 22:54:28
+ * @see LongGenerator
  */
 public class DateGenerator implements Generator<Date> {
     
