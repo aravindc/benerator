@@ -107,7 +107,8 @@ public class Entity implements Composite<Object> {
 			Class<? extends Object> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName());
 			component = AnyConverter.convert(component, javaType);
     	}
-        components.put(componentName, component);
+        String internalComponentName = componentDescriptor != null ? componentDescriptor.getName() : componentName;
+		components.put(internalComponentName, component);
     }
     
     // java.lang.overrides ---------------------------------------------------------------------------------------------
