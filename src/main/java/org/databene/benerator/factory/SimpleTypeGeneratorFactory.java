@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -43,7 +44,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
 	public static Generator<? extends Object> createSimpleTypeGenerator(SimpleTypeDescriptor descriptor, boolean nullable, boolean unique,
-            Context context, GenerationSetup setup) {
+			BeneratorContext context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
         // try constructive setup
@@ -73,7 +74,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private static Generator<? extends Object> createConstructiveGenerator(
-			SimpleTypeDescriptor descriptor, Context context) {
+			SimpleTypeDescriptor descriptor, BeneratorContext context) {
 		Generator<? extends Object> generator;
 		generator = createByGeneratorName(descriptor, context);
         if (generator == null)
@@ -84,7 +85,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	}
 
 	private static Generator<? extends Object> createDefaultGenerator(
-			SimpleTypeDescriptor descriptor, boolean unique, Context context,
+			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context,
 			GenerationSetup setup) {
 		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context, setup);
         if (generator == null)
@@ -141,7 +142,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		// TODO v0.5.x support scripts in CSV simpleType import
 		// ScriptConverter scriptConverter = new ScriptConverter(context, setup.getDefaultScript());
 		HeavyweightIterable<String> iterable = null;
-		if ((dataset != null && nesting != null) || EMPTY_WEIGHT.equals(distribution) ) {
+		if ((dataset != null && nesting != null) 
+				|| EMPTY_WEIGHT.equals(distribution) 
+				|| source.toLowerCase().endsWith(".wgt.csv") ) {
 		    generator = new WeightedDatasetCSVGenerator(source, dataset, nesting, encoding);
 		} else {
 		    iterable = new CSVCellIterable(source, separator);
@@ -152,7 +155,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 
     private static Generator<? extends Object> createTypeGenerator(
-            SimpleTypeDescriptor descriptor, boolean unique, Context context, GenerationSetup setup) {
+            SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context, GenerationSetup setup) {
         if (descriptor instanceof UnionSimpleTypeDescriptor)
             return createUnionTypeGenerator((UnionSimpleTypeDescriptor) descriptor, context, setup);
         PrimitiveType<Object> primitiveType = descriptor.getPrimitiveType();
@@ -178,7 +181,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     private static Generator<? extends Object> createUnionTypeGenerator(
-            UnionSimpleTypeDescriptor descriptor, Context context, GenerationSetup setup) {
+            UnionSimpleTypeDescriptor descriptor, BeneratorContext context, GenerationSetup setup) {
         int n = descriptor.getAlternatives().size();
         Generator[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
