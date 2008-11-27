@@ -53,6 +53,10 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     private static final String REGION  = "org/databene/dataset/region";
     
     private String datasetName;
+    private boolean sector;
+    private boolean location;
+    private boolean legalForm;
+    
     private Generator<String> core;
     private Generator<String> sectorGenerator;
     private Generator<String> legalFormGenerator;
@@ -71,11 +75,18 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     }
 
     public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
+    	this.sector = sector;
+    	this.location = location;
+    	this.legalForm = legalForm;
         this.datasetName = datasetName;
         setDataset(datasetName);
+    }
+    
+	public void setDataset(String datasetName) {
         Country country = Country.getInstance(datasetName);
         if (location && country != null) {
-            Generator<String> city = new ConvertingGenerator<City, String>(new CityGenerator(country), new PropertyAccessConverter("name"));
+            Generator<String> city = new ConvertingGenerator<City, String>(
+            		new CityGenerator(country), new PropertyAccessConverter("name"));
             locationGenerator = new NullableGenerator<String>(
                     	new AlternativeGenerator<String>(String.class, 
                     			new ConstantGenerator<String>(country.getLocalName()), 
@@ -89,9 +100,6 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
         	legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
         if (sector)
         	sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
-    }
-    
-	public void setDataset(String datasetName) {
         Generator<String> person = new MessageGenerator("{0} {1}", 
                 new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
                 new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
