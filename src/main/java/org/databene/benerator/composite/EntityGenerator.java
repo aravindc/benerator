@@ -49,6 +49,7 @@ public class EntityGenerator implements Generator<Entity> {
     private Generator<Entity> source;
     private List<ComponentBuilder> componentBuilders;
     private Context context;
+    private Entity currentEntity;
 
     // constructors --------------------------------------------------------------------------------------
 
@@ -71,6 +72,7 @@ public class EntityGenerator implements Generator<Entity> {
         this.source = source;
         this.componentBuilders = componentBuilders;
         this.context = context;
+        this.currentEntity = null;
     }
 
     // Generator interface -----------------------------------------------------------------------------------
@@ -86,11 +88,18 @@ public class EntityGenerator implements Generator<Entity> {
     }
 
     public boolean available() {
+    	if (currentEntity != null)
+    		return true;
+    	
         if (!source.available()) {
             if (stateLogger.isDebugEnabled())
                 stateLogger.debug("Source for entity '" + entityName + "' is not available any more: " + source);
             return false;
         }
+        
+    	currentEntity = source.generate();
+        context.set(currentEntity.getName(), currentEntity);
+        
         for (ComponentBuilder compGen : componentBuilders) {
             if (!compGen.available()) {
                 if (stateLogger.isDebugEnabled())
@@ -102,16 +111,16 @@ public class EntityGenerator implements Generator<Entity> {
     }
 
     public Entity generate() {
-        Entity entity = source.generate();
-        context.set(this.entityName, entity);
         for (ComponentBuilder componentBuilder : componentBuilders) {
             try {
-                componentBuilder.buildComponentFor(entity);
+                componentBuilder.buildComponentFor(currentEntity);
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of entity '" + entityName + "'", e);
             }
         }
-        return entity;
+    	Entity result = currentEntity;
+    	currentEntity = null;
+        return result;
     }
 
     public void close() {
@@ -128,7 +137,8 @@ public class EntityGenerator implements Generator<Entity> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + entityName + ']' + componentBuilders;
     }
 
