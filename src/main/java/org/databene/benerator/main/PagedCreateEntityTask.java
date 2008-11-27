@@ -48,18 +48,14 @@ public class PagedCreateEntityTask extends PagedTask {
 	private Collection<Consumer<Entity>> consumers;
 	
 	public PagedCreateEntityTask(
-			String entityName, int count, int pageSize, int threads, List<? extends Task> subTasks, 
+			String taskName, int count, int pageSize, int threads, List<? extends Task> subTasks, 
 			Generator<Entity> generator, Collection<Consumer<Entity>> consumers, ExecutorService executor, 
 			boolean isSubTask, ErrorHandler errorHandler) {
-		super(new CreateEntityTask(entityName, generator, consumers, subTasks, isSubTask, errorHandler), count, null, pageSize, threads, executor);
+		super(new CreateEntityTask(taskName, generator, consumers, subTasks, isSubTask, errorHandler), count, null, pageSize, threads, executor);
 		this.generator = generator;
 		this.consumers = consumers;
 	}
 	
-	public String getEntityName() {
-	    return ((CreateEntityTask) realTask).getEntityName();
-	}
-
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
 	@Override
