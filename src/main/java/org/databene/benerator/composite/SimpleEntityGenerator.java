@@ -46,7 +46,8 @@ public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
         this.descriptor = descriptor;
     }
 
-    public Class<Entity> getGeneratedType() {
+    @Override
+	public Class<Entity> getGeneratedType() {
         return Entity.class;
     }
 
