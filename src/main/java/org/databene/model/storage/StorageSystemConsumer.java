@@ -39,21 +39,33 @@ import org.databene.model.data.Entity;
 public class StorageSystemConsumer extends AbstractConsumer<Entity> {
 
     private StorageSystem system;
+    private boolean insert;
 
-    public StorageSystemConsumer(StorageSystem system) {
+    public StorageSystemConsumer(StorageSystem system, boolean insert) {
         this.system = system;
+        this.insert = insert;
     }
 
     public void startConsuming(Entity entity) {
-        system.store(entity);
+    	if (insert)
+    		system.store(entity);
+    	else
+    		system.update(entity);
     }
 
+    @Override
     public void flush() {
         system.flush();
     }
 
+    @Override
     public void close() {
         system.close();
+    }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + "[" + system + "]";
     }
 }
 
