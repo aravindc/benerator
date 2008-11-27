@@ -32,7 +32,7 @@ package org.databene.id;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class IdProviderId {
+public class IdProviderId { // TODO merge with AbstractIdProviderFactory
     
     private String strategyName;
     private String scope;
