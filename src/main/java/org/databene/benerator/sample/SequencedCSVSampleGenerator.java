@@ -52,9 +52,9 @@ import java.util.ArrayList;
  *   Charly,fuv
  * </pre>
  *
- * @see org.databene.benerator.sample.WeightedSampleGenerator<br/>
  * <br/>
  * Created: 26.07.2007 18:10:33
+ * @see org.databene.benerator.sample.WeightedSampleGenerator
  */
 public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
@@ -113,7 +113,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     /** test support method */
     void addValue(E value) {
         ((SequencedSampleGenerator<E>) source).addValue(value);
-        // do not set dirty flag, otherwise this value would be cöeared
+        // do not set dirty flag, otherwise this value would be cï¿½eared
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
