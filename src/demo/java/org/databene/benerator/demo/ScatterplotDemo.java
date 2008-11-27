@@ -12,9 +12,9 @@ import java.awt.*;
  * Demonstrates the use of Sequences and weight functions for generating numbers.
  * For the horizontal distribution, a weight function of sin^2(cx) is used, vertically
  * a Sequence of type 'cumulated'.
- * @see XFunction<br/>
  * <br/>
  * Created: 07.09.2006 19:06:16
+ * @see XFunction <br/>
  */
 public class ScatterplotDemo extends Component {
 
