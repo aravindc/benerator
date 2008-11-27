@@ -30,10 +30,11 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.main.Benerator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
-import org.databene.commons.converter.DefaultEntryConverter;
+import org.databene.model.DefaultEntryConverter;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 
@@ -104,7 +105,8 @@ public class ShopDBTest extends TestCase {
                 (String) dbCfg.get("db_password")
         );
         // check generation results
-        Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", new DefaultEntryConverter());
+        Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", 
+        		new DefaultEntryConverter(new BeneratorContext(null)));
         int expectedProductCount = 6 + (Integer) genCfg.get("product_count");
         int expectedCustomerCount = 1 + (Integer) genCfg.get("customer_count");
         int expectedUserCount = 3 + expectedCustomerCount;
