@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.context.DefaultContext;
@@ -56,7 +57,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
     private static final String CHOICE_TEST_FILE = "org/databene/platform/xml/choice-test.xsd";
 
     public void testSimpleTypeElement() throws IOException {
-        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, new DefaultContext());
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
         assertNotNull(rootDescriptor);
@@ -68,7 +69,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
     }
 
     public void testNesting() throws IOException {
-        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new DefaultContext());
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
         assertNotNull(rootDescriptor);
@@ -89,7 +90,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
     }
 
     public void testAnnotations() throws IOException {
-        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(ANNOTATION_TEST_FILE, new DefaultContext());
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(ANNOTATION_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
         assertNotNull(rootDescriptor);
@@ -119,7 +120,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
     }
 
     public void testChoice() throws IOException {
-        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, new DefaultContext());
+        XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
         assertNotNull(rootDescriptor);
