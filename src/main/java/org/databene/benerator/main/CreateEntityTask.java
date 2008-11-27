@@ -44,26 +44,20 @@ import org.databene.task.ThreadSafe;
  */
 public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
 
-    private String entityName;
     private Generator<Entity> generator;
     private Collection<Consumer<Entity>> consumers;
 //    private int generationCount;
     private List<? extends Task> subTasks;
     private boolean isSubTask;
     
-    public CreateEntityTask(String entityName, Generator<Entity> generator, 
+    public CreateEntityTask(String taskName, Generator<Entity> generator, 
             Collection<Consumer<Entity>> consumers, List<? extends Task> subTasks, boolean isSubTask, ErrorHandler errorHandler) {
-    	super(errorHandler);
-        this.entityName = entityName;
+    	super(taskName, errorHandler);
         this.generator = generator;
         this.consumers = consumers;
 //        this.generationCount = 0;
         this.subTasks = subTasks;
         this.isSubTask = isSubTask;
-    }
-    
-    public String getEntityName() {
-        return entityName;
     }
 
     @Override
@@ -81,7 +75,7 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
 	                return;
 	        }
 	        if (entity != null) {
-	            context.set(entityName, entity);
+	            context.set(entity.getName(), entity);
 	//            generationCount++;
 	            for (Consumer<Entity> consumer : consumers)
 	                consumer.startConsuming(entity);
@@ -108,8 +102,4 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
         super.destroy();
     }
     
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + entityName + ']';
-    }
 }
