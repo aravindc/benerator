@@ -34,7 +34,7 @@ import org.databene.commons.Validator;
  * Created at 12.07.2008 15:24:58
  * @since 0.5.4
  * @author Volker Bergmann
- * @see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+ * @see "http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2"
  */
 public class CountryCode2Validator implements Validator<String> {
 

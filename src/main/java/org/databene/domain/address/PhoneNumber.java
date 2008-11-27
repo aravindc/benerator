@@ -82,7 +82,7 @@ public class PhoneNumber {
     }
 
     /**
-     * @return
+     * @return the area code
      * @deprecated replaced with {@link #getAreaCode()}
      */
     public String getCityCode() {
@@ -110,7 +110,7 @@ public class PhoneNumber {
     }
 
     /**
-     * @return
+     * @return the local number
      * @deprecated replaced with {@link #getLocalNumber()}
      */
     public String getLocalCode() {
