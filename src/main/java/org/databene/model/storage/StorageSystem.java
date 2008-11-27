@@ -54,8 +54,11 @@ public interface StorageSystem extends DescriptorProvider, Heavyweight {
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
     <T> TypedIterable<T> query(String selector, Context context);
     
-    /** Enqueues an entity for {@link #flush()}ing. */
+    /** Persists a new entity. */
     void store(Entity entity);
+    
+    /** Updates an existing entity. */
+    void update(Entity entity);
     
     /** Assures that all data that has been {@link #store(Entity)}d, is send to the target system. */
     void flush();
