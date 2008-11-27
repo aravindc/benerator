@@ -26,11 +26,11 @@
 
 package org.databene.benerator.engine;
 
-import java.util.Set;
-
 import org.databene.benerator.factory.GenerationSetup;
 import org.databene.benerator.factory.SimpleGenerationSetup;
-import org.databene.commons.Context;
+import org.databene.commons.bean.ClassCache;
+import org.databene.commons.bean.ClassProvider;
+import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
@@ -42,39 +42,48 @@ import org.databene.commons.context.PropertiesContext;
  * @author Volker Bergmann
  *
  */
-public class BeneratorContext implements Context {
+public class BeneratorContext extends ContextStack implements ClassProvider {
 	
-	private ContextStack stack;
+	private DefaultContext properties;
+	private ClassCache classCache;
 	
 	public BeneratorContext(String contextUri) {
-		stack = new ContextStack();
-		stack.push(new PropertiesContext(java.lang.System.getenv()));
-		stack.push(new PropertiesContext(java.lang.System.getProperties()));
-		stack.push(new DefaultContext());
-		stack.set("benerator", new SimpleGenerationSetup(contextUri));
+		properties = new DefaultContext();
+		push(new PropertiesContext(java.lang.System.getenv()));
+		push(new PropertiesContext(java.lang.System.getProperties()));
+		push(properties);
+		push(new CaseInsensitiveContext(true));
+		set("benerator", new SimpleGenerationSetup(contextUri));
+		classCache = new ClassCache(); // TODO initialize ClassCache
 	}
-
-	public Object get(String key) {
-		return stack.get(key);
-	}
-
-	public Set<String> keySet() {
-		return stack.keySet();
-	}
-
-	public void remove(String key) {
-		stack.remove(key);
-	}
-
-	public void set(String key, Object value) {
-		stack.set(key, value);
-	}
-
-	public String toString() {
-		return stack.toString();
+	
+	@Override
+    public synchronized Object get(String key) {
+        for (int i = contexts.size() - 1; i >= 0; i--) {
+            Object result = contexts.get(i).get(key);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+	
+	public void setProperty(String name, Object value) {
+		properties.set(name, value);
 	}
 	
 	public GenerationSetup getGenerationSetup() {
 		return (GenerationSetup) get("benerator");
+	}
+
+	public void importClass(String className) {
+		classCache.importClass(className);
+	}
+
+	public void importPackage(String packageName) {
+		classCache.importPackage(packageName);
+	}
+
+	public Class forName(String className) {
+		return classCache.forName(className);
 	}
 }
