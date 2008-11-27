@@ -108,7 +108,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     public Class<Entity> getType() {
     	if (!initialized)
     		init();
-    	return super.getType(); // TODO implement FlatFileEntityIterable.getType()
+    	return Entity.class;
     }
     
     public HeavyweightIterator<Entity> iterator() {
@@ -134,6 +134,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
 
     private static Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, String encoding) {
         PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
+        // TODO resolve relative uris
         return new FlatFileLineIterable(uri, formats, true, encoding);
     }
 
