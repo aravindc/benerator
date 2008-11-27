@@ -27,6 +27,7 @@
 package org.databene.model;
 
 import org.databene.commons.Heavyweight;
+import org.databene.model.consumer.Consumer;
 
 /**
  * Abstraction of an object that processes (possibly larger quantities of) objects.
