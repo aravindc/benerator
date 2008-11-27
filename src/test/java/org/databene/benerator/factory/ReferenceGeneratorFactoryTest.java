@@ -35,6 +35,7 @@ import org.databene.commons.Context;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.iterator.DefaultTypedIterable;
+import org.databene.commons.iterator.HeavyweightIterableAdapter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
@@ -43,12 +44,13 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.storage.StorageSystem;
 
 /**
- * Tests the {@link ReferenceGeneratorFactory}.<br/><br/>
+ * Tests the {@link ComponentBuilderFactory}.<br/><br/>
  * Created at 05.05.2008 17:08:45
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class ReferenceGeneratorFactoryTest extends TestCase {
+public class ReferenceGeneratorFactoryTest extends TestCase { 
+	// TODO this tests the ComponentBuilderFactory, migrste tests to ComponentBuilderFactoryTest
 
 	public void testMissingType() {
 		try {
@@ -136,11 +138,17 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		}
 
 		public <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
-			return (TypedIterable<T>) new DefaultTypedIterable<String>(String.class, CollectionUtil.toList("Alice", "Bob"));
+			HeavyweightIterableAdapter<String> source = 
+				new HeavyweightIterableAdapter<String>(CollectionUtil.toList("Alice", "Bob"));
+			return (TypedIterable<T>) new DefaultTypedIterable<String>(String.class, source);
 		}
 
 		public void store(Entity entity) {
 			throw new UnsupportedOperationException("store() not implemented");
+		}
+
+		public void update(Entity entity) {
+			throw new UnsupportedOperationException("StorageSystem.update() is not implemented");
 		}
 
 	}
