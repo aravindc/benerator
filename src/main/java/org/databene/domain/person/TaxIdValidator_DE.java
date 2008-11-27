@@ -35,7 +35,7 @@ import org.databene.commons.Validator;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TaxIdValidator_DE implements Validator<String>{
+public class TaxIdValidator_DE implements Validator<String> {
 
 	public boolean valid(String number) {
 		if (number == null || number.length() != 11)
