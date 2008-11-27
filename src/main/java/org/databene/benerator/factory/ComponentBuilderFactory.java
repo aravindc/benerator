@@ -51,6 +51,7 @@ import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.InstanceArrayGenerator;
 import org.databene.benerator.composite.PlainComponentBuilder;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
@@ -80,9 +81,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     // factory methods for component generators ------------------------------------------------------------------------
 
     public static ComponentBuilder createComponentBuilder( 
-            ComponentDescriptor descriptor, Context context, GenerationSetup setup) {
+            ComponentDescriptor descriptor, BeneratorContext context, GenerationSetup setup) {
         if (logger.isDebugEnabled())
-            logger.debug("addComponentGenerator(" + descriptor.getName() + ')');
+            logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
         ComponentBuilder builder = createNullQuotaOneBuilder(descriptor);
         if (builder != null)
         	return builder;
@@ -106,7 +107,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	}
 
 	private static ComponentBuilder createAlternativeGroupBuilder(AlternativeGroupDescriptor type, 
-    		Context context, GenerationSetup setup) {
+			BeneratorContext context, GenerationSetup setup) {
     	int i = 0;
 		Collection<ComponentDescriptor> components = type.getComponents();
 		ComponentBuilder[] builders = new ComponentBuilder[components.size()];
@@ -132,7 +133,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 */
     public static ComponentBuilder createPartBuilder(
-            PartDescriptor part, Context context, GenerationSetup setup) {
+            PartDescriptor part, BeneratorContext context, GenerationSetup setup) {
         Generator<? extends Object> generator = createSingleInstanceGenerator(
                 part, context, setup);
         generator = createMultiplicityWrapper(part, generator, context);
