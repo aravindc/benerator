@@ -30,6 +30,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DescriptorUtil;
 import org.databene.model.data.Entity;
+import org.databene.model.data.EntitySource;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -45,6 +46,7 @@ import org.databene.benerator.composite.ComponentTypeConverter;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
@@ -82,7 +84,7 @@ public class ComplexTypeGeneratorFactory {
     
     // public utility methods ------------------------------------------------------------------------------------------
 
-    public static Generator<Entity> createComplexTypeGenerator(ComplexTypeDescriptor type, boolean unique, Context context, 
+    public static Generator<Entity> createComplexTypeGenerator(ComplexTypeDescriptor type, boolean unique, BeneratorContext context, 
     		GenerationSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
@@ -106,7 +108,7 @@ public class ComplexTypeGeneratorFactory {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<Entity> wrapGeneratorWithVariables(
-            ComplexTypeDescriptor type, Context context, GenerationSetup setup, Generator<Entity> generator) {
+            ComplexTypeDescriptor type, BeneratorContext context, GenerationSetup setup, Generator<Entity> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
             Map<String, Generator<? extends Object>> varGens = new HashMap<String, Generator<? extends Object>>();
             for (InstanceDescriptor variable : variables) {
@@ -141,8 +143,8 @@ public class ComplexTypeGeneratorFactory {
                 StorageSystem storage = (StorageSystem) sourceObject;
                 String selector = descriptor.getSelector();
                 generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
-            } else if (sourceObject instanceof TypedIterable) {
-                generator = new IteratingGenerator((TypedIterable) sourceObject);
+            } else if (sourceObject instanceof EntitySource) {
+                generator = new IteratingGenerator((EntitySource) sourceObject);
             } else if (sourceObject instanceof Generator) {
                 generator = (Generator) sourceObject;
             } else
@@ -237,7 +239,7 @@ public class ComplexTypeGeneratorFactory {
 	}
 
     private static Generator<Entity> createSyntheticEntityGenerator(
-            ComplexTypeDescriptor complexType, boolean unique, Context context, GenerationSetup setup) {
+            ComplexTypeDescriptor complexType, boolean unique, BeneratorContext context, GenerationSetup setup) {
         List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
         if (DescriptorUtil.isWrappedSimpleType(complexType)) {
     		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
@@ -259,7 +261,7 @@ public class ComplexTypeGeneratorFactory {
     }
 
 	private static Generator<Entity> createMutatingEntityGenerator(
-            ComplexTypeDescriptor descriptor, Context context, GenerationSetup setup, Generator<Entity> generator) {
+            ComplexTypeDescriptor descriptor, BeneratorContext context, GenerationSetup setup, Generator<Entity> generator) {
     	List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
         Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
         for (ComponentDescriptor component : components)
