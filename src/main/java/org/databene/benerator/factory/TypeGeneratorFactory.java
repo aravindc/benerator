@@ -28,14 +28,13 @@ package org.databene.benerator.factory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
@@ -63,7 +62,6 @@ import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
-import org.databene.model.function.IndividualWeight;
 import org.databene.model.function.Sequence;
 import org.databene.model.function.WeightFunction;
 import org.databene.script.Script;
@@ -81,7 +79,7 @@ public class TypeGeneratorFactory {
     
     private static final Log logger = LogFactory.getLog(TypeGeneratorFactory.class);
 
-    public static Generator<? extends Object> createTypeGenerator(TypeDescriptor descriptor, boolean unique, Context context, GenerationSetup setup) {
+    public static Generator<? extends Object> createTypeGenerator(TypeDescriptor descriptor, boolean unique, BeneratorContext context, GenerationSetup setup) {
     	if (logger.isDebugEnabled())
     		logger.debug(descriptor + ", " + unique);
         if (descriptor instanceof SimpleTypeDescriptor)
@@ -92,16 +90,21 @@ public class TypeGeneratorFactory {
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
     }
 
-    protected static Generator<? extends Object> createByGeneratorName(TypeDescriptor descriptor, Context context) {
+    protected static Generator<? extends Object> createByGeneratorName(TypeDescriptor descriptor, BeneratorContext context) {
         Generator<? extends Object> generator = null;
         String generatorClassName = descriptor.getGenerator();
         if (generatorClassName != null) {
-            generator = BeanUtil.newInstance(generatorClassName);
+        	generator = (Generator<Object>) newInstance(generatorClassName, context);
             mapDetailsToBeanProperties(descriptor, generator, context);
         }
         return generator;
     }
 
+	private static Object newInstance(String className, BeneratorContext context) {
+		Class generatorClass = context.forName(className);
+		return BeanUtil.newInstance(generatorClass);
+	}
+    
     protected static Generator<? extends Object> createSampleGenerator(TypeDescriptor descriptor, boolean unique) {
         Generator<? extends Object> generator = null;
         // check for samples
@@ -129,35 +132,35 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-    static Validator getValidator(TypeDescriptor descriptor, Context context) {
+    static Validator getValidator(TypeDescriptor descriptor, BeneratorContext context) {
         String validatorSpec = descriptor.getValidator();
         if (StringUtil.isEmpty(validatorSpec))
             return null;
         String[] specs = StringUtil.tokenize(validatorSpec, ',');
         if (specs.length == 1) {
-        	return parseValidatorSpec(validatorSpec, context);
+        	return parseSingleValidatorSpec(validatorSpec, context);
         } else {
         	Validator[] validators = new Validator[specs.length];
         	for (int i = 0; i < specs.length; i++)
-        		validators[i] = parseValidatorSpec(specs[i], context);
+        		validators[i] = parseSingleValidatorSpec(specs[i], context);
 			return new AndValidator(validators);
         }
     }
 
-	private static Validator parseValidatorSpec(String validatorSpec,
-			Context context) {
+	static Validator parseSingleValidatorSpec(String validatorSpec,
+			BeneratorContext context) {
 		Object validator = null;
         // first try to resolve the converterSpec from the context
         validator = context.get(validatorSpec);
         // if the converter is not in the context, interpret the converterSpec as classname
         if (validator == null)
-        	validator = BeanUtil.newInstance(validatorSpec);
+        	validator = newInstance(validatorSpec, context);
         if (!(validator instanceof Validator))
         	throw new ConfigurationError(validatorSpec + " is not an instance of " + Validator.class);
 		return (Validator) validator;
 	}
 	
-	static Converter getConverter(TypeDescriptor descriptor, Context context) {
+	static Converter getConverter(TypeDescriptor descriptor, BeneratorContext context) {
         String converterSpec = descriptor.getConverter();
         if (StringUtil.isEmpty(converterSpec))
             return null;
@@ -173,13 +176,13 @@ public class TypeGeneratorFactory {
     }
 
 	private static Converter parseConverterSpec(String converterSpec,
-			Context context) {
+			BeneratorContext context) {
 		Object converter = null;
         // first try to resolve the converterSpec from the context
         converter = context.get(converterSpec);
-        // if the converter is not in the context, interpret the converterSpec as classname
+        // if the converter is not in the context, interpret the converterSpec as class name
         if (converter == null)
-        	converter = BeanUtil.newInstance(converterSpec);
+        	converter = newInstance(converterSpec, context);
         if (converter instanceof java.text.Format)
         	converter = new FormatFormatConverter((java.text.Format) converter);
         if (!(converter instanceof Converter))
@@ -218,7 +221,7 @@ public class TypeGeneratorFactory {
     }
 
     protected static <T> Generator<T> createValidatingGenerator(
-            TypeDescriptor descriptor, Generator<T> generator, Context context) {
+            TypeDescriptor descriptor, Generator<T> generator, BeneratorContext context) {
         Validator<T> validator = getValidator(descriptor, context);
         if (validator != null)
             generator = new ValidatingGeneratorProxy<T>(generator, validator);
@@ -242,7 +245,7 @@ public class TypeGeneratorFactory {
         	return TimeUtil.createDefaultDateFormat();
     }
 
-    protected static Generator createConvertingGenerator(TypeDescriptor descriptor, Generator generator, Context context) {
+    protected static Generator createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
         Converter converter = getConverter(descriptor, context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
@@ -265,7 +268,7 @@ public class TypeGeneratorFactory {
 		return new DistributingGenerator(generator, distribution, descriptor.getVariation1(), descriptor.getVariation2());
 	}
 
-	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, Context context) {
+	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, BeneratorContext context) {
 		generator = createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor)
 			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
