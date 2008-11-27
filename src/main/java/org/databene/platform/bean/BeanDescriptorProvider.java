@@ -117,7 +117,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
 
     /**
      * @param concreteType
-     * @return
+     * @return the abstract type that corresponds to the specified concrete type
      * @see org.databene.model.data.TypeMapper#abstractType(java.lang.Object)
      */
     public String abstractType(Class<? extends Object> concreteType) {
@@ -126,7 +126,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
 
     /**
      * @param primitiveType
-     * @return
+     * @return the abstract type that corresponds to the specified primitive type
      * @see org.databene.model.data.TypeMapper#concreteType(java.lang.String)
      */
     public Class<? extends Object> concreteType(String primitiveType) {
