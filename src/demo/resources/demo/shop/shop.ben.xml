@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<setup 	xmlns="http://databene.org/benerator-0.5.5.xsd"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator-0.5.5.xsd org/databene/benerator/benerator-0.5.5.xsd">
+<setup 
+	xmlns="http://databene.org/benerator/0.5.6"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://databene.org/benerator/0.5.6 http://databene.org/benerator-0.5.6.xsd">
 
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	     Demonstration file for populating the shop database.
-	     Please invoke with JVM paramenters like these:
-	         -Dstage=development -Ddatabase=oracle
-	     or something appropriate for your environment.
-	     
-	     When doing so you need to provide the following files:
-	         shop.development.properties
-	         oracle/shop.oracle.properties
-	         oracle/create_tables.oracle.sql
-	         oracle/drop_tables.oracle.sql
-	         
-	     Have a look at the examples provided for oracle, db, 
-	     sql_server, mysql, postgres, hsql, mysql & derby
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 !   Demonstration file for populating the shop database.   !
+	 !   Please invoke with JVM paramenters like these:         !
+	 !       -Dstage=development -Ddatabase=oracle              !
+	 !   or something appropriate for your environment.         !
+	 !                                                          !
+	 !   When doing so you need to provide the following files: !
+	 !       shop.development.properties                        !
+	 !       oracle/shop.oracle.properties                      !
+	 !       oracle/create_tables.oracle.sql                    !
+	 !       oracle/drop_tables.oracle.sql                      !
+	 !                                                          !
+	 !   Have a look at the examples provided for oracle, db,   !
+	 !   sql_server, mysql, postgres, hsql, mysql & derby       !
 	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	 
+	<import defaults="true"/>
+	<import domain="person"/>
+	<import domain="net"/>
+	<import domain="product"/>
 
 	<!-- first, import stage and database specific properties -->
-	<include uri="{demo/shop/${database}/shop.${database}.properties}" />
-	<include uri="{demo/shop/shop.${stage}.properties}" />
+	<include uri="{${database}/shop.${database}.properties}" />
+	<include uri="{shop.${stage}.properties}" />
 
 	<!-- log the settings to the console -->
 	<echo message="Starting generation for" />
@@ -31,36 +37,26 @@
 	<echo message="{  ${items_per_order} items per order}" />
 	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
 
-	<!-- define a database that will be referred by the id 'db' later -->
-	<database id="db" url="{${db_uri}}" driver="{${db_driver}}" schema="{${db_schema!}}"
-		user="{${db_user}}" password="{${db_password!}}" batch="{${db_batch!}}" />
+    <!-- define a database that will be referred by the id 'db' later -->
+    <database id="db" url="{${db_uri}}" driver="{${db_driver}}" schema="{${db_schema!}}"
+        user="{${db_user}}" password="{${db_password!}}" batch="{${db_batch?string!}}" />
 
 	<!-- drop the current tables/sequences if they exist and recreate them -->
-	<run-task class="org.databene.platform.db.RunSqlScriptTask">
-	<!--  note: the 'drop' script is database independent -->
-		<property name="uri" value="{demo/shop/${database}/drop_tables.${database}.sql}" />
-		<property name="db" ref="db" />
-		<property name="haltOnError" value="false" />
-	</run-task>
-	<run-task class="org.databene.platform.db.RunSqlScriptTask">
-		<!-- note: The 'create' script is database specific -->
-		<property name="uri" value="{demo/shop/${database}/create_tables.${database}.sql}" />
-		<property name="db" ref="db" />
-		<property name="ignoreComments" value="false" />
-		<property name="haltOnError" value="true" />
-	</run-task>
+	<execute uri="{${database}/drop_tables.${database}.sql}" target="db" onError="ignore"/>
+	<execute uri="{${database}/create_tables.${database}.sql}" target="db" optimize="true"/>
 
 	<!-- Create a valid base data set for regression testing by importing a DbUnit file -->
-	<create-entities source="demo/shop/shop.dbunit.xml" consumer="db" />
+	<create-entities source="shop.dbunit.xml" consumer="db" />
 
 	<!-- import some more predefined products from a CSV file -->
-	<create-entities name="db_product" source="demo/shop/products.import.csv" encoding="utf-8" consumer="db" />
+	<create-entities name="db_product" source="products.import.csv" encoding="utf-8" consumer="db" />
+
 	<!-- you could import them from a flat file as well, e.g. -->
-	<!-- <create-entities name="db_product" source="demo/shop/products.import.flat" 
+	<!-- <create-entities name="db_product" source="products.import.flat" 
 		pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /> -->
 
 	<!-- For the db_product table, the primary keys are EAN codes, create a specific generator for them -->
-	<bean id="ean_generator" class="org.databene.domain.product.EANGenerator">
+	<bean id="ean_generator" class="EANGenerator">
 		<property name="unique" value="true" />
 	</bean>
 
@@ -70,32 +66,9 @@
 		<attribute name="category_id" source="db" selector="select id from db_category" distribution="random" />
 		<attribute name="price" type="big_decimal" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
-		<consumer class="org.databene.platform.flat.FlatFileEntityExporter">
+		<consumer class="FlatFileEntityExporter">
 			<property name="uri" value="products.flat" />
 			<property name="properties" value="ean_code[13],name[30l],price[10.2r0]" />
-		</consumer>
-	</create-entities>
-
-	<!-- create customers -->
-	<create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
-		<variable name="person" generator="org.databene.domain.person.PersonGenerator" dataset="{${country}}" locale="{${locale}}"/>
-		<id name="id" strategy="{${id_strategy}}" param="{${id_param}}" source="db" />
-		<attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
-		<attribute name="email" generator="org.databene.domain.net.EMailAddressGenerator" />
-		<attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
-		<attribute name="role_id" values="customer" />
-		<create-entities name="db_customer" count="1" consumer="db">
-			<attribute name="id" source="db_user.id" />
-			<attribute name="category" values="A,B,C" />
-			<attribute name="salutation" source="person.salutation" />
-			<attribute name="first_name" source="person.givenName" />
-			<attribute name="last_name" source="person.familyName" />
-			<attribute name="birth_date" nullable="false" />
-			<!-- Export the customers not only to the database, but there names and passwords to a CSV file -->
-		</create-entities>
-		<consumer class="org.databene.platform.csv.CSVEntityExporter">
-			<property name="uri" value="customers.csv" />
-			<property name="properties" value="id,password" />
 		</consumer>
 	</create-entities>
 
@@ -103,15 +76,39 @@
 	<!-- create-entities name="db_order" consumer="db">
 		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
-		<create-entities name="db_order_item" source="demo/shop/default_order.dbunit.xml" consumer="db">
+		<create-entities name="db_order_item" source="default_order.dbunit.xml" consumer="db">
 			<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
 		</create-entities>
 	</create-entities-->
+
+    <!-- create customers -->
+    <create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
+        <variable name="person" generator="PersonGenerator" dataset="{${country}}" locale="{${locale}}"/>
+        <id name="id" strategy="{${id_strategy}}" param="{${id_param}}" source="db" />
+        <attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
+        <attribute name="email" generator="EMailAddressGenerator" />
+        <attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
+        <attribute name="role_id" values="customer" />
+        <create-entities name="db_customer" count="1" consumer="db">
+            <attribute name="id" source="db_user.id" />
+            <attribute name="category" values="A,B,C" />
+            <attribute name="salutation" source="person.salutation" />
+            <attribute name="first_name" source="person.givenName" />
+            <attribute name="last_name" source="person.familyName" />
+            <attribute name="birth_date" nullable="false" generator="CurrentDateGenerator"/>
+            <!-- Export the customers not only to the database, but their names and passwords to a CSV file -->
+            <consumer class="CSVEntityExporter">
+                <property name="uri" value="customers.csv" />
+                <property name="properties" value="id,password" />
+            </consumer>
+        </create-entities>
+    </create-entities>
 
 	<!-- create orders for random customers and random products -->
 	<create-entities name="db_order" count="{ftl:${customer_count * orders_per_customer}}" consumer="db">
 		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true" />
+        <attribute name="total_price" values="0" />
 	</create-entities>
 
 	<!-- create order items -->
@@ -124,4 +121,11 @@
 		<attribute name="product_ean_code" script="{${product[0]}}" />
 		<attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
 	</create-entities>
+
+    <!-- fix order data  -->
+    <update-entities name="db_order" source="db">
+        <attribute name="total_price" source="db" 
+            selector="{{select sum(total_price) from db_order_item where order_id = ${db_order.id}}}" cyclic="true"/>
+    </update-entities>
+
 </setup>
