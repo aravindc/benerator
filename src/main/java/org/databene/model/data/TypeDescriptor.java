@@ -31,7 +31,6 @@ import java.util.Locale;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
-import org.databene.commons.operation.ArrayIntersectionOperation;
 import org.databene.commons.operation.FirstNonNullSelector;
 import org.databene.model.function.Distribution;
 
@@ -95,11 +94,11 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
 	protected void init() {
 		// restrictions
-        addRestriction(VALUES,    String[].class,  null, new ArrayIntersectionOperation<String>());
-        addRestriction(VALIDATOR, String.class,    null, new FirstNonNullSelector<String>()); 
+        addRestriction(VALIDATOR, String.class, null, new FirstNonNullSelector<String>()); 
             // For performance reasons, retain only the first non-null validator
         
         // config
+        addConfig(VALUES,         String[].class,     null);
         addConfig(GENERATOR,      String.class,       null);
         addConfig(CONVERTER,      String.class,       null);
         addConfig(PATTERN,        String.class,       null);
