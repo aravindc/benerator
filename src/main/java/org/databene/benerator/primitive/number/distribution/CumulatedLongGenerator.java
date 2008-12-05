@@ -27,7 +27,6 @@
 package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.primitive.number.AbstractLongGenerator;
-import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
 
@@ -36,7 +35,7 @@ import org.databene.model.function.Sequence;
  *
  * Created: 07.06.2006 19:33:37
  */
-public class CumulatedLongGenerator extends AbstractLongGenerator implements NumberGenerator<Long> {
+public class CumulatedLongGenerator extends AbstractLongGenerator {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
