@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>${setup.groupId}</groupId>
+    <artifactId>${setup.projectName}</artifactId>
+    <version>${setup.version}</version>
+
+    <packaging>jar</packaging>
+    <name>${setup.projectName} data generation project</name>
+
+    <build>
+        <plugins>
+            <plugin>
+            	<groupId>org.databene</groupId>
+            	<artifactId>maven-benerator-plugin</artifactId>
+            	<version>0.5.6</version>
+            	<configuration>
+            		<descriptor>${setup.projectName}.ben.xml</descriptor>
+                    <encoding>${setup.encoding}</encoding>
+                    <validate>true</validate>
+            		<dbUrl>${setup.dbUrl}</dbUrl>
+            		<dbDriver>${setup.dbDriver}</dbDriver>
+            		<dbSchema>${setup.dbSchema}</dbSchema>
+            		<dbUser>${setup.dbUser}</dbUser>
+            		<dbPassword>${setup.dbPassword}</dbPassword>
+            	</configuration>
+            	<dependencies>
+            	<!-- TODO add needed dependencies -->
+            		<dependency>
+            			<groupId>oracle</groupId>
+            			<artifactId>ojdbc</artifactId>
+            			<version>1.4</version>
+            		</dependency>
+            		<dependency>
+            			<groupId>log4j</groupId>
+            			<artifactId>log4j</artifactId>
+            			<version>1.2.13</version>
+            		</dependency>
+            	</dependencies>
+        	</plugin>
+        </plugins>
+    </build>
+
+</project>

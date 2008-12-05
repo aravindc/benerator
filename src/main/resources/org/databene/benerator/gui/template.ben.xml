@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup 	xmlns="http://databene.org/benerator/0.5.6"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator/0.5.6 http://databene.org/benerator-0.5.6.xsd">
+
+    <import defaults="true"/>
+    
+    <import domain="person"/>
+    <import domain="net"/>
+    <import domain="product"/>
+
+    <include uri="${setup.projectName}.properties" />
+    
+    <echo message="Starting ${setup.projectName} data generation" />
+
+    <comment>define the database using the properties set in pom.xml</comment>
+    <database id="db" url="{${dbUrl}}" driver="{${dbDriver}}" 
+        schema="{${dbSchema}}" user="{${dbUser}}" password="{${dbPassword}}" />
+
+    <comment>execute initializers and load static data</comment>
+    ${import-files}
+	
+	<comment>generate mass data</comment>
+	${create-entities}
+	
+</setup>
