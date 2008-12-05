@@ -114,7 +114,7 @@ public class SeqHiLoIdProvider implements IdProvider<Long> {
     private long nextHi() {
         if (sqlLogger.isDebugEnabled())
             sqlLogger.debug(selector);
-        return Long.parseLong(DBUtil.queryWithOneCellResult(statement));
+        return Long.parseLong(DBUtil.queryString(statement));
     }
 
     private static final Log logger = LogFactory.getLog(SeqHiLoIdProvider.class);

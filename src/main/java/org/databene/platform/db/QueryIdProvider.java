@@ -69,7 +69,7 @@ public class QueryIdProvider implements IdProvider<String> {
     }
 
     public String next() {
-        return DBUtil.queryWithOneCellResult(statement);
+        return DBUtil.queryString(statement);
     }
 
     public void remove() {
