@@ -9,8 +9,8 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.benerator.factory.TypeGeneratorFactory;
+import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
@@ -19,7 +19,6 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.MessageConverter;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.ModelParser;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
@@ -45,7 +44,6 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         
         // create context
         BeneratorContext context = new BeneratorContext(IOUtil.getContextUri(schemaUri));
-        SimpleGenerationSetup setup = new SimpleGenerationSetup(IOUtil.getContextUri(schemaUri));
 
         // parse schema
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
@@ -55,7 +53,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 new MessageConverter<Long>(filenamePattern, Locale.US));
         // parse properties files
-        ModelParser parser = new ModelParser(IOUtil.getContextUri(schemaUri));
+        ModelParser parser = new ModelParser(new BeneratorContext(IOUtil.getContextUri(schemaUri)));
         for (String propertiesFile : propertiesFiles)
             parser.importProperties(propertiesFile, context);
 
@@ -63,8 +61,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
-		contentGenerator = TypeGeneratorFactory.createTypeGenerator(
-                rootDescriptor, false, context, setup);
+		contentGenerator = TypeGeneratorFactory.createTypeGenerator(rootDescriptor, false, context);
     }
 
     @Override
