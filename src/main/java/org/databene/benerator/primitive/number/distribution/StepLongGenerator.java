@@ -51,7 +51,7 @@ public class StepLongGenerator extends AbstractLongGenerator {
     }
 
     public StepLongGenerator(long min, long max, long increment) {
-        super(min, max, Math.abs(increment));
+        super(min, max, Math.abs(increment), increment, 0);
         this.variation1 = increment;
     }
 
