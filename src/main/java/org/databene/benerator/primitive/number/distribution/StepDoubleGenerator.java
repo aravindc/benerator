@@ -38,7 +38,6 @@ import org.databene.model.function.Sequence;
 public class StepDoubleGenerator extends AbstractDoubleGenerator {
 
     private double next;
-    private double increment;
 
     public StepDoubleGenerator() {
         this(Double.MIN_VALUE, Double.MAX_VALUE);
@@ -49,8 +48,7 @@ public class StepDoubleGenerator extends AbstractDoubleGenerator {
     }
 
     public StepDoubleGenerator(double min, double max, double increment) {
-        super(min, max, Math.abs(increment));
-        this.increment = increment;
+        super(min, max, Math.abs(increment), increment, 0);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -67,12 +65,10 @@ public class StepDoubleGenerator extends AbstractDoubleGenerator {
         this.next = next;
     }
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
-            if (increment < 0)
-                next = max;
-            else
-                next = min;
+            reset();
             super.validate();
         }
     }
@@ -81,12 +77,20 @@ public class StepDoubleGenerator extends AbstractDoubleGenerator {
         if (dirty)
             validate();
         double value = next;
-        next += increment;
+        next += variation1;
         if (next > max)
             next = max;
         else if (next < min)
             next = min;
         return value;
     }
+
+	@Override
+	public void reset() {
+		if (variation1 < 0)
+		    next = max;
+		else
+		    next = min;
+	}
 
 }
