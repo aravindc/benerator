@@ -71,14 +71,16 @@ public class StepLongGenerator extends AbstractLongGenerator {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             reset();
     		super.validate();
         }
     }
 
-    public Class<Long> getGeneratedType() {
+    @Override
+	public Class<Long> getGeneratedType() {
         return Long.class;
     }
     
