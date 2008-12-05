@@ -32,7 +32,6 @@ import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.benerator.util.LightweightGenerator;
-import org.databene.commons.context.DefaultContext;
 import org.databene.id.IdProviderFactory;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -195,12 +194,10 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
     	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
 		alternativeType.addComponent(new PartDescriptor("b", typeB));
 		BeneratorContext context = new BeneratorContext(null);
-		SimpleGenerationSetup setup = new SimpleGenerationSetup(null);
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
-		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context, setup);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context);
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
-		System.out.println(entity);
     }
     
 /*
@@ -487,7 +484,7 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 	}
 	
 	private ComponentBuilder createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
-		return ComponentBuilderFactory.createComponentBuilder(component, context, context.getGenerationSetup());
+		return ComponentBuilderFactory.createComponentBuilder(component, context);
 	}
 	
 	private static final class ComponentBuilderGenerator<E> extends LightweightGenerator<E> {

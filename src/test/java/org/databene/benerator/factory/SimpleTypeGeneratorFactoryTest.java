@@ -29,8 +29,6 @@ package org.databene.benerator.factory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Context;
-import org.databene.commons.context.DefaultContext;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.function.Sequence;
@@ -101,8 +99,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	private Generator<? extends Object> createGenerator(SimpleTypeDescriptor type, boolean unique) {
 		BeneratorContext context = new BeneratorContext(null);
-		GenerationSetup setup = new SimpleGenerationSetup(contextUri);
-		Generator<? extends Object> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context, setup);
+		Generator<? extends Object> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context);
 		return generator;
 	}
 }

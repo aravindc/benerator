@@ -50,7 +50,7 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 public class ReferenceGeneratorFactoryTest extends TestCase { 
-	// TODO this tests the ComponentBuilderFactory, migrste tests to ComponentBuilderFactoryTest
+	// TODO v0.5.7 this tests the ComponentBuilderFactory, migrste tests to ComponentBuilderFactoryTest
 
 	public void testMissingType() {
 		try {
@@ -112,8 +112,7 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
-		SimpleGenerationSetup setup = new SimpleGenerationSetup(null);
-		return ComponentBuilderFactory.createReferenceBuilder(ref, context, setup);
+		return ComponentBuilderFactory.createReferenceBuilder(ref, context);
 	}
 	
 	public static class StorageSystemMock extends DefaultDescriptorProvider implements StorageSystem {
