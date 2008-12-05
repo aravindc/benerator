@@ -73,6 +73,7 @@ CREATE INDEX db_customer_name on db_customer (first_name, last_name);
 CREATE TABLE db_order (
   id          number(10) NOT NULL,
   customer_id number(10) NOT NULL,
+  total_price number(8,2)  NOT NULL,
   created_at  timestamp with time zone NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT db_order_customer_fk FOREIGN KEY (customer_id) REFERENCES db_customer (id)

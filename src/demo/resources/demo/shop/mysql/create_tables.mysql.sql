@@ -53,6 +53,7 @@ CREATE TABLE db_customer (
 CREATE TABLE db_order (
   id          int(10)  NOT NULL auto_increment,
   customer_id int(10)  NOT NULL,
+  total_price float(8,2)  NOT NULL,
   created_at  DATETIME NOT NULL,
   PRIMARY KEY (id),
   KEY db_order_customer_fk (customer_id),
