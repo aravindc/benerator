@@ -36,15 +36,13 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
-import org.databene.commons.Context;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.ModelParser;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -108,7 +106,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     public XMLSchemaDescriptorProvider(String schemaUri, BeneratorContext context, DataModel dataModel) {
         super(schemaUri, true);
         this.namespaces = new HashMap<String, String>();
-        parser = new ModelParser(IOUtil.getContextUri(schemaUri));
+        parser = new ModelParser(context);
         this.context = context;
         this.dataModel = dataModel;
         this.propertiesFiles = new ArrayList<String>();
@@ -234,7 +232,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
                 String filename = parser.parseInclude(child, context);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
-                parser.parseBean(child, context);
+                parser.parseBean(child);
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " + child.getNodeName());
         }
@@ -502,7 +500,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         for (Element info : infos) {
             String childName = XMLUtil.localName(info);
             if ("bean".equals(childName))
-                parser.parseBean(info, context);
+                parser.parseBean(info);
             else if ("variable".equals(childName))
                 parser.parseVariable(info, (ComplexTypeDescriptor) descriptor, context);
             else if (ATTRIBUTE.equals(childName))
