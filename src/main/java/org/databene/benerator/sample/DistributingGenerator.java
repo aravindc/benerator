@@ -24,14 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.wrapper;
+package org.databene.benerator.sample;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.SequencedSampleGenerator;
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.IndividualWeight;
