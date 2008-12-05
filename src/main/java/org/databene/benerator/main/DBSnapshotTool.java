@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
+import org.databene.gui.swing.ProgressMonitor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
@@ -46,11 +47,11 @@ import org.databene.platform.dbunit.DbUnitEntityExporter;
  */
 public class DBSnapshotTool {
     
-	public static final String DB_PASSWORD = "db.password";
-	public static final String DB_URL = "db.url";
-	public static final String DB_DRIVER = "db.driver";
-	public static final String DB_SCHEMA = "db.schema";
-	public static final String DB_USER = "db.user";
+	public static final String DB_PASSWORD = "dbPassword";
+	public static final String DB_URL = "dbUrl";
+	public static final String DB_DRIVER = "dbDriver";
+	public static final String DB_SCHEMA = "dbSchema";
+	public static final String DB_USER = "dbUser";
 	
 	// TODO v0.6.0 test with each database
     private static final Log logger = LogFactory.getLog(DBSnapshotTool.class);
@@ -62,11 +63,11 @@ public class DBSnapshotTool {
         String dbUrl = System.getProperty(DB_URL);
         if (StringUtil.isEmpty(dbUrl))
             throw new IllegalArgumentException("No database URL specified. " +
-            		"Please provide the JDBC URL as an environment property like '-Ddb.url=jdbc:...'");
+            		"Please provide the JDBC URL as an environment property like '-DdbUrl=jdbc:...'");
         String dbDriver = System.getProperty(DB_DRIVER);
         if (StringUtil.isEmpty(dbDriver))
             throw new IllegalArgumentException("No database driver specified. " +
-                    "Please provide the JDBC driver class name as an environment property like '-Ddb.driver=...'");
+                    "Please provide the JDBC driver class name as an environment property like '-DdbDriver=...'");
         String dbUser = System.getProperty(DB_USER);
         String dbPassword = System.getProperty(DB_PASSWORD);
         String dbSchema = System.getProperty(DB_SCHEMA);
@@ -75,11 +76,16 @@ public class DBSnapshotTool {
                 + "'" + (dbSchema != null ? " using schema '" + dbSchema + "'" : "") 
                 + " to file " + filename);
 
-        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename);
+        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, null);
     }
 
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
 			String dbUser, String dbPassword, String filename) {
+		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, null);
+	}
+	
+	public static void export(String dbUrl, String dbDriver, String dbSchema,
+			String dbUser, String dbPassword, String filename, ProgressMonitor monitor) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");
         String fileEncoding = System.getProperty("file.encoding");
@@ -96,12 +102,21 @@ public class DBSnapshotTool {
             List<TypeDescriptor> descriptors = Arrays.asList(db.getTypeDescriptors());
             logger.info("Starting export");
             for (TypeDescriptor descriptor : descriptors) {
-                logger.info("Exporting table " + descriptor.getName());
+                String note = "Exporting table " + descriptor.getName();
+                if (monitor != null) {
+                	monitor.setNote(note);
+                	if (monitor.isCanceled())
+                		throw new RuntimeException("Export cancelled");
+                }
+				logger.info(note);
+				Thread.yield();
                 for (Entity entity : db.queryEntities(descriptor.getName(), null, null)) {
                     exporter.startConsuming(entity);
                     exporter.finishConsuming(entity);
                     count++;
                 }
+                if (monitor != null)
+                	monitor.advance();
             }
             long duration = System.currentTimeMillis() - startTime;
             logger.info("Exported " + NumberUtil.format(count, 0) + " entities in " + RoundedNumberFormat.format(duration, 0) + " ms (" + RoundedNumberFormat.format(count * 3600000L / duration, 0) + " p.h.)");
