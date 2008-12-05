@@ -290,7 +290,7 @@ public class GeneratorFactory {
     }
 
     /**
-     * TODO make Sequence hold the variation info and remove this method.
+     * TODO v0.5.7 make Sequence hold the variation info and remove this method.
      * @deprecated
      */
     @Deprecated
