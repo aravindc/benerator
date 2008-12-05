@@ -60,7 +60,8 @@ public class BitReverseLongGenerator extends AbstractLongGenerator {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             super.validate();
             indexGenerator = new BitReverseNaturalNumberGenerator((max - min + precision - 1) / precision);
@@ -68,10 +69,11 @@ public class BitReverseLongGenerator extends AbstractLongGenerator {
         }
     }
 
-    public boolean available() {
+    @Override
+	public boolean available() {
         if (dirty)
             validate();
-        return indexGenerator.available(); // TODO check life cycle
+        return indexGenerator.available();
     }
 
     public Long generate() throws IllegalGeneratorStateException {
@@ -80,12 +82,14 @@ public class BitReverseLongGenerator extends AbstractLongGenerator {
         return min + indexGenerator.generate() * precision;
     }
 
-    public void reset() {
+    @Override
+	public void reset() {
         super.reset();
         indexGenerator.reset();
     }
 
-    public void close() {
+    @Override
+	public void close() {
         super.close();
         indexGenerator.close();
     }
