@@ -35,7 +35,8 @@ import java.util.Date;
  * <br/>
  * Created: 17.11.2007 13:07:18
  */
-public class CurrentTimeGenerator extends LightweightGenerator<Date> { // TODO this should return only time, not the date!
+public class CurrentTimeGenerator extends LightweightGenerator<Date> { 
+	// TODO v0.5.7 this should return only time, not the date!
 
     public Date generate() {
         return new Date();
