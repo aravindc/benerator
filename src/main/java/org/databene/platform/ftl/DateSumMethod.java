@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.ftl;
+package org.databene.platform.ftl;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -35,7 +35,6 @@ import org.databene.commons.converter.LiteralParser;
 import freemarker.template.SimpleDate;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * FreeMarker method that sums Date, Time and millisecond values.<br/>
