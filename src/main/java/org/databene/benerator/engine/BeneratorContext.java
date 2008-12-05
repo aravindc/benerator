@@ -26,36 +26,48 @@
 
 package org.databene.benerator.engine;
 
-import org.databene.benerator.factory.GenerationSetup;
-import org.databene.benerator.factory.SimpleGenerationSetup;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ClassCache;
 import org.databene.commons.bean.ClassProvider;
 import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
+import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.script.ScriptUtil;
 
 /**
  * A BeneratorContext.<br/><br/>
  * Created at 20.04.2008 06:41:04
  * @since 0.5.2
  * @author Volker Bergmann
- *
  */
-public class BeneratorContext extends ContextStack implements ClassProvider, GenerationSetup {
+public class BeneratorContext extends ContextStack implements ClassProvider {
 	// TODO v0.5.7 move GenerationSetup implementation from 'Benerator' to here
 	
 	private DefaultContext properties;
 	private ClassCache classCache;
 	
+    protected String  defaultEncoding     = SystemInfo.fileEncoding();
+    protected int     defaultPagesize     = 1;
+    protected boolean defaultNull         = true;
+    protected char    defaultSeparator    = ',';
+    protected String  defaultErrorHandler = "fatal";
+    protected String  contextUri          = "./";
+    public    boolean validate            = true;
+
+    protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
+	
 	public BeneratorContext(String contextUri) {
+		this.contextUri = contextUri;
+		validate = !("false".equals(System.getProperty("benerator.validate")));
 		properties = new DefaultContext();
 		push(new PropertiesContext(java.lang.System.getenv()));
 		push(new PropertiesContext(java.lang.System.getProperties()));
 		push(properties);
 		push(new CaseInsensitiveContext(true));
-		set("benerator", new SimpleGenerationSetup(contextUri));
+		set("benerator", this);
 		classCache = new ClassCache();
 	}
 	
@@ -73,14 +85,6 @@ public class BeneratorContext extends ContextStack implements ClassProvider, Gen
 		properties.set(name, value);
 	}
 	
-	public GenerationSetup getGenerationSetup() {
-		return (GenerationSetup) get("benerator");
-	}
-
-	public void setGenerationSetup(GenerationSetup setup) {
-		set("benerator", setup);
-	}
-
 	public void importClass(String className) {
 		classCache.importClass(className);
 	}
@@ -93,33 +97,76 @@ public class BeneratorContext extends ContextStack implements ClassProvider, Gen
 		return classCache.forName(className);
 	}
 	
-	// GenerationSetup interface implementation ------------------------------------------------------------------------
+    public String getDefaultEncoding() {
+        return defaultEncoding;
+    }
+    
+    public void setDefaultEncoding(String defaultEncoding) {
+        this.defaultEncoding = defaultEncoding;
+    }
+    
+    public int getDefaultPagesize() {
+        return defaultPagesize;
+    }
+    
+    public void setDefaultPagesize(int defaultPagesize) {
+        this.defaultPagesize = defaultPagesize;
+    }
+    
+    public String getDefaultScript() {
+        return ScriptUtil.getDefaultScriptEngine();
+    }
+    
+    public void setDefaultScript(String defaultScript) {
+        ScriptUtil.setDefaultScriptEngine(defaultScript);
+    }
+    
+    public boolean isDefaultNull() {
+        return defaultNull;
+    }
+    
+    public void setDefaultNull(boolean defaultNull) {
+        this.defaultNull = defaultNull;
+    }
+    
+	public char getDefaultSeparator() {
+		return defaultSeparator;
+	}
 
-	public String getContextUri() {
-		return getGenerationSetup().getContextUri();
+	public void setDefaultSeparator(char defaultSeparator) {
+		this.defaultSeparator = defaultSeparator;
 	}
 
 	public ComponentDescriptor getDefaultComponentConfig(String name) {
-		return getGenerationSetup().getDefaultComponentConfig(name);
+		return defaultComponent.getComponent(name);
 	}
 
-	public String getDefaultEncoding() {
-		return getGenerationSetup().getDefaultEncoding();
+	public String getDefaultErrorHandler() {
+		return defaultErrorHandler;
 	}
 
-	public int getDefaultPagesize() {
-		return getGenerationSetup().getDefaultPagesize();
+	public void setDefaultErrorHandler(String defaultErrorHandler) {
+		this.defaultErrorHandler = defaultErrorHandler;
 	}
 
-	public String getDefaultScript() {
-		return getGenerationSetup().getDefaultScript();
+	public String getContextUri() {
+		return contextUri;
 	}
 
-	public char getDefaultSeparator() {
-		return getGenerationSetup().getDefaultSeparator();
+	public void setContextUri(String contextUri) {
+		this.contextUri = contextUri;
 	}
 
-	public boolean isDefaultNull() {
-		return getGenerationSetup().isDefaultNull();
+	public boolean isValidate() {
+		return validate;
 	}
+
+	public void setValidate(boolean validate) {
+		this.validate = validate;
+	}
+
+	public ComplexTypeDescriptor getDefaultComponent() { // TODO v0.5.7 check if this can bee hidden
+		return defaultComponent;
+	}
+
 }
