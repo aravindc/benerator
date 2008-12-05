@@ -53,13 +53,19 @@ public class ShuffleDoubleGenerator extends AbstractDoubleGenerator {
         if (min < max && increment <= 0)
             throw new IllegalArgumentException("Unsupported increment value: " + increment);
         this.increment = increment;
-        this.cursor = min;
+        reset();
     }
 
     // config properties -----------------------------------------------------------------------------------------------
 
     public Distribution getDistribution() {
         return Sequence.SHUFFLE;
+    }
+    
+    @Override
+    public void setMin(Double min) {
+    	super.setMin(min);
+    	reset();
     }
 
     public double getIncrement() {
@@ -79,5 +85,10 @@ public class ShuffleDoubleGenerator extends AbstractDoubleGenerator {
         else
             cursor = min + ((cursor - min + precision) % increment);
         return result;
+    }
+
+    @Override
+    public void reset() {
+        this.cursor = min;
     }
 }
