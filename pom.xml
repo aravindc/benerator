@@ -5,11 +5,12 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.6-alpha3</version>
+    <version>0.5.6</version>
 
     <properties>
-	    <webdecs_version>0.4.6-alpha3</webdecs_version>
-	    <commons_version>0.4.6-alpha3</commons_version>
+        <gui_version>0.1.6</gui_version>
+        <webdecs_version>0.4.6</webdecs_version>
+	    <commons_version>0.4.6</commons_version>
     </properties>
 
 <!--
@@ -71,6 +72,11 @@
             <groupId>org.databene</groupId>
             <artifactId>databene-commons</artifactId>
             <version>${commons_version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.databene</groupId>
+		    <artifactId>databene-gui</artifactId>
+		    <version>${gui_version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -174,6 +180,17 @@
                         <descriptor>src/main/assembly/backup-assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
