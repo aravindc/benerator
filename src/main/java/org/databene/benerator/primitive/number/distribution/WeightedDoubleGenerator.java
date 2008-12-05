@@ -28,7 +28,6 @@ package org.databene.benerator.primitive.number.distribution;
 
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
-import org.databene.benerator.primitive.number.NumberGenerator;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.WeightFunction;
 
@@ -40,7 +39,7 @@ import java.util.Random;
  * <br/>
  * Created: 11.06.2006 21:33:41
  */
-public class WeightedDoubleGenerator extends AbstractDoubleGenerator implements NumberGenerator<Double> {
+public class WeightedDoubleGenerator extends AbstractDoubleGenerator {
 
     private WeightFunction function;
     private Random random;
@@ -68,7 +67,8 @@ public class WeightedDoubleGenerator extends AbstractDoubleGenerator implements 
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             int sampleCount = (int) ((max - min) / precision) + 1;
             if (sampleCount > 100000)
