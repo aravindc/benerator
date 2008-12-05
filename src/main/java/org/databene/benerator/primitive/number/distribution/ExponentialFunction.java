@@ -51,7 +51,8 @@ public class ExponentialFunction implements WeightFunction {
         return scale * Math.exp(frequency * param);
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return scale + "e^(" + frequency + "x)";
     }
 }

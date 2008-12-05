@@ -57,7 +57,8 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
 
     // config properties -----------------------------------------------------------------------------------------------
 
-    public Class<Long> getGeneratedType() {
+    @Override
+	public Class<Long> getGeneratedType() {
         return Long.class;
     }
 
@@ -74,7 +75,8 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
 
     // generator interface ---------------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             super.validate();
             cursor = 0;
@@ -85,7 +87,8 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
         }
     }
 
-    public boolean available() {
+    @Override
+	public boolean available() {
         if (dirty)
             validate();
         return next != null;
@@ -106,20 +109,23 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
         return result;
     }
 
-    public void reset() {
+    @Override
+	public void reset() {
         super.reset();
         dirty = true;
         validate();
     }
 
-    public void close() {
+    @Override
+	public void close() {
         super.close();
         next = null;
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + renderState() + ']';
     }
 

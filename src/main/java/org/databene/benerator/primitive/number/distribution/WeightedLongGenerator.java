@@ -86,7 +86,8 @@ public class WeightedLongGenerator extends AbstractLongGenerator {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             normalize();
             super.validate();

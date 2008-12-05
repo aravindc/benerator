@@ -49,7 +49,8 @@ public class ConstantFunction implements WeightFunction {
         return value;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + value + ']';
     }
 }

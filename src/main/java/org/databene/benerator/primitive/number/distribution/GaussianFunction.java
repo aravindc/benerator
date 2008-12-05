@@ -73,8 +73,9 @@ public class GaussianFunction implements WeightFunction {
         return scale * Math.exp(-0.5 * x*x);
     }
 
-    /** Creates a Stirng representation of the function */
-    public String toString() {
+    /** Creates a String representation of the function */
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + "[1. / (" + deviation + "*sqrt(2*PI)) * e^(-" + (average != 0 ? "(x - " + average + ")" : "x") + "^2/" + (2 * deviation * deviation) + ")]";
     }
 }
