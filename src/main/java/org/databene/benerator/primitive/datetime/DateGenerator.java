@@ -69,7 +69,7 @@ public class DateGenerator implements Generator<Date> {
         );
     }
 
-    // TODO make the sequence contain the variation params and remove this method
+    // v0.5.7 TODO make the sequence contain the variation params and remove this method
     public DateGenerator(Date min, Date max, long precision, Distribution distribution, Date variation1, Date variation2) {
         source = new LongGenerator(
                 (min != null ? min.getTime() : Long.MIN_VALUE),
