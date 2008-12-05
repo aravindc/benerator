@@ -236,4 +236,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
     	setNullQuota(nullQuota);
     	return this;
     }
+
+	public boolean overwritesParent() {
+		return parent != null;
+	}
 }
