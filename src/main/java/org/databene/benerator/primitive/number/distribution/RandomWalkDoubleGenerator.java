@@ -58,8 +58,11 @@ public class RandomWalkDoubleGenerator extends AbstractDoubleGenerator {
         super(min, max, precision);
         incrementGenerator = new RandomDoubleGenerator(minIncrement, maxIncrement, precision);
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     public void setPrecision(double precision) {
+    	super.setPrecision(precision);
         incrementGenerator.setPrecision(precision);
     }
 
@@ -74,17 +77,13 @@ public class RandomWalkDoubleGenerator extends AbstractDoubleGenerator {
     public void setNext(double next) {
         this.next = next;
     }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
-            double minIncrement = incrementGenerator.getMin();
-            double maxIncrement = incrementGenerator.getMax();
-            if (minIncrement < 0 && maxIncrement <= 0)
-                next = max;
-            else if (minIncrement >= 0 && maxIncrement > 0)
-                next = min;
-            else
-                next = (min + max) / 2;
+            reset();
             super.validate();
         }
     }
@@ -100,5 +99,17 @@ public class RandomWalkDoubleGenerator extends AbstractDoubleGenerator {
             next = min;
         return value;
     }
+    
+	@Override
+	public void reset() {
+		double minIncrement = incrementGenerator.getMin();
+		double maxIncrement = incrementGenerator.getMax();
+		if (minIncrement < 0 && maxIncrement <= 0)
+		    next = max;
+		else if (minIncrement >= 0 && maxIncrement > 0)
+		    next = min;
+		else
+		    next = (min + max) / 2;
+	}
 
 }
