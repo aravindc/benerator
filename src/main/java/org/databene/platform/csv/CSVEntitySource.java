@@ -18,7 +18,7 @@ public class CSVEntitySource implements EntitySource {
     private String encoding;
     private Converter<String, String> preprocessor;
 
-    private ComplexTypeDescriptor entityDescriptor; // TODO is this used/useful?
+    private ComplexTypeDescriptor entityDescriptor;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -102,7 +102,8 @@ public class CSVEntitySource implements EntitySource {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
                 ", entityName=" + entityDescriptor.getName() + "]";
     }
