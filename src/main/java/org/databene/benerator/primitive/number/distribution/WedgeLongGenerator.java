@@ -66,7 +66,8 @@ public class WedgeLongGenerator extends AbstractLongGenerator {
 
     // generator interface ---------------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             cursor = min;
             max = min + (max - min) / precision * precision;
@@ -79,7 +80,8 @@ public class WedgeLongGenerator extends AbstractLongGenerator {
         }
     }
 
-    public boolean available() {
+    @Override
+	public boolean available() {
         return (cursor != null);
     }
 
@@ -99,19 +101,22 @@ public class WedgeLongGenerator extends AbstractLongGenerator {
         return result;
     }
 
-    public void reset() {
+    @Override
+	public void reset() {
         super.reset();
         this.cursor = min;
     }
 
-    public void close() {
+    @Override
+	public void close() {
         super.close();
         this.cursor = null;
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + renderState() + ']';
     }
 
