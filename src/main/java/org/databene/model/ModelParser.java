@@ -221,10 +221,10 @@ public class ModelParser {
                     	if (source != null) {
                     		if (source.endsWith(".ent.csv") || source.endsWith(".flat.csv") || source.endsWith(".dbunit.xml"))
                     			partType = "entity";
-                    		// TODO handle source beans
+                    		// TODO v0.5.7 handle source beans
                     	}
                     }
-                    // TODO handle types of generators
+                    // TODO v0.5.7 handle types of generators
                     if (partType != null) {
                         TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(partType);
                         String name = attributes.get("name");
