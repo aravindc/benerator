@@ -84,22 +84,22 @@ public class ComplexTypeGeneratorFactory {
     
     // public utility methods ------------------------------------------------------------------------------------------
 
-    public static Generator<Entity> createComplexTypeGenerator(ComplexTypeDescriptor type, boolean unique, BeneratorContext context, 
-    		GenerationSetup setup) {
+    public static Generator<Entity> createComplexTypeGenerator(
+    		ComplexTypeDescriptor type, boolean unique, BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
         // create original generator
         Generator<Entity> generator = null;
         generator = (Generator<Entity>) TypeGeneratorFactory.createByGeneratorName(type, context);
         if (generator == null)
-            generator = createSourceGenerator(type, context, setup);
+            generator = createSourceGenerator(type, context);
         if (generator == null)
-            generator = createSyntheticEntityGenerator(type, unique, context, setup);
+            generator = createSyntheticEntityGenerator(type, unique, context);
         else
-            generator = createMutatingEntityGenerator(type, context, setup, generator);
+            generator = createMutatingEntityGenerator(type, context, generator);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = wrapGeneratorWithVariables(type, context, setup, generator);
+        generator = wrapGeneratorWithVariables(type, context, generator);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
@@ -108,11 +108,11 @@ public class ComplexTypeGeneratorFactory {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<Entity> wrapGeneratorWithVariables(
-            ComplexTypeDescriptor type, BeneratorContext context, GenerationSetup setup, Generator<Entity> generator) {
+            ComplexTypeDescriptor type, BeneratorContext context, Generator<Entity> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
             Map<String, Generator<? extends Object>> varGens = new HashMap<String, Generator<? extends Object>>();
             for (InstanceDescriptor variable : variables) {
-                Generator<? extends Object> varGen = InstanceGeneratorFactory.createInstanceGenerator(variable, context, setup);
+                Generator<? extends Object> varGen = InstanceGeneratorFactory.createInstanceGenerator(variable, context);
                 varGens.put(variable.getName(), varGen);
             }
         return new ConfiguredEntityGenerator((Generator<Entity>) generator, varGens, context);
@@ -130,7 +130,7 @@ public class ComplexTypeGeneratorFactory {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<Entity> createSourceGenerator(
-            ComplexTypeDescriptor descriptor, Context context, GenerationSetup setup) {
+            ComplexTypeDescriptor descriptor, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
         if (sourceName == null)
@@ -150,13 +150,13 @@ public class ComplexTypeGeneratorFactory {
             } else
                 throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
         } else {
-        	String uri = IOUtil.resolveLocalUri(sourceName, setup.getContextUri());
+        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
             if (uri.endsWith(".xml")) {
                 generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(uri, context));
             } else if (uri.endsWith(".csv")) {
-                generator = createCSVSourceGenerator(descriptor, context, setup, uri);
+                generator = createCSVSourceGenerator(descriptor, context, uri);
             } else if (uri.endsWith(".flat")) {
-                generator = createFlatSourceGenerator(descriptor, context, setup, uri);
+                generator = createFlatSourceGenerator(descriptor, context, uri);
             } else
                 throw new UnsupportedOperationException("Unknown source type: " + sourceName);
         }
@@ -186,12 +186,11 @@ public class ComplexTypeGeneratorFactory {
 	}
 
 	private static Generator<Entity> createFlatSourceGenerator(
-			ComplexTypeDescriptor descriptor, Context context,
-			GenerationSetup setup, String sourceName) {
+			ComplexTypeDescriptor descriptor, BeneratorContext context, String sourceName) {
 		Generator<Entity> generator;
 		String encoding = descriptor.getEncoding();
 		if (encoding == null)
-		    encoding = setup.getDefaultEncoding();
+		    encoding = context.getDefaultEncoding();
 		String pattern = descriptor.getPattern();
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
@@ -203,16 +202,15 @@ public class ComplexTypeGeneratorFactory {
 	}
 
 	private static Generator<Entity> createCSVSourceGenerator(
-			ComplexTypeDescriptor complexType, Context context,
-			GenerationSetup setup, String sourceName) {
+			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
 		Generator<Entity> generator;
 		String encoding = complexType.getEncoding();
 		if (encoding == null)
-		    encoding = setup.getDefaultEncoding();
+		    encoding = context.getDefaultEncoding();
 		ScriptConverter scriptConverter = new ScriptConverter(context);
 		String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
-		char separator = getSeparator(complexType, setup);
+		char separator = getSeparator(complexType, context);
 		if (dataset != null && nesting != null) {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
@@ -228,9 +226,9 @@ public class ComplexTypeGeneratorFactory {
 		return generator;
 	}
 
-	private static char getSeparator(ComplexTypeDescriptor descriptor, GenerationSetup setup) {
+	private static char getSeparator(ComplexTypeDescriptor descriptor, BeneratorContext context) {
 		String separatorString = descriptor.getSeparator();
-		char separator = setup.getDefaultSeparator();
+		char separator = context.getDefaultSeparator();
 		if (!StringUtil.isEmpty(separatorString)) {
 			Assert.length(separatorString, 1);
 			separator = separatorString.charAt(0);
@@ -239,21 +237,22 @@ public class ComplexTypeGeneratorFactory {
 	}
 
     private static Generator<Entity> createSyntheticEntityGenerator(
-            ComplexTypeDescriptor complexType, boolean unique, BeneratorContext context, GenerationSetup setup) {
+            ComplexTypeDescriptor complexType, boolean unique, BeneratorContext context) {
         List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
         if (DescriptorUtil.isWrappedSimpleType(complexType)) {
     		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
-    		Generator<Object> generator = (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) contentType, false, unique, context, setup);
+    		Generator<Object> generator = (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+    				(SimpleTypeDescriptor) contentType, false, unique, context);
         	return new SimpleTypeEntityGenerator(generator, complexType);
         }
         Collection<ComponentDescriptor> components = complexType.getComponents();
         for (ComponentDescriptor component : components) {
             if (!complexType.equals(component.getType()) && component.getMode() != Mode.ignored) {
             	String componentName = component.getName();
-				ComponentDescriptor defaultComponentConfig = setup.getDefaultComponentConfig(componentName);
+				ComponentDescriptor defaultComponentConfig = context.getDefaultComponentConfig(componentName);
 				if (!complexType.isDeclaredComponent(componentName) && defaultComponentConfig != null)
 					component = defaultComponentConfig;
-            	ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context, setup);
+            	ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context);
 				componentBuilders.add(builder); 
             }
         }
@@ -261,12 +260,12 @@ public class ComplexTypeGeneratorFactory {
     }
 
 	private static Generator<Entity> createMutatingEntityGenerator(
-            ComplexTypeDescriptor descriptor, BeneratorContext context, GenerationSetup setup, Generator<Entity> generator) {
+            ComplexTypeDescriptor descriptor, BeneratorContext context, Generator<Entity> generator) {
     	List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
         Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
         for (ComponentDescriptor component : components)
             if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName()))
-            	componentGenerators.add(ComponentBuilderFactory.createComponentBuilder(component, context, setup));
+            	componentGenerators.add(ComponentBuilderFactory.createComponentBuilder(component, context));
         return new EntityGenerator(descriptor, generator, componentGenerators, context);
     }
 }

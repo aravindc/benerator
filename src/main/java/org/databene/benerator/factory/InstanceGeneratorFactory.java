@@ -57,8 +57,8 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
-    public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context, GenerationSetup setup) {
-        Generator<? extends Object> generator = createSingleInstanceGenerator(descriptor, context, setup);
+    public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
+        Generator<? extends Object> generator = createSingleInstanceGenerator(descriptor, context);
         generator = createInstanceGeneratorWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -68,8 +68,7 @@ public class InstanceGeneratorFactory {
     // protected helpers for child classes -----------------------------------------------------------------------------
 
     protected static Generator<? extends Object> createSingleInstanceGenerator(
-            InstanceDescriptor descriptor, BeneratorContext context,
-            GenerationSetup setup) {
+            InstanceDescriptor descriptor, BeneratorContext context) {
         Generator<? extends Object> generator = null;
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
@@ -77,9 +76,11 @@ public class InstanceGeneratorFactory {
             boolean unique = isUnique(descriptor);
             TypeDescriptor type = descriptor.getType();
             if (type instanceof SimpleTypeDescriptor)
-				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) type, false, unique, context, setup);
+				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+						(SimpleTypeDescriptor) type, false, unique, context);
             else if (type instanceof ComplexTypeDescriptor)
-        		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) type, unique, context, setup);
+        		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
+        				(ComplexTypeDescriptor) type, unique, context);
             else
                 throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
             generator = wrapWithNullQuota(generator, descriptor);
@@ -118,15 +119,6 @@ public class InstanceGeneratorFactory {
         return null;
     }
 
-    public static Generator<? extends Object> createNullGenerator(InstanceDescriptor descriptor) {
-        Boolean nullable = descriptor.isNullable();
-        if (nullable != null && nullable.booleanValue()) { 
-        	// TODO cross-check with benerator-setting default-null
-            return new ConstantGenerator<Object>(null);
-        }
-        return null;
-    }
-
     private static <T> Generator<T> wrapWithNullQuota(
             Generator<T> generator, InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
@@ -147,14 +139,11 @@ public class InstanceGeneratorFactory {
         return nullQuota;
     }
 
-    protected static Generator<? extends Object> createNullGenerator(
-            InstanceDescriptor descriptor, GenerationSetup setup) {
-        Boolean nullable = descriptor.isNullable();
-        if (nullable != null && nullable.booleanValue()) {
-            Boolean defaultNull = setup.isDefaultNull();
-            if (defaultNull != null && defaultNull.booleanValue())
-                return new ConstantGenerator<Object>(null);
-        }
+
+    public static Generator<? extends Object> createNullableGenerator(
+    		InstanceDescriptor descriptor, BeneratorContext context) {
+        if (!descriptor.overwritesParent() && descriptor.isNullable() && context.isDefaultNull()) 
+            return new ConstantGenerator<Object>(null);
         return null;
     }
 

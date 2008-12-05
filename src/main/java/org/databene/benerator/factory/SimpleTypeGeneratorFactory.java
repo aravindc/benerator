@@ -43,8 +43,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
-	public static Generator<? extends Object> createSimpleTypeGenerator(SimpleTypeDescriptor descriptor, boolean nullable, boolean unique,
-			BeneratorContext context, GenerationSetup setup) {
+	public static Generator<? extends Object> createSimpleTypeGenerator(
+			SimpleTypeDescriptor descriptor, boolean nullable, boolean unique,
+			BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
         // try constructive setup
@@ -58,7 +59,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		}
 		// fall back to default setup
         if (generator == null)
-        	generator = createDefaultGenerator(descriptor, unique, context, setup);
+        	generator = createDefaultGenerator(descriptor, unique, context);
         // by now, we must have created a generator
         if (generator == null)
             throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
@@ -85,9 +86,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	}
 
 	private static Generator<? extends Object> createDefaultGenerator(
-			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context,
-			GenerationSetup setup) {
-		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context, setup);
+			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context);
         if (generator == null)
             generator = createStringGenerator(descriptor, unique);
 		return generator;
@@ -155,9 +155,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 
     private static Generator<? extends Object> createTypeGenerator(
-            SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context, GenerationSetup setup) {
+            SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
         if (descriptor instanceof UnionSimpleTypeDescriptor)
-            return createUnionTypeGenerator((UnionSimpleTypeDescriptor) descriptor, context, setup);
+            return createUnionTypeGenerator((UnionSimpleTypeDescriptor) descriptor, context);
         PrimitiveType<Object> primitiveType = descriptor.getPrimitiveType();
         if (primitiveType == null)
             return null;
@@ -181,12 +181,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     private static Generator<? extends Object> createUnionTypeGenerator(
-            UnionSimpleTypeDescriptor descriptor, BeneratorContext context, GenerationSetup setup) {
+            UnionSimpleTypeDescriptor descriptor, BeneratorContext context) {
         int n = descriptor.getAlternatives().size();
         Generator[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
-            sources[i] = createSimpleTypeGenerator(alternative, false, false, context, setup);
+            sources[i] = createSimpleTypeGenerator(alternative, false, false, context);
         }
         Class<Object> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);
@@ -209,7 +209,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Date precisionDate = parseDate(descriptor, PRECISION, TimeUtil.date(1970, 0, 2));
         long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
         Distribution distribution = getDistribution(descriptor, unique);
-        if (distribution instanceof Sequence) { // TODO finalize Sequence concept and adapt this 
+        if (distribution instanceof Sequence) { // TODO v0.5.7 finalize Sequence concept and adapt this 
 	        Date variation1 = parseDate(descriptor, VARIATION1, precisionDate);
 	        Date variation2 = parseDate(descriptor, VARIATION2, precisionDate);
 	        return GeneratorFactory.getDateGenerator(min, max, precision, (Sequence) distribution, variation1, variation2, 0);

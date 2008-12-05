@@ -80,21 +80,23 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     
     // factory methods for component generators ------------------------------------------------------------------------
 
-    public static ComponentBuilder createComponentBuilder( 
-            ComponentDescriptor descriptor, BeneratorContext context, GenerationSetup setup) {
+    public static ComponentBuilder createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
         ComponentBuilder builder = createNullQuotaOneBuilder(descriptor);
         if (builder != null)
         	return builder;
+        builder = createNullableBuilder(descriptor, context);
+        if (builder != null)
+        	return builder;
         if (descriptor instanceof PartDescriptor) {
         	TypeDescriptor type = descriptor.getType();
         	if (type instanceof AlternativeGroupDescriptor) {
-				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, context, setup);
+				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, context);
 			} else
-				return createPartBuilder((PartDescriptor)descriptor, context, setup);
+				return createPartBuilder((PartDescriptor)descriptor, context);
         } else if (descriptor instanceof ReferenceDescriptor)
-            return createReferenceBuilder((ReferenceDescriptor)descriptor, context, setup);
+            return createReferenceBuilder((ReferenceDescriptor)descriptor, context);
         else if (descriptor instanceof IdDescriptor)
             return createIdBuilder((IdDescriptor)descriptor, context);
         else 
@@ -106,13 +108,18 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
 	}
 
-	private static ComponentBuilder createAlternativeGroupBuilder(AlternativeGroupDescriptor type, 
-			BeneratorContext context, GenerationSetup setup) {
+    private static ComponentBuilder createNullableBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
+    	Generator<? extends Object> generator = InstanceGeneratorFactory.createNullableGenerator(descriptor, context);
+    	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
+	}
+
+	private static ComponentBuilder createAlternativeGroupBuilder(
+			AlternativeGroupDescriptor type, BeneratorContext context) {
     	int i = 0;
 		Collection<ComponentDescriptor> components = type.getComponents();
 		ComponentBuilder[] builders = new ComponentBuilder[components.size()];
 		for (ComponentDescriptor component : components) {
-			builders[i++] = createComponentBuilder(component, context, setup);
+			builders[i++] = createComponentBuilder(component, context);
 		}
 		return new AlternativeComponentBuilder(builders);
 	}
@@ -133,16 +140,15 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 */
     public static ComponentBuilder createPartBuilder(
-            PartDescriptor part, BeneratorContext context, GenerationSetup setup) {
-        Generator<? extends Object> generator = createSingleInstanceGenerator(
-                part, context, setup);
+            PartDescriptor part, BeneratorContext context) {
+        Generator<? extends Object> generator = createSingleInstanceGenerator(part, context);
         generator = createMultiplicityWrapper(part, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return new PlainComponentBuilder(part.getName(), generator);
     }
 
-    public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, Context context, GenerationSetup setup) {
+    public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, Context context) {
         TypeDescriptor typeDescriptor = descriptor.getType();
         
         // check target type

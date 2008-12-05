@@ -36,10 +36,10 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ScriptGenerator;
+import org.databene.benerator.sample.DistributingGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
-import org.databene.benerator.wrapper.DistributingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
@@ -79,13 +79,14 @@ public class TypeGeneratorFactory {
     
     private static final Log logger = LogFactory.getLog(TypeGeneratorFactory.class);
 
-    public static Generator<? extends Object> createTypeGenerator(TypeDescriptor descriptor, boolean unique, BeneratorContext context, GenerationSetup setup) {
+    public static Generator<? extends Object> createTypeGenerator(
+    		TypeDescriptor descriptor, boolean unique, BeneratorContext context) {
     	if (logger.isDebugEnabled())
     		logger.debug(descriptor + ", " + unique);
         if (descriptor instanceof SimpleTypeDescriptor)
-            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, unique, context, setup);
+            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, unique, context);
         else if (descriptor instanceof ComplexTypeDescriptor)
-            return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context, setup);
+            return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context);
         else
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
     }
