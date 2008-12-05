@@ -46,15 +46,15 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.databene.commons.I18NSupport;
-import org.databene.ui.swing.AlignedPane;
-import org.databene.ui.swing.FileField;
-import org.databene.ui.swing.ProgressMonitor;
-import org.databene.ui.swing.PropertyCheckBox;
-import org.databene.ui.swing.PropertyComboBox;
-import org.databene.ui.swing.PropertyFileField;
-import org.databene.ui.swing.PropertyFileList;
-import org.databene.ui.swing.PropertyTextField;
-import org.databene.ui.swing.SwingUtil;
+import org.databene.gui.swing.AlignedPane;
+import org.databene.gui.swing.FileField;
+import org.databene.gui.swing.ProgressMonitor;
+import org.databene.gui.swing.SwingUtil;
+import org.databene.gui.swing.delegate.PropertyCheckBox;
+import org.databene.gui.swing.delegate.PropertyComboBox;
+import org.databene.gui.swing.delegate.PropertyFileField;
+import org.databene.gui.swing.delegate.PropertyFileList;
+import org.databene.gui.swing.delegate.PropertyTextField;
 
 /**
  * Lets the user enter benerator project data and 
