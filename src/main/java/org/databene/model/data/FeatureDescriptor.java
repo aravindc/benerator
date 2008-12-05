@@ -97,7 +97,8 @@ public class FeatureDescriptor {
 
     // java.lang.io overrides ------------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         String name = getName();
         if (StringUtil.isEmpty(name))
             name = "anonymous";
@@ -114,7 +115,8 @@ public class FeatureDescriptor {
         return buffer.append("]").toString();
     }
 
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -128,7 +130,8 @@ public class FeatureDescriptor {
         return true;
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return (getClass().hashCode() * 29 /*+ (parent != null ? parent.hashCode() : 0)*/) * 29 + details.hashCode();
     }
 
