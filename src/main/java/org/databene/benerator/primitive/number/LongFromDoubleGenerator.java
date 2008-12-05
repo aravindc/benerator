@@ -39,7 +39,8 @@ public class LongFromDoubleGenerator extends AbstractLongGenerator {
         this.doubleGenerator = doubleGenerator;
     }
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             doubleGenerator.setMin((double)min);
             doubleGenerator.setMax((double)max);
@@ -51,7 +52,8 @@ public class LongFromDoubleGenerator extends AbstractLongGenerator {
         }
     }
 
-    public boolean available() {
+    @Override
+	public boolean available() {
         return doubleGenerator.available();
     }
 

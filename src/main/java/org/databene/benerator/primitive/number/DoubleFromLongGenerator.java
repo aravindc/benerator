@@ -39,7 +39,8 @@ public class DoubleFromLongGenerator extends AbstractDoubleGenerator {
         this.indexGenerator = longGenerator;
     }
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             super.validate();
             indexGenerator.setMin(0L);
@@ -49,7 +50,8 @@ public class DoubleFromLongGenerator extends AbstractDoubleGenerator {
         }
     }
 
-    public boolean available() {
+    @Override
+	public boolean available() {
         return indexGenerator.available();
     }
 
@@ -59,12 +61,14 @@ public class DoubleFromLongGenerator extends AbstractDoubleGenerator {
         return min + indexGenerator.generate() * precision;
     }
 
-    public void reset() {
+    @Override
+	public void reset() {
         super.reset();
         indexGenerator.reset();
     }
 
-    public void close() {
+    @Override
+	public void close() {
         super.close();
         indexGenerator.close();
     }

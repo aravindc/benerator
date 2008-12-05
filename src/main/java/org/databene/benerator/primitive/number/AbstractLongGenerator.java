@@ -116,11 +116,13 @@ public abstract class AbstractLongGenerator extends LightweightGenerator<Long> i
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<Long> getGeneratedType() {
+    @Override
+	public Class<Long> getGeneratedType() {
         return Long.class;
     }
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (min > max)
             throw new InvalidGeneratorSetupException("min", " min (" + min + ") greater than max (" + max + ')');
         super.validate();
@@ -129,7 +131,8 @@ public abstract class AbstractLongGenerator extends LightweightGenerator<Long> i
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + "[min=" + min + ", max=" + max + ", precision=" + precision + ", " +
                 "variation1=" + variation1 + ", variation2=" + variation2 + ']';
     }

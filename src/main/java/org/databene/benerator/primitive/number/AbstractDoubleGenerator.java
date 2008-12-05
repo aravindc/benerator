@@ -104,11 +104,13 @@ public abstract class AbstractDoubleGenerator extends LightweightGenerator<Doubl
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<Double> getGeneratedType() {
+    @Override
+	public Class<Double> getGeneratedType() {
         return Double.class;
     }
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             if (min > max)
                 throw new InvalidGeneratorSetupException("min", "greater than max (" + min + ")");
@@ -119,7 +121,8 @@ public abstract class AbstractDoubleGenerator extends LightweightGenerator<Doubl
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + "[min=" + min + ", max=" + max + ", precision=" + precision + ", " +
                 "variation1=" + variation1 + ", variation2=" + variation2 + ']';
     }
