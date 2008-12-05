@@ -29,8 +29,10 @@ package org.databene.platform.db.model;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
+import org.databene.commons.db.DBUtil;
 import org.databene.model.depend.Dependent;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -229,6 +231,11 @@ public class DBTable implements Dependent<DBTable>{
         DBColumn[] columns = pkConstraint.getColumns();
         String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
 		return pkColumnNames;
+	}
+
+	public long getRowCount(Connection connection) {
+		Object result = DBUtil.queryScalar("select count(*) from " + name, connection);
+		return ((Number) result).longValue();
 	}
 
 }
