@@ -241,8 +241,9 @@
 		<xs:complexType>
 			<xs:attribute name="name"     type="xs:string"/>
 			<xs:attribute name="type"     type="xs:string"/>
-			<xs:attribute name="strategy" type="xs:string"/>
-			<xs:attribute name="source"   type="xs:string"/>
+            <xs:attribute name="source"   type="xs:string"/>
+            <xs:attribute name="strategy" type="xs:string"/>
+            <xs:attribute name="scope"    type="xs:string"/>
 			<xs:attribute name="param"    type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
