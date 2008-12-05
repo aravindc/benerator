@@ -328,7 +328,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
       
     // IdProviderFactory interface -------------------------------------------------------------------------------------
     
-    // TODO merge with AbstractIdProviderFactory
+    // TODO v0.5.7 merge with AbstractIdProviderFactory
     private Map<IdProviderId, IdProvider> idProviders = new HashMap<IdProviderId, IdProvider>();
     
     public IdStrategy<? extends Object>[] getIdStrategies() {
@@ -371,7 +371,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 	public void invalidate() {
 		typeDescriptors = null;
 	} 
-
+	
 	// java.lang.Object overrides ------------------------------------------------------------------
 	
     @Override
@@ -445,7 +445,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         DBColumn[] columns = pkConstraint.getColumns();
         String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
-        if (pkColumnNames.length == 1) { // TODO support composite primary keys
+        if (pkColumnNames.length == 1) { // TODO 0.6 support composite primary keys
         	String columnName = pkColumnNames[0];
         	DBColumn column = table.getColumn(columnName);
 			table.getColumn(columnName);
@@ -471,7 +471,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 descriptor.getLocalType(false).setSource(id);
                 descriptor.setMinCount(1L);
                 descriptor.setMaxCount(1L);
-                descriptor.setNullable(foreignKeyColumn.getForeignKeyColumn().isNullable());
+                boolean nullable = foreignKeyColumn.getForeignKeyColumn().isNullable();
+				descriptor.setNullable(nullable);
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
