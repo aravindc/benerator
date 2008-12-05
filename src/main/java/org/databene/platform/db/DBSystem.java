@@ -318,7 +318,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         return query(query, context);
     }
 
-    public <T> TypedIterable<T> query(String query, Context context) { // TODO use HeavyweightTypedIterable
+    public <T> TypedIterable<T> query(String query, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
         Connection connection = getThreadContext().connection;
