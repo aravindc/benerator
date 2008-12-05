@@ -50,7 +50,7 @@ public class ShuffleLongGenerator extends AbstractLongGenerator {
 
     public ShuffleLongGenerator(long min, long max, long variation1) {
         super(min, max, 1, variation1, variation1);
-        this.cursor = min;
+        reset();
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -70,7 +70,8 @@ public class ShuffleLongGenerator extends AbstractLongGenerator {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             cursor = min;
             super.validate();
@@ -86,8 +87,13 @@ public class ShuffleLongGenerator extends AbstractLongGenerator {
         if (cursor + increment <= max)
             cursor += increment;
         else
-            cursor = min + ((cursor - min + 1) % increment); // TODO check life cycle
+            cursor = min + ((cursor - min + 1) % increment);
         return result;
+    }
+    
+    @Override
+    public void reset() {
+    	this.cursor = min;
     }
 
 }
