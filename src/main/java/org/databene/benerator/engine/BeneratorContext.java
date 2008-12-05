@@ -34,6 +34,7 @@ import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
+import org.databene.model.data.ComponentDescriptor;
 
 /**
  * A BeneratorContext.<br/><br/>
@@ -42,7 +43,8 @@ import org.databene.commons.context.PropertiesContext;
  * @author Volker Bergmann
  *
  */
-public class BeneratorContext extends ContextStack implements ClassProvider {
+public class BeneratorContext extends ContextStack implements ClassProvider, GenerationSetup {
+	// TODO v0.5.7 move GenerationSetup implementation from 'Benerator' to here
 	
 	private DefaultContext properties;
 	private ClassCache classCache;
@@ -54,7 +56,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		push(properties);
 		push(new CaseInsensitiveContext(true));
 		set("benerator", new SimpleGenerationSetup(contextUri));
-		classCache = new ClassCache(); // TODO initialize ClassCache
+		classCache = new ClassCache();
 	}
 	
 	@Override
@@ -75,6 +77,10 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		return (GenerationSetup) get("benerator");
 	}
 
+	public void setGenerationSetup(GenerationSetup setup) {
+		set("benerator", setup);
+	}
+
 	public void importClass(String className) {
 		classCache.importClass(className);
 	}
@@ -85,5 +91,35 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
 	public Class forName(String className) {
 		return classCache.forName(className);
+	}
+	
+	// GenerationSetup interface implementation ------------------------------------------------------------------------
+
+	public String getContextUri() {
+		return getGenerationSetup().getContextUri();
+	}
+
+	public ComponentDescriptor getDefaultComponentConfig(String name) {
+		return getGenerationSetup().getDefaultComponentConfig(name);
+	}
+
+	public String getDefaultEncoding() {
+		return getGenerationSetup().getDefaultEncoding();
+	}
+
+	public int getDefaultPagesize() {
+		return getGenerationSetup().getDefaultPagesize();
+	}
+
+	public String getDefaultScript() {
+		return getGenerationSetup().getDefaultScript();
+	}
+
+	public char getDefaultSeparator() {
+		return getGenerationSetup().getDefaultSeparator();
+	}
+
+	public boolean isDefaultNull() {
+		return getGenerationSetup().isDefaultNull();
 	}
 }
