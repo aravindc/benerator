@@ -63,4 +63,9 @@ public class BitReverseLongGeneratorTest extends GeneratorClassTest {
     public void testScaledAndShifted() throws Exception {
         expectGeneratedSequence(new BitReverseLongGenerator( 1,  7, 2),  1L,  5L,  3L,  7L).withCeasedAvailability();
     }
+
+    public void testReset() throws Exception {
+        expectGeneratedSequence(new BitReverseLongGenerator( 1,  4),  1L,  3L,  2L).withContinuedAvailability();
+    }
+
 }

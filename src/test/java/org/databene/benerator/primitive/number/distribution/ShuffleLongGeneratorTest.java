@@ -58,4 +58,10 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
         assertEquals(3, (long)generator.generate());
         assertEquals(0, (long)generator.generate());
     }
+
+    public void testReset() throws Exception {
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 2);
+        expectGeneratedSequence(generator, 0L, 2L, 1L, 3L, 0L).withContinuedAvailability();
+    }
+
 }

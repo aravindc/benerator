@@ -67,6 +67,11 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    public void testReset() throws Exception {
+    	ShuffleDoubleGenerator generator = new ShuffleDoubleGenerator(0., 3., 1., 2.);
+        expectGeneratedSequence(generator, 0., 2., 1., 3., 0.).withContinuedAvailability();
+    }
+
     private void check(double min, double max, double precision, double increment, double ... expectedProducts) {
         Generator<Double> generator = new ShuffleDoubleGenerator(min, max, precision, increment);
         for (double product : expectedProducts) {
