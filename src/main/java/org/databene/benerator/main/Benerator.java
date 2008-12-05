@@ -29,7 +29,6 @@ package org.databene.benerator.main;
 import org.databene.LogCategories;
 import org.databene.platform.db.DBSystem;
 import org.databene.platform.db.RunSqlScriptTask;
-import org.databene.model.ModelParser;
 import org.databene.model.Processor;
 import org.databene.commons.*;
 import org.databene.commons.ErrorHandler.Level;
@@ -46,7 +45,7 @@ import org.databene.task.PageListener;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
-import org.databene.benerator.factory.SimpleGenerationSetup;
+import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.Generator;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ProcessorToConsumerAdapter;
@@ -76,12 +75,13 @@ import javax.script.ScriptException;
  * Parses and executes a benerator setup file.<br/>
  * <br/>
  * Created: 14.08.2007 19:14:28
- * 
  * @author Volker Bergmann
  */
-public class Benerator extends SimpleGenerationSetup {
+public class Benerator {
 
 	// constants -------------------------------------------------------------------------------------------------------
+
+	public static final String LOCALE_VM_PARAM = "benerator.locale";
 	
 	private static final String UPDATE_ENTITIES = "update-entities";
 	private static final String CREATE_ENTITIES = "create-entities";
@@ -121,28 +121,26 @@ public class Benerator extends SimpleGenerationSetup {
 	}
 
 	public Benerator() {
-		super(null);
+		this.context = new BeneratorContext(null);
 		this.executor = Executors.newCachedThreadPool();
 		this.escalator = new LoggerEscalator();
 		beans = new HashMap<String, Object>();
-		validate = !("false".equals(System.getProperty("benerator.validate")));
 	}
 
-	public Context getContext() {
+	public BeneratorContext getContext() {
 		return context;
 	}
 
 	public void processFile(String uri) throws IOException {
 		try {
-			contextUri = IOUtil.getContextUri(uri);
-			context = new BeneratorContext(contextUri);
-			context.set("benerator", this);
-			parser = new ModelParser(contextUri);
+			context.setContextUri(IOUtil.getContextUri(uri));
+			parser = new ModelParser(context);
 
 			long startTime = java.lang.System.currentTimeMillis();
-			Document document = XMLUtil.parse(uri, validate);
+			Document document = XMLUtil.parse(uri, context.isValidate());
 			Element root = document.getDocumentElement();
-			// TODO map root element attributes to benerator properties
+			XMLUtil.mapAttributesToProperties(root, context, false);
+			// process sub elements
 			NodeList nodes = root.getChildNodes();
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node node = nodes.item(i);
@@ -222,7 +220,7 @@ public class Benerator extends SimpleGenerationSetup {
 
 	private Object parseBean(Element element) {
 		try {
-			Object bean = parser.parseBean(element, context);
+			Object bean = parser.parseBean(element);
 			if (bean instanceof DescriptorProvider)
 				dataModel.addDescriptorProvider((DescriptorProvider) bean);
 			if (bean instanceof Heavyweight)
@@ -255,7 +253,7 @@ public class Benerator extends SimpleGenerationSetup {
 					100));
 			context.set(id, db);
 			beans.put(id, db);
-			dataModel.addDescriptorProvider(db, validate);
+			dataModel.addDescriptorProvider(db, context.isValidate());
 			resources.add(db);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
@@ -291,7 +289,7 @@ public class Benerator extends SimpleGenerationSetup {
 				// check for JavaScript file URI
 				if (lcUri.endsWith(".js"))
 					type = "js";
-				uri = IOUtil.resolveLocalUri(uri, contextUri);
+				uri = IOUtil.resolveLocalUri(uri, context.getContextUri());
 			}
 			if (type == null && targetObject instanceof DBSystem)
 				type = "sql";
@@ -305,7 +303,7 @@ public class Benerator extends SimpleGenerationSetup {
 				if (!StringUtil.isEmpty(uri))
 					text = IOUtil.getContentOfURI(uri);
 				text = ScriptUtil.render(text, context);
-				runShell(null, text, onError); // TODO remove null uri parameter
+				runShell(null, text, onError); // TODO v0.5.7 remove null uri parameter
 			} else {
 				if (StringUtil.isEmpty(type))
 					throw new ConfigurationError("script type is not defined");
@@ -341,11 +339,11 @@ public class Benerator extends SimpleGenerationSetup {
 		ErrorHandler errorHandler = new ErrorHandler(getClass().getName(),
 				Level.valueOf(onError));
 		if (text != null)
-			ShellUtil.runShellTask(new ReaderLineIterator(
+			ShellUtil.runShellCommands(new ReaderLineIterator(
 					new StringReader(text)), errorHandler);
 		else if (uri != null) {
 			try {
-				ShellUtil.runShellTask(new ReaderLineIterator(IOUtil
+				ShellUtil.runShellCommands(new ReaderLineIterator(IOUtil
 						.getReaderForURI(uri)), errorHandler);
 			} catch (IOException e) {
 				errorHandler.handleError("Error in shell invocation", e);
@@ -380,6 +378,7 @@ public class Benerator extends SimpleGenerationSetup {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
 			if (COMPONENT_TYPES.contains(childType)) {
+				ComplexTypeDescriptor defaultComponent = context.getDefaultComponent();
 				ComponentDescriptor component = parser
 						.parseSimpleTypeComponent(child, defaultComponent,
 								context);
@@ -398,7 +397,7 @@ public class Benerator extends SimpleGenerationSetup {
 					context, scriptConverter);
 			int count = parseIntAttribute(element, "count", context, 1);
 			int pageSize = parseIntAttribute(element, "pagesize", context,
-					defaultPagesize);
+					context.getDefaultPagesize());
 			int threads = parseIntAttribute(element, "threads", context, 1);
 			PageListener pager = parsePager(element);
 			TaskRunner.run(task, context, count, pager, pageSize, threads,
@@ -473,7 +472,7 @@ public class Benerator extends SimpleGenerationSetup {
 		
 		// create generator
 		Generator<Entity> configuredGenerator = (Generator<Entity>) InstanceGeneratorFactory
-				.createInstanceGenerator(descriptor, context, this);
+				.createInstanceGenerator(descriptor, context);
 		
 		// handle sub-create-entities
 		List<PagedCreateEntityTask> subs = new ArrayList<PagedCreateEntityTask>();
@@ -486,7 +485,7 @@ public class Benerator extends SimpleGenerationSetup {
 		// parse task properties
 		int count = parseIntAttribute(element, "count", context, -1);
 		int pageSize = parseIntAttribute(element, "pagesize", context,
-				defaultPagesize);
+				context.getDefaultPagesize());
 		int threads = parseIntAttribute(element, "threads", context, 1);
 		
 		// done
@@ -648,7 +647,7 @@ public class Benerator extends SimpleGenerationSetup {
 	private ErrorHandler parseOnError(Element element, String category) {
 		String levelName = parseAttribute(element, "onError", context);
 		if (levelName == null)
-			levelName = defaultErrorHandler;
+			levelName = context.getDefaultErrorHandler();
 		Level level = Level.valueOf(levelName);
 		return new ErrorHandler(category, level);
 	}
