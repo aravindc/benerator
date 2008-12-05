@@ -8,12 +8,25 @@
 
   <component id="Root">
 	  <component id="databene benerator">
-	    <component id="benerator interface">
-	      <element-group regex="org.databene.benerator\.[^\.]*" />
-	    </component>
+        <component id="benerator interface">
+          <element-group regex="org.databene.benerator\.[^\.]*" />
+        </component>
 	    <component id="benerator core">
-	      <element-group regex="org.databene.benerator\.[^\.]*\..*" />
+          <element-group regex="org.databene.benerator.composite.*" />
+          <element-group regex="org.databene.benerator.csv.*" />
+          <element-group regex="org.databene.benerator.engine.*" />
+          <element-group regex="org.databene.benerator.factory.*" />
+          <element-group regex="org.databene.benerator.file.*" />
+          <element-group regex="org.databene.benerator.parser.*" />
+          <element-group regex="org.databene.benerator.primitive.*" />
+          <element-group regex="org.databene.benerator.sample.*" />
+          <element-group regex="org.databene.benerator.util.*" />
+          <element-group regex="org.databene.benerator.wrapper.*" />
 	    </component>
+        <component id="benerator main">
+          <element-group regex="org.databene.benerator.main.*" />
+          <element-group regex="org.databene.benerator.gui.*" />
+        </component>
 	    <component id="databene domains">
 	      <element-group regex="org.databene.domain.*" />
 	    </component>
@@ -47,19 +60,27 @@
 	      <element-group regex="org.databene.xslt.*" />
 	  </component>
 	
-	  <component id="databene commons">
-	      <element-group regex="org.databene.commons.*" />
-	  </component>
-	  
+      <component id="databene commons">
+          <element-group regex="org.databene.commons.*" />
+      </component>
+      
+      <component id="databene gui">
+          <element-group regex="org.databene.gui.*" />
+      </component>
+      
 	  <component id="JDK">
 	    <element-group regex="org.w3c.*" />
 	    <element-group regex="org.xml.*" />
 	  </component>
 	  
-	  <component id="poi">
-	    <element-group regex="org.apache.poi.*" />
-	  </component>
-	  
+      <component id="poi">
+        <element-group regex="org.apache.poi.*" />
+      </component>
+      
+      <component id="freemarker">
+        <element-group regex="freemarker.*" />
+      </component>
+      
 	  <component id="commons logging">
 	    <element-group regex="org.apache.commons.logging.*" />
 	  </component>
@@ -69,6 +90,15 @@
   <policies>
   
     <!-- benerator -->
+    <allow from="benerator main" to="databene gui" />
+    <allow from="benerator main" to="databene webdecs" />
+    <allow from="benerator main" to="databene commons" />
+    <allow from="benerator main" to="benerator interface" />
+    <allow from="benerator main" to="benerator core" />
+    <allow from="benerator main" to="platform" />
+    <allow from="benerator main" to="model" />
+    <allow from="benerator main" to="task" />
+    
     <allow from="databene benerator" to="databene webdecs" />
     <allow from="databene benerator" to="databene commons" />
     <allow from="databene benerator" to="JDK" />
@@ -83,10 +113,13 @@
     <allow from="benerator core" to="id" />
     <allow from="benerator core" to="task" />
     <allow from="benerator core" to="dataset" />
+    
     <allow from="platform" to="poi" />
+    <allow from="platform" to="freemarker" />
     <allow from="platform" to="model" />
     <allow from="platform" to="id" />
     <allow from="platform" to="task" />
+    
     <allow from="benerator interface" to="model" />
     
     <!-- webdecs -->
