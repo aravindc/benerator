@@ -46,7 +46,7 @@ import freemarker.template.TemplateModelException;
  */
 public class DateSumMethod implements TemplateMethodModel {
     
-	public TemplateModel exec(List args) throws TemplateModelException {
+	public TemplateModel exec(List args) {
 		long sum = 0;
 		for (Object arg : args) {
 			arg = LiteralParser.parse((String) arg);
