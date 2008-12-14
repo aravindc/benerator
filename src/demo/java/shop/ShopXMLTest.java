@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
-import org.databene.benerator.factory.SimpleGenerationSetup;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
@@ -100,7 +99,7 @@ public class ShopXMLTest extends TestCase {
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-            descriptor, false, false, provider.getContext(), new SimpleGenerationSetup(contextUri));
+            descriptor, false, false, provider.getContext());
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
             logger.debug(object);
@@ -114,7 +113,7 @@ public class ShopXMLTest extends TestCase {
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
-                descriptor, false, provider.getContext(), new SimpleGenerationSetup(contextUri));
+                descriptor, false, provider.getContext());
         for (int i = 0; i < 10; i++)
             if (generator.available()) {
                 Entity entity = generator.generate();
