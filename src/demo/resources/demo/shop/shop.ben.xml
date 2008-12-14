@@ -38,8 +38,8 @@
 	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
 
     <!-- define a database that will be referred by the id 'db' later -->
-    <database id="db" url="{${db_uri}}" driver="{${db_driver}}" schema="{${db_schema!}}"
-        user="{${db_user}}" password="{${db_password!}}" batch="{${db_batch?string!}}" />
+    <database id="db" url="{${dbUri}}" driver="{${dbDriver}}" schema="{${dbSchema!}}"
+        user="{${dbUser}}" password="{${dbPassword!}}" batch="{${dbBatch?string!}}" />
 
 	<!-- drop the current tables/sequences if they exist and recreate them -->
 	<execute uri="{${database}/drop_tables.${database}.sql}" target="db" onError="ignore"/>
@@ -74,17 +74,17 @@
 
 	<!-- create one default order for each customer based on a DBUnit template -->
 	<!-- create-entities name="db_order" consumer="db">
-		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
 		<create-entities name="db_order_item" source="default_order.dbunit.xml" consumer="db">
-			<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+			<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
 		</create-entities>
 	</create-entities-->
 
     <!-- create customers -->
     <create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
         <variable name="person" generator="PersonGenerator" dataset="{${country}}" locale="{${locale}}"/>
-        <id name="id" strategy="{${id_strategy}}" param="{${id_param}}" source="db" />
+        <id name="id" strategy="{${idStrategy}}" param="{${idParam}}" source="db" />
         <attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
         <attribute name="email" generator="EMailAddressGenerator" />
         <attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
@@ -106,7 +106,7 @@
 
 	<!-- create orders for random customers and random products -->
 	<create-entities name="db_order" count="{ftl:${customer_count * orders_per_customer}}" consumer="db">
-		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true" />
         <attribute name="total_price" values="0" />
 	</create-entities>
@@ -115,7 +115,7 @@
 	<create-entities name="db_order_item"
 			count="{ftl:${customer_count * orders_per_customer * items_per_order}}" consumer="db">
 		<variable name="product" source="db" selector="select ean_code, price from db_product" distribution="cumulated" />
-		<id name="id" strategy="{${id_strategy}}" source="db" param="{${id_param}}" />
+		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
 		<attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
 		<attribute name="order_id" source="db" selector="select id from db_order" cyclic="true" />
 		<attribute name="product_ean_code" script="{${product[0]}}" />
