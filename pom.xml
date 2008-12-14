@@ -137,6 +137,14 @@
                     <exclude>dataset.dtd</exclude>
                 </excludes>
             </resource>
+
+            <resource>
+                <filtering>false</filtering>
+                <directory>${basedir}/src/demo/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
         </resources>
 
         <testResources>
