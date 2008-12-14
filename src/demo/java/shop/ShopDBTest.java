@@ -32,9 +32,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.main.Benerator;
+import org.databene.benerator.parser.DefaultEntryConverter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
-import org.databene.model.DefaultEntryConverter;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 
@@ -99,10 +99,10 @@ public class ShopDBTest extends TestCase {
         Map<String, String> dbCfg = IOUtil.readProperties("demo/shop/" + database + "/shop." + database + ".properties");
         DBSystem db = new DBSystem(
                 "db", 
-                (String) dbCfg.get("db_uri"), 
-                (String) dbCfg.get("db_driver"), 
-                (String) dbCfg.get("db_user"), 
-                (String) dbCfg.get("db_password")
+                (String) dbCfg.get("dbUri"), 
+                (String) dbCfg.get("dbDriver"), 
+                (String) dbCfg.get("dbUser"), 
+                (String) dbCfg.get("dbPassword")
         );
         // check generation results
         Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", 
