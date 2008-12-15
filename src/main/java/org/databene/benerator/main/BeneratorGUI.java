@@ -36,10 +36,13 @@ import java.util.Locale;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.databene.benerator.gui.CreateProjectPanel;
 import org.databene.benerator.gui.Setup;
-import org.databene.commons.I18NSupport;
+import org.databene.commons.StringUtil;
+import org.databene.commons.ui.I18NSupport;
 
 /**
  * Main class for the benerator GUI.<br/>
@@ -53,13 +56,13 @@ public class BeneratorGUI extends JFrame {
 	private static final long serialVersionUID = -5866303491038671990L;
 
 	public BeneratorGUI() {
-		super("Create benerator project");
 		setIcons("org/databene/benerator/gui/benerator{0}.png", 16, 32, 64, 128);
 		
 		checkLocale();
 		I18NSupport bundle = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
 		Setup setup = new Setup();
 		
+		setTitle(bundle.getString("beneratorGuiTitle"));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		contentPane.add(new CreateProjectPanel(setup, bundle), BorderLayout.CENTER);
@@ -80,15 +83,13 @@ public class BeneratorGUI extends JFrame {
 	}
 
 	private void checkLocale() {
-/* TODO v0.5.7 support other locales than English
-		String locale = System.getProperty(Benerator.LOCALE_VM_PARAM);
-		if (!StringUtil.isEmpty(locale))
-			Locale.setDefault(new Locale(locale));
-*/
-		Locale.setDefault(Locale.ENGLISH);
+		String localeCode = System.getProperty(Benerator.LOCALE_VM_PARAM);
+		if (!StringUtil.isEmpty(localeCode))
+			Locale.setDefault(new Locale(localeCode));
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		new BeneratorGUI().setVisible(true);
 	}
 }
