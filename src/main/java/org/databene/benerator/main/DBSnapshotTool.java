@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
-import org.databene.gui.swing.ProgressMonitor;
+import org.databene.commons.ui.ProgressMonitor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
