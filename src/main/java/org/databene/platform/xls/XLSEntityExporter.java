@@ -46,6 +46,8 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.StringUtil;
 import org.databene.model.consumer.FormattingConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -62,19 +64,21 @@ import org.databene.platform.csv.CSVEntityExporter;
 public class XLSEntityExporter extends FormattingConsumer<Entity> {
 
     private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
+    private static final Escalator escalator = new LoggerEscalator();
     
     // defaults --------------------------------------------------------------------------------------------------------
     
-    private static final String DEFAULT_URI       = "export.csv";
+    private static final String DEFAULT_URI = "export.xls";
 
     // attributes ------------------------------------------------------------------------------------------------------
 
     private String uri;
-    private String[] propertyNames;
+    private String[] attributeNames;
 
     private HSSFWorkbook workbook;
     HSSFSheet sheet;
     private int rowCount;
+	private HSSFCellStyle dateCellStyle;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -95,7 +99,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
         this.uri = uri;
         Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponents();
         List<String> componentNames = BeanUtil.extractProperties(componentDescriptors, "name");
-        this.propertyNames = CollectionUtil.toArray(componentNames, String.class);
+        this.attributeNames = CollectionUtil.toArray(componentNames, String.class);
         this.workbook = null;
         this.sheet = null;
     }
@@ -110,53 +114,39 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
         this.uri = uri;
     }
 
-	public void setProperties(String attributes) { // TODO v0.5.x support column formatting, e.g. alignment
-        this.propertyNames = StringUtil.tokenize(attributes, ',');
-        StringUtil.trimAll(propertyNames);
+	public void setAttributes(String attributes) {
+        this.attributeNames = StringUtil.tokenize(attributes, ',');
+        StringUtil.trimAll(attributeNames);
+    }
+
+	public void setProperties(String attributes) {
+        escalator.escalate("XLSEntityExporter.properties is deprectated. Use XLSEntityExporter.attributes instead.", 
+        		getClass(), null);
+        setAttributes(attributes);
     }
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
     public void startConsuming(Entity entity) {
-        try {
-            if (logger.isDebugEnabled())
-                logger.debug("exporting " + entity);
-            if (workbook == null)
-                initWorkbook();
-            HSSFRow row = sheet.createRow(rowCount++);
-            for (int i = 0; i < propertyNames.length; i++) {
-                Object value = entity.getComponent(propertyNames[i]);
-                render(row, (short) i, value);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (logger.isDebugEnabled())
+            logger.debug("exporting " + entity);
+        if (workbook == null)
+            initWorkbook();
+        HSSFRow row = sheet.createRow(rowCount++);
+        for (int i = 0; i < attributeNames.length; i++) {
+            Object value = entity.getComponent(attributeNames[i]);
+            render(row, (short) i, value);
         }
     }
 
-    private void render(HSSFRow row, short column, Object value) {
-    	HSSFCell cell = row.createCell(column);
-		if (value instanceof Number)
-    		cell.setCellValue(((Number) value).doubleValue());
-    	else if (value instanceof Date) {
-			HSSFCellStyle cellStyle = workbook.createCellStyle();
-			HSSFDataFormat format = workbook.createDataFormat();
-			short dateFormat = format.getFormat(getDatePattern());
-			cellStyle.setDataFormat(dateFormat);
-			cell.setCellStyle(cellStyle);
-    		cell.setCellValue((Date) value);
-    	} else if (value instanceof Boolean)
-    		cell.setCellValue((Boolean) value);
-    	else {
-	        String s = plainConverter.convert(value);
-	        cell.setCellValue(new HSSFRichTextString(s));
-    	}
-	}
-
+	@Override
 	public void flush() {
     }
 
-    public void close() {
+    @Override
+	public void close() {
         try {
+        	autoSizeColumns();
 			// Write the output to a file
 			FileOutputStream fileOut = new FileOutputStream(uri);
 			workbook.write(fileOut);
@@ -170,22 +160,48 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
 
     // private helpers -------------------------------------------------------------------------------------------------
     
-    private void initWorkbook() throws IOException {
+    private void initWorkbook() {
         // create file
         this.workbook = new HSSFWorkbook();
         sheet = workbook.createSheet("new sheet");
         this.rowCount = 0;
+        this.dateCellStyle = workbook.createCellStyle();
+		HSSFDataFormat format = workbook.createDataFormat();
+		short dateFormat = format.getFormat(getDatePattern());
+		this.dateCellStyle.setDataFormat(dateFormat);
+
 
         // write header
         HSSFRow row = sheet.createRow((short) rowCount++);
-        for (int i = 0; i < propertyNames.length; i++)
-            row.createCell((short)i).setCellValue(new HSSFRichTextString(propertyNames[i]));
+        for (int i = 0; i < attributeNames.length; i++)
+            row.createCell((short)i).setCellValue(new HSSFRichTextString(attributeNames[i]));
     }
+
+    private void render(HSSFRow row, short column, Object value) {
+    	HSSFCell cell = row.createCell(column);
+		if (value instanceof Number)
+    		cell.setCellValue(((Number) value).doubleValue());
+    	else if (value instanceof Date) {
+			cell.setCellStyle(dateCellStyle);
+    		cell.setCellValue((Date) value);
+    	} else if (value instanceof Boolean)
+    		cell.setCellValue((Boolean) value);
+    	else {
+	        String s = plainConverter.convert(value);
+	        cell.setCellValue(new HSSFRichTextString(s));
+    	}
+	}
+
+	private void autoSizeColumns() {
+		for (short colnum = 0; colnum <= sheet.getLastRowNum(); colnum++)
+			sheet.autoSizeColumn(colnum);
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
-        return getClass().getSimpleName() + '(' + ArrayFormat.format(propertyNames) + ") -> " + uri;
+    @Override
+	public String toString() {
+        return getClass().getSimpleName() + '(' + ArrayFormat.format(attributeNames) + ") -> " + uri;
     }
 
 }
