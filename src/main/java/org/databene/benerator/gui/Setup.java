@@ -35,6 +35,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ObservableBean;
+import org.databene.commons.ui.I18NError;
 
 /**
  * Assembles all data useful for creating benerator archetypes.<br/>
@@ -62,6 +63,7 @@ public class Setup implements ObservableBean {
 	
 	private boolean eclipseProject;
 	private boolean offline;
+	private boolean overwrite;
 
 	private String encoding;
 	private String lineSeparator;
@@ -87,6 +89,7 @@ public class Setup implements ObservableBean {
 		setVersion(DEFAULT_PROJECT_VERSION);
 		eclipseProject = true;
 		offline = false;
+		overwrite = false;
 		
 		setEncoding(SystemInfo.fileEncoding());
 		setLineSeparator(SystemInfo.lineSeparator());
@@ -147,6 +150,14 @@ public class Setup implements ObservableBean {
 
 	public void setOffline(boolean offline) {
 		this.offline = offline;
+	}
+
+	public boolean isOverwrite() {
+		return overwrite;
+	}
+
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
 	}
 
 	public File getProjectFolder() {
@@ -284,8 +295,8 @@ public class Setup implements ObservableBean {
 
 	public File projectFile(String filename) {
 		File file = new File(getProjectFolder(), filename);
-		if (file.exists())
-			throw new RuntimeException("File already exists: " + filename);
+		if (!overwrite && file.exists())
+			throw new I18NError("FileAlreadyExists", null, filename);
 		return file;
 	}
 
