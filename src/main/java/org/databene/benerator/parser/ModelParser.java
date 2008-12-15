@@ -326,6 +326,7 @@ public class ModelParser {
 			context.importPackage("org.databene.platform.flat");
 			context.importPackage("org.databene.platform.csv");
 			context.importPackage("org.databene.platform.dbunit");
+			context.importPackage("org.databene.platform.xls");
 			context.importPackage("org.databene.model.consumer");
 		}
 	}
