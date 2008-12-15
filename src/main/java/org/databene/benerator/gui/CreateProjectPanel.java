@@ -31,13 +31,13 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,16 +45,20 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
-import org.databene.commons.I18NSupport;
+import org.databene.commons.FileUtil;
+import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.ui.FileOperation;
+import org.databene.commons.ui.FileTypeSupport;
+import org.databene.commons.ui.I18NError;
+import org.databene.commons.ui.I18NSupport;
 import org.databene.gui.swing.AlignedPane;
-import org.databene.gui.swing.FileField;
-import org.databene.gui.swing.ProgressMonitor;
 import org.databene.gui.swing.SwingUtil;
 import org.databene.gui.swing.delegate.PropertyCheckBox;
 import org.databene.gui.swing.delegate.PropertyComboBox;
 import org.databene.gui.swing.delegate.PropertyFileField;
 import org.databene.gui.swing.delegate.PropertyFileList;
 import org.databene.gui.swing.delegate.PropertyTextField;
+import org.databene.gui.swing.ProgressMonitor;
 
 /**
  * Lets the user enter benerator project data and 
@@ -72,6 +76,7 @@ public class CreateProjectPanel extends JPanel {
 	
 	Setup setup;
 	I18NSupport i18n;
+	PropertyFileField folderField;
 	JButton createButton;
 	
 	public CreateProjectPanel(Setup setup, I18NSupport i18n) {
@@ -92,11 +97,6 @@ public class CreateProjectPanel extends JPanel {
 		}, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
 
-	void showErrors(String... errors) {
-		JOptionPane.showMessageDialog(CreateProjectPanel.this, errors, "Error", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	
 	private Component createButtonPane() {
 		JPanel pane = new JPanel();
 
@@ -121,8 +121,16 @@ public class CreateProjectPanel extends JPanel {
 		
 		// project properties
 		createTextFieldRow("projectName", pane);
-		PropertyFileField folderField = new PropertyFileField(setup, "projectFolder", WIDE, 
-				FileField.FILES_AND_DIRECTORIES, JFileChooser.SAVE_DIALOG);
+		folderField = new PropertyFileField(setup, "projectFolder", WIDE, 
+				FileTypeSupport.directoriesOnly, FileOperation.save);
+		folderField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				File folder = CreateProjectPanel.this.folderField.getFile();
+				if (! setup.isOverwrite() && folder.exists() && !FileUtil.isEmptyFolder(folder))
+					showErrors(i18n.getString("error.projectFolderNotEmpty"));
+			}
+			
+		});
 		pane.addRow(i18n.getString("projectFolder"), folderField);
 		pane.addSeparator();
 		
@@ -133,7 +141,9 @@ public class CreateProjectPanel extends JPanel {
 		createCheckBox("eclipseProject", pane);
 		createTextField("encoding",    pane);
 		pane.endRow();
+		
 		createCheckBox("offline", pane);
+		createCheckBox("overwrite", pane);
 		pane.endRow();
 		pane.addSeparator();
 		
@@ -161,7 +171,7 @@ public class CreateProjectPanel extends JPanel {
 	}
 
 	private JComboBox createComboBox(String propertyName, AlignedPane pane, String... options) {
-		JComboBox comboBox = new PropertyComboBox(setup, propertyName, (Object[]) options);
+		JComboBox comboBox = new PropertyComboBox(setup, propertyName, i18n, "dbSnapshot.", (Object[]) options);
 		String label = i18n.getString(propertyName);
 		pane.addRow(label, comboBox);
 		return comboBox;
@@ -193,6 +203,19 @@ public class CreateProjectPanel extends JPanel {
 		System.exit(0);
 	}
 	
+	void showErrors(Object... errors) {
+		String[] messages = new String[errors.length];
+		for (int i = 0; i < errors.length; i++) {
+			Object error = errors[i];
+			if (error instanceof I18NError) {
+				messages[i] = ((I18NError) error).renderMessage(i18n);
+			} else
+				messages[i] = ToStringConverter.convert(error, "null");
+		}
+		JOptionPane.showMessageDialog(CreateProjectPanel.this, messages, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	
 	public class Creator implements Runnable {
 
 		public void run() {
@@ -211,9 +234,12 @@ public class CreateProjectPanel extends JPanel {
 					JOptionPane.showMessageDialog(CreateProjectPanel.this, "Done");
 					exit();
 				}
+			} catch (I18NError e) {
+				e.printStackTrace();
+				showErrors(e);
 			} catch (Exception e) {
 				e.printStackTrace();
-				showErrors(e.toString());
+				showErrors(e);
 			} finally {
 				createButton.setEnabled(true);
 				SwingUtil.repaintLater(CreateProjectPanel.this);
