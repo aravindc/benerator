@@ -64,8 +64,9 @@ import org.databene.commons.ShellUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.ui.I18NError;
+import org.databene.commons.ui.ProgressMonitor;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.gui.swing.ProgressMonitor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
@@ -123,6 +124,7 @@ public class ArchetypeBuilder implements Runnable {
 	        if (monitor != null)
 	        	monitor.setProgress(0);
             db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
+            db.setSchema(setup.getDbSchema());
             DataModel.getDefaultInstance().addDescriptorProvider(db);
             if (setup.getDbSchema() != null)
                 db.setSchema(setup.getDbSchema());
@@ -164,6 +166,7 @@ public class ArchetypeBuilder implements Runnable {
 	}
 
 	private void createEclipseProject() {
+		setup.projectFile(".project"); // call this for existence check and overwrite error
 		if (setup.isEclipseProject()) {
 			noteMonitor("Creating Eclipse project");
 			String command = "mvn" + (setup.isOffline() ? " -o" : "") + " eclipse:eclipse";
@@ -198,7 +201,7 @@ public class ArchetypeBuilder implements Runnable {
 				try {
 					IOUtil.copy(importFile.getAbsolutePath(), copy.getAbsolutePath());
 				} catch (IOException e) {
-					throw new RuntimeException("Error copying " + importFile, e);
+					throw new I18NError("ErrorCopying", e, importFile.getAbsolutePath(), copy);
 				}
 			} else
 				errors.add("File not found: " + importFile);
@@ -209,6 +212,8 @@ public class ArchetypeBuilder implements Runnable {
 	private File createDbUnitSnapshot() {
 		if ("DbUnit".equals(setup.getDbSnapshot())) {
 			File file = setup.projectFile(setup.getProjectName() + ".dbunit.xml");
+			if (!setup.isOverwrite() && file.exists())
+				throw new I18NError("FileAlreadyExists", null, file.getAbsolutePath());
 			DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
 					setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), monitor);
 			return file;
@@ -232,7 +237,7 @@ public class ArchetypeBuilder implements Runnable {
 			content = content.replace("${setup.dbSchema}",    setup.getDbSchema());
 			IOUtil.writeTextFile(file.getAbsolutePath(), content, setup.getEncoding());
 		} catch (IOException e) {
-			throw new RuntimeException("Error in creation of Macen POM file", e);
+			throw new I18NError("ErrorCreatingFile", e, file);
 		}
 		advanceMonitor();
 		return file;	
@@ -247,7 +252,7 @@ public class ArchetypeBuilder implements Runnable {
 			writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			writer.println("benerator.defaultEncoding=" + setup.getEncoding());
 		} catch (IOException e) {
-			throw new RuntimeException("Error in creation of properties file '" + filename + "'", e);
+			throw new I18NError("ErrorCreatingFile", e, file);
 		} finally {
 			IOUtil.close(writer);
 		}
