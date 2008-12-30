@@ -88,7 +88,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> {
     
     public XLSEntityExporter(String uri, String attributes) {
         this.uri = uri;
-        setProperties(attributes);
+        setAttributes(attributes);
     }
 
     public XLSEntityExporter(ComplexTypeDescriptor descriptor) {
