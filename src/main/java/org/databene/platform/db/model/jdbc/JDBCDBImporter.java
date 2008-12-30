@@ -49,11 +49,7 @@ import java.util.*;
 public final class JDBCDBImporter implements DBImporter {
 
     private static final Log logger = LogFactory.getLog(JDBCDBImporter.class);
-/*
-    private final String url;
-    private final String password;
-    private final String driverClassname;
-*/    
+
     private final Connection connection;
 
     private final String user;
@@ -151,7 +147,7 @@ public final class JDBCDBImporter implements DBImporter {
             String tSchemaName = tableSet.getString(2);
             String tableName = tableSet.getString(3);
             if (tableName.startsWith("BIN$")) {
-                if (productName.toLowerCase().startsWith("oracle") && tableName.startsWith("BIN$"))
+                if (isOracle() && tableName.startsWith("BIN$"))
                     escalator.escalate("BIN$ table found (for improved performance " +
                                 "execute 'PURGE RECYCLEBIN;')", this, tableName);
                 continue;
@@ -175,6 +171,10 @@ public final class JDBCDBImporter implements DBImporter {
         tableSet.close();
     }
 
+	private boolean isOracle() {
+		return productName.toLowerCase().startsWith("oracle");
+	}
+
     private void importColumns(Database database, DatabaseMetaData metaData) throws SQLException {
         for (DBCatalog catalog : database.getCatalogs())
             importColumns(database, catalog, metaData);
@@ -184,13 +184,13 @@ public final class JDBCDBImporter implements DBImporter {
         String catalogName = catalog.getName();
         String schemaPattern = (database.getSchemas().size() == 1 ? database.getSchemas().get(0).getName() : schemaName);
         logger.info("Importing columns for catalog '" + catalogName + "' and schemaPattern '" + schemaName + "'");
+        if (isOracle()) // fix for Oracle varchar column size, see http://kr.forums.oracle.com/forums/thread.jspa?threadID=554236
+        	DBUtil.executeUpdate("ALTER SESSION SET NLS_LENGTH_SEMANTICS=CHAR", connection);
         ResultSet columnSet = metaData.getColumns(catalogName, schemaPattern, null, null);
         ResultSetMetaData setMetaData = columnSet.getMetaData();
         if (setMetaData.getColumnCount() == 0)
             return;
         while (columnSet.next()) {
-            //logResultSet(columnSet);
-            //String catalogName = columnSet.getString(1);
             String schemaName = columnSet.getString(2);
             String tableName = columnSet.getString(3);
             if (tableName.startsWith("BIN$")) {
@@ -199,7 +199,6 @@ public final class JDBCDBImporter implements DBImporter {
                 continue;
             }
             String columnName = columnSet.getString(4);
-            //logger.debug("Found column: " + tableName + '.' + columnName);
             int sqlType = columnSet.getInt(5);
             String columnType = columnSet.getString(6);
             int columnSize = columnSet.getInt(7);
@@ -395,10 +394,9 @@ public final class JDBCDBImporter implements DBImporter {
             throws SQLException {
         logger.debug("Importing imported keys");
         String catalogName = (catalog != null ? catalog.getName() : null);
-        String tableName = (table != null ? table.getName() : null);
+        String tableName = table.getName();
         String schemaName = (schema != null ? schema.getName() : null);
         ResultSet resultSet = metaData.getImportedKeys(catalogName, schemaName, tableName);
-//        DBUtil.print(resultSet);
         List<ImportedKey> importedKeys = new ArrayList<ImportedKey>();
         ImportedKey recent = null;
         while (resultSet.next()) {
