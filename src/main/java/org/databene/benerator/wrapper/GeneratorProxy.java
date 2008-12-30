@@ -32,12 +32,21 @@ import org.databene.benerator.Generator;
  * Wraps another Generator of same product type.<br/>
  * <br/>
  * Created: 17.08.2007 19:05:42
+ * @author Volker Bergmann
  */
 public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
+
+    // constructors ----------------------------------------------------------------------------------------------------
+
+    protected GeneratorProxy() {
+        this(null);
+    }
 
     public GeneratorProxy(Generator<E> source) {
         super(source);
     }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
 
     public Class<E> getGeneratedType() {
     	if (dirty)
