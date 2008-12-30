@@ -124,7 +124,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
         for (Row row : rows) {
             String[] cells = row.getValues();
             for (int i = 0; i < cells.length; i++) {
-                cells[i] = ScriptUtil.render(cells[i], context);
+                cells[i] = String.valueOf(ScriptUtil.render(cells[i], context));
             }
         }
     }
