@@ -7,7 +7,7 @@ if "%_USE_CLASSPATH%"=="no" goto runNoClasspath
 if not "%CLASSPATH%"=="" goto runWithClasspath
 
 :runNoClasspath
-"%_JAVACMD%" %BENERATOR_OPTS% -classpath "%LOCALCLASSPATH%" org.databene.benerator.main.Benerator %*
+"%_JAVACMD%" %BENERATOR_OPTS% -classpath "%LOCALCLASSPATH%" org.databene.benerator.main.BeneratorGUI %*
 goto end
 
 :runWithClasspath
