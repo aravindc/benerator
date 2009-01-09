@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,9 +50,9 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String MAX_COUNT          = "maxCount";
     
     // configs
-    public static final String COUNT_DISTRIBUTION = "countDistribution";
-    public static final String COUNT_VARIATION1   = "countVariation1";
-    public static final String COUNT_VARIATION2   = "countVariation2";
+    public static final String COUNT_DISTRIBUTION = "countDistribution"; // TODO support constructor syntax
+    public static final String COUNT_VARIATION1   = "countVariation1"; // TODO make this deprecated
+    public static final String COUNT_VARIATION2   = "countVariation2"; // TODO make this deprecated
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
 
@@ -232,8 +232,23 @@ public class InstanceDescriptor extends FeatureDescriptor {
         return this;
     }
     
+    public InstanceDescriptor withMinCount(long minCount) {
+        setMinCount(minCount);
+        return this;
+    }
+    
+    public InstanceDescriptor withMaxCount(long maxCount) {
+        setMaxCount(maxCount);
+        return this;
+    }
+    
     public InstanceDescriptor withNullQuota(double nullQuota) {
     	setNullQuota(nullQuota);
+    	return this;
+    }
+
+    public InstanceDescriptor withUnique(boolean unique) {
+    	setUnique(unique);
     	return this;
     }
 
