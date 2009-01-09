@@ -31,8 +31,6 @@ import org.databene.commons.operation.MaxNumberLiteral;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinNumberLiteral;
 import org.databene.commons.operation.MinOperation;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
 
 /**
  * Describes a simple type.<br/><br/>
@@ -40,7 +38,7 @@ import org.databene.model.function.Sequence;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class SimpleTypeDescriptor extends TypeDescriptor {
+public class SimpleTypeDescriptor extends TypeDescriptor<SimpleTypeDescriptor> {
 
     public static final String MIN = "min";
     public static final String MAX = "max";
@@ -84,7 +82,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         addRestriction(MIN_LENGTH,      Integer.class,     1, new MaxOperation<Integer>());
         addRestriction(MAX_LENGTH,      Integer.class,    30, new MinOperation<Integer>());
         // other config
-        addConfig(LENGTH_DISTRIBUTION,  Distribution.class, Sequence.RANDOM);
+        addConfig(LENGTH_DISTRIBUTION,  String.class, "random");
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -184,11 +182,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         setDetailValue(MAX_LENGTH, maxLength);
     }
 
-    public Distribution getLengthDistribution() {
-        return (Distribution) getDetailValue(LENGTH_DISTRIBUTION);
+    public String getLengthDistribution() {
+        return (String) getDetailValue(LENGTH_DISTRIBUTION);
     }
     
-    public void setLengthDistribution(Distribution lengthDistribution) {
+    public void setLengthDistribution(String lengthDistribution) {
         setDetailValue(LENGTH_DISTRIBUTION, lengthDistribution);
     }
 
@@ -224,7 +222,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         return this;
     }
 
-    public SimpleTypeDescriptor withDistribution(Distribution distribution) {
+    public SimpleTypeDescriptor withDistribution(String distribution) {
         setDistribution(distribution);
         return this;
     }
@@ -251,16 +249,16 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     // generic property access -----------------------------------------------------------------------------------------
 
-    public void setDetail(String detailName, Object detailValue) {
 /*
+    public void setDetail(String detailName, Object detailValue) {
         Class<? extends Object> targetType = getDetailType(detailName);
         if (targetType == Distribution.class && detailValue.getClass() == String.class)
             detailValue = mapDistribution((String) detailValue);
         else if (targetType == Converter.class && detailValue.getClass() == String.class)
             detailValue = mapConverter((String) detailValue);
         super.setDetailValue(detailName, detailValue);
-*/
     }
+*/
 
 // private helpers -------------------------------------------------------------------------------------------------
 /*

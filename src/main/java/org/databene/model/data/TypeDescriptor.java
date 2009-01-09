@@ -32,7 +32,6 @@ import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.operation.FirstNonNullSelector;
-import org.databene.model.function.Distribution;
 
 /**
  * Describes a type.<br/><br/>
@@ -40,7 +39,7 @@ import org.databene.model.function.Distribution;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public abstract class TypeDescriptor extends FeatureDescriptor {
+public abstract class TypeDescriptor<E extends TypeDescriptor<? extends Object>> extends FeatureDescriptor {
 
     // restriction names
     public static final String VALUES       = "values";
@@ -98,27 +97,27 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
             // For performance reasons, retain only the first non-null validator
         
         // config
-        addConfig(VALUES,         String[].class,     null);
-        addConfig(GENERATOR,      String.class,       null);
-        addConfig(CONVERTER,      String.class,       null);
-        addConfig(PATTERN,        String.class,       null);
-        addConfig(SCRIPT,         String.class,       null);
-        addConfig(SOURCE,         String.class,       null);
-        addConfig(SELECTOR,       String.class,       null);
-        addConfig(SEPARATOR,      String.class,       null);
-        addConfig(ENCODING,       String.class,       null);
-        addConfig(CYCLIC,         Boolean.class,      null);
-        addConfig(PROXY,          Iteration.class,    null);
-        addConfig(PROXY_PARAM1,   Long.class,         null);
-        addConfig(PROXY_PARAM2,   Long.class,         null);
+        addConfig(VALUES,         String.class, null);
+        addConfig(GENERATOR,      String.class,   null);
+        addConfig(CONVERTER,      String.class,   null);
+        addConfig(PATTERN,        String.class,   null);
+        addConfig(SCRIPT,         String.class,   null);
+        addConfig(SOURCE,         String.class,   null);
+        addConfig(SELECTOR,       String.class,   null);
+        addConfig(SEPARATOR,      String.class,   null);
+        addConfig(ENCODING,       String.class,   null);
+        addConfig(CYCLIC,         Boolean.class,  null);
+        addConfig(PROXY,          String.class,   null);
+        addConfig(PROXY_PARAM1,   Long.class,     null, true); // obsolete and replaced with a functional-style declaration
+        addConfig(PROXY_PARAM2,   Long.class,     null, true); // obsolete and replaced with a functional-style declaration
         // i18n config
-        addConfig(LOCALE,         Locale.class,       null);
-        addConfig(DATASET,        String.class,       null);
-        addConfig(NESTING,        String.class,       null);
+        addConfig(LOCALE,         Locale.class,   null);
+        addConfig(DATASET,        String.class,   null);
+        addConfig(NESTING,        String.class,   null);
         // distribution
-        addConfig(DISTRIBUTION,   Distribution.class, null);
-        addConfig(VARIATION1,     String.class,        "1");
-        addConfig(VARIATION2,     String.class,        "1");
+        addConfig(DISTRIBUTION,   String.class,   null);
+        addConfig(VARIATION1,     String.class,    "1"); // TODO make variation1 obsolete for sequences
+        addConfig(VARIATION2,     String.class,    "1"); // TODO make variation2 obsolete for sequences
 	}
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -131,17 +130,17 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         this.parentName = parentName;
     }
     
-    public String[] getValues() {
-        return (String[]) getDetailValue(VALUES);
+    public String getValues() {
+        return (String) getDetailValue(VALUES);
     }
 
-    public void setValues(String... values) {
+    public void setValues(String values) {
         setDetailValue(VALUES, values);
     }
 
-    public void addValue(String value) {
-        setValues(ArrayUtil.append(getValues(), value));
-    }
+	public void addValue(String value) {
+		setValues(getValues() + ',' + value);
+	}
 
     public String getValidator() {
         return (String) getDetailValue(VALIDATOR);
@@ -223,12 +222,12 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         setDetailValue(CYCLIC, cyclic);
     }
 
-    public Iteration getProxy() {
-        return (Iteration) getDetailValue(PROXY);
+    public String getProxy() {
+        return (String) getDetailValue(PROXY);
     }
 
-    public void setProxy(Iteration iteration) {
-        setDetailValue(PROXY, iteration);
+    public void setProxy(String proxy) {
+        setDetailValue(PROXY, proxy);
     }
 
     public Long getProxyParam1() {
@@ -271,11 +270,11 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         setDetailValue(LOCALE, LocaleUtil.getLocale(localeId));
     }
     
-    public Distribution getDistribution() {
-        return (Distribution) getDetailValue(DISTRIBUTION);
+    public String getDistribution() {
+        return (String) getDetailValue(DISTRIBUTION);
     }
 
-    public void setDistribution(Distribution distribution) {
+    public void setDistribution(String distribution) {
         setDetailValue(DISTRIBUTION, distribution);
     }
     
@@ -297,74 +296,23 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     // literal construction helpers ------------------------------------------------------------------------------------
     
-    public FeatureDescriptor withValues(String... values) {
+    public E withValues(String values) {
     	this.setValues(values);
-    	return this;
+    	return (E) this;
     }
 
-    public FeatureDescriptor withSource(String source) {
+    public E withSource(String source) {
         setSource(source);
-        return this;
+        return (E) this;
     }
 
-/*
-    public FeatureDescriptor withParent(DefaultFeatureDescriptor parent) {
-        this.parent = parent;
-        return this;
+    public E withSeparator(String separator) {
+        setSeparator(separator);
+        return (E) this;
     }
 
-    public FeatureDescriptor withName(String name) {
-        setName(name);
-        return this;
-    }
+    // generic functionality -------------------------------------------------------------------------------------------
 
-    public FeatureDescriptor withPattern(String pattern) {
-        setPattern(pattern);
-        return this;
-    }
-
-    public FeatureDescriptor withUnique(Boolean unique) {
-        setDetailValue("unique", unique);
-        return this;
-    }
-
-    public FeatureDescriptor withSelector(String selector) {
-        setSelector(selector);
-        return this;
-    }
-
-    public FeatureDescriptor withMode(Mode mode) {
-        setMode(mode);
-        return this;
-    }
-
-    public FeatureDescriptor withCyclic(boolean cyclic) {
-        setCyclic(cyclic);
-        return this;
-    }
-
-    public FeatureDescriptor withGenerator(String generatorName) {
-        setGenerator(generatorName);
-        return this;
-    }
-
-    public FeatureDescriptor withValidator(String validatorName) {
-        setValidator(validatorName);
-        return this;
-    }
-
-    public FeatureDescriptor withProxyParam1(Long param) {
-        setProxyParam1(param);
-        return this;
-    }
-
-    public FeatureDescriptor withProxyParam2(Long param) {
-        setProxyParam2(param);
-        return this;
-    }
-*/
-
-    
     @Override
     public Object getDetailValue(String name) {
         Object value = super.getDetailValue(name);
