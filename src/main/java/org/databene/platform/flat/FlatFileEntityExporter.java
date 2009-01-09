@@ -63,16 +63,12 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
     }
 
     public FlatFileEntityExporter(String uri, String encoding, String propertyFormatList) {
-        super(uri, encoding);
+        super(uri, encoding, null);
         this.uri = uri;
         setProperties(propertyFormatList);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 
     public void setProperties(String propertyFormatList) {
         if (propertyFormatList == null) {
@@ -137,12 +133,14 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void flush() {
+    @Override
+	public void flush() {
         if (printer != null)
             printer.flush();
     }
 
-    public void close() {
+    @Override
+	public void close() {
         IOUtil.close(printer);
     }
     
@@ -166,7 +164,8 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 
     // java.lang.Object overrrides -------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + ArrayFormat.format() + ']';
     }
 
