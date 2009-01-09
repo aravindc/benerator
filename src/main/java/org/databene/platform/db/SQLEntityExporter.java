@@ -31,7 +31,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Assert;
-import org.databene.commons.SystemInfo;
 import org.databene.commons.db.DBUtil;
 import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
@@ -50,7 +49,6 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     // defaults --------------------------------------------------------------------------------------------------------
     
     private static final String DEFAULT_URI       = "export.sql";
-    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
 
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -63,11 +61,15 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     }
     
     public SQLEntityExporter(String uri) {
-        this(uri, DEFAULT_ENCODING);
+        this(uri, null);
     }
 
     public SQLEntityExporter(String uri, String encoding) {
-    	super(uri, encoding);
+    	this(uri, encoding, null);
+    }
+
+    public SQLEntityExporter(String uri, String encoding, String lineSeparator) {
+    	super(uri, encoding, lineSeparator);
     	setNullString("null");
     	setDatePattern("''dd-MMM-yyyy''");
     	setTimestampPattern("'TIMESTAMP' ''yyyy-MM-dd HH:mm:ss.SSSSSS''");
