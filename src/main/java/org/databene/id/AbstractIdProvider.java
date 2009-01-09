@@ -49,4 +49,7 @@ public abstract class AbstractIdProvider<E> implements IdProvider<E>{
         throw new UnsupportedOperationException("Removal is not supported.");
 	}
 
+	public void close() {
+	}
+
 }
