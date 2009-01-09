@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.IOUtil;
+import org.databene.commons.ui.ConsoleInfoPrinter;
 
 import java.io.*;
 import java.util.List;
@@ -109,6 +110,6 @@ public class LineShuffler {
     }
 
     private static void printHelp() {
-        System.out.println("Parameters: inFile outFile [buffer size]");
+        ConsoleInfoPrinter.printHelp("Parameters: inFile outFile [buffer size]");
     }
 }
