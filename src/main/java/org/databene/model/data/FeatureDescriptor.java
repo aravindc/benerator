@@ -9,7 +9,6 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.String2ConverterConverter;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.model.function.String2DistributionConverter;
 
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class FeatureDescriptor {
     }
 
     public Object getDetailValue(String name) {
-        FeatureDetail detail = getDetail(name);
+        FeatureDetail<Object> detail = getDetail(name);
         Object value = detail.getValue();
         return value;
     }
@@ -145,26 +144,19 @@ public class FeatureDescriptor {
     }
 
     protected <T> void addConfig(String name, Class<T> type, T defaultValue) {
-        addDetailConfig(name, type, false, defaultValue);
+    	addConfig(name, type, defaultValue, false);
+    }
+
+    protected <T> void addConfig(String name, Class<T> type, T defaultValue, boolean deprecated) {
+        addDetail(name, type, false, defaultValue, deprecated, new AnyConverter<String, T>(type), null);
     }
 
     protected <T> void addRestriction(String name, Class<T> type, T defaultValue, Operation<T, T> combinator) {
-        addDetailConfig(name, type, true, defaultValue, null, combinator);
+        addDetail(name, type, true, defaultValue, false, null, combinator);
     }
 
-    protected <T> void addDetailConfig(String detailName, Class<T> detailType, boolean constraint, T defaultValue) {
-        addDetailConfig(detailName, detailType, constraint, defaultValue, new AnyConverter<String, T>(detailType));
-    }
-
-    protected <T> void addDetailConfig(String detailName, Class<T> detailType, boolean constraint, T defaultValue, Converter<String, T> converter) {
-        addDetailConfig(detailName, detailType, constraint, defaultValue, converter, null);
-    }
-
-    protected <T> void addDetailConfig(String detailName, Class<T> detailType, boolean constraint, T defaultValue, Operation<T,T> combinator) {
-        addDetailConfig(detailName, detailType, constraint, defaultValue, new AnyConverter<String, T>(detailType), combinator);
-    }
-
-    protected <T> void addDetailConfig(String detailName, Class<T> detailType, boolean constraint, T defaultValue, Converter<String, T> converter, Operation<T,T> combinator) {
+    protected <T> void addDetail(String detailName, Class<T> detailType, boolean constraint, T defaultValue, 
+    		boolean deprecated, Converter<String, T> converter, Operation<T,T> combinator) {
         this.details.put(detailName, new FeatureDetail<T>(detailName, detailType, constraint, defaultValue, converter, combinator));
     }
 
