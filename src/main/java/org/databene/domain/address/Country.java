@@ -245,10 +245,6 @@ public class Country {
         states.put(state.getId(), state);
     }
 
-    public String toString() {
-        return getName();
-    }
-
     public static Collection<Country> getInstances() {
         return instances.values();
     }
@@ -267,7 +263,18 @@ public class Country {
     }
 
     public static Country getDefault() {
-        return defaultCountry;
+        return Country.defaultCountry;
+    }
+
+    public static void setDefault(Country country) {
+        Country.defaultCountry = country;
+    }
+
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    
+    @Override
+	public String toString() {
+        return getName();
     }
 
 	@Override
