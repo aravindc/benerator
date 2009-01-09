@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,7 @@ import org.databene.commons.db.DBUtil;
 import org.databene.model.data.*;
 import org.databene.model.depend.DependencyModel;
 import org.databene.model.storage.StorageSystem;
+import org.databene.model.version.VersionNumber;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -56,6 +57,7 @@ import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
@@ -72,7 +74,9 @@ import javax.sql.PooledConnection;
  */
 public class DBSystem implements StorageSystem, IdProviderFactory {
     
-    // constants -------------------------------------------------------------------------------------------------------
+	private static final VersionNumber MIN_ORACLE_VERSION = new VersionNumber("10.2.0.4");
+
+	// constants -------------------------------------------------------------------------------------------------------
     
     protected static final ArrayPropertyExtractor<String> nameExtractor
             = new ArrayPropertyExtractor<String>("name", String.class);
@@ -94,6 +98,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private String driver;
     private String schema;
     private boolean batch;
+    boolean readOnly;
     
     private int fetchSize;
 
@@ -112,7 +117,6 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     public DBSystem(String id, String url, String driver, String user, String password) {
-        super();
         this.id = id;
         this.url = url;
         this.user = user;
@@ -123,6 +127,22 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         this.batch = false;
         this.contexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
+        this.readOnly = false;
+        if (driver != null && driver.contains("oracle")) {
+        	Connection connection = null;
+    		try {
+				connection = getConnection();
+				DatabaseMetaData metaData = connection.getMetaData();
+				VersionNumber driverVersion = new VersionNumber(metaData.getDriverVersion());
+				if (driverVersion.compareTo(MIN_ORACLE_VERSION) < 0)
+					logger.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
+							"You can use that driver for accessing an Oracle 9 server as well.");
+			} catch (SQLException e) {
+				throw new ConfigurationError(e);
+			} finally {
+				close();
+			}
+        }
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -202,10 +222,20 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     public void setFetchSize(int fetchSize) {
         this.fetchSize = fetchSize;
     }
+    
+    public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+    
 
     // DescriptorProvider interface ------------------------------------------------------------------------------------
 
-    public TypeDescriptor[] getTypeDescriptors() {
+	public TypeDescriptor[] getTypeDescriptors() {
         if (logger.isDebugEnabled())
             logger.debug("getTypeDescriptors()");
         if (typeDescriptors == null)
@@ -231,15 +261,18 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     // StorageSystem interface -----------------------------------------------------------------------------------------
 
     public void store(Entity entity) {
+		if (readOnly)
+			throw new IllegalStateException("Tried to insert rows into table '" + entity.getName() + "' " +
+					"though database '" + id + "' is read-only");
         if (logger.isDebugEnabled())
             logger.debug("Storing " + entity);
         persistOrUpdate(entity, true);
     }
 
-	/**
-	 * @see org.databene.model.storage.StorageSystem#update(org.databene.model.data.Entity)
-	 */
 	public void update(Entity entity) {
+		if (readOnly)
+			throw new IllegalStateException("Tried to update table '" + entity.getName() + "' " +
+					"though database '" + id + "' is read-only");
         if (logger.isDebugEnabled())
             logger.debug("Updating " + entity);
         persistOrUpdate(entity, false);
@@ -358,7 +391,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			connection = (Connection) Proxy.newProxyInstance(classLoader, 
 					new Class[] { Connection.class, PooledConnection.class }, 
-					new PooledConnectionHandler(connection));
+					new PooledConnectionHandler(this, connection));
             connection.setAutoCommit(false);
             return connection;
         } catch (ConnectFailedException e) {
@@ -411,8 +444,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         try {
             Map<String, String> mappings = IOUtil.readProperties(filename);
             for (Map.Entry<String, String> entry : mappings.entrySet())
-                if (productName.toLowerCase().contains((String)entry.getKey())) {
-                    dialect = (DatabaseDialect) BeanUtil.newInstance((String)entry.getValue());
+                if (productName.toLowerCase().contains(entry.getKey())) {
+                    dialect = (DatabaseDialect) BeanUtil.newInstance(entry.getValue());
                     return;
                 }
             dialect = new UnknownDialect(productName);
@@ -690,7 +723,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     private class ThreadContext {
         
-        private Connection connection;
+        Connection connection;
         
         public Map<ComplexTypeDescriptor, PreparedStatement> insertStatements;
         public Map<ComplexTypeDescriptor, PreparedStatement> updateStatements;
@@ -736,7 +769,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                     		createSQLUpdate(descriptor.getName(), columnInfos));
                     if (jdbcLogger.isDebugEnabled())
                         jdbcLogger.debug("Creating prepared statement: " + sql);
-                    statement = DBUtil.prepareStatement(connection, sql);
+                    statement = DBUtil.prepareStatement(connection, sql, readOnly);
                     if (insert)
                     	insertStatements.put(descriptor, statement);
                     else
@@ -792,8 +825,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         );
     }
 
-    private static final Log logger = LogFactory.getLog(DBSystem.class);
-//    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
-    private static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC");
+    static final Log logger = LogFactory.getLog(DBSystem.class);
+    static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC");
 
 }
