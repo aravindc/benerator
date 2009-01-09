@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2008 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,8 @@ import org.databene.LogCategories;
 import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.ErrorHandler.Level;
 import org.databene.commons.db.DBUtil;
@@ -47,12 +49,15 @@ public class RunSqlScriptTask extends AbstractTask {
 
 	private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
 	
+	private static Escalator escalator = new LoggerEscalator();
+	
     private String uri;
     private String encoding;
     private String text;
     private DBSystem db;
     private boolean ignoreComments;
     private ErrorHandler errorHandler;
+    private Object result;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -74,6 +79,8 @@ public class RunSqlScriptTask extends AbstractTask {
     }
 
 	private void initDefaults() {
+		String message = getClass().getName() + " is deprecated. When running benerator, use <execute> instead.";
+		escalator.escalate(message, getClass(), null);
 		this.ignoreComments = false;
         this.errorHandler = new ErrorHandler(LogCategories.SQL);
         this.errorHandler.setLoggingStackTrace(false);
@@ -86,10 +93,10 @@ public class RunSqlScriptTask extends AbstractTask {
         try {
             connection = db.createConnection();
             if (text != null)
-            	DBUtil.runScript(text, connection, ignoreComments, errorHandler);
+            	result = DBUtil.runScript(text, connection, ignoreComments, errorHandler);
             else
-            	DBUtil.runScript(uri, encoding, connection, ignoreComments, errorHandler);
-            db.invalidate();
+            	result = DBUtil.runScript(uri, encoding, connection, ignoreComments, errorHandler);
+            db.invalidate(); // possibly we changed the database structure
             connection.commit();
 		} catch (Exception sqle) { 
             if (connection != null) {
@@ -142,6 +149,7 @@ public class RunSqlScriptTask extends AbstractTask {
     /**
      * @deprecated Use the errorHandler property
      */
+    @Deprecated
     public void setHaltOnError(boolean haltOnError) {
         this.errorHandler = new ErrorHandler(LogCategories.SQL, haltOnError ? Level.fatal : Level.error);
         this.errorHandler.setLoggingStackTrace(false);
@@ -161,17 +169,14 @@ public class RunSqlScriptTask extends AbstractTask {
         this.ignoreComments = ignoreComments;
     }
 
-    public ErrorHandler getErrorHandler() {
-		return errorHandler;
-	}
-
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
+	public Object getResult() {
+		return result;
 	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + uri + "->" + db.getId() + ']';
     }
 
