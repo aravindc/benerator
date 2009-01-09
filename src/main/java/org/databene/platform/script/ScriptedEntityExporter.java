@@ -63,7 +63,7 @@ public class ScriptedEntityExporter extends TextFileExporter<Entity> {
     }
 
     public ScriptedEntityExporter(String uri, String encoding, String headerScript, String partScript, String footerScript) {
-    	super(uri, encoding);
+    	super(uri, encoding, null);
         this.headerScript = headerScript;
         this.partScript = partScript;
         this.footerScript = footerScript;
@@ -101,6 +101,8 @@ public class ScriptedEntityExporter extends TextFileExporter<Entity> {
 	protected void postInitPrinter() {
 		try {
 			docWriter = new ScriptedDocumentWriter<Entity>(printer, headerScript, partScript, footerScript);
+			if (append)
+				docWriter.setWriteHeader(false);
 		} catch (IOException e) {
             throw new ConfigurationError(e);
 		}
