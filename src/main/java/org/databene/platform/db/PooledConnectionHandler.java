@@ -28,8 +28,10 @@ package org.databene.platform.db;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.LogCategories;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.db.DBUtil;
 
 /**
  * Wraps a connection for logging of JDBC connection handling.<br/>
@@ -52,12 +55,14 @@ public class PooledConnectionHandler implements InvocationHandler {
     
     private static long nextId = 0;
 
+    private DBSystem db;
     private Connection realConnection;
     private long id;
     
     // construction ----------------------------------------------------------------------------------------------------
     
-    public PooledConnectionHandler(Connection realConnection) {
+    public PooledConnectionHandler(DBSystem db, Connection realConnection) {
+    	this.db = db;
         this.id = nextId();
         this.realConnection = realConnection;
         this.listeners = new ArrayList<ConnectionEventListener>();
@@ -78,12 +83,25 @@ public class PooledConnectionHandler implements InvocationHandler {
 			this.addConnectionEventListener((ConnectionEventListener) args[0]);
 		else if ("removeConnectionEventListener".equals(methodName))
 			this.removeConnectionEventListener((ConnectionEventListener) args[0]);
+		else if ("prepareStatement".equals(methodName) && args.length == 1) // TODO support other prepareStatement() variants
+			return DBUtil.prepareStatement(realConnection, (String) args[0], db.isReadOnly());
+		else if ("createStatement".equals(methodName))
+			return createStatement(method, args);
 		else
 			return BeanUtil.invoke(realConnection, method, args);
 		return null;
 	}
 
-    // PooledConnection implementation ---------------------------------------------------------------------------------
+	private Statement createStatement(Method method, Object[] args) {
+		Statement realStatement = (Statement) BeanUtil.invoke(realConnection, method, args);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Statement proxy = (Statement) Proxy.newProxyInstance(classLoader, 
+				new Class[] { Statement.class }, 
+				new LoggingStatementHandler(realStatement, db.isReadOnly()));
+		return proxy;
+	}
+
+	// PooledConnection implementation ---------------------------------------------------------------------------------
     
 	public void close() throws SQLException {
         try {
@@ -97,7 +115,7 @@ public class PooledConnectionHandler implements InvocationHandler {
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         return realConnection;
     }
 
