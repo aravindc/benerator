@@ -12,9 +12,9 @@ public class IdDescriptor extends ComponentDescriptor {
 
     public IdDescriptor(String name, String type) {
         super(name, type);
-        addDetailConfig(STRATEGY, String.class, false, null);
-        addDetailConfig(SCOPE,    String.class, false, null);
-        addDetailConfig(PARAM,    String.class, false, null);
+        addConfig(STRATEGY, String.class, null);
+        addConfig(SCOPE,    String.class, null);
+        addConfig(PARAM,    String.class, null, true);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
