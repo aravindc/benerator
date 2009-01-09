@@ -90,7 +90,7 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
             throw new IllegalStateException("'connection' is null");
         if (StringUtil.isEmpty(query))
             throw new IllegalStateException("'query' is empty or null");
-        renderedQuery = ScriptUtil.render(query, context);
+        renderedQuery = ScriptUtil.render(query, context).toString();
         try {
             if (sqlLogger.isDebugEnabled())
                 sqlLogger.debug(renderedQuery);
