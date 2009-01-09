@@ -29,6 +29,8 @@ package org.databene.id;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.databene.commons.CollectionUtil;
+
 /**
  * Helper class for inheriting custom {@link IdProviderFactory}s.<br/>
  * <br/>
@@ -52,5 +54,9 @@ public abstract class AbstractIdProviderFactory implements IdProviderFactory {
 	}
 
 	public abstract <T> IdProvider<T> createIdProvider(IdStrategy<T> strategy, String param);
+
+	public IdStrategy<? extends Object>[] getIdStrategies() {
+		return (IdStrategy<? extends Object>[]) CollectionUtil.toArray(providers.values());
+	}
 
 }
