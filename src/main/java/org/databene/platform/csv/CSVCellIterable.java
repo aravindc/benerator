@@ -65,4 +65,9 @@ public class CSVCellIterable implements TypedIterable<String> {
             throw new ConfigurationError(e);
         }
     }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + uri + ", '" + separator + "']";
+    }
 }
