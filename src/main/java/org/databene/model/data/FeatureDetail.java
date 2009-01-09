@@ -27,6 +27,8 @@
 package org.databene.model.data;
 
 import org.databene.commons.Converter;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
 import org.databene.commons.converter.AnyConverter;
@@ -39,6 +41,8 @@ import org.databene.commons.operation.FirstArgSelector;
  * @author Volker Bergmann
  */
 public class FeatureDetail<E> {
+	
+	private static Escalator escalator = new LoggerEscalator();
     
     // properties ------------------------------------------------------------------------------------------------------
 
@@ -49,6 +53,7 @@ public class FeatureDetail<E> {
     private Converter<String, E> converter;
     private Operation<E, E> combinator;
     private boolean restriction;
+    private boolean deprecated;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -60,7 +65,13 @@ public class FeatureDetail<E> {
         this(name, type, restriction, defaultValue, converter, new FirstArgSelector<E>());
     }
 
-    public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter, Operation<E, E> combinator) {
+    public FeatureDetail(String name, Class<E> type, boolean restriction, 
+    		E defaultValue, Converter<String, E> converter, Operation<E, E> combinator) {
+    	this(name, type, restriction, defaultValue, converter, combinator, false);
+    }
+    
+    public FeatureDetail(String name, Class<E> type, boolean restriction, 
+    		E defaultValue, Converter<String, E> converter, Operation<E, E> combinator, boolean deprecated) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
@@ -68,6 +79,7 @@ public class FeatureDetail<E> {
         this.restriction = restriction;
         this.combinator = combinator;
         this.converter = converter;
+        this.deprecated = deprecated;
     }
     
     // interface -------------------------------------------------------------------------------------------------------
@@ -85,6 +97,8 @@ public class FeatureDetail<E> {
     }
 
     public void setValue(E value) {
+    	if (deprecated && value != null)
+    		escalator.escalate("Feature '" + name + "' is deprecated", getClass(), value);
         if (value != null && !(type.isAssignableFrom(value.getClass())))
             throw new IllegalArgumentException("Tried to assign a value of type '" + value.getClass().getName() 
                     + "'to detail '" + name + "' of type '" + type + "'");
@@ -111,13 +125,20 @@ public class FeatureDetail<E> {
         return name + '=' + value + " (" + type + ')';
     }
     
+    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    public boolean isDeprecated() {
+		return deprecated;
+	}
+
+	@Override
+	public String toString() {
         return name + '=' + value;
     }
 
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -127,7 +148,8 @@ public class FeatureDetail<E> {
         	&& NullSafeComparator.equals(this.value, that.value));
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         int result;
         result = name.hashCode();
         result = 29 * result + (value != null ? value.hashCode() : 0);
