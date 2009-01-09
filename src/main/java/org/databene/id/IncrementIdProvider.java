@@ -41,7 +41,11 @@ public class IncrementIdProvider implements IdProvider<Long> {
     }
     
     public IncrementIdProvider(long initialValue) {
-        this.cursor = initialValue;
+        setInitial(initialValue);
+    }
+    
+    public void setInitial(long initialValue) {
+    	this.cursor = initialValue;
     }
     
     // IdProvider interface --------------------------------------------------------------------------------------------
