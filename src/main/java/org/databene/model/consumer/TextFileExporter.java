@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.model.consumer;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -43,20 +42,25 @@ import org.databene.commons.SystemInfo;
  */
 public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
 
-    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
+    private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
+    private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.lineSeparator();
 
     // attributes ------------------------------------------------------------------------------------------------------
 
     protected String uri;
     protected String encoding;
+    protected String lineSeparator;
+    protected boolean append;
 
     protected PrintWriter printer;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public TextFileExporter(String uri, String encoding) {
+    public TextFileExporter(String uri, String encoding, String lineSeparator) {
     	this.uri = uri;
         this.encoding = (encoding != null ? encoding : DEFAULT_ENCODING);
+        this.lineSeparator = (lineSeparator != null ? lineSeparator : DEFAULT_LINE_SEPARATOR);
+        this.append = false;
     }
     
     // callback interface for child classes ----------------------------------------------------------------------------
@@ -83,9 +87,25 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
         this.encoding = encoding;
     }
 
+    public String getLineSeparator() {
+		return lineSeparator;
+	}
+
+	public void setLineSeparator(String lineSeparator) {
+		this.lineSeparator = lineSeparator;
+	}
+	
+	public boolean isAppend() {
+		return append;
+	}
+
+	public void setAppend(boolean append) {
+		this.append = append;
+	}
+
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-    public void startConsuming(E data) {
+	public void startConsuming(E data) {
         try {
             if (printer == null)
                 initPrinter();
@@ -95,12 +115,14 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
         }
     }
 
+	@Override
 	public void flush() {
         if (printer != null)
             printer.flush();
     }
 
-    public void close() {
+    @Override
+	public void close() {
         if (printer != null)
             printer.close();
     }
@@ -110,16 +132,15 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
     protected void initPrinter() throws IOException {
         if (uri == null)
             throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
-        printer = new PrintWriter(new FileWriter(uri));
-        printer = IOUtil.getPrinterForURI(uri, encoding);
+        printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator);
         postInitPrinter();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+	@Override
 	public String toString() {
         return getClass().getSimpleName() + "[" + uri + "]";
     }
-
 
 }
