@@ -634,11 +634,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             descriptor = parseAttributeAppinfo(annotation, descriptor);
         String fixed = attributeElement.getAttribute("fixed");
         if (!StringUtil.isEmpty(fixed))
-            descriptor.getLocalType(false).setValues(new String[] { fixed });
+            descriptor.getLocalType(false).setValues(fixed);
         else {
             String defaultValue = attributeElement.getAttribute("default");
             if (!StringUtil.isEmpty(defaultValue))
-                descriptor.getLocalType(false).setValues(new String[] { defaultValue });
+                descriptor.getLocalType(false).setValues(defaultValue);
         }
         descriptor.setCount(1L);
         if ("prohibited".equals(attributeElement.getAttribute("use")))
