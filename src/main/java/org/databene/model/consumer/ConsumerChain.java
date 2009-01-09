@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007, 2008 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,9 @@
 
 package org.databene.model.consumer;
 
+import java.util.List;
+
+import org.databene.commons.CollectionUtil;
 
 /**
  * Combines several Processors under one Processor interface.
@@ -37,21 +40,26 @@ package org.databene.model.consumer;
  */
 public class ConsumerChain<E> extends AbstractConsumer<E> {
 
-    private Consumer<E>[] components;
+    private List<Consumer<E>> components;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public ConsumerChain() {
-    }
-
     public ConsumerChain(Consumer<E> ... components) {
-        this.components = components;
+    	setComponents(components);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setComponents(Consumer<E>[] components) {
-        this.components = components;
+    public void setComponents(Consumer<E>... components) {
+    	this.components = CollectionUtil.toList(components);
+    }
+
+    public void addComponent(Consumer<E> component) {
+        this.components.add(component);
+    }
+    
+    public int componentCount() {
+    	return components.size();
     }
 
     // Processor interface ---------------------------------------------------------------------------------------------
@@ -61,17 +69,20 @@ public class ConsumerChain<E> extends AbstractConsumer<E> {
             processor.startConsuming(object);
     }
 
-    public void finishConsuming(E object) {
+    @Override
+	public void finishConsuming(E object) {
         for (Consumer<E> processor : components)
             processor.finishConsuming(object);
     }
 
-    public void flush() {
+    @Override
+	public void flush() {
         for (Consumer<E> processor : components)
             processor.flush();
     }
 
-    public void close() {
+    @Override
+	public void close() {
         for (Consumer<E> processor : components)
             processor.close();
     }
