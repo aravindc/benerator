@@ -26,6 +26,8 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.operation.FirstArgSelector;
+
 /**
  * Describes a reference to an instance of a complex type (see {@link ComplexTypeDescriptor}).<br/>
  * <br/>
@@ -49,7 +51,7 @@ public class ReferenceDescriptor extends ComponentDescriptor {
 
     public ReferenceDescriptor(String name, String typeName, String targetType) {
         super(name, typeName);
-        addDetailConfig(TARGET_TYPE, String.class, true, null);
+        addRestriction(TARGET_TYPE, String.class, null, new FirstArgSelector<String>());
         setTargetTye(targetType);
     }
     
