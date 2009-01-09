@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,7 @@ import org.databene.commons.converter.BidirectionalConverter;
  * Converts Strings to Distributions and vice versa.<br/><br/>
  * Created: 13.03.2008 22:33:19
  * @author Volker Bergmann
+ * TODO v0.5.8 merge this with new object construction concept
  */
 public class String2DistributionConverter implements BidirectionalConverter<String, Distribution> {
 
