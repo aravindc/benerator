@@ -40,7 +40,6 @@ import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.model.function.Sequence;
 
 /**
  * Tests the ComponentGeneratorFactory class for all useful setups.<br/>
@@ -62,24 +61,25 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 	// csv string source -----------------------------------------------------------------------------------------------
 	
 	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
+	private static final String NAMES_TAB_CSV = "org/databene/benerator/factory/names_tab.csv";
 
 	public void testCSVStringAttribute() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
-		expectGeneratedSequence(name, "Alice", "Bob", "Charly");
+		expectUniqueSequence(name, "Alice", "Bob", "Charly");
 	}
 
 	public void testCSVStringAttributeStep() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
 		SimpleTypeDescriptor localType = (SimpleTypeDescriptor) name.getLocalType(false);
-		localType.setDistribution(Sequence.STEP);
+		localType.setDistribution("step");
 		localType.setMin("0");
-		expectGeneratedSequence(name, "Alice", "Bob", "Charly");
+		expectUniqueSequence(name, "Alice", "Bob", "Charly");
 	}
 	
 	public void testCSVStringAttributeUnique() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
 		name.setUnique(true);
-		expectGeneratedSet(name, "Alice", "Bob", "Charly");
+		expectUniqueSet(name, "Alice", "Bob", "Charly");
 	}
 
 	/** TODO v0.5.x support random unique
@@ -92,11 +92,16 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 	*/
 
 	private PartDescriptor createCSVStringAttributeBuilder() {
+		return createCSVStringAttributeBuilder(NAMES_CSV, ",");
+	}
+	
+	private PartDescriptor createCSVStringAttributeBuilder(String uri, String separator) {
 		String componentName = "name";
 		PartDescriptor name = new PartDescriptor(componentName);
 		name.setMinCount(1L);
 		name.setMaxCount(1L);
-		name.getLocalType(false).setSource(NAMES_CSV);
+		name.getLocalType(false).setSource(uri);
+		name.getLocalType(false).setSeparator(separator);
 		return name;
 	}
 	
@@ -199,6 +204,8 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
     }
+    
+    // test construction alternatives ----------------------------------------------------------------------------------
     
 /*
     public void testGenerator() {
@@ -472,7 +479,6 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
         for (int i = 0; i < 10; i++) {
             builder.buildComponentFor(entity);
             logger.debug(entity.getComponent(name));
-            System.out.println(entity.getComponent(name));
         }
         return builder;
     }
@@ -519,16 +525,22 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		}
 	}
 
-	private <T> void expectGeneratedSequence(PartDescriptor name, T... products) {
+	private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSequence(helper, products).withCeasedAvailability();
 	}
 
-	private <T> void expectGeneratedSet(PartDescriptor name, T... products) {
+	private <T> void expectUniqueSet(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSet(helper, products).withCeasedAvailability();
+	}
+	
+	private <T> void expectSequence(PartDescriptor name, T... products) {
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		expectGeneratedSet(helper, products).withContinuedAvailability();
 	}
 	
 }
