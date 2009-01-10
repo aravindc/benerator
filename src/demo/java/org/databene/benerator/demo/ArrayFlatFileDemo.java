@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,6 +37,7 @@ import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
 import org.databene.model.function.Sequence;
+import org.databene.script.AbstractScript;
 import org.databene.script.Script;
 
 import java.io.*;
@@ -108,7 +109,7 @@ public class ArrayFlatFileDemo {
         }
     }
 
-    private static class HeaderScript implements Script {
+    private static class HeaderScript extends AbstractScript {
 
         int length;
 
