@@ -37,22 +37,28 @@ import org.databene.benerator.util.SimpleRandom;
  */
 public class RepeatGeneratorProxy<E> extends GeneratorProxy<E> {
 
-    private long minRepetitions;
-    private long maxRepetitions;
+    private long minRepetitions = 0;
+    private long maxRepetitions = 3;
     private long repCount;
     private long totalReps;
     private E next;
 
     public RepeatGeneratorProxy() {
-        this(null, 0L, 3L);
+        this(null, null);
+    }
+
+    public RepeatGeneratorProxy(Long minRepetitions, Long maxRepetitions) {
+        this(null, minRepetitions, maxRepetitions);
     }
 
     public RepeatGeneratorProxy(Generator<E> source, Long minRepetitions, Long maxRepetitions) {
         super(source);
         repCount = -1;
-        setMinRepetitions(minRepetitions);
-        setMaxRepetitions(maxRepetitions);
-        totalReps = SimpleRandom.randomLong(minRepetitions, maxRepetitions);
+        if (minRepetitions != null)
+        	setMinRepetitions(minRepetitions);
+        if (maxRepetitions != null)
+        	setMaxRepetitions(maxRepetitions);
+        totalReps = SimpleRandom.randomLong(this.minRepetitions, this.maxRepetitions);
     }
 
     public long getMinRepetitions() {
@@ -75,20 +81,23 @@ public class RepeatGeneratorProxy<E> extends GeneratorProxy<E> {
         this.maxRepetitions = maxRepetitions;
     }
 
-    public void validate() {
+    @Override
+	public void validate() {
         if (dirty) {
             super.validate();
             next = source.generate();
         }
     }
 
-    public boolean available() {
+    @Override
+	public boolean available() {
         if (dirty)
             validate();
         return repCount < totalReps;
     }
 
-    public E generate() {
+    @Override
+	public E generate() {
         if (dirty)
             validate();
         if (next == null)
