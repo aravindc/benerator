@@ -5,12 +5,12 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.7-alpha-1</version>
+    <version>0.5.7</version>
 
     <properties>
-        <gui_version>0.1.7-alpha-1</gui_version>
-        <webdecs_version>0.4.7-alpha-1</webdecs_version>
-	    <commons_version>0.4.7-alpha-1</commons_version>
+        <gui_version>0.1.7</gui_version>
+        <webdecs_version>0.4.7</webdecs_version>
+	    <commons_version>0.4.7</commons_version>
     </properties>
 
 <!--
@@ -162,6 +162,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <encoding>UTF-8</encoding>
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
