@@ -39,21 +39,22 @@ import org.databene.script.ScriptUtil;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class ScriptGenerator extends LightweightGenerator<String>{
+public class ScriptGenerator extends LightweightGenerator<Object>{
     
     private Script script;
     private Context context;
     
     public ScriptGenerator(Script script, Context context) {
+    	super(Object.class);
         this.script = script;
         this.context = context;
     }
 
-    public String generate() {
-        String out = ScriptUtil.execute(script, context);
+    public Object generate() {
+        Object result = ScriptUtil.execute(script, context);
         if (logger.isDebugEnabled())
-            logger.debug("Generated: " + out);
-        return out;
+            logger.debug("Generated: " + result);
+        return result;
     }
     
     @Override
