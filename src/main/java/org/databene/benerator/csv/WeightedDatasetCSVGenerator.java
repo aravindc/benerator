@@ -59,16 +59,21 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     // constructors ----------------------------------------------------------------------------------------------------
     
     public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
-        this(filenamePattern, datasetName, nesting, SystemInfo.fileEncoding());
+        this(filenamePattern, ',', datasetName, nesting, SystemInfo.fileEncoding());
+    }
+
+    public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
+        this(filenamePattern, separator, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
     public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
-        this(filenamePattern, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
+        this(filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
+    public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
         super(new WeightedSampleGenerator<E>());
-        ((WeightedSampleGenerator<E>)source).setSamples(createSamples(datasetName, nesting, filenamePattern, encoding, converter));
+        List<WeightedSample<E>> samples = createSamples(datasetName, separator, nesting, filenamePattern, encoding, converter);
+		((WeightedSampleGenerator<E>)source).setSamples(samples);
         this.nesting = nesting;
         this.filenamePattern = filenamePattern;
         this.datasetName = datasetName;
@@ -81,7 +86,7 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static <T> List<WeightedSample<T>> createSamples(
-            String datasetName, String nesting, String filenamePattern,
+            String datasetName, char separator, String nesting, String filenamePattern,
             String encoding, Converter<String, T> converter) {
         String[] dataFilenames;
         if (nesting == null || datasetName == null)
@@ -90,13 +95,13 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
         	dataFilenames = DatasetFactory.getDataFiles(filenamePattern, datasetName, nesting);
         List<WeightedSample<T>> samples = new ArrayList<WeightedSample<T>>();
         for (String dataFilename : dataFilenames)
-            parse(dataFilename, encoding, converter, samples);
+            parse(dataFilename, separator, encoding, converter, samples);
         return samples;
     }
     
-    private static <T> void parse(String filename, String encoding, Converter<String, T> converter, List<WeightedSample<T>> samples) {
+    private static <T> void parse(String filename, char separator, String encoding, Converter<String, T> converter, List<WeightedSample<T>> samples) {
         try {
-            CSVLineIterator iterator = new CSVLineIterator(filename, ',', encoding);
+            CSVLineIterator iterator = new CSVLineIterator(filename, separator, encoding);
             while (iterator.hasNext()) {
                 String[] tokens = iterator.next();
                 if (tokens.length == 0)
