@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.Generator;
 import org.databene.commons.Period;
+import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
 
@@ -44,6 +45,8 @@ import java.util.TimeZone;
  */
 public class DateGenerator implements Generator<Date> {
     
+    private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
+
     /** The generator to use for generating millisecond values */
     private LongGenerator source;
 
@@ -104,13 +107,14 @@ public class DateGenerator implements Generator<Date> {
     }
 
     /** Returns the date precision in milliseconds */
-    public Long getPrecision() {
+    /*
+    public String getPrecision() {
         return source.getPrecision();
-    }
+    }*/
 
     /** Sets the date precision in milliseconds */
-    public void setPrecision(Long precision) {
-        source.setPrecision(precision);
+    public void setPrecision(String precision) {
+        source.setPrecision(dateConverter.convert(precision));
     }
 
     /** Returns the distribution used */
@@ -188,7 +192,7 @@ public class DateGenerator implements Generator<Date> {
                 0,
                 0);
         calendar.set(GregorianCalendar.MILLISECOND, 0);
-        return new Date();
+        return calendar.getTime();
     }
 
     @Override
