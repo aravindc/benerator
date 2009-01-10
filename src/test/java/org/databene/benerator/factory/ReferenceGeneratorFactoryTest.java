@@ -29,6 +29,7 @@ package org.databene.benerator.factory;
 import junit.framework.TestCase;
 
 import org.databene.benerator.composite.ComponentBuilder;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -108,7 +109,7 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 	}
 
 	private ComponentBuilder createGenerator(ReferenceDescriptor ref) {
-		DefaultContext context = new DefaultContext();
+		BeneratorContext context = new BeneratorContext(null);
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
