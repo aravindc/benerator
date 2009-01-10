@@ -106,7 +106,7 @@ public class CharacterGenerator implements Generator<Character> {
     }
 
     /** Sets the regular expression to match */
-    public void setPattern(String pattern) throws ParseException {
+    public void setPattern(String pattern) {
         this.pattern = pattern;
         this.dirty = true;
     }
@@ -181,7 +181,8 @@ public class CharacterGenerator implements Generator<Character> {
         return source.available();
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + values;
     }
 }
