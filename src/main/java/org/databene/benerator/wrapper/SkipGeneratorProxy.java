@@ -40,6 +40,9 @@ import org.databene.model.function.Sequence;
  * Created: 26.08.2006 16:16:04
  */
 public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
+	
+	public static final long DEFAULT_MIN_INCREMENT = 1L;
+	public static final long DEFAULT_MAX_INCREMENT = 1L;
 
     /** The increment generator, which creates an individual increment on each generation */
     private LongGenerator incrementGenerator;
@@ -52,7 +55,7 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
 
     /** Initializes the generator to iterate with increment 1 */
     public SkipGeneratorProxy(Generator<E> source) {
-        this(source, 1L, 1L);
+        this(source, DEFAULT_MIN_INCREMENT, DEFAULT_MAX_INCREMENT);
     }
 
     /** Initializes the generator to use a random increment of uniform distribution */
@@ -60,10 +63,18 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
         this(source, minIncrement, maxIncrement, Sequence.RANDOM);
     }
 
+    public SkipGeneratorProxy(Long minIncrement, Long maxIncrement) {
+        this(null, minIncrement, maxIncrement);
+    }
+
     /** Initializes the generator */
     public SkipGeneratorProxy(Generator<E> source,
             Long minIncrement, Long maxIncrement, Distribution incrementDistribution) {
         super(source);
+        if (minIncrement == null)
+        	minIncrement = DEFAULT_MIN_INCREMENT;
+        if (maxIncrement == null)
+        	maxIncrement = DEFAULT_MAX_INCREMENT;
         this.incrementGenerator = new LongGenerator(minIncrement, maxIncrement, 1L, incrementDistribution);
     }
 
