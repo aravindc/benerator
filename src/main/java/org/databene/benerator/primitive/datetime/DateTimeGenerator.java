@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,15 +27,13 @@
 package org.databene.benerator.primitive.datetime;
 
 import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.model.function.Sequence;
 import org.databene.model.function.String2DistributionConverter;
 
@@ -47,12 +45,10 @@ import org.databene.model.function.String2DistributionConverter;
  */
 public class DateTimeGenerator extends LightweightGenerator<Date> {
     
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
     private LongGenerator dateGenerator = new LongGenerator();
     private LongGenerator timeGenerator = new LongGenerator();
-    
-    private TimeZone timeZone = TimeZone.getDefault();
     
     public DateTimeGenerator() {
         this(
@@ -80,7 +76,7 @@ public class DateTimeGenerator extends LightweightGenerator<Date> {
     }
     
     public void setDatePrecision(String datePrecision) {
-        dateGenerator.setPrecision(parseDate(datePrecision) + timeZone.getRawOffset());
+        dateGenerator.setPrecision(dateConverter.convert(datePrecision));
     }
     
     public void setDateDistribution(String distribution) {
@@ -108,14 +104,5 @@ public class DateTimeGenerator extends LightweightGenerator<Date> {
     public Date generate() {
         return new Date(dateGenerator.generate() + timeGenerator.generate());
     }
-    
-    // private helper methods ------------------------------------------------------------------------------------------
-    
-    private long parseDate(String s) {
-        try {
-            return dateFormat.parse(s).getTime();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 }
