@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<setup	xmlns="http://databene.org/benerator/0.5.6"
+<setup	xmlns="http://databene.org/benerator/0.5.7"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator/0.5.6 http://databene.org/benerator-0.5.6.xsd">
+		xsi:schemaLocation="http://databene.org/benerator/0.5.7 http://databene.org/benerator-0.5.7.xsd">
 
     <bean id="datetime_gen" class="org.databene.benerator.primitive.datetime.DateTimeGenerator"> 
     	<property name="minDate" value="2007-06-21"/>
     	<property name="maxDate" value="2007-09-21"/>
-    	<property name="datePrecision" value="1970-01-02"/>
+    	<property name="datePrecision" value="0000-00-01"/>
     	<property name="dateDistribution" value="random"/>
     	<property name="minTime" value="09:00:00"/>
     	<property name="maxTime" value="17:00:00"/>
