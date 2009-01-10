@@ -27,6 +27,8 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
@@ -40,7 +42,6 @@ import org.databene.commons.*;
 import org.databene.commons.converter.*;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.model.data.Iteration;
 import org.databene.model.function.Distribution;
 import org.databene.model.function.Sequence;
 import org.databene.document.csv.CSVLineIterable;
@@ -60,6 +61,8 @@ import java.util.*;
  * Created: 23.08.2006 21:44:27
  */
 public class GeneratorFactory {
+	
+    private static final BasicParser basicParser = new BasicParser();
 
     // Singleton related stuff -----------------------------------------------------------------------------------------
 
@@ -506,15 +509,15 @@ public class GeneratorFactory {
      * @param uri         the uri of the CSV file
      * @param separator   the cell separator used in the CSV file
      * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
-     * @param iteration   Chooses a proxy if not null
+     * @param proxySpec   defines a proxy if not null
      * @param proxyParam1 first proxy parameter
      * @param proxyParam2 2nd proxy parameter
      * @return a generator of the desired characteristics
      */
     public static Generator<String> getCSVCellGenerator(String uri, char separator, boolean cyclic,
-                                                        Iteration iteration, Long proxyParam1, Long proxyParam2) {
+    		String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
         Generator<String> generator = new IteratingGenerator<String>(new CSVCellIterable(uri, separator));
-        return createProxy(generator, cyclic, iteration, proxyParam1, proxyParam2);
+        return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
     }
 
     /**
@@ -524,15 +527,15 @@ public class GeneratorFactory {
      * @param separator        the cell separator used in the CSV file
      * @param ignoreEmptyLines flag wether to leave out empty lines
      * @param cyclic           indicates wether iteration should restart from the first line after it reaches the file end.
-     * @param iteration        Chooses a proxy if not null
+     * @param proxySpec        defines a proxy if not null
      * @param proxyParam1      first proxy parameter
      * @param proxyParam2      2nd proxy parameter
      * @return a generator of the desired characteristics
      */
     public static Generator<String[]> getCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines,
-                                                          boolean cyclic, Iteration iteration, Long proxyParam1, Long proxyParam2) {
+    		boolean cyclic, String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
         Generator<String[]> generator = new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, SystemInfo.fileEncoding()));
-        return createProxy(generator, cyclic, iteration, proxyParam1, proxyParam2);
+        return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
     }
 
     /**
@@ -540,15 +543,15 @@ public class GeneratorFactory {
      *
      * @param uri         the uri of the text file
      * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
-     * @param iteration   Chooses a proxy if not null
+     * @param proxySpec   defines a proxy if not null
      * @param proxyParam1 first proxy parameter
      * @param proxyParam2 2nd proxy parameter
      * @return a generator of the desired characteristics
      */
     public static Generator<String> getTextLineGenerator(String uri, boolean cyclic,
-                                                         Iteration iteration, Long proxyParam1, Long proxyParam2) {
+    		String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
         Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
-        return createProxy(generator, cyclic, iteration, proxyParam1, proxyParam2);
+        return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
     }
     
     // helpers ---------------------------------------------------------------------------------------------------------
@@ -564,17 +567,6 @@ public class GeneratorFactory {
         Generator<T> generator = source;
         if (nullQuota > 0)
             generator = new NullableGenerator<T>(source, (float) nullQuota);
-        return generator;
-    }
-
-    static <T> Generator<T> createProxy(Generator<T> generator, boolean cyclic,
-                                                Iteration iteration, Long proxyParam1, Long proxyParam2) {
-        if (cyclic)
-            generator = new CyclicGeneratorProxy<T>(generator);
-        if (iteration == Iteration.repeat)
-            generator = new RepeatGeneratorProxy<T>(generator, proxyParam1, proxyParam2);
-        else if (iteration == Iteration.skip)
-            generator = new SkipGeneratorProxy<T>(generator, proxyParam1, proxyParam2);
         return generator;
     }
 

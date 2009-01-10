@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,10 +30,7 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.id.GlobalIdProviderFactory;
 import org.databene.id.IdProvider;
-import org.databene.id.IdProviderFactory;
-import org.databene.id.IdStrategy;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -44,7 +41,6 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
@@ -55,9 +51,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.TypedIterable;
 
 import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
@@ -76,8 +69,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     
     private static DataModel dataModel = DataModel.getDefaultInstance();
 
-	private static Escalator escalator = new LoggerEscalator();
-    
     // factory methods for component generators ------------------------------------------------------------------------
 
     public static ComponentBuilder createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
@@ -148,7 +139,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return new PlainComponentBuilder(part.getName(), generator);
     }
 
-    public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, Context context) {
+    public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
         TypeDescriptor typeDescriptor = descriptor.getType();
         
         // check target type
@@ -172,11 +163,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         	throw new ConfigurationError("Not a supported source type: " + sourceName);
         
         // check distribution
-        Distribution distribution = descriptor.getType().getDistribution();
+        Distribution distribution = DescriptorUtil.getDistribution(descriptor.getType(), descriptor.isUnique(), context);
         if (distribution != null)
             generator = TypeGeneratorFactory.applyDistribution(descriptor.getType(), distribution, generator);
         else
-        	generator = TypeGeneratorFactory.wrapWithProxy(generator, descriptor.getType());
+        	generator = DescriptorUtil.wrapWithProxy(generator, descriptor.getType(), context);
         
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
@@ -184,44 +175,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return new PlainComponentBuilder(descriptor.getName(), generator);
     }
     
-    public static ComponentBuilder createIdBuilder(IdDescriptor descriptor, Context context) {
-    	// check type
-        TypeDescriptor type = descriptor.getType();
-
-        // check source
-        IdProviderFactory source = null;
-        String sourceName = null;
-		if (type != null) {
-			sourceName = type.getSource();
-			if (sourceName != null) {
-				source = (IdProviderFactory) context.get(sourceName);
-			}
-		}
-        
-        // check strategy
-        String strategyName = descriptor.getStrategy();
-        if (strategyName == null)
-        	strategyName = GlobalIdProviderFactory.INCREMENT.getName();
-        
-        // check param
-        String param = descriptor.getParam();
-
-        // check scope
-        String scope = descriptor.getScope();
-
-        //checkUsedDetails(descriptor, usedDetails);
-        IdStrategy idStrategy = IdStrategy.getInstance(strategyName);
-        IdProvider idProvider = null;
-        if (source != null) {
-            idProvider = source.idProvider(idStrategy, param, scope);
-            if (idProvider == null)
-            	escalator.escalate("IdProvider " + sourceName + " does not support IdStrategy " 
-            			+ strategyName, ComponentBuilderFactory.class, idStrategy);
-        }
-        if (idProvider == null)
-            idProvider = GLOBAL_ID_PROVIDER_FACTORY.idProvider(idStrategy, param, scope);
-        if (idProvider == null)
-            throw new ConfigurationError("unknown id generation strategy: " + idStrategy);
+    public static ComponentBuilder createIdBuilder(IdDescriptor descriptor, BeneratorContext context) {
+        IdProvider idProvider = DescriptorUtil.getIdProvider(descriptor, context);
         Generator<Object> generator = new IdGenerator(idProvider);
         generator = TypeGeneratorFactory.createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor.getType(), generator);
         if (logger.isDebugEnabled())
@@ -229,45 +184,21 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return new PlainComponentBuilder(descriptor.getName(), generator);
     }
 
-    private static final GlobalIdProviderFactory GLOBAL_ID_PROVIDER_FACTORY = new GlobalIdProviderFactory();
-
     // non-public helpers ----------------------------------------------------------------------------------------------
 
     static Generator<Object> createMultiplicityWrapper(
-            ComponentDescriptor instance, Generator<? extends Object> generator, Context context) {
-        long maxCount = getMaxCount(instance);
-        long minCount = getMinCount(instance);
+            ComponentDescriptor instance, Generator<? extends Object> generator, BeneratorContext context) {
+        long maxCount = DescriptorUtil.getMaxCount(instance, context);
+        long minCount = DescriptorUtil.getMinCount(instance, context);
         if (maxCount != 1 && minCount != 1) {
         	InstanceArrayGenerator wrapper = new InstanceArrayGenerator(generator);
 	        mapDetailsToBeanProperties(instance, wrapper, context);
-	        wrapper.setCountDistribution(getCountDistribution(instance));
+	        wrapper.setCountDistribution(DescriptorUtil.getCountDistribution(instance));
 			wrapper.setMaxCount(maxCount);
 			wrapper.setMinCount(minCount);
 			generator = wrapper;
         }
-        return (Generator<Object>) GeneratorFactory.wrapNullQuota(generator, getNullQuota(instance));
+        return (Generator<Object>) GeneratorFactory.wrapNullQuota(generator, DescriptorUtil.getNullQuota(instance));
     }
-
-	private static long getMaxCount(ComponentDescriptor descriptor) {
-		if (descriptor.getCount() != null)
-			return descriptor.getCount();
-        if (descriptor.getMaxCount() != null)
-        	return descriptor.getMaxCount();
-        return 9;
-	}
-
-	private static long getMinCount(ComponentDescriptor descriptor) {
-		if (descriptor.getCount() != null)
-			return descriptor.getCount();
-        if (descriptor.getMinCount() != null)
-        	return descriptor.getMinCount();
-        return 1;
-	}
-
-	private static Distribution getCountDistribution(ComponentDescriptor descriptor) {
-		if (descriptor.getCountDistribution() != null)
-			return descriptor.getCountDistribution();
-        return Sequence.RANDOM;
-	}
 
 }

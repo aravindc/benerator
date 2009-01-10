@@ -29,10 +29,14 @@ package org.databene.benerator.factory;
 
 import java.beans.PropertyDescriptor;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.sample.DistributingGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
+import org.databene.model.data.TypeDescriptor;
+import org.databene.model.function.Distribution;
 import org.databene.model.storage.StorageSystem;
 
 /**

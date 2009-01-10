@@ -30,6 +30,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.function.Distribution;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -73,7 +74,7 @@ public class InstanceGeneratorFactory {
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
         if (generator == null) {
-            boolean unique = isUnique(descriptor);
+            boolean unique = DescriptorUtil.isUnique(descriptor);
             TypeDescriptor type = descriptor.getType();
             if (type instanceof SimpleTypeDescriptor)
 				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
@@ -83,28 +84,23 @@ public class InstanceGeneratorFactory {
         				(ComplexTypeDescriptor) type, unique, context);
             else
                 throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
+            generator = DescriptorUtil.wrapWithProxy(generator, type, context);
             generator = wrapWithNullQuota(generator, descriptor);
         }
         return generator;
     }
     
-	protected static boolean isUnique(InstanceDescriptor descriptor) {
-        Boolean unique = descriptor.isUnique();
-        if (unique == null)
-            unique = false;
-        return unique;
-    }
-
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private static <T> Generator<Object> createInstanceGeneratorWrapper(
-            InstanceDescriptor descriptor, Generator<T> typeGenerator, Context context) {
-        InstanceSequenceGenerator<T> generator = new InstanceSequenceGenerator<T>(typeGenerator);
+    private static Generator<Object> createInstanceGeneratorWrapper(
+            InstanceDescriptor descriptor, Generator<? extends Object> typeGenerator, BeneratorContext context) {
+        InstanceSequenceGenerator generator = new InstanceSequenceGenerator(typeGenerator);
         // set count limits
         if (descriptor.getCount() != null) {
             long count = descriptor.getCount();
-            generator.setMinCount(count);
-            generator.setMaxCount(count);
+            generator.setMinCount(DescriptorUtil.getMinCount(descriptor, context));
+            generator.setMaxCount(DescriptorUtil.getMaxCount(descriptor, context));
+            generator.setCountDistribution(DescriptorUtil.getCountDistribution(descriptor));
             mapDetailToBeanProperty(descriptor, "countDistribution", generator, context);
         } else {
             mapDetailsToBeanProperties(descriptor, generator, context);
@@ -131,14 +127,6 @@ public class InstanceGeneratorFactory {
         }
         return generator;
     }
-
-    protected static double getNullQuota(InstanceDescriptor descriptor) {
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota == null)
-            nullQuota = 0.;
-        return nullQuota;
-    }
-
 
     public static Generator<? extends Object> createNullableGenerator(
     		InstanceDescriptor descriptor, BeneratorContext context) {

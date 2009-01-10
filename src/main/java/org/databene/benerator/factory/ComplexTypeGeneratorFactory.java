@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.benerator.factory;
 
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.DescriptorUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.InstanceDescriptor;
@@ -52,6 +51,8 @@ import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
+import org.databene.commons.converter.ConverterChain;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.dataset.DatasetFactory;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileUtil;
@@ -74,12 +75,7 @@ public class ComplexTypeGeneratorFactory {
 
     private static final Log logger = LogFactory.getLog(ComplexTypeGeneratorFactory.class);
 
-    // attributes ------------------------------------------------------------------------------------------------------
-    
-    //private static Escalator escalator = new LoggerEscalator();
-
-    // private constructor for preventing instantiation ----------------------------------------------------------------
-    
+    /** private constructor for preventing instantiation */
     private ComplexTypeGeneratorFactory() {}
     
     // public utility methods ------------------------------------------------------------------------------------------
@@ -90,7 +86,7 @@ public class ComplexTypeGeneratorFactory {
             logger.debug("create(" + type.getName() + ")");
         // create original generator
         Generator<Entity> generator = null;
-        generator = (Generator<Entity>) TypeGeneratorFactory.createByGeneratorName(type, context);
+        generator = (Generator<Entity>) DescriptorUtil.getGeneratorByName(type, context);
         if (generator == null)
             generator = createSourceGenerator(type, context);
         if (generator == null)
@@ -118,7 +114,8 @@ public class ComplexTypeGeneratorFactory {
         return new ConfiguredEntityGenerator((Generator<Entity>) generator, varGens, context);
     }
 
-    private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
+    @SuppressWarnings("unchecked")
+	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
         Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
         while (type instanceof ComplexTypeDescriptor) {
             variables.addAll(((ComplexTypeDescriptor) type).getVariables());
@@ -144,7 +141,7 @@ public class ComplexTypeGeneratorFactory {
                 String selector = descriptor.getSelector();
                 generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
             } else if (sourceObject instanceof EntitySource) {
-                generator = new IteratingGenerator((EntitySource) sourceObject);
+                generator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
             } else if (sourceObject instanceof Generator) {
                 generator = (Generator) sourceObject;
             } else
@@ -162,16 +159,16 @@ public class ComplexTypeGeneratorFactory {
         }
         if (generator.getGeneratedType() != Entity.class)
         	generator = new SimpleTypeEntityGenerator(generator, descriptor);
-        if (descriptor.getDistribution() != null)
-        	return applyDistribution(descriptor, generator);
+		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context); // TODO what about uniqueness? (arbitrarily set to false)
+        if (distribution != null)
+        	return applyDistribution(distribution, descriptor, generator, context);
         else
-        	return TypeGeneratorFactory.wrapWithProxy(generator, descriptor);
+        	return DescriptorUtil.wrapWithProxy(generator, descriptor, context);
     }
 
 	private static Generator<Entity> applyDistribution(
-			ComplexTypeDescriptor descriptor, Generator<Entity> generator) {
+			Distribution distribution, ComplexTypeDescriptor descriptor, Generator<Entity> generator, BeneratorContext context) {
 		List<Entity> values = GeneratorUtil.allProducts(generator);
-		Distribution distribution = descriptor.getDistribution();
 		if (distribution instanceof Sequence) {
 			generator = new SequencedSampleGenerator<Entity>(Entity.class, (Sequence) distribution, values);
 		} else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
@@ -195,10 +192,19 @@ public class ComplexTypeGeneratorFactory {
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
-		ScriptConverter scriptConverter = new ScriptConverter(context);
+		Converter<String, String> scriptConverter = createScriptConverter(context);
 		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, ffcd);
-		generator = new IteratingGenerator(iterable);
+		generator = new IteratingGenerator<Entity>(iterable);
 		return generator;
+	}
+
+	private static Converter<String, String> createScriptConverter(
+			BeneratorContext context) {
+		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
+				new ScriptConverter(context),
+				new ToStringConverter<Object>(null)
+			);
+		return scriptConverter;
 	}
 
 	private static Generator<Entity> createCSVSourceGenerator(
@@ -207,10 +213,10 @@ public class ComplexTypeGeneratorFactory {
 		String encoding = complexType.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-		ScriptConverter scriptConverter = new ScriptConverter(context);
+		Converter<String, String> scriptConverter = createScriptConverter(context);
 		String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
-		char separator = getSeparator(complexType, context);
+		char separator = DescriptorUtil.getSeparator(complexType, context);
 		if (dataset != null && nesting != null) {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
@@ -224,16 +230,6 @@ public class ComplexTypeGeneratorFactory {
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
 		return generator;
-	}
-
-	private static char getSeparator(ComplexTypeDescriptor descriptor, BeneratorContext context) {
-		String separatorString = descriptor.getSeparator();
-		char separator = context.getDefaultSeparator();
-		if (!StringUtil.isEmpty(separatorString)) {
-			Assert.length(separatorString, 1);
-			separator = separatorString.charAt(0);
-		}
-		return separator;
 	}
 
     private static Generator<Entity> createSyntheticEntityGenerator(
