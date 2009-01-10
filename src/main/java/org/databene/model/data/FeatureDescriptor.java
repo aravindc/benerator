@@ -9,6 +9,7 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.String2ConverterConverter;
 import org.databene.commons.converter.ToStringConverter;
+import org.databene.model.function.String2DistributionConverter;
 
 import java.util.List;
 
