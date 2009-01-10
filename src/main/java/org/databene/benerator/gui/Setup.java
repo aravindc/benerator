@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,10 @@ package org.databene.benerator.gui;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.util.Locale;
 
 import org.databene.commons.FileUtil;
+import org.databene.commons.LocaleUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
@@ -68,6 +70,9 @@ public class Setup implements ObservableBean {
 	private String encoding;
 	private String lineSeparator;
 
+	private String locale;
+	private String dataset;
+
 	private String dbUrl;
 	private String dbDriver;
 	private String dbPassword;
@@ -93,6 +98,8 @@ public class Setup implements ObservableBean {
 		
 		setEncoding(SystemInfo.fileEncoding());
 		setLineSeparator(SystemInfo.lineSeparator());
+		setLocale(Locale.getDefault().toString());
+		setDataset(LocaleUtil.getDefaultCountryCode());
 
 		String url = System.getenv("DEFAULT_DATABASE");
 		if (StringUtil.isEmpty(url))
@@ -102,7 +109,7 @@ public class Setup implements ObservableBean {
 		setDbUser(SystemInfo.userName());
 		setDbSnapshot("DbUnit");
 		this.importFiles = new File[0];
-		this.dbDependencies = new MavenDependency[0]; // TODO
+		this.dbDependencies = new MavenDependency[0]; // TODO v0.5.8 handle maven dependencies
 	}
 
 	public String getProjectName() {
@@ -177,7 +184,9 @@ public class Setup implements ObservableBean {
 	}
 
 	public void setEncoding(String encoding) {
+		String oldValue = this.encoding;
 		this.encoding = encoding;
+		changeSupport.firePropertyChange("encoding", oldValue, this.encoding);
 	}
 
 	public String getLineSeparator() {
@@ -185,7 +194,29 @@ public class Setup implements ObservableBean {
 	}
 
 	public void setLineSeparator(String lineSeparator) {
+		String oldValue = this.lineSeparator;
 		this.lineSeparator = lineSeparator;
+		changeSupport.firePropertyChange("lineSeparator", oldValue, this.lineSeparator);
+	}
+
+	public String getLocale() {
+		return locale;
+	}
+
+	public void setLocale(String locale) {
+		String oldValue = this.locale;
+		this.locale = locale;
+		changeSupport.firePropertyChange("locale", oldValue, this.locale);
+	}
+
+	public String getDataset() {
+		return dataset;
+	}
+
+	public void setDataset(String dataset) {
+		String oldValue = this.dataset;
+		this.dataset = dataset;
+		changeSupport.firePropertyChange("dataset", oldValue, this.dataset);
 	}
 
 	public String getDbUrl() {
