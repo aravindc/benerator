@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.main;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.databene.benerator.Generator;
@@ -45,16 +44,16 @@ import org.databene.task.ThreadSafe;
 public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
 
     private Generator<Entity> generator;
-    private Collection<Consumer<Entity>> consumers;
+    private Consumer<Entity> consumer;
 //    private int generationCount;
     private List<? extends Task> subTasks;
     private boolean isSubTask;
     
     public CreateEntityTask(String taskName, Generator<Entity> generator, 
-            Collection<Consumer<Entity>> consumers, List<? extends Task> subTasks, boolean isSubTask, ErrorHandler errorHandler) {
+            Consumer<Entity> consumer, List<? extends Task> subTasks, boolean isSubTask, ErrorHandler errorHandler) {
     	super(taskName, errorHandler);
         this.generator = generator;
-        this.consumers = consumers;
+        this.consumer = consumer;
 //        this.generationCount = 0;
         this.subTasks = subTasks;
         this.isSubTask = isSubTask;
@@ -77,8 +76,7 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
 	        if (entity != null) {
 	            context.set(entity.getName(), entity);
 	//            generationCount++;
-	            for (Consumer<Entity> consumer : consumers)
-	                consumer.startConsuming(entity);
+	            consumer.startConsuming(entity);
 	            for (Task subTask : subTasks) {
 	                if (subTask instanceof PagedCreateEntityTask)
 	                    ((PagedCreateEntityTask)subTask).reset();
@@ -86,8 +84,7 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
 	                subTask.run();
 	                subTask.destroy();
 	            }
-	            for (Consumer<Entity> consumer : consumers)
-	                consumer.finishConsuming(entity);
+	            consumer.finishConsuming(entity);
 	        }
     	} catch (Exception e) {
     		errorHandler.handleError("Error in execution of task " + getTaskName(), e);
@@ -97,8 +94,7 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
     @Override
     public void destroy() {
         if (!isSubTask)
-            for (Consumer<Entity> consumer : consumers)
-                consumer.flush();
+            consumer.flush();
         super.destroy();
     }
     
