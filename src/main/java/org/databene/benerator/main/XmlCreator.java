@@ -34,6 +34,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.ui.ConsoleInfoPrinter;
+import org.databene.commons.ui.InfoPrinter;
 
 /**
  * Main class for generating XML files from the command line.<br/><br/>
@@ -90,7 +92,9 @@ public class XmlCreator {
 	}
 
     private static void printHelp() {
-        System.out.println("Invalid parameters");
-        System.out.println("parameters: schemaUri root fileNamePattern count [propertiesFilenames]");
+    	ConsoleInfoPrinter.printHelp(
+        	"Invalid parameters",
+        	"parameters: schemaUri root fileNamePattern count [propertiesFilenames]"
+        );
     }
 }
