@@ -165,7 +165,7 @@ public class Country {
     private static Country defaultCountry;
 
     static {
-        defaultCountry = Country.getInstance(Locale.getDefault().getCountry().toLowerCase());
+        defaultCountry = Country.getInstance(LocaleUtil.getDefaultCountryCode());
     }
 
     private static void parseConfigFile() {
