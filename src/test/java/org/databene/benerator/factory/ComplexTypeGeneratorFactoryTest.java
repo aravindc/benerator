@@ -78,6 +78,14 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		}
 	}
 
+	public void testTabbedCSVImport() {
+		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		type.setSource("org/databene/benerator/factory/person_tab.csv");
+		type.setSeparator("\t");
+		Generator<Entity> generator = createGenerator(type);
+		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
+	}
+
 	public void testSimpleCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource("org/databene/benerator/factory/person.csv");
@@ -109,7 +117,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testSequencedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource("org/databene/benerator/factory/person.csv");
-		type.setDistribution(Sequence.STEP);
+		type.setDistribution("step");
 		type.setVariation1("-1");
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
