@@ -2,7 +2,7 @@
 <!--DOCTYPE xs:schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "XMLSchema.dtd"-->
 <xs:schema 
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:ben="http://datebene.org/benerator/0.5.6"
+        xmlns:ben="http://datebene.org/benerator/0.5.7"
 		targetNamespace="annotation-test.xsd"
 		xmlns="annotation-test.xsd"
 		elementFormDefault="qualified">
