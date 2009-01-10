@@ -43,7 +43,7 @@ public class WeightedDatasetCSVGeneratorTest extends TestCase {
         WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, "UTF-8");
         boolean mueller = false;
         for (int i = 0; i < 1000; i++) {
-            if ("Müller".equals(generator.generate()))
+            if ("MÃ¼ller".equals(generator.generate()))
                 mueller = true;
         }
         assertTrue(mueller);
@@ -55,9 +55,9 @@ public class WeightedDatasetCSVGeneratorTest extends TestCase {
         boolean garcia = false;  // Spanish name
         for (int i = 0; i < 100000 && (!mueller || !garcia); i++) {
             String name = generator.generate();
-            if ("Müller".equals(name))
+            if ("MÃ¼ller".equals(name))
                 mueller = true;
-            if ("García".equals(name))
+            if ("GarcÃ­a".equals(name))
                 garcia = true;
         }
         assertTrue(mueller);
