@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.main;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -45,23 +44,22 @@ import org.databene.task.Task;
 public class PagedCreateEntityTask extends PagedTask {
     
     private Generator<Entity> generator;
-	private Collection<Consumer<Entity>> consumers;
+	private Consumer<Entity> consumer;
 	
 	public PagedCreateEntityTask(
-			String taskName, int count, int pageSize, int threads, List<? extends Task> subTasks, 
-			Generator<Entity> generator, Collection<Consumer<Entity>> consumers, ExecutorService executor, 
+			String taskName, long count, int pageSize, int threads, List<? extends Task> subTasks, 
+			Generator<Entity> generator, Consumer<Entity> consumer, ExecutorService executor, 
 			boolean isSubTask, ErrorHandler errorHandler) {
-		super(new CreateEntityTask(taskName, generator, consumers, subTasks, isSubTask, errorHandler), count, null, pageSize, threads, executor);
+		super(new CreateEntityTask(taskName, generator, consumer, subTasks, isSubTask, errorHandler), count, null, pageSize, threads, executor);
 		this.generator = generator;
-		this.consumers = consumers;
+		this.consumer = consumer;
 	}
 	
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
 	@Override
 	public void pageFinished(int currentPageNo) {
-		for (Consumer<Entity> consumer : consumers)
-			consumer.flush();
+		consumer.flush();
 	}
 
 	@Override
