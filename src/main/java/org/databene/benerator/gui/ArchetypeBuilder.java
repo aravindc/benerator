@@ -26,6 +26,7 @@
 
 package org.databene.benerator.gui;
 
+import java.beans.PropertyDescriptor;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,16 +55,16 @@ import javax.xml.transform.stream.StreamResult;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.main.DBSnapshotTool;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.ErrorHandler;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.NullSafeComparator;
-import org.databene.commons.ShellUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.maven.MavenUtil;
 import org.databene.commons.ui.I18NError;
 import org.databene.commons.ui.ProgressMonitor;
 import org.databene.commons.xml.XMLUtil;
@@ -157,6 +158,9 @@ public class ArchetypeBuilder implements Runnable {
 
 	        createEclipseProject();
 	        
+		} catch (Exception e) {
+			errors.add(e.getMessage());
+			e.printStackTrace();
 		} finally {
 			if (db != null)
 				db.close();
@@ -169,8 +173,7 @@ public class ArchetypeBuilder implements Runnable {
 		setup.projectFile(".project"); // call this for existence check and overwrite error
 		if (setup.isEclipseProject()) {
 			noteMonitor("Creating Eclipse project");
-			String command = "mvn" + (setup.isOffline() ? " -o" : "") + " eclipse:eclipse";
-			ShellUtil.runShellCommand(command, setup.getProjectFolder(), new Handler());
+			MavenUtil.invoke("eclipse:eclipse", setup.getProjectFolder(), !setup.isOffline()); 
 		}
 		advanceMonitor();
 	}
@@ -226,15 +229,7 @@ public class ArchetypeBuilder implements Runnable {
 		File file = setup.projectFile("pom.xml");
 		try {
 			String content = IOUtil.getContentOfURI("org/databene/benerator/gui/template-pom.xml");
-			content = content.replace("${setup.projectName}", setup.getProjectName());
-			content = content.replace("${setup.groupId}",     setup.getGroupId());
-			content = content.replace("${setup.version}",     setup.getVersion());
-			content = content.replace("${setup.encoding}",    setup.getEncoding());
-			content = content.replace("${setup.dbUrl}",       setup.getDbUrl());
-			content = content.replace("${setup.dbDriver}",    setup.getDbDriver());
-			content = content.replace("${setup.dbUser}",      setup.getDbUser());
-			content = content.replace("${setup.dbPassword}",  setup.getDbPassword());
-			content = content.replace("${setup.dbSchema}",    setup.getDbSchema());
+			content = replaceVariables(content);
 			IOUtil.writeTextFile(file.getAbsolutePath(), content, setup.getEncoding());
 		} catch (IOException e) {
 			throw new I18NError("ErrorCreatingFile", e, file);
@@ -324,7 +319,7 @@ public class ArchetypeBuilder implements Runnable {
 				AttributesImpl out = new AttributesImpl();
 				for (int i = 0; i < attributes.getLength(); i++) {
 					String value = attributes.getValue(i);
-					value = value.replace("${setup.projectName}", setup.getProjectName());
+					value = replaceVariables(value);
 					out.addAttribute(attributes.getURI(i), attributes.getLocalName(i), attributes.getQName(i), 
 							attributes.getType(i), value);
 				}
@@ -379,6 +374,17 @@ public class ArchetypeBuilder implements Runnable {
 		public void endDocument() throws SAXException {
 			handler.endDocument();
 		}
+	}
+
+	String replaceVariables(String text) {
+		for (PropertyDescriptor property : BeanUtil.getPropertyDescriptors(Setup.class)) {
+			String propertyName = property.getName();
+			String var = "${setup." + propertyName + "}";
+			Object propertyValue = BeanUtil.getPropertyValue(setup, propertyName);
+			String propertyString = ToStringConverter.convert(propertyValue, null);
+			text = text.replace(var, propertyString);
+		}
+		return text;
 	}
 
 	void importFiles() throws SAXException {
@@ -537,20 +543,4 @@ public class ArchetypeBuilder implements Runnable {
 			complexType.setComponent(override);
 	}
 
-	class Handler extends ErrorHandler {
-		
-		public Handler() {
-			super(ArchetypeBuilder.class);
-		}
-
-		@Override
-		public void handleError(String message) {
-			errors.add(message);
-		}
-		
-		@Override
-		public void handleError(String message, Throwable t) {
-			errors.add(message + ": " + t.toString());
-		}
-	}
 }
