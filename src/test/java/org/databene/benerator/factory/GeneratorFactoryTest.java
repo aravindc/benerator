@@ -201,7 +201,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     public void testGetCharacterGeneratorByRegex() {
-        String pattern = "[A-Za-z0-1ÄÖÜäöüß]";
+        String pattern = "[A-Za-z0-1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]";
         Generator<Character> generator = GeneratorFactory.getCharacterGenerator(pattern, Locale.GERMAN, 0);
         checkGenerator(generator);
     }
@@ -343,7 +343,8 @@ public class GeneratorFactoryTest extends GeneratorTest {
     // source generators -----------------------------------------------------------------------------------------------
 
     public void testGetCSVCellGenerator() {
-        Generator generator = GeneratorFactory.getCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true, null, null, null);
+        Generator generator = GeneratorFactory.getCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true, 
+        		null, null, null, null);
         assertEquals("Alice", generator.generate());
         assertEquals("Bob", generator.generate());
         assertEquals("Charly", generator.generate());
@@ -352,7 +353,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetArraySourceGenerator() {
         Generator<String[]> generator = GeneratorFactory.getCSVLineGenerator(
-                "file://org/databene/csv/names-abc.csv", ',', true, true, null, null, null);
+                "file://org/databene/csv/names-abc.csv", ',', true, true, null, null, null, null);
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
         assertArrayEquals(new String[] { "Charly"}, generator.generate());
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
