@@ -16,7 +16,7 @@
             <plugin>
             	<groupId>org.databene</groupId>
             	<artifactId>maven-benerator-plugin</artifactId>
-            	<version>0.5.6</version>
+            	<version>0.5.7</version>
             	<configuration>
             		<descriptor>${setup.projectName}.ben.xml</descriptor>
                     <encoding>${setup.encoding}</encoding>
@@ -28,17 +28,67 @@
             		<dbPassword>${setup.dbPassword}</dbPassword>
             	</configuration>
             	<dependencies>
-            	<!-- TODO add needed dependencies -->
-            		<dependency>
-            			<groupId>oracle</groupId>
-            			<artifactId>ojdbc</artifactId>
-            			<version>1.4</version>
-            		</dependency>
-            		<dependency>
-            			<groupId>log4j</groupId>
-            			<artifactId>log4j</artifactId>
-            			<version>1.2.13</version>
-            		</dependency>
+            	    <!-- TODO set the scope of needed dependencies from 'provided' to 'runtime' -->
+                    <dependency>
+                        <groupId>com.oracle</groupId>
+                        <artifactId>ojdbc6</artifactId>
+                        <version>11.1.0.7</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.ibm</groupId>
+                        <artifactId>db2jcc</artifactId>
+                        <version>3.50.152</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.jtds</groupId> <!-- MS SQL server and Sybase -->
+                        <artifactId>jtds</artifactId>
+                        <version>1.2.2</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.6</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>hsqldb</groupId>
+                        <artifactId>hsqldb</artifactId>
+                        <version>1.8.0.7</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derby</artifactId>
+                        <version>10.4.2.0</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>8.3-603.jdbc4</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                        <version>1.2.13</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                        <version>1.2.13</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi</artifactId>
+                        <version>3.1-FINAL</version>
+                        <scope>provided</scope>
+                    </dependency>
             	</dependencies>
         	</plugin>
         </plugins>
