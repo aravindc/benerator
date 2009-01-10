@@ -139,11 +139,19 @@ public class CreateProjectPanel extends JPanel {
 		pane.endRow();
 		
 		createCheckBox("eclipseProject", pane);
-		createTextField("encoding",    pane);
+		createCheckBox("overwrite", pane);
 		pane.endRow();
 		
 		createCheckBox("offline", pane);
-		createCheckBox("overwrite", pane);
+		pane.endRow();
+		pane.addSeparator();
+		
+		createTextField("encoding",      pane);
+		createTextField("lineSeparator", pane);
+		pane.endRow();
+
+		createTextField("locale", pane);
+		createTextField("dataset", pane);
 		pane.endRow();
 		pane.addSeparator();
 		
