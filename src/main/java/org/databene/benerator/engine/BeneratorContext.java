@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,9 @@
 
 package org.databene.benerator.engine;
 
+import java.util.Locale;
+
+import org.databene.commons.LocaleUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ClassCache;
 import org.databene.commons.bean.ClassProvider;
@@ -44,18 +47,19 @@ import org.databene.script.ScriptUtil;
  * @author Volker Bergmann
  */
 public class BeneratorContext extends ContextStack implements ClassProvider {
-	// TODO v0.5.7 move GenerationSetup implementation from 'Benerator' to here
 	
-	private DefaultContext properties;
+    private DefaultContext properties;
 	private ClassCache classCache;
 	
-    protected String  defaultEncoding     = SystemInfo.fileEncoding();
-    protected int     defaultPagesize     = 1;
-    protected boolean defaultNull         = true;
-    protected char    defaultSeparator    = ',';
-    protected String  defaultErrorHandler = "fatal";
-    protected String  contextUri          = "./";
-    public    boolean validate            = true;
+    protected String  defaultEncoding      = SystemInfo.fileEncoding();
+    protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
+    protected int     defaultPagesize      = 1;
+    protected boolean defaultNull          = true;
+    protected char    defaultSeparator     = ',';
+    protected String  defaultErrorHandler  = "fatal";
+    protected String  contextUri           = "./";
+    public    boolean validate             = true;
+    public    Long    maxCount             = null;
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
 	
@@ -71,6 +75,8 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		classCache = new ClassCache();
 	}
 	
+	// interface -------------------------------------------------------------------------------------------------------
+	
 	@Override
     public synchronized Object get(String key) {
         for (int i = contexts.size() - 1; i >= 0; i--) {
@@ -85,6 +91,10 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		properties.set(name, value);
 	}
 	
+	public Class forName(String className) {
+		return classCache.forName(className);
+	}
+	
 	public void importClass(String className) {
 		classCache.importClass(className);
 	}
@@ -93,19 +103,52 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		classCache.importPackage(packageName);
 	}
 
-	public Class forName(String className) {
-		return classCache.forName(className);
+	public void importDefaults() {
+		importPackage("org.databene.benerator.primitive.datetime");
+		importPackage("org.databene.platform.flat");
+		importPackage("org.databene.platform.csv");
+		importPackage("org.databene.platform.dbunit");
+		importPackage("org.databene.platform.xls");
+		importPackage("org.databene.model.consumer");
+		importPackage("org.databene.benerator.wrapper");
 	}
+
+	// properties ------------------------------------------------------------------------------------------------------
 	
     public String getDefaultEncoding() {
         return defaultEncoding;
     }
     
     public void setDefaultEncoding(String defaultEncoding) {
+    	System.setProperty("file.encoding", defaultEncoding);
         this.defaultEncoding = defaultEncoding;
     }
     
-    public int getDefaultPagesize() {
+    public String getDefaultLineSeparator() {
+		return SystemInfo.lineSeparator();
+	}
+
+	public void setDefaultLineSeparator(String defaultLineSeparator) {
+    	System.setProperty("line.separator", defaultLineSeparator);
+	}
+
+	public Locale getDefaultLocale() {
+		return Locale.getDefault();
+	}
+
+	public void setDefaultLocale(Locale defaultLocale) {
+		Locale.setDefault(defaultLocale);
+	}
+
+	public String getDefaultDataset() {
+		return defaultDataset;
+	}
+
+	public void setDefaultDataset(String defaultDataset) {
+		this.defaultDataset = defaultDataset;
+	}
+
+	public int getDefaultPagesize() {
         return defaultPagesize;
     }
     
@@ -163,6 +206,14 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
 	public void setValidate(boolean validate) {
 		this.validate = validate;
+	}
+	
+	public Long getMaxCount() {
+		return maxCount;
+	}
+
+	public void setMaxCount(Long maxCount) {
+		this.maxCount = maxCount;
 	}
 
 	public ComplexTypeDescriptor getDefaultComponent() { // TODO v0.5.7 check if this can bee hidden
