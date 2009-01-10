@@ -17,10 +17,6 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
         super(CharacterGenerator.class);
     }
 
-    public void testDefaultConstructor() {
-        new CharacterGenerator();
-    }
-
     public void testDigit() throws Exception {
         checkProductSet(new CharacterGenerator("\\d"), 1000,
                 CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7','8', '9'));
@@ -40,13 +36,13 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
         for (char c = '0'; c <= '9'; c++)
             expectedSet.add(c);
         expectedSet.add('_');
-        expectedSet.add('Ä');
-        expectedSet.add('ä');
-        expectedSet.add('Ö');
-        expectedSet.add('ö');
-        expectedSet.add('Ü');
-        expectedSet.add('ü');
-        expectedSet.add('ß');
+        expectedSet.add('Ã¤');
+        expectedSet.add('Ã¶');
+        expectedSet.add('Ã¼');
+        expectedSet.add('Ã„');
+        expectedSet.add('Ã–');
+        expectedSet.add('Ãœ');
+        expectedSet.add('ÃŸ');
 
         checkProductSet(new CharacterGenerator("\\w", Locale.GERMAN), 10000, expectedSet);
     }
