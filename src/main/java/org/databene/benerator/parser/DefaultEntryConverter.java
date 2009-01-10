@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,7 +46,7 @@ import org.databene.commons.mutator.AnyMutator;
 public class DefaultEntryConverter implements Converter<Map.Entry, Map.Entry> {
     
     private BeneratorContext context;
-    private Converter<String, String> preprocessor;
+    private Converter<String, Object> preprocessor;
     private LiteralParser stringParser;
     private boolean putEntriesToContext;
 
@@ -54,7 +54,7 @@ public class DefaultEntryConverter implements Converter<Map.Entry, Map.Entry> {
         this(new NoOpConverter(), context, false);
     }
 
-    public DefaultEntryConverter(Converter<String, String> preprocessor, BeneratorContext context, boolean putEntriesToContext) {
+    public DefaultEntryConverter(Converter<String, Object> preprocessor, BeneratorContext context, boolean putEntriesToContext) {
         this.preprocessor = preprocessor;
         this.context = context;
         this.putEntriesToContext = putEntriesToContext;
@@ -68,7 +68,7 @@ public class DefaultEntryConverter implements Converter<Map.Entry, Map.Entry> {
     public Map.Entry convert(Map.Entry entry) throws ConversionException {
         String key = String.valueOf(entry.getKey());
         String sourceValue = String.valueOf(entry.getValue());
-        sourceValue = preprocessor.convert(sourceValue);
+        sourceValue = String.valueOf(preprocessor.convert(sourceValue));
         Object result = stringParser.convert(sourceValue);
         if (putEntriesToContext) {
     		if (key.startsWith("benerator."))
