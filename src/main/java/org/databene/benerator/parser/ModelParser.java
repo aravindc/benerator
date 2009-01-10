@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,6 +38,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.xml.XMLElement2BeanConverter;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -50,8 +51,11 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.script.ScriptConverter;
-import org.databene.script.ScriptUtil;
+import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
+
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * Parses databene model files.<br/><br/>
@@ -70,11 +74,11 @@ public class ModelParser {
 	}
 
 	public Object parseBean(Element element) {
-        String beanId = parseAttribute(element, "id", context);
+        String beanId = parseStringAttribute(element, "id", context);
         if (beanId != null)
             logger.debug("Instantiating bean with id '" + beanId + "'");
         else
-            logger.debug("Instantiating bean of class " + parseAttribute(element, "class", context));
+            logger.debug("Instantiating bean of class " + parseStringAttribute(element, "class", context));
         Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
         if (!StringUtil.isEmpty(beanId)) {
             BeanUtil.setPropertyValue(bean, "id", beanId, false);
@@ -166,13 +170,8 @@ public class ModelParser {
         return variable;
     }
 
-    public String parseAttribute(Element element, String name, Context context) {
-        String value = element.getAttribute(name);
-        return renderAttribute(name, value, context);
-    }
-
     public String parseInclude(Element element, BeneratorContext context) {
-        String uri = parseAttribute(element, "uri", context);
+        String uri = parseStringAttribute(element, "uri", context);
         uri = IOUtil.resolveLocalUri(uri, context.getContextUri());
         try {
             importProperties(uri, context);
@@ -183,7 +182,7 @@ public class ModelParser {
     }
 
     public void importProperties(String uri, BeneratorContext context) throws IOException {
-        logger.debug("reading properties: " + uri);
+        logger.debug("reading properties from uri: " + uri);
         ScriptConverter preprocessor = new ScriptConverter(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
         IOUtil.readProperties(uri, converter);
@@ -192,10 +191,11 @@ public class ModelParser {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private <T extends TypeDescriptor> T mapTypeDetails(Element element, T descriptor, Context context) {
-        for (Map.Entry<String, String> entry : XMLUtil.getAttributes(element).entrySet()) {
-            String detailName = entry.getKey();
-            String detailValue = renderAttribute(detailName, entry.getValue(), context);
-            descriptor.setDetailValue(entry.getKey(), detailValue);
+    	NamedNodeMap attributes = element.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+        	Attr attr = (Attr) attributes.item(i);
+            String detailValue = parseStringAttribute(attr, context);
+            descriptor.setDetailValue(attr.getName(), detailValue);
         }
         return descriptor;
     }
@@ -208,9 +208,10 @@ public class ModelParser {
             String detailName = entry.getKey();
             if (detailName.equals("type"))
                 continue;
-            String detailValue = renderAttribute(detailName, entry.getValue(), context);
+            Object tmp = renderAttribute(detailName, entry.getValue(), context);
+			String detailString = ToStringConverter.convert(tmp, null);
             if (descriptor.supportsDetail(detailName))
-                descriptor.setDetailValue(detailName, detailValue);
+                descriptor.setDetailValue(detailName, detailString);
             else {
                 if (localType == null) {
                     String partType = attributes.get("type");
@@ -234,7 +235,7 @@ public class ModelParser {
                 }
                 if (localType == null)
                     localType = descriptor.getLocalType(complexType); // create new local type
-                localType.setDetailValue(detailName, detailValue);
+                localType.setDetailValue(detailName, detailString);
             }
         }
         return descriptor;
@@ -253,36 +254,6 @@ public class ModelParser {
             		"found: " + elementName;
         throw new IllegalArgumentException(message);
     }
-/*
-    private String parseAttribute(Attr attribute, Context context) {
-        String name = attribute.getName();
-        String value = attribute.getValue();
-        return renderAttribute(name, value, context);
-    }
-
-    private int parseIntAttribute(Element element, String name, Context context, int defaultValue) {
-        String text = parseAttribute(element, name, context);
-        if (StringUtil.isEmpty(text))
-            return defaultValue;
-        text = ScriptUtil.render(text, context, defaultScript);
-        return Integer.parseInt(text);
-    }
-*/    
-    public static String renderAttribute(String name, String value, Context context) {
-        if (value == null || "script".equals(name))
-            return value;
-		else
-			return ScriptUtil.render(value, context);
-    }
-/*
-    private String renderAttribute(String name, String value, Context context) {
-        if ("script".equals(name))
-            return value;
-        else
-            return ScriptUtil.render(value, context);
-    }
-*/
-
     private String normalizeNull(String text) {
         return ("".equals(text) ? null : text);
     }
@@ -319,16 +290,8 @@ public class ModelParser {
 		attribute = element.getAttribute("domain");
 		if (!StringUtil.isEmpty(attribute))
 			importDomain(attribute, context);
-		attribute = element.getAttribute("defaults");
-		if ("true".equals(attribute)) {
-			// import defaults
-			context.importPackage("org.databene.benerator.primitive.datetime");
-			context.importPackage("org.databene.platform.flat");
-			context.importPackage("org.databene.platform.csv");
-			context.importPackage("org.databene.platform.dbunit");
-			context.importPackage("org.databene.platform.xls");
-			context.importPackage("org.databene.model.consumer");
-		}
+		if ("true".equals(element.getAttribute("defaults")))
+			context.importDefaults();
 	}
 
 	public void importDomain(String domain, BeneratorContext context) {
