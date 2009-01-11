@@ -270,6 +270,10 @@ public class Country {
         Country.defaultCountry = country;
     }
 
+	public static Country getFallback() {
+		return Country.US;
+	}
+    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override
@@ -293,5 +297,5 @@ public class Country {
 		final Country other = (Country) obj;
 		return isoCode.equals(other.isoCode);
 	}
-    
+
 }
