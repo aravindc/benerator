@@ -188,13 +188,14 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<? extends Object> generator, BeneratorContext context) {
-        long maxCount = DescriptorUtil.getMaxCount(instance, context);
+        Long maxCount = DescriptorUtil.getMaxCount(instance, context);
         long minCount = DescriptorUtil.getMinCount(instance, context);
-        if (maxCount != 1 && minCount != 1) {
+        if (maxCount != null && maxCount != 1 && minCount != 1) {
         	InstanceArrayGenerator wrapper = new InstanceArrayGenerator(generator);
 	        mapDetailsToBeanProperties(instance, wrapper, context);
 	        wrapper.setCountDistribution(DescriptorUtil.getCountDistribution(instance));
-			wrapper.setMaxCount(maxCount);
+	        if (maxCount != null)
+	        	wrapper.setMaxCount(maxCount);
 			wrapper.setMinCount(minCount);
 			generator = wrapper;
         }
