@@ -50,7 +50,8 @@ public class PagedCreateEntityTask extends PagedTask {
 			String taskName, long count, int pageSize, int threads, List<? extends Task> subTasks, 
 			Generator<Entity> generator, Consumer<Entity> consumer, ExecutorService executor, 
 			boolean isSubTask, ErrorHandler errorHandler) {
-		super(new CreateEntityTask(taskName, generator, consumer, subTasks, isSubTask, errorHandler), count, null, pageSize, threads, executor);
+		super(new CreateEntityTask(taskName, generator, consumer, subTasks, isSubTask, errorHandler), 
+				count, null, pageSize, threads, executor);
 		this.generator = generator;
 		this.consumer = consumer;
 	}
@@ -68,7 +69,7 @@ public class PagedCreateEntityTask extends PagedTask {
 	    synchronized(generator) {
 	        generator.close();
 	    }
-	};
+	}
 	
 	@Override
 	protected boolean workPending(int currentPageNo) {
