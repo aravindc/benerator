@@ -32,7 +32,7 @@ import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.domain.address.Country;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.databene.text.DelocalizingConverter;
@@ -71,7 +71,7 @@ public class CompanyDomainGenerator extends LightweightGenerator<String> {
 		return normalizer.convert(companyNameGenerator.generate()) + '.' + tldGenerator.generate();
 	}
 	
-	private static final class Normalizer extends AbstractConverter<String, String> {
+	private static final class Normalizer extends FixedSourceTypeConverter<String, String> {
 		
 		private DelocalizingConverter delocalizer;
 

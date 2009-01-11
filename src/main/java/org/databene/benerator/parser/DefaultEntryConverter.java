@@ -32,7 +32,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.collection.MapEntry;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.mutator.AnyMutator;
@@ -44,7 +44,7 @@ import org.databene.commons.mutator.AnyMutator;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entry> {
+public class DefaultEntryConverter extends FixedSourceTypeConverter<Map.Entry, Map.Entry> {
     
     private BeneratorContext context;
     private Converter<String, Object> preprocessor;

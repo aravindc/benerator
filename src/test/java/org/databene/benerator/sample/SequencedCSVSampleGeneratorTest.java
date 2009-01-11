@@ -66,7 +66,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 
     public void testBigSet() throws ParseException {
         SequencedCSVSampleGenerator<Integer> generator 
-        	= new SequencedCSVSampleGenerator<Integer>(EMPTY_FILE_PATH, new AnyConverter<String,Integer>(String.class, Integer.class));
+        	= new SequencedCSVSampleGenerator<Integer>(EMPTY_FILE_PATH, new AnyConverter<String,Integer>(Integer.class));
         generator.validate();
         for (int i = 0; i < 200000; i++)
         	generator.addValue(i % 100);

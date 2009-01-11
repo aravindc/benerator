@@ -229,7 +229,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static Generator<Timestamp> createTimestampGenerator(SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
         Generator<Date> dateGenerator = createDateGenerator(descriptor, unique, context);
-        return new ConvertingGenerator<Date, Timestamp>(dateGenerator, new AnyConverter(Date.class, Timestamp.class));
+        return new ConvertingGenerator<Date, Timestamp>(dateGenerator, new AnyConverter(Timestamp.class));
     }
 
     private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {

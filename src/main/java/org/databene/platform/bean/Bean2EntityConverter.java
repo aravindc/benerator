@@ -29,7 +29,7 @@ package org.databene.platform.bean;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 
 import java.beans.PropertyDescriptor;
 
@@ -39,7 +39,7 @@ import java.beans.PropertyDescriptor;
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */
-public class Bean2EntityConverter extends AbstractConverter<Object, Entity> {
+public class Bean2EntityConverter extends FixedSourceTypeConverter<Object, Entity> {
 
     private ComplexTypeDescriptor descriptor;
     private BeanDescriptorProvider beanDescriptorProvider = new BeanDescriptorProvider();

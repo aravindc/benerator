@@ -26,7 +26,7 @@
 
 package org.databene.platform.map;
 
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.model.data.Entity;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ import java.util.HashMap;
  * <br/>
  * Created: 29.08.2007 18:12:58
  */
-public class Entity2MapConverter extends AbstractConverter<Entity, Map> {
+public class Entity2MapConverter extends FixedSourceTypeConverter<Entity, Map> {
 
 	public Entity2MapConverter() {
 		super(Entity.class, Map.class);

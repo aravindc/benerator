@@ -30,7 +30,7 @@ import java.util.Map;
 
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -47,7 +47,7 @@ import org.databene.model.data.TypeDescriptor;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
+public class ComponentTypeConverter extends FixedSourceTypeConverter<Entity, Entity>{
 
 	private ComplexTypeDescriptor type;
 

@@ -30,7 +30,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.BidirectionalConverter;
+import org.databene.commons.converter.AbstractBidirectionalConverter;
 
 /**
  * Converts Strings to Distributions and vice versa.<br/><br/>
@@ -38,15 +38,11 @@ import org.databene.commons.converter.BidirectionalConverter;
  * @author Volker Bergmann
  * TODO v0.5.8 merge this with new object construction concept
  */
-public class String2DistributionConverter implements BidirectionalConverter<String, Distribution> {
+public class String2DistributionConverter extends AbstractBidirectionalConverter<String, Distribution> {
 
-    public Class<String> getSourceType() {
-        return String.class;
-    }
-
-    public Class<Distribution> getTargetType() {
-        return Distribution.class;
-    }
+	public String2DistributionConverter() {
+		super(String.class, Distribution.class);
+	}
 
     public Distribution convert(String sourceValue) throws ConversionException {
         return parse(sourceValue);

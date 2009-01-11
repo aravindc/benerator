@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,7 +41,7 @@ import java.sql.SQLException;
  * Created: 15.08.2007 18:19:25
  * @author Volker Bergmann
  */
-public class ResultSetConverter extends AbstractConverter<ResultSet, Object> {
+public class ResultSetConverter extends FixedSourceTypeConverter<ResultSet, Object> {
 
     private boolean simplifying;
 

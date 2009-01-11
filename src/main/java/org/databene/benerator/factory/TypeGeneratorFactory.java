@@ -179,7 +179,7 @@ public class TypeGeneratorFactory {
                 converter = (Converter<S, T>) new FormatFormatConverter(Date.class, TimeUtil.createDefaultDateFormat());
             }
         } else
-        	converter = (Converter<S, T>) new AnyConverter<Object, T>(Object.class, targetType, descriptor.getPattern());
+        	converter = (Converter<S, T>) new AnyConverter<Object, T>(targetType, descriptor.getPattern());
         return new ConvertingGenerator<S, T>(generator, converter);
     }
 

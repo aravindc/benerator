@@ -58,7 +58,7 @@ public class FeatureDetail<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue) {
-        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(String.class, type));
+        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(type));
     }
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter) {

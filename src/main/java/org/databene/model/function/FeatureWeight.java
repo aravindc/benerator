@@ -49,7 +49,7 @@ public class FeatureWeight<E> implements IndividualWeight<E> {
 
 	public FeatureWeight(String weightFeature) {
 		this.accessor = new FeatureAccessor<Object, Double>(weightFeature);
-		this.converter = new AnyConverter<Object, Double>(Object.class, Double.class);
+		this.converter = new AnyConverter<Object, Double>(Double.class);
 	}
 
 	public String getWeightFeature() {

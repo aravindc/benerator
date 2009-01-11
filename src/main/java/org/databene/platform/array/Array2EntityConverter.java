@@ -29,7 +29,7 @@ package org.databene.platform.array;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -39,7 +39,7 @@ import org.databene.model.data.Entity;
  * Created: 26.08.2007 12:27:45
  * @author Volker Bergmann
  */
-public class Array2EntityConverter extends AbstractConverter<Object[], Entity> {
+public class Array2EntityConverter extends FixedSourceTypeConverter<Object[], Entity> {
 	
     private ComplexTypeDescriptor descriptor;
     private String[] attributeNames;

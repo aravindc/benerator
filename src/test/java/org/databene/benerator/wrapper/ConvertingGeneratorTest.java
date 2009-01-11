@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.FixedSourceTypeConverter;
 
 /**
  * Created: 11.10.2006 23:12:21
@@ -55,7 +55,7 @@ public class ConvertingGeneratorTest extends GeneratorClassTest {
         assertEquals("close", source.getLastMethodCall());
     }
 
-    private static class TestConverter extends AbstractConverter<Integer, String> {
+    private static class TestConverter extends FixedSourceTypeConverter<Integer, String> {
 
 		public TestConverter() {
 			super(Integer.class, String.class);
