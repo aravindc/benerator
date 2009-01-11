@@ -26,6 +26,8 @@
 
 package org.databene.domain.address;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
@@ -37,6 +39,8 @@ import org.databene.benerator.util.LightweightGenerator;
  * @author Volker Bergmann
  */
 public class AddressGenerator extends LightweightGenerator<Address> { // TODO v0.6 make country/region configurable from descriptor file
+	
+	private static Log logger = LogFactory.getLog(AddressGenerator.class);
 
     private Country country;
     private CityGenerator cityGenerator;
@@ -51,18 +55,28 @@ public class AddressGenerator extends LightweightGenerator<Address> { // TODO v0
     }
 
     public AddressGenerator(Country country) {
-        this.country = country;
-        this.cityGenerator = new CityGenerator(country);
-        this.streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
-        this.mobilePhoneNumberGenerator = new MobilePhoneNumberGenerator(country);
-        this.localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
+    	super(Address.class);
+        init(country);
     }
+
+	private void init(Country country) {
+		try {
+			this.country = country;
+	        this.cityGenerator = new CityGenerator(country);
+	        this.streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
+	        this.mobilePhoneNumberGenerator = new MobilePhoneNumberGenerator(country);
+	        this.localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
+		} catch (RuntimeException e) {
+			Country fallBackCountry = Country.getFallback();
+			if (!fallBackCountry.equals(country)) {
+				logger.error("Cannot generate addresses for " + country + ", falling back to " + fallBackCountry);
+				init(fallBackCountry);
+			} else
+				throw e;
+		}
+	}
 
     // Generator interface ---------------------------------------------------------------------------------------------
-
-    public Class<Address> getGeneratedType() {
-        return Address.class;
-    }
 
     public Address generate() throws IllegalGeneratorStateException {
         City city = cityGenerator.generate();
@@ -79,7 +93,8 @@ public class AddressGenerator extends LightweightGenerator<Address> { // TODO v0
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + country + ']';
     }
 
