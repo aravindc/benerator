@@ -47,6 +47,10 @@ public class AddressGeneratorTest extends GeneratorClassTest {
         check(Country.GERMANY);
     }
 
+    public void testSingapore() {
+        check(Country.SINGAPORE);
+    }
+
     private void check(Country country) {
         AddressGenerator generator = new AddressGenerator(country);
         for (int i = 0; i < 100; i++) {
