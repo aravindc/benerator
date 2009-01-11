@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,11 @@ import org.databene.commons.converter.PropertyResourceBundleConverter;
 import java.util.Locale;
 
 /**
+ * Generates salutations.<br/>
+ * <br/>
  * Created: 07.06.2007 10:53:07
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class SalutationProvider {
 
