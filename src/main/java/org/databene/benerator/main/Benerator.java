@@ -563,9 +563,7 @@ public class Benerator {
 		
 		// parse task properties
 		long minCount = DescriptorUtil.getMinCount(descriptor, context);
-		long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
-		if (minCount > maxCount)
-			throw new ConfigurationError("minCount > maxCount for " + descriptor);
+		Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
 		int pageSize = parseIntAttribute(element, "pagesize", context, context.getDefaultPagesize());
 		int threads = parseIntAttribute(element, "threads", context, 1);
 		
@@ -573,7 +571,8 @@ public class Benerator {
 		String taskName = descriptor.getName();
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
-		return new PagedCreateEntityTask(taskName, minCount, pageSize, // TODO support maxCount and countDistribution
+		long limit = (maxCount != null ? maxCount : -1);
+		return new PagedCreateEntityTask(taskName, limit, pageSize, // TODO support maxCount and countDistribution
 				threads, subs, configuredGenerator, consumers, executor,
 				isSubTask, errorHandler);
 	}

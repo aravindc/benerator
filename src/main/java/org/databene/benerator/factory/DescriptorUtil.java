@@ -382,14 +382,15 @@ public class DescriptorUtil {
         return result;
 	}
 
-	public static long getMaxCount(InstanceDescriptor descriptor, BeneratorContext context) {
-		long result = 9;
+	public static Long getMaxCount(InstanceDescriptor descriptor, BeneratorContext context) {
+		Long result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMaxCount() != null)
         	result = descriptor.getMaxCount();
-		if (context.getMaxCount() != null)
-			result = Math.min(result, context.getMaxCount());
+		Long globalMaxCount = context.getMaxCount();
+		if (globalMaxCount != null)
+			result = (result != null ? Math.min(result, globalMaxCount) : globalMaxCount);
         return result;
 	}
 

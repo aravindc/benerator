@@ -95,16 +95,12 @@ public class InstanceGeneratorFactory {
     private static Generator<Object> createInstanceGeneratorWrapper(
             InstanceDescriptor descriptor, Generator<? extends Object> typeGenerator, BeneratorContext context) {
         InstanceSequenceGenerator generator = new InstanceSequenceGenerator(typeGenerator);
-        // set count limits
-        if (descriptor.getCount() != null) {
-            long count = descriptor.getCount();
-            generator.setMinCount(DescriptorUtil.getMinCount(descriptor, context));
-            generator.setMaxCount(DescriptorUtil.getMaxCount(descriptor, context));
-            generator.setCountDistribution(DescriptorUtil.getCountDistribution(descriptor));
-            mapDetailToBeanProperty(descriptor, "countDistribution", generator, context);
-        } else {
-            mapDetailsToBeanProperties(descriptor, generator, context);
-        }
+        // configure count
+        generator.setMinCount(DescriptorUtil.getMinCount(descriptor, context));
+        Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
+        if (maxCount != null)
+        	generator.setMaxCount(maxCount);
+        generator.setCountDistribution(DescriptorUtil.getCountDistribution(descriptor));
         return (Generator<Object>) generator;
     }
     
