@@ -290,15 +290,15 @@ public class DescriptorUtilTest extends TestCase {
 	public void testGetMaxCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
-		assertEquals(9, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context));
+		assertEquals(null, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context));
 		// explicit setting
-		assertEquals(2, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2), context));
+		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2), context).longValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4), context));
+		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4), context).longValue());
 		// global maxCount overrides default
 		context.setMaxCount(0L);
-		assertEquals(0, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context));
+		assertEquals(0L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).longValue());
 	}
 	
 	public void testGetCountDistribution() {
