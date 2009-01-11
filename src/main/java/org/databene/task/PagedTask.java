@@ -193,8 +193,10 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
     protected boolean workPending(int currentPageNo) {
         if (!realTask.wantsToRun())
             return false;
-        long pages = (totalInvocations >= 0 ? (totalInvocations + pageSize - 1) / pageSize : -1);
-		return pages < 0 || currentPageNo < pages;
+        if (totalInvocations < 0)
+        	return true;
+        long pages = (totalInvocations + pageSize - 1) / pageSize;
+		return (currentPageNo < pages);
 	}
 
 	private Task cloneTask(Parallelizable task) {
