@@ -83,7 +83,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
 	        familyNameGen = new FamilyNameGenerator(datasetName);
 		} catch (RuntimeException e) {
-			Country fallBackCountry = Country.getFallBack();
+			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
 				logger.error("Cannot generate addresses for " + datasetName + ", falling back to " + fallBackCountry);
 				init(fallBackCountry.getIsoCode());
