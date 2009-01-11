@@ -202,7 +202,7 @@ public class ComplexTypeGeneratorFactory {
 			BeneratorContext context) {
 		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
 				new ScriptConverter(context),
-				new ToStringConverter<Object>(null)
+				new ToStringConverter(null)
 			);
 		return scriptConverter;
 	}

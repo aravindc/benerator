@@ -30,7 +30,6 @@ import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringA
 
 import org.databene.LogCategories;
 import org.databene.platform.db.DBSystem;
-import org.databene.model.Processor;
 import org.databene.commons.*;
 import org.databene.commons.ErrorHandler.Level;
 import org.databene.commons.converter.LiteralParser;
@@ -57,7 +56,6 @@ import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.Generator;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
-import org.databene.model.consumer.ProcessorToConsumerAdapter;
 import org.databene.model.data.*;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemConsumer;

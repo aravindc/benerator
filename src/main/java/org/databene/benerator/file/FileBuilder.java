@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,6 +35,7 @@ import java.io.IOException;
  * Calls a Generator several times and writes its output to a DocumentWriter.<br/>
  * <br/>
  * Created: 08.06.2007 17:53:50
+ * @author Volker Bergmann
  */
 public class FileBuilder {
 

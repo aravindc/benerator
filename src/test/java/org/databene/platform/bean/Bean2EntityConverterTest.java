@@ -42,7 +42,7 @@ public class Bean2EntityConverterTest extends TestCase {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         PersonBean bean = new PersonBean("Alice", 23);
-        assertEquals(entity, new Bean2EntityConverter<PersonBean>(descriptor).convert(bean));
-        assertEquals(entity, new Bean2EntityConverter<PersonBean>().convert(bean));
+        assertEquals(entity, new Bean2EntityConverter(descriptor).convert(bean));
+        assertEquals(entity, new Bean2EntityConverter().convert(bean));
     }
 }

@@ -60,7 +60,7 @@ public class CityManager {
         );
     private static Set<String> prefixes = CollectionUtil.toSet(
             "St.", "S.", "Alt", "Bad", // CH
-            "Markt", "Hofamt", "Maria", "Deutsch", "Moorbad", "Bairisch", "Klein", "Hohe", "Groß", // AT
+            "Markt", "Hofamt", "Maria", "Deutsch", "Moorbad", "Bairisch", "Klein", "Hohe", "Groï¿½", // AT
             "La", "Le", "Les", // CH
             "San", "Santa", "Val", "Monte", "Ponte", "Castel", "Riva", "Villa", // CH
             "Santa Maria"); // TODO v0.6 "Santa Maria" are two words
@@ -90,7 +90,7 @@ public class CityManager {
 		try {
 			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
 					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", "State", ',', "UTF-8"),
-					new Entity2BeanConverter<State>(State.class));
+					new Entity2BeanConverter(State.class));
 			while (iterator.hasNext()) {
 				State state = iterator.next();
 				country.addState(state);

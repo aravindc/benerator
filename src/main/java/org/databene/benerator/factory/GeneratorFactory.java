@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
@@ -62,8 +61,6 @@ import java.util.*;
  */
 public class GeneratorFactory {
 	
-    private static final BasicParser basicParser = new BasicParser();
-
     // Singleton related stuff -----------------------------------------------------------------------------------------
 
     /**
@@ -441,7 +438,7 @@ public class GeneratorFactory {
     public static Generator<String> getMessageGenerator(
             String pattern, int minLength, int maxLength, Generator ... sources) {
         Generator<String> generator = new ConvertingGenerator<Object[], String>(
-                new CompositeArrayGenerator<Object>(Object.class, sources), new MessageConverter<Object[]>(pattern, null));
+                new CompositeArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
         generator = new ValidatingGeneratorProxy<String>(generator, new StringLengthValidator(minLength, maxLength));
         return generator;
     }

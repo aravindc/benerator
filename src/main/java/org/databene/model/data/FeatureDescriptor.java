@@ -149,7 +149,7 @@ public class FeatureDescriptor {
     }
 
     protected <T> void addConfig(String name, Class<T> type, T defaultValue, boolean deprecated) {
-        addDetail(name, type, false, defaultValue, deprecated, new AnyConverter<String, T>(type), null);
+        addDetail(name, type, false, defaultValue, deprecated, new AnyConverter<String, T>(String.class, type), null);
     }
 
     protected <T> void addRestriction(String name, Class<T> type, T defaultValue, Operation<T, T> combinator) {

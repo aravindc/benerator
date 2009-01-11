@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,6 +42,6 @@ public class Entity2BeanConverterTest extends TestCase {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         PersonBean bean = new PersonBean("Alice", 23);
-        assertEquals(bean, new Entity2BeanConverter<PersonBean>().convert(entity));
+        assertEquals(bean, new Entity2BeanConverter<PersonBean>(PersonBean.class).convert(entity));
     }
 }

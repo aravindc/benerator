@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -126,8 +126,8 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     
     private Converter<String[], Entity> createConverter(ComplexTypeDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
         String[] featureNames = ArrayPropertyExtractor.convert(descriptors, "name", String.class);
-        Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
-        Converter<String[], String[]> aConv = new ArrayConverter<String, String>(String.class, preprocessor);
+        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames);
+        Converter<String[], String[]> aConv = new ArrayConverter<String, String>(String.class, String.class, preprocessor);
         Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(aConv, a2eConverter);
         return converter;
     }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -70,7 +70,7 @@ public class String2DistributionConverter implements BidirectionalConverter<Stri
     		return new FeatureWeight(null);
         Distribution result = Sequence.getInstance(sourceValue, false);
         if (result == null)
-            result = BeanUtil.newInstance(sourceValue);
+            result = (Distribution) BeanUtil.newInstance(sourceValue);
         if (result == null)
         	throw new ConfigurationError("Distribution not found: " + sourceValue);
         return result;

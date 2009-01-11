@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,6 @@ import java.util.Arrays;
 
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.ToStringConverter;
 
 /**
  * Represents a software version number.
@@ -40,7 +39,7 @@ import org.databene.commons.converter.ToStringConverter;
  * Created at 22.12.2008 16:46:24
  * @since 0.5.7
  * @author Volker Bergmann
- * TODO v0.6 how to handle Date components like 20073004?
+ * TODO v0.6 how to handle Date components like 20073004 ?
  */
 
 public class VersionNumber implements Comparable<VersionNumber> {
@@ -74,7 +73,6 @@ public class VersionNumber implements Comparable<VersionNumber> {
 	public VersionNumber(Object... components) {
 		this.components = new VersionNumberComponent[components.length / 2 + 1];
 		this.delimiters = new String[components.length / 2];
-		ToStringConverter<Object> converter = new ToStringConverter<Object>();
 		for (int i = 0; i < components.length; i += 2) {
 			Object component = components[i];
 			if (component instanceof Number)

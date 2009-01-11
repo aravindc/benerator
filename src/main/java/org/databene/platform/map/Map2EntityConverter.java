@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,32 +26,31 @@
 
 package org.databene.platform.map;
 
-import org.databene.commons.Converter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Converts a Map to an Entity.<br/>
  * <br/>
  * Created: 29.08.2007 18:44:41
+ * @author Volker Bergmann
  */
-public class Map2EntityConverter implements Converter<Map<String, Object>, Entity> {
+public class Map2EntityConverter extends AbstractConverter<Map, Entity> {
 
     private ComplexTypeDescriptor descriptor;
 
     public Map2EntityConverter(ComplexTypeDescriptor descriptor) {
+    	super(Map.class, Entity.class);
         this.descriptor = descriptor;
     }
 
-    public Class<Entity> getTargetType() {
-        return Entity.class;
-    }
-
-    public Entity convert(Map<String, Object> map) {
+    public Entity convert(Map map) {
         Entity entity = new Entity(descriptor);
-        for (Map.Entry<String, Object> entry : map.entrySet())
+        for (Map.Entry entry : ((Set<Map.Entry>) map.entrySet()))
             entity.setComponent((String) entry.getKey(), entry.getValue());
         return entity;
     }

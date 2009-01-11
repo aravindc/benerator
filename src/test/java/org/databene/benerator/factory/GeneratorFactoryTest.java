@@ -263,7 +263,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         format.setMinimumFractionDigits(0);
         format.setMaximumFractionDigits(2);
         Generator<String> generator = GeneratorFactory.getConvertingGenerator(
-                source, new FormatFormatConverter<Double>(format));
+                source, new FormatFormatConverter(Object.class, format));
         checkGenerator(generator);
     }
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,9 @@
 package org.databene.platform.array;
 
 import org.databene.commons.ArrayFormat;
-import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -37,8 +37,9 @@ import org.databene.model.data.Entity;
  * Converts an array of feature values to an entity.<br/>
  * <br/>
  * Created: 26.08.2007 12:27:45
+ * @author Volker Bergmann
  */
-public class Array2EntityConverter<E> implements Converter<E[], Entity> {
+public class Array2EntityConverter extends AbstractConverter<Object[], Entity> {
 	
     private ComplexTypeDescriptor descriptor;
     private String[] attributeNames;
@@ -46,15 +47,12 @@ public class Array2EntityConverter<E> implements Converter<E[], Entity> {
     Escalator escalator = new LoggerEscalator();
 
     public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames) {
+    	super(Object[].class, Entity.class);
         this.descriptor = descriptor;
         this.attributeNames = featureNames;
     }
 
-    public Class<Entity> getTargetType() {
-        return Entity.class;
-    }
-
-    public Entity convert(E[] sourceValue) {
+    public Entity convert(Object[] sourceValue) {
         Entity entity = new Entity(descriptor);
         int length;
         if (sourceValue.length > attributeNames.length) {

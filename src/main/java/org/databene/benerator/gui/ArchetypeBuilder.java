@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -108,7 +108,7 @@ public class ArchetypeBuilder implements Runnable {
 	protected DBSystem db;
     private ModelParser parser = new ModelParser(new BeneratorContext("."));
     private Map<String, ComponentDescriptor> defaults = new HashMap<String, ComponentDescriptor>();
-    private ToStringConverter<Object> toStringConverter = new ToStringConverter<Object>();
+    private ToStringConverter toStringConverter = new ToStringConverter();
     private List<String> errors;
     private ProgressMonitor monitor;
 	

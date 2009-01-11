@@ -66,7 +66,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
 	private static final String DATE_PATTERN = "yyyy-MM-dd";
 	private static final String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSSSSS";
 	
-    private ToStringConverter<Object> toStringConverter;
+    private ToStringConverter toStringConverter;
 
     private String uri;
     private String encoding;
@@ -88,7 +88,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     public DbUnitEntityExporter(String uri, String encoding) {
         setUri(uri);
         setEncoding(encoding);
-        this.toStringConverter = new ToStringConverter<Object>(null, DATE_PATTERN, TIMESTAMP_PATTERN);
+        this.toStringConverter = new ToStringConverter(null, DATE_PATTERN, TIMESTAMP_PATTERN);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -145,11 +145,13 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
 		}
     }
 
-    public void flush() {
+    @Override
+	public void flush() {
        	IOUtil.flush(out);
     }
 
-    public void close() {
+    @Override
+	public void close() {
         if (out != null) { 
             try {
             	handler.endElement("", "", "dataset");
@@ -187,7 +189,8 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
 		}
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + uri + ", " + encoding + "]";
     }
 }

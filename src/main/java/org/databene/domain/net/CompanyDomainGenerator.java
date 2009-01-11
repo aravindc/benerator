@@ -76,7 +76,7 @@ public class CompanyDomainGenerator extends LightweightGenerator<String> {
 		private DelocalizingConverter delocalizer;
 
 		public Normalizer() {
-			super(String.class);
+			super(String.class, String.class);
 			try {
 				this.delocalizer = new DelocalizingConverter();
 			} catch (IOException e) {

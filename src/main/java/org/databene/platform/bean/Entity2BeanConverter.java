@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.platform.bean;
 
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.Converter;
+import org.databene.commons.converter.AbstractConverter;
 
 import java.util.Map;
 
@@ -36,29 +36,20 @@ import java.util.Map;
  * Converts an Entity to a JavaBean.<br/>
  * <br/>
  * Created: 29.08.2007 08:50:24
+ * @author Volker Bergmann
  */
-public class Entity2BeanConverter<E> implements Converter<Entity, E> {
+public class Entity2BeanConverter<T extends Object> extends AbstractConverter<Entity, T> {
 
-    private Class<E> beanClass;
-
-    public Entity2BeanConverter() {
-        this(null);
+    public Entity2BeanConverter(Class<T> targetType) {
+        super(Entity.class, targetType);
     }
 
-    public Entity2BeanConverter(Class<E> beanClass) {
-        this.beanClass = beanClass;
-    }
-
-    public Class<E> getTargetType() {
-        return beanClass;
-    }
-
-    public E convert(Entity entity) {
-        E result;
-        if (beanClass != null)
-            result = BeanUtil.newInstance(beanClass);
+    public T convert(Entity entity) {
+    	T result;
+        if (targetType != null)
+            result = BeanUtil.newInstance(targetType);
         else
-            result = (E) BeanUtil.newInstance(entity.getName());
+            result = (T) BeanUtil.newInstance(entity.getName());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet())
             BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue(), false);
         return result;

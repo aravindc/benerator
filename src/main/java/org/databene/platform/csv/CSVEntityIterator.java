@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -152,8 +152,8 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 				featureNames = cellIterator.next();
 			else
 				throw new ConfigurationError("empty CSV file");
-	        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, preprocessor); 
-	        Array2EntityConverter<String> a2eConverter = new Array2EntityConverter<String>(entityDescriptor, featureNames);
+	        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, String.class, preprocessor); 
+	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
 	        this.source = new ConvertingIterator<String[], Entity>(cellIterator, converter);
 		} catch (FileNotFoundException e) {

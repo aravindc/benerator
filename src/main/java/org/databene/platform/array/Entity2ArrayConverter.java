@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,24 +26,22 @@
 
 package org.databene.platform.array;
 
-import org.databene.commons.Converter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.Entity;
 
 /**
  * Converts an Entity's features values to an array of objects.<br/>
  * <br/>
  * Created: 26.08.2007 12:27:45
+ * @author Volker Bergmann
  */
-public class Entity2ArrayConverter implements Converter<Entity, Object[]> {
+public class Entity2ArrayConverter extends AbstractConverter<Entity, Object[]> {
 
     private String[] featureNames;
 
     public Entity2ArrayConverter(String[] featureNames) {
+    	super(Entity.class, Object[].class);
         this.featureNames = featureNames;
-    }
-
-    public Class<Object[]> getTargetType() {
-        return Object[].class;
     }
 
     public Object[] convert(Entity target) {

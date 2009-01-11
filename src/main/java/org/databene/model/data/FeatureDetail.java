@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,7 +58,7 @@ public class FeatureDetail<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue) {
-        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(type));
+        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(String.class, type));
     }
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter) {
@@ -137,7 +137,8 @@ public class FeatureDetail<E> {
         return name + '=' + value;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public boolean equals(Object o) {
         if (this == o)
             return true;

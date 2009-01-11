@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.platform.bean;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.Converter;
+import org.databene.commons.converter.AbstractConverter;
 
 import java.beans.PropertyDescriptor;
 
@@ -37,8 +37,9 @@ import java.beans.PropertyDescriptor;
  * Converts a Bean to an Entity.<br/>
  * <br/>
  * Created: 29.08.2007 08:50:24
+ * @author Volker Bergmann
  */
-public class Bean2EntityConverter<E> implements Converter<E, Entity> {
+public class Bean2EntityConverter extends AbstractConverter<Object, Entity> {
 
     private ComplexTypeDescriptor descriptor;
     private BeanDescriptorProvider beanDescriptorProvider = new BeanDescriptorProvider();
@@ -48,14 +49,11 @@ public class Bean2EntityConverter<E> implements Converter<E, Entity> {
     }
 
     public Bean2EntityConverter(ComplexTypeDescriptor descriptor) {
+    	super(Object.class, Entity.class);
         this.descriptor = descriptor;
     }
 
-    public Class<Entity> getTargetType() {
-        return Entity.class;
-    }
-
-    public Entity convert(E bean) {
+    public Entity convert(Object bean) {
         if (bean == null)
             return null;
         Entity entity = new Entity(descriptor != null ? descriptor : createBeanDescriptor(bean.getClass()));

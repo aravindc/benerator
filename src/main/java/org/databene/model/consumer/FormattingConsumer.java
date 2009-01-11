@@ -36,7 +36,7 @@ import org.databene.commons.converter.ToStringConverter;
  */
 public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 
-	protected ToStringConverter<Object> plainConverter = new ToStringConverter<Object>();
+	protected ToStringConverter plainConverter = new ToStringConverter();
 
 	public String getNullString() {
 		return plainConverter.getNullString();

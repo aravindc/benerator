@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,7 +49,7 @@ public class Array2EntityConverterTest extends TestCase {
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         String[] featureNames = { "name", "age" };
         Object[] array = new Object[] { "Alice", 23 };
-        assertEquals(entity, new Array2EntityConverter<Object>(descriptor, featureNames).convert(array));
+        assertEquals(entity, new Array2EntityConverter(descriptor, featureNames).convert(array));
     }
 	
     public void testOverflow() {
@@ -57,7 +57,7 @@ public class Array2EntityConverterTest extends TestCase {
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         String[] featureNames = { "name", "age" };
         Object[] array = new Object[] { "Alice", 23, "superfluous" };
-        Array2EntityConverter<Object> converter = new Array2EntityConverter<Object>(descriptor, featureNames);
+        Array2EntityConverter converter = new Array2EntityConverter(descriptor, featureNames);
         EscalatorMock escalator = new EscalatorMock();
         converter.escalator = escalator;
 		assertEquals(entity, converter.convert(array));

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,7 +49,7 @@ public class FeatureWeight<E> implements IndividualWeight<E> {
 
 	public FeatureWeight(String weightFeature) {
 		this.accessor = new FeatureAccessor<Object, Double>(weightFeature);
-		this.converter = new AnyConverter<Object, Double>(Double.class);
+		this.converter = new AnyConverter<Object, Double>(Object.class, Double.class);
 	}
 
 	public String getWeightFeature() {
@@ -69,6 +69,7 @@ public class FeatureWeight<E> implements IndividualWeight<E> {
 		return accessor.getFeatureName().hashCode();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

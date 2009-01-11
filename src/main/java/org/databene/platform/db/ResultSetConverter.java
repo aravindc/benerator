@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConversionException;
-import org.databene.commons.Converter;
+import org.databene.commons.converter.AbstractConverter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,7 +41,7 @@ import java.sql.SQLException;
  * Created: 15.08.2007 18:19:25
  * @author Volker Bergmann
  */
-public class ResultSetConverter implements Converter<ResultSet, Object> {
+public class ResultSetConverter extends AbstractConverter<ResultSet, Object> {
 
     private boolean simplifying;
 
@@ -50,6 +50,7 @@ public class ResultSetConverter implements Converter<ResultSet, Object> {
     }
 
     public ResultSetConverter(boolean simplifying) {
+    	super(ResultSet.class, Object.class);
         this.simplifying = simplifying;
     }
     

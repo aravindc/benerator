@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,7 +47,7 @@ public class ConverterMock extends AbstractConverter<Integer, Integer> {
 	}
 
 	public ConverterMock(int increment) {
-		super(Integer.class);
+		super(Integer.class, Integer.class);
 		this.increment = increment;
 		latestInstance = this;
 	}

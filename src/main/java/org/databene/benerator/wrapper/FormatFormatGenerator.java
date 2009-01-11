@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,7 +49,7 @@ public class FormatFormatGenerator<S> extends ConvertingGenerator<S, String> {
      * @param format the format to apply
      */
     public FormatFormatGenerator(Generator<S> source, Format format) {
-        super(source, new FormatFormatConverter(format));
+        super(source, new FormatFormatConverter(Object.class, format));
     }
 
 }

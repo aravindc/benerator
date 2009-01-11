@@ -119,9 +119,9 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
                 assert pos.getIndex() == rbIndex;
                 FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(propertyName, width, alignment, padChar);
                 this.converters[i] = new ConverterChain<Entity, String>(
-                    new AccessingConverter<Entity, Object>(Object.class, new ComponentAccessor(descriptor.getName())),
+                    new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())),
                     plainConverter,
-                    new FormatFormatConverter(
+                    new FormatFormatConverter(String.class, 
                         new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar)
                     )
                 );

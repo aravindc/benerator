@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -67,7 +67,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
     private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
     private static final String DEFAULT_URI       = "export.xml";
     
-    private static final ToStringConverter<Object> converter = new ToStringConverter<Object>("", "yyyy-MM-dd", "yyyy-MM-dd'T'hh:mm:ss.SSS");
+    private static final ToStringConverter converter = new ToStringConverter("", "yyyy-MM-dd", "yyyy-MM-dd'T'hh:mm:ss.SSS");
 
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -204,7 +204,8 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + '[' + uri + ']';
     }
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,16 +26,13 @@
 
 package org.databene.benerator.factory;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.sample.DistributingGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
@@ -47,30 +44,22 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
-import org.databene.commons.LocaleUtil;
-import org.databene.commons.StringCharacterIterator;
-import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.String2DateConverter;
-import org.databene.commons.validator.AndValidator;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.Iteration;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.function.Distribution;
-import org.databene.model.function.FeatureWeight;
 import org.databene.model.function.Sequence;
 import org.databene.model.function.WeightFunction;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 import static org.databene.model.data.TypeDescriptor.*;
-import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
 
 /**
  * Creates generators of type instances.<br/><br/>
@@ -184,13 +173,13 @@ public class TypeGeneratorFactory {
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
                 String pattern = descriptor.getPattern();
-                converter = new FormatFormatConverter(new SimpleDateFormat(pattern));
+                converter = new FormatFormatConverter(Date.class, new SimpleDateFormat(pattern));
             } else {
                 // we need to expect the standard date format
-                converter = (Converter<S, T>) new FormatFormatConverter(TimeUtil.createDefaultDateFormat());
+                converter = (Converter<S, T>) new FormatFormatConverter(Date.class, TimeUtil.createDefaultDateFormat());
             }
         } else
-        	converter = new AnyConverter<S, T>(targetType, descriptor.getPattern());
+        	converter = (Converter<S, T>) new AnyConverter<Object, T>(Object.class, targetType, descriptor.getPattern());
         return new ConvertingGenerator<S, T>(generator, converter);
     }
 

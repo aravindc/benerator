@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.primitive.UniqueStringGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
+import org.databene.commons.Converter;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.regex.*;
 
@@ -103,9 +104,9 @@ class RegexPartGeneratorFactory {
         if (unique) {
             return new UniqueStringGenerator(min, max, charSet);
         } else {
-            Generator<String> patternGenerator = new ConvertingGenerator<Character, String>(
+			Generator<String> patternGenerator = new ConvertingGenerator<Character, String>(
                     new CharacterGenerator(((CharSetPattern)pattern).getCharSet()),
-                    new ToStringConverter<Character>());
+                    (Converter) new ToStringConverter());
             return new NFoldCompositeStringGenerator(patternGenerator, min, max);
         }
     }

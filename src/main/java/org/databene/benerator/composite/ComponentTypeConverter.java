@@ -52,7 +52,7 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
 	private ComplexTypeDescriptor type;
 
 	public ComponentTypeConverter(ComplexTypeDescriptor type) {
-		super(Entity.class);
+		super(Entity.class, Entity.class);
 		this.type = type;
 	}
 

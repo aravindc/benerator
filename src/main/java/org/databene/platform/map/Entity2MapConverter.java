@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.platform.map;
 
-import org.databene.commons.Converter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.Entity;
 
 import java.util.Map;
@@ -37,9 +37,14 @@ import java.util.HashMap;
  * <br/>
  * Created: 29.08.2007 18:12:58
  */
-public class Entity2MapConverter implements Converter<Entity, Map> {
+public class Entity2MapConverter extends AbstractConverter<Entity, Map> {
 
-    public Class<Map> getTargetType() {
+	public Entity2MapConverter() {
+		super(Entity.class, Map.class);
+		
+	}
+
+	public Class<Map> getTargetType() {
         return Map.class;
     }
 

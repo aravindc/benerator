@@ -407,7 +407,7 @@ public class DescriptorUtil {
 	private static Converter parseSingleConverterSpec(StringCharacterIterator iterator, BeneratorContext context) {
 		Object converter = basicParser.resolveConstructionOrReference(iterator, context, context);
         if (converter instanceof java.text.Format)
-        	converter = new FormatFormatConverter((java.text.Format) converter);
+        	converter = new FormatFormatConverter(Object.class, (java.text.Format) converter);
         if (!(converter instanceof Converter))
         	throw new ConfigurationError(converter + " is not an instance of " + Converter.class);
 		return (Converter) converter;
