@@ -162,7 +162,7 @@ public class LoggingStatementHandler implements InvocationHandler {
 	private void logAll(String method, String sql) {
 		if (jdbcLogger.isDebugEnabled())
 			jdbcLogger.debug(method + ": " + sql);
-		sqlLogger.debug(toString());
+		sqlLogger.debug(sql);
 	}
 
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
