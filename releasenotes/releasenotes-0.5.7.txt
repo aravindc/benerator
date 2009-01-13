@@ -3,10 +3,16 @@ release notes benerator 0.5.7
 
 summary
 -------
+benerator 0.5.7 fixes some major bugs that occur when running on Windows.
+Main improvements are
+- an assertion facility
+- improved script support
+- more concise JavaBean construction syntax 
 
 changes
 -------
-- deprecated RunSQLScriptTask 
+- deprecated RunSQLScriptTask
+- changed Converter interface and abstract implementations
 
 enhancements
 ------------
@@ -49,5 +55,8 @@ bug fixes
 (Find the tracker at http://sourceforge.net/tracker/?group_id=222964&atid=1057386)
 - 2431421 Benerator GUI throws exception for HSQLDB
 - 2476637 wrong varchar2 column sizes for Oracle
-
+- 2489739 benerator GUI call prints error message under Windows
+- 2494201 Property file inclusion fails under windows
+- 2496003 maven plugin does not find custom generators
+- 2499121 Wrong time resolution in Singapore
 
