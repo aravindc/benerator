@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="**/*.java" including="**/*" kind="src" path="src/demo/resources"/>
+	<classpathentry kind="src" path="src/demo/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry excluding="log4j.xml|dataset.dtd|**/*.java" including="**/*.xml|**/*.properties|**/*.dtd|**/*.csv|**/*.txt" kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
