@@ -40,7 +40,7 @@ import org.databene.commons.SystemInfo;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public abstract class TextFileExporter<E> extends FormattingConsumer<E> {
+public abstract class TextFileExporter<E> extends FormattingConsumer<E> implements FileExporter<E> {
 
     private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
     private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.lineSeparator();
