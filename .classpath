@@ -14,7 +14,7 @@
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.2/junit-3.8.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
 	<classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.0.2-FINAL/poi-3.0.2-FINAL.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-beta4/poi-3.5-beta4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gui"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
