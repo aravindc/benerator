@@ -47,6 +47,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.xml.sax.SAXException;
@@ -58,7 +59,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLEntityExporter extends AbstractConsumer<Entity> {
+public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileExporter<Entity> {
 
     private static final Log logger = LogFactory.getLog(XMLEntityExporter.class);
     

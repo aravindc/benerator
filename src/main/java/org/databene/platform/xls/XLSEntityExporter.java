@@ -49,6 +49,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.StringUtil;
+import org.databene.model.consumer.FileExporter;
 import org.databene.model.consumer.FormattingConsumer;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -61,7 +62,7 @@ import org.databene.platform.csv.CSVEntityExporter;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class XLSEntityExporter extends FormattingConsumer<Entity> {
+public class XLSEntityExporter extends FormattingConsumer<Entity> implements FileExporter<Entity> {
 
     private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
     private static final Escalator escalator = new LoggerEscalator();
