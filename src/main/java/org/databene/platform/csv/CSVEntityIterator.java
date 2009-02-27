@@ -136,13 +136,15 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    public String toString() {
+    @Override
+	public String toString() {
         return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
                 ", entityName=" + entityDescriptor.getName() + "]";
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
     
+	@SuppressWarnings("unchecked")
 	private void init(String uri, Converter<String, String> preprocessor,
 			char separator, String encoding) throws FileNotFoundException {
 		try {
