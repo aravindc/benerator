@@ -38,6 +38,10 @@ public class AlternatingGenerator extends org.databene.benerator.util.Lightweigh
 	
 	private int value = 1;
 
+	public AlternatingGenerator() {
+	    super(Integer.class);
+    }
+
 	public Integer generate() {
 		value = (value + 1) % 2;
 		return value;
