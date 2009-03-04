@@ -42,6 +42,7 @@ public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
     private ComplexTypeDescriptor descriptor;
 
     public SimpleEntityGenerator(ComplexTypeDescriptor descriptor) {
+    	super(Entity.class);
     	Assert.notNull(descriptor, "descriptor");
         this.descriptor = descriptor;
     }
