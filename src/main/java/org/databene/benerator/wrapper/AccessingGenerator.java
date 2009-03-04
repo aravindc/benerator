@@ -34,34 +34,30 @@ import org.databene.commons.Accessor;
  * <br/>
  * Created: 22.08.2007 19:05:40
  */
-public class AccessingGenerator extends LightweightGenerator {
+public class AccessingGenerator<S, P> extends LightweightGenerator<P> {
 
-    private Accessor accessor;
-    private Object provider;
-    private Class targetType;
+    private Accessor<S, P> accessor;
+    private S provider;
 
     private boolean fetched;
-    private Object next;
+    private P next;
 
-    public AccessingGenerator(Class targetType, Accessor accessor, Object provider) {
-        this.targetType = targetType;
+    public AccessingGenerator(Class<P> targetType, Accessor<S, P> accessor, S provider) {
+        super(targetType);
         this.accessor = accessor;
         this.provider = provider;
         this.fetched = false;
         this.next = null;
     }
 
+    @Override
     public boolean available() {
         if (!fetched)
             fetchNext();
         return (next != null);
     }
 
-    public Class getGeneratedType() {
-        return targetType;
-    }
-
-    public Object generate() {
+    public P generate() {
         if (!fetched)
             fetchNext();
         fetched = false;
@@ -72,6 +68,7 @@ public class AccessingGenerator extends LightweightGenerator {
         next = accessor.getValue(provider);
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[accessor=" + accessor + ']';
     }
