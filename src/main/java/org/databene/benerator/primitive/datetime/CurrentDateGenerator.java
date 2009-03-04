@@ -38,12 +38,17 @@ import java.util.Date;
  */
 public class CurrentDateGenerator extends LightweightGenerator<Date> {
 
-    public Date generate() {
+    public CurrentDateGenerator() {
+	    super(Date.class);
+    }
+
+	public Date generate() {
         return TimeUtil.today().getTime();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }

@@ -35,12 +35,17 @@ import org.databene.benerator.util.LightweightGenerator;
  */
 public class CurrentNanoTimeGenerator extends LightweightGenerator<Long> {
 
-    public Long generate() {
+	public CurrentNanoTimeGenerator() {
+	    super(Long.class);
+    }
+
+	public Long generate() {
         return System.nanoTime();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }

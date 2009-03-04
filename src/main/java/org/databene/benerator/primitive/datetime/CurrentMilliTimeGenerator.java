@@ -35,12 +35,17 @@ import org.databene.benerator.util.LightweightGenerator;
  */
 public class CurrentMilliTimeGenerator extends LightweightGenerator<Long> {
 
-    public Long generate() {
+	public CurrentMilliTimeGenerator() {
+	    super(Long.class);
+    }
+
+	public Long generate() {
         return System.currentTimeMillis();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }

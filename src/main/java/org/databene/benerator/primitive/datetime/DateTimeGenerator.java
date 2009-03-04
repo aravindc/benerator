@@ -59,6 +59,7 @@ public class DateTimeGenerator extends LightweightGenerator<Date> {
     }
 
     public DateTimeGenerator(Date minDate, Date maxDate, Time minTime, Time maxTine) {
+	    super(Date.class);
         setMinDate(minDate);
         setMaxDate(maxDate);
         setMinTime(minTime);
