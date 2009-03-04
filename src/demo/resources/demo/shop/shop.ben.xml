@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <setup 
-	xmlns="http://databene.org/benerator/0.5.7"
+	xmlns="http://databene.org/benerator/0.5.8"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://databene.org/benerator/0.5.7 http://databene.org/benerator-0.5.7.xsd">
+	xsi:schemaLocation="http://databene.org/benerator/0.5.8 http://databene.org/benerator-0.5.8.xsd">
 
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	 !   Demonstration file for populating the shop database.   !
-	 !   Please invoke with JVM paramenters like these:         !
-	 !       -Dstage=development -Ddatabase=oracle              !
-	 !   or something appropriate for your environment.         !
-	 !                                                          !
-	 !   When doing so you need to provide the following files: !
-	 !       shop.development.properties                        !
-	 !       oracle/shop.oracle.properties                      !
-	 !       oracle/create_tables.oracle.sql                    !
-	 !       oracle/drop_tables.oracle.sql                      !
-	 !                                                          !
-	 !   Have a look at the examples provided for oracle, db,   !
-	 !   sql_server, mysql, postgres, hsql, mysql & derby       !
-	 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<comment>
+		 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		 !   Demonstration file for populating the shop database.   !
+		 !   Please invoke with JVM paramenters like these:         !
+		 !       -Dstage=development -Ddatabase=oracle              !
+		 !   or something appropriate for your environment.         !
+		 !                                                          !
+		 !   When doing so you need to provide the following files: !
+		 !       shop.development.properties                        !
+		 !       oracle/shop.oracle.properties                      !
+		 !       oracle/create_tables.oracle.sql                    !
+		 !       oracle/drop_tables.oracle.sql                      !
+		 !                                                          !
+		 !   Have a look at the examples provided for oracle, db,   !
+		 !   sql_server, mysql, postgres, hsql, mysql & derby       !
+		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	 </comment>
 	 
 	<import defaults="true"/>
 	<import domain="person"/>
 	<import domain="net"/>
 	<import domain="product"/>
 
-	<!-- first, import stage and database specific properties -->
+	<comment>first, import stage and database specific properties</comment>
 	<include uri="{${database}/shop.${database}.properties}" />
 	<include uri="{shop.${stage}.properties}" />
 
-	<!-- log the settings to the console -->
+	<comment>log the settings to the console</comment>
 	<echo message="Starting generation for" />
 	<echo message="{  ${product_count + 6} products}" />
 	<echo message="{  ${customer_count + 1} customers}" />
@@ -37,30 +39,30 @@
 	<echo message="{  ${items_per_order} items per order}" />
 	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
 
-    <!-- define a database that will be referred by the id 'db' later -->
+    <comment>define a database that will be referred by the id 'db' later</comment>
     <database id="db" url="{${dbUri}}" driver="{${dbDriver}}" schema="{${dbSchema!}}"
         user="{${dbUser}}" password="{${dbPassword!}}" batch="{${dbBatch?string!}}" />
 
-	<!-- drop the current tables/sequences if they exist and recreate them -->
+	<comment>drop the current tables/sequences if they exist and recreate them</comment>
 	<execute uri="{${database}/drop_tables.${database}.sql}" target="db" onError="ignore"/>
 	<execute uri="{${database}/create_tables.${database}.sql}" target="db" optimize="true"/>
 
-	<!-- Create a valid base data set for regression testing by importing a DbUnit file -->
+	<comment>Create a valid base data set for regression testing by importing a DbUnit file</comment>
 	<create-entities source="shop.dbunit.xml" consumer="db" />
 
-	<!-- import some more predefined products from a CSV file -->
+	<comment>import some more predefined products from a CSV file</comment>
 	<create-entities name="db_product" source="products.import.csv" encoding="utf-8" consumer="db" />
 
-	<!-- you could import them from a flat file as well, e.g. -->
-	<!-- <create-entities name="db_product" source="products.import.flat" 
-		pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /> -->
+	<comment>you could import them from a flat file as well, e.g.
+		create-entities name="db_product" source="products.import.flat" 
+			pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /</comment>
 
-	<!-- For the db_product table, the primary keys are EAN codes, create a specific generator for them -->
+	<comment>For the db_product table, the primary keys are EAN codes, create a specific generator for them</comment>
 	<bean id="ean_generator" class="EANGenerator">
 		<property name="unique" value="true" />
 	</bean>
 
-	<!-- create products of random attributes & category -->
+	<comment>create products of random attributes &amp; category</comment>
 	<create-entities name="db_product" count="{ftl:${product_count}}" consumer="db">
 		<attribute name="ean_code" source="ean_generator" unique="true"/> <!-- This uses the EAN generator defined above -->
 		<attribute name="category_id" source="db" selector="select id from db_category" distribution="random" />
@@ -72,7 +74,7 @@
 		</consumer>
 	</create-entities>
 
-	<!-- create one default order for each customer based on a DBUnit template -->
+	<comment>create one default order for each customer based on a DBUnit template</comment>
 	<!-- create-entities name="db_order" consumer="db">
 		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
@@ -81,7 +83,7 @@
 		</create-entities>
 	</create-entities-->
 
-    <!-- create customers -->
+    <comment>create customers</comment>
     <create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
         <variable name="person" generator="PersonGenerator" dataset="{${country}}" locale="{${locale}}"/>
         <id name="id" strategy="{${idStrategy}}" param="{${idParam}}" source="db" />
@@ -104,14 +106,14 @@
         </create-entities>
     </create-entities>
 
-	<!-- create orders for random customers and random products -->
+	<comment>create orders for random customers and random products</comment>
 	<create-entities name="db_order" count="{ftl:${customer_count * orders_per_customer}}" consumer="db">
 		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true" />
         <attribute name="total_price" values="0" />
 	</create-entities>
 
-	<!-- create order items -->
+	<comment>create order items</comment>
 	<create-entities name="db_order_item"
 			count="{ftl:${customer_count * orders_per_customer * items_per_order}}" consumer="db">
 		<variable name="product" source="db" selector="select ean_code, price from db_product" distribution="cumulated" />
@@ -122,7 +124,7 @@
 		<attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
 	</create-entities>
 
-    <!-- fix order data  -->
+    <comment>fix order data</comment>
     <update-entities name="db_order" source="db">
         <attribute name="total_price" source="db" 
             selector="{{select sum(total_price) from db_order_item where order_id = ${db_order.id}}}" cyclic="true"/>
