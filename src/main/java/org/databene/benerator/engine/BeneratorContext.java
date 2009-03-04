@@ -91,7 +91,8 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		properties.set(name, value);
 	}
 	
-	public Class forName(String className) {
+	@SuppressWarnings("unchecked")
+    public Class forName(String className) {
 		return classCache.forName(className);
 	}
 	
