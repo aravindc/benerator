@@ -46,6 +46,7 @@ import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
@@ -134,28 +135,29 @@ public class ComplexTypeGeneratorFactory {
             return null;
         // create sourceObject generator
         Generator<Entity> generator = null;
-        Object sourceObject = context.get(sourceName);
-        if (sourceObject != null) {
-            if (sourceObject instanceof StorageSystem) {
-                StorageSystem storage = (StorageSystem) sourceObject;
-                String selector = descriptor.getSelector();
-                generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
-            } else if (sourceObject instanceof EntitySource) {
-                generator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
-            } else if (sourceObject instanceof Generator) {
-                generator = (Generator) sourceObject;
-            } else
-                throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
-        } else {
-        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
-            if (uri.endsWith(".xml")) {
-                generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(uri, context));
-            } else if (uri.endsWith(".csv")) {
-                generator = createCSVSourceGenerator(descriptor, context, uri);
-            } else if (uri.endsWith(".flat")) {
-                generator = createFlatSourceGenerator(descriptor, context, uri);
-            } else
-                throw new UnsupportedOperationException("Unknown source type: " + sourceName);
+        Object contextSourceObject = context.get(sourceName);
+        if (contextSourceObject != null)
+            generator = createSourceGeneratorFromObject(descriptor, context, generator, contextSourceObject);
+        else {
+        	String lcSourceName = sourceName.toLowerCase();
+        	if (lcSourceName.endsWith(".xml")) {
+        		String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(uri, context));
+	        } else if (lcSourceName.endsWith(".csv")) {
+	        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+	            generator = createCSVSourceGenerator(descriptor, context, uri);
+	        } else if (lcSourceName.endsWith(".flat")) {
+	        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+	            generator = createFlatSourceGenerator(descriptor, context, uri);
+	        } else {
+	        	try {
+		        	BasicParser parser = new BasicParser();
+		        	Object sourceObject = parser.resolveConstructionOrReference(sourceName, context, context);
+		        	return createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
+	        	} catch (Exception e) {
+	        		throw new UnsupportedOperationException("Unknown source type: " + sourceName);
+	        	}
+	        }
         }
         if (generator.getGeneratedType() != Entity.class)
         	generator = new SimpleTypeEntityGenerator(generator, descriptor);
@@ -164,6 +166,21 @@ public class ComplexTypeGeneratorFactory {
         	return applyDistribution(distribution, descriptor, generator, context);
         else
         	return DescriptorUtil.wrapWithProxy(generator, descriptor, context);
+    }
+
+	private static Generator<Entity> createSourceGeneratorFromObject(ComplexTypeDescriptor descriptor,
+            BeneratorContext context, Generator<Entity> generator, Object sourceObject) {
+	    if (sourceObject instanceof StorageSystem) {
+	        StorageSystem storage = (StorageSystem) sourceObject;
+	        String selector = descriptor.getSelector();
+	        generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
+	    } else if (sourceObject instanceof EntitySource) {
+	        generator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
+	    } else if (sourceObject instanceof Generator) {
+	        generator = (Generator) sourceObject;
+	    } else
+	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
+	    return generator;
     }
 
 	private static Generator<Entity> applyDistribution(
