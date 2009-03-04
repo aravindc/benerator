@@ -40,7 +40,7 @@ import org.databene.commons.SystemInfo;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public abstract class TextFileExporter<E> extends FormattingConsumer<E> implements FileExporter<E> {
+public class TextFileExporter<E> extends FormattingConsumer<E> implements FileExporter<E> {
 
     private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
     private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.lineSeparator();
@@ -56,8 +56,16 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> implemen
 
     // constructors ----------------------------------------------------------------------------------------------------
 
+    public TextFileExporter() {
+    	this(null, null, null);
+    }
+    
+    public TextFileExporter(String uri) {
+    	this(uri, null, null);
+    }
+    
     public TextFileExporter(String uri, String encoding, String lineSeparator) {
-    	this.uri = uri;
+    	this.uri = (uri != null ? uri : "export.txt");
         this.encoding = (encoding != null ? encoding : DEFAULT_ENCODING);
         this.lineSeparator = (lineSeparator != null ? lineSeparator : DEFAULT_LINE_SEPARATOR);
         this.append = false;
@@ -65,9 +73,31 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> implemen
     
     // callback interface for child classes ----------------------------------------------------------------------------
 
-    protected abstract void postInitPrinter();
+    /**
+     * This method is called after printer initialization and before writing the first data entry.
+     * Overwrite this method in child classes e.g. for writing a file header.
+     */
+    protected void postInitPrinter() {
+    	// overwrite this in child classes, e.g. for writing a file header
+    }
 
-    protected abstract void startConsumingImpl(E data);
+    /**
+     * Writes the data to the output file. 
+     * It uses the parent class settings for rendering the object.
+     * Overwrite this in a child class for custom output formats.
+     * @param data the data object to output
+     */
+    protected void startConsumingImpl(E data) {
+    	printer.println(plainConverter.convert(data));
+    }
+
+    /**
+     * This method is called after writing the last data entry and before closing the underlying printer.
+     * Overwrite this method in child classes e.g. for writing a file footer.
+     */
+    private void preClosePrinter() {
+    	// overwrite this in child classes, e.g. for writing a file footer
+    }
 
     // properties ------------------------------------------------------------------------------------------------------
 
@@ -123,11 +153,13 @@ public abstract class TextFileExporter<E> extends FormattingConsumer<E> implemen
 
     @Override
 	public void close() {
-        if (printer != null)
+        if (printer != null) {
+        	preClosePrinter();
             printer.close();
+        }
     }
 
-    // private helpers -------------------------------------------------------------------------------------------------
+	// private helpers -------------------------------------------------------------------------------------------------
     
     protected void initPrinter() throws IOException {
         if (uri == null)
