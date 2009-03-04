@@ -42,6 +42,7 @@ public class MobilePhoneNumberGenerator extends LightweightGenerator<PhoneNumber
     private Generator<String> mobileLocalCodeGenerator;
 
     public MobilePhoneNumberGenerator(Country country) {
+    	super(PhoneNumber.class);
         this.country = country;
         mobilePreCodeGenerator = new RegexStringGenerator(country.getMobileCodePattern());
         this.mobileLocalCodeGenerator = new RegexStringGenerator("[1-9]\\d{6,7}");
@@ -51,10 +52,6 @@ public class MobilePhoneNumberGenerator extends LightweightGenerator<PhoneNumber
         String preCode = mobilePreCodeGenerator.generate();
         String localCode = mobileLocalCodeGenerator.generate();
         return new PhoneNumber(country.getPhoneCode(), preCode, localCode, true);
-    }
-
-    public Class<PhoneNumber> getGeneratedType() {
-        return PhoneNumber.class;
     }
 
 }
