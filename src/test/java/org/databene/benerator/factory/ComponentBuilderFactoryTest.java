@@ -499,6 +499,7 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		private String componentName;
 
 		public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
+			super((Class<E>) Object.class);
 			this.builder = builder;
 			this.componentName = componentName;
 		}
