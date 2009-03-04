@@ -17,6 +17,7 @@ enhancements
 - New common interface FileExporter for all Consumers that write to a file
 - improved TextFileExporter: useable standalone, added preClosePrinter() callback
 - <comment> filed and logger category org.databene.COMMENT
+- missing validator attribute in schema file
 
 bug fixes
 ---------
