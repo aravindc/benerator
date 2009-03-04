@@ -32,6 +32,7 @@ import java.util.List;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.StringUtil;
 import org.databene.model.data.Entity;
 
 /**
@@ -42,6 +43,13 @@ import org.databene.model.data.Entity;
 public class GeneratorUtil {
 	
 	private static final int MAX_SIZE = 100000;
+	
+	public static boolean isBeneratorFile(String localFilename) {
+		if (StringUtil.isEmpty(localFilename))
+			return false;
+		String lcFilename = localFilename.toLowerCase();
+		return "benerator.xml".equals(lcFilename) || lcFilename.endsWith(".ben.xml");
+	}
 
     public static <T> IllegalGeneratorStateException stateException(Generator<T> generator) {
         return new IllegalGeneratorStateException("Generator is not available: " + generator);        
@@ -58,6 +66,7 @@ public class GeneratorUtil {
 		return list;
 	}
 	
+    @SuppressWarnings("unchecked")
     public static <T> Class<T> commonTargetTypeOf(Generator<T>... sources) {
     	if (sources.length == 0)
     		return (Class<T>) Object.class;
