@@ -109,6 +109,7 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
 
     /** Initializes the generator with the object representation of a regular expression */
     public RegexStringGenerator(Regex regex, Integer maxQuantity, boolean unique) {
+    	super(String.class);
         partsGenerator = (unique ? new UniqueCompositeGenerator<String>(String.class) : new CompositeArrayGenerator<String>(String.class));
         this.regex = regex;
         this.maxQuantity = (maxQuantity != null ? maxQuantity : 30);

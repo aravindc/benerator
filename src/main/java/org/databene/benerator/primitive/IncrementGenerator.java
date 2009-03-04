@@ -49,10 +49,12 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     }
     
     public IncrementGenerator(long min) {
+    	super(Long.class);
         setMin(min);
     }
     
     public IncrementGenerator(long min, long max) {
+    	super(Long.class);
         setMin(min);
         setMax(max);
     }

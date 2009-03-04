@@ -47,6 +47,7 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
 
     /** Initializes the generator to a trueQuota */
     public BooleanGenerator(double trueQuota) {
+    	super(Boolean.class);
         this.trueQuota = trueQuota;
     }
 
