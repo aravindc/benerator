@@ -54,6 +54,7 @@ public class CompanyDomainGenerator extends LightweightGenerator<String> {
 	}
 
 	public CompanyDomainGenerator(String datasetName) {
+		super(String.class);
 		companyNameGenerator = new CompanyNameGenerator(false, false, false, datasetName);
 		tldGenerator = new TopLevelDomainGenerator();
 		normalizer = new Normalizer();
@@ -61,10 +62,6 @@ public class CompanyDomainGenerator extends LightweightGenerator<String> {
 
 	public void setDataset(String datasetName) {
 		companyNameGenerator.setDataset(datasetName);
-	}
-
-	public Class<String> getGeneratedType() {
-		return String.class;
 	}
 
 	public String generate() {

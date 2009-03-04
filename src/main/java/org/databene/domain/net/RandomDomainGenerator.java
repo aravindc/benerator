@@ -41,6 +41,10 @@ public class RandomDomainGenerator extends LightweightGenerator<String> {
 	private Generator<String> nameGenerator = new RegexStringGenerator("[a-z]{4,12}");
 	private Generator<String> tldGenerator = new TopLevelDomainGenerator();
 
+	public RandomDomainGenerator() {
+	    super(String.class);
+    }
+
 	public String generate() {
 		return nameGenerator.generate() + '.' + tldGenerator.generate();
 	}

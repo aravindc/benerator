@@ -26,6 +26,7 @@ public class BirthDateGenerator extends LightweightGenerator<Date> {
     }
 
     public BirthDateGenerator(int minAgeYears, int maxAgeYears) {
+    	super(Date.class);
         this.minAgeYears = minAgeYears;
         this.maxAgeYears = maxAgeYears;
         Date today = TimeUtil.today().getTime();
@@ -37,14 +38,11 @@ public class BirthDateGenerator extends LightweightGenerator<Date> {
         dateGenerator.setDistribution(Sequence.RANDOM);
     }
 
-    public Class<Date> getGeneratedType() {
-        return Date.class;
-    }
-
     public Date generate() throws IllegalGeneratorStateException {
        return dateGenerator.generate();
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[minAgeYears=" + minAgeYears + ", maxAgeYears=" + maxAgeYears + ']';
     }

@@ -75,6 +75,7 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     }
 
     public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
+    	super(String.class);
     	this.sector = sector;
     	this.location = location;
     	this.legalForm = legalForm;

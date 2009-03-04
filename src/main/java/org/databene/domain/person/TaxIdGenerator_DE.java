@@ -43,6 +43,10 @@ public class TaxIdGenerator_DE extends LightweightGenerator<String> {
 	private Random random = new Random();
 	private TaxIdValidator_DE validator = new TaxIdValidator_DE();
 	
+	public TaxIdGenerator_DE() {
+	    super(String.class);
+    }
+
 	public String generate() {
 		char[] buffer = new char[10];
 		// create a 10-digit string of which each digit is used at most once
