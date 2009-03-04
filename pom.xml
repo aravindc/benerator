@@ -5,12 +5,12 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.8-alpha-2</version>
+    <version>0.5.8-alpha-3</version>
 
     <properties>
-        <gui_version>0.1.8-alpha-2</gui_version>
-        <webdecs_version>0.4.8-alpha-2</webdecs_version>
-	    <commons_version>0.4.8-alpha-2</commons_version>
+        <gui_version>0.1.8-alpha-3</gui_version>
+        <webdecs_version>0.4.8-alpha-3</webdecs_version>
+	    <commons_version>0.4.8-alpha-3</commons_version>
     </properties>
 
 <!--
@@ -79,12 +79,6 @@
 		    <version>${gui_version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.0.2-FINAL</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.2</version>
@@ -129,6 +123,7 @@
                     <include>**/*.xml</include>
                     <include>**/*.properties</include>
                     <include>**/*.dtd</include>
+                    <include>**/*.xsd</include>
                     <include>**/*.csv</include>
                     <include>**/*.txt</include>
                 </includes>
