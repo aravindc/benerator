@@ -81,6 +81,10 @@
        <priority value="info"/>
     </category>
 
+    <category name="org.databene.COMMENT">
+       <priority value="debug"/>
+    </category>
+
     <category name="org.databene.benerator.STATE">
        <priority value="info"/>
     </category>
