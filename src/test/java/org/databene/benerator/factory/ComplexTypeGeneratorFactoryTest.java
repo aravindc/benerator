@@ -32,12 +32,9 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
-import org.databene.commons.Context;
-import org.databene.commons.context.DefaultContext;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.function.Sequence;
 
 /**
  * Tests the ComplexTypeGeneratorFactory.<br/><br/>
@@ -65,6 +62,10 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		
 		private Locale locale;
 		
+        public MyGenerator() {
+	        super(Entity.class);
+        }
+
 		public Locale getLocale() {
 			return locale;
 		}
@@ -122,6 +123,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
+	
 /*
 	public void testUniqueCSVImport() { // TODO v0.6.0 uniqueness
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("Person");
