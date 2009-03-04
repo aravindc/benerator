@@ -38,9 +38,9 @@ import org.databene.benerator.IllegalGeneratorStateException;
  */
 public abstract class LightweightGenerator<E> implements Generator<E> {
 
-    private Class<E> generatedType;
+    protected Class<E> generatedType;
 
-    protected LightweightGenerator() {
+    protected LightweightGenerator() { // TODO v0.6 remove this constructor or attribute and getGeneratedType()
         this((Class<E>) Object.class);
     }
 
