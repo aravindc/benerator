@@ -51,6 +51,7 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
     }
 
     public BitReverseNaturalNumberGenerator(long max) {
+    	super(Long.class);
         this.max = max;
         this.dirty = true;
     }

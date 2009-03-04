@@ -61,7 +61,7 @@ public class FloatingPointNumberGenerator<E extends Number> extends AbstractNumb
         if (dirty)
             validate();
         Double x = source.generate();
-        return NumberToNumberConverter.convert(x, type);
+        return NumberToNumberConverter.convert(x, generatedType);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------

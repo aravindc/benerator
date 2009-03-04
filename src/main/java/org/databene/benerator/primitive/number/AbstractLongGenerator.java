@@ -59,6 +59,7 @@ public abstract class AbstractLongGenerator extends LightweightGenerator<Long> i
     }
 
     protected AbstractLongGenerator(long min, long max, long precision, long variation1, long variation2) {
+    	super(Long.class);
         setMin(min);
         setMax(max);
         setPrecision(precision);

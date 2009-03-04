@@ -43,6 +43,7 @@ public abstract class AbstractDoubleGenerator extends LightweightGenerator<Doubl
     }
 
     protected AbstractDoubleGenerator(double min, double max, double precision, double variation1, double variation2) {
+    	super(Double.class);
         if (min > max)
             throw new IllegalArgumentException("min. value (" + min + ") is greater than max. value (" + max + ')');
         this.min = min;

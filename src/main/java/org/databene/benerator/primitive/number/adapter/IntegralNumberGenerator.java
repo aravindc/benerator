@@ -58,16 +58,12 @@ public class IntegralNumberGenerator<E extends Number> extends AbstractNumberGen
 
     // generator implementation ----------------------------------------------------------------------------------------
 
-    public Class<E> getGeneratedType() {
-        return type;
-    }
-
     public E generate() {
         if (dirty)
             validate();
         Long n = source.generate();
         try {
-            return NumberConverter.convert(n, type);
+            return NumberConverter.convert(n, generatedType);
         } catch (ConversionException e) {
             throw new RuntimeException("Unexpected exception", e);
         }

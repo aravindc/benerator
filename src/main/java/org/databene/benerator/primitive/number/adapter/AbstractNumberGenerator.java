@@ -41,8 +41,6 @@ import org.databene.model.function.WeightFunction;
  */
 public abstract class AbstractNumberGenerator<P extends Number, S extends Number> extends LightweightGenerator<P> implements NumberGenerator<P> {
 
-    protected Class<P> type;
-
     protected P min;
     protected P max;
     protected P precision;
@@ -69,7 +67,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
     }
 
     public AbstractNumberGenerator(Class<P> type, P min, P max, P precision, Distribution distribution, P variation1, P variation2) {
-        this.type = type;
+    	super(type);
         this.distribution = distribution;
         setMin(min);
         setMax(max);
@@ -82,7 +80,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
     // config properties -----------------------------------------------------------------------------------------------
 
     public P getMin() {
-        return NumberToNumberConverter.convert(min, type);
+        return NumberToNumberConverter.convert(min, generatedType);
     }
 
     public void setMin(P min) {
@@ -91,7 +89,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
     }
 
     public P getMax() {
-        return NumberToNumberConverter.convert(max, type);
+        return NumberToNumberConverter.convert(max, generatedType);
     }
 
     public void setMax(P max) {
@@ -100,7 +98,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
     }
 
     public P getPrecision() {
-        return NumberToNumberConverter.convert(precision, type);
+        return NumberToNumberConverter.convert(precision, generatedType);
     }
 
     public void setPrecision(P precision) {
@@ -136,10 +134,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<P> getGeneratedType() {
-        return type;
-    }
-
+    @Override
     public void validate() {
         if (dirty) {
             if (distribution == null)
@@ -153,12 +148,14 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
         }
     }
 
+    @Override
     public boolean available() {
         if (dirty)
             validate();
         return source.available();
     }
 
+    @Override
     public void reset() {
         if (dirty)
             validate();
@@ -166,6 +163,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
         source.reset();
     }
 
+    @Override
     public void close() {
     	if (source != null)
     		source.close();
@@ -177,6 +175,7 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
 
     protected abstract NumberGenerator<S> createSource(Sequence sequence);
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[source=" + source + ']';
     }
