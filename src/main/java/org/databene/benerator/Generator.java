@@ -76,7 +76,7 @@ public interface Generator<E> {
      * When called, the Generator is expected to act as if 'restarted'.
      * After invocation the state has to be <i>available</i>.
      */
-    void reset();
+    void reset() throws IllegalGeneratorStateException;
 
     /**
      * Closes the generator. After invocation the state is <i>unavailable</i>.
