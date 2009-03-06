@@ -43,31 +43,31 @@ class ImportedKey {
     private static final Log logger = LogFactory.getLog(ImportedKey.class);
 
     /** primary key table catalog being imported (may be null) */
-    public String PK_TABLE_CAT;
+    public String pktable_cat;
 
     /** primary key table schema being imported (may be null) */
-    public String PKTABLE_SCHEM;
+    public String pktable_schem;
 
     /** primary key table name being imported */
-    public String PKTABLE_NAME;
+    public String pktable_name;
 
     /** primary key column name being imported */
-    public String PKCOLUMN_NAME;
+    public String pkcolumn_name;
 
     /** foreign key table catalog (may be null) */
-    public String FKTABLE_CAT;
+    public String fktable_cat;
 
     /** foreign key table schema (may be null) */
-    public String FKTABLE_SCHEM;
+    public String fktable_schem;
 
     /** foreign key table name */
-    public String FKTABLE_NAME;
+    public String fktable_name;
 
     /** foreign key column name */
-    public String FKCOLUMN_NAME;
+    public String fkcolumn_name;
 
     /** sequence number within a foreign key */
-    public short KEY_SEQ;
+    public short key_seq;
 
     /**
      * What happens to a foreign key when the primary key is updated:
@@ -79,7 +79,7 @@ class ImportedKey {
      *   <LI>importedKeyRestrict - same as importedKeyNoAction (for ODBC 2.x compatibility)</LI>
      * </UL>
      */
-     public short UPDATE_RULE;
+     public short update_rule;
 
     /**
      * What happens to the foreign key when primary is deleted.
@@ -91,13 +91,13 @@ class ImportedKey {
      *   <LI>importedKeySetDefault - change imported key to default if its primary key has been deleted</LI>
      * </UL>
      */
-    public short DELETE_RULE;
+    public short delete_rule;
 
     /** foreign key name (may be null) */
-    public String FK_NAME;
+    public String fk_name;
 
     /** primary key name (may be null) */
-    public String PK_NAME;
+    public String pk_name;
 
     /**
      * can the evaluation of foreign key constraints be deferred until commit
@@ -107,12 +107,12 @@ class ImportedKey {
      *   <LI>importedKeyNotDeferrable - see SQL92 for definition</LI>
      * </UL>
      */
-    public short DEFERRABILITY;
+    public short deferrablibity;
 
     private List<DBForeignKeyColumn> foreignKeyColumns = new ArrayList<DBForeignKeyColumn>();
 
     public void addForeignKeyColumn(DBColumn foreignKeyColumn, DBColumn targetColumn) {
-        foreignKeyColumns.add(new DBForeignKeyColumn(foreignKeyColumn,  targetColumn));
+        foreignKeyColumns.add(new DBForeignKeyColumn(foreignKeyColumn, targetColumn));
     }
 
     public List<DBForeignKeyColumn> getForeignKeyColumns() {
@@ -121,37 +121,47 @@ class ImportedKey {
 
     public static ImportedKey parse(ResultSet resultSet, DBCatalog catalog, DBSchema schema, DBTable fkTable) throws SQLException {
         ImportedKey key = new ImportedKey();
-        key.PK_TABLE_CAT = resultSet.getString(1);
-        key.PKTABLE_SCHEM = resultSet.getString(2);
-        key.PKTABLE_NAME = resultSet.getString(3);
-        key.PKCOLUMN_NAME = resultSet.getString(4);
-        key.FKTABLE_CAT = resultSet.getString(5);
-        key.FKTABLE_SCHEM = resultSet.getString(6);
-        key.FKTABLE_NAME = resultSet.getString(7);
-        assert key.FKTABLE_NAME.equals(fkTable.getName());
-        key.FKCOLUMN_NAME = resultSet.getString(8);
-        key.KEY_SEQ = resultSet.getShort(9);
-        key.UPDATE_RULE = resultSet.getShort(10);
-        key.DELETE_RULE = resultSet.getShort(11);
-        key.FK_NAME = resultSet.getString(12);
-        key.PK_NAME = resultSet.getString(13);
-        key.DEFERRABILITY = resultSet.getShort(14);
+        key.pktable_cat = resultSet.getString(1);
+        key.pktable_schem = resultSet.getString(2);
+        key.pktable_name = resultSet.getString(3);
+        key.pkcolumn_name = resultSet.getString(4);
+        key.fktable_cat = resultSet.getString(5);
+        key.fktable_schem = resultSet.getString(6);
+        key.fktable_name = resultSet.getString(7);
+        assert key.fktable_name.equals(fkTable.getName());
+        key.fkcolumn_name = resultSet.getString(8);
+        key.key_seq = resultSet.getShort(9);
+        key.update_rule = resultSet.getShort(10);
+        key.delete_rule = resultSet.getShort(11);
+        key.fk_name = resultSet.getString(12);
+        key.pk_name = resultSet.getString(13);
+        key.deferrablibity = resultSet.getShort(14);
         if (logger.isDebugEnabled())
             logger.debug("found imported key " 
-                    + key.PK_TABLE_CAT + ", " + key.PKTABLE_SCHEM + ", " + key.PKTABLE_NAME + ", " + key.PKCOLUMN_NAME + ", " 
-                    + key.FKTABLE_CAT + ", " + key.FKTABLE_SCHEM + ", " + key.FKTABLE_NAME + ", " + key.FKCOLUMN_NAME + ", "
-                    + key.KEY_SEQ + ", " + key.UPDATE_RULE + ", " + key.DELETE_RULE + ", " 
-                    + key.FK_NAME + ", " + key.PK_NAME + ", "
-                    + key.DEFERRABILITY
+                    + key.pktable_cat + ", " + key.pktable_schem + ", " + key.pktable_name + ", " + key.pkcolumn_name + ", " 
+                    + key.fktable_cat + ", " + key.fktable_schem + ", " + key.fktable_name + ", " + key.fkcolumn_name + ", "
+                    + key.key_seq + ", " + key.update_rule + ", " + key.delete_rule + ", " 
+                    + key.fk_name + ", " + key.pk_name + ", "
+                    + key.deferrablibity
             );
-        DBColumn fkColumn = fkTable.getColumn(key.FKCOLUMN_NAME);
+
+        if (!key.fktable_name.equalsIgnoreCase(fkTable.getName()))	// Failover for Firebird:  
+        	return null;											// When querying X, it returns the foreign keys of XY to
+
+        DBColumn fkColumn = fkTable.getColumn(key.fkcolumn_name);
         DBTable pkTable = null;
         if (catalog != null)
-            pkTable = catalog.getTable(key.PKTABLE_NAME);
+            pkTable = catalog.getTable(key.pktable_name);
         else
-            pkTable = schema.getTable(key.PKTABLE_NAME);    
-        DBColumn pkColumn = pkTable.getColumn(key.PKCOLUMN_NAME);
+            pkTable = schema.getTable(key.pktable_name);    
+        DBColumn pkColumn = pkTable.getColumn(key.pkcolumn_name);
         key.addForeignKeyColumn(fkColumn, pkColumn);
         return key;
+    }
+    
+    @Override
+    public String toString() {
+        return fktable_cat + "." + fktable_schem + "." + fktable_name + "." + fkcolumn_name +
+        	" -> " + pktable_cat + "." + pktable_schem + "." + pktable_name + "." + pkcolumn_name; 
     }
 }
