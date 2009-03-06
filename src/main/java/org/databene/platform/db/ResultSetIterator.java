@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,7 +36,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Wraps a ResultSet into the semantic of a heavyweight iterator.
+ * Wraps a ResultSet into the semantic of a {@link HeavyweightIterator}.
  * <br/>
  * Created: 15.08.2007 18:19:25
  * @see HeavyweightIterator
@@ -49,6 +49,10 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
 
     private ResultSet resultSet;
     private Boolean hasNext;
+
+    public ResultSetIterator(ResultSet resultSet) {
+        this(resultSet, "");
+    }
 
     public ResultSetIterator(ResultSet resultSet, String query) {
         this.resultSet = resultSet;
@@ -78,13 +82,10 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
     public ResultSet next() {
         if (logger.isDebugEnabled())
             logger.debug("next() called on: " + this);
-        try {
-            if (!hasNext())
-                throw new IllegalStateException("No more row available");
-            return resultSet;
-        } finally {
-            hasNext = null;
-        }
+        if (!hasNext())
+            throw new IllegalStateException("No more row available. Use hasNext() for checking availability.");
+        hasNext = null;
+        return resultSet;
     }
 
     public void remove() {
@@ -110,6 +111,7 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + query + ']';
     }
