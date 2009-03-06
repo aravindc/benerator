@@ -152,6 +152,8 @@ public final class JDBCDBImporter implements DBImporter {
                                 "execute 'PURGE RECYCLEBIN;')", this, tableName);
                 continue;
             }
+            if (ignoreTable(tableName))
+            	continue;
             String tableType = tableSet.getString(4); // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
             String tableRemarks = tableSet.getString(5);
             if (logger.isDebugEnabled())
@@ -198,6 +200,8 @@ public final class JDBCDBImporter implements DBImporter {
                     logger.debug("ignoring column: " + catalogName + ", " + schemaName + ", " + tableName);
                 continue;
             }
+            if (ignoreTable(tableName))
+            	continue;
             String columnName = columnSet.getString(4);
             int sqlType = columnSet.getInt(5);
             String columnType = columnSet.getString(6);
@@ -260,6 +264,8 @@ public final class JDBCDBImporter implements DBImporter {
         DBSchema schema = database.getSchema(schemaName);
         if (schema != null)
             for (DBTable table : schema.getTables()) {
+                if (ignoreTable(table.getName()))
+                	continue;
                 importPrimaryKeys(metaData, table);
                 count++;
             }
@@ -268,6 +274,8 @@ public final class JDBCDBImporter implements DBImporter {
         DBCatalog catalog = database.getCatalog(catalogName);
         if (catalog != null)
             for (DBTable table : catalog.getTables()) {
+                if (ignoreTable(table.getName()))
+                	continue;
                 importPrimaryKeys(metaData, table);
             }
     }
@@ -278,6 +286,10 @@ public final class JDBCDBImporter implements DBImporter {
         TreeMap<Short, DBColumn> pkComponents = new TreeMap<Short, DBColumn>();
         String pkName = null;
         while (pkset.next()) {
+        	String tableName = pkset.getString(3);
+            if (!tableName.equals(table.getName())) // Bug fix for Firebird: 
+            	continue;							// When querying X, it returns the pks of XY to
+
             String columnName = pkset.getString(4);
             DBColumn column = table.getColumn(columnName);
             short keySeq = pkset.getShort(5);
@@ -299,6 +311,8 @@ public final class JDBCDBImporter implements DBImporter {
             throws SQLException {
         for (DBCatalog catalog : database.getCatalogs()) {
             for (DBTable table : catalog.getTables()) {
+            	if (ignoreTable(table.getName()))
+            		continue;
                 logger.debug("Importing indexes for table '" + table.getName() + "'");
                 OrderedNameMap<DBIndexInfo> tableIndexes = new OrderedNameMap<DBIndexInfo>();
                 ResultSet indexSet = metaData.getIndexInfo(catalog.getName(), null, table.getName(), false, false);
@@ -378,6 +392,8 @@ public final class JDBCDBImporter implements DBImporter {
         int count = 0;
         for (DBCatalog catalog : database.getCatalogs())
             for (DBTable table : catalog.getTables()) {
+                if (ignoreTable(table.getName()))
+                	continue;
                 importImportedKeys(catalog, null, table, metaData);
                 count++;
             }
@@ -385,6 +401,8 @@ public final class JDBCDBImporter implements DBImporter {
             return;
         for (DBSchema schema : database.getSchemas())
             for (DBTable table : schema.getTables()) {
+                if (ignoreTable(table.getName()))
+                	continue;
                 importImportedKeys(null, schema, table, metaData);
                 count++;
             }
@@ -392,7 +410,7 @@ public final class JDBCDBImporter implements DBImporter {
 
     private void importImportedKeys(DBCatalog catalog, DBSchema schema, DBTable table, DatabaseMetaData metaData)
             throws SQLException {
-        logger.debug("Importing imported keys");
+        logger.debug("Importing imported keys for table " + table.getName());
         String catalogName = (catalog != null ? catalog.getName() : null);
         String tableName = table.getName();
         String schemaName = (schema != null ? schema.getName() : null);
@@ -400,11 +418,12 @@ public final class JDBCDBImporter implements DBImporter {
         List<ImportedKey> importedKeys = new ArrayList<ImportedKey>();
         ImportedKey recent = null;
         while (resultSet.next()) {
-            tableName = resultSet.getString(2);
             ImportedKey cursor = ImportedKey.parse(resultSet, catalog, schema, table);
-            if (cursor.KEY_SEQ > 1) {
-                DBColumn foreignKeyColumn = table.getColumn(cursor.FKCOLUMN_NAME);
-                DBColumn targetColumn = table.getColumn(cursor.PKCOLUMN_NAME);
+            if (cursor == null) 
+            	continue;
+            if (cursor.key_seq > 1) {
+                DBColumn foreignKeyColumn = table.getColumn(cursor.fkcolumn_name);
+                DBColumn targetColumn = table.getColumn(cursor.pkcolumn_name);
                 assert recent != null;
                 recent.addForeignKeyColumn(foreignKeyColumn, targetColumn);
             } else
@@ -413,12 +432,16 @@ public final class JDBCDBImporter implements DBImporter {
         }
         resultSet.close();
         for (ImportedKey key : importedKeys) {
-            DBForeignKeyConstraint foreignKeyConstraint = new DBForeignKeyConstraint(key.FK_NAME);
+            DBForeignKeyConstraint foreignKeyConstraint = new DBForeignKeyConstraint(key.fk_name);
             for (DBForeignKeyColumn foreignKeyColumn : key.getForeignKeyColumns()) {
                 foreignKeyConstraint.addForeignKeyColumn(foreignKeyColumn);
             }
             table.addForeignKeyConstraint(foreignKeyConstraint);
         }
+    }
+
+	private boolean ignoreTable(String tableName) {
+	    return tableName.contains("$");
     }
 
     private static String removeBrackets(String defaultValue) {
