@@ -51,6 +51,7 @@ import java.text.ParseException;
 public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 	
     private static final Log logger = LogFactory.getLog(FlatFileEntityExporter.class);
+    private static final Escalator escalator = new LoggerEscalator();
 
     private Converter<Entity, String> converters[];
 
@@ -58,66 +59,75 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
         this(null, null);
     }
 
-    public FlatFileEntityExporter(String uri, String propertyFormatList) {
-        this(uri, null, propertyFormatList);
+    public FlatFileEntityExporter(String uri, String columnFormatList) {
+        this(uri, null, columnFormatList);
     }
 
-    public FlatFileEntityExporter(String uri, String encoding, String propertyFormatList) {
+    public FlatFileEntityExporter(String uri, String encoding, String columnFormatList) {
         super(uri, encoding, null);
         this.uri = uri;
-        setProperties(propertyFormatList);
+        setColumns(columnFormatList);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setProperties(String propertyFormatList) {
-        if (propertyFormatList == null) {
+    /** @deprecated use setColumns() instead */
+    @Deprecated
+	public void setProperties(String properties) {
+    	escalator.escalate("Property 'properties' of " + getClass().getName() + " has been deprecated. " +
+    			"Use property 'columns' instead.", this, properties);
+        setColumns(properties);
+    }
+
+    public void setColumns(String columnFormatList) {
+        if (columnFormatList == null) {
             converters = null;
             return;
         }
         try {
-            String[] propertyFormats = StringUtil.tokenize(propertyFormatList, ',');
-            this.converters = new Converter[propertyFormats.length];
-            for (int i = 0; i < propertyFormats.length; i++) {
-                String propertyFormat = propertyFormats[i];
-                int lbIndex = propertyFormat.indexOf('[');
+            String[] columnFormats = StringUtil.tokenize(columnFormatList, ',');
+            this.converters = new Converter[columnFormats.length];
+            for (int i = 0; i < columnFormats.length; i++) {
+                String columnFormat = columnFormats[i];
+                int lbIndex = columnFormat.indexOf('[');
                 if (lbIndex < 0)
-                    throw new ConfigurationError("'[' expected in property format descriptor '" + propertyFormat + "'");
-                int rbIndex = propertyFormat.indexOf(']');
+                    throw new ConfigurationError("'[' expected in column format descriptor '" + columnFormat + "'");
+                int rbIndex = columnFormat.indexOf(']');
                 if (rbIndex < 0)
-                    throw new ConfigurationError("']' expected in property format descriptor '" + propertyFormat + "'");
-                String propertyName = propertyFormat.substring(0, lbIndex);
+                    throw new ConfigurationError("']' expected in column format descriptor '" + columnFormat + "'");
+                String columnName = columnFormat.substring(0, lbIndex);
                 // parse width
                 ParsePosition pos = new ParsePosition(lbIndex + 1);
-                int width = (int) ParseUtil.parseNonNegativeInteger(propertyFormat, pos);
+                int width = (int) ParseUtil.parseNonNegativeInteger(columnFormat, pos);
                 // parse fractionDigits
                 int minFractionDigits = 0;
                 int maxFractionDigits = 2;
-                if (pos.getIndex() < rbIndex && propertyFormat.charAt(pos.getIndex()) == '.') {
+                if (pos.getIndex() < rbIndex && columnFormat.charAt(pos.getIndex()) == '.') {
                     pos.setIndex(pos.getIndex() + 1);
-                    minFractionDigits = (int) ParseUtil.parseNonNegativeInteger(propertyFormat, pos);
+                    minFractionDigits = (int) ParseUtil.parseNonNegativeInteger(columnFormat, pos);
                     maxFractionDigits = minFractionDigits;
                 }
                 // parse alignment
                 Alignment alignment = Alignment.LEFT;
                 if (pos.getIndex() < rbIndex) {
-                    char alignmentCode = propertyFormat.charAt(pos.getIndex());
+                    char alignmentCode = columnFormat.charAt(pos.getIndex());
                     switch (alignmentCode) {
                         case 'l' : alignment = Alignment.LEFT; break;
                         case 'r' : alignment = Alignment.RIGHT; break;
                         case 'c' : alignment = Alignment.CENTER; break;
-                        default: throw new ConfigurationError("Illegal alignment code '" + alignmentCode + "' in property format descriptor '" + propertyFormat + "'");
+                        default: throw new ConfigurationError("Illegal alignment code '" + alignmentCode + "'" +
+                        		" in colun format descriptor '" + columnFormat + "'");
                     }
                     pos.setIndex(pos.getIndex() + 1);
                 }
                 // parse pad char
                 char padChar = ' ';
                 if (pos.getIndex() < rbIndex) {
-                    padChar = propertyFormat.charAt(pos.getIndex());
+                    padChar = columnFormat.charAt(pos.getIndex());
                     pos.setIndex(pos.getIndex() + 1);
                 }
                 assert pos.getIndex() == rbIndex;
-                FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(propertyName, width, alignment, padChar);
+                FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(columnName, width, alignment, padChar);
                 this.converters[i] = new ConverterChain<Entity, String>(
                     new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())),
                     plainConverter,
@@ -127,7 +137,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
                 );
             }
         } catch (ParseException e) {
-            throw new ConfigurationError("Invalid format: " + propertyFormatList, e);
+            throw new ConfigurationError("Invalid column definition: " + columnFormatList, e);
         }
     }
 
@@ -149,7 +159,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 	@Override
 	protected void postInitPrinter() {
         if (this.converters == null)
-            throw new ConfigurationError("Property 'properties' not set on bean " + getClass().getName());
+            throw new ConfigurationError("Property 'columns' not set on bean " + getClass().getName());
 	}
 
 	@Override
