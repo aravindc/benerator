@@ -26,6 +26,8 @@
 
 package org.databene.benerator;
 
+import org.databene.commons.Heavyweight;
+
 /**
  * This is the basic Generator interface, the mother of all generators.<br/>
  * <br/>
@@ -52,7 +54,7 @@ package org.databene.benerator;
  *
  * Created: 07.06.2006 18:51:28
  */
-public interface Generator<E> {
+public interface Generator<E> extends Heavyweight {
 
     /**
      * This is a convenience method for checking the validity of a Generator's setup.
