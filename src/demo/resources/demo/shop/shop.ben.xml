@@ -18,7 +18,8 @@
 		 !       oracle/drop_tables.oracle.sql                      !
 		 !                                                          !
 		 !   Have a look at the examples provided for oracle, db,   !
-		 !   sql_server, mysql, postgres, hsql, mysql & derby       !
+		 !   sql_server, mysql, postgres, hsql, mysql, firebird     !
+		 !   &amp; derby                                            !
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	 </comment>
 	 
@@ -38,6 +39,7 @@
 	<echo message="{  ${orders_per_customer} orders per customer}" />
 	<echo message="{  ${items_per_order} items per order}" />
 	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
+	<echo message="{JDBC URL: ${dbUri}}" />
 
     <comment>define a database that will be referred by the id 'db' later</comment>
     <database id="db" url="{${dbUri}}" driver="{${dbDriver}}" schema="{${dbSchema!}}"
@@ -70,7 +72,7 @@
 		<!-- Export the generated products not only to the database, but also to a flat file -->
 		<consumer class="FlatFileEntityExporter">
 			<property name="uri" value="products.flat" />
-			<property name="properties" value="ean_code[13],name[30l],price[10.2r0]" />
+			<property name="columns" value="ean_code[13],name[30l],price[10.2r0]" />
 		</consumer>
 	</create-entities>
 
@@ -101,7 +103,7 @@
             <!-- Export the customers not only to the database, but their names and passwords to a CSV file -->
             <consumer class="CSVEntityExporter">
                 <property name="uri" value="customers.csv" />
-                <property name="properties" value="id,password" />
+                <property name="columns" value="id,password" />
             </consumer>
         </create-entities>
     </create-entities>
