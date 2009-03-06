@@ -98,7 +98,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    /** @deprecated use setAttributes() instead */
+    /** @deprecated use setColumns() instead */
     @Deprecated
 	public void setProperties(String properties) {
     	escalator.escalate("Property 'properties' of " + getClass().getName() + " has been deprecated. " +
