@@ -56,10 +56,6 @@ public class ResultSetConverter extends FixedSourceTypeConverter<ResultSet, Obje
     
     // Converter interface ---------------------------------------------------------------------------------------------
 
-    public Class<Object> getTargetType() {
-        return Object.class;
-    }
-
     public Object convert(ResultSet resultSet) throws ConversionException {
         Object[] tmp = convertToArray(resultSet);
         return (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
