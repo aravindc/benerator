@@ -470,8 +470,6 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         if (logger.isDebugEnabled())
             logger.debug("Parsing table " + table);
         String tableName = table.getName();
-        if (tableName.startsWith("BIN$"))
-            return;
         ComplexTypeDescriptor complexType = new ComplexTypeDescriptor(tableName);
         
         // process primary keys
@@ -562,11 +560,11 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     String createSQLInsert(String tableName, List<ColumnInfo> columnInfos) {
-        StringBuilder builder = new StringBuilder("insert into ").append(tableName).append("(");
+        StringBuilder builder = new StringBuilder("insert into \"").append(tableName).append("\" (");
         if (columnInfos.size() > 0)
-            builder.append(columnInfos.get(0).name);
+            builder.append('"').append(columnInfos.get(0).name).append('"');
         for (int i = 1; i < columnInfos.size(); i++)
-            builder.append(',').append(columnInfos.get(i).name);
+            builder.append(",\"").append(columnInfos.get(i).name).append('"');
         builder.append(") values (");
         if (columnInfos.size() > 0)
             builder.append("?");
@@ -582,17 +580,17 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     	String[] pkColumnNames = getTable(tableName).getPKColumnNames();
     	if (pkColumnNames.length == 0)
     		throw new UnsupportedOperationException("Cannot update table without primary key: " + tableName);
-        StringBuilder builder = new StringBuilder("update ").append(tableName).append(" set");
+        StringBuilder builder = new StringBuilder("update \"").append(tableName).append("\" set");
         for (int i = 0; i < columnInfos.size(); i++) {
         	if (!ArrayUtil.contains(pkColumnNames, columnInfos.get(i).name)) {
-	            builder.append(" ").append(columnInfos.get(i).name).append("=?");
+	            builder.append(" ").append('"').append(columnInfos.get(i).name).append("\"=?");
 	            if (i < columnInfos.size() - pkColumnNames.length - 1)
 	            	builder.append(", ");
         	}
         }
         builder.append(" where");
         for (int i = 0; i < pkColumnNames.length; i++) {
-        	builder.append(' ').append(pkColumnNames[i]).append("=?");
+        	builder.append(' ').append('"').append(pkColumnNames[i]).append("\"=?");
         	if (i < pkColumnNames.length - 1)
         		builder.append(" and");
         }
