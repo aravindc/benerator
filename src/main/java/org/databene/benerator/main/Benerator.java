@@ -79,7 +79,8 @@ public class Benerator {
 
 	private static void checkSystem() {
 		System.out.println("Java " + VMInfo.javaVersion());
-		System.out.println(SystemInfo.osName() + " " + SystemInfo.osVersion());
+		System.out.println(VMInfo.javaVmName() + " " + VMInfo.javaVmVersion() + " (" + VMInfo.javaVmVendor() + ")");
+		System.out.println(SystemInfo.osName() + " " + SystemInfo.osVersion() + " (" + SystemInfo.osArchitecture() + ")");
 		try {
 			Class.forName("javax.script.ScriptEngine");
 		} catch (ClassNotFoundException e) {
