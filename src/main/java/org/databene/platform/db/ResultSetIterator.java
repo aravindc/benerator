@@ -43,12 +43,12 @@ import java.sql.Statement;
  */
 public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
 
-    private static final Log logger = LogFactory.getLog(ResultSetIterator.class);
-
-    private String query;
-
     private ResultSet resultSet;
     private Boolean hasNext;
+
+    private String query;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public ResultSetIterator(ResultSet resultSet) {
         this(resultSet, "");
@@ -70,6 +70,8 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
         if (resultSet == null)
         	return false;
         try {
+            if (logger.isDebugEnabled())
+            	logger.debug("hasNext() checks resultSet availability of: " + this);
             hasNext = resultSet.next();
             if (!hasNext)
             	close();
@@ -103,7 +105,6 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
             DBUtil.close(resultSet);
             resultSet = null;
             DBUtil.close(statement);
-            statement = null;
         } catch (SQLException e) {
             logger.error(e, e);
         }
@@ -115,4 +116,7 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
     public String toString() {
         return getClass().getSimpleName() + '[' + query + ']';
     }
+
+    private static final Log logger = LogFactory.getLog(ResultSetIterator.class);
+
 }
