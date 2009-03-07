@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,7 +49,6 @@ public class IteratingGenerator<E> implements Generator<E> {
 	private static final int CLOSED    =  2;
 	
     private TypedIterable<E> iterable;
-
     private Iterator<E> iterator;
     private int state;
 
@@ -62,6 +61,7 @@ public class IteratingGenerator<E> implements Generator<E> {
     public IteratingGenerator(TypedIterable<E> iterable) {
         this.iterable = iterable;
         this.state = NEW;
+        this.iterator = null;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ public class IteratingGenerator<E> implements Generator<E> {
     }
 
     public void setIterable(TypedIterable<E> iterable) {
-        if (state != NEW)
+        if (this.iterable != null)
         	throw new IllegalGeneratorStateException("Mutating an initialized generator");
         this.iterable = iterable;
     }
@@ -88,20 +88,23 @@ public class IteratingGenerator<E> implements Generator<E> {
     }
 
     public boolean available() {
-    	if (state == NEW)
-    		initialize();
-        return (iterator != null && iterator.hasNext());
+    	if (state == NEW) {
+    		iterator = iterable.iterator();
+    		if (iterator.hasNext())
+    			state = AVAILABLE;
+    		else 
+    			utilized();
+    	}
+        return (state == AVAILABLE);
     }
 
     public E generate() {
         try {
-        	if (state == NEW)
-        		initialize();
-        	if (state != AVAILABLE)
+        	if (!available())
         		throw GeneratorUtil.stateException(this);
         	E result = iterator.next();
         	if (!iterator.hasNext())
-        		closeIterator(UTILIZED);
+	            utilized();
 			return result;
         } catch (Exception e) {
         	throw new IllegalGeneratorStateException("Generation failed: ", e);
@@ -109,45 +112,38 @@ public class IteratingGenerator<E> implements Generator<E> {
     }
 
 	public void reset() {
-        closeIterator(AVAILABLE);
-        initialize();
+        closeIterator();
+        state = NEW;
     }
 
     public void close() {
-        closeIterator(CLOSED);
+        closeIterator();
+        state = CLOSED;
         if (iterable instanceof Heavyweight)
         	((Heavyweight) iterable).close();
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    public String toString() {
-        return getClass().getSimpleName() + "[" + iterable + ']';
-    }
-    
     // private helpers -------------------------------------------------------------------------------------------------    
     
-    private void initialize() {
-    	switch (state) {
-	    	case NEW: 
-	    	case AVAILABLE:
-	    	case UTILIZED:
-	    		if (iterator == null)
-    				iterator = iterable.iterator();
-				state = AVAILABLE;
-				break;
-	    	case CLOSED:
-	    		throw new IllegalGeneratorStateException("Generator is not available");
-    	}
-	}
+	private void utilized() {
+    	closeIterator();
+    	state = UTILIZED;
+    }
 
-	private void closeIterator(int state) {
+	@SuppressWarnings("unchecked")
+    private void closeIterator() {
 		if (iterator != null) {
             if (iterator instanceof HeavyweightIterator)
                 ((HeavyweightIterator)iterator).close();
             iterator = null;
         }
-		this.state = state;
 	}
 
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + iterable + ']';
+    }
+    
 }
