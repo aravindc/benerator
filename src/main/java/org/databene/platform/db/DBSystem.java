@@ -85,6 +85,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     public static final IdStrategy<Long>   SEQUENCE  = new IdStrategy<Long>("sequence", Long.class);
     public static final IdStrategy<Object> QUERY     = new IdStrategy<Object>("query", Object.class);
 
+    @SuppressWarnings("unchecked")
     private static final IdStrategy[] ID_STRATEGIES = {
         SEQHILO, SEQUENCE, QUERY
     };
@@ -97,7 +98,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private String password;
     private String driver;
     private String schema;
-    private boolean batch;
+    boolean batch;
     boolean readOnly;
     
     private int fetchSize;
@@ -351,6 +352,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         return query(query, context);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> TypedIterable<T> query(String query, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
@@ -362,12 +364,15 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     // IdProviderFactory interface -------------------------------------------------------------------------------------
     
     // TODO v0.5.7 merge with AbstractIdProviderFactory
+    @SuppressWarnings("unchecked")
     private Map<IdProviderId, IdProvider> idProviders = new HashMap<IdProviderId, IdProvider>();
     
+    @SuppressWarnings("unchecked")
     public IdStrategy<? extends Object>[] getIdStrategies() {
         return ID_STRATEGIES;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> IdProvider<T> idProvider(
             IdStrategy<T> strategy, String param, String scope) {
         IdProviderId pId = new IdProviderId(strategy.getName(), param, scope, this.getId());
@@ -415,7 +420,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     // private helpers ------------------------------------------------------------------------------
 
     private PreparedStatement getStatement(
-    		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) throws SQLException {
+    		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
         ThreadContext context = getThreadContext();
         return context.getStatement(descriptor, insert, columnInfos);
     }
@@ -748,8 +753,9 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 			for (Map.Entry<ComplexTypeDescriptor, PreparedStatement> entry : statements.entrySet()) {
 			    PreparedStatement statement = entry.getValue();
 			    if (statement != null) {
-			        statement.executeBatch();            
 			        // need to finish old statement
+		            if (batch)
+		                statement.executeBatch();
 			        if (jdbcLogger.isDebugEnabled())
 			            jdbcLogger.debug("Closing statement: " + statement);
 			        DBUtil.close(statement);
