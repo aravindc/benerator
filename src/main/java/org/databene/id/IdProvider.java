@@ -34,5 +34,5 @@ import org.databene.commons.TypedIterator;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public interface IdProvider<E> extends TypedIterator<E>, HeavyweightIterator<E> {
+public interface IdProvider<E> extends TypedIterator<E>, HeavyweightIterator<E> { // TODO v0.6 remove generics
 }
