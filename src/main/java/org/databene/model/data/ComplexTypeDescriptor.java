@@ -42,7 +42,7 @@ import org.databene.commons.collection.OrderedNameMap;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class ComplexTypeDescriptor extends TypeDescriptor<ComplexTypeDescriptor> {
+public class ComplexTypeDescriptor extends TypeDescriptor {
 
 	public static final String __SIMPLE_CONTENT = "__SIMPLE_CONTENT";
 

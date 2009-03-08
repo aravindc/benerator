@@ -28,7 +28,6 @@ package org.databene.model.data;
 
 import java.util.Locale;
 
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.operation.FirstNonNullSelector;
@@ -39,7 +38,7 @@ import org.databene.commons.operation.FirstNonNullSelector;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public abstract class TypeDescriptor<E extends TypeDescriptor<? extends Object>> extends FeatureDescriptor {
+public abstract class TypeDescriptor extends FeatureDescriptor {
 
     // restriction names
     public static final String VALUES       = "values";
@@ -296,19 +295,19 @@ public abstract class TypeDescriptor<E extends TypeDescriptor<? extends Object>>
 
     // literal construction helpers ------------------------------------------------------------------------------------
     
-    public E withValues(String values) {
+    public TypeDescriptor withValues(String values) {
     	this.setValues(values);
-    	return (E) this;
+    	return this;
     }
 
-    public E withSource(String source) {
+    public TypeDescriptor withSource(String source) {
         setSource(source);
-        return (E) this;
+        return this;
     }
 
-    public E withSeparator(String separator) {
+    public TypeDescriptor withSeparator(String separator) {
         setSeparator(separator);
-        return (E) this;
+        return this;
     }
 
     // generic functionality -------------------------------------------------------------------------------------------

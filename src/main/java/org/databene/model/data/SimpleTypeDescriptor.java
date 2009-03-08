@@ -38,7 +38,7 @@ import org.databene.commons.operation.MinOperation;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class SimpleTypeDescriptor extends TypeDescriptor<SimpleTypeDescriptor> {
+public class SimpleTypeDescriptor extends TypeDescriptor {
 
     public static final String MIN = "min";
     public static final String MAX = "max";
