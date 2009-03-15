@@ -30,7 +30,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.domain.address.Country;
 
 /**
- * Creates internet domains of companies, web mailers or random characters.<br/><br/>
+ * Creates Internet domains of companies, web mailers or random characters.<br/><br/>
  * Created at 20.04.2008 08:14:35
  * @since 0.5.2
  * @author Volker Bergmann
@@ -38,12 +38,13 @@ import org.databene.domain.address.Country;
  */
 public class DomainGenerator extends AlternativeGenerator<String> {
 	
-	// TODO v0.5.x improve domain name generation algorithm
+	// TODO v0.6 improve domain name generation algorithm
 	public DomainGenerator() {
 		this(Country.getDefault().getIsoCode());
 	}
 
-	public DomainGenerator(String datasetName) {
+	@SuppressWarnings("unchecked")
+    public DomainGenerator(String datasetName) {
 		super(String.class, 
 				new RandomDomainGenerator(), 
 				new WebmailDomainGenerator(),
