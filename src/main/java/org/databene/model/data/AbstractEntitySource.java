@@ -27,14 +27,15 @@
 package org.databene.model.data;
 
 /**
- * TODO document class AbstractEntitySource.<br/>
+ * Abstract implementation of {@link EntitySource} 
+ * to be used as parent class for custom implementations.<br/>
  * <br/>
  * Created at 03.03.2009 17:12:16
  * @since 0.5.8
  * @author Volker Bergmann
  */
 
-public abstract class AbstractEntitySource implements EntitySource { // TODO make other sources inherit from this class
+public abstract class AbstractEntitySource implements EntitySource {
 
     public Class<Entity> getType() {
 	    return Entity.class;
