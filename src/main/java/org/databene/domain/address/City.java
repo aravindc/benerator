@@ -122,8 +122,6 @@ public class City {
         this.language = language;
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
     public int getPopulation() {
 		return population;
 	}
@@ -132,10 +130,14 @@ public class City {
 		this.population = population;
 	}
 
-	public String toString() {
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
+	@Override
+    public String toString() {
         return name + (StringUtil.isEmpty(nameExtension) ? "" : (Character.isLetter(nameExtension.charAt(0)) ? " " : "") + nameExtension);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -149,6 +151,7 @@ public class City {
         return NullSafeComparator.equals(this.state, that.state);
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = name.hashCode();

@@ -85,6 +85,7 @@ public class PhoneNumber {
      * @return the area code
      * @deprecated replaced with {@link #getAreaCode()}
      */
+    @Deprecated
     public String getCityCode() {
         escalator.escalate(getClass().getSimpleName() + ".getCityCode() is deprecated. " +
         		"Use getAreaCode() instead" , getClass(), null);
@@ -95,6 +96,7 @@ public class PhoneNumber {
      * @param areaCode
      * @deprecated replaced with {@link #setAreaCode(String)}
      */
+    @Deprecated
     public void setCityCode(String areaCode) {
         escalator.escalate(getClass().getSimpleName() + ".setCityCode(String) is deprecated. " +
                 "Use setAreaCode(String) instead" , getClass(), null);
@@ -113,6 +115,7 @@ public class PhoneNumber {
      * @return the local number
      * @deprecated replaced with {@link #getLocalNumber()}
      */
+    @Deprecated
     public String getLocalCode() {
         escalator.escalate(getClass().getSimpleName() + ".getLocalCode() is deprecated. " +
                 "Use getLocalNumber() instead" , getClass(), null);
@@ -123,6 +126,7 @@ public class PhoneNumber {
      * @param localCode
      * @deprecated replaced with {@link #setLocalCode(String)}
      */
+    @Deprecated
     public void setLocalCode(String localCode) {
         escalator.escalate(getClass().getSimpleName() + ".setLocalCode() is deprecated. " +
                 "Use setLocalNumber() instead" , getClass(), null);
@@ -139,6 +143,7 @@ public class PhoneNumber {
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return "+" + countryCode + '-' + areaCode + '-' + localNumber;
     }

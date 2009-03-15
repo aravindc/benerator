@@ -61,6 +61,7 @@ public class CityId {
         this.nameExtension = nameExtension;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -72,10 +73,12 @@ public class CityId {
         return NullSafeComparator.equals(this.nameExtension, that.nameExtension);
     }
 
+    @Override
     public int hashCode() {
         return name.hashCode() * 29 + (nameExtension != null ? nameExtension.hashCode() : 0);
     }
 
+    @Override
     public String toString() {
         if (StringUtil.isEmpty(nameExtension))
             return name;

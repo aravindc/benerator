@@ -39,6 +39,7 @@ public class CountryGenerator extends WeightedSampleGenerator<Country> {
         super(Country.class, Country.getInstances());
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }

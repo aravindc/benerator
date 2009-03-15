@@ -141,6 +141,7 @@ public class Address {
         this.fax = fax;
     }
 
+    @Override
     public String toString() {
     	AddressFormat format = AddressFormat.getInstance(country.getIsoCode());
     	if (format == null)
