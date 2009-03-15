@@ -26,11 +26,11 @@
 
 package org.databene.platform.db;
 
-import org.databene.LogCategories;
 import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Escalator;
+import org.databene.commons.LogCategories;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.ErrorHandler.Level;
@@ -47,7 +47,7 @@ import java.sql.SQLException;
  */
 public class RunSqlScriptTask extends AbstractTask {
 
-	private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
+	private static final String DEFAULT_ENCODING = SystemInfo.getFileEncoding();
 	
 	private static Escalator escalator = new LoggerEscalator();
 	
