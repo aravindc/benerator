@@ -122,7 +122,7 @@ public class ArrayFlatFileDemo {
             writer.write(StringUtil.padRight("Tx", 12, ' '));
             writer.write(StringUtil.padLeft(String.valueOf(length), 8, ' '));
             writer.write(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-            writer.write(SystemInfo.lineSeparator());
+            writer.write(SystemInfo.getLineSeparator());
         }
     }
 }
