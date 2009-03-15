@@ -115,8 +115,8 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(NESTING,        String.class,   null);
         // distribution
         addConfig(DISTRIBUTION,   String.class,   null);
-        addConfig(VARIATION1,     String.class,    "1"); // TODO make variation1 obsolete for sequences
-        addConfig(VARIATION2,     String.class,    "1"); // TODO make variation2 obsolete for sequences
+        addConfig(VARIATION1,     String.class,    "1"); // TODO v0.6 make variation1 obsolete for sequences
+        addConfig(VARIATION2,     String.class,    "1"); // TODO v0.6 make variation2 obsolete for sequences
 	}
     
     // properties ------------------------------------------------------------------------------------------------------

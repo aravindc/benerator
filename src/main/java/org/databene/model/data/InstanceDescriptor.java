@@ -50,9 +50,9 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String MAX_COUNT          = "maxCount";
     
     // configs
-    public static final String COUNT_DISTRIBUTION = "countDistribution"; // TODO support constructor syntax
-    public static final String COUNT_VARIATION1   = "countVariation1"; // TODO make this deprecated
-    public static final String COUNT_VARIATION2   = "countVariation2"; // TODO make this deprecated
+    public static final String COUNT_DISTRIBUTION = "countDistribution"; // TODO v0.6 support constructor syntax
+    public static final String COUNT_VARIATION1   = "countVariation1"; // TODO v0.6 make this deprecated
+    public static final String COUNT_VARIATION2   = "countVariation2"; // TODO v0.6 make this deprecated
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
 

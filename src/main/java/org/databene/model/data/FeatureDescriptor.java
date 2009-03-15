@@ -24,8 +24,8 @@ public class FeatureDescriptor {
 
     static {
         ConverterManager converterManager = ConverterManager.getInstance();
-        converterManager.register(new String2DistributionConverter());
-        converterManager.register(new String2ConverterConverter());
+        converterManager.register(new String2DistributionConverter()); // TODO v0.6 resolve scripts
+        converterManager.register(new String2ConverterConverter()); // TODO v0.6 resolve scripts
     }
 
     protected OrderedNameMap<FeatureDetail<? extends Object>> details;
@@ -54,12 +54,8 @@ public class FeatureDescriptor {
 
     // generic detail access -------------------------------------------------------------------------------------------
 
-    /**
-     * @see org.databene.model.data.FeatureDescriptor#supportsDetail(java.lang.String)
-     */
     public boolean supportsDetail(String name) {
         return (details.get(name) != null);
-
     }
 
     public Object getDeclaredDetailValue(String name) {
