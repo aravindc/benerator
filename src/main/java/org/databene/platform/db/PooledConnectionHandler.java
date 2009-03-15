@@ -30,6 +30,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ import javax.sql.ConnectionEventListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.LogCategories;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.LogCategories;
 import org.databene.commons.db.DBUtil;
 
 /**
@@ -79,17 +80,29 @@ public class PooledConnectionHandler implements InvocationHandler {
 			this.close();
 		else if ("getConnection".equals(methodName) && args.length == 0)
 			return this.getConnection();
-		else if ("addConnectionEventListener".equals(methodName))
+		else if ("addConnectionEventListener".equals(methodName)) {
 			this.addConnectionEventListener((ConnectionEventListener) args[0]);
-		else if ("removeConnectionEventListener".equals(methodName))
+			return null;
+		} else if ("removeConnectionEventListener".equals(methodName)) {
 			this.removeConnectionEventListener((ConnectionEventListener) args[0]);
-		else if ("prepareStatement".equals(methodName) && args.length == 1) // TODO support other prepareStatement() variants
-			return DBUtil.prepareStatement(realConnection, (String) args[0], db.isReadOnly());
-		else if ("createStatement".equals(methodName))
+			return null;
+		} else if ("prepareStatement".equals(methodName)) {
+			switch (args.length) {
+				case 1: return DBUtil.prepareStatement(realConnection, (String) args[0], db.isReadOnly());
+				case 2: 
+					if (method.getParameterTypes()[1] == int.class)
+						return DBUtil.prepareStatement(realConnection, (String) args[0], db.isReadOnly(),
+								(Integer) args[1], ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+					else
+						break;
+				case 3: return DBUtil.prepareStatement(realConnection, (String) args[0], db.isReadOnly(),
+						(Integer) args[1], (Integer) args[2], ResultSet.HOLD_CURSORS_OVER_COMMIT);
+				case 4: return DBUtil.prepareStatement(realConnection, (String) args[0], db.isReadOnly(), 
+						(Integer) args[1], (Integer) args[2], (Integer) args[3]);
+			}
+		} else if ("createStatement".equals(methodName))
 			return createStatement(method, args);
-		else
-			return BeanUtil.invoke(realConnection, method, args);
-		return null;
+		return BeanUtil.invoke(realConnection, method, args);
 	}
 
 	private Statement createStatement(Method method, Object[] args) {
