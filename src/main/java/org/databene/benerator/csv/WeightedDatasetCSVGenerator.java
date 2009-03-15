@@ -59,7 +59,7 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     // constructors ----------------------------------------------------------------------------------------------------
     
     public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
-        this(filenamePattern, ',', datasetName, nesting, SystemInfo.fileEncoding());
+        this(filenamePattern, ',', datasetName, nesting, SystemInfo.getFileEncoding());
     }
 
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
