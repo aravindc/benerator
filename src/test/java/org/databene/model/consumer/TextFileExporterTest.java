@@ -51,7 +51,7 @@ public class TextFileExporterTest extends TestCase {
 		exporter.close();
 		assertEquals(uri, exporter.getUri());
 		String content = IOUtil.getContentOfURI(uri);
-		assertEquals("test" + SystemInfo.lineSeparator(), content);
+		assertEquals("test" + SystemInfo.getLineSeparator(), content);
 	}
 	
 }

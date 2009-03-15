@@ -69,7 +69,7 @@ public class ConsoleExporterTest extends TestCase {
 			exporter.startConsuming(in);
 			exporter.finishConsuming(in);
 			exporter.flush();
-			assertEquals(expectedOut + SystemInfo.lineSeparator(), stream.toString());
+			assertEquals(expectedOut + SystemInfo.getLineSeparator(), stream.toString());
 		} finally {
 			exporter.close();
 		}
