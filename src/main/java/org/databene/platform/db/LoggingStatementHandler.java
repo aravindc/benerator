@@ -35,9 +35,9 @@ import java.sql.Statement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.LogCategories;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.LogCategories;
 import org.databene.commons.db.DBUtil;
 
 /**
