@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.main;
+package org.databene.benerator.engine;
 
 import java.util.List;
 

@@ -1,5 +1,4 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +23,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.main;
+package org.databene.benerator.engine;
 
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseAttribute;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseBooleanAttribute;
@@ -47,12 +46,11 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.LogCategories;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
+import org.databene.benerator.main.Benerator;
 import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
@@ -64,6 +62,7 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.Escalator;
 import org.databene.commons.Heavyweight;
 import org.databene.commons.IOUtil;
+import org.databene.commons.LogCategories;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.RoundedNumberFormat;
@@ -127,11 +126,12 @@ public class DescriptorRunner {
 		.toSet("pagesize", "threads", "consumer", "onError");
 
 	private static final Log logger = LogFactory.getLog(Benerator.class);
-	private static final Log commentLogger = LogFactory.getLog("org.databene.COMMENT");
+	private static final Log commentLogger = LogFactory.getLog(LogCategories.COMMENT);
 
 	// attributes ------------------------------------------------------------------------------------------------------
 
 	private ModelParser parser;
+	private String uri;
 
 	private ExecutorService executor;
 	private Escalator escalator;
@@ -145,12 +145,14 @@ public class DescriptorRunner {
 	
 	// constructor -----------------------------------------------------------------------------------------------------
 	
-	public DescriptorRunner() {
+	public DescriptorRunner(String uri) {
+		this.uri = uri;
 		this.context = new BeneratorContext(".");
 		this.executor = Executors.newCachedThreadPool();
 		this.escalator = new LoggerEscalator();
 		this.basicParser = new BasicParser();
 		this.beans = new HashMap<String, Object>();
+		this.generatedFiles = new ArrayList<String>();
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
@@ -159,7 +161,8 @@ public class DescriptorRunner {
 		return context;
 	}
 
-	public void processFile(String uri) throws IOException {
+	@SuppressWarnings("unchecked")
+    public void run() throws IOException {
 		try {
 			generatedFiles = new ArrayList<String>();
 			context.setContextUri(IOUtil.getContextUri(uri));
@@ -177,22 +180,12 @@ public class DescriptorRunner {
 					continue;
 				parseRootChild((Element) node);
 			}
-			for (Heavyweight resource : resources) {
+			for (Heavyweight resource : resources)
 				resource.close();
-				if (resource instanceof FileExporter)
-					generatedFiles.add(((FileExporter) resource).getUri());
-			}
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
-			logger.info("Created a total of "
-					+ ConfiguredEntityGenerator.entityCount()
-					+ " entities "
-					+ "in "
-					+ elapsedTime
-					+ " ms "
-					+ "(~"
-					+ RoundedNumberFormat.format(ConfiguredEntityGenerator
-							.entityCount()
-							* 3600000L / elapsedTime, 0) + " p.h.)");
+			logger.info("Created a total of " + ConfiguredEntityGenerator.entityCount() + " entities "
+					+ "in " + elapsedTime + " ms " + "(~" 
+					+ RoundedNumberFormat.format(ConfiguredEntityGenerator.entityCount() * 3600000L / elapsedTime, 0) + " p.h.)");
 		} finally {
 			this.executor.shutdownNow();
 		}
@@ -266,7 +259,7 @@ public class DescriptorRunner {
 			if (bean instanceof DescriptorProvider)
 				dataModel.addDescriptorProvider((DescriptorProvider) bean);
 			if (bean instanceof Heavyweight)
-				resources.add((Heavyweight) bean);
+				addResource((Heavyweight) bean);
 			if (BeanUtil.hasProperty(bean.getClass(), "id")) {
 				Object id = BeanUtil.getPropertyValue(bean, "id");
 				beans.put(String.valueOf(id), bean);
@@ -276,6 +269,12 @@ public class DescriptorRunner {
 			throw new ConfigurationError(e);
 		}
 	}
+
+	boolean addResource(Heavyweight resource) {
+		if (resource instanceof FileExporter)
+			generatedFiles.add(((FileExporter<?>) resource).getUri());
+	    return resources.add(resource);
+    }
 
 	private void parseDatabase(Element element) {
 		try {
@@ -296,7 +295,7 @@ public class DescriptorRunner {
 			context.set(id, db);
 			beans.put(id, db);
 			dataModel.addDescriptorProvider(db, context.isValidate());
-			resources.add(db);
+			addResource(db);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
@@ -351,7 +350,7 @@ public class DescriptorRunner {
 				if (!StringUtil.isEmpty(uri))
 					text = IOUtil.getContentOfURI(uri);
 				text = String.valueOf(ScriptUtil.render(text, context));
-				result = runShell(null, text, onError); // TODO v0.5.7 remove null uri parameter
+				result = runShell(null, text, onError); // TODO v0.6 remove null uri parameter
 			} else {
 				if (StringUtil.isEmpty(type))
 					throw new ConfigurationError("script type is not defined");
@@ -456,11 +455,8 @@ public class DescriptorRunner {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
 			if (COMPONENT_TYPES.contains(childType)) {
-				ComplexTypeDescriptor defaultComponent = context.getDefaultComponent();
-				ComponentDescriptor component = parser
-						.parseSimpleTypeComponent(child, defaultComponent,
-								context);
-				defaultComponent.addComponent(component);
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null, context);
+				context.setDefaultComponentConfig(component);
 			} else
 				throw new ConfigurationError("Unexpected element: " + childType);
 		}
@@ -571,12 +567,13 @@ public class DescriptorRunner {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		long limit = (maxCount != null ? maxCount : -1);
-		return new PagedCreateEntityTask(taskName, limit, pageSize, // TODO support maxCount and countDistribution
+		return new PagedCreateEntityTask(taskName, limit, pageSize, // TODO v0.6 support maxCount and countDistribution
 				threads, subs, configuredGenerator, consumers, executor,
 				isSubTask, errorHandler);
 	}
 
-	private ConsumerChain<Entity> parseConsumers(Element parent, boolean consumersExpected) {
+	@SuppressWarnings("unchecked")
+    private ConsumerChain<Entity> parseConsumers(Element parent, boolean consumersExpected) {
 		String entityName = parseStringAttribute(parent, "name", context);
 		ConsumerChain<Entity> consumers = new ConsumerChain<Entity>();
 		if (parent.hasAttribute("consumer")) {
@@ -600,7 +597,6 @@ public class DescriptorRunner {
 		return consumers;
 	}
 
-	@SuppressWarnings("unchecked")
 	private InstanceDescriptor mapEntityDescriptorElement(Element element,
 			BeneratorContext context) {
 		String entityName = parseStringAttribute(element, "name", context);
@@ -659,6 +655,5 @@ public class DescriptorRunner {
 	public String toString() {
 		return getClass().getSimpleName();
 	}
-
 
 }
