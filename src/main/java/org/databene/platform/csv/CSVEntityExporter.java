@@ -30,6 +30,7 @@ import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Escalator;
@@ -51,11 +52,12 @@ import java.util.List;
  */
 public class CSVEntityExporter extends TextFileExporter<Entity> {
 
-    private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
+	private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
     private static final Escalator escalator = new LoggerEscalator();
     
     // defaults --------------------------------------------------------------------------------------------------------
     
+    private static final String DEFAULT_LINE_SEPARATOR = "\r\n"; // as defined by RFC 4180
     private static final char   DEFAULT_SEPARATOR = ',';
     private static final String DEFAULT_URI       = "export.csv";
 
@@ -67,16 +69,16 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public CSVEntityExporter() {
-        this(DEFAULT_URI, "");
+        this(DEFAULT_URI, (String) null);
     }
     
     public CSVEntityExporter(String uri, String columns) {
-        this(uri, columns, DEFAULT_SEPARATOR, null, "\r\n");
+        this(uri, columns, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
     }
 
-    public CSVEntityExporter(String uri, String attributes, char separator, String encoding, String lineSeparator) {
+    public CSVEntityExporter(String uri, String columns, char separator, String encoding, String lineSeparator) {
     	super(uri, encoding, lineSeparator);
-        setColumns(attributes);
+        setColumns(columns);
         this.separator = separator;
     }
 
@@ -85,7 +87,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor) {
-        this(uri, descriptor, DEFAULT_SEPARATOR, null, null);
+        this(uri, descriptor, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor, char separator, String encoding, String lineSeparator) {
@@ -106,9 +108,13 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
         setColumns(properties);
     }
 
-	public void setColumns(String attributes) {
-        this.columns = StringUtil.tokenize(attributes, ',');
-        StringUtil.trimAll(columns);
+	public void setColumns(String columnsSpec) {
+		if (StringUtil.isEmpty(columnsSpec))
+			this.columns = null;
+		else {
+	        this.columns = StringUtil.tokenize(columnsSpec, ',');
+	        StringUtil.trimAll(this.columns);
+		}
     }
 
     public void setSeparator(char separator) {
@@ -121,6 +127,11 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 	protected void startConsumingImpl(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
+        if (ArrayUtil.isEmpty(columns)) {
+        	columns = CollectionUtil.toArray(entity.getComponents().keySet());
+        	printHeaderRow();
+        }
+        printer.println();
         for (int i = 0; i < columns.length; i++) {
             if (i > 0)
                 printer.print(separator);
@@ -130,19 +141,23 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
                 s = '"' + s + '"';
             printer.print(s);
         }
-        printer.println();
     }
 
     @Override
 	protected void postInitPrinter() {
-    	if (!append) {
-	        // write header
-	        for (int i = 0; i < columns.length; i++) {
-	            if (i > 0)
-	                printer.print(separator);
-	            printer.print(columns[i]);
-	        }
-	        printer.println();
-    	}
+    	if (!append)
+	        printHeaderRow();
+    }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
+
+	private void printHeaderRow() {
+		if (columns != null) {
+		    for (int i = 0; i < columns.length; i++) {
+		        if (i > 0)
+		            printer.print(separator);
+		        printer.print(columns[i]);
+		    }
+		}
     }
 }
