@@ -36,7 +36,7 @@ public class BasicDescriptorProvider extends DefaultDescriptorProvider {
 
     public BasicDescriptorProvider() {
         super("ben");
-        for (PrimitiveType<? extends Object> type : PrimitiveType.getInstances())
+        for (PrimitiveType type : PrimitiveType.getInstances())
             addDescriptor(new SimpleTypeDescriptor(type.getName(), type.getName()));
         addDescriptor(new ComplexTypeDescriptor("entity"));
     }
