@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,24 +38,23 @@ import org.databene.benerator.GeneratorTest;
 public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	
 //	private String contextUri = "./";
+	
 	/**
 	 * Test unique generation based on random sequence.
 	 * <attribute distribution="random" unique="true"/>
 	 */
 	public void testUniqueRandom() {
-		/* TODO v0.5.x support unique random
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "int").withMin("1").withMax("1").withDistribution(Sequence.RANDOM);
-		InstanceDescriptor instance = new InstanceDescriptor("n", type);
+		/* TODO v0.6 support unique random?
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "int").withMin("1").withMax("3").withDistribution("random");
+		InstanceDescriptor instance = new InstanceDescriptor("n", type).withUnique(true);
 		Generator<Integer> generator = createInstanceGenerator(instance);
 		expectGeneratedSet(generator, 1, 2, 3).withCeasedAvailability();
 	*/
 	}
 /*
-	private Generator<Integer> createInstanceGenerator(
-			InstanceDescriptor instance) {
+	private Generator<Integer> createInstanceGenerator(InstanceDescriptor instance) {
 		BeneratorContext context = new BeneratorContext(contextUri);
-		return (Generator<Integer>) InstanceGeneratorFactory.createInstanceGenerator(
-				instance, context, context.getGenerationSetup());
+		return (Generator<Integer>) InstanceGeneratorFactory.createInstanceGenerator(instance, context);
 	}
 */
 }
