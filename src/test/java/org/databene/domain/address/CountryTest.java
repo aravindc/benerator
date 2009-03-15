@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.domain.address;
 
 import junit.framework.TestCase;
@@ -38,10 +37,11 @@ import junit.framework.TestCase;
  */
 public class CountryTest extends TestCase {
 
-	public void test() {
+	public void testInstances() {
 		assertSame(Country.GERMANY, Country.getInstance("DE"));
 		assertSame(Country.US, Country.getInstance("US"));
 		assertSame(Country.UNITED_KINGDOM, Country.getInstance("GB"));
 		assertNotNull(Country.getInstance("SO"));
 	}
+
 }
