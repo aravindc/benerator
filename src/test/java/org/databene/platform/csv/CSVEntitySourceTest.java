@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 20072009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,24 +33,24 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import java.util.Iterator;
 
 /**
- * Tests the CSVEntityIterable.<br/>
+ * Tests the {@link CSVEntitySource}.<br/>
  * <br/>
  * Created: 26.08.2007 12:45:17
  * @author Volker Bergmann
  */
-public class CSVEntityIterableTest extends TestCase {
+public class CSVEntitySourceTest extends TestCase {
 
     private static final String URI = "org/databene/platform/csv/person-bean.csv";
 
     // test methods ----------------------------------------------------------------------------------------------------
 
     public void testSingleRun() {
-        CSVEntityIterable iterable = new CSVEntityIterable(URI, "Person", ',');
+    	CSVEntitySource iterable = new CSVEntitySource(URI, "Person", ',');
         checkIteration(iterable.iterator());
     }
 
     public void testReset() {
-        CSVEntityIterable iterable = new CSVEntityIterable(URI, "Person", ',');
+    	CSVEntitySource iterable = new CSVEntitySource(URI, "Person", ',');
         checkIteration(iterable.iterator());
         checkIteration(iterable.iterator());
     }
