@@ -290,7 +290,7 @@ public class GeneratorFactory {
     }
 
     /**
-     * TODO v0.5.7 make Sequence hold the variation info and remove this method.
+     * TODO v0.6 make Sequence hold the variation info and remove this method.
      * @deprecated
      */
     @Deprecated
@@ -531,7 +531,7 @@ public class GeneratorFactory {
      */
     public static Generator<String[]> getCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines,
     		boolean cyclic, String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
-        Generator<String[]> generator = new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, SystemInfo.fileEncoding()));
+        Generator<String[]> generator = new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, SystemInfo.getFileEncoding()));
         return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
     }
 
