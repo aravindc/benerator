@@ -5,6 +5,5 @@ if [ -z "$BENERATOR_HOME" ]; then
   echo "to the location of your benerator installation."
   exit 1
 fi
-. $BENERATOR_HOME/bin/benerator_common.sh
-benerator_exec_command="exec \"$JAVACMD\" $BENERATOR_OPTS -classpath \"$LOCALCLASSPATH\" org.databene.benerator.main.BeneratorGUI $*"
-eval $benerator_exec_command
+echo "Usage of benerator-gui.sh is deprecated. Pleas use maven-project-wizard.sh instead."
+. $BENERATOR_HOME/bin/maven-project-wizard.sh
