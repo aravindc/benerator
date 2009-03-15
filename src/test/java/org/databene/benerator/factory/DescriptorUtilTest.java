@@ -44,7 +44,10 @@ import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.id.IdProvider;
+import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.Entity;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
@@ -154,7 +157,39 @@ public class DescriptorUtilTest extends TestCase {
 	}
 
 	public void testParseConsumers() {
-		//throw new UnsupportedOperationException("Not implemented yet"); // TODO v0.5.7 test
+		Entity entity = new Entity("Person", "name", "Alice");
+		BeneratorContext context = new BeneratorContext(".");
+		
+		// test constructor syntax
+		ConsumerChain<Entity> consumer = DescriptorUtil.parseConsumersSpec(ConsumerMock.class.getName(), context);
+		consumer.startConsuming(entity);
+		assertEquals(1, consumer.componentCount());
+		ConsumerMock consumerCheck = (ConsumerMock) consumer.getComponent(0);
+		assertEquals(entity, consumerCheck.last);
+		assertEquals(1, consumerCheck.n);
+		
+		// test constructor syntax
+		consumer = DescriptorUtil.parseConsumersSpec(ConsumerMock.class.getName() + "(2)", context);
+		consumer.startConsuming(entity);
+		assertEquals(1, consumer.componentCount());
+		consumerCheck = (ConsumerMock) consumer.getComponent(0);
+		assertEquals(entity, consumerCheck.last);
+		assertEquals(2, consumerCheck.n);
+		
+		// test reference
+		context.set("myconsumer", new ConsumerMock());
+		consumer = DescriptorUtil.parseConsumersSpec("myconsumer", context);
+		consumer.startConsuming(entity);
+		assertEquals(1, consumer.componentCount());
+		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).last);
+		
+		// test comma-separated combination
+		context.set("myconsumer", new ConsumerMock());
+		consumer = DescriptorUtil.parseConsumersSpec("myconsumer," + ConsumerMock.class.getName(), context);
+		consumer.startConsuming(entity);
+		assertEquals(2, consumer.componentCount());
+		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).last);
+		assertEquals(entity, ((ConsumerMock) consumer.getComponent(1)).last);
 	}
 	
 	// distribution tests ----------------------------------------------------------------------------------------------
@@ -185,7 +220,7 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetSequence(null, null, "random", null, null, null);
 		checkGetSequence(null, null, "random", "1", "1", 1);
 		checkGetSequence("id", Sequence.STEP, "id", null, null, 1);
-/* TODO v0.5.7 test custom sequences
+/* TODO v0.6 test custom sequences
 		checkGetSequence(null, null, "org.databene.benerator.test.SequenceMock", null, null, 1);
 		checkGetSequence(null, null, "SequenceMock", null, null, 1);
 		checkGetSequence(null, null, "SequenceMock(2)", null, null, 2);
@@ -193,7 +228,8 @@ public class DescriptorUtilTest extends TestCase {
 */
 	}
 
-	public void testGetDistributionWeighted() {
+	@SuppressWarnings("unchecked")
+    public void testGetDistributionWeighted() {
 		BeneratorContext context = new BeneratorContext(null);
 		
 		// test 'weighted'
@@ -302,7 +338,7 @@ public class DescriptorUtilTest extends TestCase {
 	}
 	
 	public void testGetCountDistribution() {
-		//throw new UnsupportedOperationException("Not implemented yet"); // TODO v0.5.7 test
+		// TODO v0.6 test
 	}
 	
 
@@ -346,7 +382,6 @@ public class DescriptorUtilTest extends TestCase {
 		assertEquals(expectedValue, generator.generate());
 	}
 
-	@SuppressWarnings("unchecked")
 	private void checkGetWeightFunction(
 			String contextKey, Distribution contextValue, String distributionSpec, double expectedValue) {
 		BeneratorContext context = new BeneratorContext(null);
@@ -354,13 +389,12 @@ public class DescriptorUtilTest extends TestCase {
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setDistribution(distributionSpec);
-		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context); // TODO test unique=true?
+		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context);
 		assertNotNull(distribution);
 		assertTrue(distribution instanceof WeightFunction);
 		assertEquals(expectedValue, ((WeightFunction) distribution).value(0));
 	}
 
-	@SuppressWarnings("unchecked")
 	private void checkGetSequence(
 			String contextKey, Distribution contextValue, 
 			String distributionSpec, String variation1, String variation2, Integer expectedValue) {
@@ -369,10 +403,10 @@ public class DescriptorUtilTest extends TestCase {
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setDistribution(distributionSpec);
-		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context); // TODO test unique=true?
+		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context); // TODO v0.6 test sequence=random,unique=true?
 		assertNotNull(distribution);
 		assertTrue(distribution instanceof Sequence);
-		// TODO test sequence settings
+		// TODO v0.6 test sequence settings
 	}
 
 	@SuppressWarnings("unchecked")
@@ -408,4 +442,22 @@ public class DescriptorUtilTest extends TestCase {
 			assertEquals(expected, idProvider.next());
 	}
 
+	public static class ConsumerMock extends AbstractConsumer<Entity> {
+		
+		public Entity last;
+		public int n;
+		
+		public ConsumerMock() {
+			this(1);
+		}
+
+		public ConsumerMock(int n) {
+			this.n = n;
+		}
+
+        public void startConsuming(Entity object) {
+	        last = object;
+        }
+		
+	}
 }
