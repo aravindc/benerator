@@ -7,20 +7,41 @@ summary
 
 changes
 -------
+- Removed generics from TypeDescriptor class
+- Renamed benerator-gui.sh/bat to maven-project-wizard.sh/bat
+- Using POI 3.5-beta5
 
-enhancements
-------------
-(Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
-- Added <comment> element
+enhancements (Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
+----------------------------------------------------------------------------------------------------------------
+- 2687543 Support the Firebird database
 - 2545178 Import Excel sheets: new class XLSEntitySource that reads entity data from an Excel sheet
 - 2544995 improve generated pom.xml: Configuring Java 5 compilation and benerator library dependencies in generated pom.xml
+- 2539807 include test scope artifacts in plugin classpath
+- Person package:
+  - Added salutations in different languages (thanks to Horst Frank)
+  - Added Russian names
 - New common interface FileExporter for all Consumers that write to a file
 - improved TextFileExporter: useable standalone, added preClosePrinter() callback
-- <comment> filed and logger category org.databene.COMMENT
+- <comment> element and logger category org.databene.COMMENT
+- logger category org.databene.CONFIG
 - missing validator attribute in schema file
+- XLS improvements:
+  - XLS and CSV-Exporter now work without explicitly setting the table headers
+  - XLS formulas are resolved
+- Improved maven project wizard:
+  - generating non-DB projects
+  - testing db connection
+  - improved pom.xml
+- supporting bean construction syntax like <bean id="gen" spec="com.my.Gen(34,'test')" />
+- Made TextFileExporter useable standalone and for other data types than 'Entity'
 
 bug fixes
 ---------
 (Find the bug tracker at http://sourceforge.net/tracker/?group_id=222964&atid=1057386)
-
-
+2668915 Shop demo causes NullPointerException for Derby
+2668760 Column not found in Firebird
+2537975 seqhilo IdProvider does not require a sequence name
+2528604 exception when setting oracle-custom-typed columns to null
+2504916 Oracle throws SQLException 'Invalid SQL Type'
+2687567 Error in non-latin language support
+- Turkish male name generation
