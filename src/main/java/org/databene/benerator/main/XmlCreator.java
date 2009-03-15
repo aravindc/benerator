@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ui.ConsoleInfoPrinter;
-import org.databene.commons.ui.InfoPrinter;
 
 /**
  * Main class for generating XML files from the command line.<br/><br/>
