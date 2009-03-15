@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="databene">
 
-    <skin>
-        <groupId>databene</groupId>
-        <artifactId>databene-skin</artifactId>
-        <version>1.0</version>
-    </skin>
-
     <bannerLeft>
-      <name>databene</name>
-      <src>images/logos/benerator.png</src>
+      <name>benerator</name>
       <href>./</href>
     </bannerLeft>
 
