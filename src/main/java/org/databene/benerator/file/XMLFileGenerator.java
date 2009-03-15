@@ -69,7 +69,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
         super(File.class);
-        this.encoding = SystemInfo.fileEncoding();
+        this.encoding = SystemInfo.getFileEncoding();
         this.dataModel = DataModel.getDefaultInstance();
         dataModel.clear();
         this.root = root;
