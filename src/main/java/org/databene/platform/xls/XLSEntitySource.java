@@ -32,6 +32,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
@@ -44,11 +45,11 @@ import org.databene.model.data.EntitySource;
  * @author Volker Bergmann
  */
 
-public class XLSEntitySource implements EntitySource {
+public class XLSEntitySource extends AbstractEntitySource {
 	
     private String uri;
     private int sheetIndex;
-    private Converter<String, ? extends Object> preprocessor;
+    private Converter<String, ?> preprocessor;
 
     private ComplexTypeDescriptor entityDescriptor;
 
@@ -69,6 +70,7 @@ public class XLSEntitySource implements EntitySource {
     public XLSEntitySource(String uri, int sheetIndex, ComplexTypeDescriptor descriptor, 
     		Converter<String, ? extends Object> preprocessor) {
         this.uri = uri;
+        this.sheetIndex = sheetIndex;
         this.entityDescriptor = descriptor;
         this.preprocessor = preprocessor;
     }
@@ -92,10 +94,6 @@ public class XLSEntitySource implements EntitySource {
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
-
-    public Class<Entity> getType() {
-        return Entity.class;
-    }
 
     public HeavyweightIterator<Entity> iterator() {
         try {
