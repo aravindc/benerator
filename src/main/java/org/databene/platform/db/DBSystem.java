@@ -30,6 +30,7 @@ import org.databene.id.IdProvider;
 import org.databene.id.IdProviderFactory;
 import org.databene.id.IdProviderId;
 import org.databene.id.IdStrategy;
+import org.databene.platform.db.dialect.UnknownDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
 import org.databene.commons.*;
@@ -74,6 +75,8 @@ import javax.sql.PooledConnection;
  */
 public class DBSystem implements StorageSystem, IdProviderFactory {
     
+    private static final int DEFAULT_FETCH_SIZE = 100;
+
 	private static final VersionNumber MIN_ORACLE_VERSION = new VersionNumber("10.2.0.4");
 
 	// constants -------------------------------------------------------------------------------------------------------
@@ -89,6 +92,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private static final IdStrategy[] ID_STRATEGIES = {
         SEQHILO, SEQUENCE, QUERY
     };
+
+	private static final TypeDescriptor[] EMPTY_TYPE_DESCRIPTOR_ARRAY = new TypeDescriptor[0];
     
     // attributes ------------------------------------------------------------------------------------------------------
     
@@ -109,7 +114,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     private Map<String, TypeDescriptor> typeDescriptors;
     
     private TypeMapper<Class<? extends Object>> driverTypeMapper;
-    private DatabaseDialect dialect;
+    DatabaseDialect dialect;
+    private boolean dynamicQuerySupported;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -118,17 +124,19 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     public DBSystem(String id, String url, String driver, String user, String password) {
-        this.id = id;
-        this.url = url;
-        this.user = user;
-        this.password = password;
-        this.driver = driver;
-        this.schema = null;
-        this.fetchSize = 100;
-        this.batch = false;
+        setId(id);
+        setUrl(url);
+        setUser(user);
+        setPassword(password);
+        setDriver(driver);
+        setSchema(null);
+        setFetchSize(DEFAULT_FETCH_SIZE);
+        setBatch(false);
+        setReadOnly(false);
+        setDynamicQuerySupported(true);
+        this.typeDescriptors = null;
         this.contexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
-        this.readOnly = false;
         if (driver != null && driver.contains("oracle")) {
         	Connection connection = null;
     		try {
@@ -146,7 +154,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         }
     }
 
-    // properties ------------------------------------------------------------------------------------------------------
+	// properties ------------------------------------------------------------------------------------------------------
 
     public String getId() {
         return id;
@@ -185,7 +193,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = StringUtil.emptyToNull(password);
     }
 
     public String getSchema() {
@@ -193,7 +201,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
 
     public void setSchema(String schema) {
-        this.schema = schema;
+        this.schema = StringUtil.emptyToNull(StringUtil.trim(schema));
     }
     
     /**
@@ -232,6 +240,10 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 		this.readOnly = readOnly;
 	}
 
+	public void setDynamicQuerySupported(boolean dynamicQuerySupported) {
+    	this.dynamicQuerySupported = dynamicQuerySupported;
+    }
+
     
 
     // DescriptorProvider interface ------------------------------------------------------------------------------------
@@ -239,16 +251,17 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 	public TypeDescriptor[] getTypeDescriptors() {
         if (logger.isDebugEnabled())
             logger.debug("getTypeDescriptors()");
+        parseMetadataIfNecessary();
         if (typeDescriptors == null)
-            parseMetaData();
-        return CollectionUtil.toArray(typeDescriptors.values(), TypeDescriptor.class);
+        	return EMPTY_TYPE_DESCRIPTOR_ARRAY;
+        else
+        	return CollectionUtil.toArray(typeDescriptors.values(), TypeDescriptor.class);
     }
 
     public TypeDescriptor getTypeDescriptor(String tableName) {
         if (logger.isDebugEnabled())
             logger.debug("getTypeDescriptor(" + tableName + ")");
-        if (typeDescriptors == null)
-            parseMetaData();
+        parseMetadataIfNecessary();
         TypeDescriptor entityDescriptor = typeDescriptors.get(tableName);
         if (entityDescriptor == null)
             for (TypeDescriptor candidate : typeDescriptors.values())
@@ -317,7 +330,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     	    sql = "select * from " + type + " WHERE " + selector;
     	if (script)
     		sql = '{' + sql + '}';
-        HeavyweightIterable<ResultSet> iterable = new QueryIterable(connection, sql, fetchSize, context);
+        HeavyweightIterable<ResultSet> iterable = createQuery(sql, context, connection);
         return new EntityResultSetIterable(iterable, (ComplexTypeDescriptor) getTypeDescriptor(type));
     }
 
@@ -357,13 +370,13 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
         Connection connection = getThreadContext().connection;
-        QueryIterable resultSetIterable = new QueryIterable(connection, query, fetchSize, context);
+        QueryIterable resultSetIterable = createQuery(query, context, connection);
         return (TypedIterable<T>)new ConvertingIterable<ResultSet, Object>(resultSetIterable, new ResultSetConverter(true));
     }
-      
+
     // IdProviderFactory interface -------------------------------------------------------------------------------------
     
-    // TODO v0.5.7 merge with AbstractIdProviderFactory
+    // TODO v0.6 merge with AbstractIdProviderFactory
     @SuppressWarnings("unchecked")
     private Map<IdProviderId, IdProvider> idProviders = new HashMap<IdProviderId, IdProvider>();
     
@@ -410,22 +423,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 		typeDescriptors = null;
 	} 
 	
-	// java.lang.Object overrides ------------------------------------------------------------------
-	
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + user + '@' + url + ']';
-    }
-
-    // private helpers ------------------------------------------------------------------------------
-
-    private PreparedStatement getStatement(
-    		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
-        ThreadContext context = getThreadContext();
-        return context.getStatement(descriptor, insert, columnInfos);
-    }
-
-	private void parseMetaData() {
+	public void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
@@ -442,6 +440,25 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         } catch (ImportFailedException e) {
             throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
 		}
+    }
+
+	// java.lang.Object overrides ------------------------------------------------------------------
+	
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + user + '@' + url + ']';
+    }
+
+    // private helpers ------------------------------------------------------------------------------
+
+	private QueryIterable createQuery(String query, Context context, Connection connection) {
+	    return new QueryIterable(connection, query, fetchSize, (dynamicQuerySupported ? context : null));
+    }
+      
+    private PreparedStatement getStatement(
+    		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
+        ThreadContext context = getThreadContext();
+        return context.getStatement(descriptor, insert, columnInfos);
     }
 
     private void mapStrategy(String productName) { 
@@ -481,7 +498,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         DBColumn[] columns = pkConstraint.getColumns();
         String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
-        if (pkColumnNames.length == 1) { // TODO 0.6 support composite primary keys
+        if (pkColumnNames.length == 1) { // TODO v0.6 support composite primary keys
         	String columnName = pkColumnNames[0];
         	DBColumn column = table.getColumn(columnName);
 			table.getColumn(columnName);
@@ -564,46 +581,6 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         typeDescriptors.put(complexType.getName(), complexType);
     }
 
-    String createSQLInsert(String tableName, List<ColumnInfo> columnInfos) {
-        StringBuilder builder = new StringBuilder("insert into \"").append(tableName).append("\" (");
-        if (columnInfos.size() > 0)
-            builder.append('"').append(columnInfos.get(0).name).append('"');
-        for (int i = 1; i < columnInfos.size(); i++)
-            builder.append(",\"").append(columnInfos.get(i).name).append('"');
-        builder.append(") values (");
-        if (columnInfos.size() > 0)
-            builder.append("?");
-        for (int i = 1; i < columnInfos.size(); i++)
-            builder.append(",?");
-        builder.append(")");
-        String sql = builder.toString();
-        logger.debug("built SQL statement: " + sql);
-        return sql;
-    }
-
-    String createSQLUpdate(String tableName, List<ColumnInfo> columnInfos) {
-    	String[] pkColumnNames = getTable(tableName).getPKColumnNames();
-    	if (pkColumnNames.length == 0)
-    		throw new UnsupportedOperationException("Cannot update table without primary key: " + tableName);
-        StringBuilder builder = new StringBuilder("update \"").append(tableName).append("\" set");
-        for (int i = 0; i < columnInfos.size(); i++) {
-        	if (!ArrayUtil.contains(pkColumnNames, columnInfos.get(i).name)) {
-	            builder.append(" ").append('"').append(columnInfos.get(i).name).append("\"=?");
-	            if (i < columnInfos.size() - pkColumnNames.length - 1)
-	            	builder.append(", ");
-        	}
-        }
-        builder.append(" where");
-        for (int i = 0; i < pkColumnNames.length; i++) {
-        	builder.append(' ').append('"').append(pkColumnNames[i]).append("\"=?");
-        	if (i < pkColumnNames.length - 1)
-        		builder.append(" and");
-        }
-        String sql = builder.toString();
-        logger.debug("built SQL statement: " + sql);
-        return sql;
-    }
-
     /*
     private int getColumnIndex(String tableName, String columnName) {
         tableName = tableName.toLowerCase();
@@ -661,7 +638,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         }
     }
 
-    private DBTable getTable(String tableName) {
+    DBTable getTable(String tableName) {
+    	parseMetadataIfNecessary();
         DBSchema dbSchema = database.getSchema(this.schema);
         if (dbSchema != null) {
             DBTable table = dbSchema.getTable(tableName);
@@ -696,8 +674,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     }
     
 	private void persistOrUpdate(Entity entity, boolean insert) {
-        if (typeDescriptors == null)
-            parseMetaData();
+        parseMetadataIfNecessary();
         List<ColumnInfo> writeColumnInfos = getWriteColumnInfos(entity, insert);
         try {
             String tableName = entity.getName();
@@ -723,6 +700,11 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             throw new RuntimeException("Error in persisting " + entity, e);
         }
 	}
+	
+	private void parseMetadataIfNecessary() {
+	    if (typeDescriptors == null)
+            parseMetaData();
+    }
 
     private class ThreadContext {
         
@@ -767,24 +749,31 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         public PreparedStatement getStatement(ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
             try {
                 PreparedStatement statement = (insert ? insertStatements.get(descriptor) : updateStatements.get(descriptor));
-                if (statement == null) {
-                    String sql = (insert ? 
-                    		createSQLInsert(descriptor.getName(), columnInfos) : 
-                    		createSQLUpdate(descriptor.getName(), columnInfos));
-                    if (jdbcLogger.isDebugEnabled())
-                        jdbcLogger.debug("Creating prepared statement: " + sql);
-                    statement = DBUtil.prepareStatement(connection, sql, readOnly);
-                    if (insert)
-                    	insertStatements.put(descriptor, statement);
-                    else
-                    	updateStatements.put(descriptor, statement);
-                } else {
+                if (statement == null)
+                    statement = createStatement(descriptor, insert, columnInfos);
+                else
                     statement.clearParameters();
-                }
                 return statement;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+		private PreparedStatement createStatement(ComplexTypeDescriptor descriptor, boolean insert,
+                List<ColumnInfo> columnInfos) throws SQLException {
+	        PreparedStatement statement;
+	        String tableName = descriptor.getName();
+	        String sql = (insert ? 
+	        		dialect.createSQLInsert(descriptor.getName(), columnInfos) : 
+	        		dialect.createSQLUpdate(tableName, getTable(tableName).getPKColumnNames(), columnInfos));
+	        if (jdbcLogger.isDebugEnabled())
+	            jdbcLogger.debug("Creating prepared statement: " + sql);
+	        statement = DBUtil.prepareStatement(connection, sql, readOnly);
+	        if (insert)
+	        	insertStatements.put(descriptor, statement);
+	        else
+	        	updateStatements.put(descriptor, statement);
+	        return statement;
         }
 
         public void close() {
