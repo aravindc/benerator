@@ -58,6 +58,10 @@ public class ConsumerChain<E> extends AbstractConsumer<E> {
         this.components.add(component);
     }
     
+    public Consumer<E> getComponent(int index) {
+        return this.components.get(index);
+    }
+    
     public int componentCount() {
     	return components.size();
     }
