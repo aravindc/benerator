@@ -52,15 +52,16 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public LocalCSVGenerator() {
-        this(null, null, SystemInfo.fileEncoding());
+        this(null, null, SystemInfo.getFileEncoding());
     }
 
     public LocalCSVGenerator(String baseName, String suffix, String encoding) {
         this(baseName, Locale.getDefault(), suffix, encoding);
     }
 
+    @SuppressWarnings("unchecked")
     public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding) {
-        this(baseName, locale, suffix, encoding, NoOpConverter.getInstance());
+        this(baseName, locale, suffix, encoding, (Converter<String, E>) NoOpConverter.getInstance());
     }
 
     public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding, Converter<String, E> converter) {
@@ -94,6 +95,7 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + baseName + ',' + locale + ',' + suffix + ']';
     }
