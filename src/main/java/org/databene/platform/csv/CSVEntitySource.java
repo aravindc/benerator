@@ -7,11 +7,11 @@ import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntitySource;
 
-public class CSVEntitySource implements EntitySource {
+public class CSVEntitySource extends AbstractEntitySource {
 	
     private String uri;
     private char   separator;
@@ -27,11 +27,11 @@ public class CSVEntitySource implements EntitySource {
     }
 
     public CSVEntitySource(String uri, String entityName) {
-        this(uri, entityName, ',', SystemInfo.fileEncoding());
+        this(uri, entityName, ',', SystemInfo.getFileEncoding());
     }
 
     public CSVEntitySource(String uri, String entityName, char separator) {
-        this(uri, entityName, separator, SystemInfo.fileEncoding());
+        this(uri, entityName, separator, SystemInfo.getFileEncoding());
     }
 
     public CSVEntitySource(String uri, String entityName, char separator, String encoding) {
@@ -87,10 +87,6 @@ public class CSVEntitySource implements EntitySource {
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
-
-    public Class<Entity> getType() {
-        return Entity.class;
-    }
 
     public HeavyweightIterator<Entity> iterator() {
         try {
