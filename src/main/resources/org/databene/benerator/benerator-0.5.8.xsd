@@ -96,7 +96,8 @@
 				<xs:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="id"    type="xs:string" use="required"/>
-			<xs:attribute name="class" type="xs:string" use="required"/>
+			<xs:attribute name="class" type="xs:string"/>
+			<xs:attribute name="spec" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 
@@ -229,6 +230,8 @@
             </xs:sequence>
             <xs:attribute name="name"     type="xs:string"/>
             <xs:attribute name="count"    type="xs:string"/>
+            <xs:attribute name="minCount" type="xs:string"/>
+            <xs:attribute name="maxCount" type="xs:string"/>
             <xs:attribute name="pagesize" type="xs:string"/>
             <xs:attribute name="threads"  type="xs:string"/>
             <xs:attribute name="source"   type="xs:string"/>
