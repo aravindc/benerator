@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.GeneratorClassTest;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 
 import java.util.Date;
@@ -42,11 +43,16 @@ public class CurrentTimeGeneratorTest extends GeneratorClassTest {
         super(CurrentTimeGenerator.class);
     }
 
+    @SuppressWarnings("unchecked")
     public void testProducts() {
-        expectGenerations(new CurrentTimeGenerator(), 10, new Validator<Date>() {
-            public boolean valid(Date date) {
-                return Math.abs(new Date().getTime() - date.getTime()) < 1000;
-            }
-        });
+        expectGenerations(new CurrentTimeGenerator(), 10, new CurrentTimeValidator());
+    }
+    
+    static class CurrentTimeValidator implements Validator<Date> {
+        public boolean valid(Date date) {
+            long currentTimeMillis = TimeUtil.currentTime().getTime();
+			long generatedTimeMillis = date.getTime();
+			return (Math.abs(currentTimeMillis - generatedTimeMillis) < 1000);
+        }
     }
 }
