@@ -145,7 +145,7 @@ public class DataModel {
     }
 
     private void validate(SimpleTypeDescriptor desc) {
-        PrimitiveType<? extends Object> primitiveType = desc.getPrimitiveType();
+        PrimitiveType primitiveType = desc.getPrimitiveType();
         if (primitiveType == null)
             throw new ConfigurationError("No primitive type defined for simple type: " + desc.getName());
     }
