@@ -26,26 +26,29 @@
 
 package org.databene.model.function;
 
-import org.databene.commons.BeanUtil;
-import org.databene.commons.ConfigurationError;
+import org.databene.benerator.parser.BasicParser;
+import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.StringUtil;
+import org.databene.commons.bean.ClassProvider;
 import org.databene.commons.converter.AbstractBidirectionalConverter;
 
 /**
  * Converts Strings to Distributions and vice versa.<br/><br/>
  * Created: 13.03.2008 22:33:19
  * @author Volker Bergmann
- * TODO v0.5.8 merge this with new object construction concept
  */
 public class String2DistributionConverter extends AbstractBidirectionalConverter<String, Distribution> {
+	
+	private static BasicParser parser;
 
 	public String2DistributionConverter() {
 		super(String.class, Distribution.class);
+		parser = new BasicParser();
 	}
 
     public Distribution convert(String sourceValue) throws ConversionException {
-        return parse(sourceValue);
+        return parse(sourceValue, null, null);
     }
 
     public String revert(Distribution target) throws ConversionException {
@@ -57,18 +60,18 @@ public class String2DistributionConverter extends AbstractBidirectionalConverter
             throw new UnsupportedOperationException("Not a supported distribution type: " + target);
     }
 
-    public static Distribution parse(String sourceValue) throws ConversionException {
+    public static Distribution parse(String sourceValue, ClassProvider classProvider, Context context) throws ConversionException {
     	if (StringUtil.isEmpty(sourceValue))
     		return null;
     	if (sourceValue.startsWith("weighted[") && sourceValue.endsWith("]"))
-    		return new FeatureWeight(sourceValue.substring("weighted[".length(), sourceValue.length() - 1));
+    		return new FeatureWeight<Object>(sourceValue.substring("weighted[".length(), sourceValue.length() - 1));
     	else if ("weighted".equals(sourceValue))
-    		return new FeatureWeight(null);
+    		return new FeatureWeight<Object>(null);
         Distribution result = Sequence.getInstance(sourceValue, false);
         if (result == null)
-            result = (Distribution) BeanUtil.newInstance(sourceValue);
+            result = (Distribution) parser.resolveConstructionOrReference(sourceValue, classProvider, context);
         if (result == null)
-        	throw new ConfigurationError("Distribution not found: " + sourceValue);
+        	throw new ConversionException("Distribution not found: " + sourceValue);
         return result;
     }
 
