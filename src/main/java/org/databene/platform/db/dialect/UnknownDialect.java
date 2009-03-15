@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,8 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.db;
+package org.databene.platform.db.dialect;
 
+import org.databene.platform.db.DatabaseDialect;
 
 /**
  * Space holder for unknown databases.<br/><br/>
@@ -33,16 +34,10 @@ package org.databene.platform.db;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class UnknownDialect implements DatabaseDialect {
+public class UnknownDialect extends DatabaseDialect {
 
-    private String system;
-    
     public UnknownDialect(String system) {
-        this.system = system;
-    }
-
-    public String sequenceAccessorSql(String sequenceName) {
-        throw new UnsupportedOperationException("Sequence access not supported for " + system);
+	    super(system, false);
     }
 
 }
