@@ -65,11 +65,11 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public CSVEntityIterator(String uri, String entityName) throws FileNotFoundException {
-        this(uri, entityName, ',', SystemInfo.fileEncoding());
+        this(uri, entityName, ',', SystemInfo.getFileEncoding());
     }
 
     public CSVEntityIterator(String uri, String entityName, char separator) throws FileNotFoundException {
-        this(uri, entityName, separator, SystemInfo.fileEncoding());
+        this(uri, entityName, separator, SystemInfo.getFileEncoding());
     }
 
     public CSVEntityIterator(String uri, String entityName, char separator, String encoding) throws FileNotFoundException {
