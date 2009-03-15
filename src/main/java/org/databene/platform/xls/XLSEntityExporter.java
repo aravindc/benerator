@@ -43,6 +43,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.ArrayFormat;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
@@ -74,7 +75,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
     // attributes ------------------------------------------------------------------------------------------------------
 
     private String uri;
-    private String[] attributeNames;
+    private String[] columnNames;
 
     private HSSFWorkbook workbook;
     HSSFSheet sheet;
@@ -84,12 +85,16 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
     // constructors ----------------------------------------------------------------------------------------------------
 
     public XLSEntityExporter() {
-        this(DEFAULT_URI, "");
+        this(DEFAULT_URI);
     }
     
-    public XLSEntityExporter(String uri, String attributes) {
+    public XLSEntityExporter(String uri) {
+        this(uri, (String) null);
+    }
+
+    public XLSEntityExporter(String uri, String columnSpec) {
         this.uri = uri;
-        setAttributes(attributes);
+        setColumns(columnSpec);
     }
 
     public XLSEntityExporter(ComplexTypeDescriptor descriptor) {
@@ -100,14 +105,15 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
         this.uri = uri;
         Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponents();
         List<String> componentNames = BeanUtil.extractProperties(componentDescriptors, "name");
-        this.attributeNames = CollectionUtil.toArray(componentNames, String.class);
+        this.columnNames = CollectionUtil.toArray(componentNames, String.class);
+        this.columnNames = new String[0];
         this.workbook = null;
         this.sheet = null;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public String getUri() {
+	public String getUri() {
         return uri;
     }
 
@@ -115,15 +121,27 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
         this.uri = uri;
     }
 
-	public void setAttributes(String attributes) {
-        this.attributeNames = StringUtil.tokenize(attributes, ',');
-        StringUtil.trimAll(attributeNames);
+	public void setColumns(String columnsSpec) {
+		if (StringUtil.isEmpty(columnsSpec))
+			this.columnNames = null;
+		else {
+	        this.columnNames = StringUtil.tokenize(columnsSpec, ',');
+	        StringUtil.trimAll(columnNames);
+		}
     }
 
-	public void setProperties(String attributes) {
-        escalator.escalate("XLSEntityExporter.properties is deprectated. Use XLSEntityExporter.attributes instead.", 
-        		getClass(), null);
-        setAttributes(attributes);
+	/** @deprecated use setColumns() instead */
+	@Deprecated
+	public void setProperties(String properties) {
+        escalator.escalate("XLSEntityExporter.properties is deprecated. Use XLSEntityExporter.columns instead.", getClass(), null);
+        setColumns(properties);
+    }
+
+	/** @deprecated use setColumns() instead */
+	@Deprecated
+	public void setAttributes(String attributes) {
+        escalator.escalate("XLSEntityExporter.attributes is deprecated. Use XLSEntityExporter.columns instead.", getClass(), null);
+        setColumns(attributes);
     }
 
     // Consumer interface ----------------------------------------------------------------------------------------------
@@ -132,11 +150,11 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
         if (workbook == null)
-            initWorkbook();
+            initWorkbook(entity);
         HSSFRow row = sheet.createRow(rowCount++);
-        for (int i = 0; i < attributeNames.length; i++) {
-            Object value = entity.getComponent(attributeNames[i]);
-            render(row, (short) i, value);
+        for (int i = 0; i < columnNames.length; i++) {
+            Object value = entity.getComponent(columnNames[i]);
+            render(row, i, value);
         }
     }
 
@@ -147,6 +165,8 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
     @Override
 	public void close() {
         try {
+            if (workbook == null)
+                initWorkbook(null);
         	autoSizeColumns();
 			// Write the output to a file
 			FileOutputStream fileOut = new FileOutputStream(uri);
@@ -161,7 +181,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 
     // private helpers -------------------------------------------------------------------------------------------------
     
-    private void initWorkbook() {
+    private void initWorkbook(Entity entity) {
         // create file
         this.workbook = new HSSFWorkbook();
         sheet = workbook.createSheet("new sheet");
@@ -170,15 +190,19 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 		HSSFDataFormat format = workbook.createDataFormat();
 		short dateFormat = format.getFormat(getDatePattern());
 		this.dateCellStyle.setDataFormat(dateFormat);
-
-
-        // write header
-        HSSFRow row = sheet.createRow((short) rowCount++);
-        for (int i = 0; i < attributeNames.length; i++)
-            row.createCell((short)i).setCellValue(new HSSFRichTextString(attributeNames[i]));
+        writeHeaderRow(entity);
     }
 
-    private void render(HSSFRow row, short column, Object value) {
+	private void writeHeaderRow(Entity entity) {
+	    HSSFRow row = sheet.createRow(rowCount++);
+        if (ArrayUtil.isEmpty(columnNames) && entity != null)
+        	columnNames = CollectionUtil.toArray(entity.getComponents().keySet());
+        if (columnNames != null)
+	        for (int i = 0; i < columnNames.length; i++)
+	            row.createCell(i).setCellValue(new HSSFRichTextString(columnNames[i]));
+    }
+
+    private void render(HSSFRow row, int column, Object value) {
     	HSSFCell cell = row.createCell(column);
 		if (value instanceof Number)
     		cell.setCellValue(((Number) value).doubleValue());
@@ -194,7 +218,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 	}
 
 	private void autoSizeColumns() {
-		for (short colnum = 0; colnum <= sheet.getLastRowNum(); colnum++)
+		for (int colnum = 0; colnum <= sheet.getLastRowNum(); colnum++)
 			sheet.autoSizeColumn(colnum);
 	}
 
@@ -202,7 +226,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 
     @Override
 	public String toString() {
-        return getClass().getSimpleName() + '(' + ArrayFormat.format(attributeNames) + ") -> " + uri;
+        return getClass().getSimpleName() + '(' + ArrayFormat.format(columnNames) + ") -> " + uri;
     }
 
 }
