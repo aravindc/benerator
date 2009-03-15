@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
 
 import java.util.Locale;
@@ -44,11 +45,12 @@ import java.util.Locale;
 public class PersonGenerator extends LightweightGenerator<Person> {
 
 	private static Log logger = LogFactory.getLog(PersonGenerator.class);
-
+	
     private GenderGenerator genderGen;
     private GivenNameGenerator maleGivenNameGen;
     private GivenNameGenerator femaleGivenNameGen;
     private FamilyNameGenerator familyNameGen;
+    private Converter<String, String> femaleFamilyNameConverter;
     private TitleGenerator titleGen;
     private SalutationProvider salutationProvider;
 
@@ -82,6 +84,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	        maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
 	        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
 	        familyNameGen = new FamilyNameGenerator(datasetName);
+	        femaleFamilyNameConverter = new FemaleFamilyNameConverter(datasetName); 
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
@@ -122,7 +125,10 @@ public class PersonGenerator extends LightweightGenerator<Person> {
             person.setGivenName(maleGivenNameGen.generate());
         else
             person.setGivenName(femaleGivenNameGen.generate());
-        person.setFamilyName(familyNameGen.generate());
+        String familyName = familyNameGen.generate();
+		if (Gender.FEMALE.equals(person.getGender()))
+			familyName = femaleFamilyNameConverter.convert(familyName);
+		person.setFamilyName(familyName);
         person.setSalutation(salutationProvider.salutation(person.getGender()));
         person.setTitle(titleGen.generate());
         person.setBirthDate(birthDateGenerator.generate());
