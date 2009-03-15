@@ -55,6 +55,22 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    public void testRussia() {
+        PersonGenerator generator = new PersonGenerator(Country.RUSSIA, new Locale("ru"));
+        for (int i = 0; i < 10; i++) {
+            Person person = generator.generate();
+            logger.debug(person);
+        }
+    }
+
+    public void testPoland() {
+        PersonGenerator generator = new PersonGenerator(Country.POLAND, new Locale("pl"));
+        for (int i = 0; i < 10; i++) {
+            Person person = generator.generate();
+            logger.debug(person);
+        }
+    }
+
     public void testChina() {
         PersonGenerator generator = new PersonGenerator(Country.CHINA, Locale.CHINESE);
         for (int i = 0; i < 10; i++) {
