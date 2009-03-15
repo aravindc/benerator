@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,10 +29,12 @@ package org.databene.platform.db;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Context;
+import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterable;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
-import org.databene.script.ScriptUtil;
+import org.databene.commons.converter.NoOpConverter;
+import org.databene.script.ScriptConverter;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -52,8 +54,8 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
     private Connection connection;
     private String query;
     private int fetchSize;
-    private Context context;
     
+    private Converter<String, ?> queryPreprocessor;
     private String renderedQuery;
 
     public QueryIterable(Connection connection) {
@@ -72,7 +74,10 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
         this.connection = connection;
         this.query = query;
         this.fetchSize = fetchSize;
-        this.context = context;
+        if (context != null)
+        	this.queryPreprocessor = new ScriptConverter(context);
+        else
+        	this.queryPreprocessor = new NoOpConverter<String>();
         if (logger.isDebugEnabled())
         	logger.debug("Constructed QueryIterable: " + query);
     }
@@ -90,11 +95,12 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
             throw new IllegalStateException("'connection' is null");
         if (StringUtil.isEmpty(query))
             throw new IllegalStateException("'query' is empty or null");
-        renderedQuery = ScriptUtil.render(query, context).toString();
+        renderedQuery = queryPreprocessor.convert(query).toString();
         try {
             if (sqlLogger.isDebugEnabled())
                 sqlLogger.debug(renderedQuery);
-            Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement(
+            		ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
             statement.setFetchSize(fetchSize);
             ResultSet resultSet = statement.executeQuery(renderedQuery);
             return new ResultSetIterator(resultSet, renderedQuery);
