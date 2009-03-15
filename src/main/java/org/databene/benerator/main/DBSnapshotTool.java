@@ -98,6 +98,7 @@ public class DBSnapshotTool {
             db = new DBSystem("db", dbUrl, dbDriver, dbUser, dbPassword);
             if (dbSchema != null)
                 db.setSchema(dbSchema);
+            db.setDynamicQuerySupported(false);
             //db.setFetchSize(1);
             List<TypeDescriptor> descriptors = Arrays.asList(db.getTypeDescriptors());
             logger.info("Starting export");
