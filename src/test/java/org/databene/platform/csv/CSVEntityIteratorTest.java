@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import java.util.Iterator;
 
 /**
- * Tests the CSVEntityIterator.<br/>
+ * Tests the {@link CSVEntityIterator}.<br/>
  * <br/>
  * Created: 07.04.2008 12:30:17
  * @since 0.5.1
@@ -45,9 +45,9 @@ public class CSVEntityIteratorTest extends TestCase {
 
     // test methods ----------------------------------------------------------------------------------------------------
 
-    public void test() {
-        CSVEntityIterable iterable = new CSVEntityIterable(URI, "Person", ',');
-        checkIteration(iterable.iterator());
+    public void test() throws Exception {
+    	CSVEntityIterator iterator = new CSVEntityIterator(URI, "Person", ',');
+        checkIteration(iterator);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
