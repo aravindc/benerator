@@ -34,7 +34,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.TypedIterable;
-import org.databene.commons.context.DefaultContext;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.iterator.HeavyweightIterableAdapter;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -45,13 +44,13 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.storage.StorageSystem;
 
 /**
- * Tests the {@link ComponentBuilderFactory}.<br/><br/>
+ * Tests the {@link ComponentBuilderFactory}'s reference-related methods.<br/>
+ * <br/>
  * Created at 05.05.2008 17:08:45
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class ReferenceGeneratorFactoryTest extends TestCase { 
-	// TODO v0.5.7 this tests the ComponentBuilderFactory, migrste tests to ComponentBuilderFactoryTest
+public class ReferenceComponentBuilderFactoryTest extends TestCase { 
 
 	public void testMissingType() {
 		try {
@@ -73,7 +72,8 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		}
 	}
 
-	public void testSingleRef() {
+	@SuppressWarnings("null")
+    public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(1L);
 		ComponentBuilder generator = createGenerator(ref);
@@ -84,7 +84,8 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 		assertEquals("Alice", entity.get("ref"));
 	}
 
-	public void testMultiRef() {
+	@SuppressWarnings("null")
+    public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(2L);
 		ComponentBuilder generator = createGenerator(ref);
@@ -137,7 +138,8 @@ public class ReferenceGeneratorFactoryTest extends TestCase {
 			throw new UnsupportedOperationException("queryEntities() not implemented");
 		}
 
-		public <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
+		@SuppressWarnings("unchecked")
+        public <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
 			HeavyweightIterableAdapter<String> source = 
 				new HeavyweightIterableAdapter<String>(CollectionUtil.toList("Alice", "Bob"));
 			return (TypedIterable<T>) new DefaultTypedIterable<String>(String.class, source);

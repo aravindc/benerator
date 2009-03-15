@@ -46,7 +46,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
  * <br/>
  * Created: 10.08.2007 12:40:41
  */
-public class ComponentBuilderFactoryTest extends GeneratorTest {
+public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	
 	// TODO v0.6 define tests for all syntax paths
 	
@@ -82,7 +82,7 @@ public class ComponentBuilderFactoryTest extends GeneratorTest {
 		expectUniqueSet(name, "Alice", "Bob", "Charly");
 	}
 
-	/** TODO v0.5.x support random unique
+	/** TODO v0.6 support random unique
 	public void testCSVStringAttributeRandomUnique() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
 		name.getLocalType().setDistribution(Sequence.RANDOM);
