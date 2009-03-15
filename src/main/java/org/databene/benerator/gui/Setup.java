@@ -73,6 +73,7 @@ public class Setup implements ObservableBean {
 	private String locale;
 	private String dataset;
 
+	private boolean databaseProject;
 	private String dbUrl;
 	private String dbDriver;
 	private String dbPassword;
@@ -88,7 +89,7 @@ public class Setup implements ObservableBean {
 	public Setup() {
 		this.changeSupport = new PropertyChangeSupport(this);
 		
-		projectFolder = new File(SystemInfo.currentDir());
+		projectFolder = new File(SystemInfo.getCurrentDir());
 		setProjectName(DEFAULT_PROJECT_NAME);
 		setGroupId(DEFAULT_GROUP_ID);
 		setVersion(DEFAULT_PROJECT_VERSION);
@@ -96,20 +97,21 @@ public class Setup implements ObservableBean {
 		offline = false;
 		overwrite = false;
 		
-		setEncoding(SystemInfo.fileEncoding());
-		setLineSeparator(SystemInfo.lineSeparator());
+		setEncoding(SystemInfo.getFileEncoding());
+		setLineSeparator(SystemInfo.getLineSeparator());
 		setLocale(Locale.getDefault().toString());
 		setDataset(LocaleUtil.getDefaultCountryCode());
 
+		this.databaseProject = true;
 		String url = System.getenv("DEFAULT_DATABASE");
 		if (StringUtil.isEmpty(url))
 			url = DEFAULT_DB_URL;
 		setDbUrl(url);
 		setDbDriver(DEFAULT_DB_DRIVER);
-		setDbUser(SystemInfo.userName());
+		setDbUser(SystemInfo.getUserName());
 		setDbSnapshot("DbUnit");
 		this.importFiles = new File[0];
-		this.dbDependencies = new MavenDependency[0]; // TODO v0.5.8 handle maven dependencies
+		this.dbDependencies = new MavenDependency[0]; // TODO v0.6 handle maven dependencies
 	}
 
 	public String getProjectName() {
@@ -218,6 +220,16 @@ public class Setup implements ObservableBean {
 		this.dataset = dataset;
 		changeSupport.firePropertyChange("dataset", oldValue, this.dataset);
 	}
+	
+	public boolean isDatabaseProject() {
+    	return databaseProject;
+    }
+
+	public void setDatabaseProject(boolean databaseProject) {
+		boolean oldValue = this.databaseProject;
+    	this.databaseProject = databaseProject;
+    	changeSupport.firePropertyChange("databaseProject", oldValue, this.databaseProject);
+    }
 
 	public String getDbUrl() {
 		return dbUrl;
