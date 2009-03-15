@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,7 +51,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
     private DefaultContext properties;
 	private ClassCache classCache;
 	
-    protected String  defaultEncoding      = SystemInfo.fileEncoding();
+    protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
     protected int     defaultPagesize      = 1;
     protected boolean defaultNull          = true;
@@ -126,7 +126,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
     }
     
     public String getDefaultLineSeparator() {
-		return SystemInfo.lineSeparator();
+		return SystemInfo.getLineSeparator();
 	}
 
 	public void setDefaultLineSeparator(String defaultLineSeparator) {
@@ -185,6 +185,10 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		return defaultComponent.getComponent(name);
 	}
 
+	public void setDefaultComponentConfig(ComponentDescriptor component) {
+		defaultComponent.addComponent(component);
+	}
+
 	public String getDefaultErrorHandler() {
 		return defaultErrorHandler;
 	}
@@ -215,10 +219,6 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
 	public void setMaxCount(Long maxCount) {
 		this.maxCount = maxCount;
-	}
-
-	public ComplexTypeDescriptor getDefaultComponent() { // TODO v0.5.7 check if this can bee hidden
-		return defaultComponent;
 	}
 
 }
