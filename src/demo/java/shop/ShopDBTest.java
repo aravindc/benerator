@@ -97,13 +97,7 @@ public class ShopDBTest extends TestCase {
             runAsClass(BENERATOR_FILE, database, "test");
         // connect to database
         Map<String, String> dbCfg = IOUtil.readProperties("demo/shop/" + database + "/shop." + database + ".properties");
-        DBSystem db = new DBSystem(
-                "db", 
-                (String) dbCfg.get("dbUri"), 
-                (String) dbCfg.get("dbDriver"), 
-                (String) dbCfg.get("dbUser"), 
-                (String) dbCfg.get("dbPassword")
-        );
+        DBSystem db = new DBSystem("db", dbCfg.get("dbUri"), dbCfg.get("dbDriver"), dbCfg.get("dbUser"), dbCfg.get("dbPassword"));
         // check generation results
         Map<String, Object> genCfg = IOUtil.readProperties("demo/shop/shop." + stage + ".properties", 
         		new DefaultEntryConverter(new BeneratorContext(null)));
