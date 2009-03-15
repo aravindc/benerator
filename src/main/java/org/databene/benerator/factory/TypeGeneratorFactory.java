@@ -155,8 +155,8 @@ public class TypeGeneratorFactory {
             SimpleTypeDescriptor descriptor, Generator<S> generator) {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
             return (Generator<T>) generator;
-        PrimitiveType<T> primitiveType = descriptor.getPrimitiveType();
-        Class<T> targetType = primitiveType.getJavaType();
+        PrimitiveType primitiveType = descriptor.getPrimitiveType();
+        Class<T> targetType = (Class<T>) primitiveType.getJavaType();
         Converter<S, T> converter = null;
         if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
             // String needs to be converted to Date
