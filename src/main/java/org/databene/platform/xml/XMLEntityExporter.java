@@ -65,7 +65,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
     
     // defaults --------------------------------------------------------------------------------------------------------
     
-    private static final String DEFAULT_ENCODING  = SystemInfo.fileEncoding();
+    private static final String DEFAULT_ENCODING  = SystemInfo.getFileEncoding();
     private static final String DEFAULT_URI       = "export.xml";
     
     private static final ToStringConverter converter = new ToStringConverter("", "yyyy-MM-dd", "yyyy-MM-dd'T'hh:mm:ss.SSS");
@@ -128,10 +128,12 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
 		}
     }
 
+    @Override
     public void flush() {
        	IOUtil.flush(out);
     }
 
+    @Override
     public void close() {
         if (out != null) { 
             try {
@@ -161,8 +163,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
                 Object value = entry.getValue();
                 if (value == null)
                 	continue;
-                if (key != null && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(key) 
-                		&& value != null && hasSimpleType(value)) 
+                if (key != null && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(key) && hasSimpleType(value)) 
                		atts.addAttribute("", "", entry.getKey(), "CDATA", converter.convert(value));
             }
             handler.startElement("", "", entity.getName(), atts);
