@@ -97,7 +97,7 @@ public class DateTimeGenerator extends LightweightGenerator<Date> {
     }
     
     public void setTimeDistribution(String distribution) {
-        timeGenerator.setDistribution(String2DistributionConverter.parse(distribution));
+        timeGenerator.setDistribution(String2DistributionConverter.parse(distribution, null, null)); // TODO v0.6 support script expressions
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
