@@ -36,11 +36,11 @@ import org.databene.commons.format.Alignment;
 import java.util.Iterator;
 
 /**
- * Tests the FlatFileEntityIterable.<br/>
+ * Tests the {@link FlatFileEntitySource}.<br/>
  * <br/>
  * Created: 27.08.2007 19:20:25
  */
-public class FlatFileEntityIterableTest extends TestCase {
+public class FlatFileEntitySourceTest extends TestCase {
 
     private static final String URI = "org/databene/platform/flat/person-bean.flat";
 
@@ -50,8 +50,8 @@ public class FlatFileEntityIterableTest extends TestCase {
                 new FlatFileColumnDescriptor("name", 6, Alignment.LEFT, ' '),
                 new FlatFileColumnDescriptor("age", 3, Alignment.RIGHT, '0')
         };
-        FlatFileEntityIterable iterable = new FlatFileEntityIterable(URI, descriptor, SystemInfo.fileEncoding(), descriptors);
-        Iterator<Entity> generator = iterable.iterator();
+        FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), descriptors);
+        Iterator<Entity> generator = source.iterator();
         assertTrue(generator.hasNext());
         assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), generator.next());
         assertTrue(generator.hasNext());
@@ -59,7 +59,7 @@ public class FlatFileEntityIterableTest extends TestCase {
         assertTrue(generator.hasNext());
         assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), generator.next());
         assertFalse(generator.hasNext());
-        generator = iterable.iterator();
+        generator = source.iterator();
         assertTrue(generator.hasNext());
         assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), generator.next());
         assertTrue(generator.hasNext());
