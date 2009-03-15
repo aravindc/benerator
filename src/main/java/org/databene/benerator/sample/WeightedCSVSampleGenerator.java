@@ -82,7 +82,7 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
     }
 
     public WeightedCSVSampleGenerator(Converter<String, E> converter) {
-        this(null, SystemInfo.fileEncoding(), converter);
+        this(null, SystemInfo.getFileEncoding(), converter);
     }
 
     public WeightedCSVSampleGenerator(String url, String encoding, Converter<String, E> converter) {
