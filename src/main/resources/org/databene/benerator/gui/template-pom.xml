@@ -14,17 +14,17 @@
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-benerator</artifactId>
-			<version>0.5.7</version>
+			<version>0.5.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-webdecs</artifactId>
-			<version>0.4.7</version>
+			<version>0.4.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-commons</artifactId>
-			<version>0.4.7</version>
+			<version>0.4.8</version>
 		</dependency>
 	</dependencies>
 
@@ -45,7 +45,7 @@
             <plugin>
                 <groupId>org.databene</groupId>
                 <artifactId>maven-benerator-plugin</artifactId>
-                <version>0.5.7</version>
+                <version>0.5.8</version>
                 <configuration>
                     <descriptor>${setup.projectName}.ben.xml</descriptor>
                     <encoding>${setup.encoding}</encoding>
@@ -57,10 +57,6 @@
                     <dbPassword>${setup.dbPassword}</dbPassword>
                 </configuration>
                 <dependencies>
-                    <!--
-                        TODO set the scope of needed dependencies from 'provided' to
-                        'runtime'
-                    -->
                     <dependency>
                         <groupId>com.oracle</groupId>
                         <artifactId>ojdbc6</artifactId>
@@ -74,10 +70,16 @@
                         <scope>provided</scope>
                     </dependency>
                     <dependency>
+                        <groupId>org.firbirdsql</groupId>
+                        <artifactId>jaybird-full</artifactId>
+                        <version>2.1.6</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
                         <groupId>net.sourceforge.jtds</groupId> <!-- MS SQL server and Sybase -->
                         <artifactId>jtds</artifactId>
                         <version>1.2.2</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                     <dependency>
                         <groupId>mysql</groupId>
@@ -89,37 +91,37 @@
                         <groupId>hsqldb</groupId>
                         <artifactId>hsqldb</artifactId>
                         <version>1.8.0.7</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                     <dependency>
                         <groupId>org.apache.derby</groupId>
                         <artifactId>derbyclient</artifactId>
                         <version>10.4.2.0</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                     <dependency>
                         <groupId>postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                         <version>8.3-603.jdbc4</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                     <dependency>
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
                         <version>1.2.13</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                     <dependency>
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
                         <version>1.2.13</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                     <dependency>
                         <groupId>org.apache.poi</groupId>
                         <artifactId>poi</artifactId>
                         <version>3.1-FINAL</version>
-                        <scope>provided</scope>
+                        <scope>runtime</scope>
                     </dependency>
                 </dependencies>
             </plugin>
