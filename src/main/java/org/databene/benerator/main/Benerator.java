@@ -26,6 +26,8 @@
 
 package org.databene.benerator.main;
 
+import org.databene.benerator.engine.DescriptorRunner;
+import org.databene.commons.LogCategories;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.VMInfo;
 import org.databene.commons.ui.ConsoleInfoPrinter;
@@ -50,19 +52,16 @@ public class Benerator {
 	public static final String LOCALE_VM_PARAM = "benerator.locale";
 	
 	private static final Log logger = LogFactory.getLog(Benerator.class);
+	private static final Log configLogger = LogFactory.getLog(LogCategories.CONFIG);
 
 	// methods ---------------------------------------------------------------------------------------------------------
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Running benerator");
+		String filename = (args.length > 0 ? args[0] : "benerator.xml");
+		configLogger.debug("Running benerator with file " + filename);
 		checkSystem();
         listScriptEngines();
-
-		if (args.length == 0) {
-			printHelp();
-			java.lang.System.exit(-1);
-		}
-		new DescriptorRunner().processFile(args[0]);
+		new DescriptorRunner(filename).run();
 	}
 
 	private static void listScriptEngines() {
@@ -70,33 +69,29 @@ public class Benerator {
         ScriptEngineManager mgr = new ScriptEngineManager();
         List<ScriptEngineFactory> engineFactories = mgr.getEngineFactories();
         if (engineFactories.size() > 0) {
-        	System.out.println("Installed JSR 223 Script Engines:");
+        	configLogger.debug("Installed JSR 223 Script Engines:");
 			for (ScriptEngineFactory engineFactory : engineFactories) {
-	    		System.out.println("- " + engineFactory.getEngineName() + engineFactory.getNames());
+				configLogger.debug("- " + engineFactory.getEngineName() + engineFactory.getNames());
 	        }
         }
 	}
 
 	private static void checkSystem() {
-		System.out.println("Java " + VMInfo.javaVersion());
-		System.out.println(VMInfo.javaVmName() + " " + VMInfo.javaVmVersion() + " (" + VMInfo.javaVmVendor() + ")");
-		System.out.println(SystemInfo.osName() + " " + SystemInfo.osVersion() + " (" + SystemInfo.osArchitecture() + ")");
+		configLogger.debug("Java " + VMInfo.getJavaVersion());
+		configLogger.debug(VMInfo.getJavaVmName() + " " + VMInfo.getJavaVmVersion() + " (" + VMInfo.getJavaVmVendor() + ")");
+		configLogger.debug(SystemInfo.getOsName() + " " + SystemInfo.getOsVersion() + " (" + SystemInfo.getOsArchitecture() + ")");
 		try {
 			Class.forName("javax.script.ScriptEngine");
 		} catch (ClassNotFoundException e) {
-			ConsoleInfoPrinter.printHelp("You need to run benerator with Java 6 or greater!"); // TODO print to System.err
+			ConsoleInfoPrinter.printHelp("You need to run benerator with Java 6 or greater!");
 			if (SystemInfo.isMacOsx())
 				ConsoleInfoPrinter.printHelp("Please check the reference manual for Java setup on Mac OS X.");
 			System.exit(-1);
 		}
-		VersionNumber javaVersion = new VersionNumber(VMInfo.javaVersion());
+		VersionNumber javaVersion = new VersionNumber(VMInfo.getJavaVersion());
 		if (javaVersion.compareTo(new VersionNumber("1.6")) < 0)
 			logger.warn("benerator is written for and tested under Java 6 - " +
 					"you managed to set up JSR 226, but may face other problems.");
-	}
-
-	private static void printHelp() {
-		java.lang.System.out.println("Please specify a file name as command line parameter");
 	}
 
 }
