@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.sql.DriverManager;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -78,6 +80,14 @@ public class CreateProjectPanel extends JPanel {
 	I18NSupport i18n;
 	PropertyFileField folderField;
 	JButton createButton;
+	JCheckBox dbProjectCheckBox;
+	JTextField dbUrlField;
+	JTextField dbDriverField;
+	JTextField dbUserField;
+	JTextField dbSchemaField;
+	JTextField dbPasswordField;
+	JComboBox dbSnapshotField;
+	JButton testButton;
 	
 	public CreateProjectPanel(Setup setup, I18NSupport i18n) {
 		super(new BorderLayout());
@@ -142,8 +152,32 @@ public class CreateProjectPanel extends JPanel {
 		createCheckBox("overwrite", pane);
 		pane.endRow();
 		
+		dbProjectCheckBox = createCheckBox("databaseProject", pane);
+		dbProjectCheckBox.addActionListener(new DBProjectListener());
+		
 		createCheckBox("offline", pane);
 		pane.endRow();
+		pane.addSeparator();
+		
+		// db properties
+		dbUrlField = createTextFieldRow("dbUrl", pane);
+		dbDriverField = createTextFieldRow("dbDriver", pane);
+		dbUserField = createTextField("dbUser", pane);
+		dbSchemaField = createTextField("dbSchema", pane);
+		pane.endRow();
+		
+		dbPasswordField = createTextField("dbPassword", pane);
+		pane.addElement(new JLabel(""));
+		testButton = createButton("testConnection", new TestConnectionListener());
+		pane.addElement(testButton);
+		pane.endRow();
+
+		dbSnapshotField = createComboBox( "dbSnapshot", pane, "DbUnit", "none");
+		pane.addSeparator();
+		
+		// import files
+		PropertyFileList importList =  new PropertyFileList(setup, "importFiles", i18n);
+		pane.addRow(i18n.getString("importFiles"), importList);
 		pane.addSeparator();
 		
 		createTextField("encoding",      pane);
@@ -153,20 +187,6 @@ public class CreateProjectPanel extends JPanel {
 		createTextField("locale", pane);
 		createTextField("dataset", pane);
 		pane.endRow();
-		pane.addSeparator();
-		
-		// db properties
-		createTextFieldRow("dbUrl",       pane);
-		createTextFieldRow("dbDriver",    pane);
-		createTextField("dbUser",      pane);
-		createTextField("dbSchema",    pane);
-		createTextFieldRow("dbPassword",  pane);
-		createComboBox( "dbSnapshot",  pane, "DbUnit", "none");
-		pane.addSeparator();
-		
-		// import files
-		PropertyFileList importList =  new PropertyFileList(setup, "importFiles", i18n);
-		pane.addRow(i18n.getString("importFiles"), importList);
 		pane.addSeparator();
 		
 		return pane;
@@ -223,21 +243,34 @@ public class CreateProjectPanel extends JPanel {
 		JOptionPane.showMessageDialog(CreateProjectPanel.this, messages, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	class DBProjectListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+	        boolean useDB = dbProjectCheckBox.isSelected();
+        	dbUrlField.setEnabled(useDB);
+        	dbDriverField.setEnabled(useDB);
+        	dbUserField.setEnabled(useDB);
+        	dbSchemaField.setEnabled(useDB);
+        	dbPasswordField.setEnabled(useDB);
+        	dbSnapshotField.setEnabled(useDB);
+        	testButton.setEnabled(useDB);
+        }
+	}
 	
-	public class Creator implements Runnable {
+	class Creator implements Runnable {
 
 		public void run() {
 			try {
 				createButton.setEnabled(false);
-				ProgressMonitor monitor = new ProgressMonitor(
-						null, "Creating project " + setup.getProjectName(), "Initializing", 0, 100);
+				String taskName = i18n.format("message.project.create", setup.getProjectName());
+				String message = i18n.getString("message.project.initializing");
+				ProgressMonitor monitor = new ProgressMonitor(null, taskName, message, 0, 100);
 				monitor.setMillisToDecideToPopup(10);
 				monitor.setMillisToPopup(10);
 				ArchetypeBuilder builder = new ArchetypeBuilder(setup, monitor);
 				builder.run();
 				String[] errors = builder.getErrors();
 				if (errors.length > 0)
-					showErrors(errors);
+					showErrors((Object[]) errors);
 				else {
 					JOptionPane.showMessageDialog(CreateProjectPanel.this, "Done");
 					exit();
@@ -256,4 +289,17 @@ public class CreateProjectPanel extends JPanel {
 		
 	}
 
+	class TestConnectionListener implements ActionListener {
+
+        public void actionPerformed(ActionEvent actionevent) {
+	        try {
+	        	Class.forName(setup.getDbDriver());
+	        	DriverManager.getConnection(setup.getDbUrl(), setup.getDbUser(), setup.getDbPassword());
+	        	JOptionPane.showMessageDialog(CreateProjectPanel.this, i18n.getString("message.connect.successful"));
+	        } catch (Exception e) {
+	        	showErrors(e.toString());
+	        }
+        }
+		
+	}
 }
