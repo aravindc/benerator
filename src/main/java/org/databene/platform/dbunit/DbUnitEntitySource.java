@@ -30,8 +30,8 @@ import java.io.IOException;
 
 import org.databene.commons.Context;
 import org.databene.commons.HeavyweightIterator;
+import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntitySource;
 
 /**
  * Imports entities from a DbUnit XML file.<br/>
@@ -40,7 +40,7 @@ import org.databene.model.data.EntitySource;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class DbUnitEntitySource implements EntitySource {
+public class DbUnitEntitySource extends AbstractEntitySource {
 	
     private String uri;
     private Context context;
@@ -53,10 +53,6 @@ public class DbUnitEntitySource implements EntitySource {
     public void setUri(String uri) {
 		this.uri = uri;
 	}
-
-	public Class<Entity> getType() {
-        return Entity.class;
-    }
 
     public HeavyweightIterator<Entity> iterator() {
         try {
