@@ -38,7 +38,7 @@
 
       <layout class="org.apache.log4j.PatternLayout">
          <!-- The default pattern: Date Priority [Category] Message\n -->
-         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%C] %m%n"/>
+         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
       </layout>
    </appender>
 
@@ -51,6 +51,26 @@
     </category>
 
     <category name="org.databene">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.CONFIG">
+       <priority value="debug"/>
+    </category>
+
+    <category name="org.databene.COMMENT">
+       <priority value="debug"/>
+    </category>
+
+    <category name="org.databene.SQL">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.JDBC">
+       <priority value="info"/>
+    </category>
+
+    <category name="org.databene.platform.db">
        <priority value="info"/>
     </category>
 
