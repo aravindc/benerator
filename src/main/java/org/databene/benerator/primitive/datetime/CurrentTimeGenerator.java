@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.TimeUtil;
 
 import java.util.Date;
 
@@ -36,18 +37,18 @@ import java.util.Date;
  * Created: 17.11.2007 13:07:18
  */
 public class CurrentTimeGenerator extends LightweightGenerator<Date> { 
-	// TODO v0.5.7 this should return only time, not the date!
 
 	public CurrentTimeGenerator() {
 	    super(Date.class);
     }
 
 	public Date generate() {
-        return new Date();
+        return new Date(TimeUtil.currentTime().getTime());
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }
