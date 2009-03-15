@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<setup 	xmlns="http://databene.org/benerator/0.5.7"
+<setup 	xmlns="http://databene.org/benerator/0.5.8"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator/0.5.7 http://databene.org/benerator-0.5.7.xsd">
+		xsi:schemaLocation="http://databene.org/benerator/0.5.8 http://databene.org/benerator-0.5.8.xsd">
 
 	<!-- define a database that will be referred by the id 'db' later -->
 	<database id="db" url="jdbc:hsqldb:hsql://localhost" driver="org.hsqldb.jdbcDriver" user="sa" />
