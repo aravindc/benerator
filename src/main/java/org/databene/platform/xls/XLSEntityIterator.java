@@ -33,8 +33,6 @@ import java.util.List;
 
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.converter.ArrayConverter;
-import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.xls.XLSLineIterator;
@@ -78,9 +76,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		try {
 			XLSLineIterator lineIterator = new XLSLineIterator(uri, sheetIndex, preprocessor);
 			String featureNames[] = lineIterator.getHeaders();
-			Converter arrayConverter = new ArrayConverter(Object.class, Object.class, preprocessor);
-			Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames);
-			Converter converter = new ConverterChain(arrayConverter, a2eConverter);
+			Array2EntityConverter converter = new Array2EntityConverter(entityDescriptor, featureNames);
 			source = new ConvertingIterator(lineIterator, converter);
 		} catch (FileNotFoundException e) {
 			throw e;
