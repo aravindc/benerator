@@ -28,6 +28,7 @@ package org.databene.benerator.parser;
 
 import org.databene.commons.BeanUtil;
 import org.databene.commons.bean.ClassProvider;
+import org.databene.commons.bean.DefaultClassProvider;
 
 /**
  * Represents the construction of an object of a certain class name.<br/>
@@ -39,9 +40,11 @@ import org.databene.commons.bean.ClassProvider;
 
 public class Construction implements Expression {
 	
+	protected static ClassProvider defaultClassProvider = new DefaultClassProvider();
+	
 	protected ClassProvider classProvider;
 	protected String className;
-	protected Class type;
+	protected Class<?> type;
 
 	public Construction(String className, ClassProvider classProvider) {
 		this.className = className;
@@ -56,9 +59,13 @@ public class Construction implements Expression {
 		this.className = className;
 	}
 
-	public Class getType() {
-		if (type == null)
-			type = classProvider.forName(className);
+	public Class<?> getType() {
+		if (type == null) {
+			if (classProvider != null)
+				type = classProvider.forName(className);
+			else
+				type = defaultClassProvider.forName(className);
+		}
 		return type;
 	}
 	
