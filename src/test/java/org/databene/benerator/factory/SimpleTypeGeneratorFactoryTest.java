@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,9 +42,9 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	private static final String NAME_CSV = "org/databene/benerator/factory/name.csv";
 	private static final String NAMES_TAB_CSV = "org/databene/benerator/factory/names_tab.csv";
+	private static final String SCRIPTED_NAMES_CSV = "org/databene/benerator/factory/scripted_names.csv";
+	private static final String SCRIPTED_NAMES_WGT_CSV = "org/databene/benerator/factory/scripted_names.wgt.csv";
 
-	// TODO v0.5.x resolve TODOs from area_demo.ben.xml
-	
 	String contextUri = ".";
 	
 	// 'value' attribute tests -----------------------------------------------------------------------------------------
@@ -72,6 +72,24 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 	
 	// CSV tests -------------------------------------------------------------------------------------------------------
+
+	public void testScriptedCSVImport() {
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
+		type.setSource(SCRIPTED_NAMES_CSV);
+		BeneratorContext context = new BeneratorContext(".");
+		context.set("some_user", "the_user");
+		Generator<String> generator = createGenerator(type, false, context);
+		expectGeneratedSequence(generator, "Alice", "the_user", "Otto").withCeasedAvailability();
+	}
+
+	public void testScriptedWgtCSVImport() {
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
+		type.setSource(SCRIPTED_NAMES_WGT_CSV);
+		BeneratorContext context = new BeneratorContext(".");
+		context.set("some_user", "the_user");
+		Generator<String> generator = createGenerator(type, false, context);
+		expectGeneratedSet(generator, "Alice", "the_user", "Otto").withContinuedAvailability();
+	}
 
 	public void testTabSeparatedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
@@ -134,9 +152,12 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-	@SuppressWarnings("unchecked")
     private Generator<String> createGenerator(SimpleTypeDescriptor type, boolean unique) {
-		BeneratorContext context = new BeneratorContext(contextUri);
+		return createGenerator(type, unique, new BeneratorContext("."));
+	}
+
+	@SuppressWarnings("unchecked")
+    private Generator<String> createGenerator(SimpleTypeDescriptor type, boolean unique, BeneratorContext context) {
 		Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context);
 		return (Generator<String>) generator;
 	}
