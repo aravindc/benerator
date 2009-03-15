@@ -46,7 +46,7 @@ import org.databene.commons.StringUtil;
 
 public class SSNGenerator_US extends LightweightGenerator<String> {
 
-	// TODO v0.5.7 support 'unique' property
+	// TODO v0.6 support 'unique' property
 	
 	private IntegerGenerator areaNumberGenerator;
 	private Generator<Integer> groupNumberGenerator;
