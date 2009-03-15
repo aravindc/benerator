@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
@@ -44,6 +45,8 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
+import org.databene.model.data.Entity;
+import org.databene.model.data.EntitySource;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
@@ -68,23 +71,31 @@ public class ModelParser {
     private static final Log logger = LogFactory.getLog(ModelParser.class);
 
     private BeneratorContext context;
+    private BasicParser basicParser;
 	
     public ModelParser(BeneratorContext context) {
 		this.context = context;
+		this.basicParser = new BasicParser();
 	}
 
 	public Object parseBean(Element element) {
         String beanId = parseStringAttribute(element, "id", context);
-        if (beanId != null)
-            logger.debug("Instantiating bean with id '" + beanId + "'");
-        else
-            logger.debug("Instantiating bean of class " + parseStringAttribute(element, "class", context));
-        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
-        if (!StringUtil.isEmpty(beanId)) {
-            BeanUtil.setPropertyValue(bean, "id", beanId, false);
-            context.set(beanId, bean);
-        }
-        return bean;
+        String beanClass = parseStringAttribute(element, "class", context);
+        String beanSpec = parseStringAttribute(element, "spec", context);
+        if (beanClass != null) {
+	        logger.debug("Instantiating bean of class " + beanClass + " (id=" + beanId + ")");
+	        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
+	        if (!StringUtil.isEmpty(beanId)) {
+	            BeanUtil.setPropertyValue(bean, "id", beanId, false);
+	            context.set(beanId, bean);
+	        }
+	        return bean;
+        } else if (beanSpec != null) {
+	        logger.debug("Instantiating bean: " + beanSpec + " (id=" + beanId + ")");
+	        Construction construction = basicParser.parseConstruction(beanSpec, context, context);
+	        return construction.evaluate();
+        } else
+        	throw new ConfigurationError("Syntax error in definition of bean " + beanId);
     }
 
     public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner, BeneratorContext context) {
@@ -218,18 +229,30 @@ public class ModelParser {
                     if (partType == null)
                     	partType = descriptor.getTypeName();
                     if (partType == null) {
-                    	String source = attributes.get("source");
-                    	if (source != null) {
-                    		if (source.endsWith(".ent.csv") || source.endsWith(".flat.csv") || source.endsWith(".dbunit.xml"))
+                    	String sourceSpec = attributes.get("source");
+                    	if (sourceSpec != null) {
+                    		Object source = context.get(sourceSpec);
+                    		if (source != null) {
+                    			if (source instanceof Generator) {
+                    				if (((Generator) source).getGeneratedType() == Entity.class)
+                    					partType = "entity";
+                    			} else if (source instanceof EntitySource) {
+                    				partType = "entity";
+                    			} 
+                    			// TODO v0.6 how to handle simple types and (DB)System sources?
+                    		} else if (sourceSpec.endsWith(".ent.csv") || sourceSpec.endsWith(".flat.csv") 
+                    				|| sourceSpec.endsWith(".dbunit.xml")) {
                     			partType = "entity";
-                    		// TODO v0.5.7 handle source beans
+                    		}
+                    		// TODO v0.6 how to handle properties of beans in context?
                     	}
                     }
-                    // TODO v0.5.7 handle types of generators
                     if (partType != null) {
                         TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(partType);
                         String name = attributes.get("name");
-                        localType = (localTypeParent instanceof ComplexTypeDescriptor ? new ComplexTypeDescriptor(name, partType) : new SimpleTypeDescriptor(name, partType));
+                        localType = (localTypeParent instanceof ComplexTypeDescriptor ? 
+                        		new ComplexTypeDescriptor(name, partType) : 
+                        			new SimpleTypeDescriptor(name, partType));
                     }
                     descriptor.setLocalType(localType);
                 }
