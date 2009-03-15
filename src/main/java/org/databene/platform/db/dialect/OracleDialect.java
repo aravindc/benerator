@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,8 +34,13 @@ import org.databene.platform.db.DatabaseDialect;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class OracleDialect implements DatabaseDialect {
+public class OracleDialect extends DatabaseDialect {
     
+    public OracleDialect() {
+	    super("Oracle", true);
+    }
+
+	@Override
     public String sequenceAccessorSql(String sequenceName) {
         return "SELECT " + sequenceName + ".NEXTVAL FROM dual";
     }
