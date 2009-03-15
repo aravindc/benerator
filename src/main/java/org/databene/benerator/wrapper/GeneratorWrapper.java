@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,7 +59,7 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
         dirty = true;
     }
 
-    // Generator interface ---------------------------------------------------------------------------------------------
+    // Generator interface implementation ------------------------------------------------------------------------------
 
     public void validate() {
         if (dirty) {
@@ -73,7 +73,7 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
     public void reset() {
         if (dirty)
             validate();
-        source.reset(); // TODO v0.4.7 A NullPoinerException may happen here
+        source.reset();
     }
 
     public void close() {
@@ -87,7 +87,10 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
             validate();
         return source.available();
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + source + ']';
     }
