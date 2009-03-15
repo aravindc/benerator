@@ -29,6 +29,7 @@ package org.databene.model.consumer;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
@@ -42,8 +43,8 @@ import org.databene.commons.SystemInfo;
  */
 public class TextFileExporter<E> extends FormattingConsumer<E> implements FileExporter<E> {
 
-    private static final String DEFAULT_ENCODING = SystemInfo.fileEncoding();
-    private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.lineSeparator();
+    private static final String DEFAULT_ENCODING = SystemInfo.getFileEncoding();
+    private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.getLineSeparator();
 
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -153,9 +154,15 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 
     @Override
 	public void close() {
-        if (printer != null) {
-        	preClosePrinter();
-            printer.close();
+        try {
+	        if (printer == null)
+	        	initPrinter();
+	        preClosePrinter();
+        } catch (IOException e) {
+        	LogFactory.getLog(getClass()).error(e, e);
+        } finally {
+        	if (printer != null)
+    	        printer.close();
         }
     }
 
@@ -164,6 +171,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     protected void initPrinter() throws IOException {
         if (uri == null)
             throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
+        // TODO v0.6 create sub folders if necessary
         printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator);
         postInitPrinter();
     }
