@@ -106,7 +106,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     }
 
     public void setEncoding(String encoding) {
-        this.encoding = (encoding != null ? encoding : SystemInfo.fileEncoding());
+        this.encoding = (encoding != null ? encoding : SystemInfo.getFileEncoding());
         if (this.encoding == null)
             this.encoding = DEFAULT_FILE_ENCODING;
     }
