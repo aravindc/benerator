@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,12 +26,80 @@
 
 package org.databene.platform.db;
 
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.databene.commons.ArrayUtil;
+
 /**
  * Provides abstractions of concepts that are implemented differently 
  * by different database vendors.<br/><br/>
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public interface DatabaseDialect {
-    String sequenceAccessorSql(String sequenceName);
+public class DatabaseDialect {
+	
+    private String system;
+    protected boolean quoteTableNames;
+    
+    public DatabaseDialect(String system, boolean quoteTableNames) {
+        this.system = system;
+        this.quoteTableNames = quoteTableNames;
+    }
+
+    public String sequenceAccessorSql(String sequenceName) {
+        throw new UnsupportedOperationException("Sequence access not supported for " + system);
+    }
+    
+    public String createSQLInsert(String tableName, List<ColumnInfo> columnInfos) {
+        StringBuilder builder = new StringBuilder("insert into ");
+        appendTableName(tableName, builder).append(" (");
+        if (columnInfos.size() > 0)
+            builder.append('"').append(columnInfos.get(0).name).append('"');
+        for (int i = 1; i < columnInfos.size(); i++)
+            builder.append(",\"").append(columnInfos.get(i).name).append('"');
+        builder.append(") values (");
+        if (columnInfos.size() > 0)
+            builder.append("?");
+        for (int i = 1; i < columnInfos.size(); i++)
+            builder.append(",?");
+        builder.append(")");
+        String sql = builder.toString();
+        logger.debug("built SQL statement: " + sql);
+        return sql;
+    }
+
+	public String createSQLUpdate(String tableName, String[] pkColumnNames, List<ColumnInfo> columnInfos) {
+    	if (pkColumnNames.length == 0)
+    		throw new UnsupportedOperationException("Cannot update table without primary key: " + tableName);
+        StringBuilder builder = new StringBuilder("update ");
+        appendTableName(tableName, builder).append(" set");
+        for (int i = 0; i < columnInfos.size(); i++) {
+        	if (!ArrayUtil.contains(pkColumnNames, columnInfos.get(i).name)) {
+	            builder.append(" ").append('"').append(columnInfos.get(i).name).append("\"=?");
+	            if (i < columnInfos.size() - pkColumnNames.length - 1)
+	            	builder.append(", ");
+        	}
+        }
+        builder.append(" where");
+        for (int i = 0; i < pkColumnNames.length; i++) {
+        	builder.append(' ').append('"').append(pkColumnNames[i]).append("\"=?");
+        	if (i < pkColumnNames.length - 1)
+        		builder.append(" and");
+        }
+        String sql = builder.toString();
+        logger.debug("built SQL statement: " + sql);
+        return sql;
+    }
+
+    private StringBuilder appendTableName(String tableName, StringBuilder builder) {
+    	if (quoteTableNames)
+    		return builder.append('"').append(tableName).append('"');
+    	else
+    		return builder.append(tableName);
+    }
+
+    static final Log logger = LogFactory.getLog(DBSystem.class);
+    
 }
