@@ -69,7 +69,7 @@
   <!-- CLONE DETECTION  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
   
   <!-- Perform clone detection -->
-  <!-- TODO find out what wrong here and fix it
+  <!-- TODO v1.0 find out what wrong here and fix it
   <block name="clonedetection" spec="edu.tum.cs.conqat.blocklib.JavaCloneChain">
     <input scope="@src" />
     <clone minlength="${clone.minlength}" />
