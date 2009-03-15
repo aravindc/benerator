@@ -273,7 +273,7 @@ public class Country {
 	public static Country getFallback() {
 		return Country.US;
 	}
-    
+	
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override
