@@ -98,8 +98,8 @@ public class ArchetypeBuilder implements Runnable {
 	
 	private static final String TEMPLATE_BEN_XML = "org/databene/benerator/gui/template.ben.xml";
 	private static final String DEFAULTS_XML = "org/databene/benerator/gui/defaults.xml";
-	private static final char[] LF_TAB = StringUtil.getChars(SystemInfo.lineSeparator() + "\t");
-	private static final char[] LF_TWO_TABS = StringUtil.getChars(SystemInfo.lineSeparator() + "\t\t");
+	private static final char[] LF_TAB = StringUtil.getChars(SystemInfo.getLineSeparator() + "\t");
+	private static final char[] LF_TWO_TABS = StringUtil.getChars(SystemInfo.getLineSeparator() + "\t\t");
     private final static Set<String> DB_CONSTRAINT_NAMES = CollectionUtil.toSet("nullable", "maxLength", "type");
 
 	protected Setup setup;
@@ -116,23 +116,27 @@ public class ArchetypeBuilder implements Runnable {
 		this.setup = setup;
 		this.errors = new ArrayList<String>();
 		this.monitor = monitor;
+		this.descriptors = new TypeDescriptor[0];
 	}
 
 	public void run() {
 		try {
 	        // read data model
-	        noteMonitor("scanning database");
-	        if (monitor != null)
-	        	monitor.setProgress(0);
-            db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
-            db.setSchema(setup.getDbSchema());
-            DataModel.getDefaultInstance().addDescriptorProvider(db);
-            if (setup.getDbSchema() != null)
-                db.setSchema(setup.getDbSchema());
-	        descriptors = db.getTypeDescriptors();
-	        if (monitor != null)
-	        	monitor.setMaximum(5 + setup.getImportFiles().length + descriptors.length);
-	        advanceMonitor();
+			if (setup.isDatabaseProject()) {
+		        noteMonitor("scanning database");
+		        if (monitor != null)
+		        	monitor.setProgress(0);
+	            db = new DBSystem("db", setup.getDbUrl(), setup.getDbDriver(), setup.getDbUser(), setup.getDbPassword());
+	            db.setSchema(setup.getDbSchema());
+	            DataModel.getDefaultInstance().addDescriptorProvider(db);
+	            if (setup.getDbSchema() != null)
+	                db.setSchema(setup.getDbSchema());
+		        descriptors = db.getTypeDescriptors();
+		        if (monitor != null)
+		        	monitor.setMaximum(5 + setup.getImportFiles().length + descriptors.length);
+		        advanceMonitor();
+			} else
+				monitor.setMaximum(5 + setup.getImportFiles().length);
 	        
 	        String groupId = setup.getGroupId();
 			String pkgFolder = "/" + (StringUtil.isEmpty(groupId) ? "" : groupId.replace('.', '/') + '/') + setup.getProjectName();
@@ -149,9 +153,11 @@ public class ArchetypeBuilder implements Runnable {
 			copyImportFiles();
 			
 			// create db snapshot project.dbunit.xml
-			File snapshotFile = createDbUnitSnapshot();
-			if (snapshotFile != null)
-				setup.addImportFile(snapshotFile);
+			if (setup.isDatabaseProject() && "DbUnit".equals(setup.getDbSnapshot())) {
+				File snapshotFile = createDbUnitSnapshot();
+				if (snapshotFile != null)
+					setup.addImportFile(snapshotFile);
+			}			
 			
 			// create project.ben.xml (including imports)
 			createDescriptorFile();
@@ -213,15 +219,12 @@ public class ArchetypeBuilder implements Runnable {
 	}
 
 	private File createDbUnitSnapshot() {
-		if ("DbUnit".equals(setup.getDbSnapshot())) {
-			File file = setup.projectFile(setup.getProjectName() + ".dbunit.xml");
-			if (!setup.isOverwrite() && file.exists())
-				throw new I18NError("FileAlreadyExists", null, file.getAbsolutePath());
-			DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
-					setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), monitor);
-			return file;
-		} else
-			return null;
+		File file = setup.projectFile(setup.getProjectName() + ".dbunit.xml");
+		if (!setup.isOverwrite() && file.exists())
+			throw new I18NError("FileAlreadyExists", null, file.getAbsolutePath());
+		DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
+				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), monitor);
+		return file;
 	}
 
 	private File createPOM() {
@@ -229,6 +232,8 @@ public class ArchetypeBuilder implements Runnable {
 		File file = setup.projectFile("pom.xml");
 		try {
 			String content = IOUtil.getContentOfURI("org/databene/benerator/gui/template-pom.xml");
+			if (!setup.isDatabaseProject())
+				content = StringUtil.removeSection(content, "<dbUrl>", "</dbPassword>");
 			content = replaceVariables(content);
 			IOUtil.writeTextFile(file.getAbsolutePath(), content, setup.getEncoding());
 		} catch (IOException e) {
