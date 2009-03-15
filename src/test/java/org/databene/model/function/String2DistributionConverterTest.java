@@ -39,16 +39,27 @@ import junit.framework.TestCase;
 public class String2DistributionConverterTest extends TestCase {
 
 	String2DistributionConverter converter = new String2DistributionConverter();
-/* TODO v0.5.x finalize design of Sequence and SequenceFactory
+/* TODO v0.6 finalize design of Sequence and SequenceFactory
 	public void testSequence() {
 		Distribution distribution = converter.convert(MySequence.class.getName());
 		assertTrue(distribution instanceof Sequence);
 	}
 	*/
 	
-	public void testFunction() {
+	public void testFunctionDefaultConstructor() {
 		Distribution distribution = converter.convert(MyFunction.class.getName());
 		assertTrue(distribution instanceof WeightFunction);
+		MyFunction myFunction = (MyFunction) distribution;
+		assertEquals(1, myFunction.n);
+		assertEquals(2., myFunction.value(1));
+	}
+	
+	public void testFunctionParamConstructor() {
+		Distribution distribution = converter.convert(MyFunction.class.getName() + "(2)");
+		assertTrue(distribution instanceof WeightFunction);
+		MyFunction myFunction = (MyFunction) distribution;
+		assertEquals(2, myFunction.n);
+		assertEquals(3., myFunction.value(1));
 	}
 	
 	public void testWeight() {
@@ -64,8 +75,19 @@ public class String2DistributionConverterTest extends TestCase {
 	}
 	*/
 	public static class MyFunction implements WeightFunction {
+		
+		public int n;
+		
+		public MyFunction() {
+	        this(1);
+        }
+
+		public MyFunction(int n) {
+	        this.n = n;
+        }
+
 		public double value(double param) {
-			return param;
+			return param + n;
 		}
 	}
 }
