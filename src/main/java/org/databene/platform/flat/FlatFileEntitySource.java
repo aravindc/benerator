@@ -61,7 +61,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     private Converter<String, String> preprocessor;
 
     public FlatFileEntitySource() {
-        this(null, null, SystemInfo.fileEncoding());
+        this(null, null, SystemInfo.getFileEncoding());
     }
 
     public FlatFileEntitySource(String uri, ComplexTypeDescriptor entityDescriptor, 
