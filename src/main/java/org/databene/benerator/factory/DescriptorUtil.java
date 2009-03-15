@@ -336,7 +336,7 @@ public class DescriptorUtil {
     	if (construction.classExists()) {
     		// instantiate JavaBean
     		idProvider = (IdProvider) construction.evaluate();
-    		// TODO support scope (-> move to BeneratorContext?)
+    		// TODO v0.6 support scope (-> move to BeneratorContext?)
     	} else {
     		// use IdProviderFactory
             String strategyName = construction.getClassName();
