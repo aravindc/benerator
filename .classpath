@@ -10,13 +10,16 @@
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/easymock/easymock/2.0/easymock-2.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/freemarker/freemarker/2.3.9/freemarker-2.3.9.jar"/>
-	<classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.4/hsqldb-1.8.0.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.2/junit-3.8.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.13/log4j-1.2.13.jar"/>
+	<classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.4/hsqldb-1.8.0.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/5.1.6/mysql-connector-java-5.1.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/apache/poi/poi/3.5-beta4/poi-3.5-beta4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/derby/derbyclient/10.4.2.0/derbyclient-10.4.2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gui"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
+	<classpathentry kind="var" path="M2_REPO/net/sourceforge/jtds/jtds/1.2.2/jtds-1.2.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/postgresql/postgresql/8.3-603.jdbc4/postgresql-8.3-603.jdbc4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
