@@ -6,8 +6,8 @@
         <attribute name="salutation" values="Hello,Hi,Howdy"/>
         <attribute name="name" values="Alice,Bob,Charly"/>
         <consumer id="csv" class="org.databene.platform.csv.CSVEntityExporter">
-            <property name="uri" value="greetings.csv"/>
-            <property name="properties" value="salutation,name"/>
+            <property name="uri"     value="greetings.csv"/>
+            <property name="columns" value="salutation,name"/>
         </consumer>
     </create-entities>
 </setup>

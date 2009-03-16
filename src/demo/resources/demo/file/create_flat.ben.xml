@@ -12,7 +12,7 @@
         <attribute name="date" type="date"/>
         <consumer class="org.databene.platform.flat.FlatFileEntityExporter">
             <property name="uri" value="transactions.flat"/>
-            <property name="properties" value="id[8r0],ean_code[13],price[8r0],items[4r0],date[8]"/>
+            <property name="columns" value="id[8r0],ean_code[13],price[8r0],items[4r0],date[8]"/>
             <property name="datePattern" value="yyyyMMdd"/>
         </consumer>
     </create-entities>

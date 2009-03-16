@@ -14,7 +14,7 @@
         
         <consumer class="org.databene.platform.xls.XLSEntityExporter">
             <property name="uri" value="transactions.xls"/>
-            <property name="properties" value="id,ean_code,comment,price,items"/>
+            <property name="columns" value="id,ean_code,comment,price,items"/>
         </consumer>
     </create-entities>
 </setup>

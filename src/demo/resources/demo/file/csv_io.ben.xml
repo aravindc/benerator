@@ -6,9 +6,9 @@
     <!-- read comma-sparated csv and output to semicolon separated csv -->
     <create-entities name="db_product" source="demo/file/products.import.csv" encoding="ISO-8859-1">
         <consumer class="org.databene.platform.csv.CSVEntityExporter">
-            <property name="uri"        value="p1.csv"/>
-            <property name="properties" value="ean_code,name"/>
-            <property name="separator"  value=";"/>
+            <property name="uri"       value="p1.csv"/>
+            <property name="columns"   value="ean_code,name"/>
+            <property name="separator" value=";"/>
         </consumer>
     </create-entities>
 
@@ -22,9 +22,9 @@
 
     <create-entities name="db_product" source="csv_semicolon_reader">
         <consumer class="org.databene.platform.csv.CSVEntityExporter">
-            <property name="uri"        value="p2.csv"/>
-            <property name="encoding"   value="UTF-8"/>
-            <property name="properties" value="ean_code,name"/>
+            <property name="uri"      value="p2.csv"/>
+            <property name="encoding" value="UTF-8"/>
+            <property name="columns"  value="ean_code,name"/>
         </consumer>
     </create-entities>
 
