@@ -98,6 +98,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         this.entityDescriptor = new ComplexTypeDescriptor(entity);
     }
 
+    // TODO v0.6 rename property to 'columns' and print a deprecation warning
     public void setProperties(String properties) {
         this.descriptors = FlatFileUtil.parseProperties(properties);
     }
