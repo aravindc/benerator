@@ -61,7 +61,7 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
 
     @SuppressWarnings("unchecked")
     public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding) {
-        this(baseName, locale, suffix, encoding, (Converter<String, E>) NoOpConverter.getInstance());
+        this(baseName, locale, suffix, encoding, NoOpConverter.getInstance());
     }
 
     public LocalCSVGenerator(String baseName, Locale locale, String suffix, String encoding, Converter<String, E> converter) {
