@@ -161,7 +161,6 @@ public class DescriptorRunner {
 		return context;
 	}
 
-	@SuppressWarnings("unchecked")
     public void run() throws IOException {
 		try {
 			generatedFiles = new ArrayList<String>();
@@ -186,6 +185,9 @@ public class DescriptorRunner {
 			logger.info("Created a total of " + ConfiguredEntityGenerator.entityCount() + " entities "
 					+ "in " + elapsedTime + " ms " + "(~" 
 					+ RoundedNumberFormat.format(ConfiguredEntityGenerator.entityCount() * 3600000L / elapsedTime, 0) + " p.h.)");
+			List<String> generations = getGeneratedFiles();
+			if (generations.size() > 0)
+				logger.info("Generated file(s): " + generations);
 		} finally {
 			this.executor.shutdownNow();
 		}
@@ -534,14 +536,14 @@ public class DescriptorRunner {
 			logger.debug(descriptor);
 		
 		// parse consumers
-		ConsumerChain<Entity> consumers = parseConsumers(element, CREATE_ENTITIES.equals(element.getNodeName()));
+		ConsumerChain<Entity> consumerChain = parseConsumers(element, CREATE_ENTITIES.equals(element.getNodeName()));
 		if (UPDATE_ENTITIES.equals(element.getNodeName())) {
 			String sourceName = parseStringAttribute(element, "source", context);
 			Object source = context.get(sourceName);
 			if (!(source instanceof StorageSystem))
 				throw new ConfigurationError("The source of an <" + UPDATE_ENTITIES + "> " +
 						"element must be a StorageSystem. '" + sourceName + "' is not");
-			consumers.addComponent(new StorageSystemConsumer((StorageSystem) source, false));
+			consumerChain.addComponent(new StorageSystemConsumer((StorageSystem) source, false));
 		}
 		
 		// create generator
@@ -568,33 +570,35 @@ public class DescriptorRunner {
 			taskName = descriptor.getLocalType().getSource();
 		long limit = (maxCount != null ? maxCount : -1);
 		return new PagedCreateEntityTask(taskName, limit, pageSize, // TODO v0.6 support maxCount and countDistribution
-				threads, subs, configuredGenerator, consumers, executor,
+				threads, subs, configuredGenerator, consumerChain, executor,
 				isSubTask, errorHandler);
 	}
 
 	@SuppressWarnings("unchecked")
     private ConsumerChain<Entity> parseConsumers(Element parent, boolean consumersExpected) {
 		String entityName = parseStringAttribute(parent, "name", context);
-		ConsumerChain<Entity> consumers = new ConsumerChain<Entity>();
+		ConsumerChain<Entity> consumerChain = new ConsumerChain<Entity>();
 		if (parent.hasAttribute("consumer")) {
 			String consumerSpec = parseStringAttribute(parent, "consumer", context);
-			consumers = DescriptorUtil.parseConsumersSpec(consumerSpec, context);
+			consumerChain = DescriptorUtil.parseConsumersSpec(consumerSpec, context);
 		}
 		Element[] consumerElements = XMLUtil.getChildElements(parent, true, "consumer");
 		for (int i = 0; i < consumerElements.length; i++) {
 			Element consumerElement = consumerElements[i];
 			if (consumerElement.hasAttribute("ref")) {
 				String consumerSpec = parseStringAttribute(consumerElement, "ref", context);
-				consumers.addComponent(DescriptorUtil.parseConsumersSpec(consumerSpec, context));
+				consumerChain.addComponent(DescriptorUtil.parseConsumersSpec(consumerSpec, context));
 			} else if (consumerElement.hasAttribute("class")) {
-				consumers.addComponent((Consumer<Entity>) parseBean(consumerElement));
+				consumerChain.addComponent((Consumer<Entity>) parseBean(consumerElement));
 			} else
 				throw new UnsupportedOperationException(
 						"Don't know how to handle " + XMLUtil.format(consumerElement));
 		}
-		if (consumers.componentCount() == 0 && consumersExpected)
+		for (Consumer consumer : consumerChain.getComponents())
+			addResource(consumer);
+		if (consumerChain.componentCount() == 0 && consumersExpected)
 			escalator.escalate("No consumers defined for " + entityName, this, null);
-		return consumers;
+		return consumerChain;
 	}
 
 	private InstanceDescriptor mapEntityDescriptorElement(Element element,
