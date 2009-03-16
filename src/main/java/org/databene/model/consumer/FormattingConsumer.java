@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -62,6 +62,22 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 		plainConverter.setTimestampPattern(timestampPattern);
 	}
 	
+	public String getDecimalPattern() {
+		return plainConverter.getDecimalPattern();
+	}
+
+	public void setDecimalPattern(String decimalPattern) {
+		plainConverter.setDecimalPattern(decimalPattern);
+	}
+
+	public char getDecimalSeparator() {
+    	return plainConverter.getDecimalSeparator();
+    }
+
+	public void setDecimalSeparator(char decimalSeparator) {
+		plainConverter.setDecimalSeparator(decimalSeparator);
+    }
+
 	protected String format(Object o) {
 		return plainConverter.convert(o);
 	}
