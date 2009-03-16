@@ -90,4 +90,8 @@ public class ConsumerChain<E> extends AbstractConsumer<E> {
         for (Consumer<E> processor : components)
             processor.close();
     }
+
+    public List<Consumer<E>> getComponents() {
+    	return components;
+    }
 }
