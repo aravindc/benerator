@@ -111,6 +111,21 @@ public class CSVEntityExporterTest extends TestCase {
 		}
 	}
 	
+	public void testDecimalFormat() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter();
+			exporter.setDecimalPattern("0.00");
+			exporter.setDecimalSeparator('-');
+			Entity entity = new Entity("test", "value", 1.);
+			exporter.startConsuming(entity);
+			exporter.finishConsuming(entity);
+			exporter.close();
+			assertEquals("value\r\n1-00", getContent(DEFAULT_FILE));
+		} finally {
+			DEFAULT_FILE.delete();
+		}
+	}
+	
 	// helper methods --------------------------------------------------------------------------------------------------
 
 	private void cosumeAndClose(CSVEntityExporter exporter) {
