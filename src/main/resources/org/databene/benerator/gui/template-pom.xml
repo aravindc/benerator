@@ -57,6 +57,7 @@
                     <dbPassword>${setup.dbPassword}</dbPassword>
                 </configuration>
                 <dependencies>
+<!--  
                     <dependency>
                         <groupId>com.oracle</groupId>
                         <artifactId>ojdbc6</artifactId>
@@ -75,6 +76,7 @@
                         <version>2.1.6</version>
                         <scope>provided</scope>
                     </dependency>
+-->
                     <dependency>
                         <groupId>net.sourceforge.jtds</groupId> <!-- MS SQL server and Sybase -->
                         <artifactId>jtds</artifactId>
