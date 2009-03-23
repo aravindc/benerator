@@ -26,9 +26,13 @@
 
 package org.databene.benerator.engine;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.FileExporter;
+import org.databene.model.data.Entity;
 
 import junit.framework.TestCase;
 
@@ -44,6 +48,21 @@ public class DescriptorRunnerTest extends TestCase {
 
     private static final String EXPORT_FILE_URI = "test-uri.txt";
 
+	public void testProgrammaticInvocation() throws IOException {
+		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
+				"<create-entities name='Person' count='1' consumer='myConsumer'>" +
+				"<attribute name='name' values='Alice'/>" +
+				"</create-entities>" +
+				"</setup>");
+		BeneratorContext context = runner.getContext();
+		context.setValidate(false);
+		MyConsumer myConsumer = new MyConsumer();
+		context.set("myConsumer", myConsumer);
+		runner.run();
+		assertEquals(1, myConsumer.products.size());
+		assertEquals(new Entity("Person", "name", "Alice"), myConsumer.products.get(0));
+	}
+	
 	public void testGetGeneratedFiles() {
 		DescriptorRunner runner = new DescriptorRunner("string://<setup/>");
 		runner.addResource(new TestExporter());
@@ -64,5 +83,15 @@ public class DescriptorRunnerTest extends TestCase {
         public void finishConsuming(String object) { }
         public void flush() { }
         public void close() { }
+	}
+	
+	static class MyConsumer extends AbstractConsumer<Entity> {
+		
+		List<Entity> products = new ArrayList<Entity>();
+
+        public void startConsuming(Entity entity) {
+	        products.add(entity);
+        }
+		
 	}
 }
