@@ -29,7 +29,7 @@ package org.databene.benerator.primitive.number.distribution;
 import org.databene.model.function.WeightFunction;
 
 /**
- * Returns a constant value.<br/>
+ * Returns a constant value, independent of the argument.<br/>
  * <br/>
  * Created: 18.06.2006 15:30:18
  */
