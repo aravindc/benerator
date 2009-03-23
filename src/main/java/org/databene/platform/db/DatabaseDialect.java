@@ -56,9 +56,11 @@ public class DatabaseDialect {
         StringBuilder builder = new StringBuilder("insert into ");
         appendTableName(tableName, builder).append(" (");
         if (columnInfos.size() > 0)
-            builder.append('"').append(columnInfos.get(0).name).append('"');
-        for (int i = 1; i < columnInfos.size(); i++)
-            builder.append(",\"").append(columnInfos.get(i).name).append('"');
+            appendColumnName(columnInfos.get(0).name, builder);
+        for (int i = 1; i < columnInfos.size(); i++) {
+            builder.append(",");
+            appendColumnName(columnInfos.get(i).name, builder);
+        }
         builder.append(") values (");
         if (columnInfos.size() > 0)
             builder.append("?");
@@ -77,14 +79,18 @@ public class DatabaseDialect {
         appendTableName(tableName, builder).append(" set");
         for (int i = 0; i < columnInfos.size(); i++) {
         	if (!ArrayUtil.contains(pkColumnNames, columnInfos.get(i).name)) {
-	            builder.append(" ").append('"').append(columnInfos.get(i).name).append("\"=?");
+	            builder.append(" ");
+	            appendColumnName(columnInfos.get(i).name, builder);
+	            builder.append("=?");
 	            if (i < columnInfos.size() - pkColumnNames.length - 1)
 	            	builder.append(", ");
         	}
         }
         builder.append(" where");
         for (int i = 0; i < pkColumnNames.length; i++) {
-        	builder.append(' ').append('"').append(pkColumnNames[i]).append("\"=?");
+        	builder.append(' ');
+        	appendColumnName(pkColumnNames[i], builder);
+        	builder.append("=?");
         	if (i < pkColumnNames.length - 1)
         		builder.append(" and");
         }
@@ -98,6 +104,13 @@ public class DatabaseDialect {
     		return builder.append('"').append(tableName).append('"');
     	else
     		return builder.append(tableName);
+    }
+
+    private StringBuilder appendColumnName(String columnName, StringBuilder builder) {
+    	if (quoteTableNames)
+    		return builder.append('"').append(columnName).append('"');
+    	else
+    		return builder.append(columnName);
     }
 
     static final Log logger = LogFactory.getLog(DBSystem.class);
