@@ -50,7 +50,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
-import org.databene.benerator.main.Benerator;
 import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
@@ -125,7 +124,7 @@ public class DescriptorRunner {
 	private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet("pagesize", "threads", "consumer", "onError");
 
-	private static final Log logger = LogFactory.getLog(Benerator.class);
+	private static final Log logger = LogFactory.getLog(DescriptorRunner.class);
 	private static final Log commentLogger = LogFactory.getLog(LogCategories.COMMENT);
 
 	// attributes ------------------------------------------------------------------------------------------------------
@@ -273,6 +272,8 @@ public class DescriptorRunner {
 	}
 
 	boolean addResource(Heavyweight resource) {
+		if (resources.contains(resource))
+			return false;
 		if (resource instanceof FileExporter)
 			generatedFiles.add(((FileExporter<?>) resource).getUri());
 	    return resources.add(resource);
