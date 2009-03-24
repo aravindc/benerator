@@ -112,6 +112,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		importPackage("org.databene.platform.xls");
 		importPackage("org.databene.model.consumer");
 		importPackage("org.databene.benerator.wrapper");
+		importPackage("org.databene.commons.converter");
 	}
 
 	// properties ------------------------------------------------------------------------------------------------------
