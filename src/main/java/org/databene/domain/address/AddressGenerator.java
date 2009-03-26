@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,12 +33,12 @@ import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
- * Creates Addresses.<br/>
+ * Generates {@link Address} objects.<br/>
  * <br/>
  * Created: 11.06.2006 08:07:40
  * @author Volker Bergmann
  */
-public class AddressGenerator extends LightweightGenerator<Address> { // TODO v0.6 make country/region configurable from descriptor file
+public class AddressGenerator extends LightweightGenerator<Address> {
 	
 	private static Log logger = LogFactory.getLog(AddressGenerator.class);
 
@@ -74,6 +74,10 @@ public class AddressGenerator extends LightweightGenerator<Address> { // TODO v0
 			} else
 				throw e;
 		}
+	}
+	
+	public void setDataset(String dataset) {
+		init(Country.getInstance(dataset));
 	}
 
     // Generator interface ---------------------------------------------------------------------------------------------
