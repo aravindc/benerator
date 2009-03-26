@@ -229,7 +229,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                String filename = parser.parseInclude(child, context);
+                String filename = parser.parseInclude(child);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
                 parser.parseBean(child);
@@ -285,7 +285,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             throw new ConfigurationError("Cannot handle more than one appinfo in a complex type");
         Element info = infos[0];
 
-        parser.parseComplexTypeChild(info, descriptor, context);
+        parser.parseComplexTypeChild(info, descriptor);
         return descriptor;
     }
 
@@ -502,15 +502,15 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             if ("bean".equals(childName))
                 parser.parseBean(info);
             else if ("variable".equals(childName))
-                parser.parseVariable(info, (ComplexTypeDescriptor) descriptor, context);
+                parser.parseVariable(info, (ComplexTypeDescriptor) descriptor);
             else if (ATTRIBUTE.equals(childName))
-                descriptor = (T) parser.parsePart(info, null, false, (PartDescriptor) descriptor, context);
+                descriptor = (T) parser.parsePart(info, null, false, (PartDescriptor) descriptor);
             else if ("part".equals(childName))
-                descriptor = (T) parser.parsePart(info, null, true, (PartDescriptor) descriptor, context);
+                descriptor = (T) parser.parsePart(info, null, true, (PartDescriptor) descriptor);
             else if (descriptor instanceof ComplexTypeDescriptor) // TODO v0.6 remove the following two branches
-                descriptor = (T) parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor, context);
+                descriptor = (T) parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor);
             else if (descriptor instanceof SimpleTypeDescriptor)
-                descriptor = (T) parser.parseSimpleType(info, (SimpleTypeDescriptor) descriptor, context);
+                descriptor = (T) parser.parseSimpleType(info, (SimpleTypeDescriptor) descriptor);
             else
                 throw new UnsupportedOperationException("Unsupported element (" + childName + ") or type: " + descriptor.getClass().getName());
         }
@@ -659,7 +659,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         if (infos.length == 0)
         	return descriptor;
         Element info = infos[0];
-        return (T) parser.parseSimpleTypeComponent(info, null, descriptor, context);
+        return (T) parser.parseSimpleTypeComponent(info, null, descriptor);
     }
 
     private SimpleTypeDescriptor parseSimpleType(String name, Element simpleType) {
@@ -695,7 +695,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         Element[] infos = XMLUtil.getChildElements(appInfo);
         if (infos.length > 1)
             throw new ConfigurationError("Cannot handle more than one appinfo in a simple type");
-        parser.parseSimpleType(infos[0], descriptor, context);
+        parser.parseSimpleType(infos[0], descriptor);
         return descriptor;
     }
 
