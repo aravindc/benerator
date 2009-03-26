@@ -36,7 +36,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ToStringConverter;
@@ -98,44 +97,43 @@ public class ModelParser {
         	throw new ConfigurationError("Syntax error in definition of bean " + beanId);
     }
 
-    public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner, BeneratorContext context) {
-        return parseSimpleTypeComponent(element, owner, null, context);
+    public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner) {
+        return parseSimpleTypeComponent(element, owner, null);
     }
 
     public ComponentDescriptor parseSimpleTypeComponent(
-    		Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor, BeneratorContext context) {
+    		Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor) {
         String name = XMLUtil.localName(element);
         if ("part".equals(name) || "attribute".equals(name))
-            return parsePart(element, owner, false, descriptor, context);
+            return parsePart(element, owner, false, descriptor);
         else if ("id".equals(name))
-            return parseId(element, descriptor, context);
+            return parseId(element, descriptor);
         else if ("reference".equals(name))
-            return parseReference(element, descriptor, context);
+            return parseReference(element, descriptor);
         else
             throw new ConfigurationError("Expected one of these element names: " +
             		"'id', 'attribute', 'reference' or 'part'. Found: " + name);
     }
 
-    public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor, BeneratorContext context) {
+    public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor) {
         assertElementName(ctElement, "entity", "type");
         descriptor = new ComplexTypeDescriptor(descriptor.getName(), descriptor);
-        mapTypeDetails(ctElement, descriptor, context);
+        mapTypeDetails(ctElement, descriptor);
         for (Element child : XMLUtil.getChildElements(ctElement))
-            parseComplexTypeChild(child, descriptor, context);
+            parseComplexTypeChild(child, descriptor);
         return descriptor;
     }
 
-    public void parseComplexTypeChild(Element element, 
-            ComplexTypeDescriptor descriptor, BeneratorContext context) {
+    public void parseComplexTypeChild(Element element, ComplexTypeDescriptor descriptor) {
         String childName = XMLUtil.localName(element);
         if ("variable".equals(childName))
-            parseVariable(element, descriptor, context);
+            parseVariable(element, descriptor);
         else
             throw new UnsupportedOperationException("element type not supported here: " + childName);
     }
 
     public PartDescriptor parsePart(Element element, ComplexTypeDescriptor owner, 
-            boolean complex, ComponentDescriptor descriptor, BeneratorContext context) {
+            boolean complex, ComponentDescriptor descriptor) {
         assertElementName(element, "part", "attribute");
         PartDescriptor result;
         if (descriptor instanceof PartDescriptor)
@@ -146,7 +144,7 @@ public class ModelParser {
             String type = normalizeNull(element.getAttribute("type"));
             result = new PartDescriptor(element.getAttribute("name"), type);
         }
-        mapInstanceDetails(element, complex, result, context);
+        mapInstanceDetails(element, complex, result);
         if (result.getDeclaredDetailValue("minCount") == null)
             result.setDetailValue("minCount", 1);
         if (result.getDeclaredDetailValue("maxCount") == null)
@@ -161,38 +159,36 @@ public class ModelParser {
         return result;
     }
 
-    public SimpleTypeDescriptor parseSimpleType(Element element, Context context) {
+    public SimpleTypeDescriptor parseSimpleType(Element element) {
         assertElementName(element, "type");
-        return parseSimpleType(element, new SimpleTypeDescriptor(null, (String) null), context);
+        return parseSimpleType(element, new SimpleTypeDescriptor(null, (String) null));
     }
 
-    public SimpleTypeDescriptor parseSimpleType(
-            Element element, SimpleTypeDescriptor descriptor, Context context) {
+    public SimpleTypeDescriptor parseSimpleType(Element element, SimpleTypeDescriptor descriptor) {
         assertElementName(element, "type");
-        return mapTypeDetails(element, descriptor, context);
+        return mapTypeDetails(element, descriptor);
     }
 
-    public InstanceDescriptor parseVariable(
-            Element varElement, ComplexTypeDescriptor parent, BeneratorContext context) {
+    public InstanceDescriptor parseVariable(Element varElement, ComplexTypeDescriptor parent) {
         assertElementName(varElement, "variable");
         InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"));
-        InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor, context);
+        InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
         parent.addVariable(variable);
         return variable;
     }
 
-    public String parseInclude(Element element, BeneratorContext context) {
+    public String parseInclude(Element element) {
         String uri = parseStringAttribute(element, "uri", context);
         uri = IOUtil.resolveLocalUri(uri, context.getContextUri());
         try {
-            importProperties(uri, context);
+            importProperties(uri);
             return uri;
         } catch (IOException e) {
             throw new ConfigurationError("Properties file not found for uri: " + uri);
         }
     }
 
-    public void importProperties(String uri, BeneratorContext context) throws IOException {
+    public void importProperties(String uri) throws IOException {
         logger.debug("reading properties from uri: " + uri);
         ScriptConverter preprocessor = new ScriptConverter(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
@@ -201,7 +197,7 @@ public class ModelParser {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private <T extends TypeDescriptor> T mapTypeDetails(Element element, T descriptor, Context context) {
+    private <T extends TypeDescriptor> T mapTypeDetails(Element element, T descriptor) {
     	NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
         	Attr attr = (Attr) attributes.item(i);
@@ -212,7 +208,7 @@ public class ModelParser {
     }
   
     private <T extends InstanceDescriptor> T mapInstanceDetails(
-    		Element element, boolean complexType, T descriptor, BeneratorContext context) {
+    		Element element, boolean complexType, T descriptor) {
         TypeDescriptor localType = descriptor.getLocalType();
         Map<String, String> attributes = XMLUtil.getAttributes(element);
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -234,7 +230,7 @@ public class ModelParser {
                     		Object source = context.get(sourceSpec);
                     		if (source != null) {
                     			if (source instanceof Generator) {
-                    				if (((Generator) source).getGeneratedType() == Entity.class)
+                    				if (((Generator<?>) source).getGeneratedType() == Entity.class)
                     					partType = "entity";
                     			} else if (source instanceof EntitySource) {
                     				partType = "entity";
@@ -281,7 +277,7 @@ public class ModelParser {
         return ("".equals(text) ? null : text);
     }
 
-    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor, BeneratorContext context) {
+    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor) {
         assertElementName(element, "id");
         IdDescriptor result;
         if (descriptor instanceof IdDescriptor)
@@ -290,11 +286,10 @@ public class ModelParser {
             result = new IdDescriptor(descriptor.getName(), descriptor.getTypeName());
         else
             result = new IdDescriptor(element.getAttribute("name"), element.getAttribute("type"));
-        return mapInstanceDetails(element, false, result, context);
+        return mapInstanceDetails(element, false, result);
     }
 
-    private ReferenceDescriptor parseReference(Element element,
-            ComponentDescriptor descriptor, BeneratorContext context) {
+    private ReferenceDescriptor parseReference(Element element, ComponentDescriptor descriptor) {
         assertElementName(element, "reference");
         ReferenceDescriptor result;
         if (descriptor instanceof ReferenceDescriptor)
@@ -303,21 +298,21 @@ public class ModelParser {
             result = new ReferenceDescriptor(descriptor.getName(), descriptor.getTypeName());
         else
             result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
-        return mapInstanceDetails(element, false, result, context);
+        return mapInstanceDetails(element, false, result);
     }
 
-	public void parseImport(Element element, BeneratorContext context) {
+	public void parseImport(Element element) {
 		String attribute = element.getAttribute("class");
 		if (!StringUtil.isEmpty(attribute))
 			context.importClass(attribute);
 		attribute = element.getAttribute("domain");
 		if (!StringUtil.isEmpty(attribute))
-			importDomain(attribute, context);
+			importDomain(attribute);
 		if ("true".equals(element.getAttribute("defaults")))
 			context.importDefaults();
 	}
 
-	public void importDomain(String domain, BeneratorContext context) {
+	public void importDomain(String domain) {
 		if (domain.indexOf('.') < 0)
 			context.importPackage("org.databene.domain." + domain);
 		else
