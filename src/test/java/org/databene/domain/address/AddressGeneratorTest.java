@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,15 @@ package org.databene.domain.address;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.factory.InstanceGeneratorFactory;
+import org.databene.benerator.parser.ModelParser;
+import org.databene.commons.xml.XMLUtil;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.InstanceDescriptor;
+import org.w3c.dom.Element;
 
 /**
  * Tests the AddressGenerator<br/><br/>
@@ -42,21 +50,73 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     public AddressGeneratorTest() {
         super(AddressGenerator.class);
     }
+    
+    // tests -----------------------------------------------------------------------------------------------------------
 
     public void testGermany() {
-        check(Country.GERMANY);
+        check(Country.GERMANY, true);
+    }
+
+    public void testUS() {
+        check(Country.US, true);
     }
 
     public void testSingapore() {
-        check(Country.SINGAPORE);
+        check(Country.SINGAPORE, false);
     }
+    
+    public void testDefaultDescriptorMapping() throws Exception {
+    	Country country = Country.getDefault();
+    	try {
+    		Country.setDefault(Country.GERMANY);
+    		checkDescriptorMapping(null);
+    	} finally {
+    		Country.setDefault(country);
+    	}
+    }
+    
+    public void testUSDescriptorMapping() throws Exception {
+    	checkDescriptorMapping(Country.US);
+    }
+    
+    public void testDEDescriptorMapping() throws Exception {
+    	checkDescriptorMapping(Country.GERMANY);
+    }
+    
+    // helper ----------------------------------------------------------------------------------------------------------
 
-    private void check(Country country) {
+    private void check(Country country, boolean supported) {
         AddressGenerator generator = new AddressGenerator(country);
         for (int i = 0; i < 100; i++) {
             Address address = generator.generate();
             assertNotNull(address);
+            if (supported)
+            	assertEquals(country, address.getCountry());
+            else
+            	assertEquals(Country.US, address.getCountry());
             logger.debug(address);
         }
     }
+    
+    public void checkDescriptorMapping(Country country) throws Exception {
+    	String xml = 
+    		"<variable name='x' " +
+    			"generator='org.databene.domain.address.AddressGenerator' ";
+    	if (country != null)
+    		xml += "dataset='" + country.getIsoCode() + "'";
+    	xml += "/>";
+		Element element = XMLUtil.parseStringAsElement(xml);
+    	BeneratorContext context = new BeneratorContext(".");
+		ModelParser parser = new ModelParser(context);
+    	ComplexTypeDescriptor parent = new ComplexTypeDescriptor("y");
+		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
+		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createInstanceGenerator(descriptor, context);
+        Country generatedCountry = generator.generate().getCountry();
+		if (country == null) {
+	        assertEquals(Country.GERMANY, generatedCountry);
+        } else
+			assertEquals(country, generatedCountry);
+    }
+    
+
 }
