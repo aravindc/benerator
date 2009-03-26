@@ -86,9 +86,9 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 (Converter) new MessageConverter(filenamePattern, Locale.US));
         // parse properties files
-        ModelParser parser = new ModelParser(new BeneratorContext(IOUtil.getContextUri(schemaUri)));
+        ModelParser parser = new ModelParser(context);
         for (String propertiesFile : propertiesFiles)
-            parser.importProperties(propertiesFile, context);
+            parser.importProperties(propertiesFile);
 
         // set up content generator
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
