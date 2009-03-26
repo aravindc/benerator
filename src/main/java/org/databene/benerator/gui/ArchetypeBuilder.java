@@ -106,7 +106,6 @@ public class ArchetypeBuilder implements Runnable {
 	protected TypeDescriptor[]  descriptors;
 	protected TransformerHandler handler;
 	protected DBSystem db;
-    private ModelParser parser = new ModelParser(new BeneratorContext("."));
     private Map<String, ComponentDescriptor> defaults = new HashMap<String, ComponentDescriptor>();
     private ToStringConverter toStringConverter = new ToStringConverter();
     private List<String> errors;
@@ -524,14 +523,14 @@ public class ArchetypeBuilder implements Runnable {
 	private void parseDefaults() {
 		 try {
 			Document document = XMLUtil.parse(IOUtil.getInputStreamForURI(DEFAULTS_XML));
-			 Element root = document.getDocumentElement();
-			 Element[] childElements = XMLUtil.getChildElements(root);
-			 String projectPath = setup.getProjectFolder().getCanonicalPath();
-			BeneratorContext context = new BeneratorContext(projectPath);
-			 for (Element node : childElements) {
-				 ComponentDescriptor component = parser.parseSimpleTypeComponent(node, null, context);
-				 defaults.put(component.getName(), component);
-			 }
+			Element root = document.getDocumentElement();
+			Element[] childElements = XMLUtil.getChildElements(root);
+			String projectPath = setup.getProjectFolder().getCanonicalPath();
+		    ModelParser parser = new ModelParser(new BeneratorContext(projectPath));
+			for (Element node : childElements) {
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(node, null);
+				defaults.put(component.getName(), component);
+			}
 		} catch (IOException e) {
 			throw new ConfigurationError(e);
 		}
