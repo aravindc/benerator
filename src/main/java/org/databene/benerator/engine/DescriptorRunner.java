@@ -209,9 +209,9 @@ public class DescriptorRunner {
 		else if ("property".equals(elementType))
 			parseProperty(element);
 		else if ("include".equals(elementType))
-			parser.parseInclude(element, context);
+			parser.parseInclude(element);
 		else if ("import".equals(elementType))
-			parser.parseImport(element, context);
+			parser.parseImport(element);
 		else if ("echo".equals(elementType))
 			parseEcho(element);
 		else if ("database".equals(elementType))
@@ -458,7 +458,7 @@ public class DescriptorRunner {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
 			if (COMPONENT_TYPES.contains(childType)) {
-				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null, context);
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null);
 				context.setDefaultComponentConfig(component);
 			} else
 				throw new ConfigurationError("Unexpected element: " + childType);
@@ -630,12 +630,10 @@ public class DescriptorRunner {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
 			if ("variable".equals(childType)) {
-				parser.parseVariable(child, (ComplexTypeDescriptor) localType,
-						context);
+				parser.parseVariable(child, (ComplexTypeDescriptor) localType);
 			} else if (COMPONENT_TYPES.contains(childType)) {
-				ComponentDescriptor component = parser
-						.parseSimpleTypeComponent(child,
-								(ComplexTypeDescriptor) localType, context);
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(child,
+								(ComplexTypeDescriptor) localType);
 				((ComplexTypeDescriptor) instance.getType())
 						.addComponent(component);
 			} else if (!CREATE_ENTITIES.equals(childType)
