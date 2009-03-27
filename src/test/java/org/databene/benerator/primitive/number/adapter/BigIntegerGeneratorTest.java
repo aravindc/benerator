@@ -33,16 +33,14 @@ import java.util.HashSet;
 import org.databene.benerator.GeneratorClassTest;
 
 /**
+ * Tests the {@link BigIntegerGenerator}.<br/><br/>
  * Created: 04.10.2006 19:27:39
+ * @author Volker Bergmann
  */
 public class BigIntegerGeneratorTest extends GeneratorClassTest {
 
     public BigIntegerGeneratorTest() {
         super(BigIntegerGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new BigIntegerGenerator();
     }
 
     public void testDefaults() {

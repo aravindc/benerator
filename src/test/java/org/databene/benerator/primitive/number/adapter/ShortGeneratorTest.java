@@ -33,16 +33,14 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
+ * Tests the {@link ShortGenerator}.<br/><br/>
  * Created: 11.10.2006 23:04:43
+ * @author Volker Bergmann
  */
 public class ShortGeneratorTest extends GeneratorClassTest {
 
     public ShortGeneratorTest() {
         super(ShortGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new ShortGenerator();
     }
 
     public void testDistribution() {

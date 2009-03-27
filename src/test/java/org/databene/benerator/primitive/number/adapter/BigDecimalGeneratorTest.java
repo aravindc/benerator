@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
- * Tests the BigDecimalGenerator.<br/><br/>
+ * Tests the {@link BigDecimalGenerator}.<br/><br/>
  * Created: 09.10.2006 20:33:21
  * @since 0.1
  * @author Volker Bergmann
@@ -43,10 +43,6 @@ public class BigDecimalGeneratorTest extends GeneratorClassTest {
 
     public BigDecimalGeneratorTest() {
         super(BigDecimalGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new BigDecimalGenerator();
     }
 
     public void testScale() {

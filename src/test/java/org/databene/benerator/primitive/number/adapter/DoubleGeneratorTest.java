@@ -30,16 +30,14 @@ import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 /**
+ * Tests the {@link DoubleGenerator}.<br/><br/>
  * Created: 11.10.2006 23:04:43
+ * @author Volker Bergmann
  */
 public class DoubleGeneratorTest extends GeneratorClassTest {
 
     public DoubleGeneratorTest() {
         super(DoubleGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new DoubleGenerator();
     }
 
     public void testSingleValues() {

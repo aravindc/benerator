@@ -30,16 +30,14 @@ import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 /**
+ * Tests the {@link IntegerGenerator}.<br/><br/>
  * Created: 11.10.2006 23:04:43
+ * @author Volker Bergmann
  */
 public class IntegerGeneratorTest extends GeneratorClassTest {
 
     public IntegerGeneratorTest() {
         super(IntegerGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new IntegerGenerator();
     }
 
     public void testSingle() {
