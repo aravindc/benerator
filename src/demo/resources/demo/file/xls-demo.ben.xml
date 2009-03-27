@@ -3,9 +3,9 @@
 <!-- This demonstrates how to create an Excel Sheet using the XLSEntityExporter -->
 <!-- author: Volker Bergmann -->
 
-<setup  xmlns="http://databene.org/benerator/0.5.8"
+<setup  xmlns="http://databene.org/benerator/0.5.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://databene.org/benerator/0.5.8 http://databene.org/benerator-0.5.8.xsd">
+        xsi:schemaLocation="http://databene.org/benerator/0.5.9 http://databene.org/benerator-0.5.9.xsd">
 
     <import defaults="true"/>
 

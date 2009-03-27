@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <setup 
-	xmlns="http://databene.org/benerator/0.5.8"
+	xmlns="http://databene.org/benerator/0.5.9"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://databene.org/benerator/0.5.8 http://databene.org/benerator-0.5.8.xsd">
+	xsi:schemaLocation="http://databene.org/benerator/0.5.9 http://databene.org/benerator-0.5.9.xsd">
 
 	<comment>
-		 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		 !   Demonstration file for populating the shop database.   !
-		 !   Please invoke with JVM paramenters like these:         !
-		 !       -Dstage=development -Ddatabase=oracle              !
-		 !   or something appropriate for your environment.         !
-		 !                                                          !
-		 !   When doing so you need to provide the following files: !
-		 !       shop.development.properties                        !
-		 !       oracle/shop.oracle.properties                      !
-		 !       oracle/create_tables.oracle.sql                    !
-		 !       oracle/drop_tables.oracle.sql                      !
-		 !                                                          !
-		 !   Have a look at the examples provided for oracle, db,   !
-		 !   sql_server, mysql, postgres, hsql, mysql, firebird     !
-		 !   &amp; derby                                            !
-		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		 !   Demonstration file for populating the shop database.    !
+		 !                                                           !
+		 !   You can choose a database and a stage like this:        !
+		 !       -Dstage=development -Ddatabase=oracle               !
+		 !                                                           !
+		 !   These database types are provided:                      !
+		 !       oracle, db, sql_server, mysql, postgres, hsql,      !
+		 !       hsqlmem, mysql, firebird &amp; derby                !
+		 !                                                           !
+		 !   ...and these stage configurations:                      !
+		 !       development, perftest                               !
+		 !                                                           !
+		 !   Set up your database connection in the file             !
+		 !       &lt;database&gt;/shop.&lt;database&gt;.properties   !
+		 !                                                           !
+		 !   You may want to try different generation quantities in  !
+		 !       shop.&lt;stage&gt;.properties                       !
+		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	 </comment>
 	 
 	<import defaults="true"/>
