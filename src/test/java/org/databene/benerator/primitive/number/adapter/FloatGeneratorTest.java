@@ -30,7 +30,9 @@ import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 /**
+ * Tests the {@link FloatGenerator}.<br/><br/>
  * Created: 11.10.2006 23:04:43
+ * @author Volker Bergmann
  */
 public class FloatGeneratorTest extends GeneratorClassTest {
 

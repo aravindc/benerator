@@ -32,7 +32,9 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
+ * Tests the {@link LongGenerator}.<br/><br/>
  * Created: 11.10.2006 23:04:43
+ * @author Volker Bergmann
  */
 public class LongGeneratorTest extends GeneratorClassTest {
 
