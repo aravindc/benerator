@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,16 +30,14 @@ import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 /**
+ * Tests the {@link ByteGenerator}.<br/><br/>
  * Created: 11.10.2006 23:04:43
+ * @author Volker Bergmann
  */
 public class ByteGeneratorTest extends GeneratorClassTest {
 
     public ByteGeneratorTest() {
         super(ByteGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new ByteGenerator();
     }
 
     public void test() {
@@ -52,4 +50,5 @@ public class ByteGeneratorTest extends GeneratorClassTest {
         checkEqualDistribution(ByteGenerator.class, (byte)-5, (byte)-1, (byte)2,
                 10000, 0.1, CollectionUtil.toSet((byte)-5, (byte)-3, (byte)-1));
     }
+    
 }
