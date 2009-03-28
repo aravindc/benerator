@@ -490,7 +490,7 @@ public final class JDBCDBImporter implements DBImporter {
         return productName;
     }
     
-    public void setErrorTolerant(boolean errorTolerant) {
-    	this.errorHandler = new ErrorHandler(getClass().getName(), (errorTolerant ? Level.warn : Level.fatal));
+    public void setFaultTolerant(boolean faultTolerant) {
+    	this.errorHandler = new ErrorHandler(getClass().getName(), (faultTolerant ? Level.warn : Level.fatal));
     }
 }
