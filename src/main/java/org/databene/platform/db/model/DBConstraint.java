@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,11 +32,15 @@ import org.databene.commons.bean.ArrayPropertyExtractor;
 import java.util.Arrays;
 
 /**
+ * Parent class for all database constraints.<br/><br/>
  * Created: 06.01.2007 08:58:49
+ * @author Volker Bergmann
  */
 public abstract class DBConstraint {
 
     protected String name;
+
+    // interface -------------------------------------------------------------------------------------------------------
 
     /**
      * @param name the constraint name - it may be null
@@ -45,15 +49,29 @@ public abstract class DBConstraint {
         this.name = name;
     }
 
+    /**
+     * Returns the constraint name
+     * @return the constraint name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the table which owns this constraint
+     * @return the table which owns this constraint
+     */
     public abstract DBTable getOwner();
 
+    /**
+     * Returns the columns which constitute this constraint
+     * @return the columns which constitute this constraint
+     */
     public abstract DBColumn[] getColumns();
 
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -64,10 +82,12 @@ public abstract class DBConstraint {
         		&& Arrays.equals(this.getColumns(), that.getColumns()));
     }
 
+    @Override
     public int hashCode() {
         return this.getOwner().hashCode() * 29 + Arrays.hashCode(getColumns());
     }
 
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(getClass().getSimpleName()).append('[').append(getOwner().getName()).append('[');
