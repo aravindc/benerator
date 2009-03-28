@@ -429,6 +429,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, false);
+            importer.setFaultTolerant(true);
             database = importer.importDatabase();
             String productName = importer.getProductName();
             mapStrategy(productName);
