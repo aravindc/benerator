@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,9 @@ import org.databene.commons.CollectionUtil;
 import java.util.List;
 
 /**
+ * Represents a foreign key constraint.<br/><br/>
  * Created: 06.01.2007 09:00:59
+ * @author Volker Bergmann
  */
 public class DBForeignKeyConstraint extends DBConstraint {
 
@@ -50,12 +52,12 @@ public class DBForeignKeyConstraint extends DBConstraint {
         this.foreignKeyColumns.add(foreignKeyColumn);
     }
 
-    public DBTable getOwner() {
-        return foreignKeyColumns.get(0).getForeignKeyColumn().getTable();
-    }
-
     public DBTable getForeignTable() {
         return foreignKeyColumns.get(0).getTargetColumn().getTable();
+    }
+
+    public DBTable getOwner() {
+        return foreignKeyColumns.get(0).getForeignKeyColumn().getTable();
     }
 
     public DBColumn[] getColumns() {
