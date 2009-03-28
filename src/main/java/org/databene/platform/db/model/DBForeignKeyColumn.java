@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,9 @@
 package org.databene.platform.db.model;
 
 /**
+ * Represents a foreign key column in a database table.<br/><br/>
  * Created: 14.01.2007 00:15:52
+ * @author Volker Bergmann
  */
 public class DBForeignKeyColumn {
 

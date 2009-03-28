@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,9 @@ package org.databene.platform.db.model;
 import org.databene.commons.ImportFailedException;
 
 /**
+ * Interface for classes that can import a database.<br/><br/>
  * Created: 06.01.2007 19:17:27
+ * @author Volker Bergmann
  */
 public interface DBImporter {
     Database importDatabase() throws ImportFailedException ;

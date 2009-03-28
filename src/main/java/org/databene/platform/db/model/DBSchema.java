@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,9 @@ import java.util.List;
 import org.databene.commons.collection.OrderedNameMap;
 
 /**
+ * Represents a JDBC database schema.<br/><br/>
  * Created: 06.01.2007 08:57:57
+ * @author Volker Bergmann
  */
 public class DBSchema {
 

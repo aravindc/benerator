@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,7 +37,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
+ * Represents a database table.<br/><br/>
  * Created: 06.01.2007 08:58:49
+ * @author Volker Bergmann
  */
 public class DBTable implements Dependent<DBTable>{
 

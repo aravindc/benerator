@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,9 @@ package org.databene.platform.db.model;
 import org.databene.commons.collection.OrderedNameMap;
 
 /**
+ * Represents a non-unique database index.<br/><br/>
  * Created: 11.01.2007 00:32:53
+ * @author Volker Bergmann
  */
 public class DBNonUniqueIndex extends DBIndex {
 

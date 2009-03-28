@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,9 @@
 package org.databene.platform.db.model;
 
 /**
+ * Interface for classes that can export a database catalog.<br/><br/>
  * Created: 06.01.2007 18:28:45
+ * @author Volker Bergmann
  */
 public interface DBExporter {
     public void exportCatalog(DBCatalog catalog);
