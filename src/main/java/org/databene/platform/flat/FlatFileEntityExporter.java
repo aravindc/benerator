@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -166,10 +166,9 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 	protected void startConsumingImpl(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
-        for (Converter<Entity, String> converter : converters) {
+        for (Converter<Entity, String> converter : converters)
             printer.print(converter.convert(entity));
-        }
-        printer.println();
+        printer.print(lineSeparator);
 	}
 
     // java.lang.Object overrrides -------------------------------------------------------------------------------------
