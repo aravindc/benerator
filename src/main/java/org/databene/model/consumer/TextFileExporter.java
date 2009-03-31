@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -89,7 +89,8 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
      * @param data the data object to output
      */
     protected void startConsumingImpl(E data) {
-    	printer.println(plainConverter.convert(data));
+    	printer.print(plainConverter.convert(data));
+    	printer.print(lineSeparator);
     }
 
     /**
