@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,8 @@ import java.sql.SQLException;
 class ImportedKey {
     
     private static final Log logger = LogFactory.getLog(ImportedKey.class);
+    
+    private DBTable pkTable;
 
     /** primary key table catalog being imported (may be null) */
     public String pktable_cat;
@@ -149,19 +151,24 @@ class ImportedKey {
         	return null;											// When querying X, it returns the foreign keys of XY to
 
         DBColumn fkColumn = fkTable.getColumn(key.fkcolumn_name);
-        DBTable pkTable = null;
+        key.pkTable = null;
         if (catalog != null)
-            pkTable = catalog.getTable(key.pktable_name);
+        	key.pkTable = catalog.getTable(key.pktable_name);
         else
-            pkTable = schema.getTable(key.pktable_name);    
-        DBColumn pkColumn = pkTable.getColumn(key.pkcolumn_name);
+        	key.pkTable = schema.getTable(key.pktable_name);    
+        DBColumn pkColumn = key.pkTable.getColumn(key.pkcolumn_name);
         key.addForeignKeyColumn(fkColumn, pkColumn);
         return key;
     }
     
+    public DBTable getPkTable() {
+	    return pkTable;
+    }
+
     @Override
     public String toString() {
         return fktable_cat + "." + fktable_schem + "." + fktable_name + "." + fkcolumn_name +
         	" -> " + pktable_cat + "." + pktable_schem + "." + pktable_name + "." + pkcolumn_name; 
     }
+
 }
