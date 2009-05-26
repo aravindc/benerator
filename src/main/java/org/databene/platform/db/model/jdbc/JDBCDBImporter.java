@@ -449,8 +449,9 @@ public final class JDBCDBImporter implements DBImporter {
 	            if (cursor == null) 
 	            	continue;
 	            if (cursor.key_seq > 1) {
+	            	DBTable targetTable = cursor.getPkTable();
 	                DBColumn foreignKeyColumn = table.getColumn(cursor.fkcolumn_name);
-	                DBColumn targetColumn = table.getColumn(cursor.pkcolumn_name);
+	                DBColumn targetColumn = targetTable.getColumn(cursor.pkcolumn_name);
 	                assert recent != null;
 	                recent.addForeignKeyColumn(foreignKeyColumn, targetColumn);
 	            } else
