@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -79,9 +79,9 @@ public class IntegralNumberGenerator<E extends Number> extends AbstractNumberGen
         AbstractLongGenerator longGenerator = SequenceFactory.createLongGenerator(sequence);
         longGenerator.setMin(min.longValue());
         longGenerator.setMax(max.longValue());
-        longGenerator.setPrecision(precision.longValue());
         longGenerator.setVariation1(variation1.longValue());
         longGenerator.setVariation2(variation2.longValue());
+        longGenerator.setPrecision(precision.longValue());
         return longGenerator;
     }
 
