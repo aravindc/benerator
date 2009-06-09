@@ -55,7 +55,6 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     }
 
     public AddressGenerator(Country country) {
-    	super(Address.class);
         init(country);
     }
 
@@ -81,6 +80,10 @@ public class AddressGenerator extends LightweightGenerator<Address> {
 	}
 
     // Generator interface ---------------------------------------------------------------------------------------------
+
+    public Class<Address> getGeneratedType() {
+	    return Address.class;
+    }
 
     public Address generate() throws IllegalGeneratorStateException {
         City city = cityGenerator.generate();
@@ -110,4 +113,5 @@ public class AddressGenerator extends LightweightGenerator<Address> {
         String localCode = localPhoneNumberGenerator.generate();
         return new PhoneNumber(country.getPhoneCode(), city.getAreaCode(), localCode);
     }
+
 }

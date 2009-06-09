@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,7 +42,6 @@ public class MobilePhoneNumberGenerator extends LightweightGenerator<PhoneNumber
     private Generator<String> mobileLocalCodeGenerator;
 
     public MobilePhoneNumberGenerator(Country country) {
-    	super(PhoneNumber.class);
         this.country = country;
         mobilePreCodeGenerator = new RegexStringGenerator(country.getMobileCodePattern());
         this.mobileLocalCodeGenerator = new RegexStringGenerator("[1-9]\\d{6,7}");
@@ -52,6 +51,10 @@ public class MobilePhoneNumberGenerator extends LightweightGenerator<PhoneNumber
         String preCode = mobilePreCodeGenerator.generate();
         String localCode = mobileLocalCodeGenerator.generate();
         return new PhoneNumber(country.getPhoneCode(), preCode, localCode, true);
+    }
+
+    public Class<PhoneNumber> getGeneratedType() {
+	    return PhoneNumber.class;
     }
 
 }
