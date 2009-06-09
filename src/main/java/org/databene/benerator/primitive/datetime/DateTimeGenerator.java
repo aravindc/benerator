@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.databene.benerator.primitive.number.adapter.LongGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.model.function.Sequence;
@@ -43,7 +42,7 @@ import org.databene.model.function.String2DistributionConverter;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DateTimeGenerator extends LightweightGenerator<Date> {
+public class DateTimeGenerator extends LightweightDateGenerator {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
@@ -59,7 +58,6 @@ public class DateTimeGenerator extends LightweightGenerator<Date> {
     }
 
     public DateTimeGenerator(Date minDate, Date maxDate, Time minTime, Time maxTine) {
-	    super(Date.class);
         setMinDate(minDate);
         setMaxDate(maxDate);
         setMinTime(minTime);

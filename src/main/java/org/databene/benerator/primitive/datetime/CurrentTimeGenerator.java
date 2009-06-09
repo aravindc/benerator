@@ -26,7 +26,6 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.TimeUtil;
 
 import java.util.Date;
@@ -36,20 +35,10 @@ import java.util.Date;
  * <br/>
  * Created: 17.11.2007 13:07:18
  */
-public class CurrentTimeGenerator extends LightweightGenerator<Date> { 
-
-	public CurrentTimeGenerator() {
-	    super(Date.class);
-    }
+public class CurrentTimeGenerator extends LightweightDateGenerator { 
 
 	public Date generate() {
         return new Date(TimeUtil.currentTime().getTime());
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
 }
