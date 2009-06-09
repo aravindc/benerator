@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,18 +35,12 @@ import org.databene.benerator.util.LightweightGenerator;
  */
 public class CurrentMilliTimeGenerator extends LightweightGenerator<Long> {
 
-	public CurrentMilliTimeGenerator() {
-	    super(Long.class);
-    }
-
 	public Long generate() {
         return System.currentTimeMillis();
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
+    public Class<Long> getGeneratedType() {
+    	return Long.class;
     }
+
 }

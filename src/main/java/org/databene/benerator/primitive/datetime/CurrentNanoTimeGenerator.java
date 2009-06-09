@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,18 +35,12 @@ import org.databene.benerator.util.LightweightGenerator;
  */
 public class CurrentNanoTimeGenerator extends LightweightGenerator<Long> {
 
-	public CurrentNanoTimeGenerator() {
-	    super(Long.class);
+    public Class<Long> getGeneratedType() {
+    	return Long.class;
     }
 
-	public Long generate() {
+    public Long generate() {
         return System.nanoTime();
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
 }
