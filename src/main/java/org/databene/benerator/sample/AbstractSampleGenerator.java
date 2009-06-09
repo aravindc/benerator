@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.TypedLightweightGenerator;
 
 import java.util.Collection;
 
@@ -36,7 +36,7 @@ import java.util.Collection;
  * @since v0.5.2
  * @author Volker Bergmann
  */
-public abstract class AbstractSampleGenerator<E> extends LightweightGenerator<E> {
+public abstract class AbstractSampleGenerator<E> extends TypedLightweightGenerator<E> {
 
     public AbstractSampleGenerator(Class<E> generatedType) {
 		super(generatedType);

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,14 +27,14 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.TypedLightweightGenerator;
 
 /**
  * Generator implementation that always returns the same value.<br/>
  * <br/>
  * Created: 08.06.2006 20:26:22
  */
-public class ConstantGenerator<E> extends LightweightGenerator<E> {
+public class ConstantGenerator<E> extends TypedLightweightGenerator<E> {
 
     /** The value to return */
     private E value;
@@ -47,6 +47,7 @@ public class ConstantGenerator<E> extends LightweightGenerator<E> {
 
     /** Initializes the generator to generate the specified value */
 
+    @SuppressWarnings("unchecked")
     public ConstantGenerator(E value) {
     	this(value, (Class<E>) (value != null ? value.getClass() : Object.class));
     }
@@ -85,6 +86,7 @@ public class ConstantGenerator<E> extends LightweightGenerator<E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + value + ']';
     }
