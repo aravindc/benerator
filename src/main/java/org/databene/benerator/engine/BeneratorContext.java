@@ -106,6 +106,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
 	public void importDefaults() {
 		importPackage("org.databene.benerator.primitive.datetime");
+		importPackage("org.databene.benerator.primitive");
 		importPackage("org.databene.platform.flat");
 		importPackage("org.databene.platform.csv");
 		importPackage("org.databene.platform.dbunit");
