@@ -26,7 +26,7 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.TypedLightweightGenerator;
 import org.databene.commons.Accessor;
 
 /**
@@ -34,7 +34,7 @@ import org.databene.commons.Accessor;
  * <br/>
  * Created: 22.08.2007 19:05:40
  */
-public class AccessingGenerator<S, P> extends LightweightGenerator<P> {
+public class AccessingGenerator<S, P> extends TypedLightweightGenerator<P> {
 
     private Accessor<S, P> accessor;
     private S provider;
