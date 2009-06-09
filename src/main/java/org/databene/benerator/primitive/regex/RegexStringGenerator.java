@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,8 +28,8 @@ package org.databene.benerator.primitive.regex;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.benerator.wrapper.UniqueCompositeGenerator;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
@@ -45,7 +45,7 @@ import java.text.ParseException;
  * <br/>
  * Created: 18.07.2006 19:32:52
  */
-public class RegexStringGenerator extends LightweightGenerator<String> {
+public class RegexStringGenerator extends LightweightStringGenerator {
 
     /** Optional String representation of a regular expression */
     private String pattern;
@@ -109,7 +109,6 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
 
     /** Initializes the generator with the object representation of a regular expression */
     public RegexStringGenerator(Regex regex, Integer maxQuantity, boolean unique) {
-    	super(String.class);
         partsGenerator = (unique ? new UniqueCompositeGenerator<String>(String.class) : new CompositeArrayGenerator<String>(String.class));
         this.regex = regex;
         this.maxQuantity = (maxQuantity != null ? maxQuantity : 30);
@@ -154,6 +153,8 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     /** ensures consistency of the generators state */
+    @SuppressWarnings("unchecked")
+    @Override
     public void validate() {
         if (dirty) {
             try {
@@ -175,6 +176,7 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
         }
     }
 
+    @Override
     public boolean available() {
         if (dirty)
             validate();
@@ -194,20 +196,19 @@ public class RegexStringGenerator extends LightweightGenerator<String> {
         return builder.toString();
     }
 
-    public Class<String> getGeneratedType() {
-        return String.class;
-    }
-
+    @Override
     public void reset() {
         partsGenerator.reset();
     }
 
+    @Override
     public void close() {
         partsGenerator.close();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + (unique ? "unique '" : "'") + regex + "']";
     }
