@@ -30,15 +30,12 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.function.Distribution;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.*;
-import org.databene.commons.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
 
 /**
  * Creates entity generators from entity metadata.<br/>
@@ -82,8 +79,10 @@ public class InstanceGeneratorFactory {
             else if (type instanceof ComplexTypeDescriptor)
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
         				(ComplexTypeDescriptor) type, unique, context);
+            else if (type == null)
+                throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is null");
             else
-                throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
+            	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
             generator = DescriptorUtil.wrapWithProxy(generator, type, context);
             generator = wrapWithNullQuota(generator, descriptor);
         }
@@ -92,6 +91,7 @@ public class InstanceGeneratorFactory {
     
     // private helpers -------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     private static Generator<Object> createInstanceGeneratorWrapper(
             InstanceDescriptor descriptor, Generator<? extends Object> typeGenerator, BeneratorContext context) {
         InstanceSequenceGenerator generator = new InstanceSequenceGenerator(typeGenerator);
@@ -101,7 +101,7 @@ public class InstanceGeneratorFactory {
         if (maxCount != null)
         	generator.setMaxCount(maxCount);
         generator.setCountDistribution(DescriptorUtil.getCountDistribution(descriptor));
-        return (Generator<Object>) generator;
+        return generator;
     }
     
     public static Generator<? extends Object> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
