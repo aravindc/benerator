@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.LocaleUtil;
@@ -48,7 +48,7 @@ import org.databene.text.DelocalizingConverter;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class EMailAddressGenerator extends LightweightGenerator<String> { 
+public class EMailAddressGenerator extends LightweightStringGenerator { 
 
 	private PersonGenerator personGenerator;
 	private DomainGenerator domainGenerator;
@@ -61,7 +61,6 @@ public class EMailAddressGenerator extends LightweightGenerator<String> {
 	}
 	
 	public EMailAddressGenerator(String dataset) {
-		super(String.class);
 		this.personGenerator = new PersonGenerator(dataset, LocaleUtil.getFallbackLocale());
 		this.domainGenerator = new DomainGenerator(dataset);
 		this.caseConverter = new CaseConverter(false);
@@ -106,8 +105,4 @@ public class EMailAddressGenerator extends LightweightGenerator<String> {
 		}
 	} 
 	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
 }

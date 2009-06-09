@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,8 @@
 package org.databene.domain.net;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Creates an internet domain name from random characters.<br/><br/>
@@ -36,14 +36,10 @@ import org.databene.benerator.util.LightweightGenerator;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class RandomDomainGenerator extends LightweightGenerator<String> {
+public class RandomDomainGenerator extends LightweightStringGenerator {
 
 	private Generator<String> nameGenerator = new RegexStringGenerator("[a-z]{4,12}");
 	private Generator<String> tldGenerator = new TopLevelDomainGenerator();
-
-	public RandomDomainGenerator() {
-	    super(String.class);
-    }
 
 	public String generate() {
 		return nameGenerator.generate() + '.' + tldGenerator.generate();

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.domain.net;
 
 import java.io.IOException;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
@@ -43,7 +43,7 @@ import org.databene.text.DelocalizingConverter;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class CompanyDomainGenerator extends LightweightGenerator<String> {
+public class CompanyDomainGenerator extends LightweightStringGenerator {
 
 	private CompanyNameGenerator companyNameGenerator;
 	private TopLevelDomainGenerator tldGenerator;
@@ -54,7 +54,6 @@ public class CompanyDomainGenerator extends LightweightGenerator<String> {
 	}
 
 	public CompanyDomainGenerator(String datasetName) {
-		super(String.class);
 		companyNameGenerator = new CompanyNameGenerator(false, false, false, datasetName);
 		tldGenerator = new TopLevelDomainGenerator();
 		normalizer = new Normalizer();
