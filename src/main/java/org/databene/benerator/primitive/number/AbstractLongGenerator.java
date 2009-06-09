@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,7 +59,6 @@ public abstract class AbstractLongGenerator extends LightweightGenerator<Long> i
     }
 
     protected AbstractLongGenerator(long min, long max, long precision, long variation1, long variation2) {
-    	super(Long.class);
         setMin(min);
         setMax(max);
         setPrecision(precision);
@@ -117,7 +116,6 @@ public abstract class AbstractLongGenerator extends LightweightGenerator<Long> i
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    @Override
 	public Class<Long> getGeneratedType() {
         return Long.class;
     }

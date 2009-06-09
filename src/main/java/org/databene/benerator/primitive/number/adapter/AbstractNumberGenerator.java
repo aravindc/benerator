@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,7 +41,9 @@ import org.databene.model.function.WeightFunction;
  */
 public abstract class AbstractNumberGenerator<P extends Number, S extends Number> extends LightweightGenerator<P> implements NumberGenerator<P> {
 
-    protected P min;
+	protected Class<P> generatedType;
+
+	protected P min;
     protected P max;
     protected P precision;
     protected P variation1;
@@ -66,8 +68,8 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
         return NumberToNumberConverter.convert(1, type);
     }
 
-    public AbstractNumberGenerator(Class<P> type, P min, P max, P precision, Distribution distribution, P variation1, P variation2) {
-    	super(type);
+    public AbstractNumberGenerator(Class<P> generatedType, P min, P max, P precision, Distribution distribution, P variation1, P variation2) {
+    	this.generatedType = generatedType;
         this.distribution = distribution;
         setMin(min);
         setMax(max);
@@ -134,6 +136,10 @@ public abstract class AbstractNumberGenerator<P extends Number, S extends Number
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    public Class<P> getGeneratedType() {
+    	return generatedType;
+    }
+    
     @Override
     public void validate() {
         if (dirty) {
