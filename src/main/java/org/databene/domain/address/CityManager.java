@@ -86,7 +86,8 @@ public class CityManager {
 */
     }
 
-	private static void parseStateFile(Country country) {
+	@SuppressWarnings("unchecked")
+    private static void parseStateFile(Country country) {
 		try {
 			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
 					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", "State", ',', "UTF-8"),
