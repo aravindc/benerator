@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,9 +39,10 @@ public class BankAccountValidator implements Validator<BankAccount> {
 	private Validator<String> ibanValidator = new IBANValidator();
 
 	public boolean valid(BankAccount account) {
+		if (account == null)
+			return false;
 		String accountNumber = account.getAccountNumber();
-		return (account != null 
-				&& accountNumber != null && (accountNumber.length() >= 1 && accountNumber.length() <= 10)
+		return (accountNumber != null && (accountNumber.length() >= 1 && accountNumber.length() <= 10)
 				&& account.getBankCode() != null 
 				&& account.getBankName() != null 
 				&& account.getBic() != null
