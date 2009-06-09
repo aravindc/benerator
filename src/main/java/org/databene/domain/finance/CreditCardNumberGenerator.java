@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.domain.finance;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.util.SimpleRandom;
 
 /**
@@ -36,12 +36,8 @@ import org.databene.benerator.util.SimpleRandom;
  * @author Volker Bergmann
  *
  */
-public class CreditCardNumberGenerator extends LightweightGenerator<String> {
+public class CreditCardNumberGenerator extends LightweightStringGenerator {
 	
-	public CreditCardNumberGenerator() {
-		super(String.class);
-	}
-
 	public String generate() {
 		char[] digits = new char[16];
 		digits[0] = '4'; // VISA has 16-digits numbers

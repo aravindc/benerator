@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,10 +50,13 @@ public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
 	private String countryCode;
 
 	public BankAccountGenerator() {
-		super(BankAccount.class);
 		LocaleUtil.getFallbackLocale();
 		this.countryCode = Country.getDefault().getIsoCode();
 	}
+	
+    public Class<BankAccount> getGeneratedType() {
+	    return BankAccount.class;
+    }
 	
 	public BankAccount generate() {
 		Bank bank = bankGenerator.generate();
@@ -69,5 +72,5 @@ public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
 		builder.append(StringUtil.padLeft(accountNumber, 10, '0'));
 		return IBANUtil.fixChecksum(builder.toString());
 	}
-	
+
 }

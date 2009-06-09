@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,12 +47,15 @@ public class BankGenerator extends LightweightGenerator<Bank> {
 	private Generator<String> bicGenerator;
 
 	public BankGenerator() {
-		super(Bank.class);
 		this.bankCodeGenerator = new RegexStringGenerator("[0-9]{8}");
 		this.nameGenerator = new RegexStringGenerator("(Deutsche Bank|Dresdner Bank|Commerzbank|Spardabank|HVB)");
 		this.bicGenerator = new RegexStringGenerator("[A-Z]{4}DE[A-Z0-9]{2}");
 	}
 	
+    public Class<Bank> getGeneratedType() {
+	    return Bank.class;
+    }
+
 	public Bank generate() {
 		return new Bank(nameGenerator.generate(), bankCodeGenerator.generate(), bicGenerator.generate());
 	}
