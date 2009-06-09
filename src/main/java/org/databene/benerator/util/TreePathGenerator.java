@@ -29,6 +29,7 @@ package org.databene.benerator.util;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.TreeModel;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -38,18 +39,19 @@ import java.util.ArrayList;
  * <br/>
  * Created: 30.07.2007 18:48:23
  */
-public class TreePathGenerator extends LightweightGenerator<List> {
+public class TreePathGenerator<E> extends TypedLightweightGenerator<List<E>> {
 
-    private TreeModel model;
+    private TreeModel<E> model;
 
     private boolean rootIncluded;
-
+    
     public TreePathGenerator() {
         this(null);
     }
 
-    public TreePathGenerator(TreeModel model) {
-        super(List.class);
+    @SuppressWarnings("unchecked")
+    public TreePathGenerator(TreeModel<E> model) {
+    	super((Class<List<E>>) Collections.EMPTY_LIST.getClass());
         this.model = model;
     }
 
@@ -65,14 +67,15 @@ public class TreePathGenerator extends LightweightGenerator<List> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    @Override
     public void validate() {
         if (model == null)
             throw new InvalidGeneratorSetupException("model", "is null");
     }
 
-    public List generate() {
-        List path = new ArrayList();
-        Object node = model.getRoot();
+    public List<E> generate() {
+        List<E> path = new ArrayList<E>();
+        E node = model.getRoot();
         if (rootIncluded)
             path.add(node);
         while (model.getChildCount(node) > 0) {
@@ -82,7 +85,7 @@ public class TreePathGenerator extends LightweightGenerator<List> {
         return path;
     }
 
-    private Object randomChild(Object node) {
+    private E randomChild(E node) {
         int childCount = model.getChildCount(node);
         int index = SimpleRandom.randomInt(0, childCount - 1);
         return model.getChild(node, index);
@@ -90,7 +93,9 @@ public class TreePathGenerator extends LightweightGenerator<List> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + model + ']';
     }
+
 }
