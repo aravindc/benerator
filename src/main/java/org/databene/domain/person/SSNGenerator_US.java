@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,8 +28,8 @@ package org.databene.domain.person;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.StringUtil;
 
 /**
@@ -44,7 +44,7 @@ import org.databene.commons.StringUtil;
  * @see "http://www.socialsecurity.gov/employer/ssnvhighgroup.htm"
  */
 
-public class SSNGenerator_US extends LightweightGenerator<String> {
+public class SSNGenerator_US extends LightweightStringGenerator {
 
 	// TODO v0.6 support 'unique' property
 	
@@ -57,7 +57,6 @@ public class SSNGenerator_US extends LightweightGenerator<String> {
 	}
 
 	public SSNGenerator_US(int maxAreaCode) {
-		super(String.class);
 		areaNumberGenerator = new IntegerGenerator(1, maxAreaCode);
 		groupNumberGenerator = new IntegerGenerator(1, 99);
 		serialNumberGenerator = new IntegerGenerator(1, 9999);
