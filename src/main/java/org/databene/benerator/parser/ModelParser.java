@@ -81,20 +81,20 @@ public class ModelParser {
         String beanId = parseStringAttribute(element, "id", context);
         String beanClass = parseStringAttribute(element, "class", context);
         String beanSpec = parseStringAttribute(element, "spec", context);
+        Object bean = null;
         if (beanClass != null) {
 	        logger.debug("Instantiating bean of class " + beanClass + " (id=" + beanId + ")");
-	        Object bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
-	        if (!StringUtil.isEmpty(beanId)) {
+	        bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
+	        if (!StringUtil.isEmpty(beanId))
 	            BeanUtil.setPropertyValue(bean, "id", beanId, false);
-	            context.set(beanId, bean);
-	        }
-	        return bean;
         } else if (beanSpec != null) {
 	        logger.debug("Instantiating bean: " + beanSpec + " (id=" + beanId + ")");
 	        Construction construction = basicParser.parseConstruction(beanSpec, context, context);
-	        return construction.evaluate();
+	        bean = construction.evaluate();
         } else
         	throw new ConfigurationError("Syntax error in definition of bean " + beanId);
+        context.set(beanId, bean);
+        return bean;
     }
 
     public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner) {
