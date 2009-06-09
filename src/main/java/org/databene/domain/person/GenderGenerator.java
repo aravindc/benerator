@@ -14,7 +14,6 @@ public class GenderGenerator extends LightweightGenerator<Gender> {
     private Generator<Gender> gen;
 
     public GenderGenerator() {
-    	super(Gender.class);
         this.gen = GeneratorFactory.getSampleGenerator(Gender.MALE, Gender.FEMALE);
     }
 
@@ -26,7 +25,4 @@ public class GenderGenerator extends LightweightGenerator<Gender> {
         return gen.generate();
     }
 
-    public String toString() {
-        return getClass().getSimpleName();
-    }
 }

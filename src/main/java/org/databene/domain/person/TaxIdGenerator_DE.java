@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,12 +24,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.domain.person;
 
 import java.util.Random;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 
 /**
  * Generates German tax id numbers (Steueridentifikationsnummer).<br/>
@@ -38,15 +37,11 @@ import org.databene.benerator.util.LightweightGenerator;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TaxIdGenerator_DE extends LightweightGenerator<String> {
+public class TaxIdGenerator_DE extends LightweightStringGenerator {
 	
 	private Random random = new Random();
 	private TaxIdValidator_DE validator = new TaxIdValidator_DE();
 	
-	public TaxIdGenerator_DE() {
-	    super(String.class);
-    }
-
 	public String generate() {
 		char[] buffer = new char[10];
 		// create a 10-digit string of which each digit is used at most once

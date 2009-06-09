@@ -67,7 +67,6 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     }
 
     public PersonGenerator(String datasetName, Locale locale) {
-    	super(Person.class);
         init(datasetName, locale);
     }
 
@@ -118,6 +117,9 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    public Class<Person> getGeneratedType() {
+	    return Person.class;
+    }
     public Person generate() throws IllegalGeneratorStateException {
         Person person = new Person();
         person.setGender(genderGen.generate());
@@ -141,4 +143,5 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	public String toString() {
         return getClass().getSimpleName();
     }
+
 }
