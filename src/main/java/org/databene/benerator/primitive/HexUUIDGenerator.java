@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.id.UUIDProvider;
 
 /**
@@ -35,7 +34,7 @@ import org.databene.id.UUIDProvider;
  * Created: 15.11.2007 10:52:55
  * @author Volker Bergmann
  */
-public class HexUUIDGenerator extends LightweightGenerator<String> {
+public class HexUUIDGenerator extends LightweightStringGenerator {
     
     private UUIDProvider source;
 
@@ -46,7 +45,6 @@ public class HexUUIDGenerator extends LightweightGenerator<String> {
     }
 
     public HexUUIDGenerator(String separator) {
-        super(String.class);
         this.source = new UUIDProvider(separator);
     }
 
@@ -69,6 +67,7 @@ public class HexUUIDGenerator extends LightweightGenerator<String> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[" + source + ']';
     }

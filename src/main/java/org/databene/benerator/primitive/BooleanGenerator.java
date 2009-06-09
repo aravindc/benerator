@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,7 +47,6 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
 
     /** Initializes the generator to a trueQuota */
     public BooleanGenerator(double trueQuota) {
-    	super(Boolean.class);
         this.trueQuota = trueQuota;
     }
 
@@ -76,6 +75,7 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[trueQuota=" + trueQuota + ']';
     }

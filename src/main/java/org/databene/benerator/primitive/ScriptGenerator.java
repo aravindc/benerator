@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,9 +45,12 @@ public class ScriptGenerator extends LightweightGenerator<Object>{
     private Context context;
     
     public ScriptGenerator(Script script, Context context) {
-    	super(Object.class);
         this.script = script;
         this.context = context;
+    }
+
+    public Class<Object> getGeneratedType() {
+	    return Object.class;
     }
 
     public Object generate() {
@@ -63,4 +66,5 @@ public class ScriptGenerator extends LightweightGenerator<Object>{
     }
 
     private static final Log logger = LogFactory.getLog(ScriptGenerator.class);
+
 }

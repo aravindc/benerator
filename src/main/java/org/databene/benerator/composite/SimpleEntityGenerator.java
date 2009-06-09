@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,12 +42,10 @@ public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
     private ComplexTypeDescriptor descriptor;
 
     public SimpleEntityGenerator(ComplexTypeDescriptor descriptor) {
-    	super(Entity.class);
     	Assert.notNull(descriptor, "descriptor");
         this.descriptor = descriptor;
     }
 
-    @Override
 	public Class<Entity> getGeneratedType() {
         return Entity.class;
     }

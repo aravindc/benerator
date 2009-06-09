@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,11 +38,11 @@ public class AlternatingGenerator extends org.databene.benerator.util.Lightweigh
 	
 	private int value = 1;
 
-	public AlternatingGenerator() {
-	    super(Integer.class);
+    public Class<Integer> getGeneratedType() {
+	    return Integer.class;
     }
 
-	public Integer generate() {
+    public Integer generate() {
 		value = (value + 1) % 2;
 		return value;
 	}
@@ -52,4 +52,5 @@ public class AlternatingGenerator extends org.databene.benerator.util.Lightweigh
 		for (int i = 0; i < 10; i++)
 			System.out.println(gen.generate());
 	}
+
 }

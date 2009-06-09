@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.number.distribution.BitReverseNaturalNumberGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.SimpleRandom;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
@@ -41,7 +40,7 @@ import java.util.Set;
  * <br/>
  * Created: 15.11.2007 14:07:49
  */
-public class UniqueFixedLengthStringGenerator extends LightweightGenerator<String> {
+public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator {
 
     public static final Set<Character> DEFAULT_CHAR_SET
             = CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -66,7 +65,6 @@ public class UniqueFixedLengthStringGenerator extends LightweightGenerator<Strin
     }
 
     public UniqueFixedLengthStringGenerator(int length, char ... chars) {
-        super(String.class);
         radix = chars.length;
         digitSymbols = chars;
         this.length = length;
@@ -82,12 +80,14 @@ public class UniqueFixedLengthStringGenerator extends LightweightGenerator<Strin
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    @Override
     public void reset() {
         super.reset();
         this.counter = new CustomCounter(radix, length);
         this.cycleCounter = 0;
     }
 
+    @Override
     public boolean available() {
         return counter != null;
     }
@@ -113,6 +113,7 @@ public class UniqueFixedLengthStringGenerator extends LightweightGenerator<Strin
         return result;
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[length=" + length + ", charset=" +
                 ArrayFormat.formatChars(",", digitSymbols) + ']'; 

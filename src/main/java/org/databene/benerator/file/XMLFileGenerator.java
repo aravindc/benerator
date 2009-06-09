@@ -68,7 +68,6 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     private DataModel dataModel;
     
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
-        super(File.class);
         this.encoding = SystemInfo.getFileEncoding();
         this.dataModel = DataModel.getDefaultInstance();
         dataModel.clear();
@@ -95,6 +94,10 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
 		contentGenerator = TypeGeneratorFactory.createTypeGenerator(rootDescriptor, false, context);
+    }
+
+    public Class<File> getGeneratedType() {
+    	return File.class;
     }
 
     @Override
@@ -170,4 +173,5 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     public String toString() {
         return getClass().getSimpleName() + '[' + filenamePattern + ']';
     }
+
 }
