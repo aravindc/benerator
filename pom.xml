@@ -5,7 +5,7 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.9</version>
+    <version>0.5.9-SR1</version>
 
     <properties>
         <gui_version>0.1.9</gui_version>
