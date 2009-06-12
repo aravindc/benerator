@@ -54,7 +54,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
-import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -798,7 +797,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
                 "byte",        Byte.class,
                 "short",       Short.class,
                 "int",         Integer.class,
-                "big_integer", BigInteger.class,
+                "big_integer", Long.class,
                 "float",       Float.class,
                 "double",      Double.class,
                 "big_decimal", BigDecimal.class,
