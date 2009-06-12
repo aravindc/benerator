@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,13 +50,15 @@ public class HiLoGenerator implements Generator<Long> {
 
     protected Generator<Long> hiGenerator;
     protected boolean dirty;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public HiLoGenerator() {
         this(new IncrementGenerator(), DEFAULT_MAX_LO);
     }
     
-    public HiLoGenerator(Generator<Long> hiGenerator) {
-        this(hiGenerator, DEFAULT_MAX_LO);
+    public HiLoGenerator(int maxLo) {
+    	this(new IncrementGenerator(), DEFAULT_MAX_LO);
     }
     
     public HiLoGenerator(Generator<Long> hiGenerator, int maxLo) {
