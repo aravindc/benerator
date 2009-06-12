@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,7 +51,7 @@ public class AddressFormat {
 	
 	private static final String CONFIG_FILE = "org/databene/domain/address/addressFormat.properties";
 
-	private static final Map<String, AddressFormat> instances = new HashMap<String, AddressFormat>();
+	static final Map<String, AddressFormat> instances = new HashMap<String, AddressFormat>();
 	
     private static final FreeMarkerScriptFactory SCRIPT_FACTORY = new FreeMarkerScriptFactory();
     
@@ -67,11 +67,12 @@ public class AddressFormat {
 		script = SCRIPT_FACTORY.parseText(pattern);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static AddressFormat getInstance(String country) {
 		if (instances.size() == 0) {
 			try {
 				IOUtil.readProperties(CONFIG_FILE, new FixedSourceTypeConverter<Map.Entry, Map.Entry>(Map.Entry.class, Map.Entry.class) {
-					public Entry convert(Entry entry) {
+                    public Entry convert(Entry entry) {
 						String pt = (String) entry.getValue();
 						instances.put((String) entry.getKey(), new AddressFormat(pt));
 						return entry;
