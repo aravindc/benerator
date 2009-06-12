@@ -9,8 +9,8 @@
 
     <properties>
         <gui_version>0.1.9</gui_version>
-        <webdecs_version>0.4.9</webdecs_version>
-	    <commons_version>0.4.9</commons_version>
+        <webdecs_version>0.4.9-SR1</webdecs_version>
+	    <commons_version>0.4.9-SR1</commons_version>
     </properties>
 
 <!--
