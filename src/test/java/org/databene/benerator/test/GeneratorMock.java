@@ -47,7 +47,6 @@ public class GeneratorMock extends LightweightGenerator<Integer> {
 	}
 
 	public GeneratorMock(int value) {
-		super(Integer.class);
 		this.value = value;
 		latestInstance = this;
 	}
@@ -56,10 +55,14 @@ public class GeneratorMock extends LightweightGenerator<Integer> {
 		this.value = value;
 	}
 
+    public Class<Integer> getGeneratedType() {
+	    return Integer.class;
+    }
+	
 	public Integer generate() throws IllegalGeneratorStateException {
 		return value;
 	}
 
 	public static GeneratorMock latestInstance = null;
-	
+
 }

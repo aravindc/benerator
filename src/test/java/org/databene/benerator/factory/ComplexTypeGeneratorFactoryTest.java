@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -62,10 +62,6 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		
 		private Locale locale;
 		
-        public MyGenerator() {
-	        super(Entity.class);
-        }
-
 		public Locale getLocale() {
 			return locale;
 		}
@@ -77,6 +73,10 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		public Entity generate() {
 			return new Entity("MyEntity", "locale", locale);
 		}
+
+        public Class<Entity> getGeneratedType() {
+	        return Entity.class;
+        }
 	}
 
 	public void testTabbedCSVImport() {

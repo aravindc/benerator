@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,19 +26,15 @@
 
 package org.databene.benerator.xml;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 
 /**
  * Generates "OK" strings for testing.<br/><br/>
  * Created: 29.03.2008 08:26:22
  * @author Volker Bergmann
  */
-public class OKGenerator extends LightweightGenerator<String>{
+public class OKGenerator extends LightweightStringGenerator {
 
-    public OKGenerator() {
-        super(String.class);
-    }
-    
     public String generate() {
         return "OK";
     }

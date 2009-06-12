@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -499,17 +499,22 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		private String componentName;
 
 		public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
-			super((Class<E>) Object.class);
 			this.builder = builder;
 			this.componentName = componentName;
 		}
 
-		@Override
+        @SuppressWarnings("unchecked")
+        public Class<E> getGeneratedType() {
+	        return (Class<E>) Object.class;
+        }
+
+        @Override
 		public boolean available() {
 			return builder.available();
 		}
 		
-		public E generate() {
+		@SuppressWarnings("unchecked")
+        public E generate() {
 			Entity entity = new Entity("Test");
 			builder.buildComponentFor(entity);
 			return (E) entity.get(componentName);
@@ -524,6 +529,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		public void close() {
 			builder.close();
 		}
+
 	}
 
 	private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
