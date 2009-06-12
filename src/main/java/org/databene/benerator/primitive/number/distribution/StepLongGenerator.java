@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -67,6 +67,16 @@ public class StepLongGenerator extends AbstractLongGenerator {
 
     public void setNext(long next) {
         this.next = next;
+    }
+    
+    @Override
+    public void setPrecision(Long precision) {
+    	super.setPrecision(precision);
+    	long absPrecision = Math.abs(precision);
+    	if (Math.abs(variation1) < absPrecision)
+    		variation1 = absPrecision;
+    	if (Math.abs(variation2) < absPrecision)
+    		variation2 = absPrecision;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
