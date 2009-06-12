@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,7 +44,9 @@ import java.io.IOException;
  */
 public class Country {
 
-    private static final String DEFAULT_MOBILE_PHONE_PATTERN = "[1-9][0-9][0-9]";
+    private static final String DEFAULT_PHONE_CODE = "[2-9][0-9][0-9]";
+
+	private static final String DEFAULT_MOBILE_PHONE_PATTERN = "[1-9][0-9][0-9]";
 
 	private static final Log logger = LogFactory.getLog(Country.class);
 
@@ -176,10 +178,11 @@ public class Country {
             while (iterator.hasNext()) {
                 String[] cells = iterator.next();
                 String isoCode = cells[0];
-                String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1] : "en");
-                String phoneCode = (cells.length > 2 ? cells[2] : null);
-                String mobilCodePattern = (cells.length > 3 ? cells[3] : DEFAULT_MOBILE_PHONE_PATTERN);
-                Country country = new Country(isoCode, defaultLocale, phoneCode, mobilCodePattern);
+                String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1].trim() : "en");
+                String phoneCode = (cells.length > 2 ? cells[2].trim() : null);
+                String mobilCodePattern = (cells.length > 3 ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
+                String name = (cells.length > 4 ? cells[4].trim() : null);
+                Country country = new Country(isoCode, defaultLocale, phoneCode, mobilCodePattern, name);
                 if (logger.isDebugEnabled())
                     logger.debug("parsed " + country);
             }
@@ -192,19 +195,21 @@ public class Country {
     }
 
     private String isoCode;
+    private String name;
     private String phoneCode;
     private String mobileCodePattern;
     private Locale countryLocale;
     private Locale defaultLanguage;
     private Map<String, State> states;
 
-    private Country(String isoCode, String defaultLanguage, String phoneCode, String mobilCodePattern) {
+    private Country(String isoCode, String defaultLanguage, String phoneCode, String mobilCodePattern, String name) {
         this.isoCode = isoCode;
         this.defaultLanguage = LocaleUtil.getLocale(defaultLanguage);
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
         this.mobileCodePattern = mobilCodePattern;
         this.states = new OrderedNameMap<State>();
+        this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
         instances.put(isoCode, this);
     }
 
@@ -212,10 +217,17 @@ public class Country {
         return isoCode;
     }
 
+    /** Returns the English name */
     public String getName() {
+        return name;
+    }
+
+    /** Returns the name in the user's {@link Locale} */
+    public String getDisplayName() {
         return countryLocale.getDisplayCountry(Locale.getDefault());
     }
 
+    /** Returns the name in the country's own {@link Locale} */
     public String getLocalName() {
         return countryLocale.getDisplayCountry(new Locale(defaultLanguage.getLanguage()));
     }
@@ -258,7 +270,7 @@ public class Country {
     public static Country getInstance(String isoCode) {
         Country country = instances.get(isoCode.toUpperCase());
         if (country == null)
-            country = new Country(isoCode, Locale.getDefault().getLanguage(), "[2-9][0-9][0-9]", DEFAULT_MOBILE_PHONE_PATTERN);
+            country = new Country(isoCode, Locale.getDefault().getLanguage(), DEFAULT_PHONE_CODE, DEFAULT_MOBILE_PHONE_PATTERN, null);
         return country;
     }
 
