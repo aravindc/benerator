@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,39 +27,47 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.ConfigurationError;
 
 /**
- * 
+ * TODO documentation
  * @author Volker Bergmann
  * @since 0.3.04
  */
 public class IncrementGenerator extends LightweightGenerator<Long> {
 
     private static final long DEFAULT_MIN = 1;
+    private static final long DEFAULT_MAX = Long.MAX_VALUE - 1;
+    
+    // attributes ------------------------------------------------------------------------------------------------------
     
     private long min;
-    private long max = Long.MAX_VALUE - 1;
+    private long max;
+    private long increment;
     
     private long cursor;
     
-    // constructors -----------------------------------------------------------------------------------
+    // constructors ----------------------------------------------------------------------------------------------------
     
     public IncrementGenerator() {
         this(DEFAULT_MIN);
     }
     
     public IncrementGenerator(long min) {
-    	super(Long.class);
-        setMin(min);
+        this(min, 1);
     }
     
-    public IncrementGenerator(long min, long max) {
-    	super(Long.class);
+    public IncrementGenerator(long min, long increment) {
+        this(min, increment, DEFAULT_MAX);
+    }
+    
+    public IncrementGenerator(long min, long increment, long max) {
         setMin(min);
+        setIncrement(increment);
         setMax(max);
     }
     
-    // properties ----------------------------------------------------------------------------------------
+    // properties ------------------------------------------------------------------------------------------------------
 
     public Long getMin() {
         return min;
@@ -77,8 +85,26 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     public void setMax(long max) {
         this.max = max;
     }
+    
+    public long getIncrement() {
+    	return increment;
+    }
 
-    // Generator interface ------------------------------------------------------------------------
+	public void setIncrement(long increment) {
+		if (increment < 1)
+			throw new ConfigurationError("increment must be a positive number, but was " + increment);
+    	this.increment = increment;
+    }
+
+    public long getCursor() {
+	    return cursor;
+    }
+
+    // Generator interface ---------------------------------------------------------------------------------------------
+
+	public Class<Long> getGeneratedType() {
+	    return Long.class;
+    }
 
     @Override
     public boolean available() {
@@ -94,10 +120,11 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
         this.cursor = min;
     }
 
-    // java.lang.Object overrides ------------------------------------------------------------------
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + cursor + ']';
     }
+
 }
