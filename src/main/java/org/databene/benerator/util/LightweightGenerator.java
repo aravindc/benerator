@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,13 +40,16 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
 
     private Class<E> generatedType;
 
-    protected LightweightGenerator() { // TODO v0.6 remove this constructor or attribute and getGeneratedType()
-        this((Class<E>) Object.class);
+    @SuppressWarnings("unchecked")
+    protected LightweightGenerator() {
+        this.generatedType = (Class<E>) Object.class;
     }
 
-    protected LightweightGenerator(Class<E> generatedType) {
-        this.generatedType = generatedType;
+    protected LightweightGenerator(Class<E> generatedType) { // TODO v0.6 remove this constructor, 'generatedType' attribute and getGeneratedType() method
+        this.generatedType = generatedType; 
     }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
 
     public Class<E> getGeneratedType() {
         return generatedType;
@@ -71,8 +74,16 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
         return true;
     }
 
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+    
     // protected helpers for child classes -----------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     protected static IllegalGeneratorStateException stateException(Generator generator) {
         return GeneratorUtil.stateException(generator);
     }
