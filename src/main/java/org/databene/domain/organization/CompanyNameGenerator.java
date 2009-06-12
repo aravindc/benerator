@@ -28,9 +28,9 @@ package org.databene.domain.organization;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
@@ -46,7 +46,7 @@ import org.databene.domain.address.Country;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class CompanyNameGenerator extends LightweightGenerator<String> {
+public class CompanyNameGenerator extends LightweightStringGenerator {
 
     private static final String ORG = "org/databene/domain/organization/";
     private static final String PERS = "org/databene/domain/person/";
@@ -75,7 +75,6 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
     }
 
     public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
-    	super(String.class);
     	this.sector = sector;
     	this.location = location;
     	this.legalForm = legalForm;
@@ -83,7 +82,8 @@ public class CompanyNameGenerator extends LightweightGenerator<String> {
         setDataset(datasetName);
     }
     
-	public void setDataset(String datasetName) {
+	@SuppressWarnings("unchecked")
+    public void setDataset(String datasetName) {
         Country country = Country.getInstance(datasetName);
         if (location && country != null) {
             Generator<String> city = new ConvertingGenerator<City, String>(
