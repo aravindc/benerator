@@ -32,9 +32,10 @@ import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
- * Generates Gender objects.<br/>
+ * Generates {@link Gender} objects.<br/>
  * <br/>
  * Created: 09.06.2006 21:45:23
+ * @see Gender
  * @author Volker Bergmann
  */
 public class GenderGenerator extends LightweightGenerator<Gender> {
