@@ -100,6 +100,11 @@ public class DateTimeGenerator extends LightweightDateGenerator {
 
     // Generator interface ---------------------------------------------------------------------------------------------
     
+    @Override
+    public boolean available() {
+    	return dateGenerator.available() && timeGenerator.available();
+    }
+    
     public Date generate() {
         return new Date(dateGenerator.generate() + timeGenerator.generate());
     }
