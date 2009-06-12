@@ -1,0 +1,18 @@
+release notes benerator 0.5.9-SR1
+=================================
+
+summary
+-------
+This is a bug fix release
+
+
+enhancements (Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
+----------------------------------------------------------------------------------------------------------------
+- Added org.databene.benerator.primitive to default imports
+
+
+bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
+-------------------------------------------------------------------------------------------------
+- 2797001 Bug in parsing composite foreign keys
+- 2803686 <bean spec=""/> not available in Context
+- Fixed Country data of Côte d'Ivoire, Guinea, Libya, Monaco, Montserrat, Virgin Islands and Viet Nam
