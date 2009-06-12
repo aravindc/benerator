@@ -34,4 +34,12 @@ public class StepLongGeneratorTest extends GeneratorClassTest {
         assertEquals(1L, (long)oddGenerator.generate());
     }
 
+    public void testPrecision() throws IllegalGeneratorStateException {
+        StepLongGenerator simpleGenerator = new StepLongGenerator(1, 5);
+        simpleGenerator.setPrecision(2L);
+        assertEquals(1L, (long)simpleGenerator.generate());
+        assertEquals(3L, (long)simpleGenerator.generate());
+        assertEquals(5L, (long)simpleGenerator.generate());
+    }
+
 }
