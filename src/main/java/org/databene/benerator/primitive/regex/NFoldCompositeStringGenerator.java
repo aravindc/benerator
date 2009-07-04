@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,8 @@
 package org.databene.benerator.primitive.regex;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.model.function.Sequence;
 
 /**
  * Calls another string generator a variable number of times and appends a variable number of times.<br/>
@@ -42,23 +41,20 @@ class NFoldCompositeStringGenerator extends GeneratorProxy<String> {
 
     private int maxcount;
 
-    /** A number generator for generating quanities */
+    /** A number generator for generating quantities */
     private Generator<Integer> quantityGenerator;
 
     public NFoldCompositeStringGenerator(Generator<String> patternGenerator, int minCount, int maxCount) {
         super(patternGenerator);
         this.minCount = minCount;
         this.maxcount = maxCount;
-        this.quantityGenerator = new IntegerGenerator(minCount, maxCount, 1, Sequence.RANDOM);
+        this.quantityGenerator = new RandomIntegerGenerator(minCount, maxCount, 1);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<String> getGeneratedType() {
-        return String.class;
-    }
-
     /** Determines a quantity, invokes the pattern as many times and assembles the products to a String */
+    @Override
     public String generate() {
         StringBuilder builder = new StringBuilder();
         int count = quantityGenerator.generate();
@@ -70,6 +66,7 @@ class NFoldCompositeStringGenerator extends GeneratorProxy<String> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[source=" + source + ", " + minCount + "<=partCount<=" + maxcount + ']';
     }
