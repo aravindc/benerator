@@ -268,10 +268,24 @@ public class Country {
      * else one with the specified ISO code and default settings, e.g. phoneCode 'UNKNOWN'.
      */
     public static Country getInstance(String isoCode) {
+        return getInstance(isoCode, true);
+    }
+
+    /**
+     * Retrieves a country from the country configuration file.
+     * @param isoCode the ISO code of the country to retrieve
+     * @return if it is a predfined country, an instance with the configured data is returned,
+     * else one with the specified ISO code and default settings, e.g. phoneCode 'UNKNOWN'.
+     */
+    public static Country getInstance(String isoCode, boolean create) {
         Country country = instances.get(isoCode.toUpperCase());
-        if (country == null)
+        if (country == null && create)
             country = new Country(isoCode, Locale.getDefault().getLanguage(), DEFAULT_PHONE_CODE, DEFAULT_MOBILE_PHONE_PATTERN, null);
         return country;
+    }
+
+    public static boolean hasInstance(String isoCode) {
+        return (instances.get(isoCode.toUpperCase()) != null);
     }
 
     public static Country getDefault() {
