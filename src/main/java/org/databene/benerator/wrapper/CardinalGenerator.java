@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,20 +26,25 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
-import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.*;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
 
 /**
  * Combines a a random number a source generator's products into a collection.<br/>
  * <br/>
  * Created: 06.03.2008 16:08:22
+ * @author Volker Bergmann
  */
 public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
     /** Generator that determines the cardinality of generation */
-    protected LongGenerator countGenerator;
+    protected Generator<Long> countGenerator;
+    
+    long minCount;
+    long maxCount;
+    long countPrecision;
+    Distribution countDistribution;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -48,66 +53,51 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     }
 
     public CardinalGenerator(Generator<S> source) {
-        this(source, 0, 30, Sequence.RANDOM);
+        this(source, 0, 30);
     }
 
-    public CardinalGenerator(Generator<S> source, long minLength, long maxLength) {
-        this(source, minLength, maxLength, Sequence.RANDOM);
+    public CardinalGenerator(Generator<S> source, long minCount, long maxCount) {
+        this(source, minCount, maxCount, 1, Sequence.RANDOM);
     }
 
     public CardinalGenerator(Generator<S> source,
-            long minLength, long maxLength, Distribution lengthDistribution) {
+            long minCount, long maxCount, long countPrecision, Distribution countDistribution) {
         super(source);
-        countGenerator = new LongGenerator(minLength, maxLength, 1L, lengthDistribution);
+        this.minCount = minCount;
+        this.maxCount = maxCount;
+        this.countPrecision = countPrecision;
+        this.countDistribution = countDistribution;
+    }
+    
+    // Generator interface ---------------------------------------------------------------------------------------------
+
+	/** ensures consistency of the state */
+    @Override
+    public void validate() {
+    	if (dirty) {
+	        this.countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision);
+	        super.validate();
+    	}
     }
 
-    // configuration properties ----------------------------------------------------------------------------------------
-
-    public long getMinCount() {
-        return countGenerator.getMin();
-    }
-
-    public void setMinCount(long minCardinality) {
-        countGenerator.setMin(minCardinality);
-    }
-
-    public long getMaxCount() {
-        return countGenerator.getMin();
+    public void setMinCount(long minCount) {
+    	this.minCount = minCount;
+	    dirty = true;
     }
 
     public void setMaxCount(long maxCount) {
-        countGenerator.setMax(maxCount);
+    	this.maxCount = maxCount;
+	    dirty = true;
     }
-
-    public Distribution getCountDistribution() {
-        return countGenerator.getDistribution();
+    
+    public void setCountPrecision(long countPrecision) {
+    	this.countPrecision = countPrecision;
+	    dirty = true;
     }
-
+    
     public void setCountDistribution(Distribution distribution) {
-        countGenerator.setDistribution(distribution);
+    	this.countDistribution = distribution;
+    	dirty = true;
     }
 
-    public Long getCountVariation1() {
-        return countGenerator.getVariation1();
-    }
-
-    public void setCountVariation1(Long varation1) {
-        countGenerator.setVariation1(varation1);
-    }
-
-    public Long getSizeVariation2() {
-        return countGenerator.getVariation2();
-    }
-
-    public void setSizeVariation2(Long variation2) {
-        countGenerator.setVariation2(variation2);
-    }
-
-    // Generator interface ---------------------------------------------------------------------------------------------
-
-    /** ensures consistency of the state */
-    public void validate() {
-        countGenerator.validate();
-        super.validate();
-    }
 }

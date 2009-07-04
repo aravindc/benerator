@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,14 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.commons.ArrayUtil;
-import org.databene.model.function.Distribution;
 
 /**
  * Common abstraction for all generators that create arrays.<br/>
@@ -43,54 +41,27 @@ import org.databene.model.function.Distribution;
 public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A>{
 
     /** The generator that creates the array length */
-    protected IntegerGenerator sizeGenerator;
+    protected Generator<Integer> sizeGenerator;
 
     private Class<E> componentType;
     private Class<A> generatedType;
 
-    public AbstractArrayGenerator(Generator<E> source, Class<E> componentType, Class<A> generatedType, int minLength, int maxLength, Distribution distribution) {
+    public AbstractArrayGenerator(Generator<E> source, Class<E> componentType, Class<A> generatedType, 
+    		int minLength, int maxLength, Distribution lengthDistribution) {
         super(source);
         this.componentType = componentType;
         this.generatedType = generatedType;
-        this.sizeGenerator = new IntegerGenerator(minLength, maxLength, 1, distribution);
+        this.sizeGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1);
     }
 
     // configuration properties ----------------------------------------------------------------------------------------
-
-    /** Returns the minimum array length to generate */
-    public long getMinLength() {
-        return sizeGenerator.getMin();
-    }
-
-    /** Sets the minimum array length to generate */
-    public void setMinLength(int minLength) {
-        sizeGenerator.setMin(minLength);
-    }
-
-    /** Returns the maximum array length to generate */
-    public long getMaxLength() {
-        return sizeGenerator.getMin();
-    }
-
-    /** Sets the maximum array length to generate */
-    public void setMaxLength(int maxLength) {
-        sizeGenerator.setMax(maxLength);
-    }
-
-    public Distribution getLengthDistribution() {
-        return sizeGenerator.getDistribution();
-    }
-
-    public void setLengthDistribution(Distribution distribution) {
-        sizeGenerator.setDistribution(distribution);
-    }
-
-    // generator implementation ----------------------------------------------------------------------------------------
 
     public Class<A> getGeneratedType() {
         return generatedType;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public void validate() {
         if (dirty) {
             super.validate();
@@ -104,10 +75,16 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
             dirty = false;
         }
     }
+    
+    @Override
+    public boolean available() {
+        validate();
+        return (super.available() && sizeGenerator.available());
+    }
 
-    /** @see org.databene.benerator.Generator#generate() */
+    @SuppressWarnings("unchecked")
     public A generate() {
-        int length = sizeGenerator.generate();
+        int length = sizeGenerator.generate().intValue();
         E[] array = ArrayUtil.newInstance(componentType, length);
         for (int i = 0; i < length; i++)
             array[i] = source.generate();

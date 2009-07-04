@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.commons.ArrayFormat;
 
 /**
  * Wraps several other generators (in a <i>sources</i> property) and refines a composite state from them.<br/>
@@ -59,6 +58,15 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
     public Generator<S> getSource(int index) {
         validate();
         return sources[index];
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void addSource(Generator<S> source) {
+        dirty = true;
+    	Generator<S>[] newSources = new Generator[sources.length + 1];
+    	System.arraycopy(sources, 0, newSources, 0, sources.length);
+    	newSources[sources.length] = source;
+    	sources = newSources;
     }
 
     // Generator interface implementation ------------------------------------------------------------------------------
@@ -96,8 +104,9 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
+    @Override
     public String toString() {
-        return getClass().getSimpleName() + '[' + ArrayFormat.format(sources) + ']';
+        return getClass().getSimpleName() + sources;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,29 +27,31 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.commons.ArrayUtil;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
 
 /**
  * Assembles the output of a source generator into an array of random length.<br/>
  * <br/>
  * Created: 26.08.2006 09:37:55
+ * @author Volker Bergmann
  */
 public class SimpleArrayGenerator<E> extends AbstractArrayGenerator<E, E[]> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public SimpleArrayGenerator() {
-        this(null, (Class<E>) Object.class, 0, 30, Sequence.RANDOM);
+        this(null, (Class<E>) Object.class, 0, 30);
     }
 
     public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength) {
         this(source, componentType, minLength, maxLength, Sequence.RANDOM);
     }
 
-    public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength, Distribution distribution) {
-        super(source, componentType, ArrayUtil.arrayType(componentType), minLength, maxLength, distribution);
+    public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength, Distribution lengthDistribution) {
+        super(source, componentType, ArrayUtil.arrayType(componentType), minLength, maxLength, lengthDistribution);
     }
 
 }

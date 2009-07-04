@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,11 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.*;
-import org.databene.benerator.primitive.number.adapter.LongGenerator;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
+import org.databene.benerator.Generator;
+import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
 
 /**
  * This forwards a source generator's products.
@@ -38,14 +39,16 @@ import org.databene.model.function.Sequence;
  * volumes too big to keep in RAM.<br/>
  * <br/>
  * Created: 26.08.2006 16:16:04
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
+public class SkipGeneratorProxy<E> extends GeneratorProxy<E> { // TODO merge concept with RandomWalkSequence
 	
 	public static final long DEFAULT_MIN_INCREMENT = 1L;
 	public static final long DEFAULT_MAX_INCREMENT = 1L;
 
     /** The increment generator, which creates an individual increment on each generation */
-    private LongGenerator incrementGenerator;
+    private Generator<Long> incrementGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -58,78 +61,37 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
         this(source, DEFAULT_MIN_INCREMENT, DEFAULT_MAX_INCREMENT);
     }
 
+    public SkipGeneratorProxy(Long minIncrement, Long maxIncrement) {
+        this(null, minIncrement, maxIncrement);
+    }
+
     /** Initializes the generator to use a random increment of uniform distribution */
     public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement) {
         this(source, minIncrement, maxIncrement, Sequence.RANDOM);
     }
 
-    public SkipGeneratorProxy(Long minIncrement, Long maxIncrement) {
-        this(null, minIncrement, maxIncrement);
-    }
-
-    /** Initializes the generator */
-    public SkipGeneratorProxy(Generator<E> source,
-            Long minIncrement, Long maxIncrement, Distribution incrementDistribution) {
+    /** Initializes the generator to use a random increment of uniform distribution */
+    public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement, Distribution incrementDistribution) {
         super(source);
-        if (minIncrement == null)
-        	minIncrement = DEFAULT_MIN_INCREMENT;
-        if (maxIncrement == null)
-        	maxIncrement = DEFAULT_MAX_INCREMENT;
-        this.incrementGenerator = new LongGenerator(minIncrement, maxIncrement, 1L, incrementDistribution);
-    }
-
-    // config properties -----------------------------------------------------------------------------------------------
-
-    public long getMinIncrement() {
-        return incrementGenerator.getMin();
-    }
-
-    public void setMinIncrement(long minIncrement) {
-        incrementGenerator.setMin(minIncrement);
-    }
-
-    public long getMaxIncrement() {
-        return incrementGenerator.getMax();
-    }
-
-    public void setMaxIncrement(long maxIncrement) {
-        incrementGenerator.setMax(maxIncrement);
-    }
-
-    public Distribution getIncrementDistribution() {
-        return incrementGenerator.getDistribution();
-    }
-
-    public void setIncrementDistribution(Distribution distribution) {
-        incrementGenerator.setDistribution(distribution);
-    }
-
-    public Long getIncrementVariation1() {
-        return incrementGenerator.getVariation1();
-    }
-
-    public void setIncrementVariation1(Long varation1) {
-        incrementGenerator.setVariation1(varation1);
-    }
-
-    public Long getIncrementVariation2() {
-        return incrementGenerator.getVariation2();
-    }
-
-    public void setIncrementVariation2(Long variation2) {
-        incrementGenerator.setVariation2(variation2);
+        if (minIncrement < 0)
+        	throw new InvalidGeneratorSetupException("minIncrement is less than zero");
+        if (maxIncrement < 0)
+        	throw new InvalidGeneratorSetupException("maxIncrement is less than zero");
+        if (minIncrement > maxIncrement)
+        	throw new InvalidGeneratorSetupException("minIncrement (" + minIncrement + ") is larger than maxIncrement (" + maxIncrement + ")");
+        this.incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, 1L);
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @Override
     public void validate() {
-        if (incrementGenerator.getMin() < 0)
-            throw new InvalidGeneratorSetupException("minIncrement", "less than 0");
         incrementGenerator.validate();
         super.validate();
     }
 
     /** @see org.databene.benerator.Generator#reset() */
+    @Override
     public E generate() {
         if (!source.available())
             throw new IllegalGeneratorStateException("source is not available");
@@ -139,11 +101,13 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
         return source.generate();
     }
 
+    @Override
     public void close() {
         super.close();
         incrementGenerator.close();
     }
 
+    @Override
     public void reset() {
         super.reset();
         incrementGenerator.reset();

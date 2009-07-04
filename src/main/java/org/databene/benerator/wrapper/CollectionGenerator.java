@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,10 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.commons.BeanUtil;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
 import org.databene.benerator.*;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.WeightFunction;
 
 import java.util.*;
 
@@ -37,7 +38,10 @@ import java.util.*;
  * Combines a a random number a source generator's products into a collection.<br/>
  * <br/>
  * Created: 07.07.2006 19:13:22
+ * @since 0.1
+ * @author Volker Bergmann
  */
+@SuppressWarnings("unchecked")
 public class CollectionGenerator<C extends Collection, I> extends CardinalGenerator<I, C> {
 
     /** The collection type to create */
@@ -54,17 +58,23 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
     }
 
     public CollectionGenerator(Class<C> collectionType, Generator<I> source) {
-        this(collectionType, source, 0, 30, Sequence.RANDOM);
+        this(collectionType, source, 0, 30);
     }
 
-    public CollectionGenerator(Class<C> collectionType, Generator<I> source, int minLength, int maxLength) {
-        this(collectionType, source, minLength, maxLength, Sequence.RANDOM);
+    public CollectionGenerator(Class<C> collectionType, Generator<I> source, int minSize, int maxSize) {
+        this(collectionType, source, minSize, maxSize, Sequence.RANDOM);
+    }
+
+    public CollectionGenerator(Class<C> collectionType, Generator<I> source, 
+    		int minSize, int maxSize, Distribution sizeDistribution) {
+        super(source, minSize, maxSize, 1, sizeDistribution);
+        this.collectionType = mapCollectionType(collectionType);
     }
 
     public CollectionGenerator(
             Class<C> collectionType, Generator<I> source,
-            int minLength, int maxLength, Distribution lengthDistribution) {
-        super(source, minLength, maxLength, lengthDistribution);
+            int minLength, int maxLength, WeightFunction weightFunction) {
+        super(source, minLength, maxLength, 1, weightFunction);
         this.collectionType = mapCollectionType(collectionType);
     }
 
@@ -81,6 +91,7 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
     // Generator interface ---------------------------------------------------------------------------------------------
 
     /** ensures consistency of the state */
+    @Override
     public void validate() {
         if (collectionType == null)
             throw new InvalidGeneratorSetupException("collectionType", "undefined");

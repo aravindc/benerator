@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,63 +28,44 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
 
 /**
  * A generator proxy that forwards the output of another generator with a random number of repetitions.<br/>
  * <br/>
  * Created: 18.08.2007 17:08:10
+ * @author Volker Bergmann
  */
-public class RepeatGeneratorProxy<E> extends GeneratorProxy<E> {
+public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 
-    private long minRepetitions = 0;
-    private long maxRepetitions = 3;
     private long repCount;
     private long totalReps;
     private E next;
 
     public RepeatGeneratorProxy() {
-        this(null, null);
+        this(null, 0, 3);
     }
 
-    public RepeatGeneratorProxy(Long minRepetitions, Long maxRepetitions) {
-        this(null, minRepetitions, maxRepetitions);
+    public RepeatGeneratorProxy(Generator<E> source, long minRepetitions, long maxRepetitions) {
+        this(source, minRepetitions, maxRepetitions, 1, Sequence.RANDOM);
     }
 
-    public RepeatGeneratorProxy(Generator<E> source, Long minRepetitions, Long maxRepetitions) {
-        super(source);
-        repCount = -1;
-        if (minRepetitions != null)
-        	setMinRepetitions(minRepetitions);
-        if (maxRepetitions != null)
-        	setMaxRepetitions(maxRepetitions);
-        totalReps = SimpleRandom.randomLong(this.minRepetitions, this.maxRepetitions);
+    public RepeatGeneratorProxy(Generator<E> source, long minRepetitions, long maxRepetitions, 
+    		int repetitionPrecision, Distribution repetitionDistribution) {
+        super(source, minRepetitions, maxRepetitions, repetitionPrecision, repetitionDistribution);
     }
 
-    public long getMinRepetitions() {
-        return minRepetitions;
+    public Class<E> getGeneratedType() {
+    	return source.getGeneratedType();
     }
-
-    public void setMinRepetitions(long minRepetitions) {
-        if (minRepetitions < 0)
-            throw new IllegalArgumentException("minRepetitions must be >= 0, was: " + minRepetitions);
-        this.minRepetitions = minRepetitions;
-    }
-
-    public long getMaxRepetitions() {
-        return maxRepetitions;
-    }
-
-    public void setMaxRepetitions(long maxRepetitions) {
-        if (maxRepetitions < minRepetitions)
-            throw new IllegalArgumentException("maxRepetitions must be >= minRepetitions");
-        this.maxRepetitions = maxRepetitions;
-    }
-
+    
     @Override
 	public void validate() {
         if (dirty) {
             super.validate();
+            repCount = -1;
+            totalReps = countGenerator.generate();
             next = source.generate();
         }
     }
@@ -96,18 +77,17 @@ public class RepeatGeneratorProxy<E> extends GeneratorProxy<E> {
         return repCount < totalReps;
     }
 
-    @Override
 	public E generate() {
         if (dirty)
             validate();
         if (next == null)
-            throw new IllegalGeneratorStateException("Generator is no more available");
+            throw new IllegalGeneratorStateException("Generator is not available");
         E result = next;
         repCount++;
         if (repCount >= totalReps) {
             if (source.available()) {
                 next = source.generate();
-                totalReps = SimpleRandom.randomLong(minRepetitions, maxRepetitions);
+                totalReps = countGenerator.generate();
                 repCount = -1;
             } else {
                 next = null;

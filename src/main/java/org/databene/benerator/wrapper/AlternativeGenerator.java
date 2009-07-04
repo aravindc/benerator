@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.primitive.number.distribution.RandomIntegerGenerator;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.model.function.Distribution;
 
 /**
  * On each call to generate(), it chooses a generator from a collection,
@@ -39,11 +38,12 @@ import org.databene.model.function.Distribution;
  */
 public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
-    private IntegerGenerator indexGenerator;
+    private Generator<Integer> indexGenerator;
     private Class<E> targetType;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public AlternativeGenerator() {
         this((Class<E>) Object.class);
     }
@@ -57,33 +57,6 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
     public AlternativeGenerator(Class<E> targetType, Generator<E>... sources) {
         super(sources);
         this.targetType = targetType;
-        this.indexGenerator = new IntegerGenerator(0, sources.length - 1);
-    }
-
-    // config properties -----------------------------------------------------------------------------------------------
-
-    public Integer getVariation1() {
-        return indexGenerator.getVariation1();
-    }
-
-    public void setVariation1(Integer varation1) {
-        indexGenerator.setVariation1(varation1);
-    }
-
-    public Integer getVariation2() {
-        return indexGenerator.getVariation2();
-    }
-
-    public void setVariation2(Integer variation2) {
-        indexGenerator.setVariation2(variation2);
-    }
-
-    public Distribution getDistribution() {
-        return indexGenerator.getDistribution();
-    }
-
-    public void setDistribution(Distribution distribution) {
-        indexGenerator.setDistribution(distribution);
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
@@ -92,9 +65,11 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
         return targetType;
     }
 
+    @Override
     public void validate() {
         if (dirty) {
             super.validate();
+            this.indexGenerator = new RandomIntegerGenerator(0, sources.length - 1);
             indexGenerator.validate();
             dirty = false;
         }
