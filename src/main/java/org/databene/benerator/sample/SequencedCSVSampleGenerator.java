@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,8 +31,6 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVLineIterator;
 
@@ -54,7 +52,7 @@ import java.util.ArrayList;
  *
  * <br/>
  * Created: 26.07.2007 18:10:33
- * @see org.databene.benerator.sample.WeightedSampleGenerator
+ * @see org.databene.benerator.sample.AttachedWeightSampleGenerator
  */
 public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
@@ -64,14 +62,13 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     /** The converter to create instances from the CSV cell strings */
     private Converter<String, E> converter;
 
-    private static Escalator escalator = new LoggerEscalator();
-
     // constructors ----------------------------------------------------------------------------------------------------
 
     public SequencedCSVSampleGenerator() {
         this((String)null);
     }
 
+    @SuppressWarnings("unchecked")
     public SequencedCSVSampleGenerator(String uri) {
         this(uri, new NoOpConverter());
     }
@@ -98,18 +95,6 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         this.dirty = true;
     }
 
-    @Deprecated
-    public String getUrl() {
-    	escalator.escalate("The 'url' property is deprecated, use 'uri' instead", getClass(), "getUrl() called");
-        return getUri();
-    }
-
-    @Deprecated
-    public void setUrl(String url) {
-    	escalator.escalate("The 'url' property is deprecated, use 'uri' instead", getClass(), "setUrl() called");
-        setUri(url);
-    }
-    
     /** test support method */
     void addValue(E value) {
         ((SequencedSampleGenerator<E>) source).addValue(value);
@@ -118,10 +103,10 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    @Override
     public void validate() {
         if (dirty) {
             try {
-            	super.validate();
             	if (uri == null)
             		throw new InvalidGeneratorSetupException("uri is not set");
                 CSVLineIterator parser = new CSVLineIterator(uri);
@@ -133,6 +118,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
                         samples.add(converter.convert(tokens[0]));
                 }
                 ((SequencedSampleGenerator<E>) source).setValues(samples);
+            	super.validate();
                 dirty = false;
             } catch (FileNotFoundException e) {
                 throw new InvalidGeneratorSetupException("uri", "not found: " + uri);
@@ -146,6 +132,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[source=" + source + ", converter=" + converter + ']';
     }

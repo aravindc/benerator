@@ -53,9 +53,9 @@ import java.util.ArrayList;
  * <br/>
  * Created: 11.06.2006 20:49:33
  * @author Volker Bergmann
- * @see WeightedSampleGenerator
+ * @see AttachedWeightSampleGenerator
  */
-public class WeightedCSVSampleGenerator<E> implements Generator<E> {
+public class WeightedCSVSampleGenerator<E> implements Generator<E> { // TODO merge with AttachedWeight distribution
 
     /** The URL to read the samples from */
     private String url;
@@ -66,17 +66,19 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
     private Converter<String, E> converter;
 
     /** the SampleGenerator utilized for selecting among the samples */
-    private WeightedSampleGenerator<E> source;
+    private AttachedWeightSampleGenerator<E> source;
 
     /** flag that indicates if the generator needs to be initialized */
     private boolean dirty;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public WeightedCSVSampleGenerator() {
         this((Converter) null);
     }
 
+    @SuppressWarnings("unchecked")
     public WeightedCSVSampleGenerator(String url, String encoding) {
         this(url, encoding, new NoOpConverter());
     }
@@ -86,7 +88,7 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
     }
 
     public WeightedCSVSampleGenerator(String url, String encoding, Converter<String, E> converter) {
-        this.source = new WeightedSampleGenerator<E>();
+        this.source = new AttachedWeightSampleGenerator<E>();
         this.converter = converter;
         this.encoding = encoding;
         if (url != null && url.trim().length() > 0)
@@ -116,6 +118,7 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
         return source.generate();
     }
 
+    @SuppressWarnings({ "unchecked", "cast" })
     public void validate() {
         if (dirty) {
             try {
@@ -157,6 +160,7 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[source=" + source + ", converter=" + converter + ']';
     }

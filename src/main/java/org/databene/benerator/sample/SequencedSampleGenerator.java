@@ -26,26 +26,31 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.Generator;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.util.SimpleRandom;
-import org.databene.model.function.Sequence;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Generates values from an unweighted list of samples.<br/>
  * <br/>
  * Created: 07.06.2006 19:04:08
+ * @author Volker Bergmann
  */
 public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Keeps the Sample information */
     private List<E> samples = new ArrayList<E>();
 
-    /** Generator for choosing a List index of the sample list */
-    private IntegerGenerator indexGenerator = new IntegerGenerator(0, 0, 1, Sequence.RANDOM);
+    /** Sequence for choosing a List index of the sample list */
+    private Distribution distribution = null;
+
+    /** Sequence for choosing a List index of the sample list */
+    private Generator<Integer> indexGenerator = null;
 
     /** Flag that indicates if the generator needs to be initialized */
     private boolean dirty = true;
@@ -65,52 +70,28 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     public SequencedSampleGenerator(Class<E> generatedType, E ... values) {
     	super(generatedType);
         setValues(values);
+        this.distribution = Sequence.RANDOM;
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, Sequence distribution, E ... values) {
+    public SequencedSampleGenerator(Class<E> generatedType, Distribution distribution, E ... values) {
     	super(generatedType);
-        setDistribution(distribution);
+        this.distribution = distribution;
         setValues(values);
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, Collection<E> values) {
+    public SequencedSampleGenerator(Class<E> generatedType, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
+        this.distribution = Sequence.RANDOM;
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, Sequence distribution, Collection<E> values) {
+    public SequencedSampleGenerator(Class<E> generatedType, Distribution distribution, Iterable<E> values) {
     	super(generatedType);
-        setDistribution(distribution);
+        this.distribution = distribution;
         setValues(values);
-    }
-
-    // config properties -----------------------------------------------------------------------------------------------
-
-    public Sequence getDistribution() {
-        return (Sequence) indexGenerator.getDistribution();
-    }
-
-    public void setDistribution(Sequence distribution) {
-        indexGenerator.setDistribution(distribution);
-    }
-
-    public Integer getVariation1() {
-        return indexGenerator.getVariation1();
-    }
-
-    public void setVariation1(Integer varation1) {
-        indexGenerator.setVariation1(varation1);
-    }
-
-    public Integer getVariation2() {
-        return indexGenerator.getVariation2();
-    }
-
-    public void setVariation2(Integer variation2) {
-        indexGenerator.setVariation2(variation2);
     }
 
     // values property -------------------------------------------------------------------------------------------------
@@ -130,29 +111,31 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     @Override
     public boolean available() {
-    	return indexGenerator.available();
+    	if (dirty)
+    		validate();
+    	return samples.size() > 0 && indexGenerator.available();
     }
     
     /** Initializes all attributes */
     @Override
     public void validate() {
         if (dirty) {
-            if (samples.size() > 0) {
-                indexGenerator.setMax(samples.size() - 1);
-                indexGenerator.validate();
+            if (samples.size() == 0) 
+            	throw new InvalidGeneratorSetupException("No samples defined");
+            else {
+            	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1);
+            	indexGenerator.validate();
             }
             this.dirty = false;
         }
     }
 
-    /** @see org.databene.benerator.Generator#generate() */
     public E generate() {
         if (dirty)
             validate();
         if (samples.size() == 0)
             return null;
-        int index = indexGenerator.generate();
-        return samples.get(index);
+        return samples.get(indexGenerator.generate());
     }
     
     @Override
@@ -179,7 +162,8 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
-        return getClass().getSimpleName() + '[' + indexGenerator.getDistribution() + ']';
+        return getClass().getSimpleName();
     }
 }
