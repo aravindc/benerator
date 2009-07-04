@@ -1,0 +1,131 @@
+/*
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.benerator.distribution.sequence;
+
+import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+
+/**
+ * Long Generator that implements a 'randomWalk' Long Sequence.<br/>
+ * <br/>
+ * Created: 13.06.2006 07:36:45
+ * @since 0.1
+ * @author Volker Bergmann
+ */
+public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
+
+    long minIncrement;
+    long maxIncrement;
+    Distribution incrementDistribution;
+    
+    private long initial;
+    private long next;
+
+    private Generator<Long> incrementGenerator;
+
+    // constructors ----------------------------------------------------------------------------------------------------
+
+    public RandomWalkLongGenerator() {
+        this(Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    public RandomWalkLongGenerator(long min, long max) {
+        this(min, max, 1, 2);
+    }
+
+    public RandomWalkLongGenerator(long min, long max, long minIncrement, long maxIncrement) {
+        this(min, max, 1, min, minIncrement, maxIncrement, Sequence.RANDOM);
+    }
+
+    public RandomWalkLongGenerator(long min, long max, long precision, long initial, long minIncrement, long maxIncrement) {
+        this(min, max, precision, initial, minIncrement, maxIncrement, Sequence.RANDOM);
+    }
+
+    public RandomWalkLongGenerator(long min, long max, long precision, long initial, 
+    		long minIncrement, long maxIncrement, Distribution incrementDistribution) {
+        super(Long.class, min, max, precision);
+        this.minIncrement = minIncrement;
+        this.maxIncrement = maxIncrement;
+        this.incrementDistribution = incrementDistribution;
+        this.initial = initial;
+    }
+
+    // config properties -----------------------------------------------------------------------------------------------
+
+    public long getNext() {
+        return next;
+    }
+
+    public void setNext(long next) {
+        this.next = next;
+    }
+
+    // Generator implementation ----------------------------------------------------------------------------------------
+
+    @Override
+    public void validate() {
+        if (dirty) {
+            incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, precision);
+            if (minIncrement < 0 && maxIncrement <= 0)
+                initial = max;
+            else if (minIncrement >= 0 && maxIncrement > 0)
+                initial = min;
+            else
+                initial = (min + max) / 2;
+            next = initial;
+            incrementGenerator.validate();
+            super.validate();
+            dirty = false;
+        }
+    }
+
+    public Long generate() {
+        if (dirty)
+            validate();
+        long value = next;
+        next += incrementGenerator.generate();
+        if (next > max)
+            next = max;
+        else if (next < min)
+            next = min;
+        return value;
+    }
+
+    @Override
+    public void reset() {
+    	super.reset();
+    	next = initial;
+    }
+    
+    @Override
+    public void close() {
+    	super.close();
+    	next = initial;
+    }
+}
