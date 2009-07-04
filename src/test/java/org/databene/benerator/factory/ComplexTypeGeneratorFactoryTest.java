@@ -30,7 +30,6 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorTest;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -45,6 +44,9 @@ import org.databene.model.data.Entity;
  */
 public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
+    private static final String PERSON_TAB_CSV = "org/databene/benerator/factory/person_tab.csv";
+    private static final String PERSON_CSV = "org/databene/benerator/factory/person.csv";
+    
 	private Entity alice = new Entity("person", "name", "Alice", "age", "23");
 	private Entity otto = new Entity("person", "name", "Otto", "age", "89");
 	
@@ -81,7 +83,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	public void testTabbedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource("org/databene/benerator/factory/person_tab.csv");
+		type.setSource(PERSON_TAB_CSV);
 		type.setSeparator("\t");
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
@@ -89,22 +91,22 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	public void testSimpleCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource("org/databene/benerator/factory/person.csv");
+		type.setSource(PERSON_CSV);
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
 
 	public void testCyclicCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource("org/databene/benerator/factory/person.csv");
+		type.setSource(PERSON_CSV);
 		type.setCyclic(true);
 		Generator<Entity> generator = createGenerator(type);
-		expectGeneratedSequence(generator, alice, otto,alice).withContinuedAvailability();
+		expectGeneratedSequence(generator, alice, otto, alice).withContinuedAvailability();
 	}
 
 	public void testWeightedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource("org/databene/benerator/factory/person.csv");
+		type.setSource(PERSON_CSV);
 		type.setDetailValue("distribution", "weighted[age]");
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSet(generator, alice, otto).withContinuedAvailability();
@@ -117,9 +119,8 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 
 	public void testSequencedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource("org/databene/benerator/factory/person.csv");
-		type.setDistribution("step");
-		type.setVariation1("-1");
+		type.setSource(PERSON_CSV);
+		type.setDistribution("step(-1)");
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
@@ -140,8 +141,6 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
-		BeneratorContext context = new BeneratorContext(null);
-		Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(type, false, context);
-		return generator;
+		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type, false, context);
 	}
 }

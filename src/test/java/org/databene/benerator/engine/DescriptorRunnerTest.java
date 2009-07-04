@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.distribution.sequence.SequenceFactory;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.Entity;
@@ -55,7 +56,9 @@ public class DescriptorRunnerTest extends TestCase {
 				"</create-entities>" +
 				"</setup>");
 		BeneratorContext context = runner.getContext();
+		context.importDefaults();
 		context.setValidate(false);
+		SequenceFactory.setClassProvider(context); // TODO make this unnecessary
 		MyConsumer myConsumer = new MyConsumer();
 		context.set("myConsumer", myConsumer);
 		runner.run();

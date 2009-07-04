@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 
 /**
  * Created: 11.10.2006 23:12:21
@@ -40,7 +40,7 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
     }
 
     public void test() {
-        Generator<String> source = new WeightedSampleGenerator<String>(String.class, "Alice", "Bob");
+        Generator<String> source = new AttachedWeightSampleGenerator<String>(String.class, "Alice", "Bob");
         check(source, 0, 0);
         check(source, 3, 3);
         check(source, 0, 1);

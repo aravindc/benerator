@@ -26,6 +26,10 @@
 
 package org.databene.benerator.sample;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -48,7 +52,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
     }
 
     private static final String DATE_FILE_PATH = "org/databene/benerator/csv/dates.csv";
-    private static final String EMPTY_FILE_PATH = "org/databene/benerator/csv/empty.csv";
+    private static final String BIG_FILE_NAME = "many_dates.csv";
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -64,15 +68,27 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
         }
     }
 
-    public void testBigSet() throws ParseException {
-        SequencedCSVSampleGenerator<Integer> generator 
-        	= new SequencedCSVSampleGenerator<Integer>(EMPTY_FILE_PATH, new AnyConverter<String,Integer>(Integer.class));
-        generator.validate();
-        for (int i = 0; i < 200000; i++)
-        	generator.addValue(i % 100);
-        for (int i = 0; i < 100; i++) {
-            int product = generator.generate();
-            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
-        }
+    public void testBigSet() throws Exception {
+    	File csvFile = new File(BIG_FILE_NAME);
+    	try {
+	    	PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(csvFile)));
+	    	// create large CSV file
+	        for (int i = 0; i < 200000; i++)
+	        	writer.println(i % 100);
+	    	writer.close();
+	    	
+	    	// test generator
+	        SequencedCSVSampleGenerator<Integer> generator 
+	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, new AnyConverter<String,Integer>(Integer.class));
+	        generator.validate();
+	        for (int i = 0; i < 1000; i++) {
+	            int product = generator.generate();
+	            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
+	        }
+    	} finally {
+	        // delete large CSV file
+	        if (csvFile.exists())
+	        	csvFile.delete();
+    	}
     }
 }

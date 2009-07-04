@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,19 +27,19 @@
 package org.databene.benerator.factory;
 
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.AttachedWeight;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.FeatureWeight;
+import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.ConverterMock;
 import org.databene.benerator.test.GeneratorMock;
-import org.databene.benerator.test.GeneratorProxyMock;
 import org.databene.benerator.test.ValidatorMock;
 import org.databene.benerator.test.WeightFunctionMock;
-import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
@@ -53,10 +53,6 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.FeatureWeight;
-import org.databene.model.function.Sequence;
-import org.databene.model.function.WeightFunction;
 
 import junit.framework.TestCase;
 
@@ -75,7 +71,7 @@ public class DescriptorUtilTest extends TestCase {
 		super.tearDown();
 	}
 	
-	
+
 	// instantiation tests ---------------------------------------------------------------------------------------------
 
 	
@@ -114,21 +110,6 @@ public class DescriptorUtilTest extends TestCase {
 		// test converter chaining
 		checkGetValidator("c", new ValidatorMock(3), "c," + ValidatorMock.class.getName() + "(5)", null);
 		checkGetValidator("c", new ValidatorMock(3), "c," + ValidatorMock.class.getName() + "(3)", 3);
-	}
-	
-	public void testGetProxy() {
-		String mockName = GeneratorProxyMock.class.getName();
-		checkGetProxy(mockName, null, null, "param1", 1, "param2", 2);
-		checkGetProxy(mockName + "(3, 4)", null, null, "param1", 3, "param2", 4);
-		checkGetProxy(mockName + "[param1 = 5, param2 = 6]", null, null, "param1", 5, "param2", 6);
-		checkGetProxy("repeat", null, null, "minRepetitions", 0L, "maxRepetitions", 3L);
-		checkGetProxy("repeat", 4L, 5L, "minRepetitions", 4L, "maxRepetitions", 5L);
-		checkGetProxy("repeat(6, 7)", null, null, "minRepetitions", 6L, "maxRepetitions", 7L);
-		checkGetProxy("repeat[minRepetitions=8, maxRepetitions=9]", null, null, "minRepetitions", 8L, "maxRepetitions", 9L);
-		checkGetProxy("skip", null, null, "minIncrement", 1L, "maxIncrement", 1L);
-		checkGetProxy("skip", 3L, 4L, "minIncrement", 3L, "maxIncrement", 4L);
-		checkGetProxy("skip(5, 6)", null, null, "minIncrement", 5L, "maxIncrement", 6L);
-		checkGetProxy("skip[minIncrement=7, maxIncrement=8]", null, null, "minIncrement", 7L, "maxIncrement", 8L);
 	}
 	
 	public void testGetGeneratorByName() {
@@ -194,14 +175,6 @@ public class DescriptorUtilTest extends TestCase {
 	
 	// distribution tests ----------------------------------------------------------------------------------------------
 	
-	
-	public void testGetDistributionDefault() {
-		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
-		BeneratorContext context = new BeneratorContext(null);
-		assertNull(DescriptorUtil.getDistribution(descriptor, false, context));
-		assertEquals(Sequence.BIT_REVERSE, DescriptorUtil.getDistribution(descriptor, true, context));
-	}
-
 	public void testGetDistributionForWeightFunction() {
 		// test bean reference
 		checkGetWeightFunction("c", new WeightFunctionMock(2), "c", 2);
@@ -216,30 +189,18 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetWeightFunction(null, null, WeightFunctionMock.class.getName() + "[value=3]", 3);
 	}
 
-	public void testGetDistributionForSequence() {
-		checkGetSequence(null, null, "random", null, null, null);
-		checkGetSequence(null, null, "random", "1", "1", 1);
-		checkGetSequence("id", Sequence.STEP, "id", null, null, 1);
-/* TODO v0.6 test custom sequences
-		checkGetSequence(null, null, "org.databene.benerator.test.SequenceMock", null, null, 1);
-		checkGetSequence(null, null, "SequenceMock", null, null, 1);
-		checkGetSequence(null, null, "SequenceMock(2)", null, null, 2);
-		checkGetSequence(null, null, "SequenceMock[value = 3]", null, null, 3);
-*/
-	}
-
 	@SuppressWarnings("unchecked")
     public void testGetDistributionWeighted() {
 		BeneratorContext context = new BeneratorContext(null);
 		
 		// test 'weighted'
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType").withDistribution("weighted");
-		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context);
-		assertTrue(distribution instanceof FeatureWeight);
+		Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, true, context);
+		assertTrue(distribution instanceof AttachedWeight);
 		
 		// test 'weighted[population]'
 		SimpleTypeDescriptor descriptor2 = new SimpleTypeDescriptor("myType").withDistribution("weighted[population]");
-		Distribution distribution2 = DescriptorUtil.getDistribution(descriptor2, false, context);
+		Distribution distribution2 = GeneratorFactoryUtil.getDistribution(descriptor2.getDistribution(), false, true, context);
 		assertTrue(distribution2 instanceof FeatureWeight);
 		assertEquals("population", ((FeatureWeight) distribution2).getWeightFeature());
 	}
@@ -259,16 +220,6 @@ public class DescriptorUtilTest extends TestCase {
 	
 	// configuration tests ---------------------------------------------------------------------------------------------
 	
-	
-	public void testGetValues() {
-		assertNull(DescriptorUtil.getValues(new SimpleTypeDescriptor("test"), null));
-		assertTrue(Arrays.equals(new Object[] {"a", "b"}, 
-				DescriptorUtil.getValues(new SimpleTypeDescriptor("test").withValues("a,b"), null)));
-		assertTrue(Arrays.equals(new Object[] {"a", "b"}, 
-				DescriptorUtil.getValues(new SimpleTypeDescriptor("test").withValues("a|b").withSeparator("|"), null)));
-		assertTrue(Arrays.equals(new Object[] {"a", "b,c"}, 
-				DescriptorUtil.getValues(new SimpleTypeDescriptor("test").withValues("a|b,c").withSeparator("|"), null)));
-	}
 	
 	public void testGetPatternAsDateFormat() {
 		Date date = TimeUtil.date(2000, 0, 2);
@@ -389,43 +340,10 @@ public class DescriptorUtilTest extends TestCase {
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setDistribution(distributionSpec);
-		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context);
+		Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, true, context);
 		assertNotNull(distribution);
 		assertTrue(distribution instanceof WeightFunction);
 		assertEquals(expectedValue, ((WeightFunction) distribution).value(0));
-	}
-
-	private void checkGetSequence(
-			String contextKey, Distribution contextValue, 
-			String distributionSpec, String variation1, String variation2, Integer expectedValue) {
-		BeneratorContext context = new BeneratorContext(null);
-		if (contextKey != null)
-			context.set(contextKey, contextValue);
-		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
-		descriptor.setDistribution(distributionSpec);
-		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context); // TODO v0.6 test sequence=random,unique=true?
-		assertNotNull(distribution);
-		assertTrue(distribution instanceof Sequence);
-		// TODO v0.6 test sequence settings
-	}
-
-	@SuppressWarnings("unchecked")
-	private void checkGetProxy(String spec, Long proxyParam1, Long proxyParam2,
-			String prop1, Object expected1, String prop2, Object expected2) {
-		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
-		descriptor.setProxy(spec);
-		descriptor.setProxyParam1(proxyParam1);
-		descriptor.setProxyParam2(proxyParam2);
-		Generator source = new GeneratorMock();
-		BeneratorContext context = new BeneratorContext(null);
-		context.importDefaults();
-		GeneratorProxy proxy = (GeneratorProxy) DescriptorUtil.wrapWithProxy(source, descriptor, context);
-		assertNotNull(proxy);
-		assertEquals(source, proxy.getSource());
-		assertEquals(expected1, BeanUtil.getPropertyValue(proxy, prop1));
-		assertEquals(expected2, BeanUtil.getPropertyValue(proxy, prop2));
-		assertTrue(proxy.available());
-		assertNotNull(proxy.generate());
 	}
 
 	@SuppressWarnings("unchecked")

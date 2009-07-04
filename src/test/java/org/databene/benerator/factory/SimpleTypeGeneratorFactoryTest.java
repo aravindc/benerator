@@ -33,7 +33,8 @@ import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 /**
- * Tests the {@link SimpleTypeGeneratorFactory}.<br/><br/>
+ * Tests the {@link SimpleTypeGeneratorFactory}.<br/>
+ * <br/>
  * Created at 29.04.2008 20:13:40
  * @since 0.5.2
  * @author Volker Bergmann
@@ -50,14 +51,14 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	// 'value' attribute tests -----------------------------------------------------------------------------------------
 
 	public void testValues() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("rank");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
 		type.setValues("A,B,C");
 		Generator<String> generator = createGenerator(type, false);
 		expectGeneratedSet(generator, "A", "B", "C").withContinuedAvailability();
 	}
 	
 	public void testValuesWithCustomSeparator() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("rank");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
 		type.setValues("A|B|C");
 		type.setSeparator("|");
 		Generator<String> generator = createGenerator(type, false);
@@ -65,13 +66,46 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 	
 	public void testUniqueValues() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("rank");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
 		type.setValues("A,B,C");
 		Generator<String> generator = createGenerator(type, true);
 		expectGeneratedSet(generator, "A", "B", "C").withCeasedAvailability();
 	}
 	
+	public void testCreateSampleGeneratorNA() {
+		assertNull(SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test"), false, null));
+	}
+	
+	public void testCreateSampleGeneratorUnweighted() {
+		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("a,b"), false, null);
+		expectRelativeWeights(generator, 100, "a", 1, "b", 1);
+		generator = SimpleTypeGeneratorFactory.createSampleGenerator((SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("a|b").withSeparator("|"), false, null);
+		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
+		generator = SimpleTypeGeneratorFactory.createSampleGenerator((SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("a|b,c").withSeparator("|"), false, null);
+		expectRelativeWeights(generator, 1000, "a", 1, "b,c", 1);
+	}
+
+	public void testCreateSampleGeneratorWeighted() {
+		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("a[2],b"), false, null);
+		expectRelativeWeights(generator, 1000, "a", 2, "b", 1);
+	}
+	
 	// CSV tests -------------------------------------------------------------------------------------------------------
+
+	public void testSimpleCSVImport() {
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		type.setSource(NAME_CSV);
+		Generator<String> generator = createGenerator(type, false);
+		expectGeneratedSequence(generator, "Alice", "Otto").withCeasedAvailability();
+	}
+
+	public void testTabSeparatedCSVImport() {
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
+		type.setSource(NAMES_TAB_CSV);
+		type.setSeparator("\t");
+		Generator<String> generator = createGenerator(type, false);
+		expectGeneratedSequence(generator, "Alice", "Bob", "Charly").withCeasedAvailability();
+	}
 
 	public void testScriptedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
@@ -91,29 +125,6 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		expectGeneratedSet(generator, "Alice", "the_user", "Otto").withContinuedAvailability();
 	}
 
-	public void testTabSeparatedCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
-		type.setSource(NAMES_TAB_CSV);
-		type.setSeparator("\t");
-		Generator<String> generator = createGenerator(type, false);
-		expectGeneratedSequence(generator, "Alice", "Bob", "Charly").withCeasedAvailability();
-	}
-
-	public void testSimpleCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
-		type.setSource(NAME_CSV);
-		Generator<String> generator = createGenerator(type, false);
-		expectGeneratedSequence(generator, "Alice", "23", "Otto", "89").withCeasedAvailability();
-	}
-
-	public void testCyclicCSVImport() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
-		type.setSource(NAME_CSV);
-		type.setCyclic(true);
-		Generator<String> generator = createGenerator(type, false);
-		expectGeneratedSequence(generator, "Alice", "23", "Otto", "89", "Alice").withContinuedAvailability();
-	}
-
 	public void testWeightedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
 		type.setSource(NAME_CSV);
@@ -130,10 +141,9 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testSequencedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
 		type.setSource(NAME_CSV);
-		type.setDistribution("step");
-		type.setVariation1("-1");
+		type.setDistribution("step(-1)");
 		Generator<String> generator = createGenerator(type, false);
-		expectGeneratedSequence(generator, "89", "Otto", "23", "Alice").withCeasedAvailability();
+		expectGeneratedSequence(generator, "Otto", "Alice").withCeasedAvailability();
 	}
 
 	public void testUniqueCSVImport() {
@@ -141,24 +151,30 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(NAME_CSV);
 		Generator<String> generator = createGenerator(type, true);
 		ObjectCounter<String> counter = new ObjectCounter<String>(2);
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 2; i++)
 			counter.count(generator.generate());
 		assertEquals(1, counter.getCount("Alice"));
-		assertEquals(1, counter.getCount("23"));
 		assertEquals(1, counter.getCount("Otto"));
-		assertEquals(1, counter.getCount("89"));
 		assertFalse(generator.available());
+	}
+	
+	public void testCyclicCSVImport() {
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
+		type.setSource(NAME_CSV);
+		type.setCyclic(true);
+		Generator<String> generator = createGenerator(type, false);
+		expectGeneratedSequence(generator, "Alice", "Otto", "Alice").withContinuedAvailability();
 	}
 
 	// private helpers -------------------------------------------------------------------------------------------------
 	
     private Generator<String> createGenerator(SimpleTypeDescriptor type, boolean unique) {
-		return createGenerator(type, unique, new BeneratorContext("."));
+		return createGenerator(type, unique, context);
 	}
 
 	@SuppressWarnings("unchecked")
     private Generator<String> createGenerator(SimpleTypeDescriptor type, boolean unique, BeneratorContext context) {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context);
-		return (Generator<String>) generator;
+		return (Generator<String>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(type, false, unique, context);
 	}
+
 }

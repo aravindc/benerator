@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,30 +26,30 @@
 
 package org.databene.benerator.factory;
 
-import java.util.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.*;
 
 import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.WeightFunction;
+import org.databene.benerator.distribution.function.ConstantFunction;
+import org.databene.benerator.distribution.function.GaussianFunction;
+import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
+import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGeneratorTest;
-import org.databene.benerator.primitive.number.adapter.DoubleGenerator;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
-import org.databene.benerator.primitive.number.distribution.ConstantFunction;
-import org.databene.benerator.primitive.number.distribution.GaussianFunction;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.model.function.Sequence;
-import org.databene.model.function.WeightFunction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link GeneratorFactory}.<br/><br/>
  * Created: 24.08.2006 07:03:03
  * @author Volker Bergmann
  */
@@ -68,7 +68,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     public void testGetNumberGenerator() {
         checkNumberGenerator(Byte.class, (byte)-10, (byte)10, (byte)1);
         checkNumberGenerator(Short.class, (short)-10, (short)10, (short)1);
-        checkNumberGenerator(Integer.class, (int)-10, (int)10, 1);
+        checkNumberGenerator(Integer.class, -10, 10, 1);
         checkNumberGenerator(Long.class, (long)-10, (long)10, (long)1);
         checkNumberGenerator(BigInteger.class, new BigInteger("-10"), new BigInteger("10"), new BigInteger("1"));
         checkNumberGenerator(Double.class, (double)-10, (double)10, (double)1);
@@ -76,18 +76,20 @@ public class GeneratorFactoryTest extends GeneratorTest {
         checkNumberGenerator(BigDecimal.class, new BigDecimal(-10), new BigDecimal(10), new BigDecimal(1));
     }
 
+
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision) {
         for (Sequence sequence : Sequence.getInstances())
             checkNumberGenerator(type, min, max, precision, sequence);
         for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
             checkNumberGenerator(type, min, max, precision, function);
     }
-
+    
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
         Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, sequence, 0);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             T n = generator.generate();
-            assertTrue(n.doubleValue() >= min.doubleValue());
+            assertTrue("Generated value (" + n + ") is smaller than min (" + min + ") using " + sequence, 
+            		n.doubleValue() >= min.doubleValue());
             assertTrue(n.doubleValue() <= max.doubleValue());
         }
     }
@@ -107,29 +109,6 @@ public class GeneratorFactoryTest extends GeneratorTest {
         logger.debug(weightFunction + ": " + ArrayFormat.formatInts(", ", count));
     }
 
-    // BigDecimal source --------------------------------------------------------------------------------------------
-/*
-    public void testGetBigDecimalGeneratorByDistributionType() {
-        for (Sequence sequence : Sequence.getInstances()) {
-            Generator<BigDecimal> generator = GeneratorFactory.getBigDecimalGenerator(
-                    new BigDecimal(-10), new BigDecimal(10),
-                    2, distribution, false, 0
-            );
-            checkGenerator(generator);
-        }
-    }
-
-    public void testGetBigDecimalGeneratorByDistributionFunction() {
-        int min = -10;
-        int max = 10;
-        for (WeightFunction function : getDistributionFunctions(min, max)) {
-            Generator<BigDecimal> generator = GeneratorFactory.getBigDecimalGenerator(
-                    new BigDecimal(min), new BigDecimal(max), 2, function, 0
-            );
-            checkGenerator(generator);
-        }
-    }
-*/
     // sample source ------------------------------------------------------------------------------------------------
 
     public void testGetSampleGenerator() {
@@ -258,7 +237,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     // formatting generators -------------------------------------------------------------------------------------------
 
     public void testGetConvertingGenerator() {
-        Generator<Double> source = new DoubleGenerator(0, 9);
+        Generator<Double> source = new RandomDoubleGenerator(0, 9);
         NumberFormat format = DecimalFormat.getInstance();
         format.setMinimumFractionDigits(0);
         format.setMaximumFractionDigits(2);
@@ -269,9 +248,9 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetMessageGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        WeightedSampleGenerator<String> salutationGenerator = new WeightedSampleGenerator<String>(String.class, salutations);
+        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        WeightedSampleGenerator<String> nameGenerator = new WeightedSampleGenerator<String>(String.class, names);
+        AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         String pattern = "{0} {1}";
         Generator<String> generator = GeneratorFactory.getMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
         for (int i = 0; i < 10; i++) {
@@ -286,7 +265,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     // collection generators -------------------------------------------------------------------------------------------
 
     public void testGetCollectionGeneratorByCardinalityDistributionType() {
-        Generator<Integer> source = new IntegerGenerator(0, 9);
+        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (Sequence sequence : Sequence.getInstances()) {
             Generator<List> generator = GeneratorFactory.getCollectionGenerator(
                     List.class, source, 0, 5, sequence);
@@ -295,7 +274,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     public void testGetCollectionGeneratorByCardinalityDistributionFunction() {
-        Generator<Integer> source = new IntegerGenerator(0, 9);
+        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         int minSize = 0;
         int maxSize = 5;
         for (WeightFunction distributionFunction : getDistributionFunctions(minSize, maxSize)) {
@@ -308,7 +287,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     // array generators ------------------------------------------------------------------------------------------------
 
     public void testGetArrayGeneratorByCardinalityDistributionType() {
-        Generator<Integer> source = new IntegerGenerator(0, 9);
+        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (Sequence sequence : Sequence.getInstances()) {
             Generator<Integer[]> generator = GeneratorFactory.getArrayGenerator(source, Integer.class, 0, 5, sequence);
             checkGenerator(generator);
@@ -318,7 +297,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     public void testGetArrayGeneratorByCardinalityDistributionFunction() {
         int minLength = 0;
         int maxLength = 5;
-        Generator<Integer> source = new IntegerGenerator(0, 9);
+        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (WeightFunction distributionFunction : getDistributionFunctions(minLength, maxLength)) {
             Generator<Integer[]> generator = GeneratorFactory.getArrayGenerator(source, Integer.class, minLength, maxLength, distributionFunction);
             checkGenerator(generator);
@@ -327,9 +306,9 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
-        WeightedSampleGenerator<String> salutationGenerator = new WeightedSampleGenerator<String>(String.class, salutations);
+        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        WeightedSampleGenerator<String> nameGenerator = new WeightedSampleGenerator<String>(String.class, names);
+        AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
         Generator<Object[]> generator = GeneratorFactory.getArrayGenerator(Object.class, sources);
         for (int i = 0; i < 10; i++) {
@@ -343,8 +322,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     // source generators -----------------------------------------------------------------------------------------------
 
     public void testGetCSVCellGenerator() {
-        Generator generator = GeneratorFactory.getCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true, 
-        		null, null, null, null);
+        Generator<String> generator = GeneratorFactory.getCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true);
         assertEquals("Alice", generator.generate());
         assertEquals("Bob", generator.generate());
         assertEquals("Charly", generator.generate());
@@ -353,7 +331,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     public void testGetArraySourceGenerator() {
         Generator<String[]> generator = GeneratorFactory.getCSVLineGenerator(
-                "file://org/databene/csv/names-abc.csv", ',', true, true, null, null, null, null);
+                "file://org/databene/csv/names-abc.csv", ',', true, true);
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
         assertArrayEquals(new String[] { "Charly"}, generator.generate());
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
@@ -401,6 +379,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 */
     private <T> void checkGenerator(Generator<T> generator) {
         for (int i = 0; i < 5; i++) {
+        	assertTrue("Generator unexpectedly invalid: " + generator.toString(), generator.available());
             generator.generate();
         }
     }

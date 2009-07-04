@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,52 +26,52 @@
 
 package org.databene.benerator.sample;
 
-import java.text.ParseException;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.GeneratorClassTest;
 
 /**
- * Tests the {@link SequencedSampleGenerator}.<br/>
+ * Tests the {@link AttachedWeightSampleGenerator}.<br/>
+ * <br/>
  * Created: 07.06.2006 21:59:02
  * @author Volker Bergmann
  */
-public class SequencedSampleGeneratorTest extends GeneratorClassTest {
+public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
 
-    private static Log logger = LogFactory.getLog(SequencedSampleGeneratorTest.class);
+    private static Log logger = LogFactory.getLog(AttachedWeightSampleGeneratorTest.class);
 
-    public SequencedSampleGeneratorTest() {
-        super(SequencedSampleGenerator.class);
+    public AttachedWeightSampleGeneratorTest() {
+        super(AttachedWeightSampleGenerator.class);
+    }
+
+    public void testInstantiation() throws Exception {
+        new AttachedWeightSampleGenerator<Integer>();
+        new AttachedWeightSampleGenerator<String>();
     }
 
     public void testDistribution() throws Exception {
-        Integer[] samples = new Integer[] { 0, 1, 2 };
-        SequencedSampleGenerator<Integer> g = new SequencedSampleGenerator<Integer>(Integer.class);
-        g.setValues(samples);
+        WeightedSample<Integer>[] samples = new WeightedSample[] {
+            new WeightedSample<Integer>(0, 0.1),
+            new WeightedSample<Integer>(1, 0.3),
+            new WeightedSample<Integer>(2, 0.6)
+        };
+        AttachedWeightSampleGenerator<Integer> g = new AttachedWeightSampleGenerator<Integer>();
+        g.setSamples(samples);
         int n = 10000;
         int[] sampleCount = new int[3];
         for (int i = 0; i < n; i++) {
             sampleCount[g.generate()] ++;
         }
+        List<WeightedSample<Integer>> samples2 = g.getSamples();
         for (int i = 0; i < sampleCount.length; i++) {
             int count = sampleCount[i];
             double measuredProbability = (float)count / n;
-            double expectedProbability = 1. / samples.length;
+            double expectedProbability = samples2.get(i).getWeight();
             double ratio = measuredProbability / expectedProbability;
             logger.debug(i + " " + count + " " + ratio);
             assertTrue(ratio > 0.9 && ratio < 1.1);
-        }
-    }
-
-    public void testBigSet() throws ParseException {
-        SequencedSampleGenerator<Integer> generator = new SequencedSampleGenerator<Integer>(Integer.class);
-        for (int i = 0; i < 200000; i++)
-        	generator.addValue(i % 100);
-        generator.validate();
-        for (int i = 0; i < 100; i++) {
-            int product = generator.generate();
-            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
         }
     }
 }

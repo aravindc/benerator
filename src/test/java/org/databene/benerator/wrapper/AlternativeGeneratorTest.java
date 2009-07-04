@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,15 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
 
 /**
+ * Tests the {@link AlternativeGenerator}.<br/>
+ * <br/>
  * Created: 11.10.2006 23:10:34
+ * @author Volker Bergmann
  */
 public class AlternativeGeneratorTest extends GeneratorClassTest {
 
@@ -38,9 +42,10 @@ public class AlternativeGeneratorTest extends GeneratorClassTest {
         super(AlternativeGenerator.class);
     }
 
+    @SuppressWarnings("unchecked")
     public void test() {
-        IntegerGenerator source1 = new IntegerGenerator(-2, -1);
-        IntegerGenerator source2 = new IntegerGenerator(1, 2);
+        Generator<Integer> source1 = new RandomIntegerGenerator(-2, -1);
+        Generator<Integer> source2 = new RandomIntegerGenerator(1, 2);
         AlternativeGenerator<Integer> generator = new AlternativeGenerator<Integer>(Integer.class, source1, source2);
         for (int i = 0; i < 100; i++) {
             int product = generator.generate();

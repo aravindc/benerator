@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,7 @@ import org.databene.benerator.GeneratorClassTest;
  * Tests the RepeatGeneratorProxy.<br/>
  * <br/>
  * Created: 01.09.2007 11:05:04
+ * @author Volker Bergmann
  */
 public class RepeatGeneratorProxyTest extends GeneratorClassTest {
 
