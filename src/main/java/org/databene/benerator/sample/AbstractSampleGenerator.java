@@ -29,6 +29,7 @@ package org.databene.benerator.sample;
 import org.databene.benerator.util.TypedLightweightGenerator;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Generates values from an unweighted list of samples.<br/><br/>
@@ -43,7 +44,7 @@ public abstract class AbstractSampleGenerator<E> extends TypedLightweightGenerat
 	}
 
     /** Adds values to the sample list */
-    public void setValues(Collection<E> values) {
+    public void setValues(Iterable<E> values) {
         clear();
         if (values != null)
             for (E value : values)
