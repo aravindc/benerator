@@ -1,6 +1,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.commons.IOUtil;
 import org.databene.id.IdProvider;
 
 public class IdGenerator<E> implements Generator<E> {
@@ -43,7 +44,7 @@ public class IdGenerator<E> implements Generator<E> {
     }
 
     public void close() {
-        source.close();
+        IOUtil.close(source);
     }
 
     public E generate() {
