@@ -27,7 +27,8 @@
 package org.databene.benerator.util;
 
 /**
- * TODO document class TypedLightweightGenerator.<br/>
+ * {@link LightweightGenerator} implementation that stores the generated type.
+ * It is identical to the former {@link LightweightGenerator}.<br/>
  * <br/>
  * Created at 26.05.2009 16:31:23
  * @since 0.6.0
