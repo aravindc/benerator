@@ -28,10 +28,11 @@ package org.databene.benerator.primitive.datetime;
 
 import java.util.Date;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
- * TODO document class LightweightDateGenerator.<br/>
+ * Parent class for lighteight {@link Date} {@link Generator}s.<br/>
  * <br/>
  * Created at 26.05.2009 16:11:47
  * @since 0.6.0
