@@ -28,8 +28,8 @@ package org.databene.model.function;
 
 import java.util.Map;
 
+import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.commons.CollectionUtil;
-import org.databene.model.function.FeatureWeight;
 
 import junit.framework.TestCase;
 

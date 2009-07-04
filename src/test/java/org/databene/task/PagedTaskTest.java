@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.task;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import junit.framework.TestCase;
@@ -37,31 +38,31 @@ import junit.framework.TestCase;
  */
 public class PagedTaskTest extends TestCase {
 
-    public void testSingleInvocation() {
+    public void testSingleInvocation() throws Exception {
         checkRun(1,  1,  1,   1, 1, 1);
         checkRun(1, 10,  1,   1, 1, 1);
         checkRun(1,  1, 10,   1, 1, 1);
         checkRun(1, 10, 10,   1, 1, 1);
     }
 
-    public void testSingleThreadedInvocation() {
+    public void testSingleThreadedInvocation() throws Exception {
         checkRun(10,  1,  1,   10, 10, 10);
         checkRun(10, 10,  1,    1, 10,  1);
         checkRun( 4,  3,  1,    2,  4,  2);
     }
 
-    public void testMultiThreadedInvocation() {
+    public void testMultiThreadedInvocation() throws Exception {
         checkRun(10,  1, 10,   10, 10, 10);
         checkRun(10, 10, 10,    1, 10,  1);
     }
 
-    public void testMultiPagedInvocation() {
+    public void testMultiPagedInvocation() throws Exception {
         checkRun(10,  5, 1,    2, 10,  2);
         checkRun(10,  5, 2,    2, 10,  2);
         checkRun(20,  5, 2,    4, 20,  4);
     }
 
-    public void testNonThreadSafeTask() {
+    public void testNonThreadSafeTask() throws Exception {
         checkNonThreadSafeTask(1,   1, 1, 1); // single threaded
         checkNonThreadSafeTask(10, 10, 1, 1); // single threaded, single-paged
         checkNonThreadSafeTask(10,  5, 1, 1); // single threaded, multi-paged
@@ -70,23 +71,23 @@ public class PagedTaskTest extends TestCase {
         checkNonThreadSafeTask(10,  5, 2, 5); // multi-threaded, multi-paged
     }
 
-    public void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) {
+    public void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) throws IOException {
         SingleThreadedTask.instanceCount = 0;
         SingleThreadedTask task = new SingleThreadedTask();
         PagedTask pagedTask = new PagedTask(task, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
         pagedTask.init(new TaskContext());
         pagedTask.run();
-        pagedTask.destroy();
+        pagedTask.close();
         assertEquals("Unexpected instanceCount", expectedInstanceCount, SingleThreadedTask.instanceCount);
     }
 
     private void checkRun(int totalInvocations, int pageSize, int threads,
-                          int expectedInitCount, int expectedRunCount, int expectedDestroyCount) {
+                          int expectedInitCount, int expectedRunCount, int expectedDestroyCount) throws IOException {
         CountTask countTask = new CountTask();
         PagedTask pagedTask = new PagedTask(countTask, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
         pagedTask.init(new TaskContext());
         pagedTask.run();
-        pagedTask.destroy();
+        pagedTask.close();
         assertEquals("Unexpected initCount", expectedInitCount, countTask.initCount);
         assertEquals("Unexpected runCount", expectedRunCount, countTask.runCount);
         assertEquals("Unexpected destroyCount", expectedDestroyCount, countTask.destroyCount);

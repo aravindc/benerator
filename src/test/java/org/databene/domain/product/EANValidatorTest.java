@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,12 +28,11 @@ package org.databene.domain.product;
 
 import junit.framework.TestCase;
 
-import org.databene.commons.Validator;
-
 /**
  * Tests validation of an EAN code.<br/>
  * <br/>
  * Created: 29.07.2007 08:04:09
+ * @author Volker Bergmann
  */
 public class EANValidatorTest extends TestCase {
 
@@ -42,11 +41,12 @@ public class EANValidatorTest extends TestCase {
     private static String EAN_INVALID_LENGTH   = "3057640182";
 
     public void test() {
-        Validator<String> validator = new EANValidator();
-        assertTrue(validator.valid(EAN_VOLVIC));
-        assertFalse(validator.valid(null));
-        assertFalse(validator.valid(""));
-        assertFalse(validator.valid(EAN_INVALID_CHECKSUM));
-        assertFalse(validator.valid(EAN_INVALID_LENGTH));
+    	EANValidator validator = new EANValidator();
+        assertTrue(validator.isValid(EAN_VOLVIC, null));
+        assertFalse(validator.isValid(null, null));
+        assertFalse(validator.isValid("", null));
+        assertFalse(validator.isValid(EAN_INVALID_CHECKSUM, null));
+        assertFalse(validator.isValid(EAN_INVALID_LENGTH, null));
     }
+    
 }

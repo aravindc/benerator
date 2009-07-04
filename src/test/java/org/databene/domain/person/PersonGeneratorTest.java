@@ -37,6 +37,7 @@ import java.util.Locale;
  * Tests the {@link PersonGenerator}.<br/>
  * <br/>
  * Created: 09.06.2006 22:14:08
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class PersonGeneratorTest extends GeneratorClassTest {

@@ -59,12 +59,13 @@ public class CountTask implements Task, ThreadSafe {
         runCount++;
     }
 
-    public void destroy() {
+    public void close() {
         destroyCount++;
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return "CountTask[initCount=" + initCount + ", runCount=" + runCount + ", destroyCount=" + destroyCount + ']';
     }

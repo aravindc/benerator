@@ -39,13 +39,13 @@ public class CountryCode2ValidatorTest extends TestCase {
 
 	public void test() {
 		CountryCode2Validator validator = new CountryCode2Validator();
-		assertTrue(validator.valid("DE"));
-		assertTrue(validator.valid("US"));
-		assertFalse(validator.valid(null));
-		assertFalse(validator.valid(""));
-		assertFalse(validator.valid("USA"));
-		assertFalse(validator.valid("D1"));
-		assertFalse(validator.valid("1D"));
-		assertFalse(validator.valid(".*"));
+		assertTrue(validator.isValid("DE", null));
+		assertTrue(validator.isValid("US", null));
+		assertFalse(validator.isValid(null, null));
+		assertFalse(validator.isValid("", null));
+		assertFalse(validator.isValid("USA", null));
+		assertFalse(validator.isValid("D1", null));
+		assertFalse(validator.isValid("1D", null));
+		assertFalse(validator.isValid(".*", null));
 	}
 }

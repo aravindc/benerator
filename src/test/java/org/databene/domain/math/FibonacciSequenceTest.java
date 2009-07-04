@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,25 +24,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.math;
 
-import junit.framework.TestCase;
+import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorTest;
+import org.databene.domain.math.FibonacciSequence;
 
 /**
- * Tests the {@link TaxIdGenerator_DE}.<br/>
+ * TODO document class FibonacciSequenceTest.<br/>
  * <br/>
- * Created at 27.08.2008 00:23:07
- * @since 0.5.5
+ * Created at 03.07.2009 10:51:18
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class TaxIdGenerator_DETest extends TestCase {
 
-	public void test() {
-		TaxIdGenerator_DE generator = new TaxIdGenerator_DE();
-		TaxIdValidator_DE validator = new TaxIdValidator_DE();
-		for (int i = 0; i < 1000; i++) {
-			String number = generator.generate();
-			assertTrue(validator.isValid(number, null));
-		}
+public class FibonacciSequenceTest extends GeneratorTest {
+
+	public void testLong() {
+		Generator<Integer> intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1);
+		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withCeasedAvailability();
+		intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, null, 1);
+		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withContinuedAvailability();
+		intGenerator = new FibonacciSequence().createGenerator(Integer.class, 4, 10, 1);
+		expectGeneratedSequence(intGenerator, 5, 8).withCeasedAvailability();
 	}
+	
 }

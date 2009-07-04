@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,11 +35,13 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 public class CreditCardNumberValidatorTest extends TestCase {
+	
 	public void test() {
 		CreditCardNumberValidator validator = new CreditCardNumberValidator();
-		assertTrue(validator.valid("4111111111111111")); // VISA
-		assertTrue(validator.valid("30000000000004")); // Diner's Club 11
-		assertTrue(validator.valid("340000000000009")); // American Express12
-		assertTrue(validator.valid("3088000000000009")); // JCB
+		assertTrue(validator.isValid("4111111111111111", null)); // VISA
+		assertTrue(validator.isValid("30000000000004", null)); // Diner's Club 11
+		assertTrue(validator.isValid("340000000000009", null)); // American Express12
+		assertTrue(validator.isValid("3088000000000009", null)); // JCB
 	}
+	
 }

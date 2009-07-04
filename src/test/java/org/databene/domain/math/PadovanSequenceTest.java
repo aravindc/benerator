@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,25 +24,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.math;
 
-import junit.framework.TestCase;
+import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorTest;
 
 /**
- * Tests the {@link TaxIdGenerator_DE}.<br/>
+ * Tests the {@link PadovanSequence}.<br/>
  * <br/>
- * Created at 27.08.2008 00:23:07
- * @since 0.5.5
+ * Created at 03.07.2009 13:25:56
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class TaxIdGenerator_DETest extends TestCase {
 
-	public void test() {
-		TaxIdGenerator_DE generator = new TaxIdGenerator_DE();
-		TaxIdValidator_DE validator = new TaxIdValidator_DE();
-		for (int i = 0; i < 1000; i++) {
-			String number = generator.generate();
-			assertTrue(validator.isValid(number, null));
-		}
+public class PadovanSequenceTest extends GeneratorTest {
+
+	public void testLong() {
+		PadovanSequence padovanSequence = new PadovanSequence();
+		Generator<Integer> intGenerator = padovanSequence.createGenerator(Integer.class, 0, 10, 1);
+		expectGeneratedSequence(intGenerator, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9).withCeasedAvailability();
+		intGenerator = padovanSequence.createGenerator(Integer.class, 0, null, 1);
+		expectGeneratedSequence(intGenerator, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9, 12, 16).withContinuedAvailability();
+		intGenerator = padovanSequence.createGenerator(Integer.class, 4, 10, 1);
+		expectGeneratedSequence(intGenerator, 4, 5, 7, 9).withCeasedAvailability();
 	}
+	
 }

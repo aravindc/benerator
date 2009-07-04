@@ -53,6 +53,10 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
         check("US");
     }
 
+    public void testXX() {
+        check("XX");
+    }
+
     public void check(String dataset) {
         CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
         for (int i = 0; i < 10; i++) {

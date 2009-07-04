@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,11 +39,11 @@ public class TaxIdValidator_DETest extends TestCase {
 
 	public void test() {
 		TaxIdValidator_DE validator = new TaxIdValidator_DE();
-		assertFalse(validator.valid(null));
-		assertFalse(validator.valid("0123456789"));
-		assertFalse(validator.valid("012345678901"));
-		assertTrue( validator.valid("85546190279"));
-		assertTrue( validator.valid("13774960521"));
-		assertTrue( validator.valid("24321065874"));
+		assertFalse(validator.isValid(null, null));
+		assertFalse(validator.isValid("0123456789", null));
+		assertFalse(validator.isValid("012345678901", null));
+		assertTrue( validator.isValid("85546190279", null));
+		assertTrue( validator.isValid("13774960521", null));
+		assertTrue( validator.isValid("24321065874", null));
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,16 +41,17 @@ public class SSNValidator_USTest extends TestCase {
 	private SSNValidator_US validator = new SSNValidator_US();
 
 	public void testInvalidNumbers() {
-		assertFalse(validator.valid(null));
-		assertFalse(validator.valid("ABC-65-4329"));
-		assertFalse(validator.valid("001654329"));
-		assertFalse(validator.valid("987-65-43292"));
-		assertFalse(validator.valid("987-651-4329"));
-		assertFalse(validator.valid("0001-65-432"));
+		assertFalse(validator.isValid(null, null));
+		assertFalse(validator.isValid("ABC-65-4329", null));
+		assertFalse(validator.isValid("001654329", null));
+		assertFalse(validator.isValid("987-65-43292", null));
+		assertFalse(validator.isValid("987-651-4329", null));
+		assertFalse(validator.isValid("0001-65-432", null));
 	}
 	
 	public void testAdvertisementNumbers() {
-		assertFalse(validator.valid("987-65-4320"));
-		assertFalse(validator.valid("987-65-4329"));
+		assertFalse(validator.isValid("987-65-4320", null));
+		assertFalse(validator.isValid("987-65-4329", null));
 	}
+	
 }

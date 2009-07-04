@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,13 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorClassTest;
+import org.databene.commons.Validator;
 
 /**
  * Tests the EANGenerator.<br/>
  * <br/>
  * Created: 30.07.2007 21:35:18
+ * @author Volker Bergmann
  */
 public class EANGeneratorTest extends GeneratorClassTest {
 
@@ -40,7 +42,7 @@ public class EANGeneratorTest extends GeneratorClassTest {
     }
 
     public void testNonUnique() {
-        expectGenerations(new EANGenerator(false), 100, new EANValidator());
+        expectGenerations(new EANGenerator(false), 100, (Validator) new EANValidator());
     }
 
     public void testUnique() {

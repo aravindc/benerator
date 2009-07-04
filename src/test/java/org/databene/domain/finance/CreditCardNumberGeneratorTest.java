@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,6 @@ import junit.framework.TestCase;
  * Created at 09.04.2008 13:03:46
  * @since 0.5.1
  * @author Volker Bergmann
- *
  */
 public class CreditCardNumberGeneratorTest extends TestCase {
 
@@ -41,6 +40,6 @@ public class CreditCardNumberGeneratorTest extends TestCase {
 		CreditCardNumberGenerator generator = new CreditCardNumberGenerator();
 		CreditCardNumberValidator validator = new CreditCardNumberValidator();
 		for (int i = 0; i < 10; i++)
-			assertTrue(validator.valid(generator.generate()));
+			assertTrue(validator.isValid(generator.generate(), null));
 	}
 }

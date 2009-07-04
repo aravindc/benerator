@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (null) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.domain.finance;
 
 import junit.framework.TestCase;
@@ -40,12 +39,12 @@ public class IBANValidatorTest extends TestCase {
 	
 	public void test() {
 		IBANValidator v = new IBANValidator();
-		assertFalse(v.valid(null));
-		assertFalse(v.valid(""));
-		assertFalse(v.valid("DE"));
-		assertFalse(v.valid("DE6821050170001234567891234567890123456789"));
-		assertFalse(v.valid("DE123456789"));
-		assertFalse( v.valid("DE12345678"));
-		assertTrue( v.valid("DE68210501700012345678"));
+		assertFalse(v.isValid(null, null));
+		assertFalse(v.isValid("", null));
+		assertFalse(v.isValid("DE", null));
+		assertFalse(v.isValid("DE6821050170001234567891234567890123456789", null));
+		assertFalse(v.isValid("DE123456789", null));
+		assertFalse( v.isValid("DE12345678", null));
+		assertTrue( v.isValid("DE68210501700012345678", null));
 	}
 }

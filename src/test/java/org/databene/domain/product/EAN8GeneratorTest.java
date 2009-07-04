@@ -1,6 +1,7 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorClassTest;
+import org.databene.commons.Validator;
 import org.databene.commons.validator.UniqueValidator;
 
 public class EAN8GeneratorTest extends GeneratorClassTest {
@@ -10,10 +11,10 @@ public class EAN8GeneratorTest extends GeneratorClassTest {
     }
 
     public void testNonUnique() {
-        expectGenerations(new EAN8Generator(false), 100, new EANValidator());
+        expectGenerations(new EAN8Generator(false), 100, (Validator<?>) new EANValidator());
     }
 
     public void testUnique() {
-        expectGenerations(new EAN8Generator(true), 10000, new EANValidator(), new UniqueValidator<String>());
+        expectGenerations(new EAN8Generator(true), 10000, new EANValidator(), new UniqueValidator<Object>());
     }
 }

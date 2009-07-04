@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  */
 public class XMLSchemaNativeTypeProviderTest extends TestCase {
     
-    private XMLSchemaNativeTypeProvider provider = new XMLSchemaNativeTypeProvider("xs");
+    private XMLNativeTypeDescriptorProvider provider = new XMLNativeTypeDescriptorProvider("xs");
 
     public void testDurationType() {
         checkIllegalValues("duration", 
