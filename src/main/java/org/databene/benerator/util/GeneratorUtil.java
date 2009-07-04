@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
-import org.databene.model.data.Entity;
 
 /**
  * Provides general utility methods for generation.<br/>
@@ -55,8 +54,8 @@ public class GeneratorUtil {
         return new IllegalGeneratorStateException("Generator is not available: " + generator);        
     }
 
-	public static List<Entity> allProducts(Generator<Entity> generator) {
-		List<Entity> list = new ArrayList<Entity>();
+	public static <T> List<T> allProducts(Generator<T> generator) {
+		List<T> list = new ArrayList<T>();
 		int count = 0;
 		while (generator.available()) {
 			list.add(generator.generate());
