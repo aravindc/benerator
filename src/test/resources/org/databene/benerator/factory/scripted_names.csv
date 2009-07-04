@@ -1,2 +1,3 @@
-Alice,{${some_user}}
+Alice
+{${some_user}}
 Otto
