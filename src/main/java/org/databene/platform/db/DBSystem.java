@@ -41,6 +41,7 @@ import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.db.DBUtil;
 import org.databene.model.data.*;
 import org.databene.model.depend.DependencyModel;
+import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.version.VersionNumber;
 import org.apache.commons.logging.Log;
@@ -72,7 +73,7 @@ import javax.sql.PooledConnection;
  * @since 0.3
  * @author Volker Bergmann
  */
-public class DBSystem implements StorageSystem, IdProviderFactory {
+public class DBSystem extends AbstractStorageSystem implements IdProviderFactory {
     
     private static final int DEFAULT_FETCH_SIZE = 100;
 
@@ -116,6 +117,8 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     DatabaseDialect dialect;
     private boolean dynamicQuerySupported;
     
+	private boolean connectedBefore;
+    
     // constructors ----------------------------------------------------------------------------------------------------
 
     public DBSystem() {
@@ -136,6 +139,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         this.typeDescriptors = null;
         this.contexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
+        this.connectedBefore = false;
         if (driver != null && driver.contains("oracle")) {
         	Connection connection = null;
     		try {
@@ -275,7 +279,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
     public void store(Entity entity) {
 		if (readOnly)
-			throw new IllegalStateException("Tried to insert rows into table '" + entity.getName() + "' " +
+			throw new IllegalStateException("Tried to insert rows into table '" + entity.name() + "' " +
 					"though database '" + id + "' is read-only");
         if (logger.isDebugEnabled())
             logger.debug("Storing " + entity);
@@ -284,7 +288,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 
 	public void update(Entity entity) {
 		if (readOnly)
-			throw new IllegalStateException("Tried to update table '" + entity.getName() + "' " +
+			throw new IllegalStateException("Tried to update table '" + entity.name() + "' " +
 					"though database '" + id + "' is read-only");
         if (logger.isDebugEnabled())
             logger.debug("Updating " + entity);
@@ -303,7 +307,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
             logger.debug("close()");
         flush();
         for (IdProvider<? extends Object> idProvider : idProviders.values())
-            idProvider.close();
+            IOUtil.close(idProvider);
         Iterator<ThreadContext> iterator = contexts.values().iterator();
         while (iterator.hasNext()) {
             iterator.next().close();
@@ -378,7 +382,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     // TODO v0.6 merge with AbstractIdProviderFactory
     @SuppressWarnings("unchecked")
     private Map<IdProviderId, IdProvider> idProviders = new HashMap<IdProviderId, IdProvider>();
-    
+
     @SuppressWarnings("unchecked")
     public IdStrategy<? extends Object>[] getIdStrategies() {
         return ID_STRATEGIES;
@@ -405,6 +409,10 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
     public Connection createConnection() {
 		try {
             Connection connection = DBUtil.connect(url, driver, user, password);
+            if (!connectedBefore) {
+            	DBUtil.logMetaData(connection);
+            	connectedBefore = true;
+            }
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			connection = (Connection) Proxy.newProxyInstance(classLoader, 
 					new Class[] { Connection.class, PooledConnection.class }, 
@@ -603,7 +611,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
 */
     
     List<ColumnInfo> getWriteColumnInfos(Entity entity, boolean insert) {
-        String tableName = entity.getName();
+        String tableName = entity.name();
         DBTable table = getTable(tableName);
         List<String> pkColumnNames = CollectionUtil.toList(table.getPKColumnNames());
         ComplexTypeDescriptor typeDescriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
@@ -677,7 +685,7 @@ public class DBSystem implements StorageSystem, IdProviderFactory {
         parseMetadataIfNecessary();
         List<ColumnInfo> writeColumnInfos = getWriteColumnInfos(entity, insert);
         try {
-            String tableName = entity.getName();
+            String tableName = entity.name();
             PreparedStatement statement = getStatement(entity.getDescriptor(), insert, writeColumnInfos);
             for (int i = 0; i < writeColumnInfos.size(); i++) {
             	ColumnInfo info = writeColumnInfos.get(i);
