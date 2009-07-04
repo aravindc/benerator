@@ -1,0 +1,83 @@
+/*
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.benerator.distribution.sequence;
+
+import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.wrapper.RepeatGeneratorProxy;
+
+/**
+ * Distribution that repeats consecutive elements or numbers.<br/>
+ * <br/>
+ * Created at 01.07.2009 15:40:02
+ * @since 0.6.0
+ * @author Volker Bergmann
+ */
+
+public class RepeatSequence extends Sequence { // TODO test
+
+    private static final String NAME = "repeat";
+    
+    private int minRepetitions;
+    private int maxRepetitions;
+    private int repetitionPrecision;
+    private Distribution repetitionDistribution;
+
+	private final static Distribution stepSequence = new StepSequence();
+
+	public RepeatSequence() {
+		this(0, 3);
+	}
+    
+	public RepeatSequence(int minRepetitions, int maxRepetitions) {
+		this(minRepetitions, maxRepetitions, 1, Sequence.RANDOM);
+	}
+	
+	public RepeatSequence(int minRepetitions, int maxRepetitions, int repetitionPrecision,
+			Distribution repetitionDistribution) {
+	    super(NAME);
+	    this.minRepetitions = minRepetitions;
+	    this.maxRepetitions = maxRepetitions;
+	    this.repetitionPrecision = repetitionPrecision;
+	    this.repetitionDistribution = repetitionDistribution;
+    }
+
+	@Override
+    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision);
+		return applyTo(source);
+	}
+	
+	@SuppressWarnings("unchecked")
+    @Override
+	public <S, P> Generator<P> applyTo(Generator<S> source) {
+	    return (Generator<P>) new RepeatGeneratorProxy<S>(source, minRepetitions, maxRepetitions, 
+	    		repetitionPrecision, repetitionDistribution);
+	}
+	
+}
