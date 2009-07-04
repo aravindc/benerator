@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,8 @@ package org.databene.benerator.sample;
  * The sample value may have an additional weight information.<br/>
  * <br/>
  * Created: 07.06.2006 19:05:13
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class WeightedSample<E> {
 
@@ -41,8 +43,8 @@ public class WeightedSample<E> {
     private double weight;
 
     /** Initializes the Sample to the specified value and weight */
-    public WeightedSample(E value, double probability) {
-        this.weight = probability;
+    public WeightedSample(E value, double weight) {
+        this.weight = weight;
         this.value = value;
     }
 
