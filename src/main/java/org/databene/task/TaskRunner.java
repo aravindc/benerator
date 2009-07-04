@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,16 +28,13 @@ package org.databene.task;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.databene.document.csv.CSVLineIterator;
-import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
+import org.databene.commons.IOUtil;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * Runs a task from its instance or from a config file.<br/>
+ * Runs a task.<br/>
  * <br/>
  * Created: 06.07.2007 06:37:20
  * @author Volker Bergmann
@@ -58,26 +55,8 @@ public class TaskRunner {
         try {
             pagedTask.run();
         } finally {
-            pagedTask.destroy();
+            IOUtil.close(pagedTask);
         }
-    }
-
-    /** @deprecated this is no longer supported */
-    public static void runFromConfigFile(String urn) throws IOException {
-        TaskContext context = new TaskContext();
-        CSVLineIterator iterator = new CSVLineIterator(urn, ',');
-        while (iterator.hasNext()) {
-            String[] cells = iterator.next();
-            if (cells.length == 0)
-                continue;
-            Class<Task> taskClass = BeanUtil.forName(cells[0]);
-            Task task = BeanUtil.newInstance(taskClass);
-            int invocations = Integer.parseInt(cells[1]);
-            int pageSize = Integer.parseInt(cells[2]);
-            int threadCount = Integer.parseInt(cells[3]);
-            run(task, context, invocations, null, pageSize, threadCount, Executors.newCachedThreadPool());
-        }
-        iterator.close();
     }
 
 }
