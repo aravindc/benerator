@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,10 @@
 
 package org.databene.model.storage;
 
+import java.io.Closeable;
+import java.io.Flushable;
 
 import org.databene.commons.Context;
-import org.databene.commons.Heavyweight;
 import org.databene.commons.TypedIterable;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
@@ -40,7 +41,7 @@ import org.databene.model.data.Entity;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public interface StorageSystem extends DescriptorProvider, Heavyweight {
+public interface StorageSystem extends DescriptorProvider, Closeable, Flushable {
 
     /** Returns a name that identifies the database */
     String getId();
