@@ -51,7 +51,7 @@ public class ProductValidator extends EntityValidator {
         if (!super.valid(product))
             return false;
         String ean = (String) product.getComponent("ean_code");
-        if (!eanValidator.valid(ean))
+        if (!eanValidator.isValid(ean, null))
             return false;
         String name = (String) product.getComponent("name");
         if (name == null || name.length() == 0)

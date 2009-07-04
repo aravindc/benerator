@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package shop;
 
+import org.databene.commons.IOUtil;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
@@ -68,16 +69,19 @@ public class MyProxy extends AbstractConsumer<Entity> {
         target.startConsuming(object);
     }
 
+    @Override
     public void finishConsuming(Entity object) {
         logger.info(object);
         target.finishConsuming(object);
     }
+    @Override
     public void flush() {
         target.flush();
     }
 
+    @Override
     public void close() {
-        target.close();
+    	IOUtil.close(target);
     }
 
 }

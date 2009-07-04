@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,19 +24,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package shop;
 
-import org.databene.commons.Validator;
+import java.lang.annotation.Annotation;
+
+import javax.validation.ConstraintValidatorContext;
+
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Validates a long value.<br/><br/>
  * Created: 26.03.2008 12:29:41
  * @author Volker Bergmann
  */
-public class LongValidator implements Validator<Long> {
+public class LongValidator extends AbstractConstraintValidator<Annotation, Long> {
 
-    public boolean valid(Long n) {
+    public boolean isValid(Long n, ConstraintValidatorContext context) {
         return (n != null);
     }
 

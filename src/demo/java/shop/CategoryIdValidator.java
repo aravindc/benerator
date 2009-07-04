@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,16 +26,20 @@
 
 package shop;
 
-import org.databene.commons.Validator;
+import java.lang.annotation.Annotation;
+
+import javax.validation.ConstraintValidatorContext;
+
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Validates a category id.<br/><br/>
  * Created: 26.03.2008 12:13:14
  * @author Volker Bergmann
  */
-public class CategoryIdValidator implements Validator<String> {
+public class CategoryIdValidator extends AbstractConstraintValidator<Annotation, String> {
 
-    public boolean valid(String categoryId) {
+    public boolean isValid(String categoryId, ConstraintValidatorContext context) {
         return (categoryId != null && (categoryId.length() == 4 || categoryId.length() == 9));
     }
 

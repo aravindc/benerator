@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,10 +45,11 @@ public class CategoryValidator extends EntityValidator {
         super(entityName);
     }
 
+    @Override
     public boolean valid(Entity category) {
         if (!super.valid(category))
             return false;
-        if (!idValidator.valid((String) category.get("id")))
+        if (!idValidator.isValid((String) category.get("id"), null))
             return false;
         if (category.get("name") == null)
             return false;

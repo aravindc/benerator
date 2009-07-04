@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,10 +49,13 @@ import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
 import java.io.IOException;
 
+import javax.validation.ConstraintValidator;
+
 /**
  * Tests processing of the shop.xsd file.<br/>
  * <br/>
  * Created: 28.02.2008 15:17:13
+ * @author Volker Bergmann
  */
 public class ShopXMLTest extends TestCase {
     
@@ -91,6 +94,27 @@ public class ShopXMLTest extends TestCase {
         checkComplexType("admin",    provider, new UserValidator("admin"));
         checkComplexType("clerk",    provider, new UserValidator("clerk"));
         checkComplexType("customer", provider, new CustomerValidator());
+    }
+
+    private <T> void checkSimpleType(String name, XMLSchemaDescriptorProvider provider, Object validator) {
+        SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) provider.getTypeDescriptor(name);
+        logger.debug("");
+        logger.debug("Testing simple type: " + descriptor.getName());
+        logger.debug("-------------------------------------");
+        Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+            descriptor, false, false, provider.getContext());
+        for (int i = 0; i < 10; i++) {
+            T object = generator.generate();
+            logger.debug(object);
+            validate(object, validator);
+        }
+    }
+
+	private <T> void validate(T object, Object validator) {
+		if (validator instanceof ConstraintValidator)
+			assertTrue("Invalid object: " + object, ((ConstraintValidator) validator).isValid(object, null));
+		else
+			assertTrue("Invalid object: " + object, ((Validator<T>) validator).valid(object));
     }
 
     private <T> void checkSimpleType(String name, XMLSchemaDescriptorProvider provider, Validator<T> validator) {

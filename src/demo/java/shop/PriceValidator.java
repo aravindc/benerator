@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,16 +26,19 @@
 
 package shop;
 
+import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 
-import org.databene.commons.Validator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Validates a price.<br/><br/>
  * Created: 26.03.2008 12:21:01
  * @author Volker Bergmann
  */
-public class PriceValidator implements Validator<BigDecimal> {
+public class PriceValidator extends AbstractConstraintValidator<Annotation, BigDecimal> {
 
     private int fractionDigits;
     
@@ -47,7 +50,7 @@ public class PriceValidator implements Validator<BigDecimal> {
         this.fractionDigits = fractionDigits;
     }
 
-    public boolean valid(BigDecimal price) {
+    public boolean isValid(BigDecimal price, ConstraintValidatorContext context) {
         return (price.scale() <= fractionDigits);
     }
 }

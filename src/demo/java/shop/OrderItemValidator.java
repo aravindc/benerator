@@ -57,7 +57,7 @@ public class OrderItemValidator extends EntityValidator {
         Integer n = (Integer) item.getComponent("number_of_items");
         if (n == null || n <= 0)
             return false;
-        if (!eanValidator.valid((String) item.getComponent("product_ean_code")))
+        if (!eanValidator.isValid((String) item.getComponent("product_ean_code"), null))
             return false;
         Number totalPrice = (Number) item.getComponent("total_price");
         if (totalPrice == null || totalPrice.doubleValue() < 0)
