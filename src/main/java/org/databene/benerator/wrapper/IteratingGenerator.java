@@ -30,10 +30,10 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.commons.Heavyweight;
-import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
 import org.databene.commons.TypedIterable;
 
+import java.io.Closeable;
 import java.util.Iterator;
 
 /**
@@ -119,8 +119,8 @@ public class IteratingGenerator<E> implements Generator<E> {
     public void close() {
         closeIterator();
         state = CLOSED;
-        if (iterable instanceof Heavyweight)
-        	((Heavyweight) iterable).close();
+        if (iterable instanceof Closeable)
+        	IOUtil.close((Closeable) iterable);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------    
@@ -130,11 +130,10 @@ public class IteratingGenerator<E> implements Generator<E> {
     	state = UTILIZED;
     }
 
-	@SuppressWarnings("unchecked")
     private void closeIterator() {
 		if (iterator != null) {
-            if (iterator instanceof HeavyweightIterator)
-                ((HeavyweightIterator)iterator).close();
+            if (iterator instanceof Closeable)
+                IOUtil.close((Closeable) iterator);
             iterator = null;
         }
 	}
