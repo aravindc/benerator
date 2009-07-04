@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,14 +46,14 @@ public class MessageGenerator extends ValidatingGenerator<String> {
      */
     private String pattern;
 
-    /** minumum length of the generated String */
+    /** minimum length of the generated String */
     private int minLength;
 
-    /** maxumum length of the generated String */
+    /** maximum length of the generated String */
     private int maxLength;
 
     /** provides the objects to format */
-    private CompositeArrayGenerator helper;
+    private CompositeArrayGenerator<?> helper;
 
     private boolean dirty;
 
@@ -64,17 +64,18 @@ public class MessageGenerator extends ValidatingGenerator<String> {
         this(null);
     }
 
-    public MessageGenerator(String pattern, Generator ... sources) {
+    public MessageGenerator(String pattern, Generator<?> ... sources) {
         this(pattern, 0, 30, sources);
     }
 
     /** Initializes Generator */
+    @SuppressWarnings("unchecked")
     public MessageGenerator(String pattern, int minLength, int maxLength, Generator ... sources) {
         super(new StringLengthValidator());
         this.pattern = pattern;
         this.minLength = minLength;
         this.maxLength = maxLength;
-        this.helper = new CompositeArrayGenerator(Object.class, sources);
+        this.helper = new CompositeArrayGenerator<Object>(Object.class, sources);
         this.dirty = true;
     }
 
@@ -111,6 +112,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     }
 
     /** Sets the source generators */
+    @SuppressWarnings("unchecked")
     public void setSources(Generator[] sources) {
         this.helper.setSources(sources);
     }
