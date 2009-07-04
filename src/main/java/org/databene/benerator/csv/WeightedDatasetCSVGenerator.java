@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -62,18 +62,20 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
         this(filenamePattern, ',', datasetName, nesting, SystemInfo.getFileEncoding());
     }
 
+    @SuppressWarnings({ "unchecked", "cast" })
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
         this(filenamePattern, separator, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
+    @SuppressWarnings({ "cast", "unchecked" })
     public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
         this(filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
-        super(new WeightedSampleGenerator<E>());
+        super(new AttachedWeightSampleGenerator<E>());
         List<WeightedSample<E>> samples = createSamples(datasetName, separator, nesting, filenamePattern, encoding, converter);
-		((WeightedSampleGenerator<E>)source).setSamples(samples);
+		((AttachedWeightSampleGenerator<E>)source).setSamples(samples);
         this.nesting = nesting;
         this.filenamePattern = filenamePattern;
         this.datasetName = datasetName;
@@ -118,6 +120,7 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + filenamePattern + ',' + nesting + ':' + datasetName + ']';
     }
