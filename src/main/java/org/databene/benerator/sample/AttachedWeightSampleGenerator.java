@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,11 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.distribution.AbstractWeightFunction;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.IndividualWeight;
+import org.databene.benerator.distribution.WeightedLongGenerator;
 import org.databene.benerator.util.SimpleRandom;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.IndividualWeight;
-import org.databene.model.function.WeightFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +41,15 @@ import java.util.Collection;
  * <br/>
  * Created: 07.06.2006 19:04:08
  */
-public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
+public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E> {
 	
     /** Keeps the Sample information */
-    private List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
+    List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
     
     private IndividualWeight<E> individualWeight;
 
     /** Generator for choosing a List index of the sample list */
-    private IntegerGenerator indexGenerator = new IntegerGenerator(0, 0, 1, new SampleWeightFunction());
+    private WeightedLongGenerator indexGenerator = new WeightedLongGenerator(0, 0, 1, new SampleWeightFunction());
 
     /** Flag that indicates if the generator needs to be initialized */
     private boolean dirty = true;
@@ -57,36 +57,36 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     /** Initializes the generator to an empty sample list */
-    public WeightedSampleGenerator() {
+    public AttachedWeightSampleGenerator() {
         this((Class<E>) Object.class);
     }
 
     /** Initializes the generator to an empty sample list */
-    public WeightedSampleGenerator(Class<E> generatedType) {
+    public AttachedWeightSampleGenerator(Class<E> generatedType) {
         this(generatedType, (E[]) null);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(Class<E> generatedType, E ... values) {
+    public AttachedWeightSampleGenerator(Class<E> generatedType, E ... values) {
     	super(generatedType);
         setValues(values);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(Class<E> generatedType, Distribution distribution, E ... values) {
+    public AttachedWeightSampleGenerator(Class<E> generatedType, Distribution distribution, E ... values) {
     	super(generatedType);
         setValues(values);
         setDistribution(distribution);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(Class<E> generatedType, Collection<E> values) {
+    public AttachedWeightSampleGenerator(Class<E> generatedType, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public WeightedSampleGenerator(Class<E> generatedType, Distribution distribution, Collection<E> values) {
+    public AttachedWeightSampleGenerator(Class<E> generatedType, Distribution distribution, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
         setDistribution(distribution);
@@ -103,24 +103,6 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     		this.individualWeight = (IndividualWeight<E>) distribution;
     	else
     		indexGenerator.setDistribution(distribution);
-    	this.dirty = true;
-    }
-
-    public Integer getVariation1() {
-        return indexGenerator.getVariation1();
-    }
-
-    public void setVariation1(Integer varation1) {
-        indexGenerator.setVariation1(varation1);
-    	this.dirty = true;
-    }
-
-    public Integer getVariation2() {
-        return indexGenerator.getVariation2();
-    }
-
-    public void setVariation2(Integer variation2) {
-        indexGenerator.setVariation2(variation2);
     	this.dirty = true;
     }
 
@@ -153,18 +135,18 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
             this.samples.addAll(samples);
         this.dirty = true;
     }
-//
-//    /** Adds weighted values to the sample list */
-//    public void addSample(E value, double weight) {
-//        addSample(new Sample<E>(value, weight));
-//    }
-//
-//    /** Adds a weighted value to the sample list */
-//    public void addSample(Sample<E> sample) {
-//        samples.add(sample);
-//        valid = false;
-//    }
-//
+
+    /** Adds weighted values to the sample list */
+    public void addSample(E value, double weight) {
+        addSample(new WeightedSample<E>(value, weight));
+    }
+
+    /** Adds a weighted value to the sample list */
+    public void addSample(WeightedSample<E> sample) {
+        samples.add(sample);
+        this.dirty = true;
+    }
+
     // values property -------------------------------------------------------------------------------------------------
 
     /** Adds an unweighted value to the sample list */
@@ -188,7 +170,7 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
         if (dirty) {
             if (samples.size() > 0) {
                 normalize();
-                indexGenerator.setMax(samples.size() - 1);
+                indexGenerator.setMax((long) (samples.size() - 1));
                 indexGenerator.validate();
             }
             this.dirty = false;
@@ -201,7 +183,7 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
             validate();
         if (samples.size() == 0)
             return null;
-        int index = indexGenerator.generate();
+        int index = indexGenerator.generate().intValue();
         WeightedSample<E> sample = samples.get(index);
         return sample.getValue();
     }
@@ -246,14 +228,15 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Weight function that evaluates the weights that are stored in the sample list. */
 
-    private class SampleWeightFunction implements WeightFunction {
+    class SampleWeightFunction extends AbstractWeightFunction {
 
-        /** @see org.databene.model.function.WeightFunction#value(double) */
+        /** @see org.databene.benerator.distribution.WeightFunction#value(double) */
         public double value(double param) {
             return samples.get((int) param).getWeight();
         }
 
         /** creates a String representation */
+        @Override
         public String toString() {
             return getClass().getSimpleName();
         }
@@ -261,6 +244,7 @@ public class WeightedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName();
     }
