@@ -122,7 +122,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
         if (logger.isDebugEnabled())
             logger.debug("finishConsuming(" + entity + ')');
         try {
-			handler.endElement("", "", entity.getName());
+			handler.endElement("", "", entity.name());
 		} catch (SAXException e) {
 			throw new ConfigurationError("Error in processing element: " + entity, e);
 		}
@@ -166,7 +166,7 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
                 if (key != null && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(key) && hasSimpleType(value)) 
                		atts.addAttribute("", "", entry.getKey(), "CDATA", converter.convert(value));
             }
-            handler.startElement("", "", entity.getName(), atts);
+            handler.startElement("", "", entity.name(), atts);
             Object content = entity.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
             if (content != null) {
             	renderSimpleType(content);

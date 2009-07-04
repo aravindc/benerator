@@ -33,6 +33,7 @@ import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
@@ -105,7 +106,7 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     }
     
 	public void close() {
-		 source.close();
+		 IOUtil.close(source);
 	}
 
     public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor) throws FileNotFoundException {

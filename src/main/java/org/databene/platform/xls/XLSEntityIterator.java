@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.xls.XLSLineIterator;
@@ -105,7 +106,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	}
 
 	public void close() {
-		source.close();
+		IOUtil.close(source);
 	}
 	
 	// convenience methods ---------------------------------------------------------------------------------------------
