@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,14 +28,13 @@ package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.Validator;
-
-import java.util.Date;
+import org.databene.commons.validator.ConstantValidator;
 
 /**
  * Tests the CurrentDateGenerator.<br/>
  * <br/>
  * Created: 19.11.2007 20:43:45
+ * @author Volker Bergmann
  */
 public class CurrentDateGeneratorTest extends GeneratorClassTest {
 
@@ -44,10 +43,8 @@ public class CurrentDateGeneratorTest extends GeneratorClassTest {
     }
 
     public void testProducts() {
-        expectGenerations(new CurrentDateGenerator(), 10, new Validator<Date>() {
-            public boolean valid(Date date) {
-                return TimeUtil.today().getTime().equals(date);
-            }
-        });
+        ConstantValidator validator = new ConstantValidator(TimeUtil.today().getTime());
+		expectGenerations(new CurrentDateGenerator(), 10, validator);
     }
+    
 }

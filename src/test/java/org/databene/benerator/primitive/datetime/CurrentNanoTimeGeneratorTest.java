@@ -26,8 +26,12 @@
 
 package org.databene.benerator.primitive.datetime;
 
+import java.lang.annotation.Annotation;
+
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Tests the CurrentNanoTimeGenerator.<br/>
@@ -43,11 +47,12 @@ public class CurrentNanoTimeGeneratorTest extends GeneratorClassTest {
     }
 
     public void testProducts() {
-        expectGenerations(new CurrentNanoTimeGenerator(), 10, new Validator<Long>() {
-            public boolean valid(Long generatedNanos) {
+        expectGenerations(new CurrentNanoTimeGenerator(), 10, new AbstractConstraintValidator<Annotation, Long>() {
+			public boolean isValid(Long generatedNanos, ConstraintValidatorContext context) {
                 long nanoTime = System.nanoTime();
                 return Math.abs(nanoTime - generatedNanos) < 500000000L;
             }
         });
     }
+    
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,13 +26,18 @@
 
 package org.databene.benerator.primitive.datetime;
 
+import java.lang.annotation.Annotation;
+
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Tests the CurrentMilliTimeGenerator.<br/>
  * <br/>
  * Created: 19.11.2007 20:43:45
+ * @author Volker Bergmann
  */
 public class CurrentMilliTimeGeneratorTest extends GeneratorClassTest {
 
@@ -41,10 +46,11 @@ public class CurrentMilliTimeGeneratorTest extends GeneratorClassTest {
     }
 
     public void testProducts() {
-        expectGenerations(new CurrentMilliTimeGenerator(), 10, new Validator<Long>() {
-            public boolean valid(Long millis) {
+        expectGenerations(new CurrentMilliTimeGenerator(), 10, new AbstractConstraintValidator<Annotation, Long>() {
+            public boolean isValid(Long millis, ConstraintValidatorContext context) {
                 return Math.abs(System.currentTimeMillis() - millis) < 1000L;
             }
         });
     }
+    
 }

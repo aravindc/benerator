@@ -5,12 +5,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.commons.TimeUtil;
 
-import junit.framework.TestCase;
-
-public class DateTimeGeneratorTest extends TestCase {
+public class DateTimeGeneratorTest extends GeneratorClassTest {
 	
+    public DateTimeGeneratorTest() {
+	    super(DateTimeGenerator.class);
+    }
+
 	static final int N = 100;
 
     public void testInvalidSettings() {
@@ -39,11 +43,11 @@ public class DateTimeGeneratorTest extends TestCase {
         Date minDate = TimeUtil.date(minYear, 7, 6, hour, minute, second, millisecond);
         Date maxDate = TimeUtil.date(maxYear, 8, 8, hour, minute, second, millisecond);
         generator.setDatePrecision("0000-00-01");
-        generator.setDateDistribution("step");
+        generator.setDateDistribution(Sequence.STEP);
         assertTrue(generator.available());
         for (int i = 0; i < N && generator.available(); i++) {
             Date date = generator.generate();
-            assertFalse(date.before(minDate));
+            assertFalse("Generated date " + date + " is before min date: " + minDate, date.before(minDate));
             assertFalse(date.after(maxDate));
             Calendar cal = new GregorianCalendar();
             cal.setTime(date);

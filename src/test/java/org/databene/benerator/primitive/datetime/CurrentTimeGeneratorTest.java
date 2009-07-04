@@ -28,9 +28,12 @@ package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
+import java.lang.annotation.Annotation;
 import java.util.Date;
+
+import javax.validation.ConstraintValidatorContext;
 
 /**
  * Tests the CurrentTimeGenerator.<br/>
@@ -43,16 +46,16 @@ public class CurrentTimeGeneratorTest extends GeneratorClassTest {
         super(CurrentTimeGenerator.class);
     }
 
-    @SuppressWarnings("unchecked")
     public void testProducts() {
         expectGenerations(new CurrentTimeGenerator(), 10, new CurrentTimeValidator());
     }
     
-    static class CurrentTimeValidator implements Validator<Date> {
-        public boolean valid(Date date) {
+    static class CurrentTimeValidator extends AbstractConstraintValidator<Annotation, Date> {
+        public boolean isValid(Date date, ConstraintValidatorContext context) {
             long currentTimeMillis = TimeUtil.currentTime().getTime();
 			long generatedTimeMillis = date.getTime();
 			return (Math.abs(currentTimeMillis - generatedTimeMillis) < 1000);
         }
     }
+
 }
