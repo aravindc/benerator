@@ -108,7 +108,7 @@ public class BasicParser {
 
 	private Construction parseConstructionDetails(
 			StringCharacterIterator iterator, String className, ClassProvider classProvider) {
-		if (!iterator.hasNext())
+		if (!iterator.hasNext() || iterator.peekNext() == ',')
 			return new Construction(className, classProvider);
 
 		// find out specific construction type
@@ -230,7 +230,7 @@ public class BasicParser {
 		while (iterator.hasNext()) {
 			char c = iterator.next();
 			if ((c == separator || c == rightParenthesis) && quoteMode == 0 && !escapeMode) {
-				Object element = formatListElement(iterator, start, lastNonWs, escapeOccurred, escapeMode);
+				Object element = parseListElement(iterator, start, lastNonWs, escapeOccurred, escapeMode);
 				if (!NOT_AN_ELEMENT.equals(element))
 					builder.append(element);
 				iterator.skipWhitespace();
@@ -257,7 +257,7 @@ public class BasicParser {
 				lastNonWs = iterator.index();
 		}
 		if (start < iterator.index()) {
-			Object element = formatListElement(iterator, start, lastNonWs, escapeOccurred, escapeMode);
+			Object element = parseListElement(iterator, start, lastNonWs, escapeOccurred, escapeMode);
 			if (!NOT_AN_ELEMENT.equals(element))
 				builder.append(element);
 		}
@@ -293,7 +293,7 @@ public class BasicParser {
 		return value;
 	}
 
-	private static Object formatListElement(StringCharacterIterator iterator, int from, int to, 
+	private static Object parseListElement(StringCharacterIterator iterator, int from, int to, 
 			boolean escapeOccurred, boolean escapeModeActive) {
 		if (escapeModeActive)
 			throw new IllegalStateException("Token ended in escape mode");
