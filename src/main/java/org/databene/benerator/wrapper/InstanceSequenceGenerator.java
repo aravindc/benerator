@@ -64,12 +64,13 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
     @Override
     public void validate() {
         if (dirty) {
-            countAvailable = countGenerator.generate();
             super.validate();
+            countAvailable = countGenerator.generate();
             dirty = false;
         }
     }
     
+    @Override
     public boolean available() {
         validate();
         return super.available() && (countUsed < countAvailable || !limited);
@@ -83,6 +84,7 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
         return source.generate();
     }
 
+    @Override
     public void reset() {
         validate();
         super.reset();
@@ -90,6 +92,7 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
         countUsed = 0;
     }
 
+    @Override
     public void close() {
         validate();
         super.close();
