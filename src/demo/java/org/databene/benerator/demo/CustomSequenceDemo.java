@@ -1,10 +1,10 @@
 package org.databene.benerator.demo;
 
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.primitive.number.AbstractDoubleGenerator;
-import org.databene.benerator.primitive.number.adapter.SequenceFactory;
+import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.benerator.Generator;
-import org.databene.model.function.Sequence;
 
 /**
  * Demonstrates definition and use of the custom Sequence 'odd'
@@ -15,31 +15,68 @@ import org.databene.model.function.Sequence;
  */
 public class CustomSequenceDemo {
 
-    /** Defines the Sequence 'odd', creates an Integer generator that acceses it and invokes the generator 10 times */
+	/** Defines the Sequence 'odd', creates an Integer generator that acceses it and invokes the generator 10 times */
     public static void main(String[] args) {
-        Sequence odd = SequenceFactory.defineSequence("odd", OddDoubleGenerator.class);
+        Sequence odd = new OddNumberSequence();
         Generator<Integer> generator = GeneratorFactory.getNumberGenerator(Integer.class, 3, Integer.MAX_VALUE, 2, odd, 0);
         for (int i = 0; i < 10; i++)
             System.out.println(generator.generate());
     }
 
     /** The custom Sequence implementation */
-    public static class OddDoubleGenerator extends AbstractDoubleGenerator {
+    public static class OddNumberSequence extends Sequence {
 
-        /** Pointer to the next value to return */
-        private double cursor;
-
-        /** sets the miniume value and initializes the cursor to this value */
-        public void setMin(Double min) { // Take care to use the number wrapper classes
-            super.setMin(min);
-            cursor = min;
+        protected OddNumberSequence() {
+	        super("odd");
         }
 
-        /** Generates a value from the cursor and increases the cursor by two */
-        public Double generate() {
-            double value = cursor;
-            cursor += precision;
-            return value;
+        @Override
+        public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+        	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());
+			return WrapperFactory.wrapNumberGenerator(numberType, doubleGenerator);
         }
     }
+
+    public static class OddNumberGenerator extends LightweightGenerator<Double> {
+    	
+    	private double min;
+    	private double max;
+    	private double precision;
+    	
+    	private double next;
+    	
+		public OddNumberGenerator(double min, double max) {
+	        this(min, max, null);
+        }
+
+		public OddNumberGenerator(double min, double max, Double precision) {
+	        this.min = min;
+	        this.max = max;
+	        this.precision = (precision != null ? precision : 2);
+	        this.next = min;
+        }
+		
+		// Generator interface implementation --------------------------------------------------------------------------
+
+        public Class<Double> getGeneratedType() {
+	        return Double.class;
+        }
+    	
+        @Override
+        public boolean available() {
+            return (next < max);
+        }
+        
+        public Double generate() {
+	        double result = next;
+	        next += precision;
+	        return result;
+        }
+
+        @Override
+        public void reset() {
+            next = min;
+        }
+    }
+
 }

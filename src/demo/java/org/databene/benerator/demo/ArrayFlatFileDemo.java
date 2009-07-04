@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
@@ -36,9 +37,7 @@ import org.databene.commons.*;
 import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
-import org.databene.model.function.Sequence;
 import org.databene.script.AbstractScript;
-import org.databene.script.Script;
 
 import java.io.*;
 import java.util.Date;
@@ -90,18 +89,19 @@ public class ArrayFlatFileDemo {
             super(Object.class, createSources());
         }
 
+        @SuppressWarnings({ "unchecked", "cast" })
         private static Generator<Object>[] createSources() {
             Generator<Date> dateGenerator = GeneratorFactory.getDateGenerator( // transaction date
                     TimeUtil.date(2004, 0, 1), TimeUtil.date(2006, 11, 31), Period.DAY.getMillis(),
                     Sequence.RANDOM, 0);
             return (Generator<Object>[]) new Generator[] {
-                    new ConstantGenerator("R"),
-                    GeneratorFactory.getNumberGenerator(Integer.class, 1, LENGTH, 1, Sequence.RANDOM_WALK, 1, 1, 0),
+                    new ConstantGenerator<String>("R"),
+                    GeneratorFactory.getNumberGenerator(Integer.class, 1, LENGTH, 1, Sequence.RANDOM_WALK, 0),
                     GeneratorFactory.getSampleGenerator("BUY", "SALE"), // transaction type
                     new FormatFormatGenerator(dateGenerator, new SimpleDateFormat("yyyyMMdd")),
                     GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly"), // partner
                     GeneratorFactory.getRegexStringGenerator("[A-Z0-9]{6}", 6, 6, null, 0), // article number
-                    GeneratorFactory.getNumberGenerator(Integer.class, 1, 20, 1, Sequence.RANDOM, 1, 1, 0), // item count
+                    GeneratorFactory.getNumberGenerator(Integer.class, 1, 20, 1, Sequence.RANDOM, 0), // item count
                     GeneratorFactory.getNumberGenerator(BigDecimal.class, // item price
                             new BigDecimal("0.50"), new BigDecimal("99.99"), new BigDecimal("0.01"),
                             Sequence.CUMULATED, 0)
@@ -117,6 +117,7 @@ public class ArrayFlatFileDemo {
             this.length = length;
         }
 
+        @Override
         public void execute(Context context, Writer writer) throws IOException {
             writer.write("H");
             writer.write(StringUtil.padRight("Tx", 12, ' '));

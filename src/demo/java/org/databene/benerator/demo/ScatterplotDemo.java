@@ -1,9 +1,9 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.AbstractWeightFunction;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.model.function.Sequence;
-import org.databene.model.function.WeightFunction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,8 @@ public class ScatterplotDemo extends Component {
 
 	private static final long serialVersionUID = 5264230937667632984L;
 
-	public void paint(Graphics g) {
+	@Override
+    public void paint(Graphics g) {
         Generator<Integer> xGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getWidth(), 1, new XFunction(), 0);
         Generator<Integer> yGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getHeight(), 1, Sequence.CUMULATED, 0.);
         int n = getWidth() * getHeight() / 16;
@@ -40,7 +41,7 @@ public class ScatterplotDemo extends Component {
         frame.setVisible(true);
     }
 
-    private static class XFunction implements WeightFunction {
+    static class XFunction extends AbstractWeightFunction {
         public double value(double param) {
             double s = Math.sin(param / 30);
             return s * s;
