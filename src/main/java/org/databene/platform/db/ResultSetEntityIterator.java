@@ -31,6 +31,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -93,7 +94,7 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
     }
 
 	public void close() {
-		 resultSetIterator.close();
+		IOUtil.close(resultSetIterator);
 	}
 
     // private helpers ----------------------------------------------------------------------------------------

@@ -99,7 +99,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     }
 
     String createSQLInsert(Entity entity, List<ColumnInfo> columnInfos) {
-    	String table = entity.getName();
+    	String table = entity.name();
         StringBuilder builder = new StringBuilder("insert into ").append(table).append(" (");
         if (columnInfos.size() > 0)
             builder.append(columnInfos.get(0).name);

@@ -29,6 +29,7 @@ package org.databene.platform.db;
 import java.sql.Connection;
 
 import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
 import org.databene.id.IdProvider;
 
 /**
@@ -66,7 +67,7 @@ public class LongQueryIdProvider implements IdProvider<Long> {
     }
     
     public void close() {
-        realIterator.close();
+        IOUtil.close(realIterator);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
