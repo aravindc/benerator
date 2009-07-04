@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,10 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.model.consumer;
 
-import org.databene.commons.Heavyweight;
+import java.io.Closeable;
 
 /**
  * Abstraction of an object that consumes (possibly larger quantities of) objects.
@@ -39,7 +38,7 @@ import org.databene.commons.Heavyweight;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public interface Consumer<E> extends Heavyweight{
+public interface Consumer<E> extends Closeable {
     void startConsuming(E object);
     void finishConsuming(E object);
     void flush();

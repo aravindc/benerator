@@ -29,6 +29,7 @@ package org.databene.model.consumer;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.IOUtil;
 
 /**
  * Combines several Processors under one Processor interface.
@@ -87,8 +88,8 @@ public class ConsumerChain<E> extends AbstractConsumer<E> {
 
     @Override
 	public void close() {
-        for (Consumer<E> processor : components)
-            processor.close();
+        for (Consumer<E> consumer : components)
+            IOUtil.close(consumer);
     }
 
     public List<Consumer<E>> getComponents() {
