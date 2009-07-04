@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,14 +26,14 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 
 /**
  * Generates a random country.<br/>
  * <br/>
  * Created: 11.06.2006 08:15:51
  */
-public class CountryGenerator extends WeightedSampleGenerator<Country> {
+public class CountryGenerator extends AttachedWeightSampleGenerator<Country> {
 
     public CountryGenerator() {
         super(Country.class, Country.getInstances());
