@@ -29,16 +29,19 @@ package org.databene.domain.person;
 import java.util.Date;
 import java.util.Calendar;
 
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.benerator.primitive.datetime.LightweightDateGenerator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Period;
-import org.databene.model.function.Sequence;
 
 /**
- * TODO documentation<br/><br/>
+ * Creates {@link Date} objects for a person's birth day.<br/>
+ * <br/>
  * Created: 13.06.2006 07:15:03
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class BirthDateGenerator extends LightweightDateGenerator {
 
@@ -59,8 +62,7 @@ public class BirthDateGenerator extends LightweightDateGenerator {
         min.add(Calendar.YEAR, -maxAgeYears);
         Calendar max = TimeUtil.calendar(today);
         max.add(Calendar.YEAR, -minAgeYears);
-        dateGenerator = new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis());
-        dateGenerator.setDistribution(Sequence.RANDOM);
+		dateGenerator = new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), Sequence.RANDOM);
     }
 
     public Date generate() throws IllegalGeneratorStateException {
