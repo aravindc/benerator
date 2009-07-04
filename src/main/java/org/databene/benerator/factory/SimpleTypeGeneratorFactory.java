@@ -26,42 +26,54 @@
 
 package org.databene.benerator.factory;
 
+import java.lang.annotation.Annotation;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
+
+import javax.validation.ConstraintValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
-import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.IndividualWeight;
+import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.parser.BasicParser;
+import org.databene.benerator.primitive.number.adapter.AsByteGeneratorWrapper;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
-import org.databene.commons.HeavyweightIterable;
-import org.databene.commons.SystemInfo;
+import org.databene.commons.Converter;
+import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.converter.ArrayElementExtractor;
+import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.ConvertingIterable;
+import org.databene.commons.converter.LiteralParser;
+import org.databene.commons.iterator.ArrayIterable;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.validator.StringLengthValidator;
+import org.databene.document.csv.CSVLineIterable;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.FeatureWeight;
-import org.databene.model.function.Sequence;
 import org.databene.model.storage.StorageSystem;
-import org.databene.platform.csv.CSVCellIterable;
 import org.databene.script.ScriptConverter;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
@@ -72,8 +84,9 @@ import static org.databene.model.data.SimpleTypeDescriptor.*;
  * @author Volker Bergmann
  */
 public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
-
-    private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
+	
+    //@SuppressWarnings("unchecked")
+    //private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
 	public static Generator<? extends Object> createSimpleTypeGenerator(
 			SimpleTypeDescriptor descriptor, boolean nullable, boolean unique,
@@ -83,6 +96,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         // try constructive setup
         Generator<? extends Object> generator = createConstructiveGenerator(descriptor, context);
         // fall back to descriptive setup
+        if (generator == null)
+        	generator = createConstantGenerator(descriptor, unique, context);
         if (generator == null)
         	generator = createSampleGenerator(descriptor, unique, context);
 		if (generator == null && nullable) {
@@ -97,7 +112,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
         // create wrappers
         generator = wrapWithPostprocessors(generator, descriptor, context);
-        generator = DescriptorUtil.wrapWithProxy(generator, descriptor, context);
+        generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
         // done
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -117,6 +132,58 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		return generator;
 	}
 
+    protected static Generator<?> createSampleGenerator(
+    		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    	PrimitiveType primitiveType = descriptor.getPrimitiveType();
+		Class<?> targetType = (primitiveType != null ? primitiveType.getJavaType() : String.class);
+		String valueSpec = descriptor.getValues();
+		if (StringUtil.isEmpty(valueSpec))
+			return null;
+		char separator = DescriptorUtil.getSeparator(descriptor, context);
+		String[] tokens = StringUtil.tokenize(valueSpec, separator);
+		Distribution distribution;
+		if (valueSpec.contains("[") && valueSpec.contains("]")) {
+			AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
+			for (int i = 0; i < tokens.length; i++)
+				generator.addSample(parseWeightedSample(tokens[i], targetType));
+			return generator;
+		} else {
+			Object[] values = new Object[tokens.length];
+			for (int i = 0; i < tokens.length; i++)
+				values[i] = LiteralParser.parse(tokens[i]);
+			distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, true, context);
+	        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)));
+		}
+    }
+
+    private static WeightedSample parseWeightedSample(String sampleSpec, Class targetType) {
+    	Object value = null;
+    	Double weight = null;
+		String[] tokens = sampleSpec.split("(\\[|\\])");
+		Iterator<String> iterator = ArrayUtil.iterator(tokens);
+		while (iterator.hasNext()) {
+			String token = iterator.next().trim();
+			if (value == null)
+				value = AnyConverter.convert(token, targetType);
+			else
+				weight = Double.parseDouble(token);
+		}
+		if (weight == null)
+			weight = 1.;
+		return new WeightedSample(value, weight);
+    }
+
+	protected static Generator<?> createConstantGenerator(
+    		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+        Generator<?> generator = null;
+        // check for constant
+        if (!StringUtil.isEmpty(descriptor.getConstant())) {
+        	Object value = LiteralParser.parse(descriptor.getConstant());
+            generator = new ConstantGenerator(value);
+        }
+        return generator;
+    }
+
 	private static Generator<? extends Object> createDefaultGenerator(
 			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
 		Generator<? extends Object> generator = createTypeGenerator(descriptor, unique, context);
@@ -125,7 +192,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		return generator;
 	}
 
-    private static Generator<? extends Object> createSourceAttributeGenerator(
+    public static Generator<? extends Object> createSourceAttributeGenerator(
     		SimpleTypeDescriptor descriptor, BeneratorContext context) {
     	// TODO v0.6 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
@@ -134,7 +201,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             return null;
         String lcn = source.toLowerCase();
         String selector = descriptor.getSelector();
-        Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context);
         Generator<? extends Object> generator;
         if (context.get(source) != null) {
             Object sourceObject = context.get(source);
@@ -145,41 +211,70 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             else
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
-            generator = createCSVSourceGenerator(descriptor, source, distribution, context);
+            return createSimpleTypeCSVSourceGenerator(descriptor, source, context);
         } else if (lcn.endsWith(".txt")) {
-            generator = GeneratorFactory.getTextLineGenerator(source, false, null, null, null, context);
+            generator = GeneratorFactory.getTextLineGenerator(source, false);
         } else {
-            generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);
+        	try {
+	        	BasicParser parser = new BasicParser();
+	        	Object sourceObject = parser.resolveConstructionOrReference(source, context, context);
+	        	generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
+        	} catch (Exception e) {
+                generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);
+        	}
         }
 
-        // check distribution
-        if (distribution != null && !EMPTY_WEIGHT.equals(distribution))
-            return TypeGeneratorFactory.applyDistribution(descriptor, distribution, generator);
-        else
-        	return DescriptorUtil.wrapWithProxy(generator, descriptor, context);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
+        if (distribution != null)
+            generator = distribution.applyTo(generator);
+        
+    	return generator;
     }
 
-	private static Generator<? extends Object> createCSVSourceGenerator(
-			SimpleTypeDescriptor descriptor, String source,
-			Distribution distribution, BeneratorContext context) {
-		Generator<? extends Object> generator;
+	@SuppressWarnings("unchecked")
+    private static Generator<?> createSourceGeneratorFromObject(SimpleTypeDescriptor descriptor,
+            BeneratorContext context, Object sourceObject) {
+		Generator generator;
+	    if (sourceObject instanceof StorageSystem) {
+	        StorageSystem storage = (StorageSystem) sourceObject;
+	        String selector = descriptor.getSelector();
+	        generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), selector, context));
+	    } else if (sourceObject instanceof Generator) {
+	        generator = (Generator) sourceObject;
+	    } else
+	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
+	    return generator;
+    }
+
+	private static Generator<?> createSimpleTypeCSVSourceGenerator(
+			SimpleTypeDescriptor descriptor, String sourceName, BeneratorContext context) {
+		Generator<?> generator;
 		char separator = DescriptorUtil.getSeparator(descriptor, context);
 		String encoding = descriptor.getEncoding();
 		if (encoding == null)
-		    encoding = SystemInfo.getFileEncoding();
+		    encoding = context.getDefaultEncoding();
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
+
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
-		ScriptConverter preprocessor = new ScriptConverter(context);
-		if ((dataset != null && nesting != null) 
-				|| EMPTY_WEIGHT.equals(distribution) 
-				|| source.toLowerCase().endsWith(".wgt.csv") ) {
-		    generator = new WeightedDatasetCSVGenerator(source, separator, dataset, nesting, encoding);
+		if (dataset != null && nesting != null) {
+			generator = null;
+			/*TODO support csv datasets
+		    generator = new WeightedDatasetCSVGenerator(sourceName, separator, dataset, nesting, encoding);
 		    generator = new ConvertingGenerator(generator, preprocessor);
-		} else {
-			HeavyweightIterable<String> src = new CSVCellIterable(source, separator);
-			HeavyweightIterable<Object> iterable = new ConvertingIterable<String, Object>(src, preprocessor);
-		    generator = new IteratingGenerator<Object>(new DefaultTypedIterable<Object>(Object.class, iterable));
-		}
+		    */
+		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
+        	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverter(context));
+        } else {
+    		Iterable<String[]> src = new CSVLineIterable(sourceName, separator, true, encoding);
+    		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
+    				new ArrayElementExtractor<String>(String.class, 0), 
+    				new ScriptConverter(context));
+    		Iterable<Object> iterable = new ConvertingIterable<String[], Object>(src, converterChain);
+    	    generator = new IteratingGenerator<Object>(new DefaultTypedIterable<Object>(Object.class, iterable));
+            if (distribution != null)
+            	generator = distribution.applyTo(generator);
+        }
 		return generator;
 	}
 
@@ -223,7 +318,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
     private static Generator<? extends Object> createByteArrayGenerator(
             SimpleTypeDescriptor descriptor) {
-        Generator<Byte> byteGenerator = GeneratorFactory.getNumberGenerator(Byte.class, (byte)-128, (byte)127, (byte)1, Sequence.RANDOM, 0);
+        Generator<Byte> byteGenerator = new AsByteGeneratorWrapper(new RandomIntegerGenerator(-128, 127, 1));
         return new ByteArrayGenerator(byteGenerator, 
                 getMinLength(descriptor), getMaxLength(descriptor));
     }
@@ -238,15 +333,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Date max = parseDate(descriptor, MAX, TimeUtil.today().getTime());
         Date precisionDate = parseDate(descriptor, PRECISION, TimeUtil.date(1970, 0, 2));
         long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
-        Distribution distribution = DescriptorUtil.getDistribution(descriptor, unique, context);
-        if (distribution == null)
-        	distribution = Sequence.RANDOM;
-        if (distribution instanceof Sequence) { // TODO v0.6 finalize Sequence concept and adapt this 
-	        Date variation1 = parseDate(descriptor, VARIATION1, precisionDate);
-	        Date variation2 = parseDate(descriptor, VARIATION2, precisionDate);
-	        return GeneratorFactory.getDateGenerator(min, max, precision, (Sequence) distribution, variation1, variation2, 0);
-        } else
-	        return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(
+        		descriptor.getDistribution(), unique, true, context);
+	    return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
 
     }
 
@@ -292,13 +381,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Integer totalDigits = getNumberDetail(descriptor, "totalDigits", Integer.class);
         Integer fractionDigits = getNumberDetail(descriptor, "fractionDigits", Integer.class);
         T precision = getNumberDetail(descriptor, PRECISION, targetType);
-        Distribution distribution = DescriptorUtil.getDistribution(descriptor, unique, context);
-        if (distribution == null)
-        	distribution = Sequence.RANDOM;
-        T variation1 = getNumberDetail(descriptor, VARIATION1, targetType);
-        T variation2 = getNumberDetail(descriptor, VARIATION2, targetType);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(
+        		descriptor.getDistribution(), unique, true, context);
         return GeneratorFactory.getNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, variation1, variation2, 0);
+                targetType, min, max, totalDigits, fractionDigits, precision, distribution, 0);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, boolean unique) {
@@ -339,12 +425,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, locale, 0);
     }
     
-    protected static <T> Validator<T> createRestrictionValidator(
+    @SuppressWarnings("unchecked")
+    protected static <A extends Annotation, T> ConstraintValidator<A, T> createRestrictionValidator(
             SimpleTypeDescriptor descriptor, boolean nullable) {
         if ((descriptor.getMinLength() != null || descriptor.getMaxLength() != null) && "string".equals(descriptor.getName())) {
             Integer minLength = getMinLength(descriptor);
             Integer maxLength = getMaxLength(descriptor);
-            return (Validator<T>)new StringLengthValidator(minLength, maxLength, nullable);
+            return (ConstraintValidator<A, T>) new StringLengthValidator(minLength, maxLength, nullable);
         }
         return null;
     }
