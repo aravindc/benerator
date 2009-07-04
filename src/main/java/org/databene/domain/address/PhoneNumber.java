@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,19 +26,16 @@
 
 package org.databene.domain.address;
 
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.NullSafeComparator;
 
 /**
  * Represents a phone number.<br/>
  * <br/>
  * Created: 13.06.2006 07:19:26
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class PhoneNumber {
-    
-    private static final Escalator escalator = new LoggerEscalator();
     
     private String countryCode;
     private String areaCode;
@@ -81,56 +78,12 @@ public class PhoneNumber {
         this.areaCode = cityCode;
     }
 
-    /**
-     * @return the area code
-     * @deprecated replaced with {@link #getAreaCode()}
-     */
-    @Deprecated
-    public String getCityCode() {
-        escalator.escalate(getClass().getSimpleName() + ".getCityCode() is deprecated. " +
-        		"Use getAreaCode() instead" , getClass(), null);
-        return areaCode;
-    }
-
-    /**
-     * @param areaCode
-     * @deprecated replaced with {@link #setAreaCode(String)}
-     */
-    @Deprecated
-    public void setCityCode(String areaCode) {
-        escalator.escalate(getClass().getSimpleName() + ".setCityCode(String) is deprecated. " +
-                "Use setAreaCode(String) instead" , getClass(), null);
-        this.areaCode = areaCode;
-    }
-
     public String getLocalNumber() {
         return localNumber;
     }
 
     public void setLocalNumber(String localNumber) {
         this.localNumber = localNumber;
-    }
-
-    /**
-     * @return the local number
-     * @deprecated replaced with {@link #getLocalNumber()}
-     */
-    @Deprecated
-    public String getLocalCode() {
-        escalator.escalate(getClass().getSimpleName() + ".getLocalCode() is deprecated. " +
-                "Use getLocalNumber() instead" , getClass(), null);
-        return localNumber;
-    }
-
-    /**
-     * @param localCode
-     * @deprecated replaced with {@link #setLocalCode(String)}
-     */
-    @Deprecated
-    public void setLocalCode(String localCode) {
-        escalator.escalate(getClass().getSimpleName() + ".setLocalCode() is deprecated. " +
-                "Use setLocalNumber() instead" , getClass(), null);
-        this.localNumber = localCode;
     }
 
     public boolean isMobile() {
