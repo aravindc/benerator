@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Volker Bergmann
  */
 public class ObjectCounter<E> {
+	
     private Map<E, AtomicInteger> instances;
     long totalCount;
 
@@ -63,8 +64,16 @@ public class ObjectCounter<E> {
         return (counter != null ? counter.intValue() : 0);
     }
 
+    public double getRelativeCount(E instance) {
+        return (double) getCount(instance) / totalCount;
+    }
+
     public double averageCount() {
         return totalCount / instances.size();
+    }
+
+    public double totalCount() {
+	    return totalCount();
     }
 
     public boolean equalDistribution(double tolerance) {
@@ -82,14 +91,15 @@ public class ObjectCounter<E> {
         StringBuilder buffer = new StringBuilder("[");
         Iterator<Map.Entry<E, AtomicInteger>> iterator = instances.entrySet().iterator();
         if (iterator.hasNext()) {
-            Map.Entry entry = iterator.next();
+            Map.Entry<E, AtomicInteger> entry = iterator.next();
             buffer.append(entry.getKey()).append(':').append(entry.getValue());
         }
         while (iterator.hasNext()) {
-            Map.Entry entry = iterator.next();
+            Map.Entry<E, AtomicInteger> entry = iterator.next();
             buffer.append(", ").append(entry.getKey()).append(':').append(entry.getValue());
         }
         buffer.append(']');
         return buffer.toString();
     }
+
 }
