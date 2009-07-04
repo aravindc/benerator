@@ -80,10 +80,9 @@ public class InstanceGeneratorFactory {
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
         				(ComplexTypeDescriptor) type, unique, context);
             else if (type == null)
-                throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is null");
+                throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
             else
             	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
-            generator = DescriptorUtil.wrapWithProxy(generator, type, context);
             generator = wrapWithNullQuota(generator, descriptor);
         }
         return generator;
@@ -100,7 +99,7 @@ public class InstanceGeneratorFactory {
         Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
         if (maxCount != null)
         	generator.setMaxCount(maxCount);
-        generator.setCountDistribution(DescriptorUtil.getCountDistribution(descriptor));
+        generator.setCountDistribution(GeneratorFactoryUtil.getDistribution(descriptor.getCountDistribution(), false, true, context));
         return generator;
     }
     

@@ -34,10 +34,6 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.IndividualWeight;
-import org.databene.model.function.Sequence;
-import org.databene.model.function.WeightFunction;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
 import org.databene.benerator.composite.ComponentBuilder;
@@ -45,10 +41,9 @@ import org.databene.benerator.composite.ComponentTypeConverter;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.EntityGenerator;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.BasicParser;
-import org.databene.benerator.sample.SequencedSampleGenerator;
-import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
@@ -98,6 +93,7 @@ public class ComplexTypeGeneratorFactory {
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
         generator = wrapGeneratorWithVariables(type, context, generator);
+        generator = DescriptorUtil.wrapWithProxy(generator, type);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
@@ -128,8 +124,7 @@ public class ComplexTypeGeneratorFactory {
     
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private static Generator<Entity> createSourceGenerator(
-            ComplexTypeDescriptor descriptor, BeneratorContext context) {
+    private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
         if (sourceName == null)
@@ -165,14 +160,14 @@ public class ComplexTypeGeneratorFactory {
         }
         if (generator.getGeneratedType() != Entity.class)
         	generator = new SimpleTypeEntityGenerator(generator, descriptor);
-		Distribution distribution = DescriptorUtil.getDistribution(descriptor, false, context); // TODO v0.6 what about uniqueness? (arbitrarily set to false)
+    	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
         if (distribution != null)
-        	return applyDistribution(distribution, descriptor, generator, context);
-        else
-        	return DescriptorUtil.wrapWithProxy(generator, descriptor, context);
+        	generator = distribution.applyTo(generator);
+    	return generator;
     }
 
-	private static Generator<Entity> createSourceGeneratorFromObject(ComplexTypeDescriptor descriptor,
+	@SuppressWarnings("unchecked")
+    private static Generator<Entity> createSourceGeneratorFromObject(ComplexTypeDescriptor descriptor,
             BeneratorContext context, Generator<Entity> generator, Object sourceObject) {
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
@@ -186,22 +181,6 @@ public class ComplexTypeGeneratorFactory {
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    return generator;
     }
-
-	private static Generator<Entity> applyDistribution(
-			Distribution distribution, ComplexTypeDescriptor descriptor, Generator<Entity> generator, BeneratorContext context) {
-		List<Entity> values = GeneratorUtil.allProducts(generator);
-		if (distribution instanceof Sequence) {
-			generator = new SequencedSampleGenerator<Entity>(Entity.class, (Sequence) distribution, values);
-		} else if (distribution instanceof WeightFunction || distribution instanceof IndividualWeight)
-			generator = new WeightedSampleGenerator<Entity>(Entity.class, distribution, values);
-		else
-			throw new ConfigurationError("Not a supported distribution: " + distribution);
-		if (descriptor.getVariation1() != null)
-			BeanUtil.setPropertyValue(generator, "variation1", descriptor.getVariation1(), false);
-		if (descriptor.getVariation2() != null)
-			BeanUtil.setPropertyValue(generator, "variation2", descriptor.getVariation2(), false);
-		return generator;
-	}
 
 	private static Generator<Entity> createFlatSourceGenerator(
 			ComplexTypeDescriptor descriptor, BeneratorContext context, String sourceName) {

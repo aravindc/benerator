@@ -28,8 +28,17 @@ package org.databene.benerator.factory;
 
 import java.beans.PropertyDescriptor;
 
+import org.databene.benerator.distribution.AttachedWeight;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.FeatureWeight;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.parser.BasicParser;
+import org.databene.benerator.parser.Construction;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.StringUtil;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.storage.StorageSystem;
@@ -40,6 +49,8 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 public class GeneratorFactoryUtil {
+
+    private static final BasicParser basicParser = new BasicParser();
 
     public static void mapDetailsToBeanProperties(FeatureDescriptor descriptor, Object bean, Context context) {
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails())
@@ -65,4 +76,60 @@ public class GeneratorFactoryUtil {
         }
     }
         
+    /**
+     * Extracts distribution information from the descriptor.
+     * @param spec the textual representation of the distribution
+     * @param unique tells if a unique distribution is requested
+     * @param required if set the method will never return null
+     * @param context the {@link BeneratorContext}
+     * @return a distribution that reflects the descriptor setup, null if distribution info is not found nor required.
+     */
+    @SuppressWarnings("unchecked")
+    public static Distribution getDistribution(String spec, boolean unique, boolean required, BeneratorContext context) {
+        
+        // handle absence of distribution spec
+        if (StringUtil.isEmpty(spec)) {
+        	if (unique)
+        		return Sequence.BIT_REVERSE;
+        	else if (required)
+        		return Sequence.RANDOM;
+        	else
+        		return null;
+        }
+        
+        // check for context reference
+        Object contextObject = context.get(spec);
+        if (contextObject != null) {
+        	if (contextObject instanceof Distribution)
+        		return (Distribution) contextObject;
+        	else
+        		throw new ConfigurationError("Not a distribution: " + spec + "=" + contextObject);
+        }
+
+        // check for 'weighted' distribution
+        if (spec.startsWith("weighted[") && spec.endsWith("]"))
+    		return new FeatureWeight(spec.substring("weighted[".length(), spec.length() - 1).trim());
+    	else if ("weighted".equals(spec))
+    		return new AttachedWeight();
+        
+        // check for default sequence reference
+        Distribution result = Sequence.getInstance(spec, false);
+        if (result != null)
+        	return result;
+
+        // check for explicit construction
+    	Construction construction = basicParser.parseConstruction(spec, context, context);
+    	if (construction.classExists())
+    		return (Distribution) construction.evaluate();
+    	else {
+    		String className = StringUtil.capitalize(construction.getClassName());
+    		if (!className.endsWith("Sequence"))
+    			construction.setClassName(className + "Sequence");
+    		if (construction.classExists())
+    			return (Distribution) construction.evaluate();
+    	}
+    	
+    	throw new ConfigurationError("Unable to resolve distribution spec '" + spec + "'");
+	}
+
 }

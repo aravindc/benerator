@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,15 +36,13 @@ import java.util.Locale;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.parser.Construction;
 import org.databene.benerator.parser.Expression;
 import org.databene.benerator.parser.ParametrizedConstruction;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
-import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.benerator.wrapper.RepeatGeneratorProxy;
-import org.databene.benerator.wrapper.SkipGeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
@@ -62,19 +60,14 @@ import org.databene.id.GlobalIdProviderFactory;
 import org.databene.id.IdProvider;
 import org.databene.id.IdProviderFactory;
 import org.databene.id.IdStrategy;
-import org.databene.model.Processor;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
-import org.databene.model.consumer.ProcessorToConsumerAdapter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.FeatureWeight;
-import org.databene.model.function.Sequence;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemConsumer;
 
@@ -98,22 +91,6 @@ public class DescriptorUtil {
 		List<ComponentDescriptor> components = complexType.getComponents();
 		return (components.size() == 1 
 				&& ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(components.get(0).getName()));
-	}
-    
-    public static Distribution getDistribution(TypeDescriptor descriptor, boolean unique, BeneratorContext context) {
-        String spec = descriptor.getDistribution();
-        if (StringUtil.isEmpty(spec))
-            return (unique ? Sequence.BIT_REVERSE : null);
-        else if (spec.startsWith("weighted[") && spec.endsWith("]"))
-    		return new FeatureWeight(spec.substring("weighted[".length(), spec.length() - 1));
-    	else if ("weighted".equals(spec))
-    		return new FeatureWeight(null);
-        Distribution result = Sequence.getInstance(spec, false);
-        if (result == null)
-            result = (Distribution) basicParser.resolveConstructionOrReference(spec, context, context);
-        if (result == null)
-        	throw new ConfigurationError("Distribution not found: " + spec);
-        return result;
 	}
 
     @SuppressWarnings("unchecked")
@@ -182,7 +159,8 @@ public class DescriptorUtil {
         return result;
     }
 
-	public static ConsumerChain<Entity> parseConsumersSpec(String consumerSpec, BeneratorContext context) {
+	@SuppressWarnings("unchecked")
+    public static ConsumerChain<Entity> parseConsumersSpec(String consumerSpec, BeneratorContext context) {
         if (StringUtil.isEmpty(consumerSpec))
             return null;
         StringCharacterIterator iterator = new StringCharacterIterator(consumerSpec);
@@ -203,7 +181,8 @@ public class DescriptorUtil {
 		return result;
 	}
 
-	private static Consumer<Entity> parseSingleConsumer(
+	@SuppressWarnings("unchecked")
+    private static Consumer<Entity> parseSingleConsumer(
 			StringCharacterIterator consumerSpec, boolean insert, BeneratorContext context) {
 		Expression expression = basicParser.parseConstructionOrReference(consumerSpec, context, context);
 		Object consumer = expression.evaluate();
@@ -215,14 +194,11 @@ public class DescriptorUtil {
 			return new StorageSystemConsumer((StorageSystem) consumer, insert);
 		else if (consumer instanceof Consumer)
 			return (Consumer<Entity>) consumer;
-		else if (consumer instanceof Processor)
-			return new ProcessorToConsumerAdapter((Processor<Entity>) consumer);
 		else
 			throw new UnsupportedOperationException(
 					"Consumer type not supported: " + consumer.getClass());
 	}
 
-    @SuppressWarnings("unchecked")
 	public static Locale getLocale(TypeDescriptor descriptor) {
         Locale locale = descriptor.getLocale();
         if (locale == null)
@@ -232,7 +208,6 @@ public class DescriptorUtil {
         return locale;
     }
 
-    @SuppressWarnings("unchecked")
 	public static DateFormat getPatternAsDateFormat(TypeDescriptor descriptor) {
         String pattern = descriptor.getPattern();
         if (pattern != null)
@@ -255,58 +230,13 @@ public class DescriptorUtil {
         return nullQuota;
     }
     
-    @SuppressWarnings("unchecked")
-	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor, BeneratorContext context) {
-        // check cyclic flag
-		Boolean cyclic = descriptor.isCyclic();
-		if (cyclic == null)
-		    cyclic = false;
-		
-		// check proxy
-		Long proxyParam1 = null;
-		Long proxyParam2 = null;
-		String proxySpec = descriptor.getProxy();
-		if (proxySpec != null) {
-		    proxyParam1 = descriptor.getProxyParam1();
-		    proxyParam2 = descriptor.getProxyParam2();
-		}
-		return wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
+	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
+		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
+		return wrapWithProxy(generator, cyclic);
     }
 
-	@SuppressWarnings("unchecked")
-	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, boolean cyclic, 
-			String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
-		GeneratorProxy<T> proxy = createProxy(cyclic, proxySpec, proxyParam1, proxyParam2, context);
-		if (proxy != null) {
-			proxy.setSource(generator);
-	    	return proxy;
-		} else
-			return generator;
-	}
-
-    @SuppressWarnings("unchecked")
-	public static GeneratorProxy createProxy(boolean cyclic,
-    		String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
-        if (cyclic)
-            return new CyclicGeneratorProxy(null);
-        if ("repeat".equals(proxySpec))
-        	return new RepeatGeneratorProxy(null, proxyParam1, proxyParam2);
-        else if ("skip".equals(proxySpec))
-        	return new SkipGeneratorProxy(null, proxyParam1, proxyParam2);
-        else if (!StringUtil.isEmpty(proxySpec)) {
-        	Construction construction = basicParser.parseConstruction(proxySpec, context, context);
-        	if (!construction.classExists()) {
-        		String[] parts = StringUtil.splitOnLastSeparator(construction.getClassName(), '.');
-        		parts[1] = StringUtil.capitalize(parts[1]);
-        		String className = StringUtil.joinWithSeparator('.', parts) + "GeneratorProxy";
-				construction.setClassName(className);
-        	}
-			Object instance = construction.evaluate();
-        	if (!(instance instanceof GeneratorProxy))
-        		throw new ConfigurationError(instance + " does not extend the class GeneratorProxy");
-        	return (GeneratorProxy) instance;
-        } else
-        	return null;
+	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, boolean cyclic) {
+	    return (cyclic ? new CyclicGeneratorProxy<T>(generator) : generator);
     }
 
 	@SuppressWarnings("unchecked")
@@ -359,7 +289,6 @@ public class DescriptorUtil {
 		return idProvider;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static char getSeparator(TypeDescriptor descriptor, BeneratorContext context) {
 		char separator = (context != null ? context.getDefaultSeparator() : ',');
 		if (!StringUtil.isEmpty(descriptor.getSeparator())) {
@@ -394,12 +323,6 @@ public class DescriptorUtil {
         return result;
 	}
 
-	public static Distribution getCountDistribution(InstanceDescriptor descriptor) {
-		if (descriptor.getCountDistribution() != null)
-			return descriptor.getCountDistribution();
-        return Sequence.RANDOM;
-	}
-
 
 
     // private helpers -------------------------------------------------------------------------------------------------
@@ -414,14 +337,15 @@ public class DescriptorUtil {
 		return (Converter) converter;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static Object[] getValues(TypeDescriptor descriptor, BeneratorContext context) {
-		String valueSpec = descriptor.getValues();
-		if (!StringUtil.isEmpty(valueSpec)) {
-			char separator = getSeparator(descriptor, context);
-			return BasicParser.parseSeparatedList(valueSpec, separator);
-		} else
-			return null;
-	}
+	public static Generator<Long> getCountGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
+        Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
+        long minCount = DescriptorUtil.getMinCount(descriptor, context);
+        String countDistributionSpec = descriptor.getCountDistribution();
+        if (countDistributionSpec == null)
+        	countDistributionSpec = "random";
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(
+        		countDistributionSpec, false, true, context);
+		return distribution.createGenerator(Long.class, minCount, maxCount, 1L);
+    }
 
 }

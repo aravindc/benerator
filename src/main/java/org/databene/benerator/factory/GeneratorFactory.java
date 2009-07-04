@@ -27,28 +27,21 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.datetime.DateGenerator;
-import org.databene.benerator.primitive.number.adapter.IntegralNumberGenerator;
-import org.databene.benerator.primitive.number.adapter.BigDecimalGenerator;
-import org.databene.benerator.primitive.number.adapter.FloatingPointNumberGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.*;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
 import org.databene.document.csv.CSVLineIterable;
 import org.databene.platform.csv.CSVCellIterable;
 import org.databene.regex.RegexParser;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -67,23 +60,6 @@ public class GeneratorFactory {
      * Private constructor that prevents the user from multiple instantiantion
      */
     private GeneratorFactory() {
-    }
-
-    /**
-     * The static attribute for keeping the only instance of this class
-     */
-    private static GeneratorFactory instance;
-
-
-    /**
-     * The instance factory and accessor method
-     *
-     * @deprecated use the static methods of the class itself
-     */
-    public static GeneratorFactory getInstance() {
-        if (instance == null)
-            instance = new GeneratorFactory();
-        return instance;
     }
 
     // boolean generator -----------------------------------------------------------------------------------------------
@@ -105,7 +81,7 @@ public class GeneratorFactory {
     /**
      * Creates a generator for numbers.
      *
-     * @param type         the number type, e.g. java.lang.Integer
+     * @param numberType         the number type, e.g. java.lang.Integer
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
      * @param precision    the resolution to use in number generation.
@@ -114,66 +90,51 @@ public class GeneratorFactory {
      * @return a Number generator of the desired characteristics
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
-            Class<T> type, T min, T max, T precision,
+            Class<T> numberType, T min, T max, T precision,
             Distribution distribution, double nullQuota) {
-        return getNumberGenerator(type, min, max, precision, distribution,
-                NumberToNumberConverter.convert(1, type), NumberToNumberConverter.convert(1, type),
-                nullQuota);
-    }
-
-    public static <T extends Number> Generator<T> getNumberGenerator(
-            Class<T> type, T min, T max, T precision,
-            Distribution distribution, T variation1, T variation2,
-            double nullQuota) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
-        return getNumberGenerator(type, min, max, totalDigits, fractionDigits, precision, distribution, variation1, variation2, nullQuota);
+        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, nullQuota);
     }
     
     /**
      * Creates a generator for numbers.
      *
-     * @param type         the number type, e.g. java.lang.Integer
+     * @param numberType         the number type, e.g. java.lang.Integer
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
      * @param precision    the resolution to use in number generation.
-     * @param distribution The Sequence of WeightFunction to use for generation
-     * @param variation1   parameter #1 for Sequence setup which is individual to the Sequence type
-     * @param variation2   parameter #2 for Sequence setup which is individual to the Sequence type
      * @param nullQuota    the quota of null values to generate [0..1].
      * @return a Number generator of the desired characteristics
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
-            Class<T> type, T min, T max, int totalDigits, int fractionDigits, T precision,
-            Distribution distribution, T variation1, T variation2,
-            double nullQuota) {
-        if (type == null)
+            Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
+            Distribution distribution, double nullQuota) {
+        if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
-        Generator<T> source;
+        Generator<T> source = distribution.createGenerator(numberType, min, max, precision); // TODO support WeightFunction, fractionDigits 
+        /*
         if (Integer.class.equals(type) || Long.class.equals(type) || Byte.class.equals(type) || Short.class.equals(type) || BigInteger.class.equals(type))
-            source = new IntegralNumberGenerator<T>(type, min, max, precision, distribution, variation1, variation2);
+            source = new IntegralNumberGenerator<T>(type, min, max, precision, distribution);
         else if (Double.class.equals(type) || Float.class.equals(type))
-            source = (Generator<T>) new FloatingPointNumberGenerator(
+            source = (Generator<T>) new DecimalNumberGenerator(
                     type, 
                     min, 
                     max(type, max, totalDigits, fractionDigits), 
                     precision(type, precision, fractionDigits), 
-                    distribution, 
-                    variation1, 
-                    variation2);
+                    distribution);
         else if (BigDecimal.class.equals(type))
             source = (Generator<T>) new BigDecimalGenerator(
                     (BigDecimal) min, 
                     (BigDecimal) max(type, max, totalDigits, fractionDigits), 
                     (BigDecimal) precision(type, precision, fractionDigits), 
-                    distribution,
-                    (BigDecimal) variation1, 
-                    (BigDecimal) variation2);
+                    distribution);
         else
             throw new UnsupportedOperationException("Number type not supported: " + type.getName());
+        */
         return wrapNullQuota(source, nullQuota);
     }
-
+/*
     private static <T> T max(Class<T> type, T max, int totalDigits, int fractionDigits) {
         if (max != null)
             return max;
@@ -185,7 +146,7 @@ public class GeneratorFactory {
             return precision;
         return NumberConverter.convert(Math.pow(10, -fractionDigits), type);
     }
-
+*/
     // sample source ------------------------------------------------------------------------------------------------
 
     /**
@@ -213,7 +174,7 @@ public class GeneratorFactory {
     		T first = values.iterator().next();
 			generatedType = (Class<T>) first.getClass();
     	}
-        return new WeightedSampleGenerator<T>(generatedType, values);
+        return new AttachedWeightSampleGenerator<T>(generatedType, values);
     }
 
     /**
@@ -223,7 +184,7 @@ public class GeneratorFactory {
      * @return a generator that selects from the listed sample values
      */
     public static <T> Generator<T> getSampleGenerator(Class<T> generatedType, Collection<T> values) {
-        return new WeightedSampleGenerator<T>(generatedType, values);
+        return new AttachedWeightSampleGenerator<T>(generatedType, values);
     }
 
     /**
@@ -244,7 +205,7 @@ public class GeneratorFactory {
      * @return a generator that selects from the listed sample values
      */
     public static <T> Generator<T> getSampleGenerator(Class<T> generatedType, T ... values) {
-        return new WeightedSampleGenerator<T>(generatedType, values);
+        return new AttachedWeightSampleGenerator<T>(generatedType, values);
     }
 
     /**
@@ -254,7 +215,7 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      */
     public static <T> Generator<T> getWeightedSampleGenerator(Collection<WeightedSample<T>> samples) {
-        WeightedSampleGenerator<T> generator = new WeightedSampleGenerator<T>();
+        AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
     }
@@ -266,7 +227,7 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      */
     public static <T> Generator<T> getWeightedSampleGenerator(WeightedSample<T> ... samples) {
-        WeightedSampleGenerator<T> generator = new WeightedSampleGenerator<T>();
+        AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
     }
@@ -279,24 +240,13 @@ public class GeneratorFactory {
      * @param min          The earliest Date to generate
      * @param max          The latest Date to generate
      * @param precision    the time resolution of dates in milliseconds
-     * @param distribution the Sequence or WeightFunction to use
+     * @param distribution the distribution to use
      * @param nullQuota    the quota of null values to generate
      * @return a generator of the desired characteristics
      */
     public static Generator<Date> getDateGenerator(
             Date min, Date max, long precision, Distribution distribution, double nullQuota) {
         DateGenerator generator = new DateGenerator(min, max, precision, distribution);
-        return wrapNullQuota(generator, nullQuota);
-    }
-
-    /**
-     * TODO v0.6 make Sequence hold the variation info and remove this method.
-     * @deprecated
-     */
-    @Deprecated
-    public static Generator<Date> getDateGenerator(
-            Date min, Date max, long precision, Sequence sequence, Date variation1, Date variation2, double nullQuota) {
-        DateGenerator generator = new DateGenerator(min, max, precision, sequence, variation1, variation2);
         return wrapNullQuota(generator, nullQuota);
     }
 
@@ -316,18 +266,6 @@ public class GeneratorFactory {
     }
 
     // text generators -------------------------------------------------------------------------------------------------
-
-    /**
-     * Creates a generator that produces characters of a locale.
-     *
-     * @param locale    the locale to choose the characters from
-     * @param nullQuota the quota of null values to generate
-     * @return a generator of the desired characteristics
-     * @deprecated use getCharacterGenerator(String pattern, Locale locale, double nullQuota)
-     */
-    public static Generator<Character> getCharacterGenerator(Locale locale, double nullQuota) {
-        return getCharacterGenerator(null, locale, nullQuota);
-    }
 
     /**
      * Creates a Character generator that creates characters of a locale which match a regular expresseion.
@@ -450,15 +388,13 @@ public class GeneratorFactory {
      *
      * @param collectionType     the type of collection to create, e.g. java.util.List or java.util.TreeSet
      * @param source             the generator that provides the collection items
-     * @param minLength          the minimum collection length
-     * @param maxLength          the maximum collection length
-     * @param lengthDistribution a Sequence or WeightFunction for the distribution of collection lengths
+     * @param sizeDistribution      distribution for the collection size
      * @return a generator of the desired characteristics
      */
     public static <C extends Collection<I>, I> Generator<C> getCollectionGenerator(
-            Class<C> collectionType, Generator<I> source, int minLength, int maxLength,
-            Distribution lengthDistribution) {
-        return new CollectionGenerator<C, I>(collectionType, source, minLength, maxLength, lengthDistribution);
+            Class<C> collectionType, Generator<I> source, 
+            int minSize, int maxSize, Distribution sizeDistribution) {
+        return new CollectionGenerator<C, I>(collectionType, source, minSize, maxSize, sizeDistribution);
     }
 
     /**
@@ -466,14 +402,13 @@ public class GeneratorFactory {
      *
      * @param source             the generator that provides the array items
      * @param type               the type of the array
-     * @param minLength          the minimum array length
-     * @param maxLength          the maximum array length
-     * @param lengthDistribution a Sequence or WeightFunction for the distribution of array lengths
+     * @param sizeDistribution   distribution for the array length
      * @return a generator of the desired characteristics
      */
     public static <T> Generator<T[]> getArrayGenerator(
-            Generator<T> source, Class<T> type, int minLength, int maxLength, Distribution lengthDistribution) {
-        return new SimpleArrayGenerator<T>(source, type, minLength, maxLength, lengthDistribution);
+            Generator<T> source, Class<T> type, 
+            int minSize, int maxSize, Distribution sizeDistribution) {
+        return new SimpleArrayGenerator<T>(source, type, minSize, maxSize, sizeDistribution);
     }
 
     /**
@@ -506,15 +441,11 @@ public class GeneratorFactory {
      * @param uri         the uri of the CSV file
      * @param separator   the cell separator used in the CSV file
      * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
-     * @param proxySpec   defines a proxy if not null
-     * @param proxyParam1 first proxy parameter
-     * @param proxyParam2 2nd proxy parameter
      * @return a generator of the desired characteristics
      */
-    public static Generator<String> getCSVCellGenerator(String uri, char separator, boolean cyclic,
-    		String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
+    public static Generator<String> getCSVCellGenerator(String uri, char separator, boolean cyclic) {
         Generator<String> generator = new IteratingGenerator<String>(new CSVCellIterable(uri, separator));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
+        return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
 
     /**
@@ -524,15 +455,11 @@ public class GeneratorFactory {
      * @param separator        the cell separator used in the CSV file
      * @param ignoreEmptyLines flag wether to leave out empty lines
      * @param cyclic           indicates wether iteration should restart from the first line after it reaches the file end.
-     * @param proxySpec        defines a proxy if not null
-     * @param proxyParam1      first proxy parameter
-     * @param proxyParam2      2nd proxy parameter
      * @return a generator of the desired characteristics
      */
-    public static Generator<String[]> getCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines,
-    		boolean cyclic, String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
+    public static Generator<String[]> getCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines, boolean cyclic) {
         Generator<String[]> generator = new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, SystemInfo.getFileEncoding()));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
+        return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
 
     /**
@@ -540,15 +467,11 @@ public class GeneratorFactory {
      *
      * @param uri         the uri of the text file
      * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
-     * @param proxySpec   defines a proxy if not null
-     * @param proxyParam1 first proxy parameter
-     * @param proxyParam2 2nd proxy parameter
      * @return a generator of the desired characteristics
      */
-    public static Generator<String> getTextLineGenerator(String uri, boolean cyclic,
-    		String proxySpec, Long proxyParam1, Long proxyParam2, BeneratorContext context) {
+    public static Generator<String> getTextLineGenerator(String uri, boolean cyclic) {
         Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic, proxySpec, proxyParam1, proxyParam2, context);
+        return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
     
     // helpers ---------------------------------------------------------------------------------------------------------

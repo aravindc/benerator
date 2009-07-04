@@ -40,13 +40,13 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.function.Distribution;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.InstanceArrayGenerator;
 import org.databene.benerator.composite.PlainComponentBuilder;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
@@ -163,12 +163,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         	throw new ConfigurationError("Not a supported source type: " + sourceName);
         
         // check distribution
-        Distribution distribution = DescriptorUtil.getDistribution(descriptor.getType(), descriptor.isUnique(), context);
+    	Distribution distribution = GeneratorFactoryUtil.getDistribution(
+    			typeDescriptor.getDistribution(), descriptor.isUnique(), false, context);
         if (distribution != null)
-            generator = TypeGeneratorFactory.applyDistribution(descriptor.getType(), distribution, generator);
-        else
-        	generator = DescriptorUtil.wrapWithProxy(generator, descriptor.getType(), context);
+            generator = distribution.applyTo(generator);
         
+        // check multiplicity
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -193,7 +193,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (maxCount != null && maxCount != 1 && minCount != 1) {
         	InstanceArrayGenerator wrapper = new InstanceArrayGenerator(generator);
 	        mapDetailsToBeanProperties(instance, wrapper, context);
-	        wrapper.setCountDistribution(DescriptorUtil.getCountDistribution(instance));
+	        wrapper.setCountDistribution(GeneratorFactoryUtil.getDistribution(instance.getCountDistribution(), false, true, context));
 	        if (maxCount != null)
 	        	wrapper.setMaxCount(maxCount);
 			wrapper.setMinCount(minCount);
