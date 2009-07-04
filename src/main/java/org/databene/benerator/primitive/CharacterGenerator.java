@@ -127,12 +127,6 @@ public class CharacterGenerator implements Generator<Character> {
         return values;
     }
 
-    /** Sets the available values */
-    public void setValues(Set<Character> set) {
-        source.setValues(set);
-        this.dirty = true;
-    }
-
     // source interface ------------------------------------------------------------------------------------------------
 
     public Class<Character> getGeneratedType() {
