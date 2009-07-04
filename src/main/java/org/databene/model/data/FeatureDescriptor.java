@@ -9,13 +9,13 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.String2ConverterConverter;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.model.function.String2DistributionConverter;
 
 import java.util.List;
 
 /**
  * Common parent class of all descriptors.<br/><br/>
  * Created: 17.07.2006 21:30:45
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class FeatureDescriptor {
@@ -23,9 +23,7 @@ public class FeatureDescriptor {
     public static final String NAME = "name";
 
     static {
-        ConverterManager converterManager = ConverterManager.getInstance();
-        converterManager.register(new String2DistributionConverter()); // TODO v0.6 resolve scripts
-        converterManager.register(new String2ConverterConverter()); // TODO v0.6 resolve scripts
+        ConverterManager.getInstance().register(new String2ConverterConverter());
     }
 
     protected OrderedNameMap<FeatureDetail<? extends Object>> details;
@@ -159,6 +157,7 @@ public class FeatureDescriptor {
 
     // generic property access -----------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     protected <T> FeatureDetail<T> getDetail(String name) {
         FeatureDetail<T> detail = (FeatureDetail<T>) details.get(name);
         if (detail == null)
