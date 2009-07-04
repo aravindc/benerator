@@ -26,11 +26,11 @@
 
 package org.databene.model.data;
 
+import org.databene.benerator.distribution.Distribution;
 import org.databene.commons.operation.AndOperation;
 import org.databene.commons.operation.MaxOperation;
 import org.databene.commons.operation.MinOperation;
 import org.databene.commons.operation.OrOperation;
-import org.databene.model.function.Distribution;
 
 /**
  * Describes generation of (several) entities of a type by uniqueness, 
@@ -50,9 +50,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String MAX_COUNT          = "maxCount";
     
     // configs
-    public static final String COUNT_DISTRIBUTION = "countDistribution"; // TODO v0.6 support constructor syntax
-    public static final String COUNT_VARIATION1   = "countVariation1"; // TODO v0.6 make this deprecated
-    public static final String COUNT_VARIATION2   = "countVariation2"; // TODO v0.6 make this deprecated
+    public static final String COUNT_DISTRIBUTION = "countDistribution";
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
 
@@ -88,8 +86,6 @@ public class InstanceDescriptor extends FeatureDescriptor {
         // configs
         addConfig(COUNT,              Long.class,         null);
         addConfig(COUNT_DISTRIBUTION, Distribution.class, null);
-        addConfig(COUNT_VARIATION1,   Long.class,         null);
-        addConfig(COUNT_VARIATION2,   Long.class,         null);
         addConfig(NULL_QUOTA,         Double.class,       null);
     }
 
@@ -180,28 +176,12 @@ public class InstanceDescriptor extends FeatureDescriptor {
         setDetailValue(COUNT, count);
     }
 
-    public Distribution getCountDistribution() {
-        return (Distribution) getDetailValue(COUNT_DISTRIBUTION);
+    public String getCountDistribution() {
+        return (String) getDetailValue(COUNT_DISTRIBUTION);
     }
     
-    public void setCountDistribution(Distribution distribution) {
+    public void setCountDistribution(String distribution) {
         setDetailValue(COUNT_DISTRIBUTION, distribution);
-    }
-
-    public Long getCountVariation1() {
-        return (Long)getDetailValue(COUNT_VARIATION1);
-    }
-    
-    public void setCountVariation1(Long countVariation1) {
-        setDetailValue(COUNT_VARIATION1, countVariation1);
-    }
-
-    public Long getCountVariation2() {
-        return (Long)getDetailValue(COUNT_VARIATION2);
-    }
-    
-    public void setCountVariation2(Long countVariation2) {
-        setDetailValue(COUNT_VARIATION2, countVariation2);
     }
 
     public Double getNullQuota() {
