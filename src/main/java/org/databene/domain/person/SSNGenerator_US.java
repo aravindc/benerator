@@ -29,7 +29,8 @@ package org.databene.domain.person;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.LightweightStringGenerator;
-import org.databene.benerator.primitive.number.adapter.IntegerGenerator;
+import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.distribution.RandomIntegerGenerator;
 import org.databene.commons.StringUtil;
 
 /**
@@ -48,7 +49,7 @@ public class SSNGenerator_US extends LightweightStringGenerator {
 
 	// TODO v0.6 support 'unique' property
 	
-	private IntegerGenerator areaNumberGenerator;
+	private AbstractNumberGenerator<Integer> areaNumberGenerator;
 	private Generator<Integer> groupNumberGenerator;
 	private Generator<Integer> serialNumberGenerator;
 
@@ -57,14 +58,11 @@ public class SSNGenerator_US extends LightweightStringGenerator {
 	}
 
 	public SSNGenerator_US(int maxAreaCode) {
-		areaNumberGenerator = new IntegerGenerator(1, maxAreaCode);
-		groupNumberGenerator = new IntegerGenerator(1, 99);
-		serialNumberGenerator = new IntegerGenerator(1, 9999);
+		areaNumberGenerator = new RandomIntegerGenerator(1, maxAreaCode);
+		groupNumberGenerator = new RandomIntegerGenerator(1, 99);
+		serialNumberGenerator = new RandomIntegerGenerator(1, 9999);
 	}
 
-	/**
-	 * @see org.databene.benerator.Generator#generate()
-	 */
 	public String generate() throws IllegalGeneratorStateException {
 		Integer area;
 		do {
@@ -75,16 +73,12 @@ public class SSNGenerator_US extends LightweightStringGenerator {
 		StringUtil.padLeft(String.valueOf(serialNumberGenerator.generate()), 4, '0');
 	}
 
-	public int getMaxAreaCode() {
-		return areaNumberGenerator.getMax();
-	}
-
 	public void setMaxAreaCode(int maxAreaCode) {
 		areaNumberGenerator.setMax(maxAreaCode);
 	}
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '[' + getMaxAreaCode() + ']';
+		return getClass().getSimpleName();
 	}
 }
