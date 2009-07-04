@@ -30,6 +30,7 @@ import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseBoolean
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseIntAttribute;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
@@ -50,8 +51,10 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
+import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
 import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.benerator.primitive.number.adapter.SequenceFactory;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
@@ -59,7 +62,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Escalator;
-import org.databene.commons.Heavyweight;
 import org.databene.commons.IOUtil;
 import org.databene.commons.LogCategories;
 import org.databene.commons.LoggerEscalator;
@@ -83,6 +85,7 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemConsumer;
@@ -134,7 +137,7 @@ public class DescriptorRunner {
 
 	private ExecutorService executor;
 	private Escalator escalator;
-	private Set<Heavyweight> resources = new HashSet<Heavyweight>();
+	private Set<Closeable> resources = new HashSet<Closeable>();
 	private BeneratorContext context;
 	private Map<String, Object> beans;
 
@@ -165,6 +168,7 @@ public class DescriptorRunner {
 			generatedFiles = new ArrayList<String>();
 			context.setContextUri(IOUtil.getContextUri(uri));
 			parser = new ModelParser(context);
+			SequenceFactory.setClassProvider(context); // TODO find more robust model
 
 			long startTime = java.lang.System.currentTimeMillis();
 			Document document = XMLUtil.parse(uri, context.isValidate());
@@ -178,7 +182,7 @@ public class DescriptorRunner {
 					continue;
 				parseRootChild((Element) node);
 			}
-			for (Heavyweight resource : resources)
+			for (Closeable resource : resources)
 				resource.close();
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
 			logger.info("Created a total of " + ConfiguredEntityGenerator.entityCount() + " entities "
@@ -236,13 +240,23 @@ public class DescriptorRunner {
 		String propertyName = element.getAttribute("name");
 		Object propertyValue;
 		if (element.hasAttribute("value"))
-			propertyValue = LiteralParser.parse(parseStringAttribute(element,
-					"value", context));
+			propertyValue = LiteralParser.parse(parseStringAttribute(element, "value", context));
 		else if (element.hasAttribute("ref"))
-			propertyValue = context
-					.get(parseStringAttribute(element, "ref", context));
-		else
-			throw new ConfigurationError("Syntax error");
+			propertyValue = context.get(parseStringAttribute(element, "ref", context));
+		else if (element.hasAttribute("source")) {
+			SimpleTypeDescriptor tmpDescriptor = new SimpleTypeDescriptor("tmp");
+			tmpDescriptor.setSource(element.getAttribute("source"));
+			tmpDescriptor.setSelector("selector");
+			Generator<? extends Object> tmpGenerator = null;
+			try {
+				tmpGenerator = SimpleTypeGeneratorFactory.createSourceAttributeGenerator(tmpDescriptor, context);
+				propertyValue = tmpGenerator.generate();
+			} finally {
+				if (tmpGenerator != null)
+					tmpGenerator.close();
+			}
+		} else
+			throw new ConfigurationError("Syntax error in property definition");
 		if (propertyName.startsWith("benerator."))
 			AnyMutator.setValue(context, propertyName, propertyValue, true);
 		else
@@ -259,8 +273,8 @@ public class DescriptorRunner {
 			Object bean = parser.parseBean(element);
 			if (bean instanceof DescriptorProvider)
 				dataModel.addDescriptorProvider((DescriptorProvider) bean);
-			if (bean instanceof Heavyweight)
-				addResource((Heavyweight) bean);
+			if (bean instanceof Closeable)
+				addResource((Closeable) bean);
 			if (BeanUtil.hasProperty(bean.getClass(), "id")) {
 				Object id = BeanUtil.getPropertyValue(bean, "id");
 				beans.put(String.valueOf(id), bean);
@@ -271,7 +285,7 @@ public class DescriptorRunner {
 		}
 	}
 
-	boolean addResource(Heavyweight resource) {
+	boolean addResource(Closeable resource) {
 		if (resources.contains(resource))
 			return false;
 		if (resource instanceof FileExporter)
@@ -510,7 +524,7 @@ public class DescriptorRunner {
 		try {
 			task.run();
 		} finally {
-			task.destroy();
+			IOUtil.close(task);
 		}
 		long dc = ConfiguredEntityGenerator.entityCount() - count0;
 		long dt = System.currentTimeMillis() - t0;
@@ -527,7 +541,8 @@ public class DescriptorRunner {
 					+ taskId);
 	}
 
-	public PagedCreateEntityTask parseCreateEntities(Element element, boolean isSubTask) {
+	@SuppressWarnings("unchecked")
+    public PagedCreateEntityTask parseCreateEntities(Element element, boolean isSubTask) {
 		InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		descriptor.setNullable(false);
 		ErrorHandler errorHandler = parseOnError(element, getClass().getName());
@@ -560,7 +575,7 @@ public class DescriptorRunner {
 		}
 		
 		// parse task properties
-		long minCount = DescriptorUtil.getMinCount(descriptor, context);
+		long minCount = DescriptorUtil.getMinCount(descriptor, context); // TODO make use of minCount
 		Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
 		int pageSize = parseIntAttribute(element, "pagesize", context, context.getDefaultPagesize());
 		int threads = parseIntAttribute(element, "threads", context, 1);
@@ -632,10 +647,8 @@ public class DescriptorRunner {
 			if ("variable".equals(childType)) {
 				parser.parseVariable(child, (ComplexTypeDescriptor) localType);
 			} else if (COMPONENT_TYPES.contains(childType)) {
-				ComponentDescriptor component = parser.parseSimpleTypeComponent(child,
-								(ComplexTypeDescriptor) localType);
-				((ComplexTypeDescriptor) instance.getType())
-						.addComponent(component);
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType);
+				((ComplexTypeDescriptor) instance.getType()).addComponent(component);
 			} else if (!CREATE_ENTITIES.equals(childType)
 					&& !"consumer".equals(childType)
 					&& !"variable".equals(childType))
