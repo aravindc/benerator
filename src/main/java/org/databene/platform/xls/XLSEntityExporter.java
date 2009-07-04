@@ -130,20 +130,6 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 		}
     }
 
-	/** @deprecated use setColumns() instead */
-	@Deprecated
-	public void setProperties(String properties) {
-        escalator.escalate("XLSEntityExporter.properties is deprecated. Use XLSEntityExporter.columns instead.", getClass(), null);
-        setColumns(properties);
-    }
-
-	/** @deprecated use setColumns() instead */
-	@Deprecated
-	public void setAttributes(String attributes) {
-        escalator.escalate("XLSEntityExporter.attributes is deprecated. Use XLSEntityExporter.columns instead.", getClass(), null);
-        setColumns(attributes);
-    }
-
     // Consumer interface ----------------------------------------------------------------------------------------------
 
     public void startConsuming(Entity entity) {

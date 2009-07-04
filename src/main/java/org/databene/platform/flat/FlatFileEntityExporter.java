@@ -71,14 +71,6 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    /** @deprecated use setColumns() instead */
-    @Deprecated
-	public void setProperties(String properties) {
-    	escalator.escalate("Property 'properties' of " + getClass().getName() + " has been deprecated. " +
-    			"Use property 'columns' instead.", this, properties);
-        setColumns(properties);
-    }
-
     public void setColumns(String columnFormatList) {
         if (columnFormatList == null) {
             converters = null;

@@ -100,14 +100,6 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    /** @deprecated use setColumns() instead */
-    @Deprecated
-	public void setProperties(String properties) {
-    	escalator.escalate("Property 'properties' of " + getClass().getName() + " has been deprecated. " +
-    			"Use property 'columns' instead.", this, properties);
-        setColumns(properties);
-    }
-
 	public void setColumns(String columnsSpec) {
 		if (StringUtil.isEmpty(columnsSpec))
 			this.columns = null;
