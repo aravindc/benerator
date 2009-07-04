@@ -30,7 +30,7 @@ import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ConfigurationError;
 
 /**
- * TODO documentation
+ * Generates long values by continuously incrementing a base (min) value.
  * @author Volker Bergmann
  * @since 0.3.04
  */
