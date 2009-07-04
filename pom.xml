@@ -5,12 +5,12 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.5.9-SR1</version>
+    <version>0.6.0-alpha</version>
 
     <properties>
-        <gui_version>0.1.9</gui_version>
-        <webdecs_version>0.4.9-SR1</webdecs_version>
-	    <commons_version>0.4.9-SR1</commons_version>
+        <gui_version>0.2.0-alpha</gui_version>
+        <webdecs_version>0.5.0-alpha</webdecs_version>
+	    <commons_version>0.5.0-alpha</commons_version>
     </properties>
 
 <!--
