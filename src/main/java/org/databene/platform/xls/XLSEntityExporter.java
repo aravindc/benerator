@@ -33,8 +33,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -47,8 +45,6 @@ import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.StringUtil;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.consumer.FormattingConsumer;
@@ -56,6 +52,8 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exports entities to Excel sheets.<br/><br/>
@@ -65,8 +63,7 @@ import org.databene.platform.csv.CSVEntityExporter;
  */
 public class XLSEntityExporter extends FormattingConsumer<Entity> implements FileExporter<Entity> {
 
-    private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
-    private static final Escalator escalator = new LoggerEscalator();
+    private static final Logger logger = LoggerFactory.getLogger(CSVEntityExporter.class);
     
     // defaults --------------------------------------------------------------------------------------------------------
     

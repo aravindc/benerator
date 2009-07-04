@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,8 @@
 
 package org.databene.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wraps a Task and logs its execution time.<br/>
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TimedTask extends TaskProxy {
 
-    private static final Log logger = LogFactory.getLog(TimedTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimedTask.class);
 
     public TimedTask(Task realTask) {
         super(realTask);
@@ -46,6 +46,6 @@ public class TimedTask extends TaskProxy {
     public void run() {
         long startTime = System.currentTimeMillis();
         super.run();
-        logger.info(System.currentTimeMillis() - startTime);
+        logger.info(String.valueOf(System.currentTimeMillis() - startTime));
     }
 }

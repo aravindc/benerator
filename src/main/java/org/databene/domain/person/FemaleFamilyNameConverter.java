@@ -28,13 +28,13 @@ package org.databene.domain.person;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConversionException;
 import org.databene.commons.IOUtil;
 import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.dataset.DatasetFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Can convert the male form of a family name to the female form by a suffix mapping. 
@@ -79,6 +79,6 @@ public class FemaleFamilyNameConverter extends FixedSourceTypeConverter<String, 
 	    return name;
     }
 
-	private static final Log logger = LogFactory.getLog(FemaleFamilyNameConverter.class);
+	private static final Logger logger = LoggerFactory.getLogger(FemaleFamilyNameConverter.class);
 	
 }

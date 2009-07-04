@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,10 @@
 
 package org.databene.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +45,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionHandler {
 
-    private static final Log logger = LogFactory.getLog(PagedTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(PagedTask.class);
 
     protected Task realTask;
     private PageListener listener;

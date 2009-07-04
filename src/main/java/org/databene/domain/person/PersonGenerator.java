@@ -26,12 +26,12 @@
 
 package org.databene.domain.person;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
@@ -44,7 +44,7 @@ import java.util.Locale;
  */
 public class PersonGenerator extends LightweightGenerator<Person> {
 
-	private static Log logger = LogFactory.getLog(PersonGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
 	
     private GenderGenerator genderGen;
     private GivenNameGenerator maleGivenNameGen;

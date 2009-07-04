@@ -1,9 +1,9 @@
 package org.databene.benerator.primitive;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.GeneratorClassTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann
@@ -11,14 +11,10 @@ import org.databene.benerator.GeneratorClassTest;
  */
 public class BooleanGeneratorTest extends GeneratorClassTest {
 
-    private static Log logger = LogFactory.getLog(BooleanGeneratorTest.class);
+    private static Logger logger = LoggerFactory.getLogger(BooleanGeneratorTest.class);
 
     public BooleanGeneratorTest() {
         super(BooleanGenerator.class);
-    }
-
-    public void testDefaultConstructor() {
-        new BooleanGenerator();
     }
 
     public void testDistribution() throws IllegalGeneratorStateException {

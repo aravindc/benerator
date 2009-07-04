@@ -29,8 +29,6 @@ package org.databene.benerator.parser;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
@@ -55,6 +53,8 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.script.ScriptConverter;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -67,7 +67,7 @@ import org.w3c.dom.NamedNodeMap;
  */
 public class ModelParser {
 	
-    private static final Log logger = LogFactory.getLog(ModelParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModelParser.class);
 
     private BeneratorContext context;
     private BasicParser basicParser;

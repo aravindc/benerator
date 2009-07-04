@@ -36,8 +36,6 @@ import java.util.Locale;
 
 import javax.validation.ConstraintValidator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
@@ -75,6 +73,8 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.storage.StorageSystem;
 import org.databene.script.ScriptConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
 
@@ -83,7 +83,7 @@ import static org.databene.model.data.SimpleTypeDescriptor.*;
  * <br/>
  * @author Volker Bergmann
  */
-public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
+public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory { // TODO support & test JSR 303
 	
     //@SuppressWarnings("unchecked")
     //private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
@@ -351,15 +351,15 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     private static Date parseDate(SimpleTypeDescriptor descriptor, String detailName, Date defaultDate) {
+        String detail = (String) descriptor.getDeclaredDetailValue(detailName);
         try {
-            String detail = (String) descriptor.getDeclaredDetailValue(detailName);
             if (detail != null) {
                 DateFormat dateFormat = DescriptorUtil.getPatternAsDateFormat(descriptor);
                 return dateFormat.parse(detail);
             } else
                 return defaultDate;
         } catch (ParseException e) {
-            logger.error(e, e);
+            logger.error("Error parsing date " + detail, e);
             return defaultDate;
         }
     }
@@ -473,6 +473,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private SimpleTypeGeneratorFactory() {}
     
-    private static final Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComponentBuilderFactory.class);
 
 }

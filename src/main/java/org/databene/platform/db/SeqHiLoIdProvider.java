@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,11 +30,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.db.DBUtil;
 import org.databene.id.IdProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates Unique keys efficiently by connecting a database, retrieving a (unique) sequence value 
@@ -117,6 +117,6 @@ public class SeqHiLoIdProvider implements IdProvider<Long> {
         return Long.parseLong(DBUtil.queryString(statement));
     }
 
-    private static final Log logger = LogFactory.getLog(SeqHiLoIdProvider.class);
-    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
+    private static final Logger logger = LoggerFactory.getLogger(SeqHiLoIdProvider.class);
+    private static final Logger sqlLogger = LoggerFactory.getLogger("org.databene.SQL"); 
 }

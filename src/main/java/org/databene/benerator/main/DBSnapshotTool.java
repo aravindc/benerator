@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,6 @@ package org.databene.benerator.main;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
@@ -39,6 +37,8 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a snapshot of a database schema and exports it in DbUnit XML file format.
@@ -54,7 +54,7 @@ public class DBSnapshotTool {
 	public static final String DB_USER = "dbUser";
 	
 	// TODO v0.6.0 test with each database
-    private static final Log logger = LogFactory.getLog(DBSnapshotTool.class);
+    private static final Logger logger = LoggerFactory.getLogger(DBSnapshotTool.class);
     
     public static void main(String[] args) {
         logger.info("Starting " + DBSnapshotTool.class.getSimpleName());

@@ -26,10 +26,10 @@
 
 package org.databene.benerator.primitive;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Combines the output of a 'slow' generator (e.g. a remote hiGenerator) 
@@ -39,7 +39,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  */
 public class HiLoGenerator implements Generator<Long> {
 
-    private static final Log logger = LogFactory.getLog(HiLoGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(HiLoGenerator.class);
 
     protected static final int DEFAULT_MAX_LO = 100;
 

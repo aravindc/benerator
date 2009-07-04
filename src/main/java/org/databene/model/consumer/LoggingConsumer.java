@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,8 @@
 
 package org.databene.model.consumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link Consumer} that logs the entities that it receives at info level.<br/>
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoggingConsumer<E> extends AbstractConsumer<E> {
 
-    private static final Log logger = LogFactory.getLog(LoggingConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoggingConsumer.class);
 
     public void startConsuming(E object) {
         if (logger.isInfoEnabled())

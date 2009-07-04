@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,9 @@
 
 package org.databene.benerator.sample;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.databene.benerator.util.GeneratorUtil.*;
 
@@ -39,7 +39,7 @@ import static org.databene.benerator.util.GeneratorUtil.*;
  */
 public class SequenceGenerator<E> implements Generator<E> {
     
-    private static Log logger = LogFactory.getLog(SequenceGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(SequenceGenerator.class);
 
     private Class<E> productType;
     private E[] values;

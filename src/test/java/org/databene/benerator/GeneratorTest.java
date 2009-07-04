@@ -42,8 +42,8 @@ import org.databene.commons.Validator;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.UniqueValidator;
 import org.databene.measure.count.ObjectCounter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides methods for testing generators.<br/>
@@ -53,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class GeneratorTest extends TestCase {
 
-    private static final Log logger = LogFactory.getLog(GeneratorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeneratorTest.class);
     
     protected BeneratorContext context;
 

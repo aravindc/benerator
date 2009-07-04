@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007--2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,8 @@ import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.script.ScriptedDocumentWriter;
 import org.databene.commons.ConfigurationError;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ import java.io.IOException;
  */
 public class ScriptedEntityExporter extends TextFileExporter<Entity> {
 
-    private static final Log logger = LogFactory.getLog(ScriptedEntityExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScriptedEntityExporter.class);
 
     private String headerScript;
     private String partScript;

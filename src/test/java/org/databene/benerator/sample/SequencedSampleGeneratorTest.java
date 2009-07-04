@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,9 @@
 
 package org.databene.benerator.sample;
 
-import java.text.ParseException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.GeneratorClassTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the {@link SequencedSampleGenerator}.<br/>
@@ -39,7 +37,7 @@ import org.databene.benerator.GeneratorClassTest;
  */
 public class SequencedSampleGeneratorTest extends GeneratorClassTest {
 
-    private static Log logger = LogFactory.getLog(SequencedSampleGeneratorTest.class);
+    private static Logger logger = LoggerFactory.getLogger(SequencedSampleGeneratorTest.class);
 
     public SequencedSampleGeneratorTest() {
         super(SequencedSampleGenerator.class);
@@ -64,7 +62,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
         }
     }
 
-    public void testBigSet() throws ParseException {
+    public void testBigSet() {
         SequencedSampleGenerator<Integer> generator = new SequencedSampleGenerator<Integer>(Integer.class);
         for (int i = 0; i < 200000; i++)
         	generator.addValue(i % 100);

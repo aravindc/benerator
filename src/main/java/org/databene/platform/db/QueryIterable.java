@@ -26,8 +26,6 @@
 
 package org.databene.platform.db;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterable;
@@ -35,6 +33,8 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.script.ScriptConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -48,8 +48,8 @@ import java.sql.ResultSet;
  */
 public class QueryIterable implements HeavyweightIterable<ResultSet> {
     
-    private static final Log sqlLogger = LogFactory.getLog("org.databene.SQL"); 
-    private static final Log logger = LogFactory.getLog(QueryIterable.class); 
+    private static final Logger sqlLogger = LoggerFactory.getLogger("org.databene.SQL"); 
+    private static final Logger logger = LoggerFactory.getLogger(QueryIterable.class); 
 
     private Connection connection;
     private String query;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,8 +32,8 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.ArrayFormat;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Array;
 
@@ -46,7 +46,7 @@ import java.lang.reflect.Array;
  */
 public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
-    private static final Log logger = LogFactory.getLog(UniqueCompositeGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(UniqueCompositeGenerator.class);
 
     private Class<S> componentType;
     private Object[] products;

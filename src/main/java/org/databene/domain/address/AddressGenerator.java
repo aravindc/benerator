@@ -26,11 +26,11 @@
 
 package org.databene.domain.address;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates {@link Address} objects.<br/>
@@ -40,7 +40,7 @@ import org.databene.benerator.util.LightweightGenerator;
  */
 public class AddressGenerator extends LightweightGenerator<Address> {
 	
-	private static Log logger = LogFactory.getLog(AddressGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(AddressGenerator.class);
 
     private Country country;
     private CityGenerator cityGenerator;

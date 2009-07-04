@@ -25,13 +25,14 @@
  */
 
 package org.databene.domain.address;
+
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.document.csv.CSVLineIterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class Country {
 
 	private static final String DEFAULT_MOBILE_PHONE_PATTERN = "[1-9][0-9][0-9]";
 
-	private static final Log logger = LogFactory.getLog(Country.class);
+	private static final Logger logger = LoggerFactory.getLogger(Country.class);
 
     private static String FILE_NAME = "org/databene/domain/address/country.csv";
 

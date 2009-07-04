@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,11 +38,11 @@ import java.util.List;
 
 import javax.sql.ConnectionEventListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.LogCategories;
 import org.databene.commons.db.DBUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Wraps a connection for logging of JDBC connection handling.<br/>
@@ -52,7 +52,7 @@ import org.databene.commons.db.DBUtil;
  */
 public class PooledConnectionHandler implements InvocationHandler {
     
-    private static final Log jdbcLogger = LogFactory.getLog(LogCategories.JDBC);
+    private static final Logger jdbcLogger = LoggerFactory.getLogger(LogCategories.JDBC);
     
     private static long nextId = 0;
 

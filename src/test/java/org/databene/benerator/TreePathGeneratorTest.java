@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,8 @@ package org.databene.benerator;
 import org.databene.benerator.util.TreePathGenerator;
 import org.databene.commons.tree.DefaultTreeModel;
 import org.databene.commons.tree.DefaultTreeNode;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the TreePathGenerator.<br/>
@@ -40,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TreePathGeneratorTest extends GeneratorClassTest {
 
-    private static final Log logger = LogFactory.getLog(TreePathGeneratorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TreePathGeneratorTest.class);
 
     public TreePathGeneratorTest() {
         super(TreePathGenerator.class);
@@ -68,7 +67,7 @@ public class TreePathGeneratorTest extends GeneratorClassTest {
         DefaultTreeModel<String> model = new DefaultTreeModel<String>(root);
         TreePathGenerator generator = new TreePathGenerator(model);
         for (int i = 0; i < 10; i++)
-            logger.debug(generator.generate());
+            logger.debug(generator.generate().toString());
     }
 
 }

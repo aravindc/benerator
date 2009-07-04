@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,8 +32,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.databene.model.depend.NodeState.*;
 
@@ -45,7 +45,7 @@ import static org.databene.model.depend.NodeState.*;
  */
 public class DependencyModel<E extends Dependent<E>> {
     
-    private static final Log logger = LogFactory.getLog(DependencyModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(DependencyModel.class);
     
     private Map<E, Node<E>> nodeMappings;
     
@@ -192,7 +192,7 @@ public class DependencyModel<E extends Dependent<E>> {
     private void logState(List<Node<E>> intermediates) {
         logger.error(intermediates.size() + " unresolved intermediates on DependencyModel error: ");
         for (Node<E> node : intermediates)
-            logger.error(node);
+            logger.error(node.toString());
     }
 
     private Node<E> findForceable(List<Node<E>> candidates) {

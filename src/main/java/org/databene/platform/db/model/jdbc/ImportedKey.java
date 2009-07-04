@@ -26,9 +26,9 @@
 
 package org.databene.platform.db.model.jdbc;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.platform.db.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import java.sql.SQLException;
  */
 class ImportedKey {
     
-    private static final Log logger = LogFactory.getLog(ImportedKey.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImportedKey.class);
     
     private DBTable pkTable;
 

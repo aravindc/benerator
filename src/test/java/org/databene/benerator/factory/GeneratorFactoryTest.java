@@ -45,8 +45,8 @@ import org.databene.benerator.primitive.regex.RegexStringGeneratorTest;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the {@link GeneratorFactory}.<br/><br/>
@@ -55,7 +55,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class GeneratorFactoryTest extends GeneratorTest {
 
-    private static Log logger = LogFactory.getLog(GeneratorFactoryTest.class);
+    private static Logger logger = LoggerFactory.getLogger(GeneratorFactoryTest.class);
 
     // boolean source -----------------------------------------------------------------------------------------------
 
@@ -236,6 +236,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // formatting generators -------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public void testGetConvertingGenerator() {
         Generator<Double> source = new RandomDoubleGenerator(0, 9);
         NumberFormat format = DecimalFormat.getInstance();
@@ -264,6 +265,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // collection generators -------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public void testGetCollectionGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (Sequence sequence : Sequence.getInstances()) {
@@ -273,6 +275,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void testGetCollectionGeneratorByCardinalityDistributionFunction() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         int minSize = 0;
@@ -304,6 +307,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
         AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);

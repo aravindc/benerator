@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.primitive.LightweightStringGenerator;
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.commons.StringUtil;
 
 /**

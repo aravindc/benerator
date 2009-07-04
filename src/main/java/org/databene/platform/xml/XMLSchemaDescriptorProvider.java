@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
@@ -56,6 +54,8 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.UnresolvedTypeDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -877,6 +877,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 
     private static final String TYPE = "type";
 
-    private static Log logger = LogFactory.getLog(XMLSchemaDescriptorProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(XMLSchemaDescriptorProvider.class);
 
 }

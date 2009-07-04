@@ -28,8 +28,8 @@ package org.databene.platform.db;
 
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.HeavyweightIterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -106,7 +106,7 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
             resultSet = null;
             DBUtil.close(statement);
         } catch (SQLException e) {
-            logger.error(e, e);
+            logger.error("Error closing ResultSet", e);
         }
     }
     
@@ -117,6 +117,6 @@ public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
         return getClass().getSimpleName() + '[' + query + ']';
     }
 
-    private static final Log logger = LogFactory.getLog(ResultSetIterator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultSetIterator.class);
 
 }

@@ -26,10 +26,10 @@
 
 package org.databene.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 
@@ -41,7 +41,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class TaskRunner {
 
-    private static final Log logger = LogFactory.getLog(TaskRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(TaskRunner.class);
 
     public static void run(Task task, Context context, long invocations,
                            PageListener pager, long pageSize, int threadCount, ExecutorService executor) {

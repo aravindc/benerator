@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,10 +29,10 @@ package org.databene.benerator.xml;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.xml.XMLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,7 +46,7 @@ import junit.framework.TestCase;
  */
 public class XMLFileGeneratorTest extends TestCase {
     
-    private static final Log logger = LogFactory.getLog(XMLFileGeneratorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(XMLFileGeneratorTest.class);
     
 /*
     private static final String ROOT_ELEMENT = "product";

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,8 @@
 
 package org.databene.task;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements a PageListener that logs its invocations in info level.<br/>
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LoggingPageListener implements PageListener {
 
-    private static final Log logger = LogFactory.getLog(LoggingPageListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoggingPageListener.class);
 
     public void pageStarting(int currentPageNo, long totalPages) {
         logger.info("pageStarting(" + currentPageNo + ", " + totalPages + ')');

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,11 @@
 
 package org.databene.benerator.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides an abstract implementation of a generator that validates its generated values.<br/>
@@ -40,7 +40,7 @@ import org.databene.commons.Validator;
 public abstract class ValidatingGenerator<P> implements Generator<P> {
 
     /** The Logger */
-    private static Log logger = LogFactory.getLog(ValidatingGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(ValidatingGenerator.class);
 
     /** The number of invalid consecutive generations that causes a warning */
     public static final int WARNING_THRESHOLD = 100;

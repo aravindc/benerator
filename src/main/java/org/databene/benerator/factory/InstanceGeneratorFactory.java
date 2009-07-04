@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,8 +34,8 @@ import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates entity generators from entity metadata.<br/>
@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class InstanceGeneratorFactory {
 
-    private static final Log logger = LogFactory.getLog(InstanceGeneratorFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstanceGeneratorFactory.class);
 
     // attributes ------------------------------------------------------------------------------------------------------
     

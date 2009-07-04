@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,12 +33,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LogCategories;
 import org.databene.commons.db.DBUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link InvocationHandler} implementation for a proxy to the {@link Statement} interface
@@ -52,8 +52,8 @@ import org.databene.commons.db.DBUtil;
 
 public class LoggingStatementHandler implements InvocationHandler {
 
-    private static final Log sqlLogger = LogFactory.getLog(LogCategories.SQL); 
-    private static final Log jdbcLogger = LogFactory.getLog(LogCategories.JDBC);
+    private static final Logger sqlLogger = LoggerFactory.getLogger(LogCategories.SQL); 
+    private static final Logger jdbcLogger = LoggerFactory.getLogger(LogCategories.JDBC);
 
 	// attributes ------------------------------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,12 +26,12 @@
 
 package org.databene.benerator.util;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ui.ConsoleInfoPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.List;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
  */
 public class LineShuffler {
 
-    public static final Log logger = LogFactory.getLog(LineShuffler.class);
+    public static final Logger logger = LoggerFactory.getLogger(LineShuffler.class);
 
     public static void main(String[] args) throws IOException {
         if (args.length < 2) {

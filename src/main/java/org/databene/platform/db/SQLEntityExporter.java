@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,13 +28,13 @@ package org.databene.platform.db;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.Assert;
 import org.databene.commons.db.DBUtil;
 import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exports Entities to a SQL file.<br/><br/>
@@ -44,7 +44,7 @@ import org.databene.platform.csv.CSVEntityExporter;
  */
 public class SQLEntityExporter extends TextFileExporter<Entity> {
 
-    private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(CSVEntityExporter.class);
     
     // defaults --------------------------------------------------------------------------------------------------------
     

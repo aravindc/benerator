@@ -3,25 +3,28 @@ package org.databene.benerator.primitive.regex;
 import java.util.regex.Pattern;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.LocaleUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link RegexStringGenerator}.
  * Created: 20.08.2006 09:21:19
+ * @author Volker Bergmann
  */
 public class RegexStringGeneratorTest extends GeneratorClassTest {
 
-    private static Log logger = LogFactory.getLog(RegexStringGeneratorTest.class);
+    private static Logger logger = LoggerFactory.getLogger(RegexStringGeneratorTest.class);
 
     public RegexStringGeneratorTest() {
         super(RegexStringGenerator.class);
     }
 
+    @Override
     protected void setUp() throws Exception {
+    	super.setUp();
         Locale.setDefault(LocaleUtil.getFallbackLocale());
     }
 

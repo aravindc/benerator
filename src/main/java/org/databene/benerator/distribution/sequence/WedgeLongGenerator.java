@@ -29,8 +29,8 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.commons.BeanUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Long Generator that implements a 'wedge' Long Sequence.<br/>
@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
 
-    private static final Log logger = LogFactory.getLog(WedgeLongGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(WedgeLongGenerator.class);
 
     private Long cursor;
     private long end;

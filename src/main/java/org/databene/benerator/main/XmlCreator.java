@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,11 +30,11 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ui.ConsoleInfoPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main class for generating XML files from the command line.<br/><br/>
@@ -44,7 +44,7 @@ import org.databene.commons.ui.ConsoleInfoPrinter;
  */
 public class XmlCreator {
     
-    private static final Log logger = LogFactory.getLog(XmlCreator.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlCreator.class);
 
     /**
      * @param args

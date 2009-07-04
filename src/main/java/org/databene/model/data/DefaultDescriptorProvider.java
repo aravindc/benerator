@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,12 +28,12 @@ package org.databene.model.data;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.xml.XMLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of the DescriptorProvider interface.<br/><br/>
@@ -42,7 +42,7 @@ import org.databene.commons.xml.XMLUtil;
  */
 public class DefaultDescriptorProvider implements DescriptorProvider {
     
-    private static Log logger = LogFactory.getLog(DefaultDescriptorProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(DefaultDescriptorProvider.class);
     
     protected Map<String, TypeDescriptor> typeMap;
     protected String id;

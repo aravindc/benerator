@@ -28,9 +28,9 @@ package org.databene.benerator.sample;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.GeneratorClassTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the {@link AttachedWeightSampleGenerator}.<br/>
@@ -40,7 +40,7 @@ import org.databene.benerator.GeneratorClassTest;
  */
 public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
 
-    private static Log logger = LogFactory.getLog(AttachedWeightSampleGeneratorTest.class);
+    private static Logger logger = LoggerFactory.getLogger(AttachedWeightSampleGeneratorTest.class);
 
     public AttachedWeightSampleGeneratorTest() {
         super(AttachedWeightSampleGenerator.class);
@@ -51,6 +51,7 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
         new AttachedWeightSampleGenerator<String>();
     }
 
+    @SuppressWarnings("unchecked")
     public void testDistribution() throws Exception {
         WeightedSample<Integer>[] samples = new WeightedSample[] {
             new WeightedSample<Integer>(0, 0.1),

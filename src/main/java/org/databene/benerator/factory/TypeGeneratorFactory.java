@@ -29,8 +29,6 @@ package org.databene.benerator.factory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ScriptGenerator;
@@ -51,6 +49,9 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.databene.model.data.TypeDescriptor.*;
 
 /**
@@ -61,7 +62,7 @@ import static org.databene.model.data.TypeDescriptor.*;
  */
 public class TypeGeneratorFactory {
     
-    private static final Log logger = LogFactory.getLog(TypeGeneratorFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
     public static Generator<? extends Object> createTypeGenerator(
     		TypeDescriptor descriptor, boolean unique, BeneratorContext context) {

@@ -28,8 +28,6 @@ package org.databene.benerator.factory;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.id.IdProvider;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -52,6 +50,8 @@ import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.TypedIterable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
 
@@ -65,7 +65,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     
     protected ComponentBuilderFactory() { }
 
-    private static final Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComponentBuilderFactory.class);
     
     private static DataModel dataModel = DataModel.getDefaultInstance();
 
@@ -175,6 +175,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return new PlainComponentBuilder(descriptor.getName(), generator);
     }
     
+    @SuppressWarnings("unchecked")
     public static ComponentBuilder createIdBuilder(IdDescriptor descriptor, BeneratorContext context) {
         IdProvider idProvider = DescriptorUtil.getIdProvider(descriptor, context);
         Generator<Object> generator = new IdGenerator(idProvider);
@@ -186,6 +187,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     // non-public helpers ----------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<? extends Object> generator, BeneratorContext context) {
         Long maxCount = DescriptorUtil.getMaxCount(instance, context);

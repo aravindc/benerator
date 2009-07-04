@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,14 +35,14 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.xml.XMLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,7 +56,7 @@ import java.util.ArrayList;
  */
 public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
 
-    private static final Log logger = LogFactory.getLog(DbUnitEntityIterator.class);
+    private static final Logger logger = LoggerFactory.getLogger(DbUnitEntityIterator.class);
 
     private Context context;
     
@@ -214,6 +214,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
             return columnNames[i];
         }
 
+        @Override
         public String toString() {
             return name + '[' + ArrayFormat.format(columnNames) + ']';
         }
@@ -252,6 +253,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
             return columnNames[i];
         }
 
+        @Override
         public String toString() {
             return tableName  + '[' + ArrayFormat.format(values) + ']';
         }

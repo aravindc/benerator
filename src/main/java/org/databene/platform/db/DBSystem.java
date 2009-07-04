@@ -44,8 +44,8 @@ import org.databene.model.depend.DependencyModel;
 import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.version.VersionNumber;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -826,7 +826,7 @@ public class DBSystem extends AbstractStorageSystem implements IdProviderFactory
         );
     }
 
-    static final Log logger = LogFactory.getLog(DBSystem.class);
-    static final Log jdbcLogger = LogFactory.getLog("org.databene.benerator.JDBC");
+    static final Logger logger = LoggerFactory.getLogger(DBSystem.class);
+    static final Logger jdbcLogger = LoggerFactory.getLogger("org.databene.benerator.JDBC");
 
 }

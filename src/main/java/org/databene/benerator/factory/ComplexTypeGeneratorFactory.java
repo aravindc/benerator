@@ -44,7 +44,6 @@ import org.databene.benerator.composite.SimpleTypeEntityGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.BasicParser;
-import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.ConverterChain;
@@ -57,8 +56,8 @@ import org.databene.platform.flat.FlatFileEntitySource;
 import org.databene.platform.xls.XLSEntitySource;
 import org.databene.platform.csv.CSVEntitySource;
 import org.databene.script.ScriptConverter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -68,9 +67,9 @@ import java.util.*;
  * Created: 08.09.2007 07:45:40
  * @author Volker Bergmann
  */
-public class ComplexTypeGeneratorFactory {
+public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 
-    private static final Log logger = LogFactory.getLog(ComplexTypeGeneratorFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComplexTypeGeneratorFactory.class);
 
     /** private constructor for preventing instantiation */
     private ComplexTypeGeneratorFactory() {}

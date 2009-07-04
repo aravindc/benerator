@@ -26,12 +26,12 @@
 
 package org.databene.benerator.primitive;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Context;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates Strings based on a Script.<br/><br/>
@@ -65,6 +65,6 @@ public class ScriptGenerator extends LightweightGenerator<Object>{
         return getClass().getSimpleName() + '[' + script + ']';
     }
 
-    private static final Log logger = LogFactory.getLog(ScriptGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScriptGenerator.class);
 
 }

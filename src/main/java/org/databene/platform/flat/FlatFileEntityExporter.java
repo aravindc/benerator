@@ -36,8 +36,8 @@ import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
 import org.databene.commons.format.PadFormat;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParsePosition;
 import java.text.ParseException;
@@ -50,8 +50,7 @@ import java.text.ParseException;
  */
 public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 	
-    private static final Log logger = LogFactory.getLog(FlatFileEntityExporter.class);
-    private static final Escalator escalator = new LoggerEscalator();
+    private static final Logger logger = LoggerFactory.getLogger(FlatFileEntityExporter.class);
 
     private Converter<Entity, String> converters[];
 
@@ -71,6 +70,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public void setColumns(String columnFormatList) {
         if (columnFormatList == null) {
             converters = null;

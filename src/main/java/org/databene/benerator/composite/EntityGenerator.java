@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,8 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.benerator.Generator;
 import org.databene.commons.Context;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class EntityGenerator implements Generator<Entity> {
 
-    private static final Log stateLogger = LogFactory.getLog("org.databene.benerator.STATE");
+    private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
     private String entityName;
     private Generator<Entity> source;

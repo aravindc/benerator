@@ -29,10 +29,10 @@ package org.databene.model.consumer;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parent class for Exporters that export data to a text file.<br/>
@@ -160,7 +160,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 	        	initPrinter();
 	        preClosePrinter();
         } catch (IOException e) {
-        	LogFactory.getLog(getClass()).error(e, e);
+        	LoggerFactory.getLogger(getClass()).error("Error closing file " + uri, e);
         } finally {
         	if (printer != null)
     	        printer.close();

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,12 +28,12 @@ package org.databene.benerator.composite;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.Context;
 import org.databene.model.data.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Encapsulates variables, entity generator and context behind a Generator interface.<br/><br/>
@@ -43,7 +43,7 @@ import org.databene.model.data.Entity;
  */
 public class ConfiguredEntityGenerator implements Generator<Entity> {
 	
-    private static Log logger = LogFactory.getLog(ConfiguredEntityGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(ConfiguredEntityGenerator.class);
     
     private static long entityCount = 0;
 

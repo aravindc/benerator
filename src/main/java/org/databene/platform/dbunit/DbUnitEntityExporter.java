@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,14 +38,14 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -58,7 +58,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     
     // attributes ------------------------------------------------------------------------------------------------------
 
-    private static final Log logger = LogFactory.getLog(DbUnitEntityExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(DbUnitEntityExporter.class);
 
     private static final String DEFAULT_FILE_ENCODING = "UTF-8";
     private static final String DEFAULT_URI = "data.dbunit.xml";

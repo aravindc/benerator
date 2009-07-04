@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,8 +33,8 @@ import org.databene.platform.bean.Entity2BeanConverter;
 import org.databene.platform.csv.CSVEntityIterator;
 import org.databene.commons.*;
 import org.databene.commons.iterator.ConvertingIterator;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.io.FileNotFoundException;
@@ -49,7 +49,7 @@ import java.io.FileWriter;
  */
 public class CityManager {
 
-    private static final Log logger = LogFactory.getLog(CityManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
 
     private static Set<String> simpleLocatorWords = CollectionUtil.toSet(
             "b.", "bei", "im", "am", "ob", "zum", "sopra", "di", "in");
@@ -118,7 +118,7 @@ public class CityManager {
                 instance.put(header[i], cells[i]);
             }
             if (logger.isDebugEnabled())
-                logger.debug(instance);
+                logger.debug(instance.toString());
 
             // create/setup state
             String stateId = instance.get("state");

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,9 @@
 
 package org.databene.domain.net;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.GeneratorClassTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A EMailGeneratorTest.<br/><br/>
@@ -39,7 +39,7 @@ import org.databene.benerator.GeneratorClassTest;
  */
 public class EMailAddressGeneratorTest extends GeneratorClassTest {
 	
-	private static final Log logger = LogFactory.getLog(EMailAddressGeneratorTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(EMailAddressGeneratorTest.class);
 
 	public EMailAddressGeneratorTest() {
 		super(EMailAddressGenerator.class);

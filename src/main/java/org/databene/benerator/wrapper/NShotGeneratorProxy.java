@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,17 +28,18 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Proxy that forwards a limited number of products of another Generator.<br/>
  * <br/>
  * Created: 01.09.2007 10:54:01
+ * @author Volker Bergmann
  */
 public class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
 
-    private static final Log logger = LogFactory.getLog(NShotGeneratorProxy.class);
+    private static final Logger logger = LoggerFactory.getLogger(NShotGeneratorProxy.class);
 
     private long shots;
 
@@ -50,6 +51,7 @@ public class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
         this.remainingShots = shots;
     }
 
+    @Override
     public boolean available() {
         if (remainingShots <= 0) {
             logger.debug("requested count reached for " + source);
@@ -58,6 +60,7 @@ public class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
         return super.available();
     }
 
+    @Override
     public E generate() {
         if (remainingShots <= 0)
             throw new IllegalGeneratorStateException("Generator not available.");
@@ -65,11 +68,13 @@ public class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
         return super.generate();
     }
 
+    @Override
     public void reset() {
         super.reset();
         remainingShots = shots;
     }
 
+    @Override
     public void close() {
         super.close();
         remainingShots = 0;

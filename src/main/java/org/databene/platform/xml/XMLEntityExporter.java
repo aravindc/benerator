@@ -38,9 +38,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
@@ -50,6 +47,8 @@ import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -61,7 +60,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileExporter<Entity> {
 
-    private static final Log logger = LogFactory.getLog(XMLEntityExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(XMLEntityExporter.class);
     
     // defaults --------------------------------------------------------------------------------------------------------
     

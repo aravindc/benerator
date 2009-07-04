@@ -33,11 +33,9 @@ import org.databene.model.data.Entity;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.StringUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,8 +50,7 @@ import java.util.List;
  */
 public class CSVEntityExporter extends TextFileExporter<Entity> {
 
-	private static final Log logger = LogFactory.getLog(CSVEntityExporter.class);
-    private static final Escalator escalator = new LoggerEscalator();
+	private static final Logger logger = LoggerFactory.getLogger(CSVEntityExporter.class);
     
     // defaults --------------------------------------------------------------------------------------------------------
     

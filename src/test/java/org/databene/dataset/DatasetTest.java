@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,10 +28,10 @@ package org.databene.dataset;
 
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.TestCase;
 
@@ -43,7 +43,7 @@ import junit.framework.TestCase;
  */
 public class DatasetTest extends TestCase {
     
-    private static Log logger = LogFactory.getLog(DatasetTest.class);
+    private static Logger logger = LoggerFactory.getLogger(DatasetTest.class);
     
     private static final String REGION = "org/databene/dataset/region";
     public static final String TYPE = "test";

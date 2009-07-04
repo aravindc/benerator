@@ -28,9 +28,9 @@ package org.databene.platform.db;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ArrayUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides abstractions of concepts that are implemented differently 
@@ -113,6 +113,6 @@ public class DatabaseDialect {
     		return builder.append(columnName);
     }
 
-    static final Log logger = LogFactory.getLog(DBSystem.class);
+    static final Logger logger = LoggerFactory.getLogger(DBSystem.class);
     
 }

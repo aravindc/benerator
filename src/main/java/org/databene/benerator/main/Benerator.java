@@ -33,8 +33,8 @@ import org.databene.commons.SystemInfo;
 import org.databene.commons.VMInfo;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.model.version.VersionNumber;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -52,8 +52,8 @@ public class Benerator {
 	
 	public static final String LOCALE_VM_PARAM = "benerator.locale";
 	
-	private static final Log logger = LogFactory.getLog(Benerator.class);
-	private static final Log configLogger = LogFactory.getLog(LogCategories.CONFIG);
+	private static final Logger logger = LoggerFactory.getLogger(Benerator.class);
+	private static final Logger configLogger = LoggerFactory.getLogger(LogCategories.CONFIG);
 
 	// methods ---------------------------------------------------------------------------------------------------------
 

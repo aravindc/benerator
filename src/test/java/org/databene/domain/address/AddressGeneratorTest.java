@@ -26,8 +26,6 @@
 
 package org.databene.domain.address;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.engine.BeneratorContext;
@@ -36,6 +34,8 @@ import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  */
 public class AddressGeneratorTest extends GeneratorClassTest {
 
-    private static final Log logger = LogFactory.getLog(AddressGeneratorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AddressGeneratorTest.class);
 
     public AddressGeneratorTest() {
         super(AddressGenerator.class);
@@ -94,10 +94,11 @@ public class AddressGeneratorTest extends GeneratorClassTest {
             	assertEquals(country, address.getCountry());
             else
             	assertEquals(Country.US, address.getCountry());
-            logger.debug(address);
+            logger.debug(address.toString());
         }
     }
     
+    @SuppressWarnings("unchecked")
     public void checkDescriptorMapping(Country country) throws Exception {
     	String xml = 
     		"<variable name='x' " +

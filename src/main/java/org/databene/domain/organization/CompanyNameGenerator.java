@@ -26,8 +26,6 @@
 
 package org.databene.domain.organization;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.primitive.LightweightStringGenerator;
@@ -42,6 +40,8 @@ import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.City;
 import org.databene.domain.address.CityGenerator;
 import org.databene.domain.address.Country;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates company names.<br/><br/>
@@ -51,7 +51,7 @@ import org.databene.domain.address.Country;
  */
 public class CompanyNameGenerator extends LightweightStringGenerator {
 	
-	private static final Log logger = LogFactory.getLog(CompanyNameGenerator.class);
+	private static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
     private static final String ORG = "org/databene/domain/organization/";
     private static final String PERS = "org/databene/domain/person/";

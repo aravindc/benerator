@@ -1,4 +1,5 @@
 /*
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,8 +46,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.distribution.sequence.SequenceFactory;
@@ -98,6 +97,8 @@ import org.databene.task.PageListener;
 import org.databene.task.Task;
 import org.databene.task.TaskException;
 import org.databene.task.TaskRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -127,8 +128,8 @@ public class DescriptorRunner {
 	private static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet("pagesize", "threads", "consumer", "onError");
 
-	private static final Log logger = LogFactory.getLog(DescriptorRunner.class);
-	private static final Log commentLogger = LogFactory.getLog(LogCategories.COMMENT);
+	private static final Logger logger = LoggerFactory.getLogger(DescriptorRunner.class);
+	private static final Logger commentLogger = LoggerFactory.getLogger(LogCategories.COMMENT);
 
 	// attributes ------------------------------------------------------------------------------------------------------
 
@@ -547,9 +548,9 @@ public class DescriptorRunner {
 		descriptor.setNullable(false);
 		ErrorHandler errorHandler = parseOnError(element, getClass().getName());
 		if (!isSubTask)
-			logger.info(descriptor);
+			logger.info(descriptor.toString());
 		else if (logger.isDebugEnabled())
-			logger.debug(descriptor);
+			logger.debug(descriptor.toString());
 		
 		// parse consumers
 		ConsumerChain<Entity> consumerChain = parseConsumers(element, CREATE_ENTITIES.equals(element.getNodeName()));

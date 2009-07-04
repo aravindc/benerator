@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,9 @@ package org.databene.model.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Merges and organizes entity definitions of different systems.<br/><br/>
@@ -41,7 +41,7 @@ import org.databene.commons.ConfigurationError;
  */
 public class DataModel {
 	
-	private Log logger = LogFactory.getLog(DataModel.class);
+	private Logger logger = LoggerFactory.getLogger(DataModel.class);
     
     private static final DataModel defaultInstance = new DataModel();
 

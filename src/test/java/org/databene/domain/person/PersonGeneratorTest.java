@@ -28,8 +28,8 @@ package org.databene.domain.person;
 
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.domain.address.Country;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ import java.util.Locale;
  */
 public class PersonGeneratorTest extends GeneratorClassTest {
 
-    private static final Log logger = LogFactory.getLog(PersonGeneratorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersonGeneratorTest.class);
 
     public PersonGeneratorTest() {
         super(PersonGenerator.class);
@@ -52,7 +52,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMANY);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
-            logger.debug(person);
+            logger.debug(person.toString());
         }
     }
 
@@ -60,7 +60,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         PersonGenerator generator = new PersonGenerator(Country.RUSSIA, new Locale("ru"));
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
-            logger.debug(person);
+            logger.debug(person.toString());
         }
     }
 
@@ -68,7 +68,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         PersonGenerator generator = new PersonGenerator(Country.POLAND, new Locale("pl"));
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
-            logger.debug(person);
+            logger.debug(person.toString());
         }
     }
 
@@ -76,7 +76,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         PersonGenerator generator = new PersonGenerator(Country.CHINA, Locale.CHINESE);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
-            logger.debug(person);
+            logger.debug(person.toString());
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,10 @@
 
 package org.databene.domain.organization;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.GeneratorClassTest;
 import org.databene.domain.organization.CompanyNameGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,7 +39,7 @@ import org.databene.domain.organization.CompanyNameGenerator;
  */
 public class CompanyNameGeneratorTest extends GeneratorClassTest {
 
-	private static Log logger = LogFactory.getLog(CompanyNameGeneratorTest.class);
+	private static Logger logger = LoggerFactory.getLogger(CompanyNameGeneratorTest.class);
 
     public CompanyNameGeneratorTest() {
 		super(CompanyNameGenerator.class);

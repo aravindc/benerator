@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,11 @@
 
 package org.databene.platform.db;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -91,5 +91,5 @@ public class ResultSetConverter extends FixedSourceTypeConverter<ResultSet, Obje
         }
     }
     
-    private static final Log logger = LogFactory.getLog(ResultSetConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultSetConverter.class);
 }

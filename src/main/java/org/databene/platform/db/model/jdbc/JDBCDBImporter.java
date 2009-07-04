@@ -37,8 +37,8 @@ import org.databene.commons.ErrorHandler.Level;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.model.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
@@ -50,7 +50,7 @@ import java.util.*;
  */
 public final class JDBCDBImporter implements DBImporter {
 
-    private static final Log logger = LogFactory.getLog(JDBCDBImporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JDBCDBImporter.class);
 
     private final Connection connection;
 
@@ -390,8 +390,8 @@ public final class JDBCDBImporter implements DBImporter {
 	        	DBUtil.close(indexSet);
 	        }
 	        for (DBIndexInfo indexInfo : tableIndexes.values()) {
+                DBIndex index = null;
 	            try {
-	                DBIndex index;
 	                DBColumn[] columns = table.getColumns(indexInfo.columnNames);
 	                if (indexInfo.unique) {
 	                    DBUniqueConstraint constraint = new DBUniqueConstraint(indexInfo.name, columns);
@@ -407,7 +407,7 @@ public final class JDBCDBImporter implements DBImporter {
 	                }
 	                table.addIndex(index);
 	            } catch (ObjectNotFoundException e) {
-	                logger.error(e);
+	                logger.error("Error parsing index: " + index, e);
 	            }
 	        }
 	    }
@@ -492,6 +492,6 @@ public final class JDBCDBImporter implements DBImporter {
     }
     
     public void setFaultTolerant(boolean faultTolerant) {
-    	this.errorHandler = new ErrorHandler(getClass().getName(), (faultTolerant ? Level.warn : Level.fatal));
+    	this.errorHandler = new ErrorHandler(getClass().getName(), (faultTolerant ? Level.warn : Level.error));
     }
 }
