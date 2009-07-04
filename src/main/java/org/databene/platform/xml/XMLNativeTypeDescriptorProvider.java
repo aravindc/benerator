@@ -35,7 +35,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLSchemaNativeTypeProvider extends DefaultDescriptorProvider {
+public class XMLNativeTypeDescriptorProvider extends DefaultDescriptorProvider {
 
     private static final String REGEX_YEAR = "\\-?\\d{4,}";
     private static final String REGEX_MONTH_NUMBER = "(0[1-9]|1[0-2])";
@@ -43,7 +43,7 @@ public class XMLSchemaNativeTypeProvider extends DefaultDescriptorProvider {
     private static final String REGEX_TIMEZONE = "(Z|[+\\-]\\d{2}:\\d{2})";
     private static final String REGEX_OPTIONAL_TIMEZONE = REGEX_TIMEZONE + '?';
 
-    public XMLSchemaNativeTypeProvider(String id) {
+    public XMLNativeTypeDescriptorProvider(String id) {
         super(id);
 
         // schema types that resemble the benerator primitives

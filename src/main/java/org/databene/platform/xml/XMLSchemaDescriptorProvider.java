@@ -117,7 +117,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     
     public void setSchemaUri(String schemaUri) {
         try {
-            dataModel.addDescriptorProvider(new XMLSchemaNativeTypeProvider(SCHEMA_NAMESPACE));
+            dataModel.addDescriptorProvider(new XMLNativeTypeDescriptorProvider(SCHEMA_NAMESPACE));
     		Document document = parse(schemaUri);
     		this.namespaces = getNamespaces(document);
             this.id = getTargetNamespace(document);
@@ -634,11 +634,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             descriptor = parseAttributeAppinfo(annotation, descriptor);
         String fixed = attributeElement.getAttribute("fixed");
         if (!StringUtil.isEmpty(fixed))
-            descriptor.getLocalType(false).setValues(fixed);
+            ((SimpleTypeDescriptor) descriptor.getLocalType(false)).setValues(fixed);
         else {
             String defaultValue = attributeElement.getAttribute("default");
             if (!StringUtil.isEmpty(defaultValue))
-                descriptor.getLocalType(false).setValues(defaultValue);
+                ((SimpleTypeDescriptor) descriptor.getLocalType(false)).setValues(defaultValue);
         }
         descriptor.setCount(1L);
         if ("prohibited".equals(attributeElement.getAttribute("use")))
