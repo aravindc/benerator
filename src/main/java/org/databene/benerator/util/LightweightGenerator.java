@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 
 /**
- * Helper for lightweight generators that do not have a life cycle.
+ * Helper class for generators that do not have a life cycle.
  * For these, the close() and reset() methods are implemented with
  * an empty body.<br/>
  * <br/>
@@ -38,26 +38,10 @@ import org.databene.benerator.IllegalGeneratorStateException;
  */
 public abstract class LightweightGenerator<E> implements Generator<E> {
 
-    private Class<E> generatedType;
-
-    @SuppressWarnings("unchecked")
     protected LightweightGenerator() {
-        this.generatedType = (Class<E>) Object.class;
     }
 
-    protected LightweightGenerator(Class<E> generatedType) { // TODO v0.6 remove this constructor, 'generatedType' attribute and getGeneratedType() method
-        this.generatedType = generatedType; 
-    }
-    
     // Generator interface implementation ------------------------------------------------------------------------------
-
-    public Class<E> getGeneratedType() {
-        return generatedType;
-    }
-    
-	public void setGeneratedType(Class<E> generatedType) {
-		this.generatedType = generatedType;
-	}
 
 	public void validate() {
     }
