@@ -37,7 +37,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 
 /**
- * TODO document class PersistentIncrementGenerator.<br/>
+ * Local implementation of an increment {@link Generator} that behaves like a database sequence.<br/>
  * <br/>
  * Created at 29.05.2009 19:35:27
  * @since 0.6.0
@@ -46,25 +46,33 @@ import org.databene.commons.IOUtil;
 
 public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 	
-	// TODO test
-	
-    private static final String FILENAME = LocalSequenceGenerator.class.getSimpleName() + ".properties";
+    static final String FILENAME = LocalSequenceGenerator.class.getSimpleName() + ".properties";
     
 	private static final Map<String, IncrementGenerator> MAP = new HashMap<String, IncrementGenerator>();
 	
+	// Initialization --------------------------------------------------------------------------------------------------
+
 	static {
 		init();
 	}
 
+	public LocalSequenceGenerator() {
+		this("default");
+	}
+	
 	public LocalSequenceGenerator(String name) {
 		super(getOrCreateSource(name));
 	}
 	
+	// Generator interface ---------------------------------------------------------------------------------------------
+
 	@Override
 	public void close() {
 		persist();
 		super.close();
 	}
+	
+	// private helpers -------------------------------------------------------------------------------------------------
 
 	private static void init() {
 		if (IOUtil.isURIAvailable(FILENAME)) {
