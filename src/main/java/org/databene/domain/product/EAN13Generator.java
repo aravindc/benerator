@@ -77,6 +77,7 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + (unique ? "[unique]" : "");
     }

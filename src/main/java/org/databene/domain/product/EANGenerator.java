@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -64,10 +64,13 @@ public class EANGenerator extends GeneratorProxy<String> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    @Override
     public Class<String> getGeneratedType() {
         return String.class;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
     public void validate() {
         if (dirty) {
             if (unique)
@@ -83,12 +86,14 @@ public class EANGenerator extends GeneratorProxy<String> {
         }
     }
 
+    @Override
     public boolean available() {
         if (dirty)
             validate();
         return super.available();
     }
 
+    @Override
     public String generate() {
         if (dirty)
             validate();
@@ -97,6 +102,7 @@ public class EANGenerator extends GeneratorProxy<String> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + (unique ? "[unique]" : "");
     }
