@@ -30,7 +30,6 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.primitive.number.adapter.SequenceFactory;
 
 /**
  * Random Walk {@link Sequence} implementation that supports a variable step width.<br/>

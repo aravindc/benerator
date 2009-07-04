@@ -28,7 +28,7 @@ package org.databene.benerator.distribution;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.function.ConstantFunction;
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 import java.util.Arrays;
 import java.util.Random;

@@ -27,9 +27,9 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.number.adapter.WrapperFactory;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 
 /**

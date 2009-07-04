@@ -30,7 +30,7 @@ import java.util.Random;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
  * Creates random {@link Integer} values with a uniform distribution.<br/>

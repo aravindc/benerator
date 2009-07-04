@@ -29,7 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
  * Long Generator that implements a 'randomWalk' Long Sequence.<br/>

@@ -32,8 +32,8 @@ import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
+import org.databene.benerator.distribution.sequence.SequenceFactory;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
-import org.databene.benerator.primitive.number.adapter.SequenceFactory;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConfigurationError;

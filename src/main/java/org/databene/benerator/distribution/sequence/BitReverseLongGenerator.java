@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
  * Generates integers reversing the bits of a continuously rising number.<br/>

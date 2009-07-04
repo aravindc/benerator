@@ -26,7 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.benerator.util.SimpleRandom;
 
 /**

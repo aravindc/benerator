@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.number.adapter.WrapperFactory;
+import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
  * TODO document class LongBasedSequence.<br/>
