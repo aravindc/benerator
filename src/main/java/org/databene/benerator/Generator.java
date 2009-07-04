@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator;
 
-import org.databene.commons.Heavyweight;
+import java.io.Closeable;
 
 /**
  * This is the basic Generator interface, the mother of all generators.<br/>
@@ -54,7 +54,7 @@ import org.databene.commons.Heavyweight;
  *
  * Created: 07.06.2006 18:51:28
  */
-public interface Generator<E> extends Heavyweight {
+public interface Generator<E> extends Closeable {
 
     /**
      * This is a convenience method for checking the validity of a Generator's setup.
