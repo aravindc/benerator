@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,7 +41,6 @@ import org.databene.commons.operation.FirstNonNullSelector;
 public abstract class TypeDescriptor extends FeatureDescriptor {
 
     // restriction names
-    public static final String VALUES       = "values";
     public static final String VALIDATOR    = "validator";
 
     // config names
@@ -56,17 +55,12 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String SEPARATOR    = "separator";
     
     public static final String CYCLIC       = "cyclic";
-    public static final String PROXY        = "proxy";
-    public static final String PROXY_PARAM1 = "proxy-param1";
-    public static final String PROXY_PARAM2 = "proxy-param2";
 
     public static final String LOCALE       = "locale";
     public static final String DATASET      = "dataset";
     public static final String NESTING      = "nesting";
 
     public static final String DISTRIBUTION = "distribution";
-    public static final String VARIATION1   = "variation1";
-    public static final String VARIATION2   = "variation2";
     
     // attributes ------------------------------------------------------------------------------------------------------
     
@@ -96,7 +90,6 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
             // For performance reasons, retain only the first non-null validator
         
         // config
-        addConfig(VALUES,         String.class, null);
         addConfig(GENERATOR,      String.class,   null);
         addConfig(CONVERTER,      String.class,   null);
         addConfig(PATTERN,        String.class,   null);
@@ -106,17 +99,12 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(SEPARATOR,      String.class,   null);
         addConfig(ENCODING,       String.class,   null);
         addConfig(CYCLIC,         Boolean.class,  null);
-        addConfig(PROXY,          String.class,   null);
-        addConfig(PROXY_PARAM1,   Long.class,     null, true); // obsolete and replaced with a functional-style declaration
-        addConfig(PROXY_PARAM2,   Long.class,     null, true); // obsolete and replaced with a functional-style declaration
         // i18n config
         addConfig(LOCALE,         Locale.class,   null);
         addConfig(DATASET,        String.class,   null);
         addConfig(NESTING,        String.class,   null);
         // distribution
         addConfig(DISTRIBUTION,   String.class,   null);
-        addConfig(VARIATION1,     String.class,    "1"); // TODO v0.6 make variation1 obsolete for sequences
-        addConfig(VARIATION2,     String.class,    "1"); // TODO v0.6 make variation2 obsolete for sequences
 	}
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -129,18 +117,6 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         this.parentName = parentName;
     }
     
-    public String getValues() {
-        return (String) getDetailValue(VALUES);
-    }
-
-    public void setValues(String values) {
-        setDetailValue(VALUES, values);
-    }
-
-	public void addValue(String value) {
-		setValues(getValues() + ',' + value);
-	}
-
     public String getValidator() {
         return (String) getDetailValue(VALIDATOR);
     }
@@ -221,30 +197,6 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         setDetailValue(CYCLIC, cyclic);
     }
 
-    public String getProxy() {
-        return (String) getDetailValue(PROXY);
-    }
-
-    public void setProxy(String proxy) {
-        setDetailValue(PROXY, proxy);
-    }
-
-    public Long getProxyParam1() {
-        return (Long) getDetailValue(PROXY_PARAM1);
-    }
-
-    public void setProxyParam1(Long param) {
-        setDetailValue(PROXY_PARAM1, param);
-    }
-
-    public Long getProxyParam2() {
-        return (Long) getDetailValue(PROXY_PARAM2);
-    }
-
-    public void setProxyParam2(Long param) {
-        setDetailValue(PROXY_PARAM2, param);
-    }
-
     public String getDataset() {
         return (String) getDetailValue(DATASET);
     }
@@ -277,29 +229,8 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         setDetailValue(DISTRIBUTION, distribution);
     }
     
-    public String getVariation1() {
-        return (String)getDetailValue(VARIATION1);
-    }
-
-    public void setVariation1(String variation1) {
-        setDetailValue(VARIATION1, variation1);
-    }
-
-    public String getVariation2() {
-        return (String)getDetailValue(VARIATION2);
-    }
-
-    public void setVariation2(String variation2) {
-        setDetailValue(VARIATION2, variation2);
-    }
-
     // literal construction helpers ------------------------------------------------------------------------------------
     
-    public TypeDescriptor withValues(String values) {
-    	this.setValues(values);
-    	return this;
-    }
-
     public TypeDescriptor withSource(String source) {
         setSource(source);
         return this;

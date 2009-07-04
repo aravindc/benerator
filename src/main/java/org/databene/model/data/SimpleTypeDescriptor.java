@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,8 @@ import org.databene.commons.operation.MinNumberLiteral;
 import org.databene.commons.operation.MinOperation;
 
 /**
- * Describes a simple type.<br/><br/>
+ * Describes a simple type.<br/>
+ * <br/>
  * Created: 03.03.2008 08:58:58
  * @since 0.5.0
  * @author Volker Bergmann
@@ -52,9 +53,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public static final String TRUE_QUOTA = "trueQuota";
     public static final String MIN_LENGTH = "minLength";
     public static final String MAX_LENGTH = "maxLength";
-
     public static final String LENGTH_DISTRIBUTION = "lengthDistribution";
     
+    public static final String CONSTANT     = "constant";
+    public static final String VALUES       = "values";
+
     private PrimitiveType primitiveType = null;
 
     public SimpleTypeDescriptor(String name) {
@@ -81,8 +84,10 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         // string setup
         addRestriction(MIN_LENGTH,      Integer.class,     1, new MaxOperation<Integer>());
         addRestriction(MAX_LENGTH,      Integer.class,    30, new MinOperation<Integer>());
-        // other config
         addConfig(LENGTH_DISTRIBUTION,  String.class, "random");
+        // other config
+        addConfig(VALUES,               String.class, null);
+        addConfig(CONSTANT,             String.class, null);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -190,6 +195,26 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         setDetailValue(LENGTH_DISTRIBUTION, lengthDistribution);
     }
 
+    public String getValues() {
+        return (String) getDetailValue(VALUES);
+    }
+
+    public void setValues(String values) {
+        setDetailValue(VALUES, values);
+    }
+
+	public void addValue(String value) {
+		setValues(getValues() + ',' + value);
+	}
+
+    public String getConstant() {
+        return (String) getDetailValue(CONSTANT);
+    }
+
+    public void setConstant(String constant) {
+        setDetailValue(CONSTANT, constant);
+    }
+
     // literate build helpers ------------------------------------------------------------------------------------------
 
     public SimpleTypeDescriptor withMin(String min) {
@@ -209,16 +234,6 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     public SimpleTypeDescriptor withPattern(String pattern) {
         setPattern(pattern);
-        return this;
-    }
-
-    public SimpleTypeDescriptor withVariation1(String variation1) {
-        setVariation1(variation1);
-        return this;
-    }
-
-    public SimpleTypeDescriptor withVariation2(String variation2) {
-        setVariation2(variation2);
         return this;
     }
 
@@ -245,6 +260,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public SimpleTypeDescriptor withUri(String source) {
         setSource(source);
         return this;
+    }
+
+    public SimpleTypeDescriptor withValues(String values) {
+    	this.setValues(values);
+    	return this;
     }
 
     // generic property access -----------------------------------------------------------------------------------------
