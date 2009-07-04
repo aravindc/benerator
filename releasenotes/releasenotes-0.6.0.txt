@@ -1,0 +1,61 @@
+release notes benerator 0.6.0
+=============================
+
+
+summary
+-------
+
+
+enhancements (Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
+----------------------------------------------------------------------------------------------------------------
+- new class Version
+- Improved JDK integration by supporting java.io.Closeable and java.io.Flushable
+- logging database, driver and JDBC version info on first connect
+- new class LocalSequenceGenerator
+- supporting source attribute in property element, e.g. <property name="number" source="LocalSequenceGenerator('filenum')"/>
+- referencing the current entity by 'this', e.g. <attribute name="mail" script="{someone@${this.inetDomain}}"  />
+- Made LightweightGenerator more lightweight and moved the 'generatedType' attribute to TypedLightweightGenerator
+- supporting weights in value list, e.g. values="A[1],B[4],C[1]"
+- new 'math' domain:
+  - Fibonacci Sequence
+  - Padovan Sequence
+- new Validators:
+  - UnluckyNumberValidator
+- new Converters:
+  - URLEncodeConverter
+  - URLDecodeConverter
+- new class 'Version' which provides the benerator version number
+- descriptor file features
+  - added support for package import, e.g. <import package="com.my"/>
+  - new constant attribute definition, e.g. <attribute ... constant="0" />
+
+
+changes
+-------
+- Removed all deprecations
+- Redesigned distribution concept
+- removed descriptor attributes and merged them with the distribution concept: 
+  proxy, proxy-param1, proxy-param2, variation1, variation2
+- Removed the 'generatedType' property implementation from 'LightweightGenerator' 
+  and moved it to the new 'TypedLightweightGenerator'.
+  When migrating older generator implementations that extended LightweightGenerator, 
+  make the extend TypedLightweightGenerator now.
+- Class Entity
+  - renamed getName() to name()
+  - new method removeComponent(String componentName) 
+  - new copy constructor
+- descriptor file format
+  - removed support for proxy-param attributes
+- removed deprecated classes
+  - org.databene.model.Processor
+  - org.databene.model.consumer.ProcessorToConsumerAdapter
+- replaced Heavyweight interface with java.io.Closeable
+- Task interface:
+  - replaced destroy() with close() (from java.io.Closeable)
+- Supporting JSR 303 Bean Validation, removed old Validator interface
+
+
+bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
+-------------------------------------------------------------------------------------------------
+- parsing comma-separated consumer lists
+- Entity's 'name' property
