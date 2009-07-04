@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.primitive;
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
 import org.databene.regex.RegexTokenizer;
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.commons.LocaleUtil;
 
 import java.util.*;
@@ -56,7 +56,7 @@ public class CharacterGenerator implements Generator<Character> {
     private boolean dirty;
 
     /** The SampleGenerator to choose from the character set */
-    private WeightedSampleGenerator<Character> source;
+    private AttachedWeightSampleGenerator<Character> source;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -147,7 +147,7 @@ public class CharacterGenerator implements Generator<Character> {
             try {
                 if (pattern != null)
                     values = new RegexParser(locale).parseCharSet(new RegexTokenizer(pattern));
-                this.source = new WeightedSampleGenerator<Character>(Character.class, values);
+                this.source = new AttachedWeightSampleGenerator<Character>(Character.class, values);
                 source.validate();
                 this.dirty = false;
             } catch (ParseException e) {
