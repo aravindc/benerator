@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,9 @@
 
 package org.databene.domain.person;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.StringUtil;
 import org.databene.commons.Validator;
 
@@ -41,15 +44,28 @@ import org.databene.commons.Validator;
  * @see "http://www.socialsecurity.gov/employer/ssnvhighgroup.htm"
  */
 
-public class SSNValidator_US implements Validator<String> {
+public class SSNValidator_US implements ConstraintValidator<SSN_US, String>, Validator<String> {
 	
-	private int maxAreaCode = 772;
+	private int maxAreaCode;
+	
+    public SSNValidator_US() {
+	    this(SSN_US.DEFAULT_MAX_AREA_CODE);
+    }
 
-	/**
-	 * @see org.databene.commons.Validator#valid(java.lang.Object)
-	 */
+    public SSNValidator_US(int maxAreaCode) {
+	    this.maxAreaCode = maxAreaCode;
+    }
+
+	public void initialize(SSN_US parameters) {
+	    this.maxAreaCode = parameters.maxAreaCode();
+    }
+
+	public boolean isValid(String ssn, ConstraintValidatorContext context) {
+		return valid(ssn);
+	}
+
 	public boolean valid(String ssn) {
-		if (ssn == null || ssn.length() != 11)
+	    if (ssn == null || ssn.length() != 11)
 			return false;
 		String[] tokens = StringUtil.tokenize(ssn, '-');
 		if (tokens.length != 3)
@@ -84,6 +100,6 @@ public class SSNValidator_US implements Validator<String> {
 			return false;
 		}
 		return true;
-	}
+    }
 
 }

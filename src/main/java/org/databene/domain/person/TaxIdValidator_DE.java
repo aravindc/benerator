@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,10 @@
 
 package org.databene.domain.person;
 
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Validates German tax id numbers (Steueridentifikationsnummer).<br/>
@@ -35,10 +38,14 @@ import org.databene.commons.Validator;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TaxIdValidator_DE implements Validator<String> {
+public class TaxIdValidator_DE extends AbstractConstraintValidator<TaxId_DE, String> implements Validator<String> {
+
+    public boolean isValid(String number, ConstraintValidatorContext context) {
+		return valid(number);
+	}
 
 	public boolean valid(String number) {
-		if (number == null || number.length() != 11)
+	    if (number == null || number.length() != 11)
 			return false;
 		boolean[] digitUsed = new boolean[10];
 		// assure that at most one digit is used twice
@@ -59,9 +66,9 @@ public class TaxIdValidator_DE implements Validator<String> {
 			return false;
 		int checksum = calculateChecksum(number);
 		return (number.charAt(10) == checksum + '0');
-	}
+    }
 
-	public int calculateChecksum(String number) {
+	public static int calculateChecksum(String number) {
 		int product = 0;
 		for (int i = 0; i < 10; i++) {
 			int sum = (number.charAt(i) - '0' + product) % 10;
