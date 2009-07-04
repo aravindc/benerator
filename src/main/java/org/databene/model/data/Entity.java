@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,8 +45,10 @@ public class Entity implements Composite<Object> {
 
 	private static final BeanDescriptorProvider BEAN_DESCRIPTOR_PROVIDER = new BeanDescriptorProvider();
 	
-    private OrderedNameMap<Object> components;
     private ComplexTypeDescriptor descriptor;
+    private OrderedNameMap<Object> components;
+    
+    // constructors ----------------------------------------------------------------------------------------------------
 
     public Entity(String name, Object ... componentKeyValuePairs) {
         this(new ComplexTypeDescriptor(name), componentKeyValuePairs);
@@ -62,8 +64,15 @@ public class Entity implements Composite<Object> {
         for (int i = 0; i < componentKeyValuePairs.length; i += 2)
             setComponent((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
     }
+    
+    public Entity(Entity that) {
+        this.descriptor = that.descriptor;
+        this.components = new OrderedNameMap<Object>(that.components);
+    }
+    
+    // interface -------------------------------------------------------------------------------------------------------
 
-    public String getName() {
+    public String name() {
         return (descriptor != null ? descriptor.getName() : null);
     }
 
@@ -111,8 +120,17 @@ public class Entity implements Composite<Object> {
 		components.put(internalComponentName, component);
     }
     
+    public void remove(String componentName) {
+		removeComponent(componentName);
+    }    
+    
+    public void removeComponent(String componentName) {
+		components.remove(componentName);
+    }    
+    
     // java.lang.overrides ---------------------------------------------------------------------------------------------
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -124,11 +142,13 @@ public class Entity implements Composite<Object> {
         return this.components.equalsIgnoreOrder(that.components);
     }
 
+    @Override
     public int hashCode() {
         return descriptor.hashCode() * 29 + components.hashCode();
     }
 
+    @Override
     public String toString() {
-        return new CompositeFormatter(true, true).render(getName() + '[', this, "]");
+        return new CompositeFormatter(true, true).render(name() + '[', this, "]");
     }
 }
