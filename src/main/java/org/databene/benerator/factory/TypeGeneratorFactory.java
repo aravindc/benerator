@@ -34,14 +34,9 @@ import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ScriptGenerator;
-import org.databene.benerator.sample.DistributingGenerator;
-import org.databene.benerator.sample.SequencedSampleGenerator;
-import org.databene.benerator.sample.WeightedSampleGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
@@ -54,9 +49,6 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
-import org.databene.model.function.WeightFunction;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 import static org.databene.model.data.TypeDescriptor.*;
@@ -81,25 +73,6 @@ public class TypeGeneratorFactory {
             return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context);
         else
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
-    }
-
-    protected static Generator<? extends Object> createSampleGenerator(
-    		TypeDescriptor descriptor, boolean unique, BeneratorContext context) {
-        Generator<? extends Object> generator = null;
-        // check for samples
-        Object[] values = DescriptorUtil.getValues(descriptor, context);
-        if (!ArrayUtil.isEmpty(values)) {
-            Distribution distribution = DescriptorUtil.getDistribution(descriptor, unique, context);
-            if (distribution instanceof Sequence)
-                generator = new SequencedSampleGenerator<Object>(Object.class, (Sequence) distribution, values);
-            else if (distribution instanceof WeightFunction)
-                generator = new WeightedSampleGenerator<Object>(Object.class, (WeightFunction) distribution, values);
-            else if (distribution == null)
-                generator = new SequencedSampleGenerator<Object>(Object.class, values);
-            else
-                throw new ConfigurationError("Unsupported distribution type: " + distribution.getClass());
-        }
-        return generator;
     }
 
     protected static Generator<? extends Object> createScriptGenerator(TypeDescriptor descriptor, Context context) {
@@ -182,10 +155,5 @@ public class TypeGeneratorFactory {
         	converter = (Converter<S, T>) new AnyConverter<Object, T>(targetType, descriptor.getPattern());
         return new ConvertingGenerator<S, T>(generator, converter);
     }
-
-	public static Generator<? extends Object> applyDistribution(TypeDescriptor descriptor,
-			Distribution distribution, Generator<? extends Object> generator) {
-		return new DistributingGenerator(generator, distribution, descriptor.getVariation1(), descriptor.getVariation2());
-	}
 
 }
