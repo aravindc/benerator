@@ -26,6 +26,8 @@
 
 package org.databene.task;
 
+import java.io.Closeable;
+
 import org.databene.commons.Context;
 
 /**
@@ -42,7 +44,7 @@ import org.databene.commons.Context;
  * Created: 06.07.2007 06:30:22
  * @author Volker Bergmann
  */
-public interface Task extends Runnable {
+public interface Task extends Runnable, Closeable {
 
     /** @return the name of the task. */
     String getTaskName();
@@ -59,6 +61,4 @@ public interface Task extends Runnable {
     /** executes the main functionality of the task. */
     void run();
     
-    /** closes the task and releases all resources. */
-    void destroy();
 }

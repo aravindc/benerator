@@ -29,6 +29,7 @@ package org.databene.task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.IOUtil;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -178,7 +179,7 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
             e.printStackTrace();
         }
         if (realTask instanceof ThreadSafe)
-            realTask.destroy();
+            IOUtil.close(realTask);
         return localInvocationCount;
     }
 
@@ -186,7 +187,7 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
         Task task = new LoopedTask(realTask, currentPageSize);
         task.init(context);
         task.run();
-        task.destroy();
+        IOUtil.close(task);
         return currentPageSize;
     }
 

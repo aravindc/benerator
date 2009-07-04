@@ -29,6 +29,7 @@ package org.databene.task;
 import java.util.concurrent.CountDownLatch;
 
 import org.databene.commons.Context;
+import org.databene.commons.IOUtil;
 
 /**
  * Thread implementation that executes a Task.<br/>
@@ -64,7 +65,7 @@ public class TaskRunnable implements Runnable {
                 target.init(context);
             target.run();
             if (context != null)
-                target.destroy();
+                IOUtil.close(target);
         } finally {
             if (latch != null)
             	latch.countDown();

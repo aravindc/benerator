@@ -26,6 +26,8 @@
 
 package org.databene.task;
 
+import java.io.IOException;
+
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 
@@ -90,7 +92,10 @@ public abstract class AbstractTask implements Task {
         return true;
     }
 
-    public void destroy() { }
+    @SuppressWarnings("unused")
+    public void close() throws IOException {
+    	// empty
+    }
 
     @Override
     public String toString() {

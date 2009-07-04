@@ -26,6 +26,8 @@
 
 package org.databene.task;
 
+import java.io.IOException;
+
 import org.databene.commons.Context;
 
 /**
@@ -62,8 +64,8 @@ public abstract class TaskProxy extends AbstractTask {
     }
 
     @Override
-    public void destroy() {
-        realTask.destroy();
+    public void close() throws IOException {
+        realTask.close();
     }
 
     @Override
