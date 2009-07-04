@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,12 @@
 
 package org.databene.domain.organization;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.primitive.LightweightStringGenerator;
+import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -47,6 +50,8 @@ import org.databene.domain.address.Country;
  * @author Volker Bergmann
  */
 public class CompanyNameGenerator extends LightweightStringGenerator {
+	
+	private static final Log logger = LogFactory.getLog(CompanyNameGenerator.class);
 
     private static final String ORG = "org/databene/domain/organization/";
     private static final String PERS = "org/databene/domain/person/";
@@ -57,7 +62,7 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
     private boolean location;
     private boolean legalForm;
     
-    private Generator<String> core;
+    private AlternativeGenerator<String> core;
     private Generator<String> sectorGenerator;
     private Generator<String> legalFormGenerator;
     private Generator<String> locationGenerator;
@@ -82,38 +87,17 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
         setDataset(datasetName);
     }
     
-	@SuppressWarnings("unchecked")
     public void setDataset(String datasetName) {
-        Country country = Country.getInstance(datasetName);
-        if (location && country != null) {
-            Generator<String> city = new ConvertingGenerator<City, String>(
-            		new CityGenerator(country), new PropertyAccessConverter("name"));
-            locationGenerator = new NullableGenerator<String>(
-                    	new AlternativeGenerator<String>(String.class, 
-                    			new ConstantGenerator<String>(country.getLocalName()), 
-                    			city), 
-                    	0.8
-                );
-            
-        } else
-            locationGenerator = new ConstantGenerator<String>(null);
-        if (legalForm)
-        	legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
-        if (sector)
-        	sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
-        Generator<String> person = new MessageGenerator("{0} {1}", 
-                new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
-                new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
-            );
-        Generator<String> artificial = new MessageGenerator("{0}{1}", 
-                new SequencedCSVSampleGenerator<String>(ORG + "artificial1.csv"),
-                new SequencedCSVSampleGenerator<String>(ORG + "artificial2.csv")
-            );
-        Generator<String> tech = new MessageGenerator("{0}{1}", 
-                new SequencedCSVSampleGenerator<String>(ORG + "tech1.csv"),
-                new SequencedCSVSampleGenerator<String>(ORG + "tech2.csv")
-            );
-        core = new AlternativeGenerator<String>(String.class, artificial, tech, person);
+        initLocationGenerator(datasetName);
+        initLegalFormGenerator(datasetName);
+        initSectorGenerator(datasetName);
+        
+        core = new AlternativeGenerator<String>(String.class);
+        core.addSource(new RegexStringGenerator("[A-Z]{3}"));
+        
+        createPersonNameGenerator(datasetName, core);
+        createArtificialNameGenerator(core);
+        createTechNameGenerator(core);
 	}
 
 	public String generate() {
@@ -138,5 +122,88 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
     public String toString() {
         return getClass().getSimpleName() + '[' + datasetName + ']';
     }
+
+    // private helpers -------------------------------------------------------------------------------------------------
+    
+	private static void createTechNameGenerator(AlternativeGenerator<String> coreGenerator) {
+	    try {
+            Generator<String> tech = new MessageGenerator("{0}{1}", 
+                    new SequencedCSVSampleGenerator<String>(ORG + "tech1.csv"),
+                    new SequencedCSVSampleGenerator<String>(ORG + "tech2.csv")
+                );
+            tech.validate();
+	        coreGenerator.addSource(tech);
+        } catch (Exception e) {
+        	logger.info("Cannot create technical company name generator: " + e.getMessage());
+        }
+    }
+
+	private static void createArtificialNameGenerator(AlternativeGenerator<String> coreGenerator) {
+	    try {
+            Generator<String> artificial = new MessageGenerator("{0}{1}", 
+                    new SequencedCSVSampleGenerator<String>(ORG + "artificial1.csv"),
+                    new SequencedCSVSampleGenerator<String>(ORG + "artificial2.csv")
+                );
+            artificial.validate();
+	        coreGenerator.addSource(artificial);
+        } catch (Exception e) {
+        	logger.info("Cannot create artificial company name generator: " + e.getMessage());
+        }
+    }
+
+	private static void createPersonNameGenerator(String datasetName, AlternativeGenerator<String> coreGenerator) {
+	    try {
+	        Generator<String> person = new MessageGenerator("{0} {1}", 
+	                new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
+	                new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
+	            );
+	        person.validate();
+	        coreGenerator.addSource(person);
+        } catch (Exception e) {
+        	logger.info("Cannot create person-based company name generator: " + e.getMessage());
+        }
+    }
+
+	private void initSectorGenerator(String datasetName) {
+	    if (sector) {
+        	try {
+        		sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
+        	} catch (Exception e) {
+        		logger.info("Cannot create sector generator: " + e.getMessage());
+        	}
+        }
+    }
+
+	private void initLegalFormGenerator(String datasetName) {
+	    if (legalForm) {
+        	try {
+        		legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
+        	} catch (Exception e) {
+        		logger.info("Cannot create legal form generator: " + e.getMessage());
+        	}
+        }
+    }
+
+	@SuppressWarnings("unchecked")
+    private void initLocationGenerator(String datasetName) {
+	    Country country = Country.getInstance(datasetName);
+        if (location && country != null) {
+        	try {
+	            Generator<String> city = new ConvertingGenerator<City, String>(
+	            		new CityGenerator(country), new PropertyAccessConverter("name"));
+	            locationGenerator = new NullableGenerator<String>(
+	                    	new AlternativeGenerator<String>(String.class, 
+	                    			new ConstantGenerator<String>(country.getLocalName()), 
+	                    			city), 
+	                    	0.8
+	                );
+        	} catch (Exception e) {
+        		logger.info("Cannot create location generator: " + e.getMessage());
+                locationGenerator = new ConstantGenerator<String>(null);
+        	}
+        } else
+            locationGenerator = new ConstantGenerator<String>(null);
+    }
+
 
 }
