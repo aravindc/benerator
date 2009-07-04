@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,25 +26,34 @@
 
 package org.databene.domain.product;
 
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Validates an EAN code.<br/>
+ * Validates an 8- or 13-digit EAN code.<br/>
  * <br/>
  * Created: 29.07.2007 07:59:58
+ * @author Volker Bergmann
  */
-public class EANValidator implements Validator<String> {
+public class EANValidator extends AbstractConstraintValidator<EAN8, String> implements Validator<String> {
 
-    public boolean valid(String s) {
-        if (s == null || (s.length() != 8 && s.length() != 13))
+    public boolean isValid(String number, ConstraintValidatorContext context) {
+    	return valid(number);
+    }
+
+    public boolean valid(String number) {
+        if (number == null || (number.length() != 8 && number.length() != 13))
             return false;
         int sum = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
+        for (int i = 0; i < number.length(); i++) {
+            char c = number.charAt(i);
             if (!Character.isDigit(c))
                 return false;
             sum += (c - '0') * (1 + (i % 2) * 2);
         }
         return (sum % 10 == 0);
-    }
+     }
+
 }
