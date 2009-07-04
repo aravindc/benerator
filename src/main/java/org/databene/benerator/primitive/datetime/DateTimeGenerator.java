@@ -30,11 +30,12 @@ import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.databene.benerator.primitive.number.adapter.LongGenerator;
+import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
-import org.databene.model.function.Sequence;
-import org.databene.model.function.String2DistributionConverter;
 
 /**
  * Creates DateTimes with separate date and time distribution characteristics.<br/><br/>
@@ -46,8 +47,20 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
-    private LongGenerator dateGenerator = new LongGenerator();
-    private LongGenerator timeGenerator = new LongGenerator();
+    private Generator<Long> dateGenerator = null;
+    private Generator<Long> timeGenerator = null;
+    
+    private long minDate;
+    private long maxDate;
+    private long datePrecision;
+    private Distribution dateDistribution;
+    
+    private long minTime;
+    private long maxTime;
+    private long timePrecision;
+    private Distribution timeDistribution;
+    
+    boolean valid;
     
     public DateTimeGenerator() {
         this(
@@ -57,56 +70,73 @@ public class DateTimeGenerator extends LightweightDateGenerator {
             TimeUtil.time(17, 0));
     }
 
-    public DateTimeGenerator(Date minDate, Date maxDate, Time minTime, Time maxTine) {
+    public DateTimeGenerator(Date minDate, Date maxDate, Time minTime, Time maxTime) {
         setMinDate(minDate);
         setMaxDate(maxDate);
         setMinTime(minTime);
-        setMaxTime(maxTine);
+        setMaxTime(maxTime);
+        setDateDistribution(Sequence.RANDOM);
+        setTimeDistribution(Sequence.RANDOM);
+        setDatePrecision("00-00-01");
+        setTimePrecision(TimeUtil.time(0, 1));
+        this.valid = false;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
     public void setMinDate(Date minDate) {
-        dateGenerator.setMin(minDate.getTime());
+        this.minDate = minDate.getTime();
     }
     
     public void setMaxDate(Date maxDate) {
-        dateGenerator.setMax(maxDate.getTime());
+        this.maxDate = maxDate.getTime();
     }
     
     public void setDatePrecision(String datePrecision) {
-        dateGenerator.setPrecision(dateConverter.convert(datePrecision));
+        this.datePrecision = dateConverter.convert(datePrecision);
     }
     
-    public void setDateDistribution(String distribution) {
-        dateGenerator.setDistribution(Sequence.getInstance(distribution, true));
+    public void setDateDistribution(Distribution distribution) {
+        this.dateDistribution = distribution;
     }
     
     public void setMinTime(Time minTime) {
-        timeGenerator.setMin(minTime.getTime());
+        this.minTime = minTime.getTime();
     }
     
     public void setMaxTime(Time maxTime) {
-        timeGenerator.setMax(maxTime.getTime());
+        this.maxTime = maxTime.getTime();
     }
     
     public void setTimePrecision(Time timePrecision) {
-        timeGenerator.setPrecision(timePrecision.getTime());
+        this.timePrecision = timePrecision.getTime();
     }
     
-    public void setTimeDistribution(String distribution) {
-        timeGenerator.setDistribution(String2DistributionConverter.parse(distribution, null, null)); // TODO v0.6 support script expressions
+    public void setTimeDistribution(Distribution distribution) {
+        this.timeDistribution = distribution;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
     
     @Override
     public boolean available() {
+    	if (!valid)
+    		init();
     	return dateGenerator.available() && timeGenerator.available();
     }
     
     public Date generate() {
+    	if (!valid)
+    		init();
         return new Date(dateGenerator.generate() + timeGenerator.generate());
+    }
+
+    private void init() {
+    	this.dateGenerator = GeneratorFactory.getNumberGenerator(
+    			Long.class, minDate, maxDate, datePrecision, dateDistribution, 0);
+    	this.timeGenerator = GeneratorFactory.getNumberGenerator(
+    			Long.class, minTime, maxTime, timePrecision, timeDistribution, 0);
+	    this.valid = true;
     }
 
 }

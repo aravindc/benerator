@@ -26,29 +26,34 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.primitive.number.adapter.LongGenerator;
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.commons.Period;
 import org.databene.commons.converter.DateString2DurationConverter;
-import org.databene.model.function.Distribution;
-import org.databene.model.function.Sequence;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 /**
  * creates date values by a LongGenerator.
  * <br/>
  * Created: 07.06.2006 22:54:28
- * @see LongGenerator
+ * @author Volker Bergmann
  */
 public class DateGenerator implements Generator<Date> {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
     /** The generator to use for generating millisecond values */
-    private LongGenerator source;
+    private Generator<Long> source;
+    
+    private long min;
+    private long max;
+    private long precision;
+    private Distribution distribution;
+    
+    private boolean initialized = false;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -64,87 +69,33 @@ public class DateGenerator implements Generator<Date> {
 
     /** Initializes the generator to create dates of a Sequence or WeightFunction */
     public DateGenerator(Date min, Date max, long precision, Distribution distribution) {
-        source = new LongGenerator(
-                (min != null ? min.getTime() : Long.MIN_VALUE),
-                (max != null ? max.getTime() : Long.MAX_VALUE),
-                precision,
-                distribution
-        );
-    }
-
-    // TODO v0.6 make the sequence contain the variation params and remove this method
-    public DateGenerator(Date min, Date max, long precision, Distribution distribution, Date variation1, Date variation2) {
-        source = new LongGenerator(
-                (min != null ? min.getTime() : Long.MIN_VALUE),
-                (max != null ? max.getTime() : Long.MAX_VALUE),
-                precision,
-                distribution,
-                (variation1 != null ? variation1.getTime() + TimeZone.getDefault().getRawOffset() : 1000L),
-                (variation2 != null ? variation2.getTime() + TimeZone.getDefault().getRawOffset() : 1000L)
-        );
+        this.distribution = distribution;
+		this.min = (min != null ? min.getTime() : Long.MIN_VALUE);
+		this.max = (max != null ? max.getTime() : Long.MAX_VALUE);
+		this.precision = precision;
+        source = distribution.createGenerator(Long.class, this.min, this.max, this.precision);
     }
 
     // config properties -----------------------------------------------------------------------------------------------
 
-    /** Returns the earliest date to generate */
-    public Date getMin() {
-        return new Date(source.getMin());
-    }
-
     /** Sets the earliest date to generate */
     public void setMin(Date min) {
-        source.setMin(min.getTime());
-    }
-
-    /** Returns the latest date to generate */
-    public Date getMax() {
-        return new Date(source.getMax());
+        this.min = min.getTime();
     }
 
     /** Sets the latest date to generate */
     public void setMax(Date max) {
-        source.setMax(max.getTime());
+        this.max = max.getTime();
     }
-
-    /** Returns the date precision in milliseconds */
-    /*
-    public String getPrecision() {
-        return source.getPrecision();
-    }*/
 
     /** Sets the date precision in milliseconds */
     public void setPrecision(String precision) {
-        source.setPrecision(dateConverter.convert(precision));
-    }
-
-    /** Returns the distribution used */
-    public Distribution getDistribution() {
-        return source.getDistribution();
+        this.precision = dateConverter.convert(precision);
     }
 
     /** Sets the distribution to use */
     public void setDistribution(Distribution distribution) {
-        source.setDistribution(distribution);
-    }
-
-    /** Returns the first sequence-specific variation parameter */
-    public Long getVariation1() {
-        return source.getVariation1();
-    }
-
-    /** Sets the first sequence-specific variation parameter */
-    public void setVariation1(Long varation1) {
-        source.setVariation1(varation1);
-    }
-
-    /** Returns the second sequence-specific variation parameter */
-    public Long getVariation2() {
-        return source.getVariation2();
-    }
-
-    /** Sets the second sequence-specific variation parameter */
-    public void setVariation2(Long variation2) {
-        source.setVariation2(variation2);
+        this.distribution = distribution;
     }
 
     // source interface ---------------------------------------------------------------------------------------------
@@ -154,11 +105,23 @@ public class DateGenerator implements Generator<Date> {
     }
 
     public void validate() {
-        source.validate();
+    	if (!initialized) {
+    		init();
+    		source.validate();
+    		this.initialized = true;
+    	}
+    }
+
+    public boolean available() {
+    	if (!initialized)
+    		validate();
+        return source.available();
     }
 
     /** Generates a Date by creating a millisecond value from the source generator and wrapping it into a Date */
     public Date generate() {
+    	if (!initialized)
+    		validate();
         return new Date(source.generate());
     }
 
@@ -170,12 +133,12 @@ public class DateGenerator implements Generator<Date> {
         source.close();
     }
 
-    public boolean available() {
-        return source.available();
-    }
-
     // implementation --------------------------------------------------------------------------------------------------
 
+    private void init() {
+    	this.source = distribution.createGenerator(Long.class, min, max, precision);
+    }
+    
     /** Returns the default start date as 80 years ago */
     private static Date defaultStartDate() {
         return new Date(currentDay().getTime() - 80L * 365 * Period.DAY.getMillis());
@@ -197,6 +160,6 @@ public class DateGenerator implements Generator<Date> {
 
     @Override
     public String toString() {
-    	return getClass().getSimpleName() + '[' + getMin() + '-' + getMax() + ']';
+    	return getClass().getSimpleName() + '[' + source + ']';
     }
 }
