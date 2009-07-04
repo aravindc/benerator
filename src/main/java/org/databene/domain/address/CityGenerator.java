@@ -26,7 +26,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.sample.WeightedSampleGenerator;
+import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.commons.ConfigurationError;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.io.IOException;
  * Created: 14.10.2007 21:24:25
  * @author Volker Bergmann
  */
-public class CityGenerator extends WeightedSampleGenerator<City> {
+public class CityGenerator extends AttachedWeightSampleGenerator<City> {
 
     public CityGenerator(Country country) {
         String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
