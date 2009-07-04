@@ -31,9 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.sequence.RandomWalkSequence;
+import org.databene.benerator.distribution.sequence.ShuffleSequence;
 import org.databene.benerator.primitive.number.adapter.SequenceFactory;
-import org.databene.benerator.primitive.number.distribution.RandomWalkSequence;
-import org.databene.benerator.primitive.number.distribution.ShuffleSequence;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConfigurationError;
@@ -42,6 +42,7 @@ import org.databene.commons.ConfigurationError;
  * Provides access to specific Sequence number Generators.<br/>
  * <br/>
  * Created: 11.09.2006 21:12:57
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class Sequence implements Distribution {
