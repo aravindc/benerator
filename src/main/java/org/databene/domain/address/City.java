@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,8 +28,6 @@ package org.databene.domain.address;
 
 import java.util.*;
 
-import org.databene.commons.Escalator;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 
@@ -37,12 +35,11 @@ import org.databene.commons.StringUtil;
  * Represents a city.<br/>
  * <br/>
  * Created: 11.06.2006 08:19:23
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class City {
 	
-	private static final Escalator escalator = new LoggerEscalator();
-
     private String name;
     private String nameExtension;
     private SortedSet<String> zipCodes;
@@ -88,18 +85,6 @@ public class City {
 
     public void setAreaCode(String phoneCode) {
         this.areaCode = phoneCode;
-    }
-
-    @Deprecated
-    public String getPhoneCode() {
-    	escalator.escalate("The 'phoneCode' property is deprecated, please use 'areaCode' instead", City.class, "Called setPhoneCode()");
-        return getAreaCode();
-    }
-
-    @Deprecated
-    public void setPhoneCode(String areaCode) {
-    	escalator.escalate("The 'phoneCode' property is deprecated, please use 'areaCode' instead", City.class, "Called getPhoneCode()");
-        setAreaCode(areaCode);
     }
 
     public State getState() {
