@@ -26,6 +26,7 @@
 
 package org.databene.benerator.main;
 
+import org.databene.benerator.Version;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.commons.LogCategories;
 import org.databene.commons.SystemInfo;
@@ -58,7 +59,7 @@ public class Benerator {
 
 	public static void main(String[] args) throws IOException {
 		String filename = (args.length > 0 ? args[0] : "benerator.xml");
-		configLogger.debug("Running benerator with file " + filename);
+		configLogger.debug("Running benerator " + Version.VERSION + " with file " + filename);
 		checkSystem();
         listScriptEngines();
 		new DescriptorRunner(filename).run();
