@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,10 @@
 
 package org.databene.domain.finance;
 
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.databene.domain.address.CountryCode2Validator;
 
 /**
@@ -38,15 +41,16 @@ import org.databene.domain.address.CountryCode2Validator;
  * @see "http://en.wikipedia.org/wiki/IBAN"
  * @see "http://de.wikipedia.org/wiki/International_Bank_Account_Number"
  */
-public class IBANValidator implements Validator<String> {
+public class IBANValidator extends AbstractConstraintValidator<IBAN, String> implements Validator<String> {
 
 	private CountryCode2Validator countryCodeValidator = new CountryCode2Validator();
 	
-	/**
-	 * @see org.databene.commons.Validator#valid(java.lang.Object)
-	 */
+    public boolean isValid(String iban, ConstraintValidatorContext context) {
+		return valid(iban);
+	}
+
 	public boolean valid(String iban) {
-		// check length
+	    // check length
 		if (iban == null || iban.length() < 15 || iban.length() > 32 )
 			return false;
 		// check country code
@@ -57,6 +61,6 @@ public class IBANValidator implements Validator<String> {
 		// check checksum
 		int checksum = IBANUtil.checksum(iban);
 		return (checksum == 1);
-	}
+    }
 
 }

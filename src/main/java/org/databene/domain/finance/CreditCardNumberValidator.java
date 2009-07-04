@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,10 @@
 
 package org.databene.domain.finance;
 
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Validates credit card numbers.<br/><br/>
@@ -34,9 +37,14 @@ import org.databene.commons.Validator;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CreditCardNumberValidator implements Validator<String> {
+public class CreditCardNumberValidator extends AbstractConstraintValidator<CreditCardNumber, String> 
+		implements Validator<String>{
 
-	public boolean valid(String number) {
+    public boolean isValid(String number, ConstraintValidatorContext arg1) {
+    	return valid(number);
+	}
+
+    public boolean valid(String number) {
 		if (number == null || number.length() < 13 || number.length() > 16)
 			return false;
 		int sum = 0;
@@ -49,6 +57,6 @@ public class CreditCardNumberValidator implements Validator<String> {
 			sum += digit > 9 ? digit - 9 : digit;
 		}
 		return sum % 10 == 0;
-	}
+    }
 
 }
