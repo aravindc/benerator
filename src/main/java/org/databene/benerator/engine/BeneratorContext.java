@@ -36,6 +36,7 @@ import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.context.PropertiesContext;
+import org.databene.domain.address.Country;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.script.ScriptUtil;
@@ -62,6 +63,10 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
     public    Long    maxCount             = null;
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
+
+	public BeneratorContext() {
+		this(".");
+	}
 	
 	public BeneratorContext(String contextUri) {
 		this.contextUri = contextUri;
@@ -106,6 +111,8 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
 	public void importDefaults() {
 		importPackage("org.databene.benerator.primitive.datetime");
+		importPackage("org.databene.benerator.distribution.sequence");
+		importPackage("org.databene.benerator.distribution.function");
 		importPackage("org.databene.benerator.primitive");
 		importPackage("org.databene.platform.flat");
 		importPackage("org.databene.platform.csv");
@@ -149,6 +156,9 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
 	public void setDefaultDataset(String defaultDataset) {
 		this.defaultDataset = defaultDataset;
+		Country country = Country.getInstance(defaultDataset, false);
+		if (country != null)
+			Country.setDefault(country);
 	}
 
 	public int getDefaultPagesize() {
