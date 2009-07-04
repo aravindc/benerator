@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.test;
 
 import org.databene.commons.Validator;
-import org.databene.commons.validator.AbstractValidator;
 
 /**
  * Mock implementation of the {@link Validator} interface.<br/>
@@ -37,7 +36,7 @@ import org.databene.commons.validator.AbstractValidator;
  * @author Volker Bergmann
  */
 
-public class ValidatorMock extends AbstractValidator<Integer> {
+public class ValidatorMock implements Validator<Integer> {
 	
 	public static ValidatorMock latestInstance;
 	

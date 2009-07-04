@@ -26,8 +26,8 @@
 
 package org.databene.benerator.test;
 
-import org.databene.model.function.AbstractWeightFunction;
-import org.databene.model.function.WeightFunction;
+import org.databene.benerator.distribution.AbstractWeightFunction;
+import org.databene.benerator.distribution.WeightFunction;
 
 /**
  * Mock implementation of the {@link WeightFunction} interface.<br/>
