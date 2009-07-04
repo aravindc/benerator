@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import junit.framework.AssertionFailedError;
  * Provides methods for testing generators and standard tests that act on generically created generator instances.<br/>
  * <br/>
  * Created: 13.11.2007 13:13:07
+ * @author Volker Bergmann
  */
 public abstract class GeneratorClassTest extends GeneratorTest {
 
@@ -42,11 +43,11 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         this.generatorClass = generatorClass;
     }
 
-    public GeneratorClassTest(Class<? extends Generator> generatorClass, String uri) {
+    public GeneratorClassTest(Class<? extends Generator<?>> generatorClass, String uri) {
         super(uri);
         this.generatorClass = generatorClass;
     }
-
+    
     // test methods that apply for all Generators ----------------------------------------------------------------------
 
     public void testDefaultConstructor() throws Throwable {
@@ -54,12 +55,12 @@ public abstract class GeneratorClassTest extends GeneratorTest {
     }
 
     public void testToString() throws Throwable {
-        Generator generator = generatorClass.newInstance();
+        Generator<?> generator = generatorClass.newInstance();
         assertCustomToStringMethod(generator);
     }
 
     public void testDefaultGenerationIfValid() throws Throwable {
-        Generator generator = generatorClass.newInstance();
+        Generator<?> generator = generatorClass.newInstance();
         boolean valid = true;
         try {
             generator.validate();
@@ -73,7 +74,7 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         }
     }
 
-    protected void assertCustomToStringMethod(Generator generator) {
+    protected void assertCustomToStringMethod(Generator<?> generator) {
         String s = generator.toString();
         String className = generator.getClass().getName();
         if (s.startsWith(className) && s.length() >= className.length() + 2

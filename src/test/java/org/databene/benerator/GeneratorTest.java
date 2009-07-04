@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,11 @@ import junit.framework.TestCase;
 import java.util.Set;
 import java.util.Collection;
 
-import org.databene.benerator.primitive.number.NumberGenerator;
+import javax.validation.ConstraintValidator;
+
+import org.databene.benerator.distribution.sequence.SequenceFactory;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Validator;
@@ -45,16 +49,27 @@ import org.apache.commons.logging.LogFactory;
  * Provides methods for testing generators.<br/>
  * <br/>
  * Created: 15.11.2007 14:46:31
+ * @author Volker Bergmann
  */
 public abstract class GeneratorTest extends TestCase {
 
     private static final Log logger = LogFactory.getLog(GeneratorTest.class);
+    
+    protected BeneratorContext context;
 
     public GeneratorTest() {
     }
 
     public GeneratorTest(String uri) {
         super(uri);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+    	super.setUp();
+        context = new BeneratorContext();
+        context.importDefaults();
+        SequenceFactory.setClassProvider(context);
     }
 
     // helper methods for this and child classes -----------------------------------------------------------------------
@@ -87,7 +102,14 @@ public abstract class GeneratorTest extends TestCase {
         return new Helper(generator);
     }
 
-    protected <T> Helper expectGenerations(Generator<T> generator, int n, Validator<T> ... validators) {
+    protected <T> Helper expectGenerations(Generator<T> generator, int n, ConstraintValidator ... validators) {
+        expectGenerationsOnce(generator, n, validators);
+        generator.reset();
+        expectGenerationsOnce(generator, n, validators);
+        return new Helper(generator);
+    }
+
+    protected <T> Helper expectGenerations(Generator<T> generator, int n, Validator ... validators) {
         expectGenerationsOnce(generator, n, validators);
         generator.reset();
         expectGenerationsOnce(generator, n, validators);
@@ -108,22 +130,22 @@ public abstract class GeneratorTest extends TestCase {
     // Number generator tests ------------------------------------------------------------------------------------------
 
     public static <T extends Number> void checkEqualDistribution(
-            Class<? extends NumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, double tolerance, T ... expectedValues) {
         Set<T> expectedSet = CollectionUtil.toSet(expectedValues);
         checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
     }
 
     public static <T extends Number> void checkEqualDistribution(
-            Class<? extends NumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, double tolerance, Set<T> expectedSet) {
         checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
     }
 
     private static <T extends Number> void checkDistribution(
-            Class<? extends NumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, boolean equalDistribution, double tolerance, Set<T> expectedSet) {
-        NumberGenerator<T> generator = BeanUtil.newInstance(generatorClass);
+    	AbstractNumberGenerator<T> generator = BeanUtil.newInstance(generatorClass);
         generator.setMin(min);
         generator.setMax(max);
         generator.setPrecision(precision);
@@ -159,6 +181,27 @@ public abstract class GeneratorTest extends TestCase {
         checkDistribution(counter, equalDistribution, tolerance, expectedSet);
     }
 
+    protected static void expectRelativeWeights(Generator<?> generator, int iterations, Object... expectedValueWeightPairs) {
+	    ObjectCounter<Object> counter = new ObjectCounter<Object>(expectedValueWeightPairs.length / 2);
+	    for (int i = 0; i < iterations; i++)
+	    	counter.count(generator.generate());
+	    Set<Object> productSet = counter.objectSet();
+	    double totalExpectedWeight = 0;
+	    for (int i = 1; i < expectedValueWeightPairs.length; i += 2)
+	    	totalExpectedWeight += ((Number) expectedValueWeightPairs[i]).doubleValue();
+
+	    for (int i = 0; i < expectedValueWeightPairs.length; i += 2) {
+            Object value = expectedValueWeightPairs[i];
+	    	double expectedWeight = ((Number) expectedValueWeightPairs[i + 1]).doubleValue() / totalExpectedWeight;
+			if (expectedWeight > 0) {
+	            assertTrue("Generated set does not contain value " + value, productSet.contains(value));
+				double measuredWeight = counter.getRelativeCount(value);
+				assertTrue(Math.abs(measuredWeight - expectedWeight) / expectedWeight < 0.15);
+			} else
+	    		assertFalse("Generated contains value " + value + " though it has zero weight", productSet.contains(value));
+	    }
+    }
+
     // collection checks -----------------------------------------------------------------------------------------------
 
     public static <E> void checkEqualDistribution(Collection<E> collection, double tolerance, Set<E> expectedSet) {
@@ -189,9 +232,9 @@ public abstract class GeneratorTest extends TestCase {
     }
 
     public static class Helper {
-        private Generator generator;
+        private Generator<?> generator;
 
-        public Helper(Generator generator) {
+        public Helper(Generator<?> generator) {
             this.generator = generator;
         }
 
@@ -245,7 +288,7 @@ public abstract class GeneratorTest extends TestCase {
     private <T>void expectUniqueFromSetOnce(Generator<T> generator, T... products) {
         generator.validate();
         Set<T> expectedSet = CollectionUtil.toSet(products);
-        UniqueValidator<T> validator = new UniqueValidator<T>();
+        UniqueValidator<Object> validator = new UniqueValidator<Object>();
         for (int i = 0; i < products.length; i++) {
             assertTrue("Generator has gone unavailable before creating a number of products " +
                     "that matches the expected set: " + generator, generator.available());
@@ -259,7 +302,7 @@ public abstract class GeneratorTest extends TestCase {
 
     private <T>void expectUniqueProductsOnce(Generator<T> generator, int n) {
         generator.validate();
-        UniqueValidator<T> validator = new UniqueValidator<T>();
+        UniqueValidator validator = new UniqueValidator();
         for (int i = 0; i < n; i++) {
             assertTrue("Generator is not available: " + generator, generator.available());
             T product = generator.generate();
@@ -268,22 +311,36 @@ public abstract class GeneratorTest extends TestCase {
         }
     }
 
-    private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator<T> ... validators) {
+    private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
         generator.validate();
         for (int i = 0; i < n; i++) {
             assertTrue("Generator has gone unavailable before creating the required number of products ",
                     generator.available());
             T product = generator.generate();
             logger.debug("created " + format(product));
-            for (Validator<T> validator : validators) {
+            for (Validator validator : validators) {
                 assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
                         validator.valid(product));
             }
         }
     }
 
-    private <T> void expectUniqueGenerationsOnce(Generator<T> generator, int n, Validator<T> ... validators) {
-        UniqueValidator<T> validator = new UniqueValidator<T>();
+    private <T> void expectGenerationsOnce(Generator<T> generator, int n, ConstraintValidator ... validators) {
+        generator.validate();
+        for (int i = 0; i < n; i++) {
+            assertTrue("Generator has gone unavailable before creating the required number of products ",
+                    generator.available());
+            T product = generator.generate();
+            logger.debug("created " + format(product));
+            for (ConstraintValidator validator : validators) {
+                assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
+                        validator.isValid(product, null));
+            }
+        }
+    }
+
+    private <T> void expectUniqueGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
+        UniqueValidator validator = new UniqueValidator();
         generator.validate();
         for (int i = 0; i < n; i++) {
             assertTrue("Generator has gone unavailable before creating the required number of products ",
