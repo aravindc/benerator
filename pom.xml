@@ -127,6 +127,13 @@
 		    <scope>runtime</scope>
 		</dependency>
         
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.8</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Dependencies to JDBC drivers that are closed source or not available on the maven repository -->
         <!-- 
 		<dependency>
