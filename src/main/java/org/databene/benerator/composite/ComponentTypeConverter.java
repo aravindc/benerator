@@ -59,7 +59,7 @@ public class ComponentTypeConverter extends FixedSourceTypeConverter<Entity, Ent
 	public Entity convert(Entity entity) throws ConversionException {
 		if (entity == null)
 			return null;
-		if (!type.getName().equals(entity.getName()))
+		if (!type.getName().equals(entity.name()))
 			throw new ConfigurationError("Expected '" + type.getName() + "', found: '" + entity + "'");
 		Map<String, Object> components = entity.getComponents();
 		for (Map.Entry<String, Object> entry : components.entrySet()) {
