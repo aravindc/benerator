@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -302,15 +302,27 @@ public class ModelParser {
     }
 
 	public void parseImport(Element element) {
+		
+		// check class import
 		String attribute = element.getAttribute("class");
 		if (!StringUtil.isEmpty(attribute))
 			context.importClass(attribute);
+		
+		// domain import
 		attribute = element.getAttribute("domain");
 		if (!StringUtil.isEmpty(attribute))
 			importDomain(attribute);
+		
+		// package import
+		attribute = element.getAttribute("package");
+		if (!StringUtil.isEmpty(attribute))
+			context.importPackage(attribute);
+		
+		// defaults import
 		if ("true".equals(element.getAttribute("defaults")))
 			context.importDefaults();
 	}
+
 
 	public void importDomain(String domain) {
 		if (domain.indexOf('.') < 0)
