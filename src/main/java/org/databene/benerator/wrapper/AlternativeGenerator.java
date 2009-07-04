@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.number.distribution.RandomIntegerGenerator;
+import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
