@@ -49,7 +49,7 @@ public class Entity2BeanConverter<T extends Object> extends FixedSourceTypeConve
         if (targetType != null)
             result = BeanUtil.newInstance(targetType);
         else
-            result = (T) BeanUtil.newInstance(entity.getName());
+            result = (T) BeanUtil.newInstance(entity.name());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet())
             BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue(), false);
         return result;
