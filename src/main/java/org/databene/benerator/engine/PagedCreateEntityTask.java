@@ -26,6 +26,7 @@
 
 package org.databene.benerator.engine;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -64,8 +65,8 @@ public class PagedCreateEntityTask extends PagedTask {
 	}
 
 	@Override
-	public void destroy() {
-		super.destroy();
+	public void close() throws IOException {
+		super.close();
 	    synchronized(generator) {
 	        generator.close();
 	    }

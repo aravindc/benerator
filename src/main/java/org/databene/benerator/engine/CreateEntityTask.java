@@ -26,6 +26,7 @@
 
 package org.databene.benerator.engine;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.databene.benerator.Generator;
@@ -74,15 +75,15 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
 	                return;
 	        }
 	        if (entity != null) {
-	            context.set(entity.getName(), entity);
+	        	//context.set(entity.name(), entity);
 	//            generationCount++;
 	            consumer.startConsuming(entity);
 	            for (Task subTask : subTasks) {
 	                if (subTask instanceof PagedCreateEntityTask)
-	                    ((PagedCreateEntityTask)subTask).reset();
+	                    ((PagedCreateEntityTask) subTask).reset();
 	                subTask.init(context);
 	                subTask.run();
-	                subTask.destroy();
+	                subTask.close();
 	            }
 	            consumer.finishConsuming(entity);
 	        }
@@ -92,10 +93,10 @@ public  class CreateEntityTask extends AbstractTask implements ThreadSafe {
     }
     
     @Override
-    public void destroy() {
+    public void close() throws IOException {
         if (!isSubTask)
             consumer.flush();
-        super.destroy();
+        super.close();
     }
     
 }
