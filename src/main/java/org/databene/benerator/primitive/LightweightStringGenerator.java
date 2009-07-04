@@ -26,10 +26,11 @@
 
 package org.databene.benerator.primitive;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
- * TODO document class LightweightStringGenerator.<br/>
+ * Parent class for lightweight {@link String} {@link Generator}s.<br/>
  * <br/>
  * Created at 26.05.2009 15:57:39
  * @since 0.6.0
