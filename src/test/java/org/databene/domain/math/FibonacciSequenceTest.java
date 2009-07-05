@@ -31,7 +31,7 @@ import org.databene.benerator.GeneratorTest;
 import org.databene.domain.math.FibonacciSequence;
 
 /**
- * TODO document class FibonacciSequenceTest.<br/>
+ * Tests the {@link FibonacciSequence}.<br/>
  * <br/>
  * Created at 03.07.2009 10:51:18
  * @since 0.6.0

@@ -31,7 +31,7 @@ import org.databene.domain.address.Country;
 import junit.framework.TestCase;
 
 /**
- * TODO document class UnluckyNumberValidatorTest.<br/>
+ * Tests the {@link UnluckyNumberValidator}.<br/>
  * <br/>
  * Created at 03.07.2009 08:57:20
  * @since 0.6.0
