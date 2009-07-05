@@ -28,9 +28,11 @@ package org.databene.domain.math;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.LongBasedSequence;
+import org.databene.benerator.distribution.Sequence;
 
 /**
- * TODO document class FibonacciSequence.<br/>
+ * {@link Sequence}-based implementation of the 
+ * <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci Sequence</a><br/>
  * <br/>
  * Created at 03.07.2009 10:43:09
  * @since 0.6.0

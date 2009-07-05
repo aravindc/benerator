@@ -26,12 +26,13 @@
 
 package org.databene.domain.math;
 
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
- * TODO document class PadovanLongGenerator.<br/>
+ * Generates numbers according to the <i>Padovan Sequence</i>.<br/>
  * <br/>
  * Created at 03.07.2009 13:22:41
+ * @see PadovanSequence
  * @since 0.6.0
  * @author Volker Bergmann
  */

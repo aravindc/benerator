@@ -26,10 +26,11 @@
 
 package org.databene.domain.math;
 
-import org.databene.benerator.primitive.number.adapter.AbstractNumberGenerator;
+import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
- * TODO document class FibonacciLongGenerator.<br/>
+ * Generates <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci Numbers</a>.<br/>
  * <br/>
  * Created at 03.07.2009 10:44:56
  * @since 0.6.0

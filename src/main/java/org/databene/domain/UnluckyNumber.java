@@ -37,9 +37,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import javax.validation.Constraint;
 
 /**
- * TODO document class UnluckyNumber.<br/>
+ * Annotation to mark a JavaBean field that may not contain an 'unluck number'.<br/> 
  * <br/>
  * Created at 03.07.2009 17:55:40
+ * @see UnluckyNumberValidator
  * @since 0.6.0
  * @author Volker Bergmann
  */

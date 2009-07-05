@@ -30,7 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
- * TODO document class LongBasedSequence.<br/>
+ * Helper class that serves as parent for individual {@link Sequence} implementations 
+ * that are based on a Long-value generator (Generator&lt;Long&gt;).<br/>
  * <br/>
  * Created at 03.07.2009 13:15:22
  * @since 0.6.0
