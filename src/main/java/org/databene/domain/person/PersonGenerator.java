@@ -96,6 +96,14 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
+	public double getFemaleQuota() {
+		return genderGen.getFemaleQuota();
+	}
+	
+	public void setFemaleQuota(double femaleQuota) {
+		genderGen.setFemaleQuota(femaleQuota);
+	}
+	
 	public Locale getLocale() {
 		return titleGen.getLocale();
 	}
