@@ -68,6 +68,7 @@ public class Person {
         this.birthDate = birthDate;
     }
 
+    @Override
     public String toString() {
         return salutation + ' ' + (!StringUtil.isEmpty(title) ? title + " " : "") + givenName + ' ' + familyName
                 + ", *" + df.format(birthDate);

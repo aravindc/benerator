@@ -63,7 +63,7 @@ public class FemaleFamilyNameConverter extends FixedSourceTypeConverter<String, 
 			    for (String dataFileName : dataFiles) {
 			    	Map<String, String> props = IOUtil.readProperties(dataFileName);
 			    	for (Map.Entry<String, String> entry : props.entrySet())
-			    		builder.append(new String[] { entry.getKey(), entry.getValue() });
+			    		builder.add(new String[] { entry.getKey(), entry.getValue() });
 			    }
 		    }
 	    } catch (Exception e) {

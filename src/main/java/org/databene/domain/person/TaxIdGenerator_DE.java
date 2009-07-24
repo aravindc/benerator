@@ -40,7 +40,6 @@ import org.databene.benerator.primitive.LightweightStringGenerator;
 public class TaxIdGenerator_DE extends LightweightStringGenerator {
 	
 	private Random random = new Random();
-	private TaxIdValidator_DE validator = new TaxIdValidator_DE();
 	
 	public String generate() {
 		char[] buffer = new char[10];
@@ -74,7 +73,7 @@ public class TaxIdGenerator_DE extends LightweightStringGenerator {
 		}
 		// append checksum
 		String s = new String(buffer);
-		int checksum = validator.calculateChecksum(s);
+		int checksum = TaxIdValidator_DE.calculateChecksum(s);
 		return s + (char) (checksum + '0');
 	}
 
