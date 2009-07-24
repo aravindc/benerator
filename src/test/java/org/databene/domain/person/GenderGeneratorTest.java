@@ -29,12 +29,12 @@ package org.databene.domain.person;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorClassTest;
-import org.databene.measure.count.ObjectCounter;
 
 /**
  * Tests the {@link GenderGenerator}.<br/>
  * <br/>
  * Created: 09.06.2006 21:47:53
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class GenderGeneratorTest extends GeneratorClassTest {
@@ -43,14 +43,14 @@ public class GenderGeneratorTest extends GeneratorClassTest {
         super(GenderGenerator.class);
     }
 
-    public void test() throws IllegalGeneratorStateException {
-        ObjectCounter<Gender> counter = new ObjectCounter<Gender>(10);
+    public void testDefault() throws IllegalGeneratorStateException {
         Generator<Gender> generator = new GenderGenerator();
-        for (int i = 0; i < 100; i++) {
-            Gender generatedGender = generator.generate();
-            assertNotNull(generatedGender);
-            counter.count(generatedGender);
-        }
-        assertTrue(counter.objectSet().size() == 2);
+        expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.5, Gender.MALE, 0.5);
     }
+    
+    public void testFemaleQuota() throws IllegalGeneratorStateException {
+        Generator<Gender> generator = new GenderGenerator(0.3);
+        expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.3, Gender.MALE, 0.7);
+    }
+    
 }
