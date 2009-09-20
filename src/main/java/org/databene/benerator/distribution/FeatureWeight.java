@@ -26,11 +26,6 @@
 
 package org.databene.benerator.distribution;
 
-import java.util.Collection;
-
-import org.databene.benerator.Generator;
-import org.databene.benerator.sample.IndividualWeightGenerator;
-import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.accessor.FeatureAccessor;
@@ -69,7 +64,8 @@ public class FeatureWeight extends IndividualWeight<Object> {
 		this.accessor.setFeatureName(weightFeature);
 	}
 
-	public double weight(Object object) {
+	@Override
+    public double weight(Object object) {
 		return converter.convert(accessor.getValue(object));
 	}
 	
