@@ -39,6 +39,7 @@ import org.databene.benerator.sample.WeightedSample;
 
 public class AttachedWeight<E> extends IndividualWeight<WeightedSample<E>>{
 
+    @Override
     public double weight(WeightedSample<E> object) {
 	    return object.getWeight();
     }
