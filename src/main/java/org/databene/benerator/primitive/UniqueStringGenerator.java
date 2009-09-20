@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,6 +49,8 @@ public class UniqueStringGenerator implements Generator<String> {
     private Generator<String>[] subGens;
     private boolean dirty;
 
+    // constructors ----------------------------------------------------------------------------------------------------
+
     public UniqueStringGenerator() {
         this(4, 8, new CharSet('A', 'Z').getSet());
     }
@@ -57,6 +59,7 @@ public class UniqueStringGenerator implements Generator<String> {
         this(minLength, maxLength, CollectionUtil.toArray(charSet));
     }
 
+    @SuppressWarnings("unchecked")
     public UniqueStringGenerator(int minLength, int maxLength, char ... charSet) {
         this.minLength = minLength;
         this.maxLength = maxLength;
@@ -64,6 +67,8 @@ public class UniqueStringGenerator implements Generator<String> {
         this.subGens = new Generator[0];
         dirty = true;
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
     public int getMinLength() {
         return minLength;
@@ -89,6 +94,7 @@ public class UniqueStringGenerator implements Generator<String> {
         return String.class;
     }
 
+    @SuppressWarnings("unchecked")
     public void validate() {
         if (dirty) {
             this.subGens = new Generator[maxLength - minLength + 1];
@@ -134,9 +140,13 @@ public class UniqueStringGenerator implements Generator<String> {
     	}
         dirty = true;
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + minLength + "<=length<=" + maxLength + ", " +
                 "charSet=[" + ArrayFormat.formatChars(", ", charSet) + "]]";
     }
+    
 }
