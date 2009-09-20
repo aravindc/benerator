@@ -40,7 +40,10 @@ public class PropertyMessage {
         this.property = property;
         this.message = message;
     }
+    
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -51,6 +54,7 @@ public class PropertyMessage {
 
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = property.hashCode();
