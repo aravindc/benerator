@@ -28,6 +28,7 @@ package org.databene.benerator.util;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.commons.BeanUtil;
 
 /**
  * Helper class for generators that do not have a life cycle.
@@ -62,7 +63,7 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName();
+        return BeanUtil.toString(this);
     }
     
     // protected helpers for child classes -----------------------------------------------------------------------------
