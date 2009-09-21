@@ -33,6 +33,8 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * Wraps several other generators (in a <i>sources</i> property) and refines a composite state from them.<br/>
  * <br/>
  * Created: 19.12.2006 07:05:29
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
 
