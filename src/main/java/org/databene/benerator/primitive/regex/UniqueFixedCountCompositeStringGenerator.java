@@ -63,10 +63,11 @@ public class UniqueFixedCountCompositeStringGenerator extends GeneratorWrapper<S
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         int count = 0;
         if (source != null)
-            count = ((UniqueCompositeGenerator)source).getSources().length;
+            count = ((UniqueCompositeGenerator<String>) source).getSources().length;
         return getClass().getSimpleName() + "[count=" + count + ", " +
                 "source=" + source + ']';
     }
