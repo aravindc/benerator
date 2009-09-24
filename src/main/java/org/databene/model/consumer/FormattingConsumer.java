@@ -55,11 +55,11 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 	}
 
 	public String getTimestampPattern() {
-		return plainConverter.getTimestampPattern();
+		return plainConverter.getDateTimePattern();
 	}
 
 	public void setTimestampPattern(String timestampPattern) {
-		plainConverter.setTimestampPattern(timestampPattern);
+		plainConverter.setDateTimePattern(timestampPattern);
 	}
 	
 	public String getDecimalPattern() {
@@ -77,8 +77,25 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 	public void setDecimalSeparator(char decimalSeparator) {
 		plainConverter.setDecimalSeparator(decimalSeparator);
     }
+	
+	public String getTimePattern() {
+		return plainConverter.getTimePattern();
+	}
+	
+    public void setTimePattern(String timePattern) {
+		plainConverter.setTimePattern(timePattern);
+    }
+
+    public String getIntegralPattern() {
+    	return plainConverter.getIntegralPattern();
+    }
+    
+    public void setIntegralPattern(String integralPattern) {
+		plainConverter.setIntegralPattern(integralPattern);
+    }
 
 	protected String format(Object o) {
 		return plainConverter.convert(o);
 	}
+	
 }
