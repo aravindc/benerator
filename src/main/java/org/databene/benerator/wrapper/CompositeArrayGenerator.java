@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,8 @@ import java.lang.reflect.Array;
  * Keeps an array of generators, of which it combines the products to an array.<br/>
  * <br/>
  * Created: 26.08.2006 09:37:55
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class CompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
@@ -41,6 +43,7 @@ public class CompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public CompositeArrayGenerator() {
         super();
     }
@@ -53,11 +56,13 @@ public class CompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public Class<S[]> getGeneratedType() {
         return (Class<S[]>) Array.newInstance(componentType, 0).getClass();
     }
 
     /** @see org.databene.benerator.Generator#generate() */
+    @SuppressWarnings("unchecked")
     public S[] generate() {
         S[] array = (S[]) Array.newInstance(componentType, sources.length);
         for (int i = 0; i < array.length; i++) {

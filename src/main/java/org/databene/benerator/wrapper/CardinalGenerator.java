@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.commons.NullSafeComparator;
 
 /**
  * Combines a a random number a source generator's products into a collection.<br/>
@@ -81,23 +82,35 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     }
 
     public void setMinCount(long minCount) {
-    	this.minCount = minCount;
-	    dirty = true;
+    	if (!NullSafeComparator.equals(minCount, this.minCount)) {
+	    	this.minCount = minCount;
+		    dirty = true;
+    	}
     }
 
     public void setMaxCount(long maxCount) {
-    	this.maxCount = maxCount;
-	    dirty = true;
+    	if (!NullSafeComparator.equals(maxCount, this.maxCount)) {
+	    	this.maxCount = maxCount;
+		    dirty = true;
+    	}
     }
     
     public void setCountPrecision(long countPrecision) {
-    	this.countPrecision = countPrecision;
-	    dirty = true;
+    	if (!NullSafeComparator.equals(countPrecision, this.countPrecision)) {
+	    	this.countPrecision = countPrecision;
+		    dirty = true;
+    	}
     }
     
     public void setCountDistribution(Distribution distribution) {
-    	this.countDistribution = distribution;
-    	dirty = true;
+    	if (!NullSafeComparator.equals(distribution, this.countDistribution)) {
+	    	this.countDistribution = distribution;
+	    	dirty = true;
+    	}
     }
 
+    @Override
+    public void reset() {
+        super.reset(); // no reset on the countGenerator!
+    }
 }

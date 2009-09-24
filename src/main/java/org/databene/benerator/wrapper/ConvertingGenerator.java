@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,7 @@ import org.databene.commons.Converter;
  * Reads products from a source Generator and applies a Converter to transform them into the target products.<br/>
  * <br/>
  * Created: 12.06.2006 19:02:30
+ * @author Volker Bergmann
  */
 public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
 
@@ -64,6 +65,7 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    @Override
     public void validate() {
         if (source == null)
             throw new InvalidGeneratorSetupException("source", "is null");

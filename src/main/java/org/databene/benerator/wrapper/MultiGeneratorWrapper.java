@@ -28,6 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.commons.ArrayFormat;
 
 /**
  * Wraps several other generators (in a <i>sources</i> property) and refines a composite state from them.<br/>
@@ -108,7 +109,7 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + sources;
+        return getClass().getSimpleName() + "[" + ArrayFormat.format(sources) + "]";
     }
 
 }

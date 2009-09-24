@@ -43,10 +43,11 @@ import java.lang.reflect.Array;
  * each used generator is supposed to generate unique values itself.<br/>
  * <br/>
  * Created: 17.11.2007 13:37:37
+ * @author Volker Bergmann
  */
-public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
+public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UniqueCompositeGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(UniqueCompositeArrayGenerator.class);
 
     private Class<S> componentType;
     private Object[] products;
@@ -54,7 +55,8 @@ public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public UniqueCompositeGenerator() {
+    @SuppressWarnings("unchecked")
+    public UniqueCompositeArrayGenerator() {
         super();
         dirty = true;
     }
@@ -62,7 +64,7 @@ public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
     /**
      * Initializes the generator to an array of source generators
      */
-    public UniqueCompositeGenerator(Class<S> componentType, Generator<S> ... sources) {
+    public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<S> ... sources) {
         super(sources);
         this.componentType = componentType;
         dirty = true;
@@ -70,10 +72,12 @@ public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public Class<S[]> getGeneratedType() {
         return (Class<S[]>) Array.newInstance(componentType, 0).getClass();
     }
 
+    @Override
     public void validate() {
         if (dirty) {
             super.validate();
@@ -89,6 +93,7 @@ public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
         }
     }
 
+    @Override
     public boolean available() {
         if (dirty)
             validate();
@@ -98,16 +103,18 @@ public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
     /**
      * @see org.databene.benerator.Generator#generate()
      */
+    @SuppressWarnings("cast")
     public S[] generate() {
         if (!available())
             throw new IllegalGeneratorStateException("Generator is not available");
-        S[] result = (S[]) ArrayUtil.copyOfRange(products, 0, products.length);
+        S[] result = (S[]) ArrayUtil.copyOfRange(products, 0, products.length, componentType);
         fetchNext(0);
         if (logger.isDebugEnabled())
             logger.debug("generated: " + ArrayFormat.format(result));
         return result;
     }
 
+    @Override
     public void reset() {
         super.reset();
         dirty = true;
@@ -130,7 +137,7 @@ public class UniqueCompositeGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
             } else
                 rep = true;
         }
-        // the sorces[i] was not available or returned the same value as before
+        // sources[index] was not available or returned the same value as before
         fetchNext(index + 1);
         if (products != null && !rep) {
             gen.reset();

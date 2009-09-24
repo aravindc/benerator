@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,17 +38,17 @@ import org.databene.benerator.IllegalGeneratorStateException;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
+public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
 
-    private long countAvailable;
-    private long countUsed;
+    private long sequenceLength;
+    private long lengthSoFar;
     private boolean limited;
-    private boolean dirty;
     
-    public InstanceSequenceGenerator(Generator<S> source) {
+    public InstanceSequenceGenerator(Generator<E> source) {
         super(source);
         limited = false;
         dirty = true;
+        sequenceLength = -1;
     }
 
     @Override
@@ -57,7 +57,13 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
         super.setMaxCount(maxCount);
     }
     
-    public Class<S> getGeneratedType() {
+    public long getSequenceLength() {
+    	if (dirty)
+    		validate();
+    	return sequenceLength;
+    }
+
+	public Class<E> getGeneratedType() {
         return source.getGeneratedType();
     }
     
@@ -65,7 +71,8 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
     public void validate() {
         if (dirty) {
             super.validate();
-            countAvailable = countGenerator.generate();
+            if (sequenceLength == -1)
+            	sequenceLength = countGenerator.generate();
             dirty = false;
         }
     }
@@ -73,14 +80,14 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
     @Override
     public boolean available() {
         validate();
-        return super.available() && (countUsed < countAvailable || !limited);
+        return super.available() && (lengthSoFar < sequenceLength || !limited);
     }
 
-    public S generate() {
+    public E generate() {
         validate();
         if (!available())
             throw new IllegalGeneratorStateException("Generator not available.");
-        this.countUsed++;
+        this.lengthSoFar++;
         return source.generate();
     }
 
@@ -88,14 +95,15 @@ public class InstanceSequenceGenerator<S> extends CardinalGenerator<S, S> {
     public void reset() {
         validate();
         super.reset();
-        countAvailable = countGenerator.generate();
-        countUsed = 0;
+    	sequenceLength = countGenerator.generate();
+        lengthSoFar = 0;
     }
 
     @Override
     public void close() {
         validate();
         super.close();
-        countUsed = countAvailable;
+        lengthSoFar = sequenceLength;
     }
+    
 }

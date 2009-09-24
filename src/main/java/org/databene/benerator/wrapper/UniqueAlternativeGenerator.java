@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.benerator.util.SimpleRandom;
  * Forwards the output of other generators in random order, but at most once.<br/>
  * <br/>
  * Created: 17.11.2007 17:12:07
+ * @author Volker Bergmann
  */
 public class UniqueAlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
@@ -56,6 +57,7 @@ public class UniqueAlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
         return targetType;
     }
 
+    @Override
     public boolean available() {
         for (Generator<E> source : sources)
             if (source.available())
