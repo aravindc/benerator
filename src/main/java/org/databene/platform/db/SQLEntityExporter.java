@@ -77,7 +77,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-	public void setDatabase(DBSystem database) {
+	public void setDatabase(DBSystem database) { // TODO get rid of this!!!
 		this.database = database;
 	}
 
@@ -94,7 +94,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     }
 
 	@Override
-    protected void postInitPrinter() {
+    protected void postInitPrinter(Entity entity) {
     	// nothing special to do
     }
 
