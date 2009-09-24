@@ -76,7 +76,7 @@ public class Entity implements Composite<Object> {
         return (descriptor != null ? descriptor.getName() : null);
     }
 
-    public ComplexTypeDescriptor getDescriptor() {
+    public ComplexTypeDescriptor getDescriptor() { // TODO rename to descriptor() ?
         return descriptor;
     }
     
@@ -107,7 +107,9 @@ public class Entity implements Composite<Object> {
     }
     
     public void setComponent(String componentName, Object component) {
-    	ComponentDescriptor componentDescriptor = descriptor.getComponent(componentName);
+    	ComponentDescriptor componentDescriptor = null;
+    	if (descriptor != null)
+    		componentDescriptor = descriptor.getComponent(componentName);
     	if (componentDescriptor != null && componentDescriptor.getType() instanceof SimpleTypeDescriptor) {
     		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) componentDescriptor.getType();
     		PrimitiveType primitiveType = componentType.getPrimitiveType();

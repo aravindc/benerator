@@ -1,6 +1,5 @@
 package org.databene.model.data;
 
-import org.databene.commons.Converter;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
 import org.databene.commons.StringUtil;
@@ -26,12 +25,12 @@ public class FeatureDescriptor {
         ConverterManager.getInstance().register(new String2ConverterConverter());
     }
 
-    protected OrderedNameMap<FeatureDetail<? extends Object>> details;
+    protected OrderedNameMap<FeatureDetail<?>> details;
 
     // constructor -----------------------------------------------------------------------------------------------------
 
     public FeatureDescriptor(String name) {
-        this.details = new OrderedNameMap<FeatureDetail<? extends Object>>();
+        this.details = new OrderedNameMap<FeatureDetail<?>>();
         addRestriction(NAME, String.class, null, null);
         setName(name);
     }
@@ -66,18 +65,11 @@ public class FeatureDescriptor {
         return value;
     }
 
-    public <T> void setDetailValue(String detailName, T detailValue) {
-        FeatureDetail<T> detail = getDetail(detailName);
+    public void setDetailValue(String detailName, Object detailValue) {
+        FeatureDetail<Object> detail = getDetail(detailName);
         if (detail == null)
             throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);
         detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
-    }
-
-    public <T> void setDetailValueAsString(String detailName, String detailValue) {
-        FeatureDetail<T> detail = getDetail(detailName);
-        if (detail == null)
-            throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);
-        detail.setValueAsString(detailValue);
     }
 
     public <T> T getDetailDefault(String name) {
@@ -89,7 +81,7 @@ public class FeatureDescriptor {
         return details.values();
     }
 
-    // java.lang.io overrides ------------------------------------------------------------------------------------------
+    // java.lang overrides ---------------------------------------------------------------------------------------------
 
     @Override
 	public String toString() {
@@ -143,16 +135,16 @@ public class FeatureDescriptor {
     }
 
     protected <T> void addConfig(String name, Class<T> type, T defaultValue, boolean deprecated) {
-        addDetail(name, type, false, defaultValue, deprecated, new AnyConverter<String, T>(type), null);
+        addDetail(name, type, false, defaultValue, deprecated, null);
     }
 
     protected <T> void addRestriction(String name, Class<T> type, T defaultValue, Operation<T, T> combinator) {
-        addDetail(name, type, true, defaultValue, false, null, combinator);
+        addDetail(name, type, true, defaultValue, false, combinator);
     }
 
     protected <T> void addDetail(String detailName, Class<T> detailType, boolean constraint, T defaultValue, 
-    		boolean deprecated, Converter<String, T> converter, Operation<T,T> combinator) {
-        this.details.put(detailName, new FeatureDetail<T>(detailName, detailType, constraint, defaultValue, converter, combinator));
+    		boolean deprecated, Operation<T,T> combinator) {
+        this.details.put(detailName, new FeatureDetail<T>(detailName, detailType, constraint, defaultValue, combinator));
     }
 
     // generic property access -----------------------------------------------------------------------------------------

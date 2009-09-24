@@ -26,12 +26,10 @@
 
 package org.databene.model.data;
 
-import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.operation.FirstArgSelector;
 
 /**
@@ -50,7 +48,6 @@ public class FeatureDetail<E> {
     private Class<E> type;
     private E value;
     private E defaultValue;
-    private Converter<String, E> converter;
     private Operation<E, E> combinator;
     private boolean restriction;
     private boolean deprecated;
@@ -58,27 +55,22 @@ public class FeatureDetail<E> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue) {
-        this(name, type, restriction, defaultValue, new AnyConverter<String, E>(type));
-    }
-
-    public FeatureDetail(String name, Class<E> type, boolean restriction, E defaultValue, Converter<String, E> converter) {
-        this(name, type, restriction, defaultValue, converter, new FirstArgSelector<E>());
+        this(name, type, restriction, defaultValue, new FirstArgSelector<E>());
     }
 
     public FeatureDetail(String name, Class<E> type, boolean restriction, 
-    		E defaultValue, Converter<String, E> converter, Operation<E, E> combinator) {
-    	this(name, type, restriction, defaultValue, converter, combinator, false);
+    		E defaultValue, Operation<E, E> combinator) {
+    	this(name, type, restriction, defaultValue, combinator, false);
     }
     
     public FeatureDetail(String name, Class<E> type, boolean restriction, 
-    		E defaultValue, Converter<String, E> converter, Operation<E, E> combinator, boolean deprecated) {
+    		E defaultValue, Operation<E, E> combinator, boolean deprecated) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
         this.value = null;
         this.restriction = restriction;
         this.combinator = combinator;
-        this.converter = converter;
         this.deprecated = deprecated;
     }
     
@@ -105,14 +97,11 @@ public class FeatureDetail<E> {
         this.value = value;
     }
 
-    public void setValueAsString(String value) {
-        this.value = converter.convert(value);
-    }
-
     public E getDefault() {
         return defaultValue;
     }
 
+    @SuppressWarnings("unchecked")
     public E combineWith(E otherValue) {
         return combinator.perform(this.value, otherValue);
     }

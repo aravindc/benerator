@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,12 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.Expression;
+
 /**
  * Descriptor for attributes<br/><br/>
  * Created: 30.06.2007 07:29:43
+ * @since 0.2
  * @author Volker Bergmann
  */
 public class PartDescriptor extends ComponentDescriptor {
@@ -45,13 +48,14 @@ public class PartDescriptor extends ComponentDescriptor {
         this(name, localType, null, null);
     }
     
-    public PartDescriptor(String name, TypeDescriptor localType, Long minCount, Long maxCount) {
+    public PartDescriptor(String name, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
     	this(name, null, localType, minCount, maxCount);
     }
     	
-    public PartDescriptor(String name, String type, TypeDescriptor localType, Long minCount, Long maxCount) {
+    public PartDescriptor(String name, String type, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
         super(name, type, localType);
         setMinCount(minCount);
         setMaxCount(maxCount);
     }
+    
 }

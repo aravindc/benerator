@@ -241,6 +241,11 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         return this;
     }
 
+    public TypeDescriptor withGenerator(String generator) {
+        setGenerator(generator);
+        return this;
+    }
+
     // generic functionality -------------------------------------------------------------------------------------------
 
     @Override

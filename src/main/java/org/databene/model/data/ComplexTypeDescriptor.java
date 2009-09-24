@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -137,6 +137,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
         return this;
     }
 
+    @Override
     protected void init() {
     	super.init();
         this.components = new NamedValueList<ComponentDescriptor>(NamedValueList.INSENSITIVE);
@@ -145,6 +146,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         if (components.size() == 0)
             return super.toString();
@@ -152,29 +154,4 @@ public class ComplexTypeDescriptor extends TypeDescriptor {
         return getName() + getComponents().toString();
     }
 
-    // helper for rendering --------------------------------------------------------------------------------------------
-/*
-    public class CompositeAdapter implements Composite<ComponentDescriptor> {
-
-        public void setComponent(String key, ComponentDescriptor value) {
-            throw new UnsupportedOperationException();
-        }
-
-		public ComponentDescriptor getComponent(int index) {
-			return components.getValue(index);
-		}
-
-		public void setComponent(int index, ComponentDescriptor value) {
-			throw new UnsupportedOperationException("Not supported");
-		}
-
-		public int size() {
-			return components.size();
-		}
-
-		public List<ComponentDescriptor> getComponents() {
-			return components.values();
-		}
-    }
-    */
 }

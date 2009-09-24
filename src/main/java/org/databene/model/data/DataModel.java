@@ -62,6 +62,10 @@ public class DataModel {
             validate();
     }
     
+    public void removeDescriptorProvider(String id) {
+	    providers.remove(id);
+    }
+
     public TypeDescriptor getTypeDescriptor(String typeId) {
     	if (typeId == null)
     		return null;
