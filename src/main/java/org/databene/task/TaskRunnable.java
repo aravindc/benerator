@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,6 +35,7 @@ import org.databene.commons.IOUtil;
  * Thread implementation that executes a Task.<br/>
  * <br/>
  * Created: 16.07.2007 20:14:52
+ * @since 0.2
  * @author Volker Bergmann
  */
 public class TaskRunnable implements Runnable {
@@ -61,9 +62,7 @@ public class TaskRunnable implements Runnable {
 
     public void run() {
         try {
-            if (context != null)
-                target.init(context);
-            target.run();
+            target.run(context);
             if (context != null)
                 IOUtil.close(target);
         } finally {

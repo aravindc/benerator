@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,8 @@ package org.databene.task;
  * Signals failure in the execution of a Task.<br/>
  * <br/>
  * Created: 20.11.2007 13:09:51
+ * @since 0.3.02
+ * @author Volker Bergmann
  */
 public class TaskException extends RuntimeException {
     

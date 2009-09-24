@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,8 @@ package org.databene.task;
  * Marker-interface for classes which may be used concurrently in different instances.<br/>
  * <br/>
  * Created: 22.07.2007 07:48:15
+ * @since 0.3
+ * @author Volker Bergmann
  */
 public interface Parallelizable extends Cloneable {
     /** Creates and returns a clone of the instance. Keep in mind, that in the default clone() implementation

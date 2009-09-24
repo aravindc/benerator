@@ -30,6 +30,7 @@ package org.databene.task;
  * Provides invocation of an implementation of java.lang.Runnable from the command line.<br/>
  * <br/>
  * Created: 22.01.2007 10:11:15
+ * @since 0.2
  */
 public class RunnableMain {
 
@@ -42,6 +43,7 @@ public class RunnableMain {
      * @throws IllegalAccessException if the constructor is not public
      * @throws InstantiationException if the class is abstract
      */
+    @SuppressWarnings("unchecked")
     public static void main(String[] args)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         assert args.length == 1;

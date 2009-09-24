@@ -37,6 +37,7 @@ import java.util.concurrent.ExecutorService;
  * Runs a task.<br/>
  * <br/>
  * Created: 06.07.2007 06:37:20
+ * @since 0.2
  * @author Volker Bergmann
  */
 public class TaskRunner {
@@ -51,9 +52,8 @@ public class TaskRunner {
             logger.info("Running task " + task + " " + invocationInfo);
         }
         PagedTask pagedTask = new PagedTask(task, invocations, pager, pageSize, threadCount, executor);
-        pagedTask.init(context);
         try {
-            pagedTask.run();
+            pagedTask.run(context);
         } finally {
             IOUtil.close(pagedTask);
         }

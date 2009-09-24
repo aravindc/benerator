@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,15 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
+import org.databene.commons.context.ContextAware;
+
 /**
  * Wraps a Runnable in a Task.<br/>
  * <br/>
+ * @since 0.2
  * Created: 06.07.2007 07:31:50
+ * @author Volker Bergmann
  */
 public class RunnableTask extends AbstractTask {
 
@@ -40,7 +45,14 @@ public class RunnableTask extends AbstractTask {
         this.runnable = runnable;
     }
 
-    public void run() {
+    public void run(Context context) {
+    	if (runnable instanceof ContextAware)
+    		((ContextAware) runnable).setContext(context);
         runnable.run();
     }
+    
+    public boolean available() {
+    	return true;
+    }
+    
 }

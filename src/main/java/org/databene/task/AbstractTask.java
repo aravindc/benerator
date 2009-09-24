@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,18 +30,20 @@ import java.io.IOException;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.Expression;
+import org.databene.commons.Level;
 
 /**
  * Simple abstract implementation of the Task interface.<br/>
  * <br/>
  * Created: 16.07.2007 18:55:16
+ * @since 0.2
  * @author Volker Bergmann
  */
 public abstract class AbstractTask implements Task {
 
     protected String taskName;
-    protected Context context;
-    protected ErrorHandler errorHandler;
+    private Expression<ErrorHandler> errorHandler;
     
     // constructor -----------------------------------------------------------------------------------------------------
 
@@ -49,7 +51,7 @@ public abstract class AbstractTask implements Task {
         this(null, null);
     }
 
-    protected AbstractTask(ErrorHandler errorHandler) {
+    protected AbstractTask(Expression<ErrorHandler> errorHandler) {
         this(null, errorHandler);
     }
 
@@ -57,12 +59,10 @@ public abstract class AbstractTask implements Task {
         this(taskName, null);
     }
     
-    protected AbstractTask(String taskName, ErrorHandler errorHandler) {
+    protected AbstractTask(String taskName, Expression<ErrorHandler> errorHandler) {
     	if (taskName == null)
     		taskName = getClass().getSimpleName();
         setTaskName(taskName);
-        if (errorHandler == null)
-        	errorHandler = new ErrorHandler(taskName);
         this.errorHandler = errorHandler;
     }
     
@@ -76,20 +76,14 @@ public abstract class AbstractTask implements Task {
         this.taskName = taskName;
     }
 
-    public ErrorHandler getErrorHandler() {
-		return errorHandler;
+    public ErrorHandler getErrorHandler(Context context) {
+    	if (errorHandler == null)
+    		return new ErrorHandler(taskName, Level.fatal);
+		return errorHandler.evaluate(context);
 	}
-
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
-	}
-
-	public void init(Context context) {
-        this.context = context;
-    }
     
-    public boolean wantsToRun() {
-        return true;
+    public boolean available() {
+    	return true;
     }
 
     @SuppressWarnings("unused")

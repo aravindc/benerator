@@ -27,6 +27,7 @@
 package org.databene.task;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,11 +44,10 @@ import java.lang.reflect.InvocationTargetException;
  * Created: 16.07.2007 19:25:30
  * @author Volker Bergmann
  */
-public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionHandler {
+public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.UncaughtExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PagedTask.class);
 
-    protected Task realTask;
     private PageListener listener;
 
     private long totalInvocations;
@@ -64,20 +64,20 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
         this(null);
     }
 
-    public PagedTask(Task realTask) {
+    public PagedTask(E realTask) {
         this(realTask, 1);
     }
 
-    public PagedTask(Task realTask, long totalInvocations) {
+    public PagedTask(E realTask, long totalInvocations) {
         this(realTask, totalInvocations, null, 1);
     }
 
-    public PagedTask(Task realTask, long totalInvocations, PageListener listener, long pageSize) {
+    public PagedTask(E realTask, long totalInvocations, PageListener listener, long pageSize) {
         this(realTask, totalInvocations, listener, pageSize, 1, Executors.newSingleThreadExecutor());
     }
 
-    public PagedTask(Task realTask, long totalInvocations, PageListener listener, long pageSize, int threads, ExecutorService executor) {
-        this.realTask = realTask;
+    public PagedTask(E realTask, long totalInvocations, PageListener listener, long pageSize, int threads, ExecutorService executor) {
+    	super(realTask);
         this.listener = listener;
         this.totalInvocations = totalInvocations;
         this.pageSize = pageSize;
@@ -108,7 +108,8 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
         return threadCount;
     }
 
-    public void run() {
+    @Override
+    public void run(Context context) {
     	if (totalInvocations == 0)
     		return;
         this.exception = null;
@@ -121,15 +122,15 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
 	            pageStarting(currentPageNo);
 	            long currentPageSize = (totalInvocations < 0 ? pageSize : Math.min(pageSize, totalInvocations - invocationCount));
 	            if (threadCount > 1)
-	                invocationCount += runMultiThreaded(currentPageNo, currentPageSize);
+	                invocationCount += runMultiThreaded(context, currentPageNo, currentPageSize);
 	            else
-	                invocationCount += runSingleThreaded(currentPageSize);
-	            pageFinished(currentPageNo);
+	                invocationCount += runSingleThreaded(context, currentPageSize);
+	            pageFinished(currentPageNo, context);
 	            if (exception != null)
 	                throw new RuntimeException(exception);
 	            currentPageNo++;
         	} catch (Exception e) {
-        		errorHandler.handleError("Error in execution of task " + getTaskName(), e);
+        		getErrorHandler(context).handleError("Error in execution of task " + getTaskName(), e);
         	}
         }
         if (logger.isDebugEnabled())
@@ -140,13 +141,13 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
     public String getTaskName() {
     	return realTask.getTaskName();
     }
+    
+    // non-public helpers ----------------------------------------------------------------------------------------------
 
-    private long runMultiThreaded(int currentPageNo, long currentPageSize) {
+    private long runMultiThreaded(Context context, int currentPageNo, long currentPageSize) {
         long localInvocationCount = 0;
         int maxLoopsPerPage = (int)((currentPageSize + threadCount - 1) / threadCount);
         int shorterLoops = (int)(threadCount * maxLoopsPerPage - currentPageSize);
-        if (realTask instanceof ThreadSafe)
-            realTask.init(context);
         // create threads for a page
         CountDownLatch latch = new CountDownLatch(threadCount);
         for (int threadNo = 0; threadNo < threadCount; threadNo++) {
@@ -183,16 +184,15 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
         return localInvocationCount;
     }
 
-    private long runSingleThreaded(long currentPageSize) {
+    private long runSingleThreaded(Context context, long currentPageSize) {
         Task task = new LoopedTask(realTask, currentPageSize);
-        task.init(context);
-        task.run();
+        task.run(context);
         IOUtil.close(task);
         return currentPageSize;
     }
 
     protected boolean workPending(int currentPageNo) {
-        if (!realTask.wantsToRun())
+        if (!realTask.available())
             return false;
         if (totalInvocations < 0)
         	return true;
@@ -220,7 +220,7 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
             listener.pageStarting(currentPageNo, -1);
     }
 
-    protected void pageFinished(int currentPageNo) {
+    protected void pageFinished(int currentPageNo, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("Page " + (currentPageNo + 1) + " of " + getTaskName() + " finished");
         if (listener != null)
@@ -230,5 +230,5 @@ public class PagedTask extends AbstractTask implements Thread.UncaughtExceptionH
     public void uncaughtException(Thread t, Throwable e) {
         this.exception = e;
     }
-    
+
 }

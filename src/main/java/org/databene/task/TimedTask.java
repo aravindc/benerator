@@ -26,6 +26,7 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,8 @@ import org.slf4j.LoggerFactory;
  * Wraps a Task and logs its execution time.<br/>
  * <br/>
  * Created: 06.07.2007 06:49:20
+ * @since 0.2
+ * @author Volker Bergmann
  */
 public class TimedTask extends TaskProxy {
 
@@ -43,9 +46,10 @@ public class TimedTask extends TaskProxy {
     }
 
     @Override
-    public void run() {
+    public void run(Context context) {
         long startTime = System.currentTimeMillis();
-        super.run();
+        super.run(context);
         logger.info(String.valueOf(System.currentTimeMillis() - startTime));
     }
+    
 }

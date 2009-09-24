@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
  * Implements a PageListener that logs its invocations in info level.<br/>
  * <br/>
  * Created: 06.09.2007 19:20:58
+ * @since 0.3
+ * @author Volker Bergmann
  */
 public class LoggingPageListener implements PageListener {
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,34 +31,25 @@ import java.io.Closeable;
 import org.databene.commons.Context;
 
 /**
- * The Task interface.
- * General usage is to call init() for initialization,
- * then once or several times the run() method for executing the task's work.
- * After usage, destroy() is called. 
- * If the goal of a Task has been achieved by external influences or Task 
- * completion, the Task may signal that it does not require further execution 
- * by returning false in {@link #wantsToRun()}.
+ * Interface for the GoF 'Command' pattern.
+ * General usage is to call the run() method once or several times for executing the task's work.
+ * After usage, close() must be called. 
  * When implementing the Task interface, you should preferably inherit from 
  * {@link AbstractTask}, this may compensate for future interface changes.<br/>
  * <br/>
  * Created: 06.07.2007 06:30:22
+ * @since 0.2
  * @author Volker Bergmann
  */
-public interface Task extends Runnable, Closeable {
+public interface Task extends Closeable {
 
     /** @return the name of the task. */
     String getTaskName();
 
-    /** initializes the task and, if necessary, stores a reference to the context. */
-    void init(Context context);
+    /** executes the task's work, possibly interacting with the context. */
+    void run(Context context); // TODO rename to execute?
 
-    /**
-     * tells if the task still wants to be executed.
-     * @since 0.4.0
-     */
-    boolean wantsToRun();
-
-    /** executes the main functionality of the task. */
-    void run();
+    /** indicates if the task can be executed */
+    boolean available();
     
 }

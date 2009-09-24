@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,33 +34,29 @@ import org.databene.commons.Context;
  * Wraps a Task and forwards invocations.<br/>
  * <br/>
  * Created: 06.07.2007 06:36:22
+ * @since 0.2
  * @author Volker Bergmann
  */
-public abstract class TaskProxy extends AbstractTask {
+public abstract class TaskProxy<E extends Task> extends AbstractTask {
 
-    protected Task realTask;
+    protected E realTask;
 
-    public TaskProxy(Task realTask) {
+    public TaskProxy(E realTask) {
         setRealTask(realTask);
     }
 
-    public void setRealTask(Task realTask) {
+    public void setRealTask(E realTask) {
         this.realTask = realTask;
         setTaskName(realTask != null ? realTask.getClass().getSimpleName() : "undefined");
     }
-
-    @Override
-    public void init(Context context) {
-        realTask.init(context);
-    }
-
-    @Override
-    public boolean wantsToRun() {
-        return realTask.wantsToRun();
-    }
     
-    public void run() {
-        realTask.run();
+    @Override
+    public boolean available() {
+    	return realTask.available();
+    }
+
+    public void run(Context context) {
+        realTask.run(context);
     }
 
     @Override
@@ -72,4 +68,5 @@ public abstract class TaskProxy extends AbstractTask {
     public String toString() {
         return getClass().getSimpleName() + '(' + realTask.toString() + ')';
     }
+    
 }

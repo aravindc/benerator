@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,8 @@ package org.databene.task;
  * Listens to page invocations of a PagedTassk.<br/>
  * <br/>
  * Created: 06.09.2007 08:48:27
+ * @since 0.3
+ * @author Volker Bergmann
  */
 public interface PageListener {
     void pageStarting(int currentPageNo, long totalPages);
