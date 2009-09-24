@@ -19,6 +19,7 @@
 		<xs:union>
 			<xs:simpleType>
 				<xs:restriction base="xs:string">
+					<xs:enumeration value="fatal"/>
 					<xs:enumeration value="error"/>
 					<xs:enumeration value="warn"/>
 					<xs:enumeration value="info"/>
@@ -58,6 +59,7 @@
 			<xs:attribute name="defaultNull"          type="xs:string"/>
             <xs:attribute name="defaultEncoding"      type="xs:string"/>
             <xs:attribute name="defaultLineSeparator" type="xs:string"/>
+            <xs:attribute name="defaultTimeZone"      type="xs:string"/>
             <xs:attribute name="defaultLocale"        type="xs:string"/>
             <xs:attribute name="defaultDataset"       type="xs:string"/>
 			<xs:attribute name="defaultPagesize"      type="xs:string"/>
@@ -72,10 +74,13 @@
 	<!-- Imports classes. -->
 	<xs:element name="import">
 		<xs:complexType>
-			<xs:attribute name="class"    type="xs:string"/>
-			<xs:attribute name="package"    type="xs:string"/>
-			<xs:attribute name="domain"   type="xs:string"/>
-			<xs:attribute name="defaults" type="xs:string"/>
+			<xs:attribute name="class"     type="xs:string"/>
+			<xs:attribute name="package"   type="xs:string"/>
+			<xs:attribute name="domain"    type="xs:string"/>
+			<xs:attribute name="domains"   type="xs:string"/>
+			<xs:attribute name="platform"  type="xs:string"/>
+			<xs:attribute name="platforms" type="xs:string"/>
+			<xs:attribute name="defaults"  type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
@@ -228,6 +233,7 @@
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"         minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="id"              minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="composite-id"    minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
@@ -274,40 +280,13 @@
         </xs:complexType>
     </xs:element>
 
-	<!-- Defines an ID generator that can be reused in different scopes. -->
-	<xs:element name="id">
-		<xs:complexType>
-			<xs:attribute name="name"     type="xs:string"/>
-			<xs:attribute name="type"     type="xs:string"/>
-            <xs:attribute name="source"   type="xs:string"/>
-            <xs:attribute name="strategy" type="xs:string"/>
-            <xs:attribute name="scope"    type="xs:string"/>
-			<xs:attribute name="param"    type="xs:string"/>
-		</xs:complexType>
-	</xs:element>
-
-	<!-- Defines a reference generator. -->
-	<xs:element name="reference">
-		<xs:complexType>
-			<xs:attribute name="name"         type="xs:string"/>
-			<xs:attribute name="type"         type="xs:string"/>
-			<xs:attribute name="nullable"     type="xs:string"/>
-			<xs:attribute name="nullQuota"    type="xs:string"/>
-			<xs:attribute name="source"       type="xs:string"/>
-			<xs:attribute name="targetType"   type="xs:string"/>
-			<xs:attribute name="selector"     type="xs:string"/>
-			<xs:attribute name="distribution" type="xs:string"/>
-			<xs:attribute name="mode"         type="xs:string"/>
-		</xs:complexType>
-	</xs:element>
-
 	<!-- Defines a variable that is recreated by a generator on each entity creation -->
 	<xs:element name="variable" type="attribute-generator-setup"/>
 
 	<xs:complexType name="generator-setup">
 		<xs:attribute name="name"         type="xs:string" use="required"/>
 		<xs:attribute name="type"         type="xs:string"/>
-		<!--xs:attribute name="generator"    type="xs:string"/-->
+		<xs:attribute name="generator"    type="xs:string"/>
 		<xs:attribute name="validator"    type="xs:string"/>
 		<xs:attribute name="source"       type="xs:string"/>
 		<xs:attribute name="encoding"     type="xs:string"/>
@@ -346,6 +325,8 @@
 		<xs:complexContent>
 			<xs:extension base="generator-setup">
 			
+				<xs:attribute name="unique-key"   type="xs:string"/>
+
 				<xs:attribute name="nullable"     type="xs:string"/>
 				<xs:attribute name="mode"         type="xs:string"/>
 
@@ -367,6 +348,39 @@
 				<!-- Sample-based generator setup -->
 				<xs:attribute name="constant"     type="xs:string"/>
 				<xs:attribute name="values"       type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- Defines an ID generator. -->
+	<xs:element name="id" type="attribute-generator-setup"/>
+
+    <xs:element name="composite-id">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="attribute"           minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="reference"           minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="composite-reference" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+	<xs:element name="reference" type="reference-generator-setup"/>
+	
+    <xs:element name="composite-reference">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="attribute"           minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="reference"           minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="composite-reference" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+	<xs:complexType name="reference-generator-setup">
+		<xs:complexContent>
+			<xs:extension base="attribute-generator-setup">
+				<xs:attribute name="targetType" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
