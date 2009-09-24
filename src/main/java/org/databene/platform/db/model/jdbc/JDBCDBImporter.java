@@ -33,7 +33,7 @@ import org.databene.commons.ImportFailedException;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.ObjectNotFoundException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.ErrorHandler.Level;
+import org.databene.commons.Level;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.model.*;
