@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,8 +32,10 @@ import java.util.Random;
  * Provides utility functions for generating numbers in an interval.<br/>
  * <br/>
  * Created: 03.09.2006 13:23:02
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class SimpleRandom {
+public class SimpleRandom { // TODO is the class name and location of the methods appropriate?
 
     /** The basic random provider */
     private static Random random = new Random();
@@ -69,6 +71,8 @@ public class SimpleRandom {
     }
 
     public static <T> T randomValue(T ... values) {
-        return values[randomInt(0, values.length)];
+    	if (values.length == 0)
+    		throw new IllegalArgumentException("Cannot choose random value from an empty array");
+        return values[randomInt(0, values.length - 1)];
     }
 }
