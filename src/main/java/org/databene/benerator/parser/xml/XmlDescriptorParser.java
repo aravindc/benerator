@@ -50,12 +50,17 @@ public class XmlDescriptorParser {
 	// attribute parsing -----------------------------------------------------------------------------------------------
 
     public static String parseStringAttribute(Element element, String name, Context context) {
-		Object value = parseAttribute(element, name, context);
-		return StringUtil.unescape(ToStringConverter.convert(value, null));
+		return parseStringAttribute(element, name, context, true);
+	}
+
+    public static String parseStringAttribute(Element element, String name, Context context, boolean resolveScript) {
+		Object value = parseAttribute(element, name, context, resolveScript);
+		String result = ToStringConverter.convert(value, null);
+		return StringUtil.unescape(result);
 	}
 
     public static String parseStringAttribute(Attr attribute, Context context) {
-		Object value = renderAttribute(attribute.getName(), attribute.getValue(), context);
+		Object value = resolveScript(attribute.getName(), attribute.getValue(), context);
 		return StringUtil.unescape(ToStringConverter.convert(value, null));
 	}
 
@@ -91,19 +96,23 @@ public class XmlDescriptorParser {
 	}
 
 	public static Object parseAttribute(Element element, String name, Context context) {
+		return parseAttribute(element, name, context, true);
+	}
+
+	public static Object parseAttribute(Element element, String name, Context context, boolean resolveScript) {
 		String value = element.getAttribute(name);
 		if (value != null && value.length() == 0)
 			value = null;
-		return renderAttribute(name, value, context);
+		return resolveScript(name, value, context);
 	}
 
     public static Object parseAttribute(Attr attribute, Context context) {
         String name = attribute.getName();
         String value = attribute.getValue();
-        return renderAttribute(name, value, context);
+        return resolveScript(name, value, context);
     }
 
-    public static Object renderAttribute(String name, String value, Context context) {
+    public static Object resolveScript(String name, String value, Context context) {
         if (value == null || "script".equals(name))
             return value;
 		else
