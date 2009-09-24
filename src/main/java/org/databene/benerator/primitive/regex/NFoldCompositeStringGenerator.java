@@ -34,8 +34,9 @@ import org.databene.benerator.wrapper.GeneratorProxy;
  * Calls another string generator a variable number of times and appends a variable number of times.<br/>
  * <br/>
  * Created: 17.11.2007 16:37:43
+ * @author Volker Bergmann
  */
-class NFoldCompositeStringGenerator extends GeneratorProxy<String> {
+class NFoldCompositeStringGenerator extends GeneratorProxy<String> { // TODO find a better name
 
     private int minCount;
 

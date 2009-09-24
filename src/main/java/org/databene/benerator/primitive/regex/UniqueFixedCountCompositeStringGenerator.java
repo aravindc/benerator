@@ -28,7 +28,7 @@ package org.databene.benerator.primitive.regex;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorWrapper;
-import org.databene.benerator.wrapper.UniqueCompositeGenerator;
+import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
 
 /**
  * Uses n String generators and appends the output of each one in each generate() call.<br/>
@@ -67,7 +67,7 @@ public class UniqueFixedCountCompositeStringGenerator extends GeneratorWrapper<S
     public String toString() {
         int count = 0;
         if (source != null)
-            count = ((UniqueCompositeGenerator<String>) source).getSources().length;
+            count = ((UniqueCompositeArrayGenerator<String>) source).getSources().length;
         return getClass().getSimpleName() + "[count=" + count + ", " +
                 "source=" + source + ']';
     }
@@ -75,7 +75,7 @@ public class UniqueFixedCountCompositeStringGenerator extends GeneratorWrapper<S
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<String[]> wrap(Generator<String> ... sources) {
-        return new UniqueCompositeGenerator<String>(String.class, sources);
+        return new UniqueCompositeArrayGenerator<String>(String.class, sources);
     }
 
 }

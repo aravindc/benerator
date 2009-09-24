@@ -26,45 +26,32 @@
 
 package org.databene.benerator.primitive.regex;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.primitive.LightweightStringGenerator;
-import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.wrapper.MultiGeneratorWrapper;
-import org.databene.benerator.wrapper.UniqueCompositeGenerator;
-import org.databene.benerator.wrapper.CompositeArrayGenerator;
-import org.databene.regex.*;
-import org.databene.commons.LocaleUtil;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.NullSafeComparator;
 
 import java.util.Locale;
-import java.text.ParseException;
 
 /**
  * Generates Strings that comply to a regular expression.<br/>
  * <br/>
  * Created: 18.07.2006 19:32:52
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class RegexStringGenerator extends LightweightStringGenerator {
+public class RegexStringGenerator extends GeneratorProxy<String> {
 
     /** Optional String representation of a regular expression */
     private String pattern;
-
-    /** Object representation of the regular expression to match */
-    private Regex regex;
 
     /** The locale from which to choose letters */
     private Locale locale;
 
     /** maximum value for unlimited quantities */
-    private int maxQuantity;
+    private int quantityLimit;
 
+    /** indicates if the generated values shall be unique */
     private boolean unique;
-
-    /** Validity flag for consistency check */
-    private boolean dirty;
-
-    private MultiGeneratorWrapper<String, String[]> partsGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -75,7 +62,7 @@ public class RegexStringGenerator extends LightweightStringGenerator {
 
     /** Initializes the generator to an empty regular expression and the fallback locale */
     public RegexStringGenerator(int maxQuantity) {
-        this((String)null, maxQuantity);
+        this((String) null, maxQuantity);
     }
 
     /** Initializes the generator to a maxQuantity of 30 and the fallback locale */
@@ -84,34 +71,19 @@ public class RegexStringGenerator extends LightweightStringGenerator {
     }
 
     /** Initializes the generator to the fallback locale */
-    public RegexStringGenerator(String pattern, int maxQuantity) {
-        this(pattern, LocaleUtil.getFallbackLocale(), maxQuantity);
+    public RegexStringGenerator(String pattern, int quantityLimit) {
+        this(pattern, null, quantityLimit);
     }
 
-    public RegexStringGenerator(String pattern, Locale locale, Integer maxQuantity) {
-        this(pattern, locale, maxQuantity, false);
+    public RegexStringGenerator(String pattern, Locale locale, Integer quantityLimit) {
+        this(pattern, locale, quantityLimit, false);
     }
 
     /** Initializes the generator with the String representation of a regular expression */
-    public RegexStringGenerator(String pattern, Locale locale, Integer maxQuantity, boolean unique) {
-        this(parse(pattern, locale), maxQuantity, unique);
-        partsGenerator = (unique ? new UniqueCompositeGenerator<String>(String.class) : new CompositeArrayGenerator<String>(String.class));
-        this.locale = locale;
+    public RegexStringGenerator(String pattern, Locale locale, Integer quantityLimit, boolean unique) {
+        super(RegexGeneratorFactory.create(pattern, locale, quantityLimit, unique));
         this.pattern = pattern;
-        this.maxQuantity = (maxQuantity != null ? maxQuantity : 30);
-        this.unique = unique;
-        this.dirty = true;
-    }
-
-    public RegexStringGenerator(Regex regex, Integer maxQuantity) {
-        this(regex, maxQuantity, false);
-    }
-
-    /** Initializes the generator with the object representation of a regular expression */
-    public RegexStringGenerator(Regex regex, Integer maxQuantity, boolean unique) {
-        partsGenerator = (unique ? new UniqueCompositeGenerator<String>(String.class) : new CompositeArrayGenerator<String>(String.class));
-        this.regex = regex;
-        this.maxQuantity = (maxQuantity != null ? maxQuantity : 30);
+        this.quantityLimit = quantityLimit;
         this.unique = unique;
         this.dirty = true;
     }
@@ -128,7 +100,6 @@ public class RegexStringGenerator extends LightweightStringGenerator {
     	if (!NullSafeComparator.equals(this.pattern, pattern)) {
 	        this.dirty = true;
 	        this.pattern = pattern;
-	        this.regex = null;
     	}
     }
 
@@ -142,88 +113,34 @@ public class RegexStringGenerator extends LightweightStringGenerator {
     }
 
     public int getMaxQuantity() {
-        return maxQuantity;
+        return quantityLimit;
     }
 
-    public void setMaxQuantity(int maxQuantity) {
+    public void setMaxQuantity(int quantityLimit) {
         this.dirty = true;
-        this.maxQuantity = maxQuantity;
+        this.quantityLimit = quantityLimit;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
     /** ensures consistency of the generators state */
-    @SuppressWarnings("unchecked")
     @Override
     public void validate() {
         if (dirty) {
             try {
-                if (regex == null)
-                    regex = parse(pattern, locale);
-                Generator<String>[] sources = null;
-                if (regex != null) {
-                    RegexPart[] parts = regex.getParts();
-                    sources = new Generator[parts.length];
-                    for (int i = 0; i < parts.length; i++)
-                        sources[i] = RegexPartGeneratorFactory.createRegexPartGenerator(parts[i], maxQuantity, unique);
-                    partsGenerator.setSources(sources);
-                } else
-                    partsGenerator.setSources(new ConstantGenerator<String>(null, String.class));
+                setSource(RegexGeneratorFactory.create(pattern, locale, quantityLimit, unique));
+                super.validate();
             } catch (Exception e) {
                 throw new InvalidGeneratorSetupException(e);
             }
-            dirty = false;
         }
-    }
-
-    @Override
-    public boolean available() {
-        if (dirty)
-            validate();
-        return partsGenerator.available();
-    }
-
-    /** Calls all sub generators and assembles their products to a string */
-    public String generate() {
-        if (dirty)
-            validate();
-        if (regex == null)
-            return null;
-        StringBuilder builder = new StringBuilder();
-        Object[] parts = partsGenerator.generate();
-        for (Object part : parts)
-            builder.append(part);
-        return builder.toString();
-    }
-
-    @Override
-    public void reset() {
-        partsGenerator.reset();
-    }
-
-    @Override
-    public void close() {
-        partsGenerator.close();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + (unique ? "unique '" : "'") + regex + "']";
-    }
-
-    // private helpers -------------------------------------------------------------------------------------------------
-
-    /** parses the string representation of a regular expression into an object representation */
-    private static Regex parse(String pattern, Locale locale) {
-        if (pattern == null)
-            return null;
-        try {
-            return new RegexParser(locale).parse(pattern);
-        } catch (ParseException e) {
-            throw new InvalidGeneratorSetupException("Invalid pattern: " + pattern, e);
-        }
+        return getClass().getSimpleName() + "[" + (unique ? "unique '" : "'") + pattern + "']";
     }
 
 }
