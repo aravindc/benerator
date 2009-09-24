@@ -64,6 +64,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.maven.MavenUtil;
 import org.databene.commons.ui.I18NError;
 import org.databene.commons.ui.ProgressMonitor;
@@ -222,7 +223,7 @@ public class ArchetypeBuilder implements Runnable {
 		if (!setup.isOverwrite() && file.exists())
 			throw new I18NError("FileAlreadyExists", null, file.getAbsolutePath());
 		DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
-				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), monitor);
+				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), "dbunit", monitor);
 		return file;
 	}
 
@@ -434,13 +435,13 @@ public class ArchetypeBuilder implements Runnable {
           	applyDefaults(complexType);
           	InstanceDescriptor iDesc = new InstanceDescriptor(name, complexType.getName());
 			long count = db.countEntities(name);
-			iDesc.setCount(count);
+			iDesc.setCount(new ConstantExpression<Long>(count));
 			createEntity(iDesc);
        }
 	}
 	
 	private void createEntity(InstanceDescriptor descriptor) throws SAXException {
-		descriptor.setCount(0L);
+		descriptor.setCount(new ConstantExpression<Long>(0L));
 		AttributesImpl attributes = new AttributesImpl();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             Object value = detail.getValue();
@@ -462,9 +463,9 @@ public class ArchetypeBuilder implements Runnable {
     private void attribute(ComponentDescriptor component) throws SAXException {
     	// normalize
     	boolean nullable = (component.isNullable() == null || component.isNullable());
-		if (component.getMaxCount() != null && component.getMaxCount() == 1)
+		if (component.getMaxCount() != null && component.getMaxCount().evaluate(null) == 1)
 			component.setMaxCount(null);
-		if (component.getMinCount() != null && component.getMinCount() == 1)
+		if (component.getMinCount() != null && component.getMinCount().evaluate(null) == 1)
 			component.setMinCount(null);
 		if (nullable)
 			component.setNullable(null);
