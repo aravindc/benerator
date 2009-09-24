@@ -35,8 +35,8 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.task.IncludeTask;
 import org.databene.benerator.factory.TypeGeneratorFactory;
-import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
@@ -53,7 +53,6 @@ import org.databene.platform.xml.XMLEntityExporter;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
 /**
- * 
  * Generates XML files.<br/>
  * <br/>
  * @author Volker Bergmann
@@ -67,6 +66,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     private Generator<? extends Object> contentGenerator;
     private DataModel dataModel;
     
+    @SuppressWarnings("unchecked")
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
         this.encoding = SystemInfo.getFileEncoding();
         this.dataModel = DataModel.getDefaultInstance();
@@ -85,9 +85,8 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 new IncrementGenerator(), 
                 (Converter) new MessageConverter(filenamePattern, Locale.US));
         // parse properties files
-        ModelParser parser = new ModelParser(context);
         for (String propertiesFile : propertiesFiles)
-            parser.importProperties(propertiesFile);
+            IncludeTask.importProperties(propertiesFile, context);
 
         // set up content generator
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
