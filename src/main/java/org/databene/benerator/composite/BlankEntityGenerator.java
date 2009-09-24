@@ -37,11 +37,11 @@ import org.databene.model.data.Entity;
  * Created: 01.09.2007 07:39:52
  * @author Volker Bergmann
  */
-public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
+public class BlankEntityGenerator extends LightweightGenerator<Entity> {
 
     private ComplexTypeDescriptor descriptor;
 
-    public SimpleEntityGenerator(ComplexTypeDescriptor descriptor) {
+    public BlankEntityGenerator(ComplexTypeDescriptor descriptor) {
     	Assert.notNull(descriptor, "descriptor");
         this.descriptor = descriptor;
     }
@@ -53,4 +53,5 @@ public class SimpleEntityGenerator extends LightweightGenerator<Entity> {
     public Entity generate() {
         return new Entity(descriptor);
     }
+    
 }

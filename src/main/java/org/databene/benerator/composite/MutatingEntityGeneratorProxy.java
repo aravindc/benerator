@@ -41,7 +41,7 @@ import java.util.List;
  * Created: 27.06.2007 23:51:42
  * @author Volker Bergmann
  */
-public class EntityGenerator implements Generator<Entity> {
+public class MutatingEntityGeneratorProxy implements Generator<Entity> {
 
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
@@ -57,8 +57,8 @@ public class EntityGenerator implements Generator<Entity> {
      * @param descriptor Entity descriptor. 
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public EntityGenerator(ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
-        this(descriptor, new SimpleEntityGenerator(descriptor), componentBuilders, context);
+    public MutatingEntityGeneratorProxy(ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
+        this(descriptor, new BlankEntityGenerator(descriptor), componentBuilders, context);
     }
 
     /**
@@ -67,7 +67,7 @@ public class EntityGenerator implements Generator<Entity> {
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public EntityGenerator(ComplexTypeDescriptor descriptor, Generator<Entity> source, List<ComponentBuilder> componentBuilders, Context context) {
+    public MutatingEntityGeneratorProxy(ComplexTypeDescriptor descriptor, Generator<Entity> source, List<ComponentBuilder> componentBuilders, Context context) {
         this.entityName = descriptor.getName();
         this.source = source;
         this.componentBuilders = componentBuilders;
