@@ -40,8 +40,10 @@ import java.util.Collection;
  * Generates values from a weighted or unweighted set of samples.<br/>
  * <br/>
  * Created: 07.06.2006 19:04:08
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E> {
+public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E> { // TODO possibly this and WeightedSample are obsolete (replaceable by MappedSampleGenerator)
 	
     /** Keeps the Sample information */
     List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
