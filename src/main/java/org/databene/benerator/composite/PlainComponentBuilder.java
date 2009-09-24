@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.model.data.Entity;
 
 /**
@@ -55,8 +54,7 @@ public class PlainComponentBuilder implements ComponentBuilder {
 	}
 	
 	public void close() {
-        if (!(source instanceof IdGenerator))
-        	source.close();
+    	source.close();
 	}
 
 	public boolean available() {

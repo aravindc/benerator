@@ -126,8 +126,7 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	public String toString() {
 	    return getClass().getSimpleName() + "[\n"
 	        + (variables.size() > 0 ? "    variables" + variables + "\n" : "")
-	        + "    " + entityGenerator + "\n"
-	        + "]";
+	        + "    " + entityGenerator + "\n" + "]";
 	}
 
 }
