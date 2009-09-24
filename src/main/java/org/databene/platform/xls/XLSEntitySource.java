@@ -26,14 +26,13 @@
 
 package org.databene.platform.xls;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.model.data.AbstractEntitySource;
-import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 
@@ -48,30 +47,20 @@ import org.databene.model.data.EntitySource;
 public class XLSEntitySource extends AbstractEntitySource {
 	
     private String uri;
-    private int sheetIndex;
     private Converter<String, ?> preprocessor;
-
-    private ComplexTypeDescriptor entityDescriptor;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
     public XLSEntitySource() {
-        this(null, 0, null);
+        this(null);
     }
 
-    public XLSEntitySource(String uri, int sheetIndex, String entityName) {
-        this(uri, sheetIndex, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>());
+    public XLSEntitySource(String uri) {
+        this(uri, new NoOpConverter<String>());
     }
 
-    public XLSEntitySource(String uri, int sheetIndex, String entityName, Converter<String, ? extends Object> preprocessor) {
-        this(uri, sheetIndex, new ComplexTypeDescriptor(entityName), preprocessor);
-    }
-
-    public XLSEntitySource(String uri, int sheetIndex, ComplexTypeDescriptor descriptor, 
-    		Converter<String, ? extends Object> preprocessor) {
+    public XLSEntitySource(String uri, Converter<String, ? extends Object> preprocessor) {
         this.uri = uri;
-        this.sheetIndex = sheetIndex;
-        this.entityDescriptor = descriptor;
         this.preprocessor = preprocessor;
     }
 
@@ -85,20 +74,12 @@ public class XLSEntitySource extends AbstractEntitySource {
         this.uri = uri;
     }
 
-    public String getEntityName() {
-        return entityDescriptor.getName();
-    }
-
-    public void setEntityName(String entityName) {
-        this.entityDescriptor = new ComplexTypeDescriptor(entityName);
-    }
-
     // EntityIterable interface ----------------------------------------------------------------------------------------
 
     public HeavyweightIterator<Entity> iterator() {
         try {
-			return new XLSEntityIterator(uri, sheetIndex, entityDescriptor, preprocessor);
-		} catch (FileNotFoundException e) {
+			return new XLSEntityIterator(uri, preprocessor);
+		} catch (IOException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}
     }
@@ -107,8 +88,7 @@ public class XLSEntitySource extends AbstractEntitySource {
 
     @Override
 	public String toString() {
-        return getClass().getSimpleName() + "[uri=" + uri + ", entityName=" + entityDescriptor.getName() + "]";
+        return getClass().getSimpleName() + "[" + uri + "]";
     }
-    
 
 }

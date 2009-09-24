@@ -26,11 +26,12 @@
 
 package org.databene.platform.xls;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
@@ -38,6 +39,7 @@ import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.xls.XLSLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.array.Array2EntityConverter;
 
@@ -52,41 +54,29 @@ import org.databene.platform.array.Array2EntityConverter;
 public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 
 	private String uri;
-	private int sheetIndex;
-	private ComplexTypeDescriptor entityDescriptor;
+	
+	private HSSFWorkbook workbook;
 
+	private int sheetNo;
+	
+	private Converter<String, ? extends Object> preprocessor;
+	
 	private HeavyweightIterator<Entity> source;
 	
 	// constructors ----------------------------------------------------------------------------------------------------
 
-	public XLSEntityIterator(String uri, int sheetIndex, String entityName) throws FileNotFoundException {
-		this(uri, sheetIndex, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>());
+	public XLSEntityIterator(String uri) throws IOException {
+		this(uri, new NoOpConverter<String>());
 	}
 
-	public XLSEntityIterator(String uri, int sheetIndex, String entityName, Converter<String, ? extends Object> preprocessor) 
-			throws FileNotFoundException {
-		this(uri, sheetIndex, new ComplexTypeDescriptor(entityName), preprocessor);
-	}
-
-	@SuppressWarnings("unchecked")
-	public XLSEntityIterator(String uri, int sheetIndex, ComplexTypeDescriptor descriptor, Converter<String, ? extends Object> preprocessor)
-			throws FileNotFoundException {
+	public XLSEntityIterator(String uri, Converter<String, ? extends Object> preprocessor) 
+			throws IOException {
 		this.uri = uri;
-		this.sheetIndex = sheetIndex;
-		this.entityDescriptor = descriptor;
-		try {
-			XLSLineIterator lineIterator = new XLSLineIterator(uri, sheetIndex, preprocessor);
-			String featureNames[] = lineIterator.getHeaders();
-			Array2EntityConverter converter = new Array2EntityConverter(entityDescriptor, featureNames);
-			source = new ConvertingIterator(lineIterator, converter);
-		} catch (FileNotFoundException e) {
-			throw e;
-		} catch (IOException e) {
-			throw new RuntimeException((new StringBuilder()).append(
-					"Error in processing ").append(uri).toString(), e);
-		}
+		this.preprocessor = preprocessor;
+		this.workbook = new HSSFWorkbook(IOUtil.getInputStreamForURI(uri));
+		this.sheetNo = -1;
 	}
-	
+
 	// HeavyweightIterator interface implementation --------------------------------------------------------------------
 
 	public void remove() {
@@ -94,13 +84,14 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	}
 
 	public boolean hasNext() {
-		return source.hasNext();
+		if (sheetNo == -1 || (source != null && !source.hasNext()))
+			nextSheet();
+		return (source != null && source.hasNext());
 	}
 
 	public Entity next() {
-		if (!source.hasNext())
-			throw new IllegalStateException(
-					"No more entity to fetch, check hasNext() before calling next()");
+		if (!hasNext())
+			throw new IllegalStateException("No more entity to fetch, check hasNext() before calling next()");
 		else
 			return source.next();
 	}
@@ -111,11 +102,10 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	
 	// convenience methods ---------------------------------------------------------------------------------------------
 
-	public static List<Entity> parseAll(String uri, int sheetIndex, ComplexTypeDescriptor descriptor, 
-				Converter<String, ? extends Object> preprocessor)
-			throws FileNotFoundException {
+	public static List<Entity> parseAll(String uri, Converter<String, ? extends Object> preprocessor) 
+			throws IOException {
     	List<Entity> list = new ArrayList<Entity>();
-    	XLSEntityIterator iterator = new XLSEntityIterator(uri, sheetIndex, descriptor, preprocessor);
+    	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor);
     	while (iterator.hasNext())
     		list.add(iterator.next());
     	return list;
@@ -127,20 +117,34 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		return uri;
 	}
 
-	public int getSheetIndex() {
-		return sheetIndex;
-	}
-
-	public String getEntityName() {
-		return entityDescriptor.getName();
-	}
-
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[uri=" + uri + ", sheetIndex=" + sheetIndex + ", " +
-				"entityName=" + entityDescriptor.getName() + "]";
+		return getClass().getSimpleName() + "[" + uri + "]";
 	}
 
+    private void nextSheet() {
+    	if (sheetNo < workbook.getNumberOfSheets() - 1) {
+			this.sheetNo++;
+			source = createSheetIterator(workbook.getSheetAt(sheetNo), workbook.getSheetName(sheetNo), preprocessor);
+    	} else
+    		source = null;
+    }
+
+	private static HeavyweightIterator<Entity> createSheetIterator(
+			HSSFSheet sheet, String sheetName, Converter<String, ? extends Object> preprocessor) {
+	    XLSLineIterator sheetIterator = new XLSLineIterator(sheet, preprocessor);
+	    String featureNames[] = sheetIterator.getHeaders();
+	    DataModel dataModel = DataModel.getDefaultInstance();
+	    ComplexTypeDescriptor typeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(sheetName);
+	    if (typeDescriptor == null) {
+	    	typeDescriptor = new ComplexTypeDescriptor(sheetName);
+	    	// TODO set components
+	    	// TODO add typeDescriptor to dataModel
+	    }
+	    Array2EntityConverter converter = new Array2EntityConverter(typeDescriptor, featureNames);
+	    return new ConvertingIterator<Object[], Entity>(sheetIterator, converter);
+    }
+	
 }
