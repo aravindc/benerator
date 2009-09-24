@@ -24,31 +24,52 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.distribution;
+package org.databene.benerator.distribution.sequence;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.BeanUtil;
+import static org.databene.commons.MathUtil.*;
 
 /**
- * Helper class that serves as parent for individual {@link Sequence} implementations 
- * that are based on a Long-value generator (Generator&lt;Long&gt;).<br/>
+ * TODO document class RandomSequence.<br/>
  * <br/>
- * Created at 03.07.2009 13:15:22
+ * Created at 27.07.2009 06:31:25
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public abstract class LongBasedSequence extends Sequence {
+public class RandomSequence extends Sequence {
 
-	public LongBasedSequence(String name) {
-		super(name);
+    private static final String NAME = "random";
+
+	public RandomSequence() {
+	    super(NAME);
+    }
+	
+	@Override
+    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+		Generator<? extends Number> base;
+		if (Integer.class.equals(numberType.getClass()))
+			base = new RandomIntegerGenerator(toInteger(min), toInteger(max), toInteger(precision));
+		else if (BigInteger.class.equals(numberType.getClass()))
+			base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(max), toBigInteger(precision));
+		else if (BigDecimal.class.equals(numberType.getClass()))
+			base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(max), toBigDecimal(precision));
+		else if (BeanUtil.isIntegralNumberType(numberType))
+			base = new RandomLongGenerator(toLong(min), toLong(max), toLong(precision));
+		else
+			base = new RandomDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision));
+		return WrapperFactory.wrapNumberGenerator(numberType, base);
 	}
 
 	@Override
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-    	return WrapperFactory.wrapNumberGenerator(numberType, createLongGenerator(toLong(min), toLong(max), toLong(precision)));
-    }
-
-	protected abstract Generator<Long> createLongGenerator(Long min, Long max, Long precision);
+	public String toString() {
+	    return BeanUtil.toString(this);
+	}
 	
 }

@@ -28,6 +28,8 @@ package org.databene.benerator.distribution.sequence;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
@@ -46,7 +48,7 @@ import org.databene.commons.converter.NumberConverter;
  * Created: 27.03.2008 13:00:35
  * @author Volker Bergmann
  */
-public class SequenceFactory {
+public class SequenceFactory { // TODO I think this is obsolete after finalizing the memebers of class 'Sequence'
 	
 	@SuppressWarnings("unchecked")
     private static final Class[] INTEGRAL_NUMBER_TYPE_ORDER = {
@@ -59,14 +61,29 @@ public class SequenceFactory {
 		Double.class, Float.class, BigDecimal.class, 
 		Long.class, Integer.class, Short.class, Byte.class, BigInteger.class
 	};
+
+	// construction ----------------------------------------------------------------------------------------------------
 	
-	private static ClassProvider classProvider;
+	private static Map<ClassProvider, SequenceFactory> instances = new HashMap<ClassProvider, SequenceFactory>();
 	
-    public static void setClassProvider(ClassProvider classProvider) {
-    	SequenceFactory.classProvider = classProvider;
+	public static SequenceFactory getInstance(ClassProvider classProvider) {
+		SequenceFactory instance = instances.get(classProvider);
+		if (instance == null) {
+			instance = new SequenceFactory(classProvider);
+			instances.put(classProvider, instance);
+		}
+		return instance;
+	}
+	
+	private ClassProvider classProvider;
+	
+	public SequenceFactory(ClassProvider classProvider) {
+	    this.classProvider = classProvider;
     }
 
-	public static <T extends Number> Generator<T> createGenerator(
+	// interface -------------------------------------------------------------------------------------------------------
+	
+	public <T extends Number> Generator<T> createGenerator(
     		String sequenceName, Class<T> numberType, Object... parameters) {
     	try {
     		return createExactSequence(sequenceName, numberType, parameters);
@@ -86,23 +103,23 @@ public class SequenceFactory {
 	// internal helper methods -----------------------------------------------------------------------------------------
     
     @SuppressWarnings("unchecked")
-    protected static <T extends Number> Generator<T> createAdaptedSequence(
+    protected <T extends Number> Generator<T> createAdaptedSequence(
     		String sequenceName, Class<T> numberType, Object... parameters) {
     	Generator<? extends Number> source = createSourceGenerator(sequenceName, numberType, parameters);
     	return new ConvertingGenerator(source, new NumberConverter<T>(numberType));
     }
     
     @SuppressWarnings("unchecked")
-    protected static <T extends Number> Generator<? extends Number> createSourceGenerator(
+    protected <T extends Number> Generator<? extends Number> createSourceGenerator(
     		String sequenceName, Class<T> numberType, Object... parameters) {
     	String className = numberType.getName();
-		if (BeanUtil.isIntegralNumber(className))
+		if (BeanUtil.isIntegralNumberType(className))
     		return createSourceGenerator(sequenceName, parameters, INTEGRAL_NUMBER_TYPE_ORDER);
     	else
     		return createSourceGenerator(sequenceName, parameters, DECIMAL_NUMBER_TYPE_ORDER);
     }
     
-    protected static Generator<? extends Number> createSourceGenerator(
+    protected Generator<? extends Number> createSourceGenerator(
     		String sequenceName, Object[] parameters, Class<? extends Number>[] typeOrder) {
     	for (Class<? extends Number> type : typeOrder) {
     		try {
@@ -116,7 +133,7 @@ public class SequenceFactory {
     }
     
     @SuppressWarnings("unchecked")
-    protected static <T extends Number> Generator<T> createExactSequence(
+    protected <T extends Number> Generator<T> createExactSequence(
     		String sequenceName, Class<T> numberType, Object... parameters) {
     	String className = StringUtil.capitalize(sequenceName) + numberType.getSimpleName() + "Generator";
     	return (Generator<T>) BeanUtil.newInstance(classProvider.forName(className), false, parameters);

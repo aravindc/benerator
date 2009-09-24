@@ -33,9 +33,10 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Long Generator that implements a 'shuffle' Long Sequence.<br/>
  * <br/>
  * Created: 18.06.2006 14:40:29
+ * @since 0.1
  * @author Volker Bergmann
  */
-public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> {
+public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TODO support precision (see version for double)
 
     private long cursor;
     private long increment;

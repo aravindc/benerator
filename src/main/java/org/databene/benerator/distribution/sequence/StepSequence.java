@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 
 /**
@@ -48,7 +49,7 @@ public class StepSequence extends Sequence {
 	private BigDecimal initial;
 	
 	public StepSequence() {
-	    this(BigDecimal.ONE);
+	    this(null);
     }
 	
 	public StepSequence(BigDecimal increment) {
@@ -71,9 +72,15 @@ public class StepSequence extends Sequence {
 
 	@Override
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-		return SequenceFactory.createGenerator(NAME, numberType, min, max, increment, initial);
+		Generator<? extends Number> base;
+		if (BeanUtil.isIntegralNumberType(numberType))
+			base = new StepLongGenerator(
+					toLong(min), toLong(max), toLong(increment != null ? increment : precision), toLong(initial));
+		else
+			base = new StepDoubleGenerator(toDouble(min), toDouble(max), toDouble(increment != null ? increment : precision), toDouble(initial));
+		return WrapperFactory.wrapNumberGenerator(numberType, base);
 	}
-	
+
 	@Override
 	public String toString() {
 	    return BeanUtil.toString(this);

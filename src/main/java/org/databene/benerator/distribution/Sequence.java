@@ -31,12 +31,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.sequence.BitReverseSequence;
+import org.databene.benerator.distribution.sequence.CumulatedSequence;
+import org.databene.benerator.distribution.sequence.RandomSequence;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
 import org.databene.benerator.distribution.sequence.SequenceFactory;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
+import org.databene.benerator.distribution.sequence.StepSequence;
+import org.databene.benerator.distribution.sequence.WedgeSequence;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.bean.DefaultClassProvider;
+import org.databene.commons.converter.NumberConverter;
 
 /**
  * Provides access to specific Sequence number Generators.<br/>
@@ -48,14 +55,15 @@ import org.databene.commons.ConfigurationError;
 public class Sequence implements Distribution {
 	
     private static Map<String, Sequence> instances = new HashMap<String, Sequence>();
+    protected static SequenceFactory sequenceFactory = SequenceFactory.getInstance(DefaultClassProvider.getInstance());
 
-    public static final Sequence RANDOM      = new Sequence("random");
+    public static final Sequence RANDOM      = new RandomSequence();
     public static final Sequence SHUFFLE     = new ShuffleSequence();
-    public static final Sequence CUMULATED   = new Sequence("cumulated");
+    public static final Sequence CUMULATED   = new CumulatedSequence();
     public static final Sequence RANDOM_WALK = new RandomWalkSequence();
-    public static final Sequence STEP        = new Sequence("step");
-    public static final Sequence WEDGE       = new Sequence("wedge");
-    public static final Sequence BIT_REVERSE = new Sequence("bitReverse");
+    public static final Sequence STEP        = new StepSequence();
+    public static final Sequence WEDGE       = new WedgeSequence();
+    public static final Sequence BIT_REVERSE = new BitReverseSequence();
     
     private String name;
     
@@ -85,7 +93,7 @@ public class Sequence implements Distribution {
     }
 
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-	    return SequenceFactory.createGenerator(getName(), numberType, min, max, precision); 
+	    return sequenceFactory.createGenerator(getName(), numberType, min, max, precision); 
 	    // TODO provide something easier for custom sequences
     }
 
@@ -93,7 +101,15 @@ public class Sequence implements Distribution {
     public <S, P> Generator<P> applyTo(Generator<S> source) {
 	    return (Generator<P>) new SequencedSampleGenerator<S>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
     }
-
+    
+	protected <T extends Number> Long toLong(T value) {
+	    return NumberConverter.convert(value, Long.class);
+    }
+	
+	protected <T extends Number> Double toDouble(T value) {
+	    return NumberConverter.convert(value, Double.class);
+    }
+	
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override

@@ -30,6 +30,8 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.BeanUtil;
 
 /**
  * Random Walk {@link Sequence} implementation that supports a variable step width.<br/>
@@ -56,7 +58,14 @@ public class RandomWalkSequence extends Sequence {
 
     @Override
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-    	return SequenceFactory.createGenerator(getName(), numberType, min, max, precision, initial(min), minStep, maxStep);
+		Generator<? extends Number> base;
+		if (BeanUtil.isIntegralNumberType(numberType))
+			base = new RandomWalkLongGenerator(
+					toLong(min), toLong(max), toLong(precision), toLong(initial(min)), toLong(minStep), toLong(maxStep));
+		else
+			base = new RandomWalkDoubleGenerator(
+					toDouble(min), toDouble(max), toDouble(precision), toDouble(minStep), toDouble(maxStep));
+		return WrapperFactory.wrapNumberGenerator(numberType, base);
     }
 
     private <T extends Number> T initial(T min) {

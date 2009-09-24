@@ -30,6 +30,8 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.wrapper.WrapperFactory;
+import org.databene.commons.BeanUtil;
 
 /**
  * {@link Sequence} implementation that implements a 'shuffle' behavior, 
@@ -58,7 +60,14 @@ public class ShuffleSequence extends Sequence {
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
     	if (increment == null)
     		increment = BigDecimal.valueOf(2);
-    	return SequenceFactory.createGenerator("shuffle", numberType, min, max, increment);
+		Generator<? extends Number> base;
+		if (BeanUtil.isIntegralNumberType(numberType))
+			base = new ShuffleLongGenerator(
+					toLong(min), toLong(max), toLong(increment));
+		else
+			base = new ShuffleDoubleGenerator(
+					toDouble(min), toDouble(max), toDouble(precision), toDouble(increment));
+		return WrapperFactory.wrapNumberGenerator(numberType, base);
     }
     
 }

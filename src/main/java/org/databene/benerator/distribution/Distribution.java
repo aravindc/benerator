@@ -32,6 +32,7 @@ import org.databene.benerator.Generator;
  * Parent interface for all distribution types.<br/>
  * <br/>
  * Created: 11.09.2006 21:31:54
+ * @version 0.1
  * @author Volker Bergmann
  */
 public interface Distribution {

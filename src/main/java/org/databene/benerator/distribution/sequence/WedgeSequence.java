@@ -24,48 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.distribution;
+package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
-import org.databene.commons.BeanUtil;
 
 /**
- * Abstract implementation of the {@link WeightFunction} interface.<br/>
+ * TODO document class CumulatedSequence.<br/>
  * <br/>
- * Created at 30.06.2009 07:13:49
+ * Created at 23.09.2009 18:59:30
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public abstract class AbstractWeightFunction implements WeightFunction {
+public class WedgeSequence extends Sequence {
 
-    @SuppressWarnings("unchecked")
-    public <S, P> Generator<P> applyTo(Generator<S> source) {
-    	// TODO this generator does not look appropriate
-	    return (Generator<P>) new AttachedWeightSampleGenerator<S>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+    public WedgeSequence() {
+    	super("wedge");
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-    	if (Long.class.equals(numberType))
-    		return (Generator<T>) createLongGenerator(min, max, precision);
-    	else if (Double.class.equals(numberType))
-    		return (Generator<T>) createDoubleGenerator(min, max, precision);
-    	else if (BeanUtil.isIntegralNumberType(numberType))
-    		return WrapperFactory.wrapNumberGenerator(numberType, createLongGenerator(min, max, precision));
-    	else
-    		return WrapperFactory.wrapNumberGenerator(numberType, createDoubleGenerator(min, max, precision));
-    }
-
-	private <T extends Number> WeightedLongGenerator createLongGenerator(T min, T max, T precision) {
-	    return new WeightedLongGenerator(min.longValue(), max.longValue(), precision.longValue(), this);
-    }
-
-	private <T extends Number> WeightedDoubleGenerator createDoubleGenerator(T min, T max, T precision) {
-	    return new WeightedDoubleGenerator(min.doubleValue(), max.doubleValue(), precision.doubleValue(), this);
+		Generator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(precision));
+		return WrapperFactory.wrapNumberGenerator(numberType, base);
     }
 
 }
