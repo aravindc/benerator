@@ -29,9 +29,13 @@ package org.databene.platform.array;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.FixedSourceTypeConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.TypeDescriptor;
 
 /**
  * Converts an array of feature values to an entity.<br/>
@@ -61,8 +65,15 @@ public class Array2EntityConverter extends FixedSourceTypeConverter<Object[], En
         } else
         	length = sourceValue.length;
         for (int i = 0; i < length; i++) {
+        	Object value = sourceValue[i];
             String featureName = attributeNames[i];
-            entity.setComponent(featureName, sourceValue[i]);
+            ComponentDescriptor component = descriptor.getComponent(featureName);
+            if (component != null) {
+	            TypeDescriptor componentType = component.getType();
+	            if (componentType instanceof SimpleTypeDescriptor)
+	            	value = AnyConverter.convert(value, ((SimpleTypeDescriptor) componentType).getPrimitiveType().getJavaType());
+            }
+			entity.setComponent(featureName, value);
         }
         return entity;
     }
