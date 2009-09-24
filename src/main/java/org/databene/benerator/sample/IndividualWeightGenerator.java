@@ -54,7 +54,7 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
     private WeightedLongGenerator indexGenerator;
 
     /** Flag that indicates if the generator needs to be initialized */
-    private boolean dirty = true;
+    protected boolean dirty = true;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
