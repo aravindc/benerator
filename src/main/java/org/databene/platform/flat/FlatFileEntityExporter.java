@@ -149,7 +149,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
     // Callback methods for TextFileExporter ---------------------------------------------------------------------------
     
 	@Override
-	protected void postInitPrinter() {
+	protected void postInitPrinter(Entity entity) {
         if (this.converters == null)
             throw new ConfigurationError("Property 'columns' not set on bean " + getClass().getName());
 	}
