@@ -32,6 +32,7 @@ import java.io.PrintWriter;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -45,6 +46,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 
     private static final String DEFAULT_ENCODING = SystemInfo.getFileEncoding();
     private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.getLineSeparator();
+    private static final Logger LOG = LoggerFactory.getLogger(TextFileExporter.class);
 
     // attributes ------------------------------------------------------------------------------------------------------
 
@@ -77,8 +79,9 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     /**
      * This method is called after printer initialization and before writing the first data entry.
      * Overwrite this method in child classes e.g. for writing a file header.
+     * @param data the first data item to write to the file
      */
-    protected void postInitPrinter() {
+    protected void postInitPrinter(E data) {
     	// overwrite this in child classes, e.g. for writing a file header
     }
 
@@ -140,7 +143,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 	public final void startConsuming(E data) {
         try {
             if (printer == null)
-                initPrinter();
+                initPrinter(data);
             startConsumingImpl(data);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -156,25 +159,26 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     @Override
 	public void close() {
         try {
+        	try {
 	        if (printer == null)
-	        	initPrinter();
+		        initPrinter(null);
+        	} catch (IOException e) {
+        		LOG.error("Error initializing empty file", e);
+        	}
 	        preClosePrinter();
-        } catch (IOException e) {
-        	LoggerFactory.getLogger(getClass()).error("Error closing file " + uri, e);
         } finally {
-        	if (printer != null)
-    	        printer.close();
+	        printer.close();
         }
     }
 
 	// private helpers -------------------------------------------------------------------------------------------------
     
-    protected void initPrinter() throws IOException {
+    protected void initPrinter(E data) throws IOException {
         if (uri == null)
             throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
         // TODO v0.6 create sub folders if necessary
         printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator);
-        postInitPrinter();
+        postInitPrinter(data);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
