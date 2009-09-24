@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,9 @@
 
 package org.databene.domain.address;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Random;
+
+import org.databene.benerator.util.SimpleRandom;
 
 /**
  * Represents a street and serves as generator for house numbers.<br/>
@@ -70,10 +70,9 @@ public class Street {
     }
 
     public String[] generateHouseNumberWithZipCode() {
-        List<String> zipCodes = new ArrayList<String>(city.getZipCodes());
         return new String[] {
             String.valueOf(random(1, maxHouseNumber)),
-            zipCodes.get(random(0, zipCodes.size() - 1))
+            SimpleRandom.randomValue(city.getPostalCodes())
         };
     }
 

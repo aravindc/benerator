@@ -26,11 +26,17 @@
 
 package org.databene.domain.address;
 
+import org.databene.commons.Assert;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.model.data.Entity;
+import org.databene.platform.csv.CSVEntitySource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,12 +215,38 @@ public class Country {
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
         this.mobileCodePattern = mobilCodePattern;
-        this.states = new OrderedNameMap<State>();
         this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
+        importStates();
         instances.put(isoCode, this);
     }
 
-    public String getIsoCode() {
+    private void importStates() {
+        this.states = new OrderedNameMap<State>();
+        String filename = "org/databene/domain/address/state_" + isoCode + ".csv";
+        if (!IOUtil.isURIAvailable(filename)) {
+        	logger.debug("No states defined for " + this);
+        	return;
+        }
+		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', "UTF-8");
+        HeavyweightIterator<Entity> iterator = source.iterator();
+        while (iterator.hasNext()) {
+        	Entity entity = iterator.next();
+        	State state = new State();
+        	mapProperty("id", entity, state);
+        	mapProperty("name", entity, state);
+        	state.setCountry(this);
+        	addState(state);
+        }
+        IOUtil.close(iterator);
+    }
+
+    private void mapProperty(String propertyName, Entity source, State target) {
+    	String propertyValue = String.valueOf(source.get(propertyName));
+    	Assert.notNull(propertyValue, propertyName);
+    	BeanUtil.setPropertyValue(target, propertyName, propertyValue);
+    }
+
+	public String getIsoCode() {
         return isoCode;
     }
 

@@ -28,6 +28,9 @@ package org.databene.domain.address;
 
 import java.util.*;
 
+import org.databene.commons.ArrayUtil;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 
@@ -40,21 +43,23 @@ import org.databene.commons.StringUtil;
  */
 public class City {
 	
+	private static final Escalator escalator = new LoggerEscalator();
+	
     private String name;
     private String nameExtension;
-    private SortedSet<String> zipCodes;
+    private String[] postalCodes;
     private String areaCode;
     private State state;
     private Locale language;
     private int population;
 
-    public City(State state, String name, String addition, Collection<String> zipCodes, String areaCode) {
+    public City(State state, String name, String addition, String[] postalCodes, String areaCode) {
         if (areaCode == null)
             throw new IllegalArgumentException("Area Code is null for " + name);
         this.state = state;
         this.name = name;
         this.nameExtension = addition;
-        this.zipCodes = new TreeSet<String>(zipCodes);
+        this.postalCodes = (postalCodes != null ? postalCodes : new String[0]);
         this.areaCode = areaCode;
     }
 
@@ -66,17 +71,37 @@ public class City {
         this.nameExtension = nameExtension;
     }
 
-    public Collection<String> getZipCodes() {
-        return zipCodes;
+    public String[] getPostalCodes() {
+        return postalCodes;
     }
 
-    public void setZipCodes(Collection<String> zipCodes) {
-        this.zipCodes.clear();
-        this.zipCodes.addAll(zipCodes);
+    public void setPostalCodes(String[] postalCodes) {
+        this.postalCodes = postalCodes;
     }
 
+    public void addPostalCode(String postalCode) {
+        postalCodes = ArrayUtil.append(postalCodes, postalCode);
+    }
+
+    /** @deprecated use property postalCodes */
+    @Deprecated
+    public String[] getZipCodes() {
+    	escalator.escalate("property City.zipCode is deprecated, use City.postalCode instead", City.class, "Invoked getZipCodes()");
+        return getPostalCodes();
+    }
+
+    /** @deprecated use property postalCodes */
+    @Deprecated
+    public void setZipCodes(String[] zipCodes) {
+    	escalator.escalate("property City.zipCode is deprecated, use City.postalCode instead", City.class, "Invoked setZipCodes()");
+        this.postalCodes = zipCodes;
+    }
+
+    /** @deprecated use property postalCodes */
+    @Deprecated
     public void addZipCode(String zipCode) {
-        zipCodes.add(zipCode);
+    	escalator.escalate("property City.zipCode is deprecated, use City.postalCode instead", City.class, "Invoked addZipCode()");
+        postalCodes = ArrayUtil.append(postalCodes, zipCode);
     }
 
     public String getAreaCode() {

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,8 @@ import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
  * Generates a street name for a region.<br/>
  * <br/>
  * Created: 12.06.2006 00:08:28
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class StreetNameGenerator extends WeightedDatasetCSVGenerator<String> {
 

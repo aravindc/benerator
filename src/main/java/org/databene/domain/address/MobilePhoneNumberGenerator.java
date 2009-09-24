@@ -34,12 +34,18 @@ import org.databene.benerator.primitive.regex.RegexStringGenerator;
  * Generates mobile phone numbers.<br/>
  * <br/>
  * Created: 14.10.2007 21:28:35
+ * @since 0.3.01
+ * @author Volker Bergmann
  */
 public class MobilePhoneNumberGenerator extends LightweightGenerator<PhoneNumber> {
 
     private Country country;
     private Generator<String> mobilePreCodeGenerator;
     private Generator<String> mobileLocalCodeGenerator;
+
+    public MobilePhoneNumberGenerator() {
+    	this(Country.getDefault());
+    }
 
     public MobilePhoneNumberGenerator(Country country) {
         this.country = country;

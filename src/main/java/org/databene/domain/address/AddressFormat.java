@@ -58,6 +58,7 @@ public class AddressFormat {
     public static AddressFormat US = getInstance("US");
     public static AddressFormat AU = getInstance("AU");
     public static AddressFormat DE = getInstance("DE");
+    public static AddressFormat BE = getInstance("BE");
     
 	private String pattern;
 	private Script script;

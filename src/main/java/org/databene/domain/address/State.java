@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,8 @@ import java.util.Map;
  * Represents a state.<br/>
  * <br/>
  * Created: 27.07.2007 17:37:12
+ * @since 0.3
+ * @author Volker Bergmann
  */
 public class State {
 
@@ -80,13 +82,13 @@ public class State {
     public void setCountry(Country country) {
         this.country = country;
     }
-    
+
     // city handling ---------------------------------------------------------------------------------------------------
 
-    public City getCity(CityId id) {
+	public City getCity(CityId id) {
         return cities.get(id);
     }
-
+    
     public Collection<City> getCities() {
         return cities.values();
     }

@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.io.FileWriter;
 
 /**
- * Reads and perists city files in CSV format (column header = property name).<br/>
+ * Reads and persists city files in CSV format (column header = property name).<br/>
  * <br/>
  * Created: 28.07.2007 15:21:12
  * @author Volker Bergmann
@@ -156,13 +156,13 @@ public class CityManager {
                     warnCount++;
                     logger.warn("areaCode is not provided for city: '" + cityId);
                 }
-                city = new CityHelper(state, cityId, CollectionUtil.toList(zipCode), areaCode);
+                city = new CityHelper(state, cityId, new String[] { zipCode }, areaCode);
                 if (!StringUtil.isEmpty(lang))
                 	city.setLanguage(LocaleUtil.getLocale(lang));
                 state.addCity(cityId, city);
                 city.setState(state);
             } else
-                city.addZipCode(zipCode);
+                city.addPostalCode(zipCode);
         }
 		return warnCount;
 	}
@@ -174,7 +174,7 @@ public class CityManager {
                 "zipCode", "areaCode", "language");
         for (State state : country.getStates()) {
             for (City city : state.getCities())
-                for (String zipCode : city.getZipCodes()) {
+                for (String zipCode : city.getPostalCodes()) {
                     ((CityHelper)city).setZipCode(zipCode);
                     writer.writeElement(city);
                 }
@@ -335,7 +335,7 @@ public class CityManager {
 
         private String zipCode;
 
-        public CityHelper(State state, CityId cityId, List<String> zipCodes, String areaCode) {
+        public CityHelper(State state, CityId cityId, String[] zipCodes, String areaCode) {
             super(state, cityId.getName(), cityId.getNameExtension(), zipCodes, areaCode);
         }
 
