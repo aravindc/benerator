@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import java.util.BitSet;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringCharacterIterator;
 import org.databene.commons.StringUtil;
@@ -61,12 +62,12 @@ public class BasicParser {
 		nameCharacters.set(c);
 	}
 
-	public Invocation parseInvocation(String code) throws ParseException {
+	public Invocation parseInvocation(String code, Context context) throws ParseException {
 		StringCharacterIterator iterator = new StringCharacterIterator(code);
 		String fqName = parseFullyQualifiedName(iterator);
 		iterator.skipWhitespace();
 		Object[] params = parseInvocationParameters(iterator);
-		params = preprocessParams(params);
+		params = preprocessParams(params, context);
 		return new Invocation(fqName, params);
 	}
 	
@@ -76,11 +77,11 @@ public class BasicParser {
 
 	public Object resolveConstructionOrReference(StringCharacterIterator iterator, ClassProvider classProvider, Context context) 
 			throws ParseException {
-		Expression expression = parseConstructionOrReference(iterator, classProvider, context);
-		return expression.evaluate();
+		Expression<?> expression = parseConstructionOrReference(iterator, classProvider, context);
+		return expression.evaluate(context);
 	}
 
-	public Expression parseConstructionOrReference(
+	public Expression<?> parseConstructionOrReference(
 			StringCharacterIterator iterator, ClassProvider classProvider, Context context) throws ParseException {
 		
 		// parse fully qualified name
@@ -95,7 +96,7 @@ public class BasicParser {
 		}
 
 		// now it must be a class - parse construction details
-		return parseConstructionDetails(iterator, classNameOrRef, classProvider);
+		return parseConstructionDetails(iterator, classNameOrRef, classProvider, context);
 	}
 
 	public Construction parseConstruction(
@@ -103,18 +104,18 @@ public class BasicParser {
 		StringCharacterIterator iterator = new StringCharacterIterator(code);
 		String className = parseFullyQualifiedName(iterator);
 		iterator.skipWhitespace();
-		return parseConstructionDetails(iterator, className, classProvider);
+		return parseConstructionDetails(iterator, className, classProvider, context);
 	}
 
 	private Construction parseConstructionDetails(
-			StringCharacterIterator iterator, String className, ClassProvider classProvider) {
+			StringCharacterIterator iterator, String className, ClassProvider classProvider, Context context) {
 		if (!iterator.hasNext() || iterator.peekNext() == ',')
 			return new Construction(className, classProvider);
 
 		// find out specific construction type
 		char next = iterator.peekNext();
 		if (next == '(') {
-			Object[] params = parseConstructorParams(iterator);
+			Object[] params = parseConstructorParams(iterator, context);
 			if (params.length > 0)
 				return new ParametrizedConstruction(className, classProvider, params);
 			else
@@ -151,9 +152,9 @@ public class BasicParser {
 		return construction;
 	}
 
-	private Object[] parseConstructorParams(StringCharacterIterator iterator) {
+	private Object[] parseConstructorParams(StringCharacterIterator iterator, Context context) {
 		Object[] parameters = parseInvocationParameters(iterator);
-		return preprocessParams(parameters);
+		return preprocessParams(parameters, context);
 	}
 /*
 	public Object resolveConstruction(String text, ClassProvider classProvider) throws ParseException {
@@ -232,7 +233,7 @@ public class BasicParser {
 			if ((c == separator || c == rightParenthesis) && quoteMode == 0 && !escapeMode) {
 				Object element = parseListElement(iterator, start, lastNonWs, escapeOccurred, escapeMode);
 				if (!NOT_AN_ELEMENT.equals(element))
-					builder.append(element);
+					builder.add(element);
 				iterator.skipWhitespace();
 				start = iterator.index();
 				escapeOccurred = false;
@@ -259,7 +260,7 @@ public class BasicParser {
 		if (start < iterator.index()) {
 			Object element = parseListElement(iterator, start, lastNonWs, escapeOccurred, escapeMode);
 			if (!NOT_AN_ELEMENT.equals(element))
-				builder.append(element);
+				builder.add(element);
 		}
 		return builder.toArray();
 	}
@@ -277,21 +278,31 @@ public class BasicParser {
 		return parsedParameters;
 	}
 
-	private Object[] preprocessParams(Object[] parsedParams) {
+	private Object[] preprocessParams(Object[] parsedParams, Context context) {
 		Object[] result = new Object[parsedParams.length];
-		for (int i = 0; i < parsedParams.length; i++)
-			result[i] = unquote(parsedParams[i]);
+		for (int i = 0; i < parsedParams.length; i++) {
+			Object param = parsedParams[i];
+			if (param instanceof String) {
+				String s = (String) param;
+				if (isQuoted(s))
+					param = unquote(s);
+				else if (context.contains(s))
+					param = context.get(s);
+				else
+					param = s;
+			}
+			result[i] = param;
+		}
 		return result;
 	}
 
-	private Object unquote(Object value) {
-		if (value instanceof String) {
-			String string = (String) value;
-			if ((string.startsWith("'") && string.endsWith("'")) || (string.startsWith("\"") && string.endsWith("\"")))
-				return string.substring(1, string.length() - 1);
-		}
-		return value;
+	private Object unquote(String value) {
+		return (isQuoted(value) ? value.substring(1, value.length() - 1) : value);
 	}
+
+	private boolean isQuoted(String s) {
+	    return (s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\""));
+    }
 
 	private static Object parseListElement(StringCharacterIterator iterator, int from, int to, 
 			boolean escapeOccurred, boolean escapeModeActive) {

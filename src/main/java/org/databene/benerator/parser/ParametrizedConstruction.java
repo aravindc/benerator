@@ -27,6 +27,7 @@
 package org.databene.benerator.parser;
 
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Context;
 import org.databene.commons.bean.ClassProvider;
 
 /**
@@ -50,9 +51,8 @@ public class ParametrizedConstruction extends Construction {
 		return params;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Object evaluate() {
+	public Object evaluate(Context context) {
 		return BeanUtil.newInstance(getType(), false, params);
 	}
 

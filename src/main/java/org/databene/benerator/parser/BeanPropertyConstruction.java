@@ -29,6 +29,7 @@ package org.databene.benerator.parser;
 import java.util.Map;
 
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Context;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.bean.ClassProvider;
 
@@ -58,10 +59,11 @@ public class BeanPropertyConstruction extends Construction {
 	}
 
 	@Override
-	public Object evaluate() {
-		Object bean = super.evaluate();
+	public Object evaluate(Context context) {
+		Object bean = super.evaluate(context);
 		for (Map.Entry<String, Object> property : properties.entrySet())
 			BeanUtil.setPropertyValue(bean, property.getKey(), property.getValue(), true, true);
 		return bean;
 	}
+	
 }

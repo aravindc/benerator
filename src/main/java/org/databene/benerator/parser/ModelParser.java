@@ -26,18 +26,20 @@
 
 package org.databene.benerator.parser;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.expression.xml.XMLBeanExpression;
+import org.databene.benerator.engine.task.ImportTask;
+import org.databene.benerator.engine.task.IncludeTask;
+import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ArrayFormat;
-import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.IOUtil;
+import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.xml.XMLElement2BeanConverter;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -50,11 +52,10 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.script.ScriptConverter;
+import org.databene.task.Task;
+
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -67,34 +68,14 @@ import org.w3c.dom.NamedNodeMap;
  */
 public class ModelParser {
 	
-    private static final Logger logger = LoggerFactory.getLogger(ModelParser.class);
-
     private BeneratorContext context;
-    private BasicParser basicParser;
 	
     public ModelParser(BeneratorContext context) {
 		this.context = context;
-		this.basicParser = new BasicParser();
 	}
 
-	public Object parseBean(Element element) {
-        String beanId = parseStringAttribute(element, "id", context);
-        String beanClass = parseStringAttribute(element, "class", context);
-        String beanSpec = parseStringAttribute(element, "spec", context);
-        Object bean = null;
-        if (beanClass != null) {
-	        logger.debug("Instantiating bean of class " + beanClass + " (id=" + beanId + ")");
-	        bean = XMLElement2BeanConverter.convert(element, context, new ScriptConverter(context), context);
-	        if (!StringUtil.isEmpty(beanId))
-	            BeanUtil.setPropertyValue(bean, "id", beanId, false);
-        } else if (beanSpec != null) {
-	        logger.debug("Instantiating bean: " + beanSpec + " (id=" + beanId + ")");
-	        Construction construction = basicParser.parseConstruction(beanSpec, context, context);
-	        bean = construction.evaluate();
-        } else
-        	throw new ConfigurationError("Syntax error in definition of bean " + beanId);
-        context.set(beanId, bean);
-        return bean;
+	public Expression<Object> parseBean(Element element) {
+        return new XMLBeanExpression(element);
     }
 
     public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner) {
@@ -146,9 +127,9 @@ public class ModelParser {
         }
         mapInstanceDetails(element, complex, result);
         if (result.getDeclaredDetailValue("minCount") == null)
-            result.setDetailValue("minCount", 1);
+            result.setMinCount(new ConstantExpression<Long>(1L));
         if (result.getDeclaredDetailValue("maxCount") == null)
-            result.setDetailValue("maxCount", 1);
+            result.setMaxCount(new ConstantExpression<Long>(1L));
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
             if (parentComponent != null) {
@@ -177,22 +158,9 @@ public class ModelParser {
         return variable;
     }
 
-    public String parseInclude(Element element) {
+    public IncludeTask parseInclude(Element element) {
         String uri = parseStringAttribute(element, "uri", context);
-        uri = IOUtil.resolveLocalUri(uri, context.getContextUri());
-        try {
-            importProperties(uri);
-            return uri;
-        } catch (IOException e) {
-            throw new ConfigurationError("Properties file not found for uri: " + uri);
-        }
-    }
-
-    public void importProperties(String uri) throws IOException {
-        logger.debug("reading properties from uri: " + uri);
-        ScriptConverter preprocessor = new ScriptConverter(context);
-        DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
-        IOUtil.readProperties(uri, converter);
+        return new IncludeTask(uri);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
@@ -215,7 +183,7 @@ public class ModelParser {
             String detailName = entry.getKey();
             if (detailName.equals("type"))
                 continue;
-            Object tmp = renderAttribute(detailName, entry.getValue(), context);
+            Object tmp = resolveScript(detailName, entry.getValue(), context);
 			String detailString = ToStringConverter.convert(tmp, null);
             if (descriptor.supportsDetail(detailName))
                 descriptor.setDetailValue(detailName, detailString);
@@ -301,34 +269,47 @@ public class ModelParser {
         return mapInstanceDetails(element, false, result);
     }
 
-	public void parseImport(Element element) {
+	public Task parseImport(Element element) {
+		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
+		ArrayBuilder<String> packageImports = new ArrayBuilder<String>(String.class); 
+		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
+		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 
+		
+		// defaults import
+		boolean defaults = ("true".equals(element.getAttribute("defaults")));
 		
 		// check class import
 		String attribute = element.getAttribute("class");
 		if (!StringUtil.isEmpty(attribute))
-			context.importClass(attribute);
+			classImports.add(attribute);
 		
 		// domain import
 		attribute = element.getAttribute("domain");
 		if (!StringUtil.isEmpty(attribute))
-			importDomain(attribute);
+			domainImports.add(attribute);
+		
+		// multiple domain import
+		attribute = element.getAttribute("domains");
+		if (!StringUtil.isEmpty(attribute))
+			domainImports.addAll(StringUtil.tokenize(attribute, ','));
 		
 		// package import
 		attribute = element.getAttribute("package");
 		if (!StringUtil.isEmpty(attribute))
-			context.importPackage(attribute);
+			packageImports.add(attribute);
 		
-		// defaults import
-		if ("true".equals(element.getAttribute("defaults")))
-			context.importDefaults();
-	}
-
-
-	public void importDomain(String domain) {
-		if (domain.indexOf('.') < 0)
-			context.importPackage("org.databene.domain." + domain);
-		else
-			context.importPackage(domain);
+		// platform import
+		attribute = element.getAttribute("platform");
+		if (!StringUtil.isEmpty(attribute))
+			platformImports.add(attribute);
+		
+		// multiple platform import
+		attribute = element.getAttribute("platforms");
+		if (!StringUtil.isEmpty(attribute))
+			platformImports.addAll(StringUtil.tokenize(attribute, ','));
+		
+		return new ImportTask(defaults, classImports.toArray(), packageImports.toArray(), 
+				domainImports.toArray(), platformImports.toArray());
 	}
 
 }

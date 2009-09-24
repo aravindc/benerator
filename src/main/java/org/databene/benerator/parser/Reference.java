@@ -27,6 +27,7 @@
 package org.databene.benerator.parser;
 
 import org.databene.commons.Context;
+import org.databene.commons.Expression;
 
 /**
  * Special expression type that resolves a reference.<br/>
@@ -36,7 +37,7 @@ import org.databene.commons.Context;
  * @author Volker Bergmann
  */
 
-public class Reference implements Expression {
+public class Reference implements Expression<Object> {
 	
 	private final String id;
 	private final Context context;
@@ -54,7 +55,7 @@ public class Reference implements Expression {
 		return context;
 	}
 
-	public Object evaluate() {
+	public Object evaluate(Context context) {
 		return context.get(id);
 	}
 }

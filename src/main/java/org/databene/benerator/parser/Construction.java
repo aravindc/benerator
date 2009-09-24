@@ -27,6 +27,8 @@
 package org.databene.benerator.parser;
 
 import org.databene.commons.BeanUtil;
+import org.databene.commons.Context;
+import org.databene.commons.Expression;
 import org.databene.commons.bean.ClassProvider;
 import org.databene.commons.bean.DefaultClassProvider;
 
@@ -78,7 +80,7 @@ public class Construction implements Expression {
 		}
 	}
 	
-	public Object evaluate() {
+	public Object evaluate(Context contex) {
 		return BeanUtil.newInstance(getType());
 	}
 
