@@ -38,17 +38,16 @@ import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.ConverterMock;
 import org.databene.benerator.test.GeneratorMock;
+import org.databene.benerator.test.JSR303ConstraintValidatorMock;
 import org.databene.benerator.test.ValidatorMock;
 import org.databene.benerator.test.WeightFunctionMock;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
-import org.databene.id.IdProvider;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -110,6 +109,9 @@ public class DescriptorUtilTest extends TestCase {
 		// test converter chaining
 		checkGetValidator("c", new ValidatorMock(3), "c," + ValidatorMock.class.getName() + "(5)", null);
 		checkGetValidator("c", new ValidatorMock(3), "c," + ValidatorMock.class.getName() + "(3)", 3);
+		
+		// test JSR 303 constraint validator
+		checkGetValidator(null, null, JSR303ConstraintValidatorMock.class.getName() + "(2)", 2);
 	}
 	
 	public void testGetGeneratorByName() {
@@ -124,17 +126,6 @@ public class DescriptorUtilTest extends TestCase {
 		
 		// test property spec
 		checkGetGeneratorByName(null, null, GeneratorMock.class.getName() + "[value=3]", 3);
-	}
-
-	public void testGetIdProvider() {
-		checkGetIdProvider("increment", null, 1L);
-		checkGetIdProvider("increment", "10", 10L);
-		checkGetIdProvider("increment(10)", null, 10L);
-		checkGetIdProvider("uuid", null, null);
-		checkGetIdProvider("IdProviderMock", null, 1);
-		checkGetIdProvider("IdProviderMock(2)", null, 2);
-		checkGetIdProvider("org.databene.benerator.test.IdProviderMock(2)", null, 2);
-		checkGetIdProvider("org.databene.benerator.test.IdProviderMock[value = 3]", null, 3);
 	}
 
 	public void testParseConsumers() {
@@ -189,7 +180,6 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetWeightFunction(null, null, WeightFunctionMock.class.getName() + "[value=3]", 3);
 	}
 
-	@SuppressWarnings("unchecked")
     public void testGetDistributionWeighted() {
 		BeneratorContext context = new BeneratorContext(null);
 		
@@ -260,39 +250,34 @@ public class DescriptorUtilTest extends TestCase {
 	public void testGetMinCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
-		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context));
+		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
 		// set explicitly
-		assertEquals(2, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(2), context));
+		assertEquals(2, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(2), context).evaluate(context).intValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(4), context));
+		assertEquals(3, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(4), context).evaluate(context).intValue());
 		// ignore global maxCount in default case
 		context.setMaxCount(5L);
-		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context));
+		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
 		// global maxCount overrides default
 		context.setMaxCount(0L);
-		assertEquals(0, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context));
+		assertEquals(0, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
 	}
 	
 	public void testGetMaxCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
-		assertEquals(null, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context));
+		assertEquals(1L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(context).longValue());
 		// explicit setting
-		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2), context).longValue());
+		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2), context).evaluate(null).longValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4), context).longValue());
+		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4), context).evaluate(null).longValue());
 		// global maxCount overrides default
 		context.setMaxCount(0L);
-		assertEquals(0L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).longValue());
+		assertEquals(0L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(null).longValue());
 	}
 	
-	public void testGetCountDistribution() {
-		// TODO v0.6 test
-	}
-	
-
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	@SuppressWarnings("unchecked")
@@ -344,20 +329,6 @@ public class DescriptorUtilTest extends TestCase {
 		assertNotNull(distribution);
 		assertTrue(distribution instanceof WeightFunction);
 		assertEquals(expectedValue, ((WeightFunction) distribution).value(0));
-	}
-
-	@SuppressWarnings("unchecked")
-	private void checkGetIdProvider(String spec, String param, Object expected) {
-		IdDescriptor descriptor = new IdDescriptor("id");
-		descriptor.setStrategy(spec);
-		descriptor.setParam(param);
-		BeneratorContext context = new BeneratorContext(null);
-		context.importPackage("org.databene.benerator.test");
-		IdProvider idProvider = DescriptorUtil.getIdProvider(descriptor, context);
-		assertNotNull(idProvider);
-		assertTrue(idProvider.hasNext());
-		if (expected != null)
-			assertEquals(expected, idProvider.next());
 	}
 
 	public static class ConsumerMock extends AbstractConsumer<Entity> {

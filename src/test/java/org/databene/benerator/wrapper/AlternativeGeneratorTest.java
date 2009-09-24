@@ -27,8 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorClassTest;
 
 /**
  * Tests the {@link AlternativeGenerator}.<br/>

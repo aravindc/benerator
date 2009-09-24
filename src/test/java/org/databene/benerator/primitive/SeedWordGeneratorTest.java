@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,28 +24,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.factory;
+package org.databene.benerator.primitive;
 
-import org.databene.id.IdProvider;
-import org.databene.id.IdProviderFactory;
-import org.databene.id.IdStrategy;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
- * Dummy implementation of the {@link IdProviderFactory}.<br/>
+ * Tests the {@link SeedWordGenerator}.<br/>
  * <br/>
- * Created at 26.08.2008 14:03:36
- * @since 0.5.5
+ * Created at 11.07.2009 19:34:40
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DummyIdProviderFactory implements IdProviderFactory {
 
-	public IdStrategy<? extends Object>[] getIdStrategies() {
-		return new IdStrategy[0];
-	}
+public class SeedWordGeneratorTest extends GeneratorClassTest {
 
-	public <T> IdProvider<T> idProvider(IdStrategy<T> strategy, String param,
-			String scope) {
-		return null;
-	}
+    public SeedWordGeneratorTest() {
+	    super(SeedWordGenerator.class);
+    }
 
+    public void test() {
+    	SeedWordGenerator generator = new SeedWordGenerator();
+    	//generator.printState();
+    	for (int i = 0; i < 10; i++) {
+    		assertTrue(generator.available());
+    		String word = generator.generate();
+			System.out.println(word);
+    		assertNotNull(word);
+    		assertTrue(word.length() > 0);
+    	}
+		assertTrue(generator.available());
+    }
+    
 }

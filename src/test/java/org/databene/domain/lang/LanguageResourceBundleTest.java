@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,42 +24,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.test;
+package org.databene.domain.lang;
 
-import org.databene.id.AbstractIdProvider;
-import org.databene.id.IdProvider;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import junit.framework.TestCase;
 
 /**
- * Mock implementation of the {@link IdProvider} interface.<br/>
+ * Tests the {@link LanguageResourceBundle}.<br/>
  * <br/>
- * Created at 02.01.2009 12:55:43
- * @since 0.5.7
+ * Created at 16.07.2009 19:15:45
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class IdProviderMock extends AbstractIdProvider<Integer>{
+public class LanguageResourceBundleTest extends TestCase {
 
-	public int value;
-	
-	public IdProviderMock() {
-		this(1);
-	}
-	
-	public IdProviderMock(int value) {
-		super(Integer.class);
-		this.value = value;
+	public void test() {
+		ResourceBundle myResources = ResourceBundle.getBundle(LanguageResourceBundle.class.getName(), Locale.GERMAN);
+		assertEquals("der", myResources.getObject("definite.article.singular.0"));
+		assertEquals("eine", myResources.getObject("indefinite.article.singular.1"));
 	}
 	
-	public void setValue(int value) {
-		this.value = value;
-	}
-
-	public boolean hasNext() {
-		return true;
-	}
-
-	public Integer next() {
-		return value;
-	}
-
 }

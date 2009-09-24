@@ -32,8 +32,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 
 /**

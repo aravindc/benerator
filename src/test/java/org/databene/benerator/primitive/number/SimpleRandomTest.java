@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.number;
 
-import org.databene.benerator.GeneratorTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.SimpleRandom;
 
 import java.util.List;

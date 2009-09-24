@@ -112,8 +112,8 @@ public class UnluckyNumberValidatorTest extends TestCase {
 	
 	public void testCustom() {
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
-		validator.setLuckyNumbers("0,2,4");
-		validator.setUnluckyNumbers("1,3,5");
+		validator.setLuckyNumbers("0", "2", "4");
+		validator.setUnluckyNumbers("1", "3", "5");
 		assertFalse(validator.isValid("818", null));
 		assertFalse(validator.isValid("212", null));
 		assertTrue(validator.isValid("0246789", null));

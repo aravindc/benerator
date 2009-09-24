@@ -26,7 +26,7 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Created: 11.10.2006 23:07:35

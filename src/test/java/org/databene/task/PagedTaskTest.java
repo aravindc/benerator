@@ -29,11 +29,15 @@ package org.databene.task;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
+import org.databene.commons.Context;
+import org.databene.commons.context.DefaultContext;
+
 import junit.framework.TestCase;
 
 /**
  * Tests the {@link PagedTask}<br/><br/>
  * Created: 16.07.2007 20:02:03
+ * @since 0.2
  * @author Volker Bergmann
  */
 public class PagedTaskTest extends TestCase {
@@ -73,23 +77,24 @@ public class PagedTaskTest extends TestCase {
 
     public void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) throws IOException {
         SingleThreadedTask.instanceCount = 0;
-        SingleThreadedTask task = new SingleThreadedTask();
-        PagedTask pagedTask = new PagedTask(task, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
-        pagedTask.init(new TaskContext());
-        pagedTask.run();
+        SingleThreadedTask task = new SingleThreadedTask() {
+			public void run(Context context) { }
+        };
+        PagedTask<SingleThreadedTask> pagedTask = new PagedTask<SingleThreadedTask>(
+        		task, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
+        pagedTask.run(new DefaultContext());
         pagedTask.close();
-        assertEquals("Unexpected instanceCount", expectedInstanceCount, SingleThreadedTask.instanceCount);
+        assertEquals("Unexpected instanceCount,", expectedInstanceCount, SingleThreadedTask.instanceCount);
     }
 
     private void checkRun(int totalInvocations, int pageSize, int threads,
-                          int expectedInitCount, int expectedRunCount, int expectedDestroyCount) throws IOException {
+                          int expectedInitCount, int expectedRunCount, int expectedCloseCount) {
         CountTask countTask = new CountTask();
-        PagedTask pagedTask = new PagedTask(countTask, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
-        pagedTask.init(new TaskContext());
-        pagedTask.run();
-        pagedTask.close();
-        assertEquals("Unexpected initCount", expectedInitCount, countTask.initCount);
-        assertEquals("Unexpected runCount", expectedRunCount, countTask.runCount);
-        assertEquals("Unexpected destroyCount", expectedDestroyCount, countTask.destroyCount);
+        PagedTask<CountTask> pagedTask = new PagedTask<CountTask>(
+        		countTask, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
+        pagedTask.run(new DefaultContext());
+        assertEquals("Unexpected runCount,", expectedRunCount, countTask.runCount);
+        assertEquals("Unexpected closeCount,", expectedCloseCount, countTask.closeCount);
     }
+    
 }

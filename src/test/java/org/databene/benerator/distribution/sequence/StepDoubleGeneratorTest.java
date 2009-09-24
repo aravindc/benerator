@@ -1,8 +1,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.sequence.StepDoubleGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the {@link StepDoubleGenerator}.<br/>

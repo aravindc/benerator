@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,6 @@
 
 package org.databene.domain.address;
 
-import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
 /**
@@ -40,11 +38,11 @@ public class CityTest extends TestCase {
 	
 	public void testEquals() {
 		State bavaria = new State("BY");
-		City city = new City(bavaria, "Munich", null, new ArrayList<String>(), "89");
+		City city = new City(bavaria, "Munich", null, null, "89");
 		assertFalse(city.equals(null));
 		assertFalse(city.equals(bavaria));
 		assertTrue(city.equals(city));
-		assertTrue(city.equals(new City(bavaria, "Munich", null, new ArrayList<String>(), "89")));
-		assertFalse(city.equals(new City(bavaria, "Nuremberg", null, new ArrayList<String>(), "89")));
+		assertTrue(city.equals(new City(bavaria, "Munich", null, null, "89")));
+		assertFalse(city.equals(new City(bavaria, "Nuremberg", null, null, "89")));
 	}
 }

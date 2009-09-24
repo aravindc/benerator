@@ -27,10 +27,10 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;

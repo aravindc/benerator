@@ -1,7 +1,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

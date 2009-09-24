@@ -1,7 +1,7 @@
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.sequence.CumulatedDoubleGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 /**

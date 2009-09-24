@@ -58,7 +58,6 @@ public class DescriptorRunnerTest extends TestCase {
 		BeneratorContext context = runner.getContext();
 		context.importDefaults();
 		context.setValidate(false);
-		SequenceFactory.setClassProvider(context); // TODO make this unnecessary
 		MyConsumer myConsumer = new MyConsumer();
 		context.set("myConsumer", myConsumer);
 		runner.run();

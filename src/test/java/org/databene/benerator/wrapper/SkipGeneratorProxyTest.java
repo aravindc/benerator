@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Created: 11.10.2006 23:10:34

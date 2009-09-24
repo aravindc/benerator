@@ -1,9 +1,9 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.WeightedDoubleGenerator;
 import org.databene.benerator.distribution.function.ConstantFunction;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 /**

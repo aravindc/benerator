@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the RepeatGeneratorProxy.<br/>

@@ -1,8 +1,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.WeightedLongGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 
 import java.util.Set;
 import java.util.HashSet;

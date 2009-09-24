@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,13 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorClassTest;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Created: 11.10.2006 23:12:21
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class SimpleArrayGeneratorTest extends GeneratorClassTest {
 
@@ -40,7 +42,7 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
     }
 
     public void test() {
-        Generator<String> source = new AttachedWeightSampleGenerator<String>(String.class, "Alice", "Bob");
+        Generator<String> source = new SequencedSampleGenerator<String>(String.class, "Alice", "Bob");
         check(source, 0, 0);
         check(source, 3, 3);
         check(source, 0, 1);

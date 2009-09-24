@@ -29,7 +29,7 @@ package org.databene.benerator.factory;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;

@@ -1,6 +1,6 @@
 package org.databene.domain.product;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.Validator;
 import org.databene.commons.validator.UniqueValidator;
 

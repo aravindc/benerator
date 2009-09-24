@@ -27,6 +27,7 @@
 package org.databene.benerator.parser;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
 
 import junit.framework.TestCase;
@@ -41,18 +42,22 @@ import junit.framework.TestCase;
 
 public class ModelParserTest extends TestCase {
 
-	public void testParseBeanClass() throws Exception {
-		ModelParser parser = new ModelParser(new BeneratorContext("."));
+    public void testParseBeanClass() throws Exception {
+		BeneratorContext context = new BeneratorContext(".");
+		ModelParser parser = new ModelParser(context);
 		String beanXML = "<bean id='id' class='" + TestBean.class.getName() + "' />";
-		Object bean = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
+		Expression<?> ex = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
+		Object bean = ex.evaluate(context);
 		assertEquals(TestBean.class, bean.getClass());
 		assertEquals(1, ((TestBean) bean).n);
 	}
 	
 	public void testParseBeanSpec() throws Exception {
-		ModelParser parser = new ModelParser(new BeneratorContext("."));
+		BeneratorContext context = new BeneratorContext(".");
+		ModelParser parser = new ModelParser(context);
 		String beanXML = "<bean id='id' spec='" + TestBean.class.getName() + "(2)' />";
-		Object bean = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
+		Expression<?> ex = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
+		Object bean = ex.evaluate(context);
 		assertEquals(TestBean.class, bean.getClass());
 		assertEquals(2, ((TestBean) bean).n);
 	}

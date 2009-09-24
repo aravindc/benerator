@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.TypedIterable;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.iterator.HeavyweightIterableAdapter;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -75,7 +76,7 @@ public class ReferenceComponentBuilderFactoryTest extends TestCase {
 	@SuppressWarnings("null")
     public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
-		ref.setCount(1L);
+		ref.setCount(new ConstantExpression<Long>(1L));
 		ComponentBuilder generator = createGenerator(ref);
 		assertTrue(generator != null);
 		assertTrue(generator.available());
@@ -87,7 +88,7 @@ public class ReferenceComponentBuilderFactoryTest extends TestCase {
 	@SuppressWarnings("null")
     public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
-		ref.setCount(2L);
+		ref.setCount(new ConstantExpression<Long>(2L));
 		ComponentBuilder generator = createGenerator(ref);
 		assertTrue(generator != null);
 		assertTrue(generator.available());

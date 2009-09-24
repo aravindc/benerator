@@ -27,8 +27,8 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.SimpleTypeDescriptor;
 

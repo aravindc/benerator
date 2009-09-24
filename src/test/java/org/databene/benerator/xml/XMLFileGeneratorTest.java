@@ -53,10 +53,11 @@ public class XMLFileGeneratorTest extends TestCase {
     private static final String SCHEMA_FILE = "demo/shop/product-simple.xsd";
     private static final String SCHEMA_FILE = "demo/shop/product-annotated.xsd";
 */
+/*
     public void testSimpleTypeElement() throws IOException {
         createXMLFile("org/databene/platform/xml/simple-element-test.xsd", "root", "target/simple-element-test.xml");
     }
-    
+*/    
     public void testBean() throws IOException {
         Document document = createXMLFile("org/databene/benerator/xml/bean_test.xsd", "root", "target/bean_test.xml");
         Element root = document.getDocumentElement();

@@ -1,6 +1,6 @@
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Locale;
@@ -8,7 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link CharacterGenerator}.<br/>
+ * <br/>
+ * @author Volker Bergmann
+ * @since 0.1
  * Created: 09.06.2006 21:03:42
  */
 public class CharacterGeneratorTest extends GeneratorClassTest {
@@ -51,4 +54,5 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
         Set<Character> values = CollectionUtil.toSet('A', 'B');
         checkProductSet(new CharacterGenerator(values), 1000, values);
     }
+    
 }

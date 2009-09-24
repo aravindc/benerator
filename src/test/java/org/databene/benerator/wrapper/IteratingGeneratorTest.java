@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.HeavyweightIterable;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.iterator.DefaultTypedIterable;

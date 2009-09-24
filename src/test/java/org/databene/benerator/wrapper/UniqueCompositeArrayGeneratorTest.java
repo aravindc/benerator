@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,28 +26,42 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
+import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
- * Tests the SequenceTestGenerator.<br/>
+ * Tests the {@link UniqueCompositeArrayGenerator}.<br/>
  * <br/>
  * Created: 17.11.2007 13:39:04
+ * @author Volker Bergmann
  */
-public class UniqueCompositeGeneratorTest extends GeneratorClassTest {
+public class UniqueCompositeArrayGeneratorTest extends GeneratorClassTest {
 
-    public UniqueCompositeGeneratorTest() {
-        super(UniqueCompositeGenerator.class);
+    public UniqueCompositeArrayGeneratorTest() {
+        super(UniqueCompositeArrayGenerator.class);
     }
 
+    @SuppressWarnings("unchecked")
     public void testInteger() {
         Generator<Integer>[] sources = new Generator [] {
                 new SequenceTestGenerator<Integer>(0, 1),
                 new SequenceTestGenerator<Integer>(0, 1),
                 new SequenceTestGenerator<Integer>(0, 1)
         };
-        expectUniqueProducts(new UniqueCompositeGenerator<Integer>(Integer.class, sources),  8).withCeasedAvailability();
+        expectUniqueProducts(new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources),  8).withCeasedAvailability();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testString() {
+        Generator<String>[] sources = new Generator [] {
+                new ConstantGenerator<String>("x"),
+                new SequenceTestGenerator<String>("a", "b"),
+                new ConstantGenerator<String>("x")
+        };
+        UniqueCompositeArrayGenerator<String> generator = new UniqueCompositeArrayGenerator<String>(String.class, sources);
+		expectUniqueProducts(generator,  2).withCeasedAvailability();
     }
 
 }

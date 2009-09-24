@@ -79,7 +79,7 @@ public class BasicParserTest extends TestCase {
 	 */
 	public void testParseInvocation() throws Exception {
 		Invocation expected = new Invocation("action.execute", "Alice", TimeUtil.date(1972, 1, 3), 102, true, "A");
-		Invocation result = parser.parseInvocation("action.execute('Alice', 1972-02-03, 102, true, 'A')");
+		Invocation result = parser.parseInvocation("action.execute('Alice', 1972-02-03, 102, true, 'A')", new DefaultContext());
 		assertEquals(expected, result);
 	}
 	

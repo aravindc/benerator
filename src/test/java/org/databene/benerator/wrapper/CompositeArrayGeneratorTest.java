@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 import java.util.Arrays;
 

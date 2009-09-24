@@ -26,7 +26,7 @@
 
 package org.databene.domain.person;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the {@link SSNGenerator_US}.<br/>

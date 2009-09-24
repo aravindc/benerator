@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,13 +31,13 @@ import org.databene.commons.Context;
 /**
  * Helper class for testing Task handling.<br/><br/>
  * Created: 16.07.2007 19:58:41
+ * @since 0.2
  * @author Volker Bergmann
  */
 public class CountTask implements Task, ThreadSafe {
 
-    public int initCount = 0;
     public int runCount = 0;
-    public int destroyCount = 0;
+    public int closeCount = 0;
     
     // Task interface --------------------------------------------------------------------------------------------------
 
@@ -45,29 +45,23 @@ public class CountTask implements Task, ThreadSafe {
         return getClass().getSimpleName();
     }
 
-    public void init(Context context) {
-        if (context == null)
-            throw new IllegalArgumentException("context is null");
-        initCount++;
-    }
-
-    public boolean wantsToRun() {
+    public boolean available() {
         return true;
     }
 
-    public void run() {
+    public void run(Context context) {
         runCount++;
     }
 
     public void close() {
-        destroyCount++;
+        closeCount++;
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "CountTask[initCount=" + initCount + ", runCount=" + runCount + ", destroyCount=" + destroyCount + ']';
+        return "CountTask[runCount=" + runCount + ", closeCount=" + closeCount + ']';
     }
 
 }

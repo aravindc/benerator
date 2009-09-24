@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import java.io.File;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the {@link LocalSequenceGenerator}.<br/>

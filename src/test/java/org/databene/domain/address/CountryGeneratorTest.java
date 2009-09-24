@@ -26,7 +26,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Created: 12.06.2007 06:46:13

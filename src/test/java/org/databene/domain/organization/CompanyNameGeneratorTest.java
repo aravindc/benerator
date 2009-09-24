@@ -26,7 +26,7 @@
 
 package org.databene.domain.organization;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

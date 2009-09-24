@@ -26,19 +26,17 @@
 
 package org.databene.platform.xls;
 
-import java.io.FileNotFoundException;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
-import org.databene.commons.TimeUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
+import org.databene.model.data.DefaultDescriptorProvider;
+import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
-
-import junit.framework.TestCase;
+import org.databene.model.data.TypeDescriptor;
 
 /**
  * Tests the {@link XLSEntityIterator} class.<br/>
@@ -48,76 +46,87 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class XLSEntityIteratorTest extends TestCase {
+public class XLSEntityIteratorTest extends XLSTest {
 	
-	private static final String PERSON_XLS = "org/databene/platform/xls/person.ent.xls";
 	private static final String PRODUCT_XLS = "org/databene/platform/xls/product.ent.xls";
+	private static final String IMPORT_XLS = "org/databene/platform/xls/import.ent.xls";
 
-	public void testIteration() throws FileNotFoundException {
-		// test default sheet
-		XLSEntityIterator iterator = new XLSEntityIterator(PERSON_XLS, 0, "Person");
+	public void testImport() throws Exception {
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
-			// check normal row
-			expectNextPerson(iterator, "Alice", 23.0);
-			// test formula
-			expectNextPerson(iterator, "Bob", 34.0);
-			// check end of sheet
+			assertTrue(iterator.hasNext());
+			assertProduct(PROD1, iterator.next());
+			assertTrue(iterator.hasNext());
+			assertProduct(PROD2, iterator.next());
+			assertTrue(iterator.hasNext());
+			assertPerson(PERSON1, iterator.next());
 			assertFalse(iterator.hasNext());
 		} finally {
 			iterator.close();
 		}
 	}
+	
 
-	public void testParseAll() throws FileNotFoundException {
-		List<Entity> entities = XLSEntityIterator.parseAll(PERSON_XLS, 0, new ComplexTypeDescriptor("Person"), null);
-		assertEquals(2, entities.size());
-		assertEquals(new Entity("Person", "name", "Alice", "age", 23.0), entities.get(0));
-		assertEquals(new Entity("Person", "name", "Bob", "age", 34.0), entities.get(1));
+	public void testParseAll() throws Exception {
+		List<Entity> entities = XLSEntityIterator.parseAll(IMPORT_XLS, null);
+		assertEquals(3, entities.size());
+		assertProduct(PROD1, entities.get(0));
+		assertProduct(PROD2, entities.get(1));
+		assertPerson(PERSON1, entities.get(2));
 	}
+
 	
 	public void testTypes() throws Exception {
-		ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Product");
+		// Create descriptor
+		final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Product");
 		descriptor.addComponent(new PartDescriptor("ean", "string"));
 		SimpleTypeDescriptor priceTypeDescriptor = new SimpleTypeDescriptor("priceType", "big_decimal");
 		priceTypeDescriptor.setPrecision("0.01");
 		descriptor.addComponent(new PartDescriptor("price", priceTypeDescriptor));
 		descriptor.addComponent(new PartDescriptor("date", "date"));
 		descriptor.addComponent(new PartDescriptor("available", "boolean"));
-		TimeZone timeZone = TimeZone.getDefault();
+		descriptor.addComponent(new PartDescriptor("updated", "timestamp"));
+		DescriptorProvider dp = new DefaultDescriptorProvider("test") {
+			@Override
+			public TypeDescriptor getTypeDescriptor(String typeName) {
+			    return ("Product".equals(typeName) ? descriptor : null);
+			}
+		};
+		DataModel.getDefaultInstance().addDescriptorProvider(dp);
 		// TODO v0.6 in which timezone should parsed dates be served by the XLSLineIterator?
 		// TODO v0.6 1.95 is parsed as 9500000000000002
-		TimeZone.setDefault(TimeZone.getTimeZone("GMT")); 
-		// test default sheet
-		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS, 0, descriptor, null);
+		
+		// test import
+		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
 		try {
-			expectNextProduct(iterator, "8000353006386", new BigDecimal("2.0"), TimeUtil.date(0), true); // TODO v0.6 should be 2.00
-			expectNextProduct(iterator, "3068320018430", new BigDecimal("0.01"), TimeUtil.date(0), false);
-			// check end of sheet
+			assertTrue(iterator.hasNext());
+			Entity next = iterator.next();
+			assertEquals(PROD1, next);
+			assertTrue(iterator.hasNext());
+			assertEquals(PROD2, iterator.next());
 			assertFalse(iterator.hasNext());
 		} finally {
-			TimeZone.setDefault(timeZone);
 			iterator.close();
+			DataModel.getDefaultInstance().removeDescriptorProvider("test");
 		}
 	}
 
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-    private void expectNextProduct(XLSEntityIterator iterator, 
-    		String ean, BigDecimal price, Date date, boolean available) {
-		assertTrue(iterator.hasNext());
-		Entity expected = new Entity("Product", 
-				"ean", ean, 
-				"price", price, 
-				"date", date,
-				"available", available);
-		Entity actual = iterator.next();
-		assertEquals(expected, actual);
+    private void assertProduct(Entity expected, Entity actual) {
+		assertEquals("Product", actual.name());
+		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
+		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.0001);
+		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
+		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
+		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
+				((Date) actual.getComponent("updated")).getTime());
     }
 
-	private void expectNextPerson(XLSEntityIterator iterator, String name, double age) {
-		assertTrue(iterator.hasNext());
-		Entity expected = new Entity("Person", "name", name, "age", age);
-		assertEquals(expected, iterator.next());
-	}
-	
+    private void assertPerson(Entity expected, Entity actual) {
+		assertEquals("Person", actual.name());
+		assertEquals(expected.get("name"), actual.get("name"));
+		assertEquals(expected.get("age"), ((Number) actual.get("age")).intValue());
+    }
+
 }

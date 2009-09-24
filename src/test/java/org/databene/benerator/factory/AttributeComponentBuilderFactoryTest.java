@@ -27,12 +27,14 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
+import org.databene.benerator.primitive.HexUUIDGenerator;
+import org.databene.benerator.primitive.IncrementGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.LightweightGenerator;
-import org.databene.id.IdProviderFactory;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -61,7 +63,6 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	// csv string source -----------------------------------------------------------------------------------------------
 	
 	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
-	private static final String NAMES_TAB_CSV = "org/databene/benerator/factory/names_tab.csv";
 
 	public void testCSVStringAttribute() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
@@ -98,8 +99,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	private PartDescriptor createCSVStringAttributeBuilder(String uri, String separator) {
 		String componentName = "name";
 		PartDescriptor name = new PartDescriptor(componentName);
-		name.setMinCount(1L);
-		name.setMaxCount(1L);
+		name.setMinCount(new ConstantExpression<Long>(1L));
+		name.setMaxCount(new ConstantExpression<Long>(1L));
 		name.getLocalType(false).setSource(uri);
 		name.getLocalType(false).setSeparator(separator);
 		return name;
@@ -107,7 +108,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	
 	// nullQuota == 1 evaluation ---------------------------------------------------------------------------------------
 	
-	public void testNullQuotaOneReference() {
+	@SuppressWarnings("unchecked")
+    public void testNullQuotaOneReference() {
 		String componentName = "id";
 		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(reference);
@@ -115,7 +117,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		expectNulls(helper, 10);
 	}
 
-	public void testNullQuotaOneAttribute() {
+	@SuppressWarnings("unchecked")
+    public void testNullQuotaOneAttribute() {
 		String componentName = "part";
 		PartDescriptor attribute = (PartDescriptor) new PartDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(attribute);
@@ -129,9 +132,12 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests UUID generation
 	 * <id name="id" strategy="uuid"/>
 	 */
-	public void testUuid() {
+	@SuppressWarnings("unchecked")
+    public void testUuid() {
 		String componentName = "id";
-		IdDescriptor id = new IdDescriptor(componentName).withStrategy("uuid");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "string");
+		type.setGenerator(HexUUIDGenerator.class.getName());
+		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		expectUniqueGenerations(helper, 10);
@@ -141,9 +147,12 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests 'increment' id generation with unspecified type
 	 * <id name="id" strategy="increment"/>
 	 */
-	public void testIncrementIdWithoutType() {
+	@SuppressWarnings("unchecked")
+    public void testIncrementIdWithoutType() {
 		String componentName = "id";
-		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "long");
+		type.setGenerator(IncrementGenerator.class.getName());
+		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		Generator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
 		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
@@ -153,7 +162,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests id generation with unspecified type and strategy
 	 * <id name="id"/>
 	 */
-	public void testDefaultIdGeneration() {
+	@SuppressWarnings("unchecked")
+    public void testDefaultIdGeneration() {
 		String componentName = "id";
 		IdDescriptor id = new IdDescriptor(componentName);
 		ComponentBuilder builder = createComponentBuilder(id);
@@ -166,32 +176,18 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests 'increment' id generation with 'byte' type
 	 * <id name="id" type="byte" strategy="increment"/>
 	 */
-	public void testIncrementId() {
+	@SuppressWarnings("unchecked")
+    public void testIncrementByteId() {
 		String componentName = "id";
-		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
-		id.setTypeName("byte");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "byte");
+		type.setGenerator(IncrementGenerator.class.getName());
+		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		Generator<Byte> helper2 = new ComponentBuilderGenerator(builder, componentName);
 		expectGeneratedSequenceOnce(helper2, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
 	}
 	
-	/**
-	 * Assures that, if an IdStragtegy is requested from a source and the source does not know it,
-	 * a fallback to the global {@link IdProviderFactory} happens.
-	 */
-	public void testIncrementIdOnSource() {
-		IdProviderFactory storage = new DummyIdProviderFactory();
-		BeneratorContext context = new BeneratorContext(contextUri);
-		context.set("sts", storage);
-		String componentName = "id";
-		IdDescriptor id = new IdDescriptor(componentName).withStrategy("increment");
-		id.setLocalType((SimpleTypeDescriptor) new SimpleTypeDescriptor("int").withSource("sts"));
-		// test with unspecified type
-		ComponentBuilder builder = createComponentBuilder(id, context);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
-		expectUniqueGenerations(helper, 10);
-	}
-	
+    @SuppressWarnings("cast")
     public void testAlternative() {
     	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
     	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
@@ -493,7 +489,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		return ComponentBuilderFactory.createComponentBuilder(component, context);
 	}
 	
-	private static final class ComponentBuilderGenerator<E> extends LightweightGenerator<E> {
+	public static final class ComponentBuilderGenerator<E> extends LightweightGenerator<E> {
 		
 		private ComponentBuilder builder;
 		private String componentName;
@@ -532,22 +528,24 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 
 	}
 
-	private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
+	@SuppressWarnings("unchecked")
+    private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSequence(helper, products).withCeasedAvailability();
 	}
 
-	private <T> void expectUniqueSet(PartDescriptor name, T... products) {
+	@SuppressWarnings("unchecked")
+    private <T> void expectUniqueSet(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSet(helper, products).withCeasedAvailability();
 	}
-	
+	/*
 	private <T> void expectSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSet(helper, products).withContinuedAvailability();
 	}
-	
+	*/
 }

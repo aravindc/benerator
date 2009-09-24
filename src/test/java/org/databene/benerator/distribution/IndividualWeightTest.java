@@ -27,8 +27,8 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.sample.SequenceGenerator;
+import org.databene.benerator.test.GeneratorTest;
 
 /**
  * Tests the {@link IndividualWeight}.<br/>

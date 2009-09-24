@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.validator.ConstantValidator;
 

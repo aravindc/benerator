@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.ConstantTestGenerator;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 import org.databene.measure.count.ObjectCounter;
 

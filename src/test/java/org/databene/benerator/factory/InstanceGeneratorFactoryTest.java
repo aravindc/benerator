@@ -26,7 +26,7 @@
 
 package org.databene.benerator.factory;
 
-import org.databene.benerator.GeneratorTest;
+import org.databene.benerator.test.GeneratorTest;
 
 /**
  * Tests the {@link InstanceGeneratorFactory}.<br/>

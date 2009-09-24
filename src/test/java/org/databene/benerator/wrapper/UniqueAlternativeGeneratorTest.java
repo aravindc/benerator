@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,15 +26,19 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.Generator;
+import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the UniqueAlternativeGenerator.<br/>
  * <br/>
  * Created: 18.11.2007 07:19:21
+ * @author Volker Bergmann
  */
 public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
 
@@ -47,6 +51,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         expectUniqueFromSet(generator(0, 1, 2), 0, 1, 2).withCeasedAvailability();
     }
 
+    @SuppressWarnings("unchecked")
     public void testMultiAlternatives() {
         Generator<Integer>[] gens = new Generator[2];
         gens[0] = new NShotGeneratorProxy<Integer>(new ConstantGenerator<Integer>(2), 1);
@@ -55,6 +60,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         expectUniqueFromSet(generator, 0, 1, 2).withCeasedAvailability();
     }
 
+    @SuppressWarnings("unchecked")
     public void testManyAlternatives() {
         Generator<Integer>[] gens = new Generator[2];
         gens[0] = new SequenceGenerator<Integer>(Integer.class, 0, 2, 4, 6, 8);
@@ -63,10 +69,56 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         expectUniqueGenerations(generator, 10).withCeasedAvailability();
     }
 
+    @SuppressWarnings("unchecked")
     private Generator<Integer> generator(int ... values) {
         Generator<Integer>[] gens = new Generator[values.length];
         for (int i = 0; i < values.length; i++)
             gens[i] = new NShotGeneratorProxy<Integer>(new ConstantGenerator<Integer>(values[i]), 1);
         return new UniqueAlternativeGenerator<Integer>(Integer.class, gens);
     }
+    
+    static class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
+
+        private static final Logger logger = LoggerFactory.getLogger(NShotGeneratorProxy.class);
+
+        private long shots;
+
+        private long remainingShots;
+
+        public NShotGeneratorProxy(Generator<E> source, long shots) {
+            super(source);
+            this.shots = shots;
+            this.remainingShots = shots;
+        }
+
+        @Override
+        public boolean available() {
+            if (remainingShots <= 0) {
+                logger.debug("requested count reached for " + source);
+                return false;
+            }
+            return super.available();
+        }
+
+        @Override
+        public E generate() {
+            if (remainingShots <= 0)
+                throw new IllegalGeneratorStateException("Generator not available.");
+            this.remainingShots--;
+            return super.generate();
+        }
+
+        @Override
+        public void reset() {
+            super.reset();
+            remainingShots = shots;
+        }
+
+        @Override
+        public void close() {
+            super.close();
+            remainingShots = 0;
+        }
+    }
+
 }

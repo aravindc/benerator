@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.ParseFormatConverter;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann

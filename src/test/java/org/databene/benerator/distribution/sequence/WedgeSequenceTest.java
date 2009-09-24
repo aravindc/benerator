@@ -1,8 +1,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.distribution.sequence.WedgeLongGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.wrapper.AsDoubleGeneratorWrapper;
 
 /**

@@ -38,7 +38,7 @@ import java.util.List;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ParseFormatConverter;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the {@link SequencedCSVSampleGenerator}.<br/>

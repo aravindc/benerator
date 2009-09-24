@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,12 @@
 package org.databene.task;
 
 /**
+ * TODO doc<br/><br/>
  * Created: 18.07.2007 19:45:49
+ * @since 0.2
+ * @author Volker Bergmann
  */
-public class SingleThreadedTask extends AbstractTask implements Parallelizable {
+public abstract class SingleThreadedTask extends AbstractTask implements Parallelizable {
 
     static int instanceCount = 0;
 
@@ -38,11 +41,10 @@ public class SingleThreadedTask extends AbstractTask implements Parallelizable {
         instanceCount++;
     }
 
-    public void run() {
-    }
-
+    @Override
     public Object clone() throws CloneNotSupportedException {
         instanceCount++;
         return super.clone();
     }
+    
 }

@@ -29,7 +29,6 @@ package org.databene.platform.xls;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -37,11 +36,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.ArrayUtil;
-import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.Entity;
-import org.databene.model.data.PartDescriptor;
-
-import junit.framework.TestCase;
+import org.databene.commons.FileUtil;
 
 /**
  * Tests the {@link XLSEntityExporter}.<br/>
@@ -51,103 +46,72 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class XLSEntityExporterTest extends TestCase {
-
-	private static final File STANDARD_FILE = new File("export.xls");
-	private static final File CUSTOM_FILE = new File("target", XLSEntityExporterTest.class.getSimpleName() + ".xls");
-
-	private static final String     EAN1   = "1234567890123";
-    private static final BigDecimal PRICE1 = new BigDecimal(123);
-    private static final Date		DATE1 = new Date();
-    private static final Boolean	AVAIL1 = true;
-    
-    private static final String     EAN2   = "9876543210987";
-    private static final BigDecimal PRICE2 = new BigDecimal(321);
-    private static final Date		DATE2 = DATE1;
-    private static final Boolean	AVAIL2 = false;
-
-	private static final ComplexTypeDescriptor descriptor;
-	static {
-		descriptor = new ComplexTypeDescriptor("Product");
-		descriptor.addComponent(new PartDescriptor("ean", "string"));
-		descriptor.addComponent(new PartDescriptor("price", "big_decimal"));
-		descriptor.addComponent(new PartDescriptor("date", "date"));
-		descriptor.addComponent(new PartDescriptor("avail", "boolean"));
-	}
+public class XLSEntityExporterTest extends XLSTest {
 	
-	private static final Entity prod1 = new Entity(descriptor, 
-			"ean", EAN1, 
-			"price", PRICE1,
-			"date", DATE1,
-			"avail", AVAIL1
-	);
-	
-	private static final Entity prod2 = new Entity(descriptor, 
-			"ean", EAN2, 
-			"price", PRICE2,
-			"date", DATE2,
-			"avail", AVAIL2
-	);
-	
+	private static final boolean CLEAN_UP = false;
+
+	protected static final File STANDARD_FILE = new File("export.xls");
+	protected static final File CUSTOM_FILE = new File("target", XLSEntityExporterTest.class.getSimpleName() + ".xls");
+
 	// tests -----------------------------------------------------------------------------------------------------------
 	
 	public void testEmptyStandard() {
-		XLSEntityExporter exporter = new XLSEntityExporter();
-		exporter.close();
-		assertTrue(STANDARD_FILE.exists());
+		try {
+			XLSEntityExporter exporter = new XLSEntityExporter();
+			exporter.close();
+			assertTrue(STANDARD_FILE.exists());
+		} finally {
+			if (CLEAN_UP)
+				FileUtil.deleteIfExists(STANDARD_FILE);
+		}
 	}
 
-	public void testPredefinedColumns() throws Exception {
-		XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath(), "ean");
-		consumeAndClose(exporter);
-		assertTrue(CUSTOM_FILE.exists());
-		HSSFSheet sheet = readFirstSheetOf(CUSTOM_FILE);
-		checkCells(sheet.getRow(0), "ean", null);
-		checkCells(sheet.getRow(1), EAN1, null);
-		checkCells(sheet.getRow(2), EAN2, null);
-		checkCells(sheet.getRow(3));
+	public void testSingleEntity() throws Exception {
+		try {
+			XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath());
+			consumeProducts(exporter);
+			exporter.close();
+			assertFullContent(CUSTOM_FILE);
+		} finally {
+			if (CLEAN_UP)
+				FileUtil.deleteIfExists(CUSTOM_FILE);
+		}
+
 	}
 
-	public void testColumnsByDescriptor() throws Exception {
-		XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath(), descriptor);
-		consumeAndClose(exporter);
-		assertFullContent(CUSTOM_FILE);
+	public void testTwoEntities() throws Exception {
+		try {
+			XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath());
+			consumeProducts(exporter);
+			consumePersons(exporter);
+			exporter.close();
+			assertFullContent(CUSTOM_FILE);
+		} finally {
+			if (CLEAN_UP)
+				FileUtil.deleteIfExists(CUSTOM_FILE);
+		}
 	}
 
-	public void testColumnsByFirstEntity() throws Exception {
-		XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath());
-		consumeAndClose(exporter);
-		assertFullContent(CUSTOM_FILE);
-	}
-
-	// framework callbacks ---------------------------------------------------------------------------------------------
-	
-	@Override
-	protected void setUp() throws Exception {
-		deleteFiles();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		deleteFiles();
-	}
-	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private void consumeAndClose(XLSEntityExporter exporter) {
-	    exporter.startConsuming(prod1);
-		exporter.finishConsuming(prod1);
-		exporter.startConsuming(prod2);
-		exporter.finishConsuming(prod2);
-		exporter.close();
+	private void consumeProducts(XLSEntityExporter exporter) {
+	    exporter.startConsuming(PROD1);
+		exporter.finishConsuming(PROD1);
+		exporter.startConsuming(PROD2);
+		exporter.finishConsuming(PROD2);
+    }
+	
+	private void consumePersons(XLSEntityExporter exporter) {
+	    exporter.startConsuming(PERSON1);
+		exporter.finishConsuming(PERSON1);
     }
 	
 	private void assertFullContent(File file) throws IOException {
 	    assertTrue(file.exists());
 		HSSFSheet sheet = readFirstSheetOf(CUSTOM_FILE);
-		checkCells(sheet.getRow(0), "ean", "price", "date", "avail", null);
-		checkCells(sheet.getRow(1), EAN1, PRICE1, DATE1, AVAIL1, null);
-		checkCells(sheet.getRow(2), EAN2, PRICE2, DATE2, AVAIL2, null);
+		checkCells(sheet.getRow(0), "ean", "price", "date", "avail", "updated", null);
+		checkCells(sheet.getRow(1), EAN1, PRICE1, DATE1, AVAIL1, UPDATED1, null);
+		checkCells(sheet.getRow(2), EAN2, PRICE2, DATE2, AVAIL2, UPDATED2, null);
 		checkCells(sheet.getRow(3));
     }
 
@@ -175,17 +139,10 @@ public class XLSEntityExporterTest extends TestCase {
 	    		assertEquals(expectedContent, cell.getBooleanCellValue());
 	    	} else if (expectedContent instanceof Date) {
 	    		assertEquals(HSSFCell.CELL_TYPE_NUMERIC, cell.getCellType());
-	    		assertEquals(expectedContent, cell.getDateCellValue());
+	    		assertEquals(((Date) expectedContent).getTime() / 1000, cell.getDateCellValue().getTime() / 1000); // cut off milliseconds
 	    	} else
 	    		throw new RuntimeException("Type not supported: " + expectedContent.getClass());
 	    }
-    }
-
-	private void deleteFiles() {
-	    if (STANDARD_FILE.exists())
-			STANDARD_FILE.delete();
-		if (CUSTOM_FILE.exists())
-			CUSTOM_FILE.delete();
     }
 
 }

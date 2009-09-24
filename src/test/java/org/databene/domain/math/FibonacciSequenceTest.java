@@ -27,7 +27,7 @@
 package org.databene.domain.math;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.domain.math.FibonacciSequence;
 
 /**

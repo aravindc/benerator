@@ -27,13 +27,10 @@
 package org.databene.platform.xml;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
-import org.databene.commons.ArrayUtil;
-import org.databene.commons.context.DefaultContext;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -56,7 +53,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
     private static final String ANNOTATION_TEST_FILE = "org/databene/platform/xml/annotation-test.xsd";
     private static final String CHOICE_TEST_FILE = "org/databene/platform/xml/choice-test.xsd";
 
-    public void testSimpleTypeElement() throws IOException {
+    public void testSimpleTypeElement() {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
@@ -68,7 +65,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         assertComplexComponentWithSimpleContent("external", rootDescriptor);
     }
 
-    public void testNesting() throws IOException {
+    public void testNesting() {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
@@ -82,8 +79,8 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         // check number
         ComponentDescriptor number = rootDescriptor.getComponent("number");
         assertNotNull(number);
-        assertEquals(Long.valueOf(1), number.getMinCount());
-        assertEquals(Long.valueOf(1), number.getMaxCount());
+        assertEquals(Long.valueOf(1), number.getMinCount().evaluate(null));
+        assertEquals(Long.valueOf(1), number.getMaxCount().evaluate(null));
         // check c2
         ComponentDescriptor c2 = rootDescriptor.getComponent("c2");
         assertNotNull(c2);
@@ -119,7 +116,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         g.generate();
     }
 
-    public void testChoice() throws IOException {
+    public void testChoice() {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
         // check root
@@ -130,16 +127,16 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         // check choice a/b
         ComponentDescriptor choiceAB = components.get(0);
         assertNotNull(choiceAB);
-        assertEquals(1, choiceAB.getMinCount().intValue());
-        assertEquals(1, choiceAB.getMaxCount().intValue());
+        assertEquals(1, choiceAB.getMinCount().evaluate(null).intValue());
+        assertEquals(1, choiceAB.getMaxCount().evaluate(null).intValue());
         AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getType();
         assertEquals(2, choiceABType.getComponents().size());
         
         // check choice x/y/z
         ComponentDescriptor choiceXYZ = components.get(1);
         assertNotNull(choiceXYZ);
-        assertEquals(0, choiceXYZ.getMinCount().intValue());
-        assertEquals(2, choiceXYZ.getMaxCount().intValue());
+        assertEquals(0, choiceXYZ.getMinCount().evaluate(null).intValue());
+        assertEquals(2, choiceXYZ.getMaxCount().evaluate(null).intValue());
         AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getType();
         assertEquals(3, choiceXYZType.getComponents().size());
     }

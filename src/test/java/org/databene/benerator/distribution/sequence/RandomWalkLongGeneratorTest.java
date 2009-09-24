@@ -1,15 +1,17 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.sequence.RandomWalkLongGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Set;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the RandomWalkLongGenerator
  * Created: 18.06.2006 09:11:19
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
 
@@ -44,7 +46,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
     }
 
     public void testLessOrEquals() throws IllegalGeneratorStateException {
-        RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, 1, -2, 0);
+        RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, 5, -2, 0);
         Set<Long> space = CollectionUtil.toSet(1L, 3L, 5L);
         assertProductSpace(space, generator);
         assertProductSpace(space, generator);

@@ -28,7 +28,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the {@link GenderGenerator}.<br/>

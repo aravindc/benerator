@@ -26,7 +26,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Tests the StreetNameGenerator.

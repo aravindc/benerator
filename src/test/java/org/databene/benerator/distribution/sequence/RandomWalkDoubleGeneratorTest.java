@@ -1,8 +1,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.sequence.RandomWalkDoubleGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Set;

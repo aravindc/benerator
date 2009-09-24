@@ -32,16 +32,16 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
-import org.databene.benerator.GeneratorTest;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.distribution.function.GaussianFunction;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
-import org.databene.benerator.primitive.regex.RegexStringGeneratorTest;
+import org.databene.benerator.primitive.regex.RegexStringGeneratorFactoryTest;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests the {@link GeneratorFactory}.<br/><br/>
  * Created: 24.08.2006 07:03:03
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class GeneratorFactoryTest extends GeneratorTest {
@@ -180,7 +181,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     public void testGetCharacterGeneratorByRegex() {
-        String pattern = "[A-Za-z0-1�������]";
+        String pattern = "[A-Za-z0-1]";
         Generator<Character> generator = GeneratorFactory.getCharacterGenerator(pattern, Locale.GERMAN, 0);
         checkGenerator(generator);
     }
@@ -205,7 +206,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     private void checkRegexGenerator(String pattern, int minLength, int maxLength, boolean nullable) {
         Generator<String> generator = GeneratorFactory.getRegexStringGenerator(
                 pattern, minLength, maxLength, Locale.GERMAN, 0);
-        RegexStringGeneratorTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
+        RegexStringGeneratorFactoryTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
 
     // enum source --------------------------------------------------------------------------------------------------

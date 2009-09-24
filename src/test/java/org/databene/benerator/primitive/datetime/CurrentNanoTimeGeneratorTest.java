@@ -30,7 +30,7 @@ import java.lang.annotation.Annotation;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**

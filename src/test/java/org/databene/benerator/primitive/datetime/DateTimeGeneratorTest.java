@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 
 public class DateTimeGeneratorTest extends GeneratorClassTest {

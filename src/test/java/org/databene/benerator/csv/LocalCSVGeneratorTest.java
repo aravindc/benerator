@@ -27,7 +27,7 @@
 package org.databene.benerator.csv;
 
 import org.databene.commons.CollectionUtil;
-import org.databene.benerator.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorClassTest;
 
 import java.util.Set;
 import java.util.Locale;

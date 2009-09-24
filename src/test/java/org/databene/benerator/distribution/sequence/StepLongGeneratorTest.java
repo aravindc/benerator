@@ -1,8 +1,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.GeneratorClassTest;
 import org.databene.benerator.distribution.sequence.StepLongGenerator;
+import org.databene.benerator.test.GeneratorClassTest;
 
 /**
  * Created: 26.07.2007 18:11:19
