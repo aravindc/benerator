@@ -41,24 +41,29 @@ import java.sql.SQLException;
  * Created: 15.08.2007 18:19:25
  * @author Volker Bergmann
  */
-public class ResultSetConverter extends FixedSourceTypeConverter<ResultSet, Object> {
+public class ResultSetConverter<E> extends FixedSourceTypeConverter<ResultSet, E> {
 
+	private Class<E> targetType;
     private boolean simplifying;
 
-    public ResultSetConverter() {
-        this(true);
+    public ResultSetConverter(Class<E> targetType) {
+        this(targetType, true);
     }
 
-    public ResultSetConverter(boolean simplifying) {
-    	super(ResultSet.class, Object.class);
+    public ResultSetConverter(Class<E> targetType, boolean simplifying) {
+    	super(ResultSet.class, targetType);
+    	this.targetType = targetType;
         this.simplifying = simplifying;
     }
     
     // Converter interface ---------------------------------------------------------------------------------------------
 
-    public Object convert(ResultSet resultSet) throws ConversionException {
+    public E convert(ResultSet resultSet) throws ConversionException {
         Object[] tmp = convertToArray(resultSet);
-        return (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
+        if (targetType.isArray())
+        	return (E) targetType;
+        else
+        	return (E) (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
     }
     
     // static convenience methods --------------------------------------------------------------------------------------
