@@ -26,21 +26,29 @@
 
 package org.databene.platform.xml;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.task.CreateBeanTask;
+import org.databene.benerator.engine.task.IncludeTask;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -54,6 +62,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.UnresolvedTypeDescriptor;
+import org.databene.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -68,7 +77,7 @@ import static org.databene.commons.xml.XMLUtil.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
+public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider implements ResourceManager {
     
     private static final String REF = "ref";
 
@@ -95,6 +104,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     private DataModel dataModel;
     private List<String> propertiesFiles;
 	private Map<String, String> namespaces;
+	private Set<Closeable> resources = new HashSet<Closeable>();
 
     
     // constructors ----------------------------------------------------------------------------------------------------
@@ -229,10 +239,13 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                String filename = parser.parseInclude(child);
+                IncludeTask task = parser.parseInclude(child);
+                String filename = task.getUri();
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
-                parser.parseBean(child);
+                Expression<Object> beanExpression = parser.parseBean(child);
+                new CreateBeanTask(null /* TODO extract ID expression */, beanExpression, this).run(context);
+                System.out.println(beanExpression.evaluate(context));
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " + child.getNodeName());
         }
@@ -354,7 +367,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
 		TypeDescriptor base = dataModel.getTypeDescriptor(baseName);
 		Assert.notNull(base, "base type");
 		if (base instanceof SimpleTypeDescriptor) {
-			complexType.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, baseName, null, 1L, 1L));
+			complexType.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, baseName, null, 
+					new ConstantExpression<Long>(1L), new ConstantExpression<Long>(1L)));
 		} else if (base instanceof ComplexTypeDescriptor)
 			complexType.setParentName(baseName);
 		else
@@ -590,8 +604,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
         Long maxOccurs = 1L;
         if (!StringUtil.isEmpty(maxOccursString))
             maxOccurs = ("unbounded".equals(maxOccursString) ? null : Long.parseLong(maxOccursString));
-        descriptor.setMinCount(minOccurs);
-        descriptor.setMaxCount(maxOccurs);
+        descriptor.setMinCount(new ConstantExpression<Long>(minOccurs));
+        descriptor.setMaxCount(new ConstantExpression<Long>(maxOccurs));
     }
 
     private void parseKeyRef(Element child) {
@@ -640,7 +654,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
             if (!StringUtil.isEmpty(defaultValue))
                 ((SimpleTypeDescriptor) descriptor.getLocalType(false)).setValues(defaultValue);
         }
-        descriptor.setCount(1L);
+        descriptor.setCount(new ConstantExpression<Long>(1L));
         if ("prohibited".equals(attributeElement.getAttribute("use")))
             descriptor.setMode(Mode.ignored);
         if (descriptor == null) 
@@ -878,5 +892,12 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider {
     private static final String TYPE = "type";
 
     private static Logger logger = LoggerFactory.getLogger(XMLSchemaDescriptorProvider.class);
+
+
+	public boolean addResource(Closeable resource) {
+		if (resources.contains(resource))
+			return false;
+	    return resources.add(resource);
+    }
 
 }
