@@ -26,7 +26,9 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.id.UUIDProvider;
+import java.net.InetAddress;
+
+import org.databene.commons.NumberUtil;
 
 /**
  * Creates UUIDs evaluating IP address, a JVM ID and timestamp.<br/>
@@ -34,41 +36,66 @@ import org.databene.id.UUIDProvider;
  * Created: 15.11.2007 10:52:55
  * @author Volker Bergmann
  */
-public class HexUUIDGenerator extends LightweightStringGenerator {
-    
-    private UUIDProvider source;
+public class HexUUIDGenerator extends LightweightStringGenerator { // TODO check class name
+    // TODO use java.util.UUID?
+    private static final String IP_ADDRESS;
+    private static final String JVM_ID = NumberUtil.formatHex((int) (System.currentTimeMillis() >>> 8), 8);
 
-    // constructors ----------------------------------------------------------------------------------------------------
+    private static short counter = (short) 0;
+
+    private String ipJvm;
+    private String separator;
+
+    // construction ----------------------------------------------------------------------------------------------------
+
+    static {
+        int ipadd;
+        try {
+            ipadd = NumberUtil.toInt( InetAddress.getLocalHost().getAddress() );
+        } catch (Exception e) {
+            ipadd = 0;
+        }
+        IP_ADDRESS = NumberUtil.formatHex(ipadd, 8);
+    }
 
     public HexUUIDGenerator() {
         this("");
     }
 
     public HexUUIDGenerator(String separator) {
-        this.source = new UUIDProvider(separator);
+        this.separator = separator;
+        this.ipJvm = IP_ADDRESS + separator + JVM_ID + separator;
     }
-
+    
     // properties ------------------------------------------------------------------------------------------------------
 
     public String getSeparator() {
-        return source.getSeparator();
+        return separator;
     }
 
-    // Generator interface ---------------------------------------------------------------------------------------------
-
-    @Override
-    public boolean available() {
-        return super.available() && source.hasNext();
-    }
+    // Generator interface implementation ------------------------------------------------------------------------------
 
     public String generate() {
-        return source.next();
+        long time = System.currentTimeMillis();
+        short count;
+        synchronized(getClass()) {
+            if (counter < 0)
+                counter = 0;
+            count = counter++;
+        }
+        return new StringBuilder(36)
+            .append(ipJvm)
+            .append(NumberUtil.formatHex((short) (time >>> 32), 4)).append(separator)
+            .append(NumberUtil.formatHex((int) time, 8)).append(separator)
+            .append(NumberUtil.formatHex(count, 4))
+            .toString();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[" + source + ']';
+        return getClass().getSimpleName() + "[ipAddress=" + IP_ADDRESS + ", jvmId=" + JVM_ID + ']';
     }
+
 }
