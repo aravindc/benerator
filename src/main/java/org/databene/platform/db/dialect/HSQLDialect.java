@@ -42,7 +42,7 @@ public class HSQLDialect extends DatabaseDialect {
 
 	@Override
     public String sequenceAccessorSql(String sequenceName) {
-        String table = "system.sequences";
+        String table = "dual_" + sequenceName;
         String sequence = sequenceName;
         int sep = sequenceName.lastIndexOf('.');
         if (sep > 0) {
