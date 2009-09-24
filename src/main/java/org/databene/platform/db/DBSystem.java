@@ -26,10 +26,7 @@
 
 package org.databene.platform.db;
 
-import org.databene.id.IdProvider;
-import org.databene.id.IdProviderFactory;
-import org.databene.id.IdProviderId;
-import org.databene.id.IdStrategy;
+import org.databene.platform.db.dialect.HSQLDialect;
 import org.databene.platform.db.dialect.UnknownDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
@@ -38,7 +35,9 @@ import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
+import org.databene.commons.converter.NumberConverter;
 import org.databene.commons.db.DBUtil;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.*;
 import org.databene.model.depend.DependencyModel;
 import org.databene.model.storage.AbstractStorageSystem;
@@ -53,6 +52,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
@@ -73,7 +73,7 @@ import javax.sql.PooledConnection;
  * @since 0.3
  * @author Volker Bergmann
  */
-public class DBSystem extends AbstractStorageSystem implements IdProviderFactory {
+public class DBSystem extends AbstractStorageSystem {
     
     private static final int DEFAULT_FETCH_SIZE = 100;
 
@@ -84,15 +84,6 @@ public class DBSystem extends AbstractStorageSystem implements IdProviderFactory
     protected static final ArrayPropertyExtractor<String> nameExtractor
             = new ArrayPropertyExtractor<String>("name", String.class);
     
-    public static final IdStrategy<Long>   SEQHILO   = new IdStrategy<Long>("seqhilo", Long.class);
-    public static final IdStrategy<Long>   SEQUENCE  = new IdStrategy<Long>("sequence", Long.class);
-    public static final IdStrategy<Object> QUERY     = new IdStrategy<Object>("query", Object.class);
-
-    @SuppressWarnings("unchecked")
-    private static final IdStrategy[] ID_STRATEGIES = {
-        SEQHILO, SEQUENCE, QUERY
-    };
-
 	private static final TypeDescriptor[] EMPTY_TYPE_DESCRIPTOR_ARRAY = new TypeDescriptor[0];
     
     // attributes ------------------------------------------------------------------------------------------------------
@@ -306,8 +297,6 @@ public class DBSystem extends AbstractStorageSystem implements IdProviderFactory
         if (logger.isDebugEnabled())
             logger.debug("close()");
         flush();
-        for (IdProvider<? extends Object> idProvider : idProviders.values())
-            IOUtil.close(idProvider);
         Iterator<ThreadContext> iterator = contexts.values().iterator();
         while (iterator.hasNext()) {
             iterator.next().close();
@@ -369,43 +358,45 @@ public class DBSystem extends AbstractStorageSystem implements IdProviderFactory
     }
 
     @SuppressWarnings("unchecked")
-    public <T> TypedIterable<T> query(String query, Context context) {
+    public <T> HeavyweightTypedIterable<T> query(String query, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("getBySelector(" + query + ")");
         Connection connection = getThreadContext().connection;
         QueryIterable resultSetIterable = createQuery(query, context, connection);
-        return (TypedIterable<T>)new ConvertingIterable<ResultSet, Object>(resultSetIterable, new ResultSetConverter(true));
+        ResultSetConverter converter = new ResultSetConverter(Object.class, true);
+		return (HeavyweightTypedIterable<T>) new ConvertingIterable<ResultSet, Object>(resultSetIterable, converter);
     }
 
-    // IdProviderFactory interface -------------------------------------------------------------------------------------
-    
-    // TODO v0.6 merge with AbstractIdProviderFactory
-    @SuppressWarnings("unchecked")
-    private Map<IdProviderId, IdProvider> idProviders = new HashMap<IdProviderId, IdProvider>();
-
-    @SuppressWarnings("unchecked")
-    public IdStrategy<? extends Object>[] getIdStrategies() {
-        return ID_STRATEGIES;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> IdProvider<T> idProvider(
-            IdStrategy<T> strategy, String param, String scope) {
-        IdProviderId pId = new IdProviderId(strategy.getName(), param, scope, this.getId());
-        IdProvider<T> provider = idProviders.get(pId);
-        if (provider == null) {
-            if (SEQHILO.equals(strategy))
-                provider = (IdProvider<T>) new SeqHiLoIdProvider(getConnection(), dialect.sequenceAccessorSql(param), 100);
-            else if (SEQUENCE.equals(strategy))
-                provider = (IdProvider<T>) new LongQueryIdProvider(getConnection(), dialect.sequenceAccessorSql(param));
-            else if (QUERY.equals(strategy))
-                provider = (IdProvider<T>) new QueryIdProvider(getConnection(), param);
-            if (provider != null)
-            	idProviders.put(pId, provider);
+    public void createSequence(String name) throws SQLException {
+    	parseMetadataIfNecessary();
+        execute("create sequence " + name);
+        if (dialect instanceof HSQLDialect) { // TODO move this to HSQLDialect
+        	String helperTable = "dual_" + name;
+        	execute("create table " + helperTable + " ( id int )");
+        	execute("insert into " + helperTable + " (id) values (1)");
+        	nextSequenceValue(name);
         }
-        return provider;
     }
 
+    public void dropSequence(String name) throws SQLException {
+        execute("drop sequence " + name);
+        if (dialect instanceof HSQLDialect)
+        	execute("drop table dual_" + name);
+    }
+
+    public void execute(String sql) throws SQLException {
+    	DBUtil.executeUpdate(sql, getThreadContext().connection);
+    }
+    
+    public long nextSequenceValue(String sequenceName) {
+    	parseMetadataIfNecessary();
+    	TypedIterable<Object> result = query(dialect.sequenceAccessorSql(sequenceName), null);
+    	Iterator<Object> iterator = result.iterator();
+    	Number next = (Number) iterator.next();
+    	IOUtil.close((Closeable) iterator);
+    	return NumberConverter.convert(next, Long.class);
+    }
+    
     public Connection createConnection() {
 		try {
             Connection connection = DBUtil.connect(url, driver, user, password);
@@ -530,8 +521,8 @@ public class DBSystem extends AbstractStorageSystem implements IdProviderFactory
                         abstractType,
                         targetTable.getName());
                 descriptor.getLocalType(false).setSource(id);
-                descriptor.setMinCount(1L);
-                descriptor.setMaxCount(1L);
+                descriptor.setMinCount(new ConstantExpression<Long>(1L));
+                descriptor.setMaxCount(new ConstantExpression<Long>(1L));
                 boolean nullable = foreignKeyColumn.getForeignKeyColumn().isNullable();
 				descriptor.setNullable(nullable);
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
@@ -569,8 +560,8 @@ public class DBSystem extends AbstractStorageSystem implements IdProviderFactory
             //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
             PartDescriptor descriptor = new PartDescriptor(columnName);
             descriptor.setLocalType(typeDescriptor);
-            descriptor.setMinCount(1L);
-            descriptor.setMaxCount(1L);
+            descriptor.setMinCount(new ConstantExpression<Long>(1L));
+            descriptor.setMaxCount(new ConstantExpression<Long>(1L));
             descriptor.setNullable(column.getNotNullConstraint() == null);
             List<DBConstraint> ukConstraints = column.getUkConstraints();
             for (DBConstraint constraint : ukConstraints) {
