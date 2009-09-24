@@ -28,8 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
-import org.databene.regex.RegexTokenizer;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.commons.LocaleUtil;
 
 import java.util.*;
@@ -56,7 +55,7 @@ public class CharacterGenerator implements Generator<Character> {
     private boolean dirty;
 
     /** The SampleGenerator to choose from the character set */
-    private AttachedWeightSampleGenerator<Character> source;
+    private Generator<Character> source;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -139,9 +138,11 @@ public class CharacterGenerator implements Generator<Character> {
     public void validate() {
         if (dirty) {
             try {
-                if (pattern != null)
-                    values = new RegexParser(locale).parseCharSet(new RegexTokenizer(pattern));
-                this.source = new AttachedWeightSampleGenerator<Character>(Character.class, values);
+                if (pattern != null) {
+                    Object regex = new RegexParser(locale).parseSingleChar(pattern);
+                    values = RegexParser.toSet(regex);
+                }
+                this.source = new SequencedSampleGenerator<Character>(Character.class, values);
                 source.validate();
                 this.dirty = false;
             } catch (ParseException e) {
