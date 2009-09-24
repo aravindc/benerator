@@ -27,13 +27,17 @@
 package org.databene.benerator.factory;
 
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DynamicInstanceSequenceGenerator;
+import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.*;
+import org.databene.commons.Expression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,10 +50,6 @@ import org.slf4j.LoggerFactory;
 public class InstanceGeneratorFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceGeneratorFactory.class);
-
-    // attributes ------------------------------------------------------------------------------------------------------
-    
-    //private static Escalator escalator = new LoggerEscalator();
 
     // protected constructor for preventing instantiation --------------------------------------------------------------
     
@@ -71,7 +71,7 @@ public class InstanceGeneratorFactory {
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
         if (generator == null) {
-            boolean unique = DescriptorUtil.isUnique(descriptor);
+            boolean unique = (descriptor instanceof IdDescriptor || DescriptorUtil.isUnique(descriptor));
             TypeDescriptor type = descriptor.getType();
             if (type instanceof SimpleTypeDescriptor)
 				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
@@ -79,9 +79,12 @@ public class InstanceGeneratorFactory {
             else if (type instanceof ComplexTypeDescriptor)
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
         				(ComplexTypeDescriptor) type, unique, context);
-            else if (type == null)
-                throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
-            else
+            else if (type == null) {
+            	if (descriptor instanceof IdDescriptor)
+    				generator = new IncrementGenerator(1);
+            	else
+            		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
+            } else
             	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
             generator = wrapWithNullQuota(generator, descriptor);
         }
@@ -93,13 +96,14 @@ public class InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     private static Generator<Object> createInstanceGeneratorWrapper(
             InstanceDescriptor descriptor, Generator<? extends Object> typeGenerator, BeneratorContext context) {
-        InstanceSequenceGenerator generator = new InstanceSequenceGenerator(typeGenerator);
+        DynamicInstanceSequenceGenerator generator = new DynamicInstanceSequenceGenerator(typeGenerator, context);
         // configure count
         generator.setMinCount(DescriptorUtil.getMinCount(descriptor, context));
-        Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
+        Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor, context);
         if (maxCount != null)
         	generator.setMaxCount(maxCount);
-        generator.setCountDistribution(GeneratorFactoryUtil.getDistribution(descriptor.getCountDistribution(), false, true, context));
+        generator.setCountPrecision(DescriptorUtil.getCountPrecision(descriptor, context));
+        generator.setCountDistribution(GeneratorFactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), false, true, context));
         return generator;
     }
     

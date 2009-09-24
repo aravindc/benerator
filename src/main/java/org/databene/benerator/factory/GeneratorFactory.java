@@ -28,11 +28,11 @@ package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.datetime.DateGenerator;
+import org.databene.benerator.primitive.regex.RegexGeneratorFactory;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.*;
@@ -156,6 +156,7 @@ public class GeneratorFactory {
      * @param converter the converter to use for representing the file entries
      * @return a Generator that creates instances of the parameterized type T.
      */
+    @SuppressWarnings("unchecked")
     public static <T> Generator<T> getSampleGenerator(String uri, String encoding, Converter<String, T> converter) {
         if (converter == null)
             converter = new NoOpConverter();
@@ -168,6 +169,7 @@ public class GeneratorFactory {
      * @param values A collection of values to choose from
      * @return a generator that selects from the listed sample values
      */
+    @SuppressWarnings("unchecked")
     public static <T> Generator<T> getSampleGenerator(Collection<T> values) {
     	Class<T> generatedType = (Class<T>) Object.class;
     	if (values.size() > 0) {
@@ -193,6 +195,7 @@ public class GeneratorFactory {
      * @param values An array of values to choose from
      * @return a generator that selects from the listed sample values
      */
+    @SuppressWarnings("unchecked")
     public static <T> Generator<T> getSampleGenerator(T ... values) {
     	Class<T> generatedType = (values.length > 0 ? (Class<T>) values[0].getClass() : (Class<T>) Object.class);
     	return getSampleGenerator(generatedType, values);
@@ -287,7 +290,7 @@ public class GeneratorFactory {
         Collection<Character> chars;
         if (pattern != null) {
             try {
-                chars = new RegexParser(locale).parseCharSet(pattern);
+                chars = RegexParser.toCharSet(new RegexParser(locale).parseSingleChar(pattern)).getSet();
             } catch (ParseException e) {
                 throw new ConfigurationError("Invalid regular expression.", e);
             }
@@ -332,18 +335,18 @@ public class GeneratorFactory {
      * @param locale    the locale to use for '\w' expressions
      * @param nullQuota the quota of null values to generate
      * @return a generator of the desired characteristics
+     * @throws ConfigurationError 
      */
     public static Generator<String> getRegexStringGenerator(
-            String pattern, int minLength, Integer maxLength, Locale locale, double nullQuota) {
-        Generator<String> generator = new RegexStringGenerator(pattern, locale, maxLength, false);
-        generator = new ValidatingGeneratorProxy<String>(
-                generator, new StringLengthValidator(minLength, maxLength));
+            String pattern, int minLength, Integer maxLength, Locale locale, double nullQuota) 
+            	throws ConfigurationError {
+        Generator<String> generator = getUniqueRegexStringGenerator(pattern, minLength, maxLength, locale);
         return wrapNullQuota(generator, nullQuota);
     }
 
     public static Generator<String> getUniqueRegexStringGenerator(
-            String pattern, int minLength, Integer maxLength, Locale locale) {
-        Generator<String> generator = new RegexStringGenerator(pattern, locale, maxLength, true);
+            String pattern, int minLength, Integer maxLength, Locale locale) throws ConfigurationError {
+        Generator<String> generator = RegexGeneratorFactory.create(pattern, locale, maxLength, true);
         return new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength));
     }
@@ -373,6 +376,7 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      * @see java.text.MessageFormat
      */
+    @SuppressWarnings("unchecked")
     public static Generator<String> getMessageGenerator(
             String pattern, int minLength, int maxLength, Generator ... sources) {
         Generator<String> generator = new ConvertingGenerator<Object[], String>(

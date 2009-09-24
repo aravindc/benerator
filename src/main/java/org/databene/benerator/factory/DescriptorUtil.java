@@ -33,39 +33,33 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import javax.validation.ConstraintValidator;
+
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.parser.BasicParser;
-import org.databene.benerator.parser.Construction;
-import org.databene.benerator.parser.Expression;
-import org.databene.benerator.parser.ParametrizedConstruction;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.Escalator;
+import org.databene.commons.Expression;
 import org.databene.commons.LocaleUtil;
-import org.databene.commons.LoggerEscalator;
 import org.databene.commons.StringCharacterIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
-import org.databene.id.GlobalIdProviderFactory;
-import org.databene.id.IdProvider;
-import org.databene.id.IdProviderFactory;
-import org.databene.id.IdStrategy;
+import org.databene.commons.validator.bean.BeanConstraintValidator;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.storage.StorageSystem;
@@ -81,9 +75,7 @@ import org.databene.model.storage.StorageSystemConsumer;
 
 public class DescriptorUtil {
 
-    private static final GlobalIdProviderFactory GLOBAL_ID_PROVIDER_FACTORY = new GlobalIdProviderFactory();
     private static final BasicParser basicParser = new BasicParser();
-	private static final Escalator escalator = new LoggerEscalator();
 	
 	private DescriptorUtil() {}
 
@@ -114,14 +106,27 @@ public class DescriptorUtil {
         StringCharacterIterator iterator = new StringCharacterIterator(validatorSpec);
         boolean done = false;
         do {
-        	Validator tmp = (Validator) basicParser.resolveConstructionOrReference(iterator, context, context);
-        	if (result == null) // if it is the first or even only validator, simply use it
-        		result = tmp;
-        	else if (result instanceof AndValidator) // else compose all validators to an AndValidator
-        		((AndValidator) result).add(tmp);
+        	Object tmp = basicParser.resolveConstructionOrReference(iterator, context, context);
+        	
+        	// check validator type
+        	Validator<?> validator;
+        	if (tmp instanceof Validator)
+        		validator = (Validator<?>) tmp;
+        	else if (tmp instanceof ConstraintValidator)
+        		validator = new BeanConstraintValidator((ConstraintValidator) tmp);
         	else
-        		result = new AndValidator(result, tmp);
+        		throw new ConfigurationError("Unknown validator type: " + String.valueOf(tmp));
+        	
+        	// compose one or more validators
+        	if (result == null) // if it is the first or even only validator, simply use it
+        		result = validator;
+        	else if (result instanceof AndValidator) // else compose all validators to an AndValidator
+        		((AndValidator) result).add(validator);
+        	else
+        		result = new AndValidator(result, validator);
         	iterator.skipWhitespace();
+
+        	// check if we're done
         	if (!iterator.hasNext())
         		done = true;
         	else if (iterator.peekNext() != ',')
@@ -145,7 +150,7 @@ public class DescriptorUtil {
         	if (result == null)
         		result = tmp;
         	else if (result instanceof ConverterChain)
-        		((ConverterChain) result).add(tmp);
+        		((ConverterChain) result).addComponent(tmp);
         	else
         		result = new ConverterChain(result, tmp);
         	iterator.skipWhitespace();
@@ -185,7 +190,7 @@ public class DescriptorUtil {
     private static Consumer<Entity> parseSingleConsumer(
 			StringCharacterIterator consumerSpec, boolean insert, BeneratorContext context) {
 		Expression expression = basicParser.parseConstructionOrReference(consumerSpec, context, context);
-		Object consumer = expression.evaluate();
+		Object consumer = expression.evaluate(context);
 		if (consumer == null)
 			throw new ConfigurationError("Consumer not found: " + consumerSpec);
 
@@ -239,56 +244,6 @@ public class DescriptorUtil {
 	    return (cyclic ? new CyclicGeneratorProxy<T>(generator) : generator);
     }
 
-	@SuppressWarnings("unchecked")
-	public static IdProvider getIdProvider(IdDescriptor descriptor, BeneratorContext context) {
-		// check source
-        IdProviderFactory source = null;
-        String sourceName = null;
-        TypeDescriptor type = descriptor.getType();
-		if (type != null) {
-			sourceName = type.getSource();
-			if (sourceName != null)
-				source = (IdProviderFactory) context.get(sourceName);
-		}
-        
-        // check param
-        String param = descriptor.getParam();
-
-        // check scope
-        String scope = descriptor.getScope();
-
-        // check strategy
-        String strategySpec = descriptor.getStrategy();
-        IdProvider idProvider = null;
-        if (strategySpec == null)
-        	strategySpec = GlobalIdProviderFactory.INCREMENT.getName();
-    	Construction construction = basicParser.parseConstruction(strategySpec, context, context);
-    	if (construction.classExists()) {
-    		// instantiate JavaBean
-    		idProvider = (IdProvider) construction.evaluate();
-    		// TODO v0.6 support scope (-> move to BeneratorContext?)
-    	} else {
-    		// use IdProviderFactory
-            String strategyName = construction.getClassName();
-			IdStrategy idStrategy = IdStrategy.getInstance(strategyName);
-            if (construction instanceof ParametrizedConstruction)
-            	param = ToStringConverter.convert(((ParametrizedConstruction) construction).getParams()[0], null);
-            if (source != null) {
-    			idProvider = source.idProvider(idStrategy, param, scope);
-                if (idProvider == null)
-                	escalator.escalate("IdProvider " + sourceName + " does not support IdStrategy " 
-                			+ strategySpec, ComponentBuilderFactory.class, idStrategy);
-            }
-            if (idProvider == null)
-                idProvider = GLOBAL_ID_PROVIDER_FACTORY.idProvider(idStrategy, param, scope);
-            if (idProvider == null)
-                throw new ConfigurationError("unknown id generation strategy: " + idStrategy);
-    	}
-        
-        //checkUsedDetails(descriptor, usedDetails);
-		return idProvider;
-	}
-
 	public static char getSeparator(TypeDescriptor descriptor, BeneratorContext context) {
 		char separator = (context != null ? context.getDefaultSeparator() : ',');
 		if (!StringUtil.isEmpty(descriptor.getSeparator())) {
@@ -299,28 +254,38 @@ public class DescriptorUtil {
 		return separator;
 	}
 	
-	public static long getMinCount(InstanceDescriptor descriptor, BeneratorContext context) {
-		long result = 1;
+	@SuppressWarnings("unchecked")
+    public static Expression<Long> getMinCount(InstanceDescriptor descriptor, BeneratorContext context) {
+		Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMinCount() != null)
         	result = descriptor.getMinCount();
+		if (result == null)
+			result = new ConstantExpression<Long>(1L);
 		Long globalMaxCount = context.getMaxCount();
-		if (globalMaxCount != null && globalMaxCount < result)
-			result = globalMaxCount;
+		if (globalMaxCount != null)
+			result = new MinExpression<Long>(result, new ConstantExpression<Long>(globalMaxCount));
         return result;
 	}
 
-	public static Long getMaxCount(InstanceDescriptor descriptor, BeneratorContext context) {
-		Long result = null;
+	@SuppressWarnings("unchecked")
+    public static Expression<Long> getMaxCount(InstanceDescriptor descriptor, BeneratorContext context) {
+		Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMaxCount() != null)
         	result = descriptor.getMaxCount();
+		if (result == null)
+			result = new ConstantExpression<Long>(1L);
 		Long globalMaxCount = context.getMaxCount();
 		if (globalMaxCount != null)
-			result = (result != null ? Math.min(result, globalMaxCount) : globalMaxCount);
+			result = new MinExpression<Long>(result, new ConstantExpression<Long>(globalMaxCount));
         return result;
+	}
+
+	public static Expression<Long> getCountPrecision(InstanceDescriptor descriptor, BeneratorContext context) {
+		return (descriptor.getCountPrecision() != null ? descriptor.getCountPrecision() : new ConstantExpression<Long>(1L));
 	}
 
 
@@ -336,16 +301,5 @@ public class DescriptorUtil {
         	throw new ConfigurationError(converter + " is not an instance of " + Converter.class);
 		return (Converter) converter;
 	}
-
-	public static Generator<Long> getCountGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
-        Long maxCount = DescriptorUtil.getMaxCount(descriptor, context);
-        long minCount = DescriptorUtil.getMinCount(descriptor, context);
-        String countDistributionSpec = descriptor.getCountDistribution();
-        if (countDistributionSpec == null)
-        	countDistributionSpec = "random";
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(
-        		countDistributionSpec, false, true, context);
-		return distribution.createGenerator(Long.class, minCount, maxCount, 1L);
-    }
 
 }

@@ -39,7 +39,7 @@ import org.databene.benerator.*;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.ComponentTypeConverter;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
-import org.databene.benerator.composite.EntityGenerator;
+import org.databene.benerator.composite.MutatingEntityGeneratorProxy;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
@@ -111,7 +111,6 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         return new ConfiguredEntityGenerator((Generator<Entity>) generator, varGens, context);
     }
 
-    @SuppressWarnings("unchecked")
 	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
         Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
         while (type instanceof ComplexTypeDescriptor) {
@@ -245,11 +244,11 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
 		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator(new XLSEntitySource(dataFiles[i], 0, complexType.getName()));
+		        sources[i] = new IteratingGenerator(new XLSEntitySource(dataFiles[i]));
 		    generator = new AlternativeGenerator(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
-			XLSEntitySource iterable = new XLSEntitySource(sourceName, 0, complexType.getName(), scriptConverter);
+			XLSEntitySource iterable = new XLSEntitySource(sourceName, scriptConverter);
 		    generator = new IteratingGenerator(iterable);
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
@@ -276,7 +275,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 				componentBuilders.add(builder); 
             }
         }
-    	return new EntityGenerator(complexType, componentBuilders, context);
+    	return new MutatingEntityGeneratorProxy(complexType, componentBuilders, context);
     }
 
 	private static Generator<Entity> createMutatingEntityGenerator(
@@ -286,6 +285,6 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         for (ComponentDescriptor component : components)
             if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName()))
             	componentGenerators.add(ComponentBuilderFactory.createComponentBuilder(component, context));
-        return new EntityGenerator(descriptor, generator, componentGenerators, context);
+        return new MutatingEntityGeneratorProxy(descriptor, generator, componentGenerators, context);
     }
 }

@@ -28,7 +28,6 @@ package org.databene.benerator.factory;
 
 import java.util.Collection;
 
-import org.databene.id.IdProvider;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -36,7 +35,6 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
-import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
@@ -46,7 +44,6 @@ import org.databene.benerator.composite.InstanceArrayGenerator;
 import org.databene.benerator.composite.PlainComponentBuilder;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.wrapper.IdGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.TypedIterable;
@@ -140,6 +137,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
     public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
+    	
+    	// TODO support 'attribute' like syntax, fall back to targetType+source+selector
         TypeDescriptor typeDescriptor = descriptor.getType();
         
         // check target type
@@ -174,15 +173,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             logger.debug("Created " + generator);
         return new PlainComponentBuilder(descriptor.getName(), generator);
     }
-    
-    @SuppressWarnings("unchecked")
-    public static ComponentBuilder createIdBuilder(IdDescriptor descriptor, BeneratorContext context) {
-        IdProvider idProvider = DescriptorUtil.getIdProvider(descriptor, context);
-        Generator<Object> generator = new IdGenerator(idProvider);
-        generator = TypeGeneratorFactory.createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor.getType(), generator);
+
+    public static ComponentBuilder createIdBuilder(IdDescriptor id, BeneratorContext context) {
+        Generator<? extends Object> generator = createSingleInstanceGenerator(id, context);
+        generator = createMultiplicityWrapper(id, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
-        return new PlainComponentBuilder(descriptor.getName(), generator);
+        return new PlainComponentBuilder(id.getName(), generator);
     }
 
     // non-public helpers ----------------------------------------------------------------------------------------------
@@ -190,8 +187,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<? extends Object> generator, BeneratorContext context) {
-        Long maxCount = DescriptorUtil.getMaxCount(instance, context);
-        long minCount = DescriptorUtil.getMinCount(instance, context);
+        Long maxCount = DescriptorUtil.getMaxCount(instance, context).evaluate(context);
+        long minCount = DescriptorUtil.getMinCount(instance, context).evaluate(context);
         if (maxCount != null && maxCount != 1 && minCount != 1) {
         	InstanceArrayGenerator wrapper = new InstanceArrayGenerator(generator);
 	        mapDetailsToBeanProperties(instance, wrapper, context);

@@ -38,6 +38,7 @@ import org.databene.benerator.parser.Construction;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
@@ -58,7 +59,10 @@ public class GeneratorFactoryUtil {
     }
 
     public static void mapDetailToBeanProperty(FeatureDescriptor descriptor, String detailName, Object bean, Context context) {
-        setBeanProperty(bean, detailName, descriptor.getDetailValue(detailName), context);
+        Object detailValue = descriptor.getDetailValue(detailName);
+        if (detailValue instanceof Expression)
+        	detailValue = ((Expression) detailValue).evaluate(context); // TODO is it OK to always evaluate the expression?
+		setBeanProperty(bean, detailName, detailValue, context);
     }
 
     public static void setBeanProperty(Object bean, String detailName, Object detailValue, Context context) {
@@ -120,16 +124,28 @@ public class GeneratorFactoryUtil {
         // check for explicit construction
     	Construction construction = basicParser.parseConstruction(spec, context, context);
     	if (construction.classExists())
-    		return (Distribution) construction.evaluate();
+    		return (Distribution) construction.evaluate(context);
     	else {
     		String className = StringUtil.capitalize(construction.getClassName());
     		if (!className.endsWith("Sequence"))
     			construction.setClassName(className + "Sequence");
     		if (construction.classExists())
-    			return (Distribution) construction.evaluate();
+    			return (Distribution) construction.evaluate(context);
     	}
     	
     	throw new ConfigurationError("Unable to resolve distribution spec '" + spec + "'");
 	}
 
+    
+    public static Expression<Distribution> getDistributionExpression(
+    		final String spec, final boolean unique, final boolean required, final BeneratorContext context) {
+    	return new Expression<Distribution>() {
+
+			public Distribution evaluate(Context context) {
+	            return getDistribution(spec, unique, required, (BeneratorContext) context);
+            }
+    		
+    	};
+    }
+    
 }

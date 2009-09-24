@@ -34,8 +34,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.validation.ConstraintValidator;
-
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
@@ -58,6 +56,7 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ArrayElementExtractor;
@@ -83,7 +82,7 @@ import static org.databene.model.data.SimpleTypeDescriptor.*;
  * <br/>
  * @author Volker Bergmann
  */
-public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory { // TODO support & test JSR 303
+public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	
     //@SuppressWarnings("unchecked")
     //private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
@@ -426,12 +425,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory { // TODO s
     }
     
     @SuppressWarnings("unchecked")
-    protected static <A extends Annotation, T> ConstraintValidator<A, T> createRestrictionValidator(
+    protected static <A extends Annotation, T> Validator<T> createRestrictionValidator(
             SimpleTypeDescriptor descriptor, boolean nullable) {
         if ((descriptor.getMinLength() != null || descriptor.getMaxLength() != null) && "string".equals(descriptor.getName())) {
             Integer minLength = getMinLength(descriptor);
             Integer maxLength = getMaxLength(descriptor);
-            return (ConstraintValidator<A, T>) new StringLengthValidator(minLength, maxLength, nullable);
+            return (Validator<T>) new StringLengthValidator(minLength, maxLength, nullable);
         }
         return null;
     }
