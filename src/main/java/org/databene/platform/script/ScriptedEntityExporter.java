@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007--2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -98,7 +98,7 @@ public class ScriptedEntityExporter extends TextFileExporter<Entity> {
     // Consumer interface ----------------------------------------------------------------------------------------------
 
 	@Override
-	protected void postInitPrinter() {
+	protected void postInitPrinter(Entity entity) {
 		try {
 			docWriter = new ScriptedDocumentWriter<Entity>(printer, headerScript, partScript, footerScript);
 			if (append)
