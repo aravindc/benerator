@@ -30,6 +30,7 @@ import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
@@ -69,17 +70,18 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
         this(DEFAULT_URI, (String) null);
     }
     
-    public CSVEntityExporter(String uri, String columns) {
-        this(uri, columns, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
+    public CSVEntityExporter(String uri, String columnsSpec) {
+        this(uri, columnsSpec, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
     }
 
-    public CSVEntityExporter(String uri, String columns, char separator, String encoding, String lineSeparator) {
+    public CSVEntityExporter(String uri, String columnsSpec, char separator, String encoding, String lineSeparator) {
     	super(uri, encoding, lineSeparator);
-        setColumns(columns);
+    	if (columnsSpec != null)
+    		setColumns(ArrayFormat.parse(columnsSpec, ",", String.class));
         this.separator = separator;
     }
 
-    public CSVEntityExporter(ComplexTypeDescriptor descriptor) {
+	public CSVEntityExporter(ComplexTypeDescriptor descriptor) {
         this(descriptor.getName() + ".csv", descriptor);
     }
 
@@ -97,11 +99,11 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-	public void setColumns(String columnsSpec) {
-		if (StringUtil.isEmpty(columnsSpec))
+	public void setColumns(String[] columns) {
+		if (ArrayUtil.isEmpty(columns))
 			this.columns = null;
 		else {
-	        this.columns = StringUtil.tokenize(columnsSpec, ',');
+	        this.columns = columns;
 	        StringUtil.trimAll(this.columns);
 		}
     }
@@ -133,9 +135,13 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
 
     @Override
-	protected void postInitPrinter() {
-    	if (!append)
-	        printHeaderRow();
+	protected void postInitPrinter(Entity entity) {
+    	if (entity != null) {
+			if (columns == null)
+				columns = CollectionUtil.toArray(entity.getComponents().keySet()); // TODO test
+	    	if (!append)
+		        printHeaderRow();
+    	}
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
@@ -149,4 +155,5 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 		    }
 		}
     }
+	
 }
