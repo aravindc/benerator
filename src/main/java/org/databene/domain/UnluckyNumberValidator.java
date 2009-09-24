@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
 import org.databene.domain.address.Country;
 
@@ -48,14 +49,14 @@ import org.databene.domain.address.Country;
  */
 
 public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber, String> { // TODO find a suitable package for this class
-	// TODO ask Yevgen
+	
 	private static final String UNLUCKY_CN = "4,14";
 	private static final String LUCKY_CN = "2,8,9,13,99,168,518,5918,814,148,1314,9413"; // TODO if a lucky number contains an unlucky number, it will not be accepted
 
 	private static final String UNLUCKY_JP = "4,9";
 	private static final String LUCKY_JP = "8";
 	
-	private static final String UNLUCKY_WESTERN = "13,616,666";
+	private static final String UNLUCKY_WESTERN = "13,69,616,666";
 	private static final String LUCKY_WESTERN = "7";
 	
 	private static final String UNLUCKY_IT = UNLUCKY_WESTERN + ",17";
@@ -63,6 +64,7 @@ public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber
 	private Set<String> luckyNumbers;
 	private Set<String> unluckyNumbers;
 	private boolean luckyNumberRequired;
+	private boolean endOnly;
 	
     public UnluckyNumberValidator() {
     	this(false);
@@ -70,6 +72,7 @@ public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber
 
     public UnluckyNumberValidator(boolean luckyNumberRequired) {
     	this.luckyNumberRequired = luckyNumberRequired;
+    	this.endOnly = false;
 	    Country country = Country.getDefault();
 	    if (Country.CHINA.equals(country)) {
 	    	luckyNumbers = parseNumberSpec(LUCKY_CN);
@@ -94,22 +97,32 @@ public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber
     	this.luckyNumberRequired = luckyNumberRequired;
     }
 	
-	public void setLuckyNumbers(String luckyNumbers) {
-		this.luckyNumbers = parseNumberSpec(luckyNumbers);
+	public void setLuckyNumbers(String... luckyNumbers) {
+		this.luckyNumbers = CollectionUtil.toSet(luckyNumbers);
 	}
 
-	public void setUnluckyNumbers(String unluckyNumbers) {
-		this.unluckyNumbers = parseNumberSpec(unluckyNumbers);
+	public void setUnluckyNumbers(String... unluckyNumbers) {
+		this.unluckyNumbers = CollectionUtil.toSet(unluckyNumbers);
 	}
 
     public void initialize(UnluckyNumber parameters) {
 	    setLuckyNumberRequired(parameters.luckyNumberRequired());
     }
+    
+    public boolean isEndOnly() {
+    	return endOnly;
+    }
 
-    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
+	public void setEndOnly(boolean endOnly) {
+    	this.endOnly = endOnly;
+    }
+
+	public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
 		if (StringUtil.isEmpty(value))
 			return false;
-		if (containsUnluckyNumber(value))
+		else if (endOnly)
+			return !endsWithUnluckyNumber(value);
+		else if (containsUnluckyNumber(value))
 			return false;
 		else if (luckyNumberRequired)
 			return containsLuckyNumber(value);
@@ -120,6 +133,13 @@ public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber
 	private boolean containsLuckyNumber(String candidate) {
 	    for (String test : luckyNumbers)
 			if (candidate.contains(test))
+				return true;
+	    return false;
+    }
+
+	private boolean endsWithUnluckyNumber(String candidate) {
+	    for (String test : unluckyNumbers)
+			if (candidate.endsWith(test))
 				return true;
 	    return false;
     }

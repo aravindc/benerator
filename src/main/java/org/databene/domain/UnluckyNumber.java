@@ -51,4 +51,6 @@ import javax.validation.Constraint;
 @Retention(RUNTIME)
 public @interface UnluckyNumber {
 	boolean luckyNumberRequired() default false;
+	int[] unluckyNumbers() default { };
+	int[] luckyNumbers() default { };
 }
