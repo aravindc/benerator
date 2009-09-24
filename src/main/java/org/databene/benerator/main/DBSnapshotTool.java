@@ -29,14 +29,19 @@ package org.databene.benerator.main;
 import java.util.Arrays;
 import java.util.List;
 
+import org.databene.commons.IOUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.StringUtil;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.ui.ProgressMonitor;
+import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
+import org.databene.platform.db.SQLEntityExporter;
 import org.databene.platform.dbunit.DbUnitEntityExporter;
+import org.databene.platform.xls.XLSEntityExporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +51,15 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 public class DBSnapshotTool {
+	
+	public static final String DEFAULT_FORMAT = "dbunit";
     
 	public static final String DB_PASSWORD = "dbPassword";
 	public static final String DB_URL = "dbUrl";
 	public static final String DB_DRIVER = "dbDriver";
 	public static final String DB_SCHEMA = "dbSchema";
 	public static final String DB_USER = "dbUser";
+	public static final String FORMAT = "format";
 	
 	// TODO v0.6.0 test with each database
     private static final Logger logger = LoggerFactory.getLogger(DBSnapshotTool.class);
@@ -71,35 +79,50 @@ public class DBSnapshotTool {
         String dbUser = System.getProperty(DB_USER);
         String dbPassword = System.getProperty(DB_PASSWORD);
         String dbSchema = System.getProperty(DB_SCHEMA);
+        String format = System.getProperty(FORMAT);
+        if (format == null)
+        	format = DEFAULT_FORMAT;
         
         logger.info("Exporting data of database '" + dbUrl + "' with driver '" + dbDriver + "' as user '" + dbUser 
                 + "'" + (dbSchema != null ? " using schema '" + dbSchema + "'" : "") 
-                + " to file " + filename);
+                + " in " + format + " format to file " + filename);
 
-        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, null);
+        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format);
     }
 
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
-			String dbUser, String dbPassword, String filename) {
-		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, null);
+			String dbUser, String dbPassword, String filename, String format) {
+		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format, null);
 	}
 	
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
-			String dbUser, String dbPassword, String filename, ProgressMonitor monitor) {
+			String dbUser, String dbPassword, String filename, String format, ProgressMonitor monitor) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");
-        String fileEncoding = System.getProperty("file.encoding");
+        String fileEncoding = SystemInfo.getFileEncoding();
+        String lineSeparator = SystemInfo.getLineSeparator();
 		long startTime = System.currentTimeMillis();
-        DbUnitEntityExporter exporter = new DbUnitEntityExporter(filename, fileEncoding);
+
+        // create exporter
+		Consumer<Entity> exporter;
+        if ("dbunit".equals(format.toLowerCase()))
+        	exporter = new DbUnitEntityExporter(filename, fileEncoding);
+        else if ("xls".equals(format))
+        	exporter = new XLSEntityExporter();
+        else if ("sql".equals(format))
+        	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator);
+        else
+        	throw new IllegalArgumentException("Unknown format: " + format);
 
         DBSystem db = null;
         int count = 0;
         try {
+        	// connect DB
             db = new DBSystem("db", dbUrl, dbDriver, dbUser, dbPassword);
             if (dbSchema != null)
                 db.setSchema(dbSchema);
             db.setDynamicQuerySupported(false);
-            //db.setFetchSize(1);
+
             List<TypeDescriptor> descriptors = Arrays.asList(db.getTypeDescriptors());
             logger.info("Starting export");
             for (TypeDescriptor descriptor : descriptors) {
@@ -122,7 +145,7 @@ public class DBSnapshotTool {
             long duration = System.currentTimeMillis() - startTime;
             logger.info("Exported " + NumberUtil.format(count, 0) + " entities in " + RoundedNumberFormat.format(duration, 0) + " ms (" + RoundedNumberFormat.format(count * 3600000L / duration, 0) + " p.h.)");
         } finally {
-            exporter.close();
+            IOUtil.close(exporter);
             if (db != null)
                 db.close();
         }
