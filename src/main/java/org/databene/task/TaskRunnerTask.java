@@ -31,14 +31,17 @@ import java.util.concurrent.ExecutorService;
 import org.databene.commons.Context;
 
 /**
- * TODO document class TaskRunnerTask.<br/>
+ * {@link Task} implementation that executes another task 
+ * a certain number of times with a certain number of threads.
+ * Depending on the Task class' abilities it may create clones 
+ * of the specified tasks or runs it in a single thread.<br/>
  * <br/>
  * Created at 23.07.2009 07:01:38
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class TaskRunnerTask extends TaskProxy {
+public class TaskRunnerTask<E extends Task> extends TaskProxy<E> {
 
     private int count;
     private int pageSize;
@@ -46,7 +49,7 @@ public class TaskRunnerTask extends TaskProxy {
     private PageListener pager;
     private ExecutorService executor;
 
-	public TaskRunnerTask(Task realTask, int count, int pageSize, int threads, PageListener pager, ExecutorService executor) {
+	public TaskRunnerTask(E realTask, int count, int pageSize, int threads, PageListener pager, ExecutorService executor) {
 	    super(realTask);
 	    this.count = count;
 	    this.pageSize = pageSize;

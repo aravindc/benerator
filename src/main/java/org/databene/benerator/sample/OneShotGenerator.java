@@ -31,7 +31,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 
 /**
- * TODO document class OneShotGenerator.<br/>
+ * Returns a value only once and then becomes unavailable immediately.<br/>
  * <br/>
  * Created at 23.09.2009 00:20:03
  * @since 0.6.0

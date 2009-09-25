@@ -31,7 +31,7 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 
 /**
- * TODO document class GeneratorExpression.<br/>
+ * {@link Expression} implementation that evaluates to a {@link Generator}.<br/>
  * <br/>
  * Created at 23.07.2009 15:17:04
  * @since 0.6.0

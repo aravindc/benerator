@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document class DatabaseTask.<br/>
+ * Executes a &lt;database/&gt; from an XML descriptor.<br/>
  * <br/>
  * Created at 23.07.2009 07:13:02
  * @since 0.6.0

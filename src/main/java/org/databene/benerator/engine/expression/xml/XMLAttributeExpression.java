@@ -35,7 +35,7 @@ import org.databene.script.ScriptUtil;
 import org.w3c.dom.Element;
 
 /**
- * TODO document class AttributeExpression.<br/>
+ * {@link Expression} implementation that evaluates an XML attribute value.<br/>
  * <br/>
  * Created at 23.07.2009 07:53:50
  * @since 0.6.0

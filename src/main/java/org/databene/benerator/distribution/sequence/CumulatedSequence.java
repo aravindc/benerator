@@ -32,7 +32,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 
 /**
- * TODO document class CumulatedSequence.<br/>
+ * {@link Sequence} implementation for an efficient bell-like distribution.<br/>
  * <br/>
  * Created at 23.09.2009 18:59:30
  * @since 0.6.0

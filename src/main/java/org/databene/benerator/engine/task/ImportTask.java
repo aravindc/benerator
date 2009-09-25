@@ -32,7 +32,7 @@ import org.databene.commons.Context;
 import org.databene.task.AbstractTask;
 
 /**
- * TODO document class ImportTask.<br/>
+ * Imports classes by package, class, domain and platform definition(s).<br/>
  * <br/>
  * Created at 22.07.2009 08:19:54
  * @since 0.6.0

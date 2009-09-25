@@ -35,7 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document class TimedEntityTask.<br/>
+ * {Task} implementation that acts as a proxy to another tasks, forwards calls to it, 
+ * measures execution times and logs them.<br/>
  * <br/>
  * Created at 23.07.2009 06:55:46
  * @since 0.6.0

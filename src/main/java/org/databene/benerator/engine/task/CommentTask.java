@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document class CommentTask.<br/>
+ * Parses a comment and logs its content to the category 'org.databene.COMMENT'.<br/>
  * <br/>
  * Created at 22.07.2009 08:11:22
  * @since 0.6.0

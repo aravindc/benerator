@@ -35,7 +35,7 @@ import org.databene.task.AbstractTask;
 import org.databene.task.Task;
 
 /**
- * TODO document class SequentialTask.<br/>
+ * Parent class for a {@link Task} that wrap several other Tasks.<br/>
  * <br/>
  * Created at 24.07.2009 06:26:36
  * @since 0.6.0

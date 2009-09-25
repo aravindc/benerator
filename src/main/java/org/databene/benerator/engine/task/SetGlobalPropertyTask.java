@@ -33,7 +33,7 @@ import org.databene.commons.mutator.AnyMutator;
 import org.databene.task.AbstractTask;
 
 /**
- * TODO document class SetGlobalPropertyTask.<br/>
+ * Sets a global Benerator property.<br/>
  * <br/>
  * Created at 23.07.2009 14:50:08
  * @since 0.6.0

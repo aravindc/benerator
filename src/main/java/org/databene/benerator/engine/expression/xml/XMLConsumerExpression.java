@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
- * TODO document class XMLConsumerSpec.<br/>
+ * Parses a {@link Consumer} specification in an XML element in a descriptor file.<br/>
  * <br/>
  * Created at 24.07.2009 07:21:16
  * @since 0.6.0
@@ -69,7 +69,8 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 		this.descriptorRunner = descriptorRunner;
     }
 
-	public Consumer<Entity> evaluate(Context context) {
+	@SuppressWarnings("unchecked")
+    public Consumer<Entity> evaluate(Context context) {
 		BeneratorContext beneratorContext = (BeneratorContext) context;
 		String entityName = parseStringAttribute(entityElement, "name", context);
 		ConsumerChain<Entity> consumerChain = new ConsumerChain<Entity>();
@@ -93,7 +94,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 		}
 		if (consumerChain.componentCount() == 0 && consumersExpected)
 			escalator.escalate("No consumers defined for " + entityName, this, null);
-		for (Consumer consumer : consumerChain.getComponents())
+		for (Consumer<Entity> consumer : consumerChain.getComponents())
 			descriptorRunner.addResource(consumer);
 		if (EL_UPDATE_ENTITIES.equals(entityElement.getNodeName())) {
 			String sourceName = parseStringAttribute(entityElement, "source", context);

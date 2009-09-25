@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
- * TODO document class XMLBeanExpression.<br/>
+ * Parses a &lt;bean/&gt; definition in an XML descriptor file.<br/>
  * <br/>
  * Created at 24.07.2009 07:51:56
  * @since 0.6.0

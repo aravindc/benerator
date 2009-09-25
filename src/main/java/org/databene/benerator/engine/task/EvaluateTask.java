@@ -57,7 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document class EvaluateTask.<br/>
+ * Executes an &lt;evaluate/&gt; from an XML descriptor.<br/>
  * <br/>
  * Created at 23.07.2009 17:59:36
  * @since 0.6.0

@@ -32,7 +32,8 @@ import org.databene.commons.IOUtil;
 import org.databene.task.Task;
 
 /**
- * TODO document class LazyTask.<br/>
+ * {@link Task} implementation that evaluates an expression 
+ * which returns a Task and executes the returned Task.<br/>
  * <br/>
  * Created at 25.07.2009 16:48:52
  * @since 0.6.0

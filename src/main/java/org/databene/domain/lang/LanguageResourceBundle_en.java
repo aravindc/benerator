@@ -27,7 +27,7 @@
 package org.databene.domain.lang;
 
 /**
- * TODO document class LanguageResourceBundle_de.<br/>
+ * English implementation of the {@link LanguageResourceBundle} class.<br/>
  * <br/>
  * Created at 16.07.2009 19:11:12
  * @since 0.6.0

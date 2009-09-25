@@ -36,7 +36,7 @@ import org.databene.commons.BeanUtil;
 import static org.databene.commons.MathUtil.*;
 
 /**
- * TODO document class RandomSequence.<br/>
+ * {@link Sequence} implementation that creates generators with a random uniform distribution.<br/>
  * <br/>
  * Created at 27.07.2009 06:31:25
  * @since 0.6.0

@@ -31,9 +31,10 @@ import org.databene.commons.Expression;
 import org.databene.commons.converter.LiteralParser;
 
 /**
- * TODO document class ScriptedLiteral.<br/>
+ * Expression that evaluates a scripts and parses its result as a literal.<br/>
  * <br/>
  * Created at 23.07.2009 14:34:42
+ * @see LiteralParser
  * @since 0.6.0
  * @author Volker Bergmann
  */

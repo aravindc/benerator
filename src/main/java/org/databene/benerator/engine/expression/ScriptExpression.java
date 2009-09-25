@@ -34,7 +34,7 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.script.ScriptUtil;
 
 /**
- * TODO document class ScriptExpression.<br/>
+ * {@link Expression} implementation that evaluates a script.<br/>
  * <br/>
  * Created at 22.07.2009 07:19:44
  * @since 0.6.0
@@ -68,4 +68,5 @@ public class ScriptExpression<E> implements Expression<E> {
 	public String toString() {
 		return script;
 	}
+	
 }

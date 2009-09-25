@@ -31,7 +31,8 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
- * TODO document class CumulatedSequence.<br/>
+ * {@link Sequence} implementation for a distribution that creates the bit-reverses (r) 
+ * of a continuous series, e.g. r(1), r(2), r(3), ....<br/>
  * <br/>
  * Created at 23.09.2009 18:59:30
  * @since 0.6.0

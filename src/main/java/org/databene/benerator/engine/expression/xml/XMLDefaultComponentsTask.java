@@ -39,7 +39,7 @@ import org.databene.task.AbstractTask;
 import org.w3c.dom.Element;
 
 /**
- * TODO document class XMLDefaultComponentsTask.<br/>
+ * Parses the default setup of entity components.<br/>
  * <br/>
  * Created at 23.07.2009 18:47:44
  * @since 0.6.0

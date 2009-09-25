@@ -36,7 +36,7 @@ import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
 
 /**
- * TODO document class SeedSentenceGenerator.<br/>
+ * Generates sentences based on a seed sentence set.<br/>
  * <br/>
  * Created at 16.07.2009 20:02:32
  * @since 0.6.0

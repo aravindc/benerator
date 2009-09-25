@@ -31,7 +31,7 @@ import org.databene.commons.IOUtil;
 import org.databene.task.Task;
 
 /**
- * TODO document class SerialTask.<br/>
+ * Task implementation that executes a series of other tasks consecutively.<br/>
  * <br/>
  * Created at 24.07.2009 06:32:43
  * @since 0.6.0

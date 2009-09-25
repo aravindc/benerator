@@ -29,7 +29,7 @@ package org.databene.domain.lang;
 import java.util.ListResourceBundle;
 
 /**
- * TODO document class LanguageResourceBundle.<br/>
+ * Provides words and grammar rules for natural languages.<br/>
  * <br/>
  * Created at 16.07.2009 19:03:56
  * @since 0.6.0

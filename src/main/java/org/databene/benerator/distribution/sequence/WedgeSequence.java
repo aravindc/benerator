@@ -31,9 +31,10 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
- * TODO document class CumulatedSequence.<br/>
+ * {@link Sequence} implementation that creates Number {@link Generator} with a wedge distribution.<br/>
  * <br/>
  * Created at 23.09.2009 18:59:30
+ * @see WedgeLongGenerator
  * @since 0.6.0
  * @author Volker Bergmann
  */

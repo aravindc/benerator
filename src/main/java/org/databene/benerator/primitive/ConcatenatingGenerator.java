@@ -31,7 +31,8 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
- * TODO document class ConcatenatingGenerator.<br/>
+ * {@link Generator} implementation that wraps several String generators 
+ * and concatenates their results to a composite {@link String}.<br/>
  * <br/>
  * Created at 21.09.2009 18:54:32
  * @since 0.6.0

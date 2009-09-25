@@ -33,7 +33,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.Level;
 
 /**
- * TODO document class OnErrorExpression.<br/>
+ * Parses an <code>onError</code> attribute in an XML descriptor element.<br/>
  * <br/>
  * Created at 24.07.2009 08:42:51
  * @since 0.6.0

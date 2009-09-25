@@ -34,9 +34,10 @@ import org.databene.commons.Expression;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.task.AbstractTask;
+import org.databene.task.Task;
 
 /**
- * TODO document class BeanTask.<br/>
+ * {@link Task} implementation that instantiates a JavaBean.<br/>
  * <br/>
  * Created at 24.07.2009 07:00:52
  * @since 0.6.0

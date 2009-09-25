@@ -33,7 +33,8 @@ import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.commons.math.MutableDouble;
 
 /**
- * TODO document class MappedSampleGenerator.<br/>
+ * {@link IndividualWeightGenerator} implementation that organizes 
+ * sample data in a Map of value-weight associations.<br/>
  * <br/>
  * Created at 12.07.2009 00:29:58
  * @since 0.6.0

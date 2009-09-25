@@ -26,8 +26,10 @@
 
 package org.databene.benerator.engine.expression;
 
+import org.databene.commons.Expression;
+
 /**
- * TODO document class StringScriptExpression.<br/>
+ * {@link Expression} that resolves a script as {@link String}.<br/>
  * <br/>
  * Created at 23.07.2009 09:14:30
  * @since 0.6.0
