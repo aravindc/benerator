@@ -29,7 +29,7 @@ package org.databene.benerator.primitive;
 import junit.framework.TestCase;
 
 /**
- * TODO document class SeedSentenceGeneratorTest.<br/>
+ * Tests the {@link SeedSentenceGenerator}.<br/>
  * <br/>
  * Created at 16.07.2009 20:11:35
  * @since 0.6.0

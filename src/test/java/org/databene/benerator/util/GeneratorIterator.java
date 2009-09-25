@@ -31,7 +31,7 @@ import java.util.Iterator;
 import org.databene.benerator.Generator;
 
 /**
- * TODO document class GeneratorIterator.<br/>
+ * Wraps a {@link Generator} with an {@link Iterator} interface.<br/>
  * <br/>
  * Created at 21.07.2009 10:09:55
  * @since 0.6.0

@@ -38,7 +38,7 @@ import org.databene.commons.expression.ConstantExpression;
 import junit.framework.TestCase;
 
 /**
- * TODO document class DynamicInstanceSequenceGeneratorTest.<br/>
+ * Tests the {@link DynamicInstanceSequenceGenerator}.<br/>
  * <br/>
  * Created at 26.07.2009 06:17:13
  * @since 0.6.0

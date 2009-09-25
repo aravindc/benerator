@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 import org.databene.commons.IOUtil;
 
 /**
- * TODO document class FileTest.<br/>
+ * Parent class for file-related tests.<br/>
  * <br/>
  * Created at 17.09.2009 10:25:10
  * @since 0.6.0

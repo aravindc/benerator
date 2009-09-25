@@ -31,7 +31,7 @@ import java.io.File;
 import org.databene.commons.FileUtil;
 
 /**
- * TODO document class FileDeleterTest.<br/>
+ * Tests the {@link FileDeleter}.<br/>
  * <br/>
  * Created at 17.09.2009 10:26:38
  * @since 0.6.0

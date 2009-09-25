@@ -33,7 +33,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * TODO document class StateGeneratorTest.<br/>
+ * Tests the {@link StateGenerator}.<br/>
  * <br/>
  * Created at 17.07.2009 05:56:28
  * @since 0.6.0

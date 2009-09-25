@@ -44,7 +44,7 @@ import org.databene.model.data.Entity;
 import junit.framework.TestCase;
 
 /**
- * TODO document class GenerateAndConsumeEntityGeneratorTest.<br/>
+ * Tests the {@link GenerateAndConsumeEntityTask}.<br/>
  * <br/>
  * Created at 25.07.2009 12:42:25
  * @since 0.6.0

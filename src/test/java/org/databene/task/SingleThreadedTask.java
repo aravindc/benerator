@@ -27,7 +27,8 @@
 package org.databene.task;
 
 /**
- * TODO doc<br/><br/>
+ * Abstract parent class for tasks that do not support multithreaded execution, 
+ * but can be cloned and executed in several parallel instances.<br/><br/>
  * Created: 18.07.2007 19:45:49
  * @since 0.2
  * @author Volker Bergmann
