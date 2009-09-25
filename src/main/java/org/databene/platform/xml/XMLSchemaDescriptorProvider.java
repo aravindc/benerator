@@ -30,13 +30,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.task.CreateBeanTask;
 import org.databene.benerator.engine.task.IncludeTask;
 import org.databene.benerator.parser.ModelParser;
@@ -48,7 +48,6 @@ import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -62,7 +61,6 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
 import org.databene.model.data.UnresolvedTypeDescriptor;
-import org.databene.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -104,7 +102,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     private DataModel dataModel;
     private List<String> propertiesFiles;
 	private Map<String, String> namespaces;
-	private Set<Closeable> resources = new HashSet<Closeable>();
+	private ResourceManager resourceManager = new ResourceManagerSupport();
 
     
     // constructors ----------------------------------------------------------------------------------------------------
@@ -147,6 +145,16 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         return context;
     }
     
+    // ResourceManager interface implementation ------------------------------------------------------------------------
+
+	public boolean addResource(Closeable resource) {
+		return resourceManager.addResource(resource);
+	}
+	
+	public void close() throws IOException {
+		resourceManager.close();
+	}
+
     // private helpers -------------------------------------------------------------------------------------------------
     
 	private void parseStructure(Document document) throws IOException {
@@ -466,12 +474,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             	descriptor = parseElementWithType(element);
         } else
         	descriptor = parseElementAppInfo(descriptor, annotation);
-        if ("false".equals(element.getAttribute("nillable")))
-        	descriptor.setNullable(false);
         if (descriptor == null)
             descriptor = new PartDescriptor(name, "string"); // possibly there i a more useful default type
-        if (descriptor != null)
-        	parseOccurrences(element, descriptor);
+        if ("false".equals(element.getAttribute("nillable")))
+        	descriptor.setNullable(false);
+        parseOccurrences(element, descriptor);
         owner.addComponent(descriptor);
         return descriptor;
     }
@@ -504,6 +511,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         return descriptor;
     }
 
+    @SuppressWarnings("unchecked")
     private <T extends FeatureDescriptor> T parseElementAppInfo(T descriptor, Annotation annotation) {
         if (annotation == null || annotation.getAppInfo() == null)
             return descriptor;
@@ -663,6 +671,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         return descriptor;
     }
     
+    @SuppressWarnings("unchecked")
     private <T extends ComponentDescriptor> T parseAttributeAppinfo(Annotation annotation, T descriptor) {
         Element appInfo = annotation.getAppInfo();
         if (appInfo == null)
@@ -892,12 +901,5 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     private static final String TYPE = "type";
 
     private static Logger logger = LoggerFactory.getLogger(XMLSchemaDescriptorProvider.class);
-
-
-	public boolean addResource(Closeable resource) {
-		if (resources.contains(resource))
-			return false;
-	    return resources.add(resource);
-    }
 
 }
