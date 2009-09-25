@@ -122,6 +122,8 @@ public class DescriptorRunner implements ResourceManager {
 	private BasicParser basicParser;
 	private List<String> generatedFiles;
 	
+	private ResourceManagerSupport resourceManager = new ResourceManagerSupport();
+	
 	// constructor -----------------------------------------------------------------------------------------------------
 	
 	public DescriptorRunner(String uri) {
@@ -261,16 +263,15 @@ public class DescriptorRunner implements ResourceManager {
 	}
 
 	public boolean addResource(Closeable resource) {
-		if (resources.contains(resource))
+		if (!resourceManager.addResource(resource))
 			return false;
-		if (resource instanceof FileExporter)
+		else if (resource instanceof FileExporter)
 			generatedFiles.add(((FileExporter<?>) resource).getUri());
-	    return resources.add(resource);
+	    return true;
     }
 
     public void close() {
-	    for (Closeable resource : resources)
-	    	IOUtil.close(resource);
+	    resourceManager.close();
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
