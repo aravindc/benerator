@@ -247,6 +247,8 @@ public class DescriptorRunner implements ResourceManager {
 		// TODO support text like <echo>DB: {${dbUrl}}</echo>
 		return new EchoTask(new StringScriptExpression(element.getAttribute(ATT_MESSAGE)));
 	}
+	
+	// ResourceManager interface implementation ------------------------------------------------------------------------
 
 	private Task parseBean(Element element) {
 		try {
@@ -265,6 +267,13 @@ public class DescriptorRunner implements ResourceManager {
 			generatedFiles.add(((FileExporter<?>) resource).getUri());
 	    return resources.add(resource);
     }
+
+    public void close() {
+	    for (Closeable resource : resources)
+	    	IOUtil.close(resource);
+    }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
 
 	private Task parseDatabase(Element element) {
 		try {
@@ -305,7 +314,8 @@ public class DescriptorRunner implements ResourceManager {
 		return new XMLDefaultComponentsTask(element);
 	}
 
-	private Task parseRunTask(Element element) {
+	@SuppressWarnings("unchecked")
+    private Task parseRunTask(Element element) {
 		try {
 			String beanName = parseStringAttribute(element, ATT_NAME, context);
 			logger.debug("Instantiating task '" + beanName + "'");
