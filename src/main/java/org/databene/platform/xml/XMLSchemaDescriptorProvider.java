@@ -37,6 +37,7 @@ import java.util.Set;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
+import org.databene.benerator.engine.expression.xml.XMLAttributeExpression;
 import org.databene.benerator.engine.task.CreateBeanTask;
 import org.databene.benerator.engine.task.IncludeTask;
 import org.databene.benerator.parser.ModelParser;
@@ -252,10 +253,13 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
                 Expression<Object> beanExpression = parser.parseBean(child);
-                new CreateBeanTask(null /* TODO extract ID expression */, beanExpression, this).run(context);
+                XMLAttributeExpression<String> idExpression 
+                	= new XMLAttributeExpression<String>(child, "id", String.class);
+				new CreateBeanTask(idExpression, beanExpression, this).run(context);
                 System.out.println(beanExpression.evaluate(context));
             } else
-                throw new UnsupportedOperationException("Document annotation type not supported: " + child.getNodeName());
+                throw new UnsupportedOperationException("Document annotation type not supported: " 
+                		+ child.getNodeName());
         }
     }
 
