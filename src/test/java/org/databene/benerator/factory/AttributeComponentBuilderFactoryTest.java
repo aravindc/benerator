@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
-import org.databene.benerator.primitive.HexUUIDGenerator;
+import org.databene.benerator.primitive.HibUUIDGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.LightweightGenerator;
@@ -136,7 +136,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
     public void testUuid() {
 		String componentName = "id";
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "string");
-		type.setGenerator(HexUUIDGenerator.class.getName());
+		type.setGenerator(HibUUIDGenerator.class.getName());
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
