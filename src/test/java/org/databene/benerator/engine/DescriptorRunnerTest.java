@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.databene.benerator.distribution.sequence.SequenceFactory;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.Entity;
