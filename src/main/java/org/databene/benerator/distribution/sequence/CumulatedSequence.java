@@ -45,7 +45,6 @@ public class CumulatedSequence extends Sequence {
     	super("cumulated");
     }
 
-    @Override
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))

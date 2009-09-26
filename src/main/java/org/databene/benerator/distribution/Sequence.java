@@ -35,14 +35,12 @@ import org.databene.benerator.distribution.sequence.BitReverseSequence;
 import org.databene.benerator.distribution.sequence.CumulatedSequence;
 import org.databene.benerator.distribution.sequence.RandomSequence;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
-import org.databene.benerator.distribution.sequence.SequenceFactory;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.benerator.distribution.sequence.WedgeSequence;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.bean.DefaultClassProvider;
 import org.databene.commons.converter.NumberConverter;
 
 /**
@@ -52,10 +50,9 @@ import org.databene.commons.converter.NumberConverter;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class Sequence implements Distribution {
+public abstract class Sequence implements Distribution {
 	
     private static Map<String, Sequence> instances = new HashMap<String, Sequence>();
-    protected static SequenceFactory sequenceFactory = SequenceFactory.getInstance(DefaultClassProvider.getInstance());
 
     public static final Sequence RANDOM      = new RandomSequence();
     public static final Sequence SHUFFLE     = new ShuffleSequence();
@@ -90,11 +87,6 @@ public class Sequence implements Distribution {
 
     public String getName() {
         return name;
-    }
-
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-	    return sequenceFactory.createGenerator(getName(), numberType, min, max, precision); 
-	    // TODO provide something easier for custom sequences
     }
 
     @SuppressWarnings("unchecked")

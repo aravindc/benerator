@@ -67,7 +67,6 @@ public class RepeatSequence extends Sequence { // TODO test
 	    this.repetitionDistribution = repetitionDistribution;
     }
 
-	@Override
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
 		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision);
 		return applyTo(source);

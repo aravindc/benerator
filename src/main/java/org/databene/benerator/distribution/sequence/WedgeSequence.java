@@ -45,7 +45,6 @@ public class WedgeSequence extends Sequence {
     	super("wedge");
     }
 
-    @Override
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
 		Generator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(precision));
 		return WrapperFactory.wrapNumberGenerator(numberType, base);
