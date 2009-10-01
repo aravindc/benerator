@@ -29,7 +29,6 @@ package org.databene.benerator.primitive;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
@@ -87,9 +86,9 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
     }
 	
     private static void persist() {
-    	Properties values = new Properties();
+    	Map<String, String> values = new HashMap<String, String>();
     	for (Map.Entry<String, IncrementGenerator> entry : MAP.entrySet())
-    		values.put(entry.getKey(), entry.getValue().getCursor());
+    		values.put(entry.getKey(), String.valueOf(entry.getValue().getCursor()));
 		try {
 	        IOUtil.writeProperties(values, FILENAME);
         } catch (IOException e) {
