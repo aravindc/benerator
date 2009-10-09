@@ -342,11 +342,13 @@ fragment
 IdentifierStart
     :   'A'..'Z'
     |	'a'..'z'
+    |   '_'
     ;                
                        
 fragment 
 IdentifierPart
     :   'A'..'Z'
     |	'a'..'z'
+    |   '_'
     |	'0'..'9'
     ;
