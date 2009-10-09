@@ -51,8 +51,6 @@ import org.hsqldb.lib.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.source.tree.AssignmentTree;
-
 /**
  * Parses Benerator Script statements and converts expressions and statements to Java objects.<br/>
  * <br/>
@@ -164,7 +162,6 @@ public class BeneratorScriptParser {
     }
 	
     private static ParseException mapToParseException(RecognitionException e) {
-    	e.printStackTrace(); // TODO remove
     	return new ParseException("Error parsing Benerator expression: " + e.getMessage(), e.charPositionInLine);
     }
 
