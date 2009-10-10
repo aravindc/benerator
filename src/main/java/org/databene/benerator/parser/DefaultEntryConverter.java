@@ -72,7 +72,7 @@ public class DefaultEntryConverter extends FixedSourceTypeConverter<Map.Entry, M
     		if (key.startsWith("benerator."))
     			AnyMutator.setValue(context, key, result, true);
     		else
-    			context.setProperty(key, result);
+    			context.set(key, result);
         }
         return new MapEntry<String, Object>(key, result);
     }
