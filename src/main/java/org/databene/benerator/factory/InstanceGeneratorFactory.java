@@ -38,6 +38,7 @@ import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.ExpressionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,14 +95,16 @@ public class InstanceGeneratorFactory {
     // private helpers -------------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    private static Generator<Object> createInstanceGeneratorWrapper(
-            InstanceDescriptor descriptor, Generator<? extends Object> typeGenerator, BeneratorContext context) {
+    private static Generator<?> createInstanceGeneratorWrapper(
+            InstanceDescriptor descriptor, Generator<?> typeGenerator, BeneratorContext context) {
+        Expression<Long> maxCountEx = DescriptorUtil.getMaxCount(descriptor, context);
+        if (ExpressionUtil.isNull(maxCountEx))
+        	return typeGenerator;
         DynamicInstanceSequenceGenerator generator = new DynamicInstanceSequenceGenerator(typeGenerator, context);
         // configure count
-        generator.setMinCount(DescriptorUtil.getMinCount(descriptor, context));
-        Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor, context);
-        if (maxCount != null)
-        	generator.setMaxCount(maxCount);
+        Expression<Long> minCountEx = DescriptorUtil.getMinCount(descriptor, context);
+		generator.setMinCount(minCountEx);
+        generator.setMaxCount(maxCountEx);
         generator.setCountPrecision(DescriptorUtil.getCountPrecision(descriptor, context));
         generator.setCountDistribution(GeneratorFactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), false, true, context));
         return generator;
