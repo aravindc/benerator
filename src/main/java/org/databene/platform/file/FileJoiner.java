@@ -107,11 +107,11 @@ public class FileJoiner extends AbstractTask {
 				for (String source : sources) {
 					File file = new File(source);
 					if (!file.delete())
-						getErrorHandler(context).handleError("File could not be deleted: " + file + ". " +
-								"Probably it is locked");
+						handleError("File could not be deleted: " + file + ". " +
+								"Probably it is locked", context);
 				}
 		} catch (Exception e) {
-			getErrorHandler(context).handleError("Error joining the files " + ArrayFormat.format(sources), e);
+			handleError("Error joining the files " + ArrayFormat.format(sources), context, e);
         } finally {
 			IOUtil.close(out);
 		}

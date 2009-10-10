@@ -82,6 +82,14 @@ public abstract class AbstractTask implements Task {
 		return errorHandler.evaluate(context);
 	}
     
+    protected void handleError(String message, Context context) {
+    	getErrorHandler(context).handleError(message);
+    }
+    
+    protected void handleError(String message, Context context, Throwable t) {
+    	getErrorHandler(context).handleError(message, t);
+    }
+    
     public boolean available() {
     	return true;
     }

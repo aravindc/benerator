@@ -57,12 +57,14 @@ public class FileDeleter extends AbstractTask {
 			File file = new File(filename);
 			if (file.exists()) {
 				try {
-					file.delete();
+					if (!file.delete())
+						handleError("File could not be deleted: " + filename + ". " +
+								"Probably it is locked.", context);
 				} catch (Exception e) {
-					getErrorHandler(context).handleError("Error deleting file " + file);
+					handleError("Error deleting file " + file, context);
 				}
 			} else
-				getErrorHandler(context).handleError("File not found: " + file);
+				handleError("File not found: " + file, context);
 		}
     }
 
