@@ -29,6 +29,7 @@ package org.databene.benerator.script;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.bean.DefaultClassProvider;
 
 /**
  * TODO document class Construction.<br/>
@@ -40,20 +41,37 @@ import org.databene.commons.Expression;
 
 public class Construction implements Expression<Object> {
 	
-	private Expression<Class<?>> classExpression;
+	private String className;
 	private Expression<?>[] argumentExpressions;
 
-    public Construction(Expression<Class<?>> classExpression, Expression<?>[] argumentExpressions) {
-	    this.classExpression = classExpression;
+    public Construction(String className, Expression<?>[] argumentExpressions) {
+	    this.className = className;
 	    this.argumentExpressions = argumentExpressions;
+    }
+    
+    public String getClassName() {
+    	return className;
     }
 
 	public Object evaluate(Context context) {
-		Class<?> type = classExpression.evaluate(context);
+		Class<?> type = getType(context);
 		Object[] arguments = new Object[argumentExpressions.length];
 		for (int i = 0; i < argumentExpressions.length; i++)
 			arguments[i] = argumentExpressions[i].evaluate(context);
 	    return BeanUtil.newInstance(type, false, arguments);
+    }
+
+	public boolean classExists(Context context) {
+		try {
+			getType(context);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+    public Class<?> getType(Context context) {
+	    return DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
     }
 
 }
