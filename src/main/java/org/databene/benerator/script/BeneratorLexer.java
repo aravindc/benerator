@@ -1,13 +1,10 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Desktop/Literal/Benerator.g 2009-10-08 18:52:18
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 Benerator.g 2009-10-09 19:35:09
  
 	package org.databene.benerator.script;
 
-
 import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class BeneratorLexer extends Lexer {
     public static final int SHIFT_LEFT=58;
     public static final int INDEX=12;
@@ -106,7 +103,7 @@ public class BeneratorLexer extends Lexer {
     // delegates
     // delegators
 
-    public BeneratorLexer() {;} 
+    public BeneratorLexer() {} 
     public BeneratorLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }
@@ -114,15 +111,16 @@ public class BeneratorLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "/Users/volker/Desktop/Literal/Benerator.g"; }
+    @Override
+    public String getGrammarFileName() { return "Benerator.g"; }
 
     // $ANTLR start "T__64"
     public final void mT__64() throws RecognitionException {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:38:7: ( 'new' )
-            // /Users/volker/Desktop/Literal/Benerator.g:38:9: 'new'
+            // Benerator.g:38:7: ( 'new' )
+            // Benerator.g:38:9: 'new'
             {
             match("new"); 
 
@@ -140,8 +138,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "TYPE"
     public final void mTYPE() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:192:14: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:192:15: 
+            // Benerator.g:217:14: ()
+            // Benerator.g:217:15: 
             {
             }
 
@@ -154,8 +152,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "NEGATION"
     public final void mNEGATION() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:193:18: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:193:19: 
+            // Benerator.g:218:18: ()
+            // Benerator.g:218:19: 
             {
             }
 
@@ -168,8 +166,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "INDEX"
     public final void mINDEX() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:194:15: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:194:16: 
+            // Benerator.g:219:15: ()
+            // Benerator.g:219:16: 
             {
             }
 
@@ -182,8 +180,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "FIELD"
     public final void mFIELD() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:195:15: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:195:16: 
+            // Benerator.g:220:15: ()
+            // Benerator.g:220:16: 
             {
             }
 
@@ -196,8 +194,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "ARGUMENTS"
     public final void mARGUMENTS() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:196:19: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:196:20: 
+            // Benerator.g:221:19: ()
+            // Benerator.g:221:20: 
             {
             }
 
@@ -210,8 +208,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "CAST"
     public final void mCAST() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:197:14: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:197:15: 
+            // Benerator.g:222:14: ()
+            // Benerator.g:222:15: 
             {
             }
 
@@ -224,8 +222,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "CONSTRUCTOR"
     public final void mCONSTRUCTOR() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:198:21: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:198:22: 
+            // Benerator.g:223:21: ()
+            // Benerator.g:223:22: 
             {
             }
 
@@ -238,8 +236,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "INVOCATION"
     public final void mINVOCATION() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:199:20: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:199:21: 
+            // Benerator.g:224:20: ()
+            // Benerator.g:224:21: 
             {
             }
 
@@ -252,8 +250,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "SUBINVOCATION"
     public final void mSUBINVOCATION() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:200:23: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:200:24: 
+            // Benerator.g:225:23: ()
+            // Benerator.g:225:24: 
             {
             }
 
@@ -266,8 +264,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "QUALIFIEDNAME"
     public final void mQUALIFIEDNAME() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:201:23: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:201:24: 
+            // Benerator.g:226:23: ()
+            // Benerator.g:226:24: 
             {
             }
 
@@ -280,8 +278,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "BEAN"
     public final void mBEAN() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:202:14: ()
-            // /Users/volker/Desktop/Literal/Benerator.g:202:15: 
+            // Benerator.g:227:14: ()
+            // Benerator.g:227:15: 
             {
             }
 
@@ -296,7 +294,7 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BOOLEANLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:205:5: ( 'true' | 'false' )
+            // Benerator.g:230:5: ( 'true' | 'false' )
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -314,7 +312,7 @@ public class BeneratorLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:205:9: 'true'
+                    // Benerator.g:230:9: 'true'
                     {
                     match("true"); 
 
@@ -322,7 +320,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:206:9: 'false'
+                    // Benerator.g:231:9: 'false'
                     {
                     match("false"); 
 
@@ -344,7 +342,7 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = INTLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:210:5: ( '0' | '1' .. '9' ( '0' .. '9' )* | '0' ( '0' .. '7' )+ | HexPrefix ( HexDigit )+ )
+            // Benerator.g:235:5: ( '0' | '1' .. '9' ( '0' .. '9' )* | '0' ( '0' .. '7' )+ | HexPrefix ( HexDigit )+ )
             int alt5=4;
             int LA5_0 = input.LA(1);
 
@@ -382,17 +380,17 @@ public class BeneratorLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:210:9: '0'
+                    // Benerator.g:235:9: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:211:9: '1' .. '9' ( '0' .. '9' )*
+                    // Benerator.g:236:9: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // /Users/volker/Desktop/Literal/Benerator.g:211:18: ( '0' .. '9' )*
+                    // Benerator.g:236:18: ( '0' .. '9' )*
                     loop2:
                     do {
                         int alt2=2;
@@ -405,7 +403,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt2) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:211:19: '0' .. '9'
+                    	    // Benerator.g:236:19: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -421,10 +419,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:212:9: '0' ( '0' .. '7' )+
+                    // Benerator.g:237:9: '0' ( '0' .. '7' )+
                     {
                     match('0'); 
-                    // /Users/volker/Desktop/Literal/Benerator.g:212:13: ( '0' .. '7' )+
+                    // Benerator.g:237:13: ( '0' .. '7' )+
                     int cnt3=0;
                     loop3:
                     do {
@@ -438,7 +436,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:212:14: '0' .. '7'
+                    	    // Benerator.g:237:14: '0' .. '7'
                     	    {
                     	    matchRange('0','7'); 
 
@@ -458,10 +456,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:213:9: HexPrefix ( HexDigit )+
+                    // Benerator.g:238:9: HexPrefix ( HexDigit )+
                     {
                     mHexPrefix(); 
-                    // /Users/volker/Desktop/Literal/Benerator.g:213:19: ( HexDigit )+
+                    // Benerator.g:238:19: ( HexDigit )+
                     int cnt4=0;
                     loop4:
                     do {
@@ -475,7 +473,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:213:19: HexDigit
+                    	    // Benerator.g:238:19: HexDigit
                     	    {
                     	    mHexDigit(); 
 
@@ -507,8 +505,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "HexPrefix"
     public final void mHexPrefix() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:218:5: ( '0x' )
-            // /Users/volker/Desktop/Literal/Benerator.g:218:9: '0x'
+            // Benerator.g:243:5: ( '0x' )
+            // Benerator.g:243:9: '0x'
             {
             match("0x"); 
 
@@ -524,8 +522,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:222:5: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /Users/volker/Desktop/Literal/Benerator.g:222:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // Benerator.g:247:5: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // Benerator.g:247:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -550,14 +548,14 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = DECIMALLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:226:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // Benerator.g:251:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ )
             int alt15=3;
             alt15 = dfa15.predict(input);
             switch (alt15) {
                 case 1 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:226:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
+                    // Benerator.g:251:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
                     {
-                    // /Users/volker/Desktop/Literal/Benerator.g:226:9: ( '0' .. '9' )+
+                    // Benerator.g:251:9: ( '0' .. '9' )+
                     int cnt6=0;
                     loop6:
                     do {
@@ -571,7 +569,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:226:10: '0' .. '9'
+                    	    // Benerator.g:251:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -588,7 +586,7 @@ public class BeneratorLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // /Users/volker/Desktop/Literal/Benerator.g:226:27: ( '0' .. '9' )*
+                    // Benerator.g:251:27: ( '0' .. '9' )*
                     loop7:
                     do {
                         int alt7=2;
@@ -601,7 +599,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt7) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:226:28: '0' .. '9'
+                    	    // Benerator.g:251:28: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -613,7 +611,7 @@ public class BeneratorLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:226:41: ( Exponent )?
+                    // Benerator.g:251:41: ( Exponent )?
                     int alt8=2;
                     int LA8_0 = input.LA(1);
 
@@ -622,7 +620,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt8) {
                         case 1 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:226:41: Exponent
+                            // Benerator.g:251:41: Exponent
                             {
                             mExponent(); 
 
@@ -635,9 +633,9 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:227:9: ( '0' .. '9' )+ Exponent
+                    // Benerator.g:252:9: ( '0' .. '9' )+ Exponent
                     {
-                    // /Users/volker/Desktop/Literal/Benerator.g:227:9: ( '0' .. '9' )+
+                    // Benerator.g:252:9: ( '0' .. '9' )+
                     int cnt9=0;
                     loop9:
                     do {
@@ -651,7 +649,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:227:10: '0' .. '9'
+                    	    // Benerator.g:252:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -672,10 +670,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:228:9: HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+
+                    // Benerator.g:253:9: HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+
                     {
                     mHexPrefix(); 
-                    // /Users/volker/Desktop/Literal/Benerator.g:228:19: ( HexDigit )*
+                    // Benerator.g:253:19: ( HexDigit )*
                     loop10:
                     do {
                         int alt10=2;
@@ -688,7 +686,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:228:20: HexDigit
+                    	    // Benerator.g:253:20: HexDigit
                     	    {
                     	    mHexDigit(); 
 
@@ -700,7 +698,7 @@ public class BeneratorLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:228:32: ( () | ( '.' ( HexDigit )* ) )
+                    // Benerator.g:253:32: ( () | ( '.' ( HexDigit )* ) )
                     int alt12=2;
                     int LA12_0 = input.LA(1);
 
@@ -718,10 +716,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt12) {
                         case 1 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:34: ()
+                            // Benerator.g:253:34: ()
                             {
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:34: ()
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:35: 
+                            // Benerator.g:253:34: ()
+                            // Benerator.g:253:35: 
                             {
                             }
 
@@ -729,13 +727,13 @@ public class BeneratorLexer extends Lexer {
                             }
                             break;
                         case 2 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:39: ( '.' ( HexDigit )* )
+                            // Benerator.g:253:39: ( '.' ( HexDigit )* )
                             {
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:39: ( '.' ( HexDigit )* )
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:40: '.' ( HexDigit )*
+                            // Benerator.g:253:39: ( '.' ( HexDigit )* )
+                            // Benerator.g:253:40: '.' ( HexDigit )*
                             {
                             match('.'); 
-                            // /Users/volker/Desktop/Literal/Benerator.g:228:44: ( HexDigit )*
+                            // Benerator.g:253:44: ( HexDigit )*
                             loop11:
                             do {
                                 int alt11=2;
@@ -748,7 +746,7 @@ public class BeneratorLexer extends Lexer {
 
                                 switch (alt11) {
                             	case 1 :
-                            	    // /Users/volker/Desktop/Literal/Benerator.g:228:45: HexDigit
+                            	    // Benerator.g:253:45: HexDigit
                             	    {
                             	    mHexDigit(); 
 
@@ -778,7 +776,7 @@ public class BeneratorLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:228:75: ( '+' | '-' )?
+                    // Benerator.g:253:75: ( '+' | '-' )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -787,7 +785,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:
+                            // Benerator.g:
                             {
                             if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                                 input.consume();
@@ -804,7 +802,7 @@ public class BeneratorLexer extends Lexer {
 
                     }
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:228:90: ( '0' .. '9' )+
+                    // Benerator.g:253:90: ( '0' .. '9' )+
                     int cnt14=0;
                     loop14:
                     do {
@@ -818,7 +816,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt14) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:228:92: '0' .. '9'
+                    	    // Benerator.g:253:92: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -850,8 +848,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:233:5: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // /Users/volker/Desktop/Literal/Benerator.g:233:9: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // Benerator.g:258:5: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // Benerator.g:258:9: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -862,7 +860,7 @@ public class BeneratorLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /Users/volker/Desktop/Literal/Benerator.g:233:23: ( '+' | '-' )?
+            // Benerator.g:258:23: ( '+' | '-' )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -871,7 +869,7 @@ public class BeneratorLexer extends Lexer {
             }
             switch (alt16) {
                 case 1 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:
+                    // Benerator.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -888,7 +886,7 @@ public class BeneratorLexer extends Lexer {
 
             }
 
-            // /Users/volker/Desktop/Literal/Benerator.g:233:38: ( '0' .. '9' )+
+            // Benerator.g:258:38: ( '0' .. '9' )+
             int cnt17=0;
             loop17:
             do {
@@ -902,7 +900,7 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // /Users/volker/Desktop/Literal/Benerator.g:233:40: '0' .. '9'
+            	    // Benerator.g:258:40: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -932,11 +930,11 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = STRINGLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:237:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\'' )
-            // /Users/volker/Desktop/Literal/Benerator.g:237:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\''
+            // Benerator.g:262:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\'' )
+            // Benerator.g:262:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\''
             {
             match('\''); 
-            // /Users/volker/Desktop/Literal/Benerator.g:237:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )*
+            // Benerator.g:262:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )*
             loop18:
             do {
                 int alt18=3;
@@ -952,14 +950,14 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // /Users/volker/Desktop/Literal/Benerator.g:237:16: EscapeSequence
+            	    // Benerator.g:262:16: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/volker/Desktop/Literal/Benerator.g:237:33: ~ ( '\\'' | '\\\\' | '\\r' | '\\n' )
+            	    // Benerator.g:262:33: ~ ( '\\'' | '\\\\' | '\\r' | '\\n' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -994,89 +992,89 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:242:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
-            // /Users/volker/Desktop/Literal/Benerator.g:242:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // Benerator.g:267:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
+            // Benerator.g:267:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             {
             match('\\'); 
-            // /Users/volker/Desktop/Literal/Benerator.g:242:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // Benerator.g:267:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             int alt19=11;
             alt19 = dfa19.predict(input);
             switch (alt19) {
                 case 1 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:243:18: 'b'
+                    // Benerator.g:268:18: 'b'
                     {
                     match('b'); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:244:18: 't'
+                    // Benerator.g:269:18: 't'
                     {
                     match('t'); 
 
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:245:18: 'n'
+                    // Benerator.g:270:18: 'n'
                     {
                     match('n'); 
 
                     }
                     break;
                 case 4 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:246:18: 'f'
+                    // Benerator.g:271:18: 'f'
                     {
                     match('f'); 
 
                     }
                     break;
                 case 5 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:247:18: 'r'
+                    // Benerator.g:272:18: 'r'
                     {
                     match('r'); 
 
                     }
                     break;
                 case 6 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:248:18: '\\\"'
+                    // Benerator.g:273:18: '\\\"'
                     {
                     match('\"'); 
 
                     }
                     break;
                 case 7 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:249:18: '\\''
+                    // Benerator.g:274:18: '\\''
                     {
                     match('\''); 
 
                     }
                     break;
                 case 8 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:250:18: '\\\\'
+                    // Benerator.g:275:18: '\\\\'
                     {
                     match('\\'); 
 
                     }
                     break;
                 case 9 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:18: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // Benerator.g:276:18: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:18: ( '0' .. '3' )
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:19: '0' .. '3'
+                    // Benerator.g:276:18: ( '0' .. '3' )
+                    // Benerator.g:276:19: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:29: ( '0' .. '7' )
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:30: '0' .. '7'
+                    // Benerator.g:276:29: ( '0' .. '7' )
+                    // Benerator.g:276:30: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:40: ( '0' .. '7' )
-                    // /Users/volker/Desktop/Literal/Benerator.g:251:41: '0' .. '7'
+                    // Benerator.g:276:40: ( '0' .. '7' )
+                    // Benerator.g:276:41: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1086,17 +1084,17 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 10 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:252:18: ( '0' .. '7' ) ( '0' .. '7' )
+                    // Benerator.g:277:18: ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/volker/Desktop/Literal/Benerator.g:252:18: ( '0' .. '7' )
-                    // /Users/volker/Desktop/Literal/Benerator.g:252:19: '0' .. '7'
+                    // Benerator.g:277:18: ( '0' .. '7' )
+                    // Benerator.g:277:19: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:252:29: ( '0' .. '7' )
-                    // /Users/volker/Desktop/Literal/Benerator.g:252:30: '0' .. '7'
+                    // Benerator.g:277:29: ( '0' .. '7' )
+                    // Benerator.g:277:30: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1106,10 +1104,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 11 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:253:18: ( '0' .. '7' )
+                    // Benerator.g:278:18: ( '0' .. '7' )
                     {
-                    // /Users/volker/Desktop/Literal/Benerator.g:253:18: ( '0' .. '7' )
-                    // /Users/volker/Desktop/Literal/Benerator.g:253:19: '0' .. '7'
+                    // Benerator.g:278:18: ( '0' .. '7' )
+                    // Benerator.g:278:19: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1135,8 +1133,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:257:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /Users/volker/Desktop/Literal/Benerator.g:257:9: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // Benerator.g:282:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // Benerator.g:282:9: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -1166,12 +1164,12 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:263:8: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /Users/volker/Desktop/Literal/Benerator.g:263:12: '/*' ( options {greedy=false; } : . )* '*/'
+            // Benerator.g:288:8: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // Benerator.g:288:12: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /Users/volker/Desktop/Literal/Benerator.g:263:17: ( options {greedy=false; } : . )*
+            // Benerator.g:288:17: ( options {greedy=false; } : . )*
             loop20:
             do {
                 int alt20=2;
@@ -1196,7 +1194,7 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt20) {
             	case 1 :
-            	    // /Users/volker/Desktop/Literal/Benerator.g:263:44: .
+            	    // Benerator.g:288:44: .
             	    {
             	    matchAny(); 
 
@@ -1226,16 +1224,16 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:266:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* )
+            // Benerator.g:291:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* )
             int alt24=2;
             alt24 = dfa24.predict(input);
             switch (alt24) {
                 case 1 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:266:9: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' )
+                    // Benerator.g:291:9: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' )
                     {
                     match("//"); 
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:266:14: (~ ( '\\n' | '\\r' ) )*
+                    // Benerator.g:291:14: (~ ( '\\n' | '\\r' ) )*
                     loop21:
                     do {
                         int alt21=2;
@@ -1248,7 +1246,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt21) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:266:14: ~ ( '\\n' | '\\r' )
+                    	    // Benerator.g:291:14: ~ ( '\\n' | '\\r' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -1268,7 +1266,7 @@ public class BeneratorLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:266:29: ( '\\r\\n' | '\\r' | '\\n' )
+                    // Benerator.g:291:29: ( '\\r\\n' | '\\r' | '\\n' )
                     int alt22=3;
                     int LA22_0 = input.LA(1);
 
@@ -1292,7 +1290,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt22) {
                         case 1 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:266:30: '\\r\\n'
+                            // Benerator.g:291:30: '\\r\\n'
                             {
                             match("\r\n"); 
 
@@ -1300,14 +1298,14 @@ public class BeneratorLexer extends Lexer {
                             }
                             break;
                         case 2 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:266:39: '\\r'
+                            // Benerator.g:291:39: '\\r'
                             {
                             match('\r'); 
 
                             }
                             break;
                         case 3 :
-                            // /Users/volker/Desktop/Literal/Benerator.g:266:46: '\\n'
+                            // Benerator.g:291:46: '\\n'
                             {
                             match('\n'); 
 
@@ -1323,11 +1321,11 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Desktop/Literal/Benerator.g:270:9: '//' (~ ( '\\n' | '\\r' ) )*
+                    // Benerator.g:295:9: '//' (~ ( '\\n' | '\\r' ) )*
                     {
                     match("//"); 
 
-                    // /Users/volker/Desktop/Literal/Benerator.g:270:14: (~ ( '\\n' | '\\r' ) )*
+                    // Benerator.g:295:14: (~ ( '\\n' | '\\r' ) )*
                     loop23:
                     do {
                         int alt23=2;
@@ -1340,7 +1338,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt23) {
                     	case 1 :
-                    	    // /Users/volker/Desktop/Literal/Benerator.g:270:14: ~ ( '\\n' | '\\r' )
+                    	    // Benerator.g:295:14: ~ ( '\\n' | '\\r' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -1381,8 +1379,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = NULL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:276:5: ( 'null' )
-            // /Users/volker/Desktop/Literal/Benerator.g:276:11: 'null'
+            // Benerator.g:301:5: ( 'null' )
+            // Benerator.g:301:11: 'null'
             {
             match("null"); 
 
@@ -1402,8 +1400,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:277:7: ( '(' )
-            // /Users/volker/Desktop/Literal/Benerator.g:277:11: '('
+            // Benerator.g:302:7: ( '(' )
+            // Benerator.g:302:11: '('
             {
             match('('); 
 
@@ -1422,8 +1420,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:278:7: ( ')' )
-            // /Users/volker/Desktop/Literal/Benerator.g:278:11: ')'
+            // Benerator.g:303:7: ( ')' )
+            // Benerator.g:303:11: ')'
             {
             match(')'); 
 
@@ -1442,8 +1440,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:279:7: ( '{' )
-            // /Users/volker/Desktop/Literal/Benerator.g:279:11: '{'
+            // Benerator.g:304:7: ( '{' )
+            // Benerator.g:304:11: '{'
             {
             match('{'); 
 
@@ -1462,8 +1460,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:280:7: ( '}' )
-            // /Users/volker/Desktop/Literal/Benerator.g:280:11: '}'
+            // Benerator.g:305:7: ( '}' )
+            // Benerator.g:305:11: '}'
             {
             match('}'); 
 
@@ -1482,8 +1480,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LBRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:281:9: ( '[' )
-            // /Users/volker/Desktop/Literal/Benerator.g:281:11: '['
+            // Benerator.g:306:9: ( '[' )
+            // Benerator.g:306:11: '['
             {
             match('['); 
 
@@ -1502,8 +1500,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = RBRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:282:9: ( ']' )
-            // /Users/volker/Desktop/Literal/Benerator.g:282:11: ']'
+            // Benerator.g:307:9: ( ']' )
+            // Benerator.g:307:11: ']'
             {
             match(']'); 
 
@@ -1522,8 +1520,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SEMI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:283:5: ( ';' )
-            // /Users/volker/Desktop/Literal/Benerator.g:283:9: ';'
+            // Benerator.g:308:5: ( ';' )
+            // Benerator.g:308:9: ';'
             {
             match(';'); 
 
@@ -1542,8 +1540,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:284:6: ( ',' )
-            // /Users/volker/Desktop/Literal/Benerator.g:284:9: ','
+            // Benerator.g:309:6: ( ',' )
+            // Benerator.g:309:9: ','
             {
             match(','); 
 
@@ -1562,8 +1560,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:285:5: ( '.' )
-            // /Users/volker/Desktop/Literal/Benerator.g:285:9: '.'
+            // Benerator.g:310:5: ( '.' )
+            // Benerator.g:310:9: '.'
             {
             match('.'); 
 
@@ -1582,8 +1580,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:286:5: ( '=' )
-            // /Users/volker/Desktop/Literal/Benerator.g:286:9: '='
+            // Benerator.g:311:5: ( '=' )
+            // Benerator.g:311:9: '='
             {
             match('='); 
 
@@ -1602,8 +1600,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BANG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:287:5: ( '!' )
-            // /Users/volker/Desktop/Literal/Benerator.g:287:9: '!'
+            // Benerator.g:312:5: ( '!' )
+            // Benerator.g:312:9: '!'
             {
             match('!'); 
 
@@ -1622,8 +1620,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = TILDE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:288:6: ( '~' )
-            // /Users/volker/Desktop/Literal/Benerator.g:288:9: '~'
+            // Benerator.g:313:6: ( '~' )
+            // Benerator.g:313:9: '~'
             {
             match('~'); 
 
@@ -1642,8 +1640,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = QUES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:289:5: ( '?' )
-            // /Users/volker/Desktop/Literal/Benerator.g:289:9: '?'
+            // Benerator.g:314:5: ( '?' )
+            // Benerator.g:314:9: '?'
             {
             match('?'); 
 
@@ -1662,8 +1660,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:290:6: ( ':' )
-            // /Users/volker/Desktop/Literal/Benerator.g:290:9: ':'
+            // Benerator.g:315:6: ( ':' )
+            // Benerator.g:315:9: ':'
             {
             match(':'); 
 
@@ -1682,8 +1680,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = EQEQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:291:5: ( '==' )
-            // /Users/volker/Desktop/Literal/Benerator.g:291:9: '=='
+            // Benerator.g:316:5: ( '==' )
+            // Benerator.g:316:9: '=='
             {
             match("=="); 
 
@@ -1703,8 +1701,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = AMPAMP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:292:7: ( '&&' )
-            // /Users/volker/Desktop/Literal/Benerator.g:292:9: '&&'
+            // Benerator.g:317:7: ( '&&' )
+            // Benerator.g:317:9: '&&'
             {
             match("&&"); 
 
@@ -1724,8 +1722,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BARBAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:293:7: ( '||' )
-            // /Users/volker/Desktop/Literal/Benerator.g:293:9: '||'
+            // Benerator.g:318:7: ( '||' )
+            // Benerator.g:318:9: '||'
             {
             match("||"); 
 
@@ -1745,8 +1743,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:294:5: ( '+' )
-            // /Users/volker/Desktop/Literal/Benerator.g:294:9: '+'
+            // Benerator.g:319:5: ( '+' )
+            // Benerator.g:319:9: '+'
             {
             match('+'); 
 
@@ -1765,8 +1763,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SUB;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:295:5: ( '-' )
-            // /Users/volker/Desktop/Literal/Benerator.g:295:9: '-'
+            // Benerator.g:320:5: ( '-' )
+            // Benerator.g:320:9: '-'
             {
             match('-'); 
 
@@ -1785,8 +1783,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = STAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:296:5: ( '*' )
-            // /Users/volker/Desktop/Literal/Benerator.g:296:9: '*'
+            // Benerator.g:321:5: ( '*' )
+            // Benerator.g:321:9: '*'
             {
             match('*'); 
 
@@ -1805,8 +1803,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:297:6: ( '/' )
-            // /Users/volker/Desktop/Literal/Benerator.g:297:10: '/'
+            // Benerator.g:322:6: ( '/' )
+            // Benerator.g:322:10: '/'
             {
             match('/'); 
 
@@ -1825,8 +1823,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = AMP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:298:5: ( '&' )
-            // /Users/volker/Desktop/Literal/Benerator.g:298:9: '&'
+            // Benerator.g:323:5: ( '&' )
+            // Benerator.g:323:9: '&'
             {
             match('&'); 
 
@@ -1845,8 +1843,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:299:5: ( '|' )
-            // /Users/volker/Desktop/Literal/Benerator.g:299:9: '|'
+            // Benerator.g:324:5: ( '|' )
+            // Benerator.g:324:9: '|'
             {
             match('|'); 
 
@@ -1865,8 +1863,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = CARET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:300:6: ( '^' )
-            // /Users/volker/Desktop/Literal/Benerator.g:300:10: '^'
+            // Benerator.g:325:6: ( '^' )
+            // Benerator.g:325:10: '^'
             {
             match('^'); 
 
@@ -1885,8 +1883,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = PERCENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:301:8: ( '%' )
-            // /Users/volker/Desktop/Literal/Benerator.g:301:10: '%'
+            // Benerator.g:326:8: ( '%' )
+            // Benerator.g:326:10: '%'
             {
             match('%'); 
 
@@ -1905,8 +1903,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = MONKEYS_AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:302:11: ( '@' )
-            // /Users/volker/Desktop/Literal/Benerator.g:302:13: '@'
+            // Benerator.g:327:11: ( '@' )
+            // Benerator.g:327:13: '@'
             {
             match('@'); 
 
@@ -1925,8 +1923,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BANGEQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:303:7: ( '!=' )
-            // /Users/volker/Desktop/Literal/Benerator.g:303:9: '!='
+            // Benerator.g:328:7: ( '!=' )
+            // Benerator.g:328:9: '!='
             {
             match("!="); 
 
@@ -1946,8 +1944,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:304:5: ( '>' )
-            // /Users/volker/Desktop/Literal/Benerator.g:304:9: '>'
+            // Benerator.g:329:5: ( '>' )
+            // Benerator.g:329:9: '>'
             {
             match('>'); 
 
@@ -1966,8 +1964,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SHIFT_RIGHT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:305:12: ( '>>' )
-            // /Users/volker/Desktop/Literal/Benerator.g:305:16: '>>'
+            // Benerator.g:330:12: ( '>>' )
+            // Benerator.g:330:16: '>>'
             {
             match(">>"); 
 
@@ -1987,8 +1985,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SHIFT_RIGHT2;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:306:13: ( '>>>' )
-            // /Users/volker/Desktop/Literal/Benerator.g:306:17: '>>>'
+            // Benerator.g:331:13: ( '>>>' )
+            // Benerator.g:331:17: '>>>'
             {
             match(">>>"); 
 
@@ -2008,8 +2006,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SHIFT_LEFT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:307:11: ( '<<' )
-            // /Users/volker/Desktop/Literal/Benerator.g:307:15: '<<'
+            // Benerator.g:332:11: ( '<<' )
+            // Benerator.g:332:15: '<<'
             {
             match("<<"); 
 
@@ -2029,8 +2027,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = GE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:308:5: ( '>=' )
-            // /Users/volker/Desktop/Literal/Benerator.g:308:9: '>='
+            // Benerator.g:333:5: ( '>=' )
+            // Benerator.g:333:9: '>='
             {
             match(">="); 
 
@@ -2050,8 +2048,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:309:5: ( '<' )
-            // /Users/volker/Desktop/Literal/Benerator.g:309:9: '<'
+            // Benerator.g:334:5: ( '<' )
+            // Benerator.g:334:9: '<'
             {
             match('<'); 
 
@@ -2070,8 +2068,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:310:5: ( '<=' )
-            // /Users/volker/Desktop/Literal/Benerator.g:310:9: '<='
+            // Benerator.g:335:5: ( '<=' )
+            // Benerator.g:335:9: '<='
             {
             match("<="); 
 
@@ -2091,24 +2089,24 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Desktop/Literal/Benerator.g:313:5: ( IdentifierStart ( IdentifierPart )* )
-            // /Users/volker/Desktop/Literal/Benerator.g:313:9: IdentifierStart ( IdentifierPart )*
+            // Benerator.g:338:5: ( IdentifierStart ( IdentifierPart )* )
+            // Benerator.g:338:9: IdentifierStart ( IdentifierPart )*
             {
             mIdentifierStart(); 
-            // /Users/volker/Desktop/Literal/Benerator.g:313:25: ( IdentifierPart )*
+            // Benerator.g:338:25: ( IdentifierPart )*
             loop25:
             do {
                 int alt25=2;
                 int LA25_0 = input.LA(1);
 
-                if ( ((LA25_0>='0' && LA25_0<='9')||(LA25_0>='A' && LA25_0<='Z')||(LA25_0>='a' && LA25_0<='z')) ) {
+                if ( ((LA25_0>='0' && LA25_0<='9')||(LA25_0>='A' && LA25_0<='Z')||LA25_0=='_'||(LA25_0>='a' && LA25_0<='z')) ) {
                     alt25=1;
                 }
 
 
                 switch (alt25) {
             	case 1 :
-            	    // /Users/volker/Desktop/Literal/Benerator.g:313:25: IdentifierPart
+            	    // Benerator.g:338:25: IdentifierPart
             	    {
             	    mIdentifierPart(); 
 
@@ -2134,10 +2132,10 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "IdentifierStart"
     public final void mIdentifierStart() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:318:5: ( 'A' .. 'Z' | 'a' .. 'z' )
-            // /Users/volker/Desktop/Literal/Benerator.g:
+            // Benerator.g:343:5: ( 'A' .. 'Z' | 'a' .. 'z' | '_' )
+            // Benerator.g:
             {
-            if ( (input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
 
             }
@@ -2158,10 +2156,10 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "IdentifierPart"
     public final void mIdentifierPart() throws RecognitionException {
         try {
-            // /Users/volker/Desktop/Literal/Benerator.g:324:5: ( 'A' .. 'Z' | 'a' .. 'z' | '0' .. '9' )
-            // /Users/volker/Desktop/Literal/Benerator.g:
+            // Benerator.g:350:5: ( 'A' .. 'Z' | 'a' .. 'z' | '_' | '0' .. '9' )
+            // Benerator.g:
             {
-            if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
                 input.consume();
 
             }
@@ -2179,314 +2177,315 @@ public class BeneratorLexer extends Lexer {
     }
     // $ANTLR end "IdentifierPart"
 
+    @Override
     public void mTokens() throws RecognitionException {
-        // /Users/volker/Desktop/Literal/Benerator.g:1:8: ( T__64 | BOOLEANLITERAL | INTLITERAL | DECIMALLITERAL | STRINGLITERAL | WS | COMMENT | LINE_COMMENT | NULL | LPAREN | RPAREN | LBRACE | RBRACE | LBRACKET | RBRACKET | SEMI | COMMA | DOT | EQ | BANG | TILDE | QUES | COLON | EQEQ | AMPAMP | BARBAR | PLUS | SUB | STAR | SLASH | AMP | BAR | CARET | PERCENT | MONKEYS_AT | BANGEQ | GT | SHIFT_RIGHT | SHIFT_RIGHT2 | SHIFT_LEFT | GE | LT | LE | IDENTIFIER )
+        // Benerator.g:1:8: ( T__64 | BOOLEANLITERAL | INTLITERAL | DECIMALLITERAL | STRINGLITERAL | WS | COMMENT | LINE_COMMENT | NULL | LPAREN | RPAREN | LBRACE | RBRACE | LBRACKET | RBRACKET | SEMI | COMMA | DOT | EQ | BANG | TILDE | QUES | COLON | EQEQ | AMPAMP | BARBAR | PLUS | SUB | STAR | SLASH | AMP | BAR | CARET | PERCENT | MONKEYS_AT | BANGEQ | GT | SHIFT_RIGHT | SHIFT_RIGHT2 | SHIFT_LEFT | GE | LT | LE | IDENTIFIER )
         int alt26=44;
         alt26 = dfa26.predict(input);
         switch (alt26) {
             case 1 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:10: T__64
+                // Benerator.g:1:10: T__64
                 {
                 mT__64(); 
 
                 }
                 break;
             case 2 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:16: BOOLEANLITERAL
+                // Benerator.g:1:16: BOOLEANLITERAL
                 {
                 mBOOLEANLITERAL(); 
 
                 }
                 break;
             case 3 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:31: INTLITERAL
+                // Benerator.g:1:31: INTLITERAL
                 {
                 mINTLITERAL(); 
 
                 }
                 break;
             case 4 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:42: DECIMALLITERAL
+                // Benerator.g:1:42: DECIMALLITERAL
                 {
                 mDECIMALLITERAL(); 
 
                 }
                 break;
             case 5 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:57: STRINGLITERAL
+                // Benerator.g:1:57: STRINGLITERAL
                 {
                 mSTRINGLITERAL(); 
 
                 }
                 break;
             case 6 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:71: WS
+                // Benerator.g:1:71: WS
                 {
                 mWS(); 
 
                 }
                 break;
             case 7 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:74: COMMENT
+                // Benerator.g:1:74: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
             case 8 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:82: LINE_COMMENT
+                // Benerator.g:1:82: LINE_COMMENT
                 {
                 mLINE_COMMENT(); 
 
                 }
                 break;
             case 9 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:95: NULL
+                // Benerator.g:1:95: NULL
                 {
                 mNULL(); 
 
                 }
                 break;
             case 10 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:100: LPAREN
+                // Benerator.g:1:100: LPAREN
                 {
                 mLPAREN(); 
 
                 }
                 break;
             case 11 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:107: RPAREN
+                // Benerator.g:1:107: RPAREN
                 {
                 mRPAREN(); 
 
                 }
                 break;
             case 12 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:114: LBRACE
+                // Benerator.g:1:114: LBRACE
                 {
                 mLBRACE(); 
 
                 }
                 break;
             case 13 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:121: RBRACE
+                // Benerator.g:1:121: RBRACE
                 {
                 mRBRACE(); 
 
                 }
                 break;
             case 14 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:128: LBRACKET
+                // Benerator.g:1:128: LBRACKET
                 {
                 mLBRACKET(); 
 
                 }
                 break;
             case 15 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:137: RBRACKET
+                // Benerator.g:1:137: RBRACKET
                 {
                 mRBRACKET(); 
 
                 }
                 break;
             case 16 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:146: SEMI
+                // Benerator.g:1:146: SEMI
                 {
                 mSEMI(); 
 
                 }
                 break;
             case 17 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:151: COMMA
+                // Benerator.g:1:151: COMMA
                 {
                 mCOMMA(); 
 
                 }
                 break;
             case 18 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:157: DOT
+                // Benerator.g:1:157: DOT
                 {
                 mDOT(); 
 
                 }
                 break;
             case 19 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:161: EQ
+                // Benerator.g:1:161: EQ
                 {
                 mEQ(); 
 
                 }
                 break;
             case 20 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:164: BANG
+                // Benerator.g:1:164: BANG
                 {
                 mBANG(); 
 
                 }
                 break;
             case 21 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:169: TILDE
+                // Benerator.g:1:169: TILDE
                 {
                 mTILDE(); 
 
                 }
                 break;
             case 22 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:175: QUES
+                // Benerator.g:1:175: QUES
                 {
                 mQUES(); 
 
                 }
                 break;
             case 23 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:180: COLON
+                // Benerator.g:1:180: COLON
                 {
                 mCOLON(); 
 
                 }
                 break;
             case 24 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:186: EQEQ
+                // Benerator.g:1:186: EQEQ
                 {
                 mEQEQ(); 
 
                 }
                 break;
             case 25 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:191: AMPAMP
+                // Benerator.g:1:191: AMPAMP
                 {
                 mAMPAMP(); 
 
                 }
                 break;
             case 26 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:198: BARBAR
+                // Benerator.g:1:198: BARBAR
                 {
                 mBARBAR(); 
 
                 }
                 break;
             case 27 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:205: PLUS
+                // Benerator.g:1:205: PLUS
                 {
                 mPLUS(); 
 
                 }
                 break;
             case 28 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:210: SUB
+                // Benerator.g:1:210: SUB
                 {
                 mSUB(); 
 
                 }
                 break;
             case 29 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:214: STAR
+                // Benerator.g:1:214: STAR
                 {
                 mSTAR(); 
 
                 }
                 break;
             case 30 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:219: SLASH
+                // Benerator.g:1:219: SLASH
                 {
                 mSLASH(); 
 
                 }
                 break;
             case 31 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:225: AMP
+                // Benerator.g:1:225: AMP
                 {
                 mAMP(); 
 
                 }
                 break;
             case 32 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:229: BAR
+                // Benerator.g:1:229: BAR
                 {
                 mBAR(); 
 
                 }
                 break;
             case 33 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:233: CARET
+                // Benerator.g:1:233: CARET
                 {
                 mCARET(); 
 
                 }
                 break;
             case 34 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:239: PERCENT
+                // Benerator.g:1:239: PERCENT
                 {
                 mPERCENT(); 
 
                 }
                 break;
             case 35 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:247: MONKEYS_AT
+                // Benerator.g:1:247: MONKEYS_AT
                 {
                 mMONKEYS_AT(); 
 
                 }
                 break;
             case 36 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:258: BANGEQ
+                // Benerator.g:1:258: BANGEQ
                 {
                 mBANGEQ(); 
 
                 }
                 break;
             case 37 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:265: GT
+                // Benerator.g:1:265: GT
                 {
                 mGT(); 
 
                 }
                 break;
             case 38 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:268: SHIFT_RIGHT
+                // Benerator.g:1:268: SHIFT_RIGHT
                 {
                 mSHIFT_RIGHT(); 
 
                 }
                 break;
             case 39 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:280: SHIFT_RIGHT2
+                // Benerator.g:1:280: SHIFT_RIGHT2
                 {
                 mSHIFT_RIGHT2(); 
 
                 }
                 break;
             case 40 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:293: SHIFT_LEFT
+                // Benerator.g:1:293: SHIFT_LEFT
                 {
                 mSHIFT_LEFT(); 
 
                 }
                 break;
             case 41 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:304: GE
+                // Benerator.g:1:304: GE
                 {
                 mGE(); 
 
                 }
                 break;
             case 42 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:307: LT
+                // Benerator.g:1:307: LT
                 {
                 mLT(); 
 
                 }
                 break;
             case 43 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:310: LE
+                // Benerator.g:1:310: LE
                 {
                 mLE(); 
 
                 }
                 break;
             case 44 :
-                // /Users/volker/Desktop/Literal/Benerator.g:1:313: IDENTIFIER
+                // Benerator.g:1:313: IDENTIFIER
                 {
                 mIDENTIFIER(); 
 
@@ -2552,8 +2551,9 @@ public class BeneratorLexer extends Lexer {
             this.special = DFA15_special;
             this.transition = DFA15_transition;
         }
+        @Override
         public String getDescription() {
-            return "225:1: DECIMALLITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ );";
+            return "250:1: DECIMALLITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ );";
         }
     }
     static final String DFA19_eotS =
@@ -2617,8 +2617,9 @@ public class BeneratorLexer extends Lexer {
             this.special = DFA19_special;
             this.transition = DFA19_transition;
         }
+        @Override
         public String getDescription() {
-            return "242:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )";
+            return "267:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )";
         }
     }
     static final String DFA24_eotS =
@@ -2671,9 +2672,11 @@ public class BeneratorLexer extends Lexer {
             this.special = DFA24_special;
             this.transition = DFA24_transition;
         }
+        @Override
         public String getDescription() {
-            return "265:1: LINE_COMMENT : ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* );";
+            return "290:1: LINE_COMMENT : ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* );";
         }
+        @Override
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
         	int _s = s;
@@ -2737,8 +2740,8 @@ public class BeneratorLexer extends Lexer {
     static final String[] DFA26_transitionS = {
             "\2\7\1\uffff\2\7\22\uffff\1\7\1\23\3\uffff\1\35\1\27\1\6\1\11"+
             "\1\12\1\33\1\31\1\20\1\32\1\21\1\10\1\4\11\5\1\26\1\17\1\40"+
-            "\1\22\1\37\1\25\1\36\32\41\1\15\1\uffff\1\16\1\34\2\uffff\5"+
-            "\41\1\3\7\41\1\1\5\41\1\2\6\41\1\13\1\30\1\14\1\24",
+            "\1\22\1\37\1\25\1\36\32\41\1\15\1\uffff\1\16\1\34\1\41\1\uffff"+
+            "\5\41\1\3\7\41\1\1\5\41\1\2\6\41\1\13\1\30\1\14\1\24",
             "\1\42\17\uffff\1\43",
             "\1\44",
             "\1\45",
@@ -2800,7 +2803,7 @@ public class BeneratorLexer extends Lexer {
             "",
             "",
             "",
-            "\12\41\7\uffff\32\41\6\uffff\32\41",
+            "\12\41\7\uffff\32\41\4\uffff\1\41\1\uffff\32\41",
             "\1\104",
             "\1\105",
             "\1\106",
@@ -2809,12 +2812,12 @@ public class BeneratorLexer extends Lexer {
             "",
             "",
             "",
-            "\12\41\7\uffff\32\41\6\uffff\32\41",
-            "\12\41\7\uffff\32\41\6\uffff\32\41",
+            "\12\41\7\uffff\32\41\4\uffff\1\41\1\uffff\32\41",
+            "\12\41\7\uffff\32\41\4\uffff\1\41\1\uffff\32\41",
             "\1\111",
             "",
             "",
-            "\12\41\7\uffff\32\41\6\uffff\32\41"
+            "\12\41\7\uffff\32\41\4\uffff\1\41\1\uffff\32\41"
     };
 
     static final short[] DFA26_eot = DFA.unpackEncodedString(DFA26_eotS);
@@ -2846,6 +2849,7 @@ public class BeneratorLexer extends Lexer {
             this.special = DFA26_special;
             this.transition = DFA26_transition;
         }
+        @Override
         public String getDescription() {
             return "1:1: Tokens : ( T__64 | BOOLEANLITERAL | INTLITERAL | DECIMALLITERAL | STRINGLITERAL | WS | COMMENT | LINE_COMMENT | NULL | LPAREN | RPAREN | LBRACE | RBRACE | LBRACKET | RBRACKET | SEMI | COMMA | DOT | EQ | BANG | TILDE | QUES | COLON | EQEQ | AMPAMP | BARBAR | PLUS | SUB | STAR | SLASH | AMP | BAR | CARET | PERCENT | MONKEYS_AT | BANGEQ | GT | SHIFT_RIGHT | SHIFT_RIGHT2 | SHIFT_LEFT | GE | LT | LE | IDENTIFIER );";
         }
