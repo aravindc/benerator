@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,21 +31,24 @@ import java.text.ParseException;
 import org.databene.domain.address.PhoneNumber;
 import org.databene.domain.address.PhoneNumberFormat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link PhoneNumberFormat}.<br/><br/>
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class PhoneNumberFormatTest extends TestCase {
+public class PhoneNumberFormatTest {
     
-    public void testFormat() throws ParseException {
+	@Test
+    public void testFormat() throws Exception {
         PhoneNumber number = new PhoneNumber("49", "1234", "5678");
         assertEquals("formatting with pattern 'cal' failed for phone number: " + number, 
                 "4912345678", new PhoneNumberFormat("cal").format(number));
     }
 
+	@Test
     public void testParsingWithInvalidPattern() {
         try {
             new PhoneNumberFormat("cal").parseObject("4912345678");
@@ -55,6 +58,7 @@ public class PhoneNumberFormatTest extends TestCase {
         }
     }
 
+	@Test
     public void testParsingInvalidNumber() {
         try {
             new PhoneNumberFormat("+c-a-l").parseObject("49(1234)5678");
@@ -64,6 +68,7 @@ public class PhoneNumberFormatTest extends TestCase {
         }
     }
 
+	@Test
     public void testBijectiveNumbers() throws ParseException {
         PhoneNumber n = new PhoneNumber("49", "1234", "5678");
         check(n, "+c-a-l", "+49-1234-5678");

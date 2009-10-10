@@ -32,7 +32,8 @@ import java.util.concurrent.Executors;
 import org.databene.commons.Context;
 import org.databene.commons.context.DefaultContext;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link PagedTask}<br/><br/>
@@ -40,8 +41,9 @@ import junit.framework.TestCase;
  * @since 0.2
  * @author Volker Bergmann
  */
-public class PagedTaskTest extends TestCase {
+public class PagedTaskTest {
 
+	@Test
     public void testSingleInvocation() throws Exception {
         checkRun(1,  1,  1,   1, 1, 1);
         checkRun(1, 10,  1,   1, 1, 1);
@@ -49,23 +51,27 @@ public class PagedTaskTest extends TestCase {
         checkRun(1, 10, 10,   1, 1, 1);
     }
 
+	@Test
     public void testSingleThreadedInvocation() throws Exception {
         checkRun(10,  1,  1,   10, 10, 10);
         checkRun(10, 10,  1,    1, 10,  1);
         checkRun( 4,  3,  1,    2,  4,  2);
     }
 
+	@Test
     public void testMultiThreadedInvocation() throws Exception {
         checkRun(10,  1, 10,   10, 10, 10);
         checkRun(10, 10, 10,    1, 10,  1);
     }
 
+	@Test
     public void testMultiPagedInvocation() throws Exception {
         checkRun(10,  5, 1,    2, 10,  2);
         checkRun(10,  5, 2,    2, 10,  2);
         checkRun(20,  5, 2,    4, 20,  4);
     }
 
+	@Test
     public void testNonThreadSafeTask() throws Exception {
         checkNonThreadSafeTask(1,   1, 1, 1); // single threaded
         checkNonThreadSafeTask(10, 10, 1, 1); // single threaded, single-paged
@@ -75,6 +81,7 @@ public class PagedTaskTest extends TestCase {
         checkNonThreadSafeTask(10,  5, 2, 5); // multi-threaded, multi-paged
     }
 
+	@Test
     public void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) throws IOException {
         SingleThreadedTask.instanceCount = 0;
         SingleThreadedTask task = new SingleThreadedTask() {
@@ -87,6 +94,8 @@ public class PagedTaskTest extends TestCase {
         assertEquals("Unexpected instanceCount,", expectedInstanceCount, SingleThreadedTask.instanceCount);
     }
 
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
     private void checkRun(int totalInvocations, int pageSize, int threads,
                           int expectedInitCount, int expectedRunCount, int expectedCloseCount) {
         CountTask countTask = new CountTask();
