@@ -58,7 +58,7 @@ public abstract class GeneratorTest {
     protected BeneratorContext context;
 
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         context = new BeneratorContext();
         context.importDefaults();
     }
