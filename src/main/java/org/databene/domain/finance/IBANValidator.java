@@ -28,7 +28,6 @@ package org.databene.domain.finance;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.databene.domain.address.CountryCode2Validator;
 
@@ -41,15 +40,11 @@ import org.databene.domain.address.CountryCode2Validator;
  * @see "http://en.wikipedia.org/wiki/IBAN"
  * @see "http://de.wikipedia.org/wiki/International_Bank_Account_Number"
  */
-public class IBANValidator extends AbstractConstraintValidator<IBAN, String> implements Validator<String> {
+public class IBANValidator extends AbstractConstraintValidator<IBAN, String> {
 
 	private CountryCode2Validator countryCodeValidator = new CountryCode2Validator();
 	
     public boolean isValid(String iban, ConstraintValidatorContext context) {
-		return valid(iban);
-	}
-
-	public boolean valid(String iban) {
 	    // check length
 		if (iban == null || iban.length() < 15 || iban.length() > 32 )
 			return false;

@@ -28,7 +28,6 @@ package org.databene.domain.product;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
@@ -37,15 +36,11 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * Created: 26.03.2008 12:20:58
  * @author Volker Bergmann
  */
-public class EAN13Validator extends AbstractConstraintValidator<EAN13, String> implements Validator<String> {
+public class EAN13Validator extends AbstractConstraintValidator<EAN13, String> {
 
     private EANValidator checksumValidator = new EANValidator();
     
     public boolean isValid(String number, ConstraintValidatorContext context) {
-        return valid(number);
-    }
-
-	public boolean valid(String number) {
 	    if (number == null || number.length() != 13)
             return false;
         return checksumValidator.valid(number);

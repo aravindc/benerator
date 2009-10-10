@@ -28,7 +28,6 @@ package org.databene.domain.person;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
@@ -38,13 +37,9 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TaxIdValidator_DE extends AbstractConstraintValidator<TaxId_DE, String> implements Validator<String> {
+public class TaxIdValidator_DE extends AbstractConstraintValidator<TaxId_DE, String> {
 
     public boolean isValid(String number, ConstraintValidatorContext context) {
-		return valid(number);
-	}
-
-	public boolean valid(String number) {
 	    if (number == null || number.length() != 11)
 			return false;
 		boolean[] digitUsed = new boolean[10];

@@ -28,7 +28,6 @@ package org.databene.domain.finance;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
@@ -37,14 +36,9 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CreditCardNumberValidator extends AbstractConstraintValidator<CreditCardNumber, String> 
-		implements Validator<String>{
+public class CreditCardNumberValidator extends AbstractConstraintValidator<CreditCardNumber, String> {
 
     public boolean isValid(String number, ConstraintValidatorContext arg1) {
-    	return valid(number);
-	}
-
-    public boolean valid(String number) {
 		if (number == null || number.length() < 13 || number.length() > 16)
 			return false;
 		int sum = 0;

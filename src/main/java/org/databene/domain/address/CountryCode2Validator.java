@@ -30,7 +30,6 @@ import java.lang.annotation.Annotation;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
@@ -41,19 +40,15 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @author Volker Bergmann
  * @see "http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2"
  */
-public class CountryCode2Validator extends AbstractConstraintValidator<Annotation, String> implements Validator<String> { // TODO define appropriate annotation, improve name (ISO...?)
+public class CountryCode2Validator extends AbstractConstraintValidator<Annotation, String> { // TODO define appropriate annotation, improve name (ISO...?)
 
 	public boolean isValid(String countryCode, ConstraintValidatorContext context) {
-		return valid(countryCode);
-	}
-
-	public boolean valid(String countryCode) {
 	    if (countryCode == null || countryCode.length() != 2)
 			return false;
 		if (!Character.isLetter(countryCode.charAt(0))
 				|| !Character.isLetter(countryCode.charAt(1)))
 			return false;
 		return (Country.getInstance(countryCode) != null);
-    }
-	
+	}
+
 }

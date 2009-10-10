@@ -28,7 +28,6 @@ package org.databene.domain.product;
 
 import javax.validation.ConstraintValidatorContext;
 
-import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
@@ -37,13 +36,9 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * Created: 29.07.2007 07:59:58
  * @author Volker Bergmann
  */
-public class EANValidator extends AbstractConstraintValidator<EAN8, String> implements Validator<String> {
+public class EANValidator extends AbstractConstraintValidator<EAN8, String> {
 
     public boolean isValid(String number, ConstraintValidatorContext context) {
-    	return valid(number);
-    }
-
-    public boolean valid(String number) {
         if (number == null || (number.length() != 8 && number.length() != 13))
             return false;
         int sum = 0;
