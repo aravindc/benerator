@@ -27,7 +27,6 @@
 package org.databene.benerator.engine.task;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import org.databene.benerator.Generator;
@@ -55,7 +54,6 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     private boolean isSubTask;
 	private Consumer<Entity> consumer;
     
-    @SuppressWarnings("unchecked")
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
     		Expression<Consumer<Entity>> consumerExpr, List<? extends Task> subTasks, 
     		boolean isSubTask, Expression<ErrorHandler> errorHandler) {
