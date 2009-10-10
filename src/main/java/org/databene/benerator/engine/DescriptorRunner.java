@@ -60,8 +60,8 @@ import org.databene.benerator.engine.task.TimedEntityTask;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.SimpleTypeGeneratorFactory;
-import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
@@ -119,7 +119,6 @@ public class DescriptorRunner implements ResourceManager {
 	private BeneratorContext context;
 
 	DataModel dataModel = DataModel.getDefaultInstance();
-	private BasicParser basicParser;
 	private List<String> generatedFiles;
 	
 	private ResourceManagerSupport resourceManager = new ResourceManagerSupport();
@@ -130,7 +129,6 @@ public class DescriptorRunner implements ResourceManager {
 		this.uri = uri;
 		this.context = new BeneratorContext(".");
 		this.executor = Executors.newCachedThreadPool();
-		this.basicParser = new BasicParser();
 		this.generatedFiles = new ArrayList<String>();
 	}
 	
@@ -284,7 +282,7 @@ public class DescriptorRunner implements ResourceManager {
 			Expression<String> user = new StringScriptExpression(element.getAttribute(ATT_USER));
 			Expression<String> password = new StringScriptExpression(element.getAttribute(ATT_PASSWORD));
 			Expression<String> schema = new StringScriptExpression(element.getAttribute(ATT_SCHEMA));
-			Expression<Boolean> batch = new ScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class);
+			Expression<Boolean> batch = new ScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
 			Expression<Integer> fetchSize = new ScriptExpression<Integer>(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
 			Expression<Boolean> readOnly = new ScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
 			return new DefineDatabaseTask(id, url, driver, user, password, schema, batch, fetchSize, readOnly, this);
@@ -338,7 +336,7 @@ public class DescriptorRunner implements ResourceManager {
 			return null;
 		PageListener pager = null;
 		try {
-			pager = (PageListener) basicParser.resolveConstructionOrReference(pagerSetup, context, context);
+			pager = (PageListener) BeneratorScriptParser.parseBeanSpec(pagerSetup).evaluate(context);
 		} catch (Exception e) {
 			pager = (PageListener) context.get(pagerSetup);
 		}
