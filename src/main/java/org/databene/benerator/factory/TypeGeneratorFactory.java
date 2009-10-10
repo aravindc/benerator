@@ -80,7 +80,7 @@ public class TypeGeneratorFactory {
         Generator<? extends Object> generator = null;
         String scriptText = descriptor.getScript();
         if (scriptText != null) {
-            Script script = ScriptUtil.parseUnspecificText(scriptText);
+            Script script = ScriptUtil.parseScriptText(scriptText);
             generator = new ScriptGenerator(script, context);
         }
         return generator;
