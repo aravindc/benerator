@@ -27,14 +27,14 @@
 package org.databene.benerator.factory;
 
 import java.beans.PropertyDescriptor;
+import java.text.ParseException;
 
 import org.databene.benerator.distribution.AttachedWeight;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.parser.BasicParser;
-import org.databene.benerator.parser.Construction;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -51,8 +51,6 @@ import org.databene.model.storage.StorageSystem;
  */
 public class GeneratorFactoryUtil {
 
-    private static final BasicParser basicParser = new BasicParser();
-
     public static void mapDetailsToBeanProperties(FeatureDescriptor descriptor, Object bean, Context context) {
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails())
             mapDetailToBeanProperty(descriptor, detail.getName(), bean, context);
@@ -61,7 +59,7 @@ public class GeneratorFactoryUtil {
     public static void mapDetailToBeanProperty(FeatureDescriptor descriptor, String detailName, Object bean, Context context) {
         Object detailValue = descriptor.getDetailValue(detailName);
         if (detailValue instanceof Expression)
-        	detailValue = ((Expression) detailValue).evaluate(context); // TODO is it OK to always evaluate the expression?
+        	detailValue = ((Expression<?>) detailValue).evaluate(context); // TODO is it OK to always evaluate the expression?
 		setBeanProperty(bean, detailName, detailValue, context);
     }
 
@@ -122,18 +120,12 @@ public class GeneratorFactoryUtil {
         	return result;
 
         // check for explicit construction
-    	Construction construction = basicParser.parseConstruction(spec, context, context);
-    	if (construction.classExists())
-    		return (Distribution) construction.evaluate(context);
-    	else {
-    		String className = StringUtil.capitalize(construction.getClassName());
-    		if (!className.endsWith("Sequence"))
-    			construction.setClassName(className + "Sequence");
-    		if (construction.classExists())
-    			return (Distribution) construction.evaluate(context);
-    	}
-    	
-    	throw new ConfigurationError("Unable to resolve distribution spec '" + spec + "'");
+    	try {
+	        Expression<?> beanEx = BeneratorScriptParser.parseBeanSpec(spec);
+	        return (Distribution) beanEx.evaluate(context);
+        } catch (ParseException e) {
+        	throw new ConfigurationError("Error parsing distribution spec: " + spec);
+        }
 	}
 
     

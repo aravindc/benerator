@@ -29,6 +29,7 @@ package org.databene.benerator.factory;
 import static org.databene.model.data.TypeDescriptor.LOCALE;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -39,19 +40,20 @@ import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBe
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.parser.BasicParser;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
 import org.databene.commons.LocaleUtil;
-import org.databene.commons.StringCharacterIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
@@ -75,8 +77,6 @@ import org.databene.model.storage.StorageSystemConsumer;
 
 public class DescriptorUtil {
 
-    private static final BasicParser basicParser = new BasicParser();
-	
 	private DescriptorUtil() {}
 
     public static boolean isWrappedSimpleType(ComplexTypeDescriptor complexType) {
@@ -87,121 +87,108 @@ public class DescriptorUtil {
 
     @SuppressWarnings("unchecked")
 	public static Generator<? extends Object> getGeneratorByName(TypeDescriptor descriptor, BeneratorContext context) {
-        Generator<? extends Object> generator = null;
-        String generatorClassName = descriptor.getGenerator();
-        if (generatorClassName != null) {
-        	generator = (Generator) basicParser.resolveConstructionOrReference(generatorClassName, context, context);
-            mapDetailsToBeanProperties(descriptor, generator, context);
-        }
-        return generator;
+    	try {
+	        Generator<? extends Object> generator = null;
+	        String generatorClassName = descriptor.getGenerator();
+	        if (generatorClassName != null) {
+	        	generator = (Generator) BeneratorScriptParser.parseBeanSpec(generatorClassName).evaluate(context);
+	            mapDetailsToBeanProperties(descriptor, generator, context);
+	        }
+	        return generator;
+    	} catch (ParseException e) {
+    		throw new ConfigurationError("Error in generator spec", e);
+    	}
     }
 
     @SuppressWarnings("unchecked")
 	public static Validator getValidator(TypeDescriptor descriptor, BeneratorContext context) {
-        String validatorSpec = descriptor.getValidator();
-        if (StringUtil.isEmpty(validatorSpec))
-            return null;
-        
-        Validator result = null;
-        StringCharacterIterator iterator = new StringCharacterIterator(validatorSpec);
-        boolean done = false;
-        do {
-        	Object tmp = basicParser.resolveConstructionOrReference(iterator, context, context);
-        	
-        	// check validator type
-        	Validator<?> validator;
-        	if (tmp instanceof Validator)
-        		validator = (Validator<?>) tmp;
-        	else if (tmp instanceof ConstraintValidator)
-        		validator = new BeanConstraintValidator((ConstraintValidator) tmp);
-        	else
-        		throw new ConfigurationError("Unknown validator type: " + String.valueOf(tmp));
-        	
-        	// compose one or more validators
-        	if (result == null) // if it is the first or even only validator, simply use it
-        		result = validator;
-        	else if (result instanceof AndValidator) // else compose all validators to an AndValidator
-        		((AndValidator) result).add(validator);
-        	else
-        		result = new AndValidator(result, validator);
-        	iterator.skipWhitespace();
-
-        	// check if we're done
-        	if (!iterator.hasNext())
-        		done = true;
-        	else if (iterator.peekNext() != ',')
-        		done = true;
-        	else
-        		iterator.next();
-        } while (!done);
-        return result;
+		try {
+	        String validatorSpec = descriptor.getValidator();
+	        if (StringUtil.isEmpty(validatorSpec))
+	            return null;
+	        
+	        Validator result = null;
+	        Expression<?>[] beanExpressions = BeneratorScriptParser.parseBeanSpecList(validatorSpec);
+			Object[] beans = ExpressionUtil.evaluateAll(beanExpressions, context);
+	        for (Object bean : beans) {
+	        	// check validator type
+	        	Validator<?> validator;
+	        	if (bean instanceof Validator)
+	        		validator = (Validator<?>) bean;
+	        	else if (bean instanceof ConstraintValidator)
+	        		validator = new BeanConstraintValidator((ConstraintValidator) bean);
+	        	else
+	        		throw new ConfigurationError("Unknown validator type: " + BeanUtil.simpleClassName(bean));
+	        	
+	        	// compose one or more validators
+	        	if (result == null) // if it is the first or even only validator, simply use it
+	        		result = validator;
+	        	else if (result instanceof AndValidator) // else compose all validators to an AndValidator
+	        		((AndValidator) result).add(validator);
+	        	else
+	        		result = new AndValidator(result, validator);
+	        }
+	        return result;
+        } catch (ParseException e) {
+        	throw new ConfigurationError("Invalid validator definition", e);
+        }
     }
 
 	@SuppressWarnings("unchecked")
 	public static Converter getConverter(TypeDescriptor descriptor, BeneratorContext context) {
         String converterSpec = descriptor.getConverter();
-        if (StringUtil.isEmpty(converterSpec))
-            return null;
-        StringCharacterIterator iterator = new StringCharacterIterator(converterSpec);
-        Converter result = null;
-        boolean done = false;
-        do {
-        	Converter tmp = parseSingleConverterSpec(iterator, context);
-        	if (result == null)
-        		result = tmp;
-        	else if (result instanceof ConverterChain)
-        		((ConverterChain) result).addComponent(tmp);
-        	else
-        		result = new ConverterChain(result, tmp);
-        	iterator.skipWhitespace();
-        	if (!iterator.hasNext())
-        		done = true;
-        	else if (iterator.peekNext() != ',')
-        		done = true;
-        	else
-        		iterator.next();
-        } while (!done);
-        return result;
+        try {
+	        if (StringUtil.isEmpty(converterSpec))
+	            return null;
+	        
+	        Converter result = null;
+	        Expression<?>[] beanExpressions = BeneratorScriptParser.parseBeanSpecList(converterSpec);
+	        Object[] beans = ExpressionUtil.evaluateAll(beanExpressions, context);
+	        for (Object bean : beans) {
+	        	Converter converter;
+	            if (bean instanceof java.text.Format)
+	            	converter = new FormatFormatConverter(Object.class, (java.text.Format) bean);
+	            if (bean instanceof Converter)
+	            	converter = (Converter) bean;
+	            else
+	            	throw new ConfigurationError(bean + " is not an instance of " + Converter.class);
+
+	        	if (result == null)
+	        		result = converter;
+	        	else if (result instanceof ConverterChain)
+	        		((ConverterChain) result).addComponent(converter);
+	        	else
+	        		result = new ConverterChain(result, converter);
+	        }
+	        return result;
+        } catch (ParseException e) {
+        	throw new ConfigurationError("Error parsing converter spec: " + converterSpec);
+        }
     }
 
 	@SuppressWarnings("unchecked")
     public static ConsumerChain<Entity> parseConsumersSpec(String consumerSpec, BeneratorContext context) {
-        if (StringUtil.isEmpty(consumerSpec))
-            return null;
-        StringCharacterIterator iterator = new StringCharacterIterator(consumerSpec);
-        ConsumerChain<Entity> result = new ConsumerChain<Entity>();
-        boolean done = false;
-        do {
-        	Consumer<Entity> consumer = parseSingleConsumer(iterator, true, context);
-        	if (consumer != null)
-        		result.addComponent(consumer);
-        	iterator.skipWhitespace();
-        	if (!iterator.hasNext())
-        		done = true;
-        	else if (iterator.peekNext() != ',')
-        		done = true;
-        	else
-        		iterator.next();
-        } while (!done);
-		return result;
-	}
-
-	@SuppressWarnings("unchecked")
-    private static Consumer<Entity> parseSingleConsumer(
-			StringCharacterIterator consumerSpec, boolean insert, BeneratorContext context) {
-		Expression expression = basicParser.parseConstructionOrReference(consumerSpec, context, context);
-		Object consumer = expression.evaluate(context);
-		if (consumer == null)
-			throw new ConfigurationError("Consumer not found: " + consumerSpec);
-
-		// check consumer type
-		if (consumer instanceof StorageSystem)
-			return new StorageSystemConsumer((StorageSystem) consumer, insert);
-		else if (consumer instanceof Consumer)
-			return (Consumer<Entity>) consumer;
-		else
-			throw new UnsupportedOperationException(
-					"Consumer type not supported: " + consumer.getClass());
+        try {
+	        if (StringUtil.isEmpty(consumerSpec))
+	            return null;
+	        Expression<?>[] beanSpecs = BeneratorScriptParser.parseBeanSpecList(consumerSpec);
+	        ConsumerChain<Entity> result = new ConsumerChain<Entity>();
+	        for (Expression beanSpec : beanSpecs) {
+	        	Consumer consumer;
+	        	Object bean = beanSpec.evaluate(context);
+	        	// check consumer type
+	        	if (bean instanceof StorageSystem)
+	        		consumer = new StorageSystemConsumer((StorageSystem) bean, true);
+	        	else if (bean instanceof Consumer)
+	        		consumer = (Consumer<?>) bean;
+	        	else
+	        		throw new UnsupportedOperationException("Consumer type not supported: " + bean.getClass());
+	        	result.addComponent(consumer);
+	        }
+	        return result;
+        } catch (ParseException e) {
+        	throw new ConfigurationError("Error parsing consumer spec: " + consumerSpec, e);
+        }
 	}
 
 	public static Locale getLocale(TypeDescriptor descriptor) {
@@ -277,7 +264,7 @@ public class DescriptorUtil {
 		else if (descriptor.getMaxCount() != null)
         	result = descriptor.getMaxCount();
 		if (result == null)
-			result = new ConstantExpression<Long>(1L);
+			result = new ConstantExpression<Long>(null); // By default, maxCount is unlimited
 		Long globalMaxCount = context.getMaxCount();
 		if (globalMaxCount != null)
 			result = new MinExpression<Long>(result, new ConstantExpression<Long>(globalMaxCount));
@@ -286,20 +273,6 @@ public class DescriptorUtil {
 
 	public static Expression<Long> getCountPrecision(InstanceDescriptor descriptor, BeneratorContext context) {
 		return (descriptor.getCountPrecision() != null ? descriptor.getCountPrecision() : new ConstantExpression<Long>(1L));
-	}
-
-
-
-    // private helpers -------------------------------------------------------------------------------------------------
-    
-	@SuppressWarnings("unchecked")
-	private static Converter parseSingleConverterSpec(StringCharacterIterator iterator, BeneratorContext context) {
-		Object converter = basicParser.resolveConstructionOrReference(iterator, context, context);
-        if (converter instanceof java.text.Format)
-        	converter = new FormatFormatConverter(Object.class, (java.text.Format) converter);
-        if (!(converter instanceof Converter))
-        	throw new ConfigurationError(converter + " is not an instance of " + Converter.class);
-		return (Converter) converter;
 	}
 
 }
