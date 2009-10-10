@@ -43,7 +43,9 @@ public class ConsoleExporter<E> extends FormattingConsumer<E> {
 	PrintStream out = System.out;
 	
 	public ConsoleExporter() {
-		compositeFormatter = new CompositeFormatter(true, true, getDatePattern(), getTimestampPattern());
+		compositeFormatter = new CompositeFormatter(true, true);
+		compositeFormatter.setDatePattern(getDatePattern());
+		compositeFormatter.setTimestampPattern(getTimestampPattern());
 	}
 	
 	@Override
