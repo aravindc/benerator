@@ -26,6 +26,7 @@
 
 package org.databene.benerator.script;
 
+import org.databene.benerator.test.Person;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
@@ -375,6 +376,24 @@ public class BeneratorScriptParserTest extends TestCase {
 		assertEquals("", values[0]);
 		assertTrue(values[1].getClass() == this.getClass());
 	}
+	
+	// tests migrated from BasicParserTest ---------------------------------------
+	
+	public void testParseCustomConstruction() throws Exception {
+		checkBeanSpec(new Person("Alice", TimeUtil.date(1972, 1, 3), 102, true, 'A'),
+				"new org.databene.benerator.test.Person('Alice', (date) '1972-02-03', 102, true, 'A')");
+	}
+	
+	/**
+	 * Tests property-based construction
+	 */
+	public void testParsePropertyConstruction() throws Exception {
+		checkBeanSpec(new Person("Alice", TimeUtil.date(1972, 1, 3), 102, true, 'A'),
+				"new org.databene.benerator.test.Person[name='Alice', birthDate=(date) '1972-02-03', score=102, " +
+				"registered=true, rank='A']");
+	}
+
+	
 	
 	// test members to be read or called from the tested script expressions --------------------------------------------
 	
