@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,9 +30,14 @@ import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 
 import java.util.Arrays;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link CompositeArrayGenerator}.<br/><br/>
  * Created: 11.10.2006 23:12:21
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class CompositeArrayGeneratorTest extends GeneratorClassTest {
 
@@ -40,12 +45,15 @@ public class CompositeArrayGeneratorTest extends GeneratorClassTest {
         super(CompositeArrayGenerator.class);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
     public void test() {
         ConstantTestGenerator<Integer> source1 = new ConstantTestGenerator<Integer>(1);
         ConstantTestGenerator<Integer> source2 = new ConstantTestGenerator<Integer>(2);
-        CompositeArrayGenerator generator = new CompositeArrayGenerator<Integer>(Integer.class, source1, source2);
+        CompositeArrayGenerator<Integer> generator = new CompositeArrayGenerator<Integer>(Integer.class, source1, source2);
         Integer[] EXPECTED_ARRAY = new Integer[] {1, 2};
         for (int i = 0; i < 10; i++)
             assertTrue(Arrays.equals(generator.generate(), EXPECTED_ARRAY));
     }
+    
 }

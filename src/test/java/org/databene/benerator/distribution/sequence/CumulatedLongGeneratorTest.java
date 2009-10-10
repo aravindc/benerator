@@ -30,10 +30,13 @@ import org.databene.benerator.distribution.sequence.CumulatedLongGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link CumulatedLongGenerator}
  * Created: 07.06.2006 20:23:39
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class CumulatedLongGeneratorTest extends GeneratorClassTest {
@@ -46,10 +49,12 @@ public class CumulatedLongGeneratorTest extends GeneratorClassTest {
 
     // tests -----------------------------------------------------------------------------------------------------------
 
+    @Test
     public void testInstantiation() throws Exception {
         new CumulatedLongGenerator(0, 10);
     }
 
+    @Test
     public void testAverage() throws Exception {
         checkAverage(0, 1, 0.5);
         checkAverage(1, 2, 1.5);
@@ -57,6 +62,7 @@ public class CumulatedLongGeneratorTest extends GeneratorClassTest {
         checkAverage(0, 50, 25);
     }
 
+    @Test
     public void testDistribution() throws Exception {
         checkDistribution(0, 1, 1000);
         checkDistribution(0, 5, 5000);
@@ -92,4 +98,5 @@ public class CumulatedLongGeneratorTest extends GeneratorClassTest {
             }
         }
     }
+    
 }

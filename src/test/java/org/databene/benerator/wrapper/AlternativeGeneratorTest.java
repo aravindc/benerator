@@ -29,11 +29,14 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.benerator.Generator;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link AlternativeGenerator}.<br/>
  * <br/>
  * Created: 11.10.2006 23:10:34
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class AlternativeGeneratorTest extends GeneratorClassTest {
@@ -42,6 +45,7 @@ public class AlternativeGeneratorTest extends GeneratorClassTest {
         super(AlternativeGenerator.class);
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void test() {
         Generator<Integer> source1 = new RandomIntegerGenerator(-2, -1);
@@ -52,4 +56,5 @@ public class AlternativeGeneratorTest extends GeneratorClassTest {
             assertTrue((-2 <= product && product <= -1) || (1 <= product && product <= 2));
         }
     }
+    
 }

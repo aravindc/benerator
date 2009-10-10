@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.domain.address;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the CountryCode2Validator.<br/>
@@ -34,9 +35,11 @@ import junit.framework.TestCase;
  * Created at 25.08.2008 09:19:13
  * @since 0.5.5
  * @author Volker Bergmann
+ * 
  */
-public class CountryCode2ValidatorTest extends TestCase {
+public class CountryCode2ValidatorTest {
 
+	@Test
 	public void test() {
 		CountryCode2Validator validator = new CountryCode2Validator();
 		assertTrue(validator.isValid("DE", null));
@@ -48,4 +51,5 @@ public class CountryCode2ValidatorTest extends TestCase {
 		assertFalse(validator.isValid("1D", null));
 		assertFalse(validator.isValid(".*", null));
 	}
+	
 }

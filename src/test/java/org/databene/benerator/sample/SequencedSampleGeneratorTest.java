@@ -29,6 +29,8 @@ package org.databene.benerator.sample;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SequencedSampleGenerator}.<br/>
@@ -43,6 +45,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
         super(SequencedSampleGenerator.class);
     }
 
+    @Test
     public void testDistribution() throws Exception {
         Integer[] samples = new Integer[] { 0, 1, 2 };
         SequencedSampleGenerator<Integer> g = new SequencedSampleGenerator<Integer>(Integer.class);
@@ -62,6 +65,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    @Test
     public void testBigSet() {
         SequencedSampleGenerator<Integer> generator = new SequencedSampleGenerator<Integer>(Integer.class);
         for (int i = 0; i < 200000; i++)
@@ -72,4 +76,5 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
             assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
         }
     }
+    
 }

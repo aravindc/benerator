@@ -26,17 +26,22 @@
 
 package org.databene.benerator;
 
+import java.util.List;
+
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.benerator.util.TreePathGenerator;
 import org.databene.commons.tree.DefaultTreeModel;
 import org.databene.commons.tree.DefaultTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the TreePathGenerator.<br/>
  * <br/>
  * Created: 30.07.2007 19:08:22
+ * @author Volker Bergmann
  */
 public class TreePathGeneratorTest extends GeneratorClassTest {
 
@@ -46,6 +51,8 @@ public class TreePathGeneratorTest extends GeneratorClassTest {
         super(TreePathGenerator.class);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
     public void test() {
         DefaultTreeNode<String> root = new DefaultTreeNode<String>("root");
         DefaultTreeNode<String> a = new DefaultTreeNode<String>("a");
@@ -67,8 +74,11 @@ public class TreePathGeneratorTest extends GeneratorClassTest {
 
         DefaultTreeModel<String> model = new DefaultTreeModel<String>(root);
         TreePathGenerator generator = new TreePathGenerator(model);
-        for (int i = 0; i < 10; i++)
-            logger.debug(generator.generate().toString());
+        for (int i = 0; i < 10; i++) {
+            List<String> path = generator.generate();
+        	assertNotNull(path);
+			logger.debug(path.toString());
+        }
     }
 
 }

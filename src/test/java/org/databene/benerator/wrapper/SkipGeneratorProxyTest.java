@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,9 +28,14 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link SkipGeneratorProxy}.<br/><br/>
  * Created: 11.10.2006 23:10:34
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class SkipGeneratorProxyTest extends GeneratorClassTest {
 
@@ -38,6 +43,7 @@ public class SkipGeneratorProxyTest extends GeneratorClassTest {
         super(SkipGeneratorProxy.class);
     }
 
+    @Test
     public void testSkip() {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source, 1L, 2L);
@@ -45,6 +51,7 @@ public class SkipGeneratorProxyTest extends GeneratorClassTest {
         assertTrue(value == 1 || value == 2);
     }
 
+    @Test
     public void testNonRepetitive() {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2);
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source);
@@ -58,6 +65,7 @@ public class SkipGeneratorProxyTest extends GeneratorClassTest {
         }
     }
 
+    @Test
     public void testInvalidSetup() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
         checkInvalidSetup(null, 1, 1);
@@ -67,11 +75,12 @@ public class SkipGeneratorProxyTest extends GeneratorClassTest {
 
     private void checkInvalidSetup(Generator<Integer> source, long minIncrement, long maxIncrement) {
         try {
-            SkipGeneratorProxy generator = new SkipGeneratorProxy<Integer>(source, minIncrement, maxIncrement);
+            Generator<Integer> generator = new SkipGeneratorProxy<Integer>(source, minIncrement, maxIncrement);
             generator.validate();
             fail("InvalidGeneratorSetupException expected");
         } catch (InvalidGeneratorSetupException e) {
             // this is the expected behavior
         }
     }
+    
 }

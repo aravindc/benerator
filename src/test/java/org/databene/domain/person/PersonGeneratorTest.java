@@ -30,6 +30,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.domain.address.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import java.util.Locale;
 
@@ -48,6 +50,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         super(PersonGenerator.class);
     }
 
+    @Test
     public void testGermany() {
         PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMANY);
         for (int i = 0; i < 10; i++) {
@@ -56,27 +59,34 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    @Test
     public void testRussia() {
         PersonGenerator generator = new PersonGenerator(Country.RUSSIA, new Locale("ru"));
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
+            assertNotNull(person);
             logger.debug(person.toString());
         }
     }
 
+    @Test
     public void testPoland() {
         PersonGenerator generator = new PersonGenerator(Country.POLAND, new Locale("pl"));
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
+            assertNotNull(person);
             logger.debug(person.toString());
         }
     }
 
+    @Test
     public void testChina() {
         PersonGenerator generator = new PersonGenerator(Country.CHINA, Locale.CHINESE);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
+            assertNotNull(person);
             logger.debug(person.toString());
         }
     }
+
 }

@@ -29,6 +29,7 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.validator.ConstantValidator;
+import org.junit.Test;
 
 /**
  * Tests the CurrentDateGenerator.<br/>
@@ -42,6 +43,7 @@ public class CurrentDateGeneratorTest extends GeneratorClassTest {
         super(CurrentDateGenerator.class);
     }
 
+    @Test
     public void testProducts() {
         ConstantValidator validator = new ConstantValidator(TimeUtil.today().getTime());
 		expectGenerations(new CurrentDateGenerator(), 10, validator);

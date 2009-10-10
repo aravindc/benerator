@@ -35,7 +35,8 @@ import org.databene.commons.TimeUtil;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.expression.ExpressionUtil;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link BeneratorScriptParser}.<br/>
@@ -45,33 +46,28 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class BeneratorScriptParserTest extends TestCase {
+public class BeneratorScriptParserTest {
 
 	private String stringProp;
 	private int intProp;
-
-    public BeneratorScriptParserTest() {
-	    super();
-    }
-
-    public BeneratorScriptParserTest(String name) {
-	    super(name);
-    }
 
 	public BeneratorScriptParserTest(String stringProp, int intProp) {
 		this.stringProp = stringProp;
 		this.intProp = intProp;
     }
 
+	@Test
 	public void testNullLiteral() throws Exception {
 		checkExpression(null, "null");
 	}
 
+	@Test
 	public void testBooleanLiteral() throws Exception {
 		checkExpression(true,  "true");
 		checkExpression(false, "false");
 	}
 
+	@Test
 	public void testIntLiteral() throws Exception {
 		checkExpression(1, "1");
 		checkExpression(0, "0");
@@ -79,12 +75,14 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(Integer.MAX_VALUE, String.valueOf(Integer.MAX_VALUE));
 	}
 
+	@Test
 	public void testLongLiteral() throws Exception {
 		checkExpression(123456789012345L, "123456789012345");
 		long border = Integer.MAX_VALUE + 1L;
 		checkExpression(border, String.valueOf(border));
 	}
 
+	@Test
 	public void testDoubleLiteral() throws Exception {
 		checkExpression(0., "0.0");
 		checkExpression(1.5, "1.5");
@@ -92,72 +90,86 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(125., "1.25E+2");
 	}
 
+	@Test
 	public void testStringLiteral() throws Exception {
 		checkExpression("Test", "'Test'");
 		checkExpression("", "''");
 	}
 	
+	@Test
 	public void testConstructor() throws Exception {
 		checkExpression("", "new java.lang.String()");
 		checkExpression("Test", "new java.lang.String('Test')");
 		checkExpression("Test", "new java.lang.String(new java.lang.String('Test'))");
 	}
 	
+	@Test
 	public void testBeanConstruction() throws Exception {
 		checkExpression(new BeneratorScriptParserTest("Alice", 23), 
 				"new " + getClass().getName() + "[stringProp='Alice', intProp=23]");
 	}
 	
+	@Test
 	public void testStaticInvocation() throws Exception {
 		checkExpression("it works!", getClass().getName() + ".exclamate('it works')");
 	}
 	
+	@Test
 	public void testReference() throws Exception {
 		Context context = new DefaultContext();
 		context.set("testString", "Hello");
 		checkExpression("Hello", "testString", context);
 	}
 	
+	@Test
 	public void testReferenceInvocation() throws Exception {
 		Context context = new DefaultContext();
 		context.set("testString", "Hello");
 		checkExpression(5, "testString.length()", context);
 	}
 	
+	@Test
 	public void testObjectInvocation() throws Exception {
 		checkExpression(3, "'123'.length()");
 	}
 	
+	@Test
 	public void testArrayIndex() throws Exception {
 		Context context = new DefaultContext();
 		context.set("testArray", new String[] { "Alice", "Bob", "Charly" });
 		checkExpression("Bob", "testArray[1]", context);
 	}
 	
+	@Test
 	public void testListIndex() throws Exception {
 		Context context = new DefaultContext();
 		context.set("testList", CollectionUtil.toList("Alice", "Bob", "Charly"));
 		checkExpression("Bob", "testList[1]", context);
 	}
 	
+	@Test
 	public void testMapIndex() throws Exception {
 		Context context = new DefaultContext();
 		context.set("testMap", CollectionUtil.buildMap("Alice", 23, "Bob", 34, "Charly", 45));
 		checkExpression(34, "testMap['Bob']", context);
 	}
 	
+	@Test
 	public void testStringIndex() throws Exception {
 		checkExpression('e', "'Hello'[1]");
 	}
 	
+	@Test
 	public void testSubCall() throws Exception {
 		checkExpression('l', "'Hello'.substring(1,3).charAt(1)");
 	}
 	
+	@Test
 	public void testStaticSubField() throws Exception {
 		checkExpression("hi!!", getClass().getName() + ".staticStringAttrib");
 	}
 	
+	@Test
 	public void testSubField() throws Exception {
 		Context context = new DefaultContext();
 		context.set("tc", this);
@@ -166,6 +178,7 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression("hi", "new " + getClass().getName() + "().pubField.text");
 	}
 	
+	@Test
 	public void testCast() throws Exception {
 		checkExpression(1L, "100000000002 - 100000000001");
 		checkExpression(1, "(int) (100000000002 - 100000000001)");
@@ -177,27 +190,32 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(TimeUtil.time(18, 19, 20), "(time) '18:19:20'");
 	}
 	
+	@Test
 	public void testNegation() throws Exception {
 		checkExpression(-1, "-1");
 		checkExpression(-3, "- (1 + 2)");
 	}
 	
+	@Test
 	public void testBitwiseComplement() throws Exception {
 		checkExpression(-2, "~1");
 		checkExpression(-4, "~ (1 + 2)");
 	}
 	
+	@Test
 	public void testLogicalComplement() throws Exception {
 		checkExpression(false, "! true");
 		checkExpression(true, "! (1 + 2 < 2)");
 	}
 	
+	@Test
 	public void testMultipication() throws Exception {
 		checkExpression(35, "7 * 5");
 		checkExpression(36, "2 + 7 * 5 - 1");
 		checkExpression(4.5, "1.5 * 3");
 	}
 	
+	@Test
 	public void testDivision() throws Exception {
 		checkExpression(2, "6 / 3");
 		checkExpression(2., "6.0 / 3.0");
@@ -205,6 +223,7 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(3.5, "7.0 / 2.0");
 	}
 	
+	@Test
 	public void testModulo() throws Exception {
 		checkExpression(2, "11 % 3");
 		checkExpression(0, "3 % 3");
@@ -212,6 +231,7 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(0, "10 % 1");
 	}
 	
+	@Test
 	public void testStringSum() throws Exception {
 		checkExpression("", "'' + ''");
 		checkExpression("", "'' + null");
@@ -222,6 +242,7 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression("implemented at 2009-10-08", "'implemented at ' + (date) '2009-10-08'");
 	}
 	
+	@Test
 	public void testNumberSum() throws Exception {
 		checkExpression(0, "0 + 0");
 		checkExpression(2, "1 + 1");
@@ -231,12 +252,14 @@ public class BeneratorScriptParserTest extends TestCase {
 		// TODO check with other types
 	}
 	
+	@Test
 	public void testDateSum() throws Exception {
 		checkExpression(TimeUtil.date(1970, 0, 1), "(date) '1970-01-01' + 0");
 		checkExpression(TimeUtil.date(1970, 0, 2), "(date) '1970-01-01' + (long) 1000 * 3600 * 24");
 		checkExpression(TimeUtil.date(1970, 0, 2), "(long) 1000 * 3600 * 24 + (date) '1970-01-01'");
 	}
 	
+	@Test
 	public void testDateTimeSum() throws Exception {
 		checkExpression(TimeUtil.date(1970, 0, 1, 18, 19, 20, 0), "(date) '1970-01-01' + (time) '18:19:20'");
 		checkExpression(TimeUtil.date(1970, 0, 1, 18, 19, 20, 0), "(time) '18:19:20' + (date) '1970-01-01'");
@@ -244,90 +267,107 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(TimeUtil.date(2009, 9, 8, 18, 19, 20, 0), "(time) '18:19:20' + (date) '2009-10-08'");
 	}
 	
+	@Test
 	public void testTimestampSum() throws Exception {
 		checkExpression(TimeUtil.timestamp(1970, 0, 1, 0, 0, 0, 0), "(timestamp) '1970-01-01' + 0");
 		checkExpression(TimeUtil.timestamp(1970, 0, 2, 0, 0, 0, 0), "(timestamp) '1970-01-01' + (long) 1000 * 3600 * 24");
 	}
 	
+	@Test
 	public void testDateDifference() throws Exception {
 		checkExpression(TimeUtil.date(1970, 0, 1), "(date) '1970-01-02' - (long) 1000 * 3600 * 24");
 	}
 	
+	@Test
 	public void testTimestampDifference() throws Exception {
 		checkExpression(TimeUtil.timestamp(1970, 0, 1, 0, 0, 0, 0), "(timestamp) '1970-01-02' - (long) 1000 * 3600 * 24");
 	}
 	
+	@Test
 	public void testParenthesis() throws Exception {
 		checkExpression(1, "6 - 3 - 2");
 		checkExpression(1, "(6 - 3) - 2");
 		checkExpression(5, "6 - (3 - 2)");
 	}
 	
+	@Test
 	public void testLeftShift() throws Exception {
 		checkExpression(  4, " 1 << 2");
 		checkExpression(-32, "-4 << 3");
 	}
 	
+	@Test
 	public void testRightShift() throws Exception {
 		checkExpression( 1, "   2  >> 1");
 		checkExpression( 4, "  32  >> 3");
 		checkExpression(-4, "(-32) >> 3");
 	}
 	
+	@Test
 	public void testRightShift2() throws Exception {
 		checkExpression(4, "32 >>> 3");
 	}
 	
+	@Test
 	public void testEquals() throws Exception {
 		checkExpression(false, "2 == 1");
 		checkExpression(true,  "2 == 2");
 	}
 	
+	@Test
 	public void testNotEquals() throws Exception {
 		checkExpression(false, "2 != 2");
 		checkExpression(true,  "2 != 1");
 	}
 	
+	@Test
 	public void testLessOrEqual() throws Exception {
 		checkExpression(false, "2 <= 1");
 		checkExpression(true,  "2 <= 2");
 		checkExpression(true,  "2 <= 3");
 	}
 	
+	@Test
 	public void testGreaterOrEqual() throws Exception {
 		checkExpression(true,  "2 >= 1");
 		checkExpression(true,  "2 >= 2");
 		checkExpression(false, "2 >= 3");
 	}
 	
+	@Test
 	public void testLess() throws Exception {
 		checkExpression(false, "2 < 1");
 		checkExpression(false, "2 < 2");
 		checkExpression(true,  "2 < 3");
 	}
 	
+	@Test
 	public void testGreater() throws Exception {
 		checkExpression(true, "2 > 1");
 		checkExpression(false, "2 > 2");
 		checkExpression(false, "2 > 3");
 	}
 	
+	@Test
 	public void testAnd() throws Exception {
 		checkExpression(1, "1 & 1");
 		checkExpression(0, "1 & 2");
 		checkExpression(1, "1 & 1 & 1");
 	}
 	
+	@Test
 	public void testExclusiveOr() throws Exception {
 		checkExpression(0, "1 ^ 1");
 		checkExpression(3, "1 ^ 2");
 	}
 	
+	@Test
 	public void testInclusiveOr() throws Exception {
 		checkExpression(1, "1 | 1");
 		checkExpression(3, "1 | 2");
 	}
 	
+	@Test
 	public void testConditionalAnd() throws Exception {
 		checkExpression(false, "false && false");
 		checkExpression(false, "true  && false");
@@ -335,6 +375,7 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(true,  "true  && true");
 	}
 	
+	@Test
 	public void testConditionalOr() throws Exception {
 		checkExpression(false, "false || false");
 		checkExpression(true,  "true  || false");
@@ -342,6 +383,7 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression(true,  "true  || true");
 	}
 	
+	@Test
 	public void testConditionalExpression() throws Exception {
 		checkExpression(1, "true ? 1 : 2");
 		checkExpression(2, "false ? 1 : 2");
@@ -350,25 +392,30 @@ public class BeneratorScriptParserTest extends TestCase {
 		checkExpression("4", "(2 > 1 ? (4 > 3 ? '4' : '3') : (7 < 6 ? 6 : 7))");
 	}
 	
+	@Test
 	public void testObjectSpecByRef() throws Exception {
 		Context context = new DefaultContext();
 		context.set("greeting", "Howdy");
 		checkBeanSpec("Howdy", "greeting", context);
 	}
 	
+	@Test
 	public void testObjectSpecByClass() throws Exception {
 		checkBeanSpec("", "java.lang.String");
 	}
 	
+	@Test
 	public void testObjectSpecByConstructor() throws Exception {
 		checkBeanSpec("Test", "new java.lang.String('Test')");
 	}
 	
+	@Test
 	public void testObjectSpecByProperties() throws Exception {
 		checkBeanSpec(new BeneratorScriptParserTest("Alice", 24), 
 				"new " + getClass().getName() + "[stringProp='Alice', intProp=24]");
 	}
 	
+	@Test
 	public void testObjectSpecList() throws Exception {
 		Expression<?>[] expressions = BeneratorScriptParser.parseBeanSpecList("java.lang.String," + getClass().getName());
 		Object[] values = ExpressionUtil.evaluateAll(expressions, new DefaultContext());

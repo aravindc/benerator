@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,11 +28,13 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.distribution.sequence.BitReverseLongGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the BitReverseLongGenerator.<br/>
  * <br/>
  * Created: 13.11.2007 15:51:32
+ * @author Volker Bergmann
  */
 public class BitReverseLongGeneratorTest extends GeneratorClassTest {
 
@@ -40,16 +42,19 @@ public class BitReverseLongGeneratorTest extends GeneratorClassTest {
         super(BitReverseLongGenerator.class);
     }
 
+    @Test
     public void testInstantiation() throws Exception {
         new BitReverseLongGenerator(0, 10);
     }
 
+    @Test
     public void testBasic() throws Exception {
         expectGeneratedSequence(new BitReverseLongGenerator(0, 3),  0L,  2L,  1L, 3L).withCeasedAvailability();
         expectGeneratedSequence(new BitReverseLongGenerator(0, 4),  0L,  4L,  2L, 1L, 3L).withCeasedAvailability();
         expectGeneratedSequence(new BitReverseLongGenerator(0, 7),  0L,  4L,  2L, 6L, 1L, 5L, 3L, 7L).withCeasedAvailability();
     }
 
+    @Test
     public void testShifted() throws Exception {
         expectGeneratedSequence(new BitReverseLongGenerator( 1,  4),  1L,  3L,  2L,  4L).withCeasedAvailability();
         expectGeneratedSequence(new BitReverseLongGenerator( 1,  5),  1L,  5L,  3L,  2L, 4L).withCeasedAvailability();
@@ -57,14 +62,17 @@ public class BitReverseLongGeneratorTest extends GeneratorClassTest {
         expectGeneratedSequence(new BitReverseLongGenerator(-4, -1), -4L, -2L, -3L, -1L).withCeasedAvailability();
     }
 
+    @Test
     public void testScaled() throws Exception {
         expectGeneratedSequence(new BitReverseLongGenerator( 2,  8, 2),  2L,  6L,  4L,  8L).withCeasedAvailability();
     }
 
+    @Test
     public void testScaledAndShifted() throws Exception {
         expectGeneratedSequence(new BitReverseLongGenerator( 1,  7, 2),  1L,  5L,  3L,  7L).withCeasedAvailability();
     }
 
+    @Test
     public void testReset() throws Exception {
         expectGeneratedSequence(new BitReverseLongGenerator( 1,  4),  1L,  3L,  2L).withContinuedAvailability();
     }

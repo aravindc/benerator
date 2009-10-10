@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,6 +39,8 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SequencedCSVSampleGenerator}.<br/>
@@ -56,6 +58,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
+    @Test
     public void testSmallSet() throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
@@ -68,6 +71,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    @Test
     public void testBigSet() throws Exception {
     	File csvFile = new File(BIG_FILE_NAME);
     	try {
@@ -91,4 +95,5 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 	        	csvFile.delete();
     	}
     }
+    
 }

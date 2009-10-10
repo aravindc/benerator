@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.benerator.primitive;
 
 import java.util.Date;
@@ -33,7 +32,8 @@ import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the DateGenerator.<br/><br/>
@@ -41,8 +41,9 @@ import junit.framework.TestCase;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DateGeneratorTest extends TestCase {
+public class DateGeneratorTest {
 
+	@Test
     public void test() {
         check(TimeUtil.date(1970, 0, 1), TimeUtil.date(1970, 0,  1), Period.DAY.getMillis());
         check(TimeUtil.date(1970, 0, 1), TimeUtil.date(1970, 0, 10), Period.DAY.getMillis());
@@ -63,6 +64,6 @@ public class DateGeneratorTest extends TestCase {
             long time0 = min.getTime();
             assertEquals(0, (time - time0) % precision);
         }
-            
     }
+
 }

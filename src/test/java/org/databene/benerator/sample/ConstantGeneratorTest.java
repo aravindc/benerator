@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,13 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link ConstantGenerator}.<br/><br/>
  * Created: 11.10.2006 23:07:35
+ * @author Volker Bergmann
  */
 public class ConstantGeneratorTest extends GeneratorClassTest {
 
@@ -37,15 +41,18 @@ public class ConstantGeneratorTest extends GeneratorClassTest {
         super(ConstantGenerator.class);
     }
 
+    @Test
     public void testNull() {
         ConstantGenerator<String> generator = new ConstantGenerator<String>(null, String.class);
         for (int i = 0; i < 100; i++)
             assertNull(generator.generate());
     }
 
+    @Test    
     public void testString() {
         ConstantGenerator<String> generator = new ConstantGenerator<String>("Alice");
         for (int i = 0; i < 100; i++)
             assertEquals("Alice", generator.generate());
     }
+    
 }

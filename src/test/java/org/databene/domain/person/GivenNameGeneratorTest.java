@@ -4,10 +4,14 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.measure.count.ObjectCounter;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link GivenNameGenerator}.
  * Created: 09.06.2006 21:37:05
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class GivenNameGeneratorTest extends GeneratorClassTest {
 
@@ -15,6 +19,7 @@ public class GivenNameGeneratorTest extends GeneratorClassTest {
         super(GivenNameGenerator.class);
     }
 
+    @Test
     public void test() throws IllegalGeneratorStateException {
         ObjectCounter<String> counter = new ObjectCounter<String>(10);
         Generator<String> generator = new GivenNameGenerator();
@@ -22,4 +27,5 @@ public class GivenNameGeneratorTest extends GeneratorClassTest {
             counter.count(generator.generate());
         assertTrue(counter.objectSet().size() >= 3);
     }
+    
 }

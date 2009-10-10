@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,31 +31,45 @@ import org.databene.benerator.test.GeneratorClassTest;
 
 import java.util.Set;
 import java.util.Locale;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link LocalCSVGenerator}.<br/><br/>
  * Created: 14.06.2007 07:01:53
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class LocalCSVGeneratorTest extends GeneratorClassTest {
 
-    public LocalCSVGeneratorTest() {
+    /**
+     */
+    private static final String CSV_LOCAL_FILENAME = "org/databene/benerator/csv/local-names";
+
+	public LocalCSVGeneratorTest() {
         super(LocalCSVGenerator.class);
     }
 
+    @Test
     public void testEnglish() {
         Set<String> enNames = CollectionUtil.toSet("Alice", "Bob", "Charly");
-        LocalCSVGenerator enGen = new LocalCSVGenerator("org/databene/benerator/csv/local-names", Locale.ENGLISH, ".csv", "UTF-8");
+        LocalCSVGenerator<String> enGen = new LocalCSVGenerator<String>(
+        		CSV_LOCAL_FILENAME, Locale.ENGLISH, ".csv", "UTF-8");
         for (int i = 0; i < 10; i++) {
-            String name = (String) enGen.generate();
+            String name = enGen.generate();
             assertTrue(enNames.contains(name));
         }
     }
 
+    @Test
     public void testGerman() {
         Set<String> deNames = CollectionUtil.toSet("Elise", "Robert", "Karl");
-        LocalCSVGenerator deGen = new LocalCSVGenerator("org/databene/benerator/csv/local-names", Locale.GERMAN, ".csv", "UTF-8");
+        LocalCSVGenerator<String> deGen = new LocalCSVGenerator<String>(
+        		CSV_LOCAL_FILENAME, Locale.GERMAN, ".csv", "UTF-8");
         for (int i = 0; i < 10; i++) {
-            String name = (String) deGen.generate();
+            String name = deGen.generate();
             assertTrue(deNames.contains(name));
         }
     }
+    
 }

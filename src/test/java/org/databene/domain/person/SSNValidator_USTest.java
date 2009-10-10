@@ -26,7 +26,8 @@
 
 package org.databene.domain.person;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SSNValidator_US}.<br/>
@@ -36,10 +37,11 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class SSNValidator_USTest extends TestCase {
+public class SSNValidator_USTest {
 	
 	private SSNValidator_US validator = new SSNValidator_US();
 
+	@Test
 	public void testInvalidNumbers() {
 		assertFalse(validator.isValid(null, null));
 		assertFalse(validator.isValid("ABC-65-4329", null));
@@ -49,6 +51,7 @@ public class SSNValidator_USTest extends TestCase {
 		assertFalse(validator.isValid("0001-65-432", null));
 	}
 	
+	@Test
 	public void testAdvertisementNumbers() {
 		assertFalse(validator.isValid("987-65-4320", null));
 		assertFalse(validator.isValid("987-65-4329", null));

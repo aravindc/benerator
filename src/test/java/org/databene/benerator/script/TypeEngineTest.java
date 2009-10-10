@@ -26,7 +26,8 @@
 
 package org.databene.benerator.script;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * TODO document class TypeEngineTest.<br/>
@@ -36,8 +37,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class TypeEngineTest extends TestCase {
+public class TypeEngineTest {
 
+	@Test
 	public static void test() {
 		check(Integer.class, Integer.class, Integer.class); // same
 		check(Long.class, Integer.class, Long.class);		// 1st < 2nd

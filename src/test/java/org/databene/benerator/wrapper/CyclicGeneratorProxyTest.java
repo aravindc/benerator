@@ -26,7 +26,8 @@
 
 package org.databene.benerator.wrapper;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
@@ -40,8 +41,9 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * @author Volker Bergmann
  */
 
-public class CyclicGeneratorProxyTest extends TestCase {
+public class CyclicGeneratorProxyTest {
 	
+	@Test
 	public void testSingleIteration() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
 		expect12(proxy);
@@ -49,6 +51,7 @@ public class CyclicGeneratorProxyTest extends TestCase {
 		assertFalse(proxy.available());
 	}
 
+	@Test
 	public void testCyclicIteration() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
 		expect12(proxy);
@@ -57,6 +60,7 @@ public class CyclicGeneratorProxyTest extends TestCase {
 		assertFalse(proxy.available());
 	}
 
+	@Test
 	public void testReset() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
 		assertTrue(proxy.available());
@@ -103,6 +107,6 @@ public class CyclicGeneratorProxyTest extends TestCase {
         public void validate() throws InvalidGeneratorSetupException {
 	        // always valid
         }
-		
 	}
+
 }

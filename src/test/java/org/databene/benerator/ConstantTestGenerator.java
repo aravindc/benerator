@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,10 @@
 package org.databene.benerator;
 
 /**
+ * Helper class for testing.<br/><br/>
  * Created: 16.12.2006 07:51:30
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class ConstantTestGenerator<E> implements Generator<E> {
 
@@ -42,6 +45,7 @@ public class ConstantTestGenerator<E> implements Generator<E> {
     public void validate() {
     }
 
+    @SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
         return (value != null ? (Class<E>) value.getClass() : null);
     }
@@ -66,4 +70,5 @@ public class ConstantTestGenerator<E> implements Generator<E> {
     public String getLastMethodCall() {
         return lastMethodCall;
     }
+    
 }

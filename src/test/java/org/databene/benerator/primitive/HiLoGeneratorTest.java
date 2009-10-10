@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,12 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the HiLoGenerator.
- * @author Volker Bergmann
  * @since 0.3.04
+ * @author Volker Bergmann
  */
 public class HiLoGeneratorTest extends GeneratorClassTest {
 
@@ -39,13 +40,16 @@ public class HiLoGeneratorTest extends GeneratorClassTest {
         super(HiLoGenerator.class);
     }
 
+    @Test
     public void test2() {
         HiLoGenerator generator = new HiLoGenerator(new IncrementGenerator(), 2);
         expectGeneratedSequence(generator, 3L, 4L, 5L, 6L, 7L, 8L);
     }
 
+    @Test
     public void test100() {
         HiLoGenerator generator = new HiLoGenerator(new IncrementGenerator(), 100);
         expectGeneratedSequence(generator, 101L, 102L, 103L);
     }
+
 }

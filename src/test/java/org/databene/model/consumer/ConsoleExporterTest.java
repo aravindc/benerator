@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,7 +34,8 @@ import java.util.Date;
 
 import org.databene.commons.SystemInfo;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link ConsoleExporter}.<br/><br/>
@@ -42,8 +43,9 @@ import junit.framework.TestCase;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class ConsoleExporterTest extends TestCase {
+public class ConsoleExporterTest {
 	
+	@Test
 	public void testSimpleTypes() {
 		check("Test", "Test");
 		check(1, "1");
@@ -51,15 +53,19 @@ public class ConsoleExporterTest extends TestCase {
 		check(true, "true");
 	}
 
+	@Test
 	public void testDate() {
 		Date date = new Date(((60 + 2) * 60 + 3) * 1000);
 		check(date, new SimpleDateFormat("yyyy-MM-dd").format(date));
 	}
 
+	@Test
 	public void testTimestamp() {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		check(timestamp, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(timestamp));
 	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(Object in, String expectedOut) {
 		ConsoleExporter<Object> exporter = new ConsoleExporter<Object>();
@@ -74,4 +80,5 @@ public class ConsoleExporterTest extends TestCase {
 			exporter.close();
 		}
 	}
+	
 }

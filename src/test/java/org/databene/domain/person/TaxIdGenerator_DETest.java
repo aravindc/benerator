@@ -26,7 +26,8 @@
 
 package org.databene.domain.person;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link TaxIdGenerator_DE}.<br/>
@@ -35,8 +36,9 @@ import junit.framework.TestCase;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TaxIdGenerator_DETest extends TestCase {
+public class TaxIdGenerator_DETest {
 
+	@Test
 	public void test() {
 		TaxIdGenerator_DE generator = new TaxIdGenerator_DE();
 		TaxIdValidator_DE validator = new TaxIdValidator_DE();
@@ -45,4 +47,5 @@ public class TaxIdGenerator_DETest extends TestCase {
 			assertTrue(validator.isValid(number, null));
 		}
 	}
+	
 }

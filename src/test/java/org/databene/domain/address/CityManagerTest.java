@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.domain.address;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link CityManager}.<br/><br/>
@@ -34,15 +35,16 @@ import junit.framework.TestCase;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class CityManagerTest extends TestCase {
+public class CityManagerTest {
 	
+	@Test
 	public void testParseCityName() {
 		check("Unterhaching", "Unterhaching", "");
 		check("Bad Wiessee", "Bad Wiessee", "");
 		check("Bad Neustadt an der Saale", "Bad Neustadt", "an der Saale");
 		check("Bern Land", "Bern", "Land");
 		check("Bern 8003", "Bern", "");
-		check("Bern 8003 Rütlibank", "Bern", "");
+		check("Bern 8003 Rï¿½tlibank", "Bern", "");
 		check("Neustadt (Aisch)", "Neustadt", "(Aisch)");
 		check("Neustadt am Kulm", "Neustadt", "am Kulm");
 		check("Munich BY", "Munich", "BY");
@@ -54,4 +56,5 @@ public class CityManagerTest extends TestCase {
 		assertEquals("Name does not match", idName, id.getName());
 		assertEquals("name extension does not match", idExtension, id.getNameExtension());
 	}
+	
 }

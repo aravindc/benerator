@@ -26,7 +26,8 @@
 
 package org.databene.domain.finance;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link CreditCardNumberValidator}.<br/><br/>
@@ -34,8 +35,9 @@ import junit.framework.TestCase;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CreditCardNumberValidatorTest extends TestCase {
+public class CreditCardNumberValidatorTest {
 	
+	@Test
 	public void test() {
 		CreditCardNumberValidator validator = new CreditCardNumberValidator();
 		assertTrue(validator.isValid("4111111111111111", null)); // VISA

@@ -26,27 +26,33 @@
 
 package org.databene.domain.person;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import java.util.Locale;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link SalutationProvider}.<br/><br/>
  * Created: 09.06.2006 22:14:08
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class SalutationProviderTest extends TestCase {
+public class SalutationProviderTest {
 
+	@Test
     public void testWesternLocales() {
         check(Locale.GERMAN,  "Frau", "Herr");
         check(Locale.FRENCH,  "Mme",  "M.");
         check(Locale.ENGLISH, "Mrs.", "Mr.");
     }
     
+	@Test
     public void testCyrillicLocales() {
         check(new Locale("ru"), "Госпожа", "Господин");
         check(new Locale("cs"), "Paní", "Pan");
     }
 
+	@Test
     public void testFallback() {
         check(new Locale("xx"), "Mrs.", "Mr.");
     }
@@ -56,4 +62,5 @@ public class SalutationProviderTest extends TestCase {
         assertEquals(femaleSalutation, provider.salutation(Gender.FEMALE));
         assertEquals(maleSalutation, provider.salutation(Gender.MALE));
     }
+    
 }

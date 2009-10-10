@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,21 +31,23 @@ import java.util.Map;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.commons.CollectionUtil;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the EntityAttributeWeightFunction.<br/><br/>
  * Created at 27.04.2008 17:41:49
  * @since 0.5.2
  * @author Volker Bergmann
- *
  */
-public class FeatureWeightTest extends TestCase {
+public class FeatureWeightTest {
 	
+	@Test
 	public void test() {
 		FeatureWeight weighter = new FeatureWeight("age");
 		assertEquals("age", weighter.getWeightFeature());
-		Map map = CollectionUtil.buildMap("name", "Alice", "age", "23");
+		Map<?,?> map = CollectionUtil.buildMap("name", "Alice", "age", "23");
 		assertEquals(23., weighter.weight(map));
 	}
+	
 }

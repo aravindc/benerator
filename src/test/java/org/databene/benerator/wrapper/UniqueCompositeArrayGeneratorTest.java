@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link UniqueCompositeArrayGenerator}.<br/>
@@ -43,6 +44,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorClassTest {
         super(UniqueCompositeArrayGenerator.class);
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testInteger() {
         Generator<Integer>[] sources = new Generator [] {
@@ -53,6 +55,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorClassTest {
         expectUniqueProducts(new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources),  8).withCeasedAvailability();
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testString() {
         Generator<String>[] sources = new Generator [] {

@@ -6,9 +6,14 @@ import org.databene.commons.TimeUtil;
 
 import java.util.Date;
 
+import org.junit.Test;
+import static junit.framework.Assert.*;
+
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link BirthDateGenerator}.<br/><br/>
  * Created: 09.06.2006 22:14:08
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class BirthDateGeneratorTest extends GeneratorClassTest {
 
@@ -16,6 +21,7 @@ public class BirthDateGeneratorTest extends GeneratorClassTest {
         super(BirthDateGenerator.class);
     }
 
+    @Test
     public void test() throws IllegalGeneratorStateException {
         Date now = new Date();
         BirthDateGenerator generator = new BirthDateGenerator(3, 80);
@@ -26,4 +32,5 @@ public class BirthDateGeneratorTest extends GeneratorClassTest {
             assertTrue("Generated birthdate is to old: " + birtDate, age <= 80);
         }
     }
+    
 }

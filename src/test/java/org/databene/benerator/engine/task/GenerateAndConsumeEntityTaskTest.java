@@ -41,7 +41,8 @@ import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link GenerateAndConsumeEntityTask}.<br/>
@@ -51,13 +52,14 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class GenerateAndConsumeEntityTaskTest extends TestCase {
+public class GenerateAndConsumeEntityTaskTest {
 	
     static final Entity ALICE = new Entity("Person", "name", "Alice");
     static final Entity BOB = new Entity("Person", "name", "Bob");
     
     // tests -----------------------------------------------------------------------------------------------------------
 
+    @Test
     public void testFlat() throws Exception {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();
@@ -74,6 +76,7 @@ public class GenerateAndConsumeEntityTaskTest extends TestCase {
 		assertEquals("fatal", task.getErrorHandler(null).getLevel().name());
 	}
 /*
+    @Test
     public void testRecursive() throws Exception {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();

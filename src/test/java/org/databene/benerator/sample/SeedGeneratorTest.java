@@ -32,7 +32,8 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SeedGenerator}.<br/>
@@ -42,12 +43,13 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class SeedGeneratorTest extends TestCase {
+public class SeedGeneratorTest {
 	
 	private static final Character[] SAMPLE1 = { '0', '1', '2' };
 	private static final Character[] SAMPLE2 = { '0', '1', '1' };
 	private static final Character[] SAMPLE3 = { '0', '0', '1' };
 
+	@Test
 	public void testEmpty() {
 		SeedGenerator<Character> generator = new SeedGenerator<Character>(Character.class, 1);
 		try {
@@ -58,6 +60,7 @@ public class SeedGeneratorTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testDepth0() {
 		try {
 			new SeedGenerator<Character>(Character.class, 0);
@@ -67,22 +70,28 @@ public class SeedGeneratorTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testDepth1() {
 		checkGenerator(1);
 	}
 
+	@Test
 	public void testDepth3() {
 		checkGenerator(3);
 	}
 
+	@Test
 	public void testDepth4() {
 		checkGenerator(4);
 	}
 
+	@Test
 	public void testDepth5() {
 		checkGenerator(5);
 	}
 
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
 	private void checkGenerator(int depth) {
 	    SeedGenerator<Character> gen1 = new SeedGenerator<Character>(Character.class, depth);
         gen1.addSample(SAMPLE1);

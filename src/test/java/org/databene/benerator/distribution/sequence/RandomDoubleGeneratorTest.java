@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,13 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
+import org.junit.Test;
 
 /**
+ * Tests the {@link RandomDoubleGenerator}.<br/><br/>
  * Created: 11.10.2006 23:03:30
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class RandomDoubleGeneratorTest extends GeneratorClassTest {
 
@@ -39,23 +43,28 @@ public class RandomDoubleGeneratorTest extends GeneratorClassTest {
         super(RandomDoubleGenerator.class);
     }
 
+    @Test
     public void testSimple() {
         RandomDoubleGenerator generator = new RandomDoubleGenerator(0, 1, 1);
         checkEqualDistribution(generator, 1000, 0.1, CollectionUtil.toSet(0., 1.));
     }
 
+    @Test
     public void testPrecision() {
         RandomDoubleGenerator generator = new RandomDoubleGenerator(-2, 2, 2);
         checkEqualDistribution(generator, 5000, 0.1, CollectionUtil.toSet(-2., 0., 2.));
     }
 
+    @Test
     public void testPrecisionOffset() {
         RandomDoubleGenerator generator = new RandomDoubleGenerator(-1, 3, 2);
         checkEqualDistribution(generator, 5000, 0.1, CollectionUtil.toSet(-1., 1., 3.));
     }
 
+    @Test
     public void testFractionalPrecision() {
         RandomDoubleGenerator generator = new RandomDoubleGenerator(-0.5, 0.5, 0.5);
         checkEqualDistribution(generator, 5000, 0.1, CollectionUtil.toSet(-0.5, 0., 0.5));
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,10 @@ package org.databene.benerator;
 import org.databene.commons.ArrayFormat;
 
 /**
+ * Helper class for testing.<br/><br/>
  * Created: 16.12.2006 19:36:25
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class SequenceTestGenerator<E> implements Generator<E> {
 
@@ -46,6 +49,7 @@ public class SequenceTestGenerator<E> implements Generator<E> {
             throw new IllegalArgumentException("sequence is null");
     }
 
+    @SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
         return (Class<E>) sequence[0].getClass();
     }
@@ -68,7 +72,9 @@ public class SequenceTestGenerator<E> implements Generator<E> {
         this.cursor = sequence.length;
     }
 
+    @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + ArrayFormat.format(sequence) + ']';
     }
+    
 }

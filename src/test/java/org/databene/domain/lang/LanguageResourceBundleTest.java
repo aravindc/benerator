@@ -29,7 +29,8 @@ package org.databene.domain.lang;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link LanguageResourceBundle}.<br/>
@@ -39,8 +40,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class LanguageResourceBundleTest extends TestCase {
+public class LanguageResourceBundleTest {
 
+	@Test
 	public void test() {
 		ResourceBundle myResources = ResourceBundle.getBundle(LanguageResourceBundle.class.getName(), Locale.GERMAN);
 		assertEquals("der", myResources.getObject("definite.article.singular.0"));

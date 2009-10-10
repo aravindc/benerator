@@ -37,10 +37,13 @@ import org.databene.model.data.InstanceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * Tests the AddressGenerator<br/><br/>
+ * Tests the AddressGenerator.<br/><br/>
  * Created: 12.06.2007 06:45:41
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class AddressGeneratorTest extends GeneratorClassTest {
@@ -53,22 +56,27 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     
     // tests -----------------------------------------------------------------------------------------------------------
 
+    @Test
     public void testGermany() {
         check(Country.GERMANY, true);
     }
 
+    @Test
     public void testUSA() {
         check(Country.US, true);
     }
 
+    @Test
     public void testBrazil() {
         check(Country.BRAZIL, true);
     }
 
+    @Test
     public void testSingapore() {
         check(Country.SINGAPORE, false);
     }
   
+    @Test
     public void testDefaultDescriptorMapping() throws Exception {
     	Country country = Country.getDefault();
     	try {
@@ -79,10 +87,12 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     	}
     }
     
+    @Test
     public void testUSDescriptorMapping() throws Exception {
     	checkDescriptorMapping(Country.US);
     }
     
+    @Test
     public void testDEDescriptorMapping() throws Exception {
     	checkDescriptorMapping(Country.GERMANY);
     }

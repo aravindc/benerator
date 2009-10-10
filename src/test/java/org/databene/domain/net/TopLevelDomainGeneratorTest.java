@@ -27,8 +27,8 @@
 package org.databene.domain.net;
 
 import org.databene.benerator.test.GeneratorClassTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the TopLevelDomainGenerator.<br/><br/>
@@ -38,18 +38,17 @@ import org.slf4j.LoggerFactory;
  */
 public class TopLevelDomainGeneratorTest extends GeneratorClassTest {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EMailAddressGeneratorTest.class);
-
 	public TopLevelDomainGeneratorTest() {
 		super(TopLevelDomainGenerator.class);
 	}
 	
+	@Test
 	public void testGeneration() {
 		TopLevelDomainGenerator generator = new TopLevelDomainGenerator();
 		for (int i = 0; i < 10; i++) {
 			String tld = generator.generate();
-			if (logger.isDebugEnabled())
-				logger.debug(tld);
+			assertNotNull(tld);
 		}
 	}
+	
 }

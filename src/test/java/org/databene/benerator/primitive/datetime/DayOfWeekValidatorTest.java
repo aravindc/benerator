@@ -29,7 +29,8 @@ package org.databene.benerator.primitive.datetime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link DayOfWeekValidator}.<br/>
@@ -39,24 +40,27 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class DayOfWeekValidatorTest extends TestCase {
+public class DayOfWeekValidatorTest {
 
 	public void testDefault() {
 		check(new DayOfWeekValidator(), true, true, true, true, true, true, true);
 	}
 
+	@Test
 	public void testWeekend() {
 		DayOfWeekValidator validator = new DayOfWeekValidator();
 		validator.setWeekdaysSupported(false);
 		check(validator, false, false, false, false, false, true, true);
 	}
 
+	@Test
 	public void testWeekdays() {
 		DayOfWeekValidator validator = new DayOfWeekValidator();
 		validator.setWeekendsSupported(false);
 		check(validator, true, true, true, true, true, false, false);
 	}
 
+	@Test
 	public void testExplicitly() {
 		DayOfWeekValidator validator = new DayOfWeekValidator();
 		validator.setDaysOfWeekSupported(true, false, true, false, true, false, true);

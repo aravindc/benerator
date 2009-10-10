@@ -30,7 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link GeneratorWrapper}.<br/>
@@ -40,8 +41,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class GeneratorWrapperTest extends TestCase {
+public class GeneratorWrapperTest {
 	
+	@Test
 	public void testReset() {
 		MyWrapper wrapper = new MyWrapper(new Source12());
 		expect12(wrapper);
@@ -102,6 +104,6 @@ public class GeneratorWrapperTest extends TestCase {
         public void validate() throws InvalidGeneratorSetupException {
 	        // always valid
         }
-		
 	}
+	
 }

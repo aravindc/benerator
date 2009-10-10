@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,12 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+
+import static junit.framework.Assert.*;
 
 /**
- * Tests the StreetNameGenerator.
+ * Tests the {@link StreetNameGenerator}.<br/><br/>
  * Created: 12.06.2007 06:46:33
  * @author Volker Bergmann
  */
@@ -39,9 +42,11 @@ public class StreetNameGeneratorTest extends GeneratorClassTest {
         super(StreetNameGenerator.class);
     }
 
+    @Test
     public void test() {
         StreetNameGenerator generator = new StreetNameGenerator("DE");
         for (int i = 0; i < 10; i++)
             assertNotNull(generator.generate());
     }
+    
 }

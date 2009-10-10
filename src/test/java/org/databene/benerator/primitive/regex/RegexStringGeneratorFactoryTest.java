@@ -8,6 +8,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.LocaleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link RegexStringGeneratorFactoryTest}.<br/>
@@ -26,20 +28,24 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         Locale.setDefault(LocaleUtil.getFallbackLocale());
     }
 
+    @Test
     public void testNullPattern() throws Exception {
         checkRegexGeneration(null);
     }
 
+    @Test
     public void testEmptyPattern() throws Exception {
         checkRegexGeneration("");
     }
 
+    @Test
     public void testConstant() throws Exception {
         assertEquals("a", gen("a").generate());
         assertEquals("ab", gen("ab").generate());
         assertEquals("abc@xyz.com", gen("abc@xyz\\.com", 16, false).generate());
     }
 
+    @Test
     public void testEscapeCharacters() throws Exception {
         assertEquals("-+*.?,&^$\\|", gen("\\-\\+\\*\\.\\?\\,\\&\\^\\$\\\\\\|").generate());
         assertEquals("()", gen("\\(\\)").generate());
@@ -47,10 +53,12 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         assertEquals("{}", gen("\\{\\}").generate());
     }
     
+    @Test
     public void testStartEndCharacters() throws Exception {
         assertEquals("ABC", gen("^ABC$").generate());
     }
 
+    @Test
     public void testCardinalities() throws Exception {
         checkRegexGeneration("a");
         checkRegexGeneration("a?");
@@ -62,18 +70,21 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         checkRegexGeneration("a{3,5}");
     }
 
+    @Test
     public void testRanges() throws Exception {
         checkRegexGeneration("[a-c]");
         checkRegexGeneration("[a-cA-C]");
 
     }
 
+    @Test
     public void testPredefinedClasses() throws Exception {
         checkRegexGeneration("\\d");
         checkRegexGeneration("\\s");
         checkRegexGeneration("\\w");
     }
 
+    @Test
     public void testCombinations() throws Exception {
         checkRegexGeneration("[^\\w]");
         checkRegexGeneration("[^0-1]");
@@ -87,11 +98,13 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         checkRegexGeneration("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
     }
 
+    @Test
     public void testGroups() throws Exception {
         checkRegexGeneration("(abc){1,3}");
         checkRegexGeneration("(a+b?c*){1,3}");
     }
 
+    @Test
     public void testAlternatives() throws Exception {
         checkRegexGeneration("(a|b|c){1,3}");
         String byteValuePattern = "[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]";
@@ -99,6 +112,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
 		checkRegexGeneration(ipAddressPattern);
     }
 
+    @Test
     public void testUniqueCharSets() throws Exception {
         expectUniqueFromSet(gen("[a]{1,2}", 30, true),
                 "a", "aa").withCeasedAvailability();
@@ -111,6 +125,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         expectUniqueProducts(gen("[0-9]{5}", 0, true), 1000).withContinuedAvailability();
     }
 
+    @Test
     public void testUniqueGroups() throws Exception {
         expectUniqueFromSet(gen("x(ab){1,2}x", 30, true), "xabx", "xababx").withCeasedAvailability();
         expectUniqueFromSet(gen("x(a[01]{2}){1,2}x", 30, true),
@@ -122,6 +137,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         ).withCeasedAvailability();
     }
     
+    @Test
     public void testUniqueAlternatives() throws Exception {
         expectUniqueFromSet(gen("x(a|b)x", 30, true), "xax", "xbx").withCeasedAvailability();
         expectUniqueFromSet(gen("x(a|b){2}x", 30, true), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
@@ -131,6 +147,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
                 "x0x", "x1x", "x00x", "x01x", "x10x", "x11x", "xbx").withCeasedAvailability();
     }
     
+    @Test
     public void testAlternativesBugOfAdgadg() throws Exception {
     	// Tests a bug posted by adgadg at 2009-07-18, see http://databene.org/phpBB3/viewtopic.php?f=3&t=110
     	String pattern = "(0[1239] [1-9]([0-9]{2}) ([0-9]{2} ){2})|(0[1-9][0-9] ([0-9]{2} ){3})";

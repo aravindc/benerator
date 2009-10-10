@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,8 @@ import java.util.Arrays;
 
 import org.databene.commons.ArrayUtil;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link InvalidGeneratorSetupException}.<br/><br/>
@@ -38,8 +39,9 @@ import junit.framework.TestCase;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class InvalidGeneratorSetupExceptionTest extends TestCase {
+public class InvalidGeneratorSetupExceptionTest {
 	
+	@Test
 	public void test() {
 		PropertyMessage m1 = new PropertyMessage("p1", "is null");
 		PropertyMessage m2 = new PropertyMessage("p2", "is too long");
@@ -48,4 +50,5 @@ public class InvalidGeneratorSetupExceptionTest extends TestCase {
 		assertEquals("'p1' is null, 'p2' is too long", e.getMessage());
 		assertTrue(Arrays.equals(mm, e.getPropertyMessages()));
 	}
+	
 }

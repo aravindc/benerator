@@ -47,6 +47,8 @@ import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link GeneratorFactory}.<br/><br/>
@@ -66,6 +68,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // number generators -----------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetNumberGenerator() {
         checkNumberGenerator(Byte.class, (byte)-10, (byte)10, (byte)1);
         checkNumberGenerator(Short.class, (short)-10, (short)10, (short)1);
@@ -112,6 +115,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // sample source ------------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetSampleGenerator() {
         List<Integer> samples = new ArrayList<Integer>();
         for (int i = 0; i < 10; i++)
@@ -120,6 +124,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         checkGenerator(generator);
     }
 
+    @Test
     public void testGetEmptySampleGenerator() {
         Generator<Integer> generator = GeneratorFactory.getSampleGenerator();
         assertNull(generator.generate());
@@ -127,11 +132,13 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // date source --------------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetDateGeneratorByDistributionType() {
         for (Sequence sequence : Sequence.getInstances())
             GeneratorFactory.getDateGenerator(date(2006, 0, 1), date(2006, 11, 31), Period.DAY.getMillis(), sequence, 0);
     }
 
+    @Test
     public void testGetDateGeneratorByDistributionFunction() {
         Date min = date(2006, 0, 1);
         Date max = date(2006, 11, 31);
@@ -141,6 +148,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         }
     }
 
+    @Test
     public void testGetDateGeneratorFromSource() {
         String url = "org/databene/benerator/factory/dates.csv";
         Generator<Date> generator = GeneratorFactory.getDateGenerator(url, "UTF-8", "dd.MM.yyyy", 0);
@@ -153,6 +161,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // text source --------------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetCharacterGeneratorByLocale() {
         checkCharacterGeneratorOfLocale(Locale.GERMANY);
         checkCharacterGeneratorOfLocale(Locale.UK);
@@ -180,24 +189,28 @@ public class GeneratorFactoryTest extends GeneratorTest {
                     specialCount[i] > 0);
     }
 
+    @Test
     public void testGetCharacterGeneratorByRegex() {
         String pattern = "[A-Za-z0-1]";
         Generator<Character> generator = GeneratorFactory.getCharacterGenerator(pattern, Locale.GERMAN, 0);
         checkGenerator(generator);
     }
 
+    @Test
     public void testGetCharacterGeneratorBySet() {
         Set<Character> set = new CharSet('A', 'Z').getSet();
         Generator<Character> generator = GeneratorFactory.getCharacterGenerator(set, 0);
         checkGenerator(generator);
     }
 
+    @Test
     public void testGetRegexGenerator() {
 //      checkRegexGenerator(null, 0, 0, true);
 //      checkRegexGenerator("", 0, 0, false);
       checkRegexGenerator("[1-9]\\d{0,3}", 1, 4, false);
   }
 
+    @Test
     public void testGetUniqueRegexGenerator() {
       Generator<String> generator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{3}", 3, 3, null);
       expectUniqueGenerations(generator, 1000).withCeasedAvailability();
@@ -211,6 +224,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // enum source --------------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetConstantGenerator() {
         checkGenerator(GeneratorFactory.getConstantGenerator(null));
         checkGenerator(GeneratorFactory.getConstantGenerator(""));
@@ -219,6 +233,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // weighted sample source ---------------------------------------------------------------------------------------
 
+    @Test
     public void testGetWeightedSampleGeneratorByValues() {
         List<WeightedSample<Integer>> samples = new ArrayList<WeightedSample<Integer>>();
         int n = 10;
@@ -230,6 +245,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         checkGenerator(generator);
     }
 
+    @Test
     public void testGetWeightedSampleGeneratorBySource() {
         Generator<String> generator = GeneratorFactory.getSampleGenerator("file://weighted-names.csv");
         checkGenerator(generator);
@@ -237,6 +253,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // formatting generators -------------------------------------------------------------------------------------------
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testGetConvertingGenerator() {
         Generator<Double> source = new RandomDoubleGenerator(0, 9);
@@ -248,6 +265,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         checkGenerator(generator);
     }
 
+    @Test
     public void testGetMessageGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
         AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);
@@ -266,6 +284,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // collection generators -------------------------------------------------------------------------------------------
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testGetCollectionGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
@@ -276,6 +295,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         }
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testGetCollectionGeneratorByCardinalityDistributionFunction() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
@@ -290,6 +310,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // array generators ------------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetArrayGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (Sequence sequence : Sequence.getInstances()) {
@@ -298,6 +319,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         }
     }
 
+    @Test
     public void testGetArrayGeneratorByCardinalityDistributionFunction() {
         int minLength = 0;
         int maxLength = 5;
@@ -308,6 +330,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         }
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
@@ -326,6 +349,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     // source generators -----------------------------------------------------------------------------------------------
 
+    @Test
     public void testGetCSVCellGenerator() {
         Generator<String> generator = GeneratorFactory.getCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true);
         assertEquals("Alice", generator.generate());
@@ -334,6 +358,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         assertEquals("Alice", generator.generate());
     }
 
+    @Test
     public void testGetArraySourceGenerator() {
         Generator<String[]> generator = GeneratorFactory.getCSVLineGenerator(
                 "file://org/databene/csv/names-abc.csv", ',', true, true);

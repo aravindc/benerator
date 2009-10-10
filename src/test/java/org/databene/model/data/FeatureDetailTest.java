@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.model.data;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link FeatureDetail}.<br/><br/>
@@ -34,17 +35,20 @@ import junit.framework.TestCase;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class FeatureDetailTest extends TestCase {
+public class FeatureDetailTest {
+
+	@Test
 	public void testEquals() {
-		FeatureDetail min = new FeatureDetail<Integer>("min", Integer.class, true, 1);
+		FeatureDetail<Integer> min = new FeatureDetail<Integer>("min", Integer.class, true, 1);
 		min.setValue(1);
 		assertFalse(min.equals(null));
 		assertFalse(min.equals(""));
 		assertTrue(min.equals(min));
-		FeatureDetail min2 = new FeatureDetail<Integer>("min", Integer.class, true, 1);
+		FeatureDetail<Integer> min2 = new FeatureDetail<Integer>("min", Integer.class, true, 1);
 		min.setValue(2);
 		assertFalse(min.equals(min2));
-		FeatureDetail max = new FeatureDetail<Integer>("max", Integer.class, true, 1);
+		FeatureDetail<Integer> max = new FeatureDetail<Integer>("max", Integer.class, true, 1);
 		assertFalse(min.equals(max));
 	}
+	
 }

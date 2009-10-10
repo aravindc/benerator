@@ -26,7 +26,10 @@
 
 package org.databene.domain.finance;
 
-import junit.framework.TestCase;
+import org.databene.benerator.test.GeneratorClassTest;
+
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link CreditCardNumberGenerator}.<br/><br/>
@@ -34,12 +37,18 @@ import junit.framework.TestCase;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CreditCardNumberGeneratorTest extends TestCase {
+public class CreditCardNumberGeneratorTest extends GeneratorClassTest {
 
+    public CreditCardNumberGeneratorTest() {
+	    super(CreditCardNumberGenerator.class);
+    }
+
+    @Test
 	public void test() {
 		CreditCardNumberGenerator generator = new CreditCardNumberGenerator();
 		CreditCardNumberValidator validator = new CreditCardNumberValidator();
 		for (int i = 0; i < 10; i++)
 			assertTrue(validator.isValid(generator.generate(), null));
 	}
+	
 }

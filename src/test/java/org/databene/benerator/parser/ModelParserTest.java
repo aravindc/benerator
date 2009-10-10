@@ -30,7 +30,8 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link ModelParser}.<br/>
@@ -40,8 +41,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class ModelParserTest extends TestCase {
+public class ModelParserTest {
 
+	@Test
     public void testParseBeanClass() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
 		ModelParser parser = new ModelParser(context);
@@ -52,6 +54,7 @@ public class ModelParserTest extends TestCase {
 		assertEquals(1, ((TestBean) bean).n);
 	}
 	
+	@Test
 	public void testParseBeanSpec() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
 		ModelParser parser = new ModelParser(context);
@@ -73,4 +76,5 @@ public class ModelParserTest extends TestCase {
         	this.n = n;
         }
 	}
+
 }

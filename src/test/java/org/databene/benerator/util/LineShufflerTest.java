@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,21 +28,26 @@ package org.databene.benerator.util;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 
 /**
+ * Tests the LineShuffler.<br/><br/>
  * Created: 22.07.2007 08:16:23
+ * @author Volker Bergmann
  */
-public class LineShufflerTest extends TestCase {
+public class LineShufflerTest {
 
+	@Test
     public void testShuffleList() {
         LineShuffler.shuffle(CollectionUtil.toList("1", "2", "3"));
     }
 
+	@Test
     public void testShuffleFile() throws IOException {
     	boolean[] check = new boolean[3];
         String outFile = "target/LineShufflerTest.txt";
@@ -59,4 +64,5 @@ public class LineShufflerTest extends TestCase {
 		for (boolean c : check)
 			assertTrue(c);
     }
+    
 }

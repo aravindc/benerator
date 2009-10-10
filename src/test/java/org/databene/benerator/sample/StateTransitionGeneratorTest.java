@@ -31,6 +31,8 @@ import java.util.List;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link StateTransitionGenerator}.<br/>
@@ -42,6 +44,7 @@ import org.databene.benerator.util.GeneratorUtil;
 
 public class StateTransitionGeneratorTest extends GeneratorTest {
 
+	@Test
 	@SuppressWarnings("unchecked")
     public void testDeterministicSequence() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
@@ -55,6 +58,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 	}
 	
 	/** Tests a setup that generates Sequences null->1, (1->2, 2->1)* */
+	@Test
 	@SuppressWarnings("unchecked")
     public void testRandomSequence() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
@@ -76,6 +80,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 	}
 	
 	/** Tests a setup that generates Sequences 1*, e.g. (1), (1, 1), (1, 1, 1), ... */
+	@Test
 	@SuppressWarnings("unchecked")
     public void testRecursion() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
@@ -91,6 +96,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		}
 	}
 	
+	@Test
 	public void testNoInitialState() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(1, 2, 0.6);
@@ -102,6 +108,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		}
 	}
 	
+	@Test
 	public void testNoFinalState() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 0.6);

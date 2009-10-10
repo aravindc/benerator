@@ -29,6 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.distribution.sequence.RandomLongGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
+import org.junit.Test;
 
 /**
  * Tests the {@link RandomLongGenerator}.<br/>
@@ -42,18 +43,22 @@ public class RandomLongGeneratorTest extends GeneratorClassTest {
         super(RandomLongGenerator.class);
     }
 
+    @Test
     public void testSimple() {
         RandomLongGenerator generator = new RandomLongGenerator(0, 1L);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(0L, 1L));
     }
 
+    @Test
     public void testPrecision() {
         RandomLongGenerator generator = new RandomLongGenerator(-2, 2L, 2);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-2L, 0L, 2L));
     }
 
+    @Test
     public void testPrecisionOffset() {
         RandomLongGenerator generator = new RandomLongGenerator(-1, 3L, 2);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-1L, 1L, 3L));
     }
+
 }

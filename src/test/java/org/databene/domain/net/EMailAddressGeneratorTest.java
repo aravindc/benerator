@@ -29,13 +29,14 @@ package org.databene.domain.net;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * A EMailGeneratorTest.<br/><br/>
  * Created at 20.04.2008 08:16:28
  * @since 0.5.2
  * @author Volker Bergmann
- *
  */
 public class EMailAddressGeneratorTest extends GeneratorClassTest {
 	
@@ -45,10 +46,12 @@ public class EMailAddressGeneratorTest extends GeneratorClassTest {
 		super(EMailAddressGenerator.class);
 	}
 
+	@Test
 	public void testDE() {
 		check("DE");
 	}
 
+	@Test
 	public void testUS() {
 		check("US");
 	}
@@ -57,7 +60,9 @@ public class EMailAddressGeneratorTest extends GeneratorClassTest {
 		EMailAddressGenerator generator = new EMailAddressGenerator(datasetName);
 		for (int i = 0; i < 10; i++) {
 			String email = generator.generate();
+			assertNotNull(email);
 			logger.debug(email);
 		}
 	}
+	
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,13 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the UniqueFixedLengthStringGenerator.<br/>
  * <br/>
  * Created: 15.11.2007 14:30:28
+ * @author Volker Bergmann
  */
 public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
 
@@ -39,34 +41,41 @@ public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
         super(UniqueFixedLengthStringGenerator.class);
     }
 
+    @Test
     public void testZeroLength() {
         expectGeneratedSequence(new UniqueFixedLengthStringGenerator(0), "").withCeasedAvailability();
     }
 
+    @Test
     public void testConstantDigit() {
         expectGeneratedSequence(new UniqueFixedLengthStringGenerator(1, '0'), "0").withCeasedAvailability();
     }
 
+    @Test
     public void testOneBinaryDigit() {
         expectGeneratedSet(new UniqueFixedLengthStringGenerator(1, '0', '1'), "0", "1").withCeasedAvailability();
         expectUniqueProducts(new UniqueFixedLengthStringGenerator(1, '0', '1'), 2).withCeasedAvailability();
     }
 
+    @Test
     public void testTwoBinaryDigits() {
         expectGeneratedSet(new UniqueFixedLengthStringGenerator(2, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
         expectUniqueProducts(new UniqueFixedLengthStringGenerator(2, '0', '1'), 4).withCeasedAvailability();
     }
 
+    @Test
     public void testTwoAlphaDigits() {
         expectGeneratedSet(new UniqueFixedLengthStringGenerator(2, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
         expectUniqueProducts(new UniqueFixedLengthStringGenerator(2, 'A', 'O'), 4).withCeasedAvailability();
         expectUniqueProducts(new UniqueFixedLengthStringGenerator(2, 'A', 'B', 'C'), 9).withCeasedAvailability();
     }
 
+    @Test
     public void testLongString() {
         expectUniqueProducts(new UniqueFixedLengthStringGenerator(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
     }
 
+    @Test
     public void testMany() {
         UniqueFixedLengthStringGenerator generator = new UniqueFixedLengthStringGenerator(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
         expectUniqueProducts(generator, 1000).withContinuedAvailability();

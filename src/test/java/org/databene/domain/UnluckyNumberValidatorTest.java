@@ -28,7 +28,10 @@ package org.databene.domain;
 
 import org.databene.domain.address.Country;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link UnluckyNumberValidator}.<br/>
@@ -38,26 +41,28 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class UnluckyNumberValidatorTest extends TestCase {
+public class UnluckyNumberValidatorTest {
 	
 	private Country defaultCountry;
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		defaultCountry = Country.getDefault();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		Country.setDefault(defaultCountry);
 	}
 	
+	@Test
 	public void testIllegalNumbers() {
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
 		assertFalse(validator.isValid(null, null));
 		assertFalse(validator.isValid("", null));
 	}
 	
+	@Test
 	public void testGermany() {
 		Country.setDefault(Country.GERMANY);
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
@@ -71,6 +76,7 @@ public class UnluckyNumberValidatorTest extends TestCase {
 		assertFalse(validator.isValid("012345689", null));
 	}
 	
+	@Test
 	public void testItaly() {
 		Country.setDefault(Country.ITALY);
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
@@ -84,6 +90,7 @@ public class UnluckyNumberValidatorTest extends TestCase {
 		assertFalse(validator.isValid("012345689", null));
 	}
 	
+	@Test
 	public void testChina() {
 		Country.setDefault(Country.CHINA);
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
@@ -97,6 +104,7 @@ public class UnluckyNumberValidatorTest extends TestCase {
 		assertFalse(validator.isValid("0103567", null));
 	}
 	
+	@Test
 	public void testJapan() {
 		Country.setDefault(Country.JAPAN);
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
@@ -110,6 +118,7 @@ public class UnluckyNumberValidatorTest extends TestCase {
 		assertFalse(validator.isValid("0123567", null));
 	}
 	
+	@Test
 	public void testCustom() {
 		UnluckyNumberValidator validator = new UnluckyNumberValidator();
 		validator.setLuckyNumbers("0", "2", "4");

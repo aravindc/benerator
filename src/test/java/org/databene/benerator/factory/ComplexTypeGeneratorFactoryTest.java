@@ -34,13 +34,14 @@ import org.databene.benerator.util.LightweightGenerator;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the ComplexTypeGeneratorFactory.<br/><br/>
  * Created at 27.04.2008 18:29:59
  * @since 0.5.2
  * @author Volker Bergmann
- *
  */
 public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
@@ -50,6 +51,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	private Entity alice = new Entity("person", "name", "Alice", "age", "23");
 	private Entity otto = new Entity("person", "name", "Otto", "age", "89");
 	
+	@Test
 	public void testGeneratorBean() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("LocaleGenerator");
 		type.setDetailValue("generator", MyGenerator.class.getName());
@@ -81,6 +83,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
         }
 	}
 
+	@Test
 	public void testTabbedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_TAB_CSV);
@@ -89,6 +92,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
 
+	@Test
 	public void testSimpleCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
@@ -96,6 +100,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
 
+	@Test
 	public void testCyclicCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
@@ -104,6 +109,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		expectGeneratedSequence(generator, alice, otto, alice).withContinuedAvailability();
 	}
 
+	@Test
 	public void testWeightedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
@@ -117,6 +123,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		assertEquals(n * 24. / (24. + 89.), counter.getCount(alice), n / 20);
 	}
 
+	@Test
 	public void testSequencedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
@@ -126,6 +133,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 	
 /*
+	@Test
 	public void testUniqueCSVImport() { // TODO v0.6.0 uniqueness
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("Person");
 		type.setSource("org/databene/benerator/factory/person.csv");
@@ -143,4 +151,5 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
 		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type, false, context);
 	}
+	
 }

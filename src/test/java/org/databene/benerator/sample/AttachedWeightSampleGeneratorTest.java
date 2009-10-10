@@ -31,6 +31,8 @@ import java.util.List;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link AttachedWeightSampleGenerator}.<br/>
@@ -46,11 +48,13 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
         super(AttachedWeightSampleGenerator.class);
     }
 
+    @Test
     public void testInstantiation() throws Exception {
         new AttachedWeightSampleGenerator<Integer>();
         new AttachedWeightSampleGenerator<String>();
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testDistribution() throws Exception {
         WeightedSample<Integer>[] samples = new WeightedSample[] {
@@ -75,4 +79,5 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
             assertTrue(ratio > 0.9 && ratio < 1.1);
         }
     }
+    
 }

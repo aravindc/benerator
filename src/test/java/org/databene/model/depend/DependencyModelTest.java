@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,14 +28,15 @@ package org.databene.model.depend;
 
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the DependencyModel class.
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class DependencyModelTest extends TestCase {
+public class DependencyModelTest {
     
     /**
      * <pre>
@@ -43,6 +44,7 @@ public class DependencyModelTest extends TestCase {
      *   b - c
      * </pre>
      */
+	@Test
     public void testLineDependencies() {
         Dep zero = new Dep("0");
         Dep a = new Dep("a");
@@ -61,6 +63,7 @@ public class DependencyModelTest extends TestCase {
      *   b   d
      * </pre>
      */
+	@Test
     public void testNetDependencies() {
         // create nodes
         Dep a = new Dep("a");
@@ -85,6 +88,7 @@ public class DependencyModelTest extends TestCase {
         assertEquals(f, oo.get(5));
     }
 
+	@Test
     public void testOptionalCycle() {
         Dep a = new Dep("a");
         Dep b = new Dep("b");
@@ -94,6 +98,7 @@ public class DependencyModelTest extends TestCase {
                 a, a, b);
     }
 
+	@Test
     public void testUnacceptedCycle() {
         try {
             Dep a = new Dep("a");
@@ -106,12 +111,14 @@ public class DependencyModelTest extends TestCase {
         }
     }
 
+	@Test
     public void testAcceptedSelfCycle() {
         Dep a = new Dep("a");
         a.addRequiredProvider(a);
         expectOrder(true, a, a);
     }
    
+	@Test
     public void testAcceptedCycle2() {
         DependencyModel<Dep> model = new DependencyModel<Dep>();
         Dep a = new Dep("a");
@@ -123,6 +130,7 @@ public class DependencyModelTest extends TestCase {
         assertTrue((oo.get(0) == a && oo.get(1) == b) || (oo.get(0) == b && oo.get(1) == a));
     }
 
+	@Test
     public void testAcceptedCycle3() {
         Dep zero = new Dep("0");
         Dep a = new Dep("a", zero);

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,8 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the HexUUIDGenerator.<br/>
@@ -41,6 +43,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
         super(HibUUIDGenerator.class);
     }
 
+    @Test
     public void testWithoutSeparator() {
         Generator<String> generator = new HibUUIDGenerator();
         for (int i = 0; i < 5; i++) {
@@ -49,6 +52,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
         }
     }
 
+    @Test
     public void testMinusSeparator() {
         Generator<String> generator = new HibUUIDGenerator("-");
         for (int i = 0; i < 5; i++) {
@@ -62,6 +66,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
         }
     }
     
+    @Test
     public void testUniqueness() {
         Generator<String> generator = new UUIDGenerator();
         expectUniqueGenerations(generator, 100);

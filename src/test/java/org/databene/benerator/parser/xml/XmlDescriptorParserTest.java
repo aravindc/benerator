@@ -29,7 +29,8 @@ package org.databene.benerator.parser.xml;
 import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link XmlDescriptorParser}.<br/>
@@ -39,8 +40,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class XmlDescriptorParserTest extends TestCase {
+public class XmlDescriptorParserTest {
 
+	@Test
 	public void testUnescaping() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<bla name='a\\tb\\\\c'/>");
 		assertEquals("a\tb\\c", XmlDescriptorParser.parseStringAttribute(element, "name", null));

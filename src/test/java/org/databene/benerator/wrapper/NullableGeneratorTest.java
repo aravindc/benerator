@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,13 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
+import org.junit.Test;
 
 /**
+ * Tests the {@link NullableGenerator}.<br/><br/>
  * Created: 11.10.2006 23:10:34
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class NullableGeneratorTest extends GeneratorClassTest {
 
@@ -39,21 +43,25 @@ public class NullableGeneratorTest extends GeneratorClassTest {
         super(NullableGenerator.class);
     }
 
+    @Test
     public void testNoNull() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         NullableGenerator<Integer> generator = new NullableGenerator<Integer>(source, 0);
         checkProductSet(generator, 100, CollectionUtil.toSet(1));
     }
 
+    @Test
     public void testOnlyNull() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         NullableGenerator<Integer> generator = new NullableGenerator<Integer>(source, 1);
         checkProductSet(generator, 100, CollectionUtil.toSet((Integer)null));
     }
 
+    @Test
     public void testFiftyPercent() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         NullableGenerator<Integer> generator = new NullableGenerator<Integer>(source, (float)0.5);
         checkEqualDistribution(generator, 1000, 0.1, CollectionUtil.toSet(null, 1));
     }
+
 }

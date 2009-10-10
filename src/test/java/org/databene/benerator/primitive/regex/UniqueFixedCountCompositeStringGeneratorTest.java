@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,11 +30,13 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the UniqueFixedCountCompositeStringGenerator.<br/>
  * <br/>
  * Created: 17.11.2007 17:45:41
+ * @author Volker Bergmann
  */
 public class UniqueFixedCountCompositeStringGeneratorTest extends GeneratorClassTest {
 
@@ -42,6 +44,8 @@ public class UniqueFixedCountCompositeStringGeneratorTest extends GeneratorClass
         super(UniqueFixedCountCompositeStringGenerator.class);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
     public void testConstant() {
         Generator<String> generator = new UniqueFixedCountCompositeStringGenerator(
                 new ConstantGenerator("0"),
@@ -49,6 +53,8 @@ public class UniqueFixedCountCompositeStringGeneratorTest extends GeneratorClass
         expectUniqueFromSet(generator,  "01").withCeasedAvailability();
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
     public void testVariable() {
         Generator<String> generator = new UniqueFixedCountCompositeStringGenerator(
                 new SequenceTestGenerator("A", "B", "C"),

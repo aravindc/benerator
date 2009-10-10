@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,17 +26,22 @@
 
 package org.databene.benerator.csv;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import java.io.IOException;
 
 import org.databene.platform.csv.CSVCellIterator;
 
 /**
+ * Tests the {@link CSVCellIterator}.<br/><br/>
  * Created: 11.10.2006 23:14:33
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class CSVCellIteratorTest extends TestCase {
+public class CSVCellIteratorTest {
 
+	@Test
     public void test() throws IOException {
         CSVCellIterator iterator = new CSVCellIterator("org/databene/csv/names-abc.csv", ',');
         assertTrue(iterator.hasNext());
@@ -47,4 +52,5 @@ public class CSVCellIteratorTest extends TestCase {
         assertEquals("Charly", iterator.next());
         assertFalse(iterator.hasNext());
     }
+	
 }

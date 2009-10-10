@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,11 +27,13 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the UniqueStringGenerator.<br/>
  * <br/>
  * Created: 16.11.2007 12:03:55
+ * @author Volker Bergmann
  */
 public class UniqueStringGeneratorTest extends GeneratorClassTest {
 
@@ -39,9 +41,11 @@ public class UniqueStringGeneratorTest extends GeneratorClassTest {
         super(UniqueStringGenerator.class);
     }
 
+    @Test
     public void testUniqueVolume() {
         expectUniqueProducts(new UniqueStringGenerator(0, 1, '0', '1'),  3).withCeasedAvailability();
         expectUniqueProducts(new UniqueStringGenerator(0, 2, '0', '1'),  7).withCeasedAvailability();
         expectUniqueProducts(new UniqueStringGenerator(3, 4, '0', '1', '3'), 27 + 81).withCeasedAvailability();
     }
+    
 }

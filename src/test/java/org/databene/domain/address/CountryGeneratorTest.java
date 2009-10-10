@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,14 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link CountryGenerator}.<br/><br/>
  * Created: 12.06.2007 06:46:13
+ * @since 0.2
+ * @author Volker Bergmann
  */
 public class CountryGeneratorTest extends GeneratorClassTest {
 
@@ -37,9 +42,11 @@ public class CountryGeneratorTest extends GeneratorClassTest {
         super(CountryGenerator.class);
     }
 
+    @Test
     public void test() {
         CountryGenerator generator = new CountryGenerator();
         for (int i = 0; i < 1; i++)
             assertNotNull(generator.generate());
     }
+    
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,26 +26,32 @@
 
 package org.databene.benerator;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.Validator;
 
 /**
+ * Tests the {@link ValidatingGeneratorProxy}.<br/><br/>
  * Created: 29.09.2006 17:01:59
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class ValidatingGeneratorProxyTest extends TestCase {
+public class ValidatingGeneratorProxyTest {
 
+	@Test
     public void testValid() {
-        Generator generator = new ValidatingGeneratorProxy<Integer>(
+        Generator<?> generator = new ValidatingGeneratorProxy<Integer>(
                 new ConstantGenerator<Integer>(1),
                 new MockValidator(true));
         for (int i = 0; i < 10; i++)
             generator.generate();
     }
 
+	@Test
     public void testInvalid() {
-        Generator generator = new ValidatingGeneratorProxy<Integer>(
+        Generator<?> generator = new ValidatingGeneratorProxy<Integer>(
                 new ConstantGenerator<Integer>(1),
                 new MockValidator(false));
         try {
@@ -68,4 +74,5 @@ public class ValidatingGeneratorProxyTest extends TestCase {
             return result;
         }
     }
+    
 }

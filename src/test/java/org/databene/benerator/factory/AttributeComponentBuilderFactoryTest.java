@@ -42,11 +42,14 @@ import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * Tests the ComponentGeneratorFactory class for all useful setups.<br/>
+ * Tests the {@link ComponentBuilderFactory} class for all useful attribute setups.<br/>
  * <br/>
  * Created: 10.08.2007 12:40:41
+ * @author Volker Bergmann
  */
 public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	
@@ -64,26 +67,30 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	
 	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
 
+	@Test
 	public void testCSVStringAttribute() {
-		PartDescriptor name = createCSVStringAttributeBuilder();
+		PartDescriptor name = createCSVStringAttributeDescriptor();
 		expectUniqueSequence(name, "Alice", "Bob", "Charly");
 	}
 
+	@Test
 	public void testCSVStringAttributeStep() {
-		PartDescriptor name = createCSVStringAttributeBuilder();
+		PartDescriptor name = createCSVStringAttributeDescriptor();
 		SimpleTypeDescriptor localType = (SimpleTypeDescriptor) name.getLocalType(false);
 		localType.setDistribution("step");
 		localType.setMin("0");
 		expectUniqueSequence(name, "Alice", "Bob", "Charly");
 	}
 	
+	@Test
 	public void testCSVStringAttributeUnique() {
-		PartDescriptor name = createCSVStringAttributeBuilder();
+		PartDescriptor name = createCSVStringAttributeDescriptor();
 		name.setUnique(true);
 		expectUniqueSet(name, "Alice", "Bob", "Charly");
 	}
 
 	/** TODO v0.6 support random unique
+	@Test
 	public void testCSVStringAttributeRandomUnique() {
 		PartDescriptor name = createCSVStringAttributeBuilder();
 		name.getLocalType().setDistribution(Sequence.RANDOM);
@@ -92,11 +99,11 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	}
 	*/
 
-	private PartDescriptor createCSVStringAttributeBuilder() {
-		return createCSVStringAttributeBuilder(NAMES_CSV, ",");
+	private PartDescriptor createCSVStringAttributeDescriptor() {
+		return createCSVStringAttributeDescriptor(NAMES_CSV, ",");
 	}
 	
-	private PartDescriptor createCSVStringAttributeBuilder(String uri, String separator) {
+	private PartDescriptor createCSVStringAttributeDescriptor(String uri, String separator) {
 		String componentName = "name";
 		PartDescriptor name = new PartDescriptor(componentName);
 		name.setMinCount(new ConstantExpression<Long>(1L));
@@ -108,6 +115,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	
 	// nullQuota == 1 evaluation ---------------------------------------------------------------------------------------
 	
+	@Test
 	@SuppressWarnings("unchecked")
     public void testNullQuotaOneReference() {
 		String componentName = "id";
@@ -117,6 +125,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		expectNulls(helper, 10);
 	}
 
+	@Test
 	@SuppressWarnings("unchecked")
     public void testNullQuotaOneAttribute() {
 		String componentName = "part";
@@ -132,6 +141,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests UUID generation
 	 * <id name="id" strategy="uuid"/>
 	 */
+	@Test
 	@SuppressWarnings("unchecked")
     public void testUuid() {
 		String componentName = "id";
@@ -147,6 +157,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests 'increment' id generation with unspecified type
 	 * <id name="id" strategy="increment"/>
 	 */
+	@Test
 	@SuppressWarnings("unchecked")
     public void testIncrementIdWithoutType() {
 		String componentName = "id";
@@ -162,6 +173,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests id generation with unspecified type and strategy
 	 * <id name="id"/>
 	 */
+	@Test
 	@SuppressWarnings("unchecked")
     public void testDefaultIdGeneration() {
 		String componentName = "id";
@@ -176,6 +188,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	 * Tests 'increment' id generation with 'byte' type
 	 * <id name="id" type="byte" strategy="increment"/>
 	 */
+	@Test
 	@SuppressWarnings("unchecked")
     public void testIncrementByteId() {
 		String componentName = "id";
@@ -187,6 +200,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		expectGeneratedSequenceOnce(helper2, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
 	}
 	
+	@Test
     @SuppressWarnings("cast")
     public void testAlternative() {
     	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
@@ -204,6 +218,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
     // test construction alternatives ----------------------------------------------------------------------------------
     
 /*
+	@Test
     public void testGenerator() {
         createGenerator("test", "generator", BooleanGenerator.class.getName());
         createGenerator("test",
@@ -218,6 +233,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "nullQuota", "0.5");
     }
 
+	@Test
     public void testSamples() {
         createGenerator("test",
                 "values", "1,2,3");
@@ -275,7 +291,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "nullQuota", "0.5");
     }
 
-    public void testNumbers() {
+    @Test
+	public void testNumbers() {
         checkNumberType("int");
         checkNumberType("byte");
         checkNumberType("short");
@@ -286,6 +303,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
         checkNumberType("big_decimal");
     }
 
+	@Test
     public void testStrings() {
         createGenerator("test",
                 "type", "string");
@@ -312,6 +330,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "maxLength", "6");
     }
 
+	@Test
     public void testBoolean() {
         createGenerator("test",
                 "type", "boolean");
@@ -327,6 +346,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "nullQuota", "0");
     }
 
+	@Test
     public void testDate() {
         createGenerator("test", "type", "date");
         createGenerator("test",
@@ -357,6 +377,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
         );
     }
 
+	@Test
     public void testCharacter() {
         createGenerator("test", "type", "char");
         createGenerator("test",
@@ -366,6 +387,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "nullQuota", "0.5");
     }
 
+	@Test
     public void testImportToType() {
         createGenerator("test",
                 "source", "org/databene/benerator/composite/dates.txt",
@@ -402,6 +424,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "type", "big_decimal");
     }
 
+	@Test
     public void testDateImport() {
         createGenerator("test",
                 "source", "org/databene/benerator/composite/dates.txt",
@@ -409,6 +432,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
                 "type", "date");
     }
 
+	@Test
     public void testConvertingImport() {
         createGenerator("test",
                 "source", "org/databene/benerator/composite/dates.txt",
@@ -421,6 +445,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
+	@Test
     private void checkNumberType(String type) {
         createGenerator("test",
                 "type", type);
@@ -455,6 +480,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 */
     // private helpers -------------------------------------------------------------------------------------------------
 /*
+	@Test
     private ComponentBuilder createGenerator(String name, String ... featureDetails) {
         GenerationSetup setup = new SimpleGenerationSetup();
         logger.debug("Test #" + (++testCount));

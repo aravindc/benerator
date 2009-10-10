@@ -34,7 +34,8 @@ import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.Entity;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link DescriptorRunner}.<br/>
@@ -44,10 +45,11 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class DescriptorRunnerTest extends TestCase {
+public class DescriptorRunnerTest {
 
     private static final String EXPORT_FILE_URI = "test-uri.txt";
 
+    @Test
 	public void testProgrammaticInvocation() throws IOException {
 		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
 				"<create-entities name='Person' count='1' consumer='myConsumer'>" +
@@ -64,6 +66,7 @@ public class DescriptorRunnerTest extends TestCase {
 		assertEquals(new Entity("Person", "name", "Alice"), myConsumer.products.get(0));
 	}
 	
+    @Test
 	public void testGetGeneratedFiles() {
 		DescriptorRunner runner = new DescriptorRunner("string://<setup/>");
 		runner.addResource(new TestExporter());
@@ -93,6 +96,6 @@ public class DescriptorRunnerTest extends TestCase {
         public void startConsuming(Entity entity) {
 	        products.add(entity);
         }
-		
 	}
+
 }

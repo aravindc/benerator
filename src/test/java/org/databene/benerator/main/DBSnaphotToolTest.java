@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,7 +36,8 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the DBSnapshotTool.<br/><br/>
@@ -44,12 +45,13 @@ import junit.framework.TestCase;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class DBSnaphotToolTest extends TestCase {
+public class DBSnaphotToolTest {
 
 	private static final String SCRIPT = "org/databene/benerator/main/create_tables.hsql.sql";
 	private static final String SNAPSHOT = "target/test.snapshot.dbunit.xml";
 	private static final String ENCODING = "iso-8859-15";
 	
+	@Test
 	public void testMissingUrl() {
 		try {
 			System.setProperty(DBSnapshotTool.DB_URL, "");
@@ -61,6 +63,7 @@ public class DBSnaphotToolTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testMissingDriver() {
 		try {
 			System.setProperty(DBSnapshotTool.DB_URL, HSQLUtil.IN_MEMORY_URL_PREFIX + "benerator");
@@ -72,6 +75,7 @@ public class DBSnaphotToolTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testSuccess() throws Exception {
 		// prepare DB
 		String db = getClass().getSimpleName();
@@ -97,4 +101,5 @@ public class DBSnaphotToolTest extends TestCase {
 		assertEquals("1", child.getAttribute("ID"));
 		assertEquals("R&B", child.getAttribute("NAME"));
 	}
+	
 }

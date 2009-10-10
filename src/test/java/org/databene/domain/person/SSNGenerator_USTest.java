@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,8 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SSNGenerator_US}.<br/>
@@ -40,9 +42,9 @@ public class SSNGenerator_USTest extends GeneratorClassTest {
 
 	public SSNGenerator_USTest() {
 		super(SSNGenerator_US.class);
-		
 	}
 
+	@Test
 	public void testDefault() {
 		SSNGenerator_US generator = new SSNGenerator_US();
 		assertEquals(String.class, generator.getGeneratedType());

@@ -28,6 +28,7 @@ package org.databene.domain.product;
 
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.Validator;
+import org.junit.Test;
 
 /**
  * Tests the EANGenerator.<br/>
@@ -41,11 +42,14 @@ public class EANGeneratorTest extends GeneratorClassTest {
         super(EANGenerator.class);
     }
 
+    @Test
     public void testNonUnique() {
-        expectGenerations(new EANGenerator(false), 100, (Validator) new EANValidator());
+        expectGenerations(new EANGenerator(false), 100, (Validator<?>) new EANValidator());
     }
 
+    @Test
     public void testUnique() {
         expectUniqueGenerations(new EANGenerator(true), 10000);
     }
+    
 }

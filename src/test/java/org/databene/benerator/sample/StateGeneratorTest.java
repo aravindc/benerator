@@ -31,6 +31,8 @@ import java.util.List;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link StateGenerator}.<br/>
@@ -42,6 +44,7 @@ import org.databene.benerator.util.GeneratorUtil;
 
 public class StateGeneratorTest extends GeneratorTest {
 
+	@Test
 	public void testDeterministicSequence() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 1.);
@@ -50,12 +53,14 @@ public class StateGeneratorTest extends GeneratorTest {
 		expectGeneratedSequence(generator, 1, 2).withCeasedAvailability();
 	}
 	
+	@Test
 	public void testDeterministicSequenceByStringSpec() {
 		StateGenerator<String> generator = new StateGenerator<String>("->1,1->2,2->");
 		expectGeneratedSequence(generator, "1", "2").withCeasedAvailability();
 	}
 	
 	/** Tests a setup that generates Sequences (1, 2)*, e.g. (1, 2), (1, 2, 1, 2), (1, 2, 1, 2, 1, 2), ... */
+	@Test
 	public void testRandomSequence() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 1.);
@@ -72,6 +77,7 @@ public class StateGeneratorTest extends GeneratorTest {
 	}
 	
 	/** Tests a setup that generates Sequences (1, 2)*, e.g. (1, 2), (1, 2, 1, 2), (1, 2, 1, 2, 1, 2), ... */
+	@Test
 	public void testRandomSequenceByStringSpec() {
 		StateGenerator<String> generator = new StateGenerator<String>("->1,1->2,2->1[0.5],2->[0.5]");
 		for (int n = 0; n < 10; n++) {
@@ -84,6 +90,7 @@ public class StateGeneratorTest extends GeneratorTest {
 	}
 	
 	/** Tests a setup that generates Sequences 1*, e.g. (1), (1, 1), (1, 1, 1), ... */
+	@Test
 	public void testRecursion() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 1.);
@@ -97,6 +104,7 @@ public class StateGeneratorTest extends GeneratorTest {
 		}
 	}
 	
+	@Test
 	public void testNoInitialState() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(1, 2, 0.6);
@@ -108,6 +116,7 @@ public class StateGeneratorTest extends GeneratorTest {
 		}
 	}
 	
+	@Test
 	public void testNoFinalState() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 0.6);

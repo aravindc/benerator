@@ -30,9 +30,14 @@ import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link ConvertingGenerator}.<br/><br/>
  * Created: 11.10.2006 23:12:21
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class ConvertingGeneratorTest extends GeneratorClassTest {
 
@@ -40,6 +45,7 @@ public class ConvertingGeneratorTest extends GeneratorClassTest {
         super(ConvertingGenerator.class);
     }
 
+    @Test
     public void test() {
         ConstantTestGenerator<Integer> source = new ConstantTestGenerator<Integer>(1);
         TestConverter converter = new TestConverter();
@@ -65,4 +71,5 @@ public class ConvertingGeneratorTest extends GeneratorClassTest {
             return String.valueOf(sourceValue);
         }
     }
+    
 }

@@ -26,7 +26,8 @@
 
 package org.databene.domain.finance;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link IBANValidator}.<br/>
@@ -35,8 +36,9 @@ import junit.framework.TestCase;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class IBANValidatorTest extends TestCase {
+public class IBANValidatorTest {
 	
+	@Test
 	public void test() {
 		IBANValidator v = new IBANValidator();
 		assertFalse(v.isValid(null, null));
@@ -47,4 +49,5 @@ public class IBANValidatorTest extends TestCase {
 		assertFalse( v.isValid("DE12345678", null));
 		assertTrue( v.isValid("DE68210501700012345678", null));
 	}
+	
 }

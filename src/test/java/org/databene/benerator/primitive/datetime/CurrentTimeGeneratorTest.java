@@ -29,6 +29,7 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
+import org.junit.Test;
 
 import java.lang.annotation.Annotation;
 import java.util.Date;
@@ -46,6 +47,7 @@ public class CurrentTimeGeneratorTest extends GeneratorClassTest {
         super(CurrentTimeGenerator.class);
     }
 
+    @Test
     public void testProducts() {
         expectGenerations(new CurrentTimeGenerator(), 10, new CurrentTimeValidator());
     }

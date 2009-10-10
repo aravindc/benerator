@@ -33,6 +33,7 @@ import org.databene.benerator.sample.SequenceGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
 
 /**
  * Tests the UniqueAlternativeGenerator.<br/>
@@ -51,6 +52,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         expectUniqueFromSet(generator(0, 1, 2), 0, 1, 2).withCeasedAvailability();
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testMultiAlternatives() {
         Generator<Integer>[] gens = new Generator[2];
@@ -60,6 +62,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         expectUniqueFromSet(generator, 0, 1, 2).withCeasedAvailability();
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     public void testManyAlternatives() {
         Generator<Integer>[] gens = new Generator[2];
@@ -69,6 +72,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         expectUniqueGenerations(generator, 10).withCeasedAvailability();
     }
 
+    @Test
     @SuppressWarnings("unchecked")
     private Generator<Integer> generator(int ... values) {
         Generator<Integer>[] gens = new Generator[values.length];

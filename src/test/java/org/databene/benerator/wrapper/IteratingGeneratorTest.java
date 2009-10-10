@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,19 +27,20 @@
 package org.databene.benerator.wrapper;
 
 import java.util.Arrays;
-import java.util.Iterator;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
-import org.databene.commons.HeavyweightIterable;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.iterator.HeavyweightIterableAdapter;
+
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the IteratingGenerator.<br/>
  * <br/>
  * Created: 01.09.2007 17:22:03
+ * @author Volker Bergmann
  */
 public class IteratingGeneratorTest extends GeneratorClassTest {
 
@@ -47,8 +48,9 @@ public class IteratingGeneratorTest extends GeneratorClassTest {
         super(IteratingGenerator.class);
     }
 
+    @Test
     public void testBehaviour() {
-        HeavyweightIterableAdapter iterable = new HeavyweightIterableAdapter(Arrays.asList(1, 2));
+        HeavyweightIterableAdapter<Integer> iterable = new HeavyweightIterableAdapter<Integer>(Arrays.asList(1, 2));
 		DefaultTypedIterable<Integer> hwIterable = new DefaultTypedIterable<Integer>(Integer.class, iterable);
 		Generator<Integer> gen = new IteratingGenerator<Integer>(hwIterable);
         assertTrue(gen.available());

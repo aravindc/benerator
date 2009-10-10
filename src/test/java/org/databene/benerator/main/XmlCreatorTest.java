@@ -28,7 +28,7 @@ package org.databene.benerator.main;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Document;
@@ -39,10 +39,11 @@ import org.w3c.dom.Document;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class XmlCreatorTest extends TestCase {
+public class XmlCreatorTest {
 
 	private static final String SCHEMA_FILE = "org/databene/platform/xml/simple-element-test.xsd";
 
+	@Test
 	public void testSimpleTypeElement() throws IOException {
         createXMLFile(SCHEMA_FILE, "root", "target/" + getClass().getSimpleName() + ".xml");
     }
@@ -53,4 +54,5 @@ public class XmlCreatorTest extends TestCase {
         Document document = XMLUtil.parse(filename);
         return document;
     }
+    
 }

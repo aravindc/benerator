@@ -30,6 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.domain.math.FibonacciSequence;
 
+import org.junit.Test;
+
 /**
  * Tests the {@link FibonacciSequence}.<br/>
  * <br/>
@@ -40,6 +42,7 @@ import org.databene.domain.math.FibonacciSequence;
 
 public class FibonacciSequenceTest extends GeneratorTest {
 
+	@Test
 	public void testLong() {
 		Generator<Integer> intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1);
 		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withCeasedAvailability();

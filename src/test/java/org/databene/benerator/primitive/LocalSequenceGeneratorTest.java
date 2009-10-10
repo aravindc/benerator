@@ -29,6 +29,7 @@ package org.databene.benerator.primitive;
 import java.io.File;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link LocalSequenceGenerator}.<br/>
@@ -44,6 +45,7 @@ public class LocalSequenceGeneratorTest extends GeneratorClassTest {
 	    super(LocalSequenceGenerator.class);
     }
 
+    @Test
 	public void testPersistence() {
 		File propertiesFile = new File(LocalSequenceGenerator.FILENAME);
 		if (propertiesFile.exists())
@@ -57,4 +59,5 @@ public class LocalSequenceGeneratorTest extends GeneratorClassTest {
     	generator.close();
 		propertiesFile.delete();
     }
+    
 }

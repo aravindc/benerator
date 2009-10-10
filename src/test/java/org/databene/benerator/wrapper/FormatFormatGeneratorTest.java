@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,9 +34,14 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.benerator.Generator;
 import org.databene.commons.TimeUtil;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link FormatFormatGenerator}.<br/><br/>
  * Created: 11.10.2006 23:12:21
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class FormatFormatGeneratorTest extends GeneratorClassTest {
 
@@ -49,7 +53,8 @@ public class FormatFormatGeneratorTest extends GeneratorClassTest {
     private static final DateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String DATE_STRING = FORMAT.format(DATE);
 
-    public void testFormat() throws ParseException {
+    @Test
+    public void testFormat() {
         Generator<Date> source = new ConstantGenerator<Date>(DATE);
         FormatFormatGenerator<Date> generator = new FormatFormatGenerator<Date>(source, FORMAT);
         String s = generator.generate();

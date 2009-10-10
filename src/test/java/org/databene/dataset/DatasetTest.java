@@ -33,26 +33,29 @@ import org.databene.commons.ArrayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * Tests the Dataset features.<br/><br/>
+ * Tests the {@link Dataset} features.<br/><br/>
  * Created: 21.03.2008 14:20:59
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DatasetTest extends TestCase {
+public class DatasetTest {
     
     private static Logger logger = LoggerFactory.getLogger(DatasetTest.class);
     
     private static final String REGION = "org/databene/dataset/region";
     public static final String TYPE = "test";
     
+    @Test
     public void testAtomicSet() {
         Dataset set = DatasetFactory.getDataset(REGION, "DE");
         assertEquals("DE", set.getName());
     }
     
+    @Test
     public void testNestedSet() {
         Dataset eu = DatasetFactory.getDataset(REGION, "europe");
         assertNotNull(eu);
@@ -65,4 +68,5 @@ public class DatasetTest extends TestCase {
         logger.debug(ArrayFormat.format(dataFiles));
         assertTrue(ArrayUtil.contains(dataFiles, "org/databene/domain/person/familyName_DE.csv"));
     }
+    
 }

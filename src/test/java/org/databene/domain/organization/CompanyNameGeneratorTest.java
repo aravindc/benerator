@@ -30,7 +30,8 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the CompanyNameGenerator.<br/><br/>
@@ -45,14 +46,17 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
 		super(CompanyNameGenerator.class);
 	}
 
+    @Test
     public void testDE() {
         check("DE");
     }
 
+    @Test
     public void testUS() {
         check("US");
     }
 
+    @Test
     public void testXX() {
         check("XX");
     }
@@ -66,4 +70,5 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
             assertTrue(name.length() > 1);
         }
     }
+    
 }

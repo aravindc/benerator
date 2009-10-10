@@ -27,6 +27,7 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.test.GeneratorTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link InstanceGeneratorFactory}.<br/>
@@ -43,6 +44,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	 * Test unique generation based on random sequence.
 	 * <attribute distribution="random" unique="true"/>
 	 */
+	@Test
 	public void testUniqueRandom() {
 		/* TODO v0.6 support unique random?
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "int").withMin("1").withMax("3").withDistribution("random");

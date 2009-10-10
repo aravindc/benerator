@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.benerator.csv;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the DatasetCSVGenerator.<br/><br/>
@@ -34,11 +35,12 @@ import junit.framework.TestCase;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class WeightedDatasetCSVGeneratorTest extends TestCase {
+public class WeightedDatasetCSVGeneratorTest {
 
     private static final String FAMILY_NAME = "org/databene/domain/person/familyName";
     private static final String REGION = "org/databene/dataset/region";
 
+    @Test
     public void testDE() {
         WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, "UTF-8");
         boolean mueller = false;
@@ -49,6 +51,7 @@ public class WeightedDatasetCSVGeneratorTest extends TestCase {
         assertTrue(mueller);
     }
 
+    @Test
     public void testEurope() {
         WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, "UTF-8");
         boolean mueller = false; // German name
@@ -63,4 +66,5 @@ public class WeightedDatasetCSVGeneratorTest extends TestCase {
         assertTrue(mueller);
         assertTrue(garcia);
     }
+    
 }

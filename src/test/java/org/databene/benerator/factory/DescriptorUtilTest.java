@@ -53,7 +53,9 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link DescriptorUtil} class.<br/>
@@ -62,18 +64,16 @@ import junit.framework.TestCase;
  * @since 0.5.7
  * @author Volker Bergmann
  */
-public class DescriptorUtilTest extends TestCase {
+public class DescriptorUtilTest {
 	
-	@Override
+	@After
 	protected void tearDown() throws Exception {
 		ConverterMock.latestInstance = null;
-		super.tearDown();
 	}
-	
 
 	// instantiation tests ---------------------------------------------------------------------------------------------
 
-	
+	@Test
 	public void testGetConverter() {
 		
 		// test bean reference
@@ -92,6 +92,7 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetConverter("c", new ConverterMock(3), "c," + ConverterMock.class.getName() + "(5)", 9);
 	}
 
+	@Test
 	public void testGetValidator() {
 		
 		// test bean reference
@@ -114,6 +115,7 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetValidator(null, null, JSR303ConstraintValidatorMock.class.getName() + "(2)", 2);
 	}
 	
+	@Test
 	public void testGetGeneratorByName() {
 		// test bean reference
 		checkGetGeneratorByName("c", new GeneratorMock(2), "c", 2);
@@ -128,6 +130,7 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetGeneratorByName(null, null, GeneratorMock.class.getName() + "[value=3]", 3);
 	}
 
+	@Test
 	public void testParseConsumers() {
 		Entity entity = new Entity("Person", "name", "Alice");
 		BeneratorContext context = new BeneratorContext(".");
@@ -166,6 +169,7 @@ public class DescriptorUtilTest extends TestCase {
 	
 	// distribution tests ----------------------------------------------------------------------------------------------
 	
+	@Test
 	public void testGetDistributionForWeightFunction() {
 		// test bean reference
 		checkGetWeightFunction("c", new WeightFunctionMock(2), "c", 2);
@@ -180,6 +184,7 @@ public class DescriptorUtilTest extends TestCase {
 		checkGetWeightFunction(null, null, WeightFunctionMock.class.getName() + "[value=3]", 3);
 	}
 
+	@Test
     public void testGetDistributionWeighted() {
 		BeneratorContext context = new BeneratorContext(null);
 		
@@ -195,6 +200,7 @@ public class DescriptorUtilTest extends TestCase {
 		assertEquals("population", ((FeatureWeight) distribution2).getWeightFeature());
 	}
 
+	@Test
 	public void testIsWrappedSimpleType() {
 		// test wrapped simple type
 		PartDescriptor bodyDescriptor = new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT);
@@ -210,7 +216,7 @@ public class DescriptorUtilTest extends TestCase {
 	
 	// configuration tests ---------------------------------------------------------------------------------------------
 	
-	
+	@Test
 	public void testGetPatternAsDateFormat() {
 		Date date = TimeUtil.date(2000, 0, 2);
 		// test default format
@@ -221,24 +227,28 @@ public class DescriptorUtilTest extends TestCase {
 		assertEquals("00-01-02", format.format(date));
 	}
 
+	@Test
 	public void testGetLocale() {
 		assertEquals(Locale.US, DescriptorUtil.getLocale(new SimpleTypeDescriptor("test")));
 		assertEquals(Locale.ENGLISH, DescriptorUtil.getLocale(new SimpleTypeDescriptor("test").withLocaleId("en")));
 		assertEquals(Locale.GERMANY, DescriptorUtil.getLocale(new SimpleTypeDescriptor("test").withLocaleId("de_DE")));
 	}
 
+	@Test
 	public void testIsUnique() {
 		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test")));
 		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(false)));
 		assertEquals(true, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(true)));
 	}
 
+	@Test
 	public void testGetNullQuota() {
 		assertEquals(0., DescriptorUtil.getNullQuota(new InstanceDescriptor("test")));
 		assertEquals(0., DescriptorUtil.getNullQuota(new InstanceDescriptor("test").withNullQuota(0)));
 		assertEquals(1., DescriptorUtil.getNullQuota(new InstanceDescriptor("test").withNullQuota(1)));
 	}
 	
+	@Test
 	public void testGetSeparator() {
 		BeneratorContext context = new BeneratorContext(null);
 		assertEquals(',', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
@@ -247,6 +257,7 @@ public class DescriptorUtilTest extends TestCase {
 		assertEquals(';', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x").withSeparator(";"), context));
 	}
 	
+	@Test
 	public void testGetMinCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
@@ -264,6 +275,7 @@ public class DescriptorUtilTest extends TestCase {
 		assertEquals(0, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
 	}
 	
+	@Test
 	public void testGetMaxCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
@@ -347,6 +359,6 @@ public class DescriptorUtilTest extends TestCase {
         public void startConsuming(Entity object) {
 	        last = object;
         }
-		
 	}
+
 }

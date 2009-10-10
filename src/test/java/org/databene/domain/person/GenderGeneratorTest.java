@@ -29,6 +29,7 @@ package org.databene.domain.person;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link GenderGenerator}.<br/>
@@ -43,11 +44,13 @@ public class GenderGeneratorTest extends GeneratorClassTest {
         super(GenderGenerator.class);
     }
 
+    @Test
     public void testDefault() throws IllegalGeneratorStateException {
         Generator<Gender> generator = new GenderGenerator();
         expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.5, Gender.MALE, 0.5);
     }
     
+    @Test
     public void testFemaleQuota() throws IllegalGeneratorStateException {
         Generator<Gender> generator = new GenderGenerator(0.3);
         expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.3, Gender.MALE, 0.7);

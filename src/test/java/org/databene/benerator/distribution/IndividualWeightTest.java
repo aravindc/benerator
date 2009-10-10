@@ -29,6 +29,7 @@ package org.databene.benerator.distribution;
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.SequenceGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link IndividualWeight}.<br/>
@@ -40,20 +41,19 @@ import org.databene.benerator.test.GeneratorTest;
 
 public class IndividualWeightTest extends GeneratorTest {
 
+	@Test(expected=Exception.class)
 	public void testCreateGenerator() {
-		try {
-			createWeight().createGenerator(Integer.class, 1, 3, 1);
-			fail("Exception expected");
-		} catch (Exception e) {
-			// this is the expected behavior
-		}
+		createWeight().createGenerator(Integer.class, 1, 3, 1);
 	}
 
+	@Test(expected=Exception.class)
 	public void testApplyTo() {
 		SequenceGenerator<Integer> source = new SequenceGenerator<Integer>(Integer.class, 1, 2, 3);
 		Generator<Object> generator = createWeight().applyTo(source);
 		expectRelativeWeights(generator, 1000, 1, 1, 2, 2, 3, 3);
 	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private IndividualWeight<Integer> createWeight() {
 	    IndividualWeight<Integer> weight = new IndividualWeight<Integer>() {
@@ -64,4 +64,5 @@ public class IndividualWeightTest extends GeneratorTest {
 	    };
 	    return weight;
     }
+	
 }

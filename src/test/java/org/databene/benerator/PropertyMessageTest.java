@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.benerator;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link PropertyMessage}.<br/><br/>
@@ -34,8 +35,9 @@ import junit.framework.TestCase;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class PropertyMessageTest extends TestCase {
+public class PropertyMessageTest {
 	
+	@Test
 	public void testEquals() {
 		PropertyMessage m11 = new PropertyMessage("prop1", "mess1");
 		// simple tests
@@ -47,4 +49,5 @@ public class PropertyMessageTest extends TestCase {
 		assertFalse(m11.equals(new PropertyMessage("prop2", "mess1")));
 		assertFalse(m11.equals(new PropertyMessage("prop1", "mess2")));
 	}
+	
 }

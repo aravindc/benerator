@@ -26,7 +26,10 @@
 
 package org.databene.domain.lang;
 
+import static org.junit.Assert.*;
+
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link NounGenerator}.<br/>
@@ -42,10 +45,11 @@ public class NounGeneratorTest extends GeneratorClassTest {
 	    super(NounGenerator.class);
     }
 
+    @Test
     public void test() throws Exception {
     	NounGenerator generator = new NounGenerator();
     	for (int i = 0; i < 10; i++)
-    		System.out.println(generator.generate());
+    		assertNotNull(generator.generate());
     }
     
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,8 @@ package org.databene.model.version;
 import org.databene.commons.StringUtil;
 import org.databene.model.version.VersionNumber;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the class {@link VersionNumber}.<br/>
@@ -39,8 +40,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class VersionNumberTest extends TestCase {
+public class VersionNumberTest {
 
+	@Test
 	public void testNumberCreation() {
 		checkCreation(null, 1);
 		checkCreation("", 1);
@@ -52,6 +54,7 @@ public class VersionNumberTest extends TestCase {
 		checkCreation("1.6.0_11", 1, ".", 6, ".", 0, "_", 11);
 	}
 	
+	@Test
 	public void testMixedCreation() {
 		checkCreation("1-alpha", 1, "-", "alpha");
 		checkCreation("1.0-alpha", 1, ".", 0, "-", "alpha");
@@ -59,6 +62,7 @@ public class VersionNumberTest extends TestCase {
 		checkCreation("10.2-alpha-2.3", 10, ".", 2, "-", "alpha", "-", 2, ".", 3);
 	}
 	
+	@Test
 	public void testCompareNumber() {
 		// test versions of equal length
 		VersionNumber v10202 = new VersionNumber("10.2.0.2");
@@ -89,6 +93,7 @@ public class VersionNumberTest extends TestCase {
 		assertTrue(v2  .compareTo(v10 ) ==  1);
 	}
 	
+	@Test
 	public void testCompareMixed() {
 		VersionNumber v10 = new VersionNumber("1.0");
 		VersionNumber v2 = new VersionNumber("2");

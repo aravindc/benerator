@@ -8,10 +8,14 @@ import java.util.List;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the {@link WeightedCSVSampleGenerator}.<br/><br/>
  * Created: 27.09.2006 23:16:11
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class WeightedCSVSampleGeneratorTest extends GeneratorClassTest {
 
@@ -23,6 +27,7 @@ public class WeightedCSVSampleGeneratorTest extends GeneratorClassTest {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
+    @Test
     public void test() throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
@@ -34,4 +39,5 @@ public class WeightedCSVSampleGeneratorTest extends GeneratorClassTest {
                     expectedDates.contains(generatedDate));
         }
     }
+    
 }

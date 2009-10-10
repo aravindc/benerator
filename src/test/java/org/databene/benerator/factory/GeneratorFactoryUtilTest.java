@@ -30,7 +30,8 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.SimpleTypeDescriptor;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link GeneratorFactoryUtil} class.<br/>
@@ -40,8 +41,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class GeneratorFactoryUtilTest extends TestCase {
+public class GeneratorFactoryUtilTest {
 
+	@Test
 	public void testGetDistributionDefault() {
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
 		BeneratorContext context = new BeneratorContext(null);

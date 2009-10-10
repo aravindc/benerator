@@ -29,8 +29,11 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link SimpleArrayGenerator}.<br/><br/>
  * Created: 11.10.2006 23:12:21
  * @since 0.1
  * @author Volker Bergmann
@@ -41,6 +44,7 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
         super(SimpleArrayGenerator.class);
     }
 
+    @Test
     public void test() {
         Generator<String> source = new SequencedSampleGenerator<String>(String.class, "Alice", "Bob");
         check(source, 0, 0);
@@ -61,4 +65,5 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
             assertTrue(product.length <= maxLength);
         }
     }
+    
 }

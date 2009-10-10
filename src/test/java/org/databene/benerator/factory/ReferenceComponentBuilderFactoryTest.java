@@ -26,7 +26,8 @@
 
 package org.databene.benerator.factory;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
@@ -51,8 +52,9 @@ import org.databene.model.storage.StorageSystem;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class ReferenceComponentBuilderFactoryTest extends TestCase { 
+public class ReferenceComponentBuilderFactoryTest { 
 
+	@Test
 	public void testMissingType() {
 		try {
 			ReferenceDescriptor ref = createDescriptor("ref", null, "Storage");
@@ -63,6 +65,7 @@ public class ReferenceComponentBuilderFactoryTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testMissingSource() {
 		try {
 			ReferenceDescriptor ref = createDescriptor("ref", "Referee", null);
@@ -73,6 +76,7 @@ public class ReferenceComponentBuilderFactoryTest extends TestCase {
 		}
 	}
 
+	@Test
 	@SuppressWarnings("null")
     public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
@@ -85,6 +89,7 @@ public class ReferenceComponentBuilderFactoryTest extends TestCase {
 		assertEquals("Alice", entity.get("ref"));
 	}
 
+	@Test
 	@SuppressWarnings("null")
     public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
@@ -153,6 +158,6 @@ public class ReferenceComponentBuilderFactoryTest extends TestCase {
 		public void update(Entity entity) {
 			throw new UnsupportedOperationException("StorageSystem.update() is not implemented");
 		}
-
 	}
+
 }

@@ -32,7 +32,7 @@ import java.io.IOException;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link TextFileExporter}.<br/>
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class TextFileExporterTest extends TestCase {
+public class TextFileExporterTest {
 	
 	public void test() throws IOException {
 		String uri = "target" + File.separator + getClass().getSimpleName() + ".txt";

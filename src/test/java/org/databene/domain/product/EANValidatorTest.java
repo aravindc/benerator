@@ -26,7 +26,8 @@
 
 package org.databene.domain.product;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests validation of an EAN code.<br/>
@@ -34,12 +35,13 @@ import junit.framework.TestCase;
  * Created: 29.07.2007 08:04:09
  * @author Volker Bergmann
  */
-public class EANValidatorTest extends TestCase {
+public class EANValidatorTest {
 
     private static String EAN_VOLVIC           = "3057640182693";
     private static String EAN_INVALID_CHECKSUM = "3057640182692";
     private static String EAN_INVALID_LENGTH   = "3057640182";
 
+    @Test
     public void test() {
     	EANValidator validator = new EANValidator();
         assertTrue(validator.isValid(EAN_VOLVIC, null));

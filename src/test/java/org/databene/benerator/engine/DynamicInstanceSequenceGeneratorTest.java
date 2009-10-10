@@ -35,7 +35,8 @@ import org.databene.commons.Expression;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.expression.ConstantExpression;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link DynamicInstanceSequenceGenerator}.<br/>
@@ -45,8 +46,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class DynamicInstanceSequenceGeneratorTest extends TestCase {
+public class DynamicInstanceSequenceGeneratorTest {
 
+	@Test
 	public void test() {
 		Generator<Long> source = new IncrementGenerator(0); // generates 0, 1, 2, 3, ...
 		Context context = new DefaultContext();

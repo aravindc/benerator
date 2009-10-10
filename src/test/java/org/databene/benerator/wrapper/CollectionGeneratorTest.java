@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,9 +33,13 @@ import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 import org.databene.measure.count.ObjectCounter;
+import org.junit.Test;
 
 /**
+ * Tests the {@link CollectionGenerator}.<br/><br/>
  * Created: 11.10.2006 23:12:21
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class CollectionGeneratorTest extends GeneratorClassTest {
 
@@ -43,6 +47,8 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
         super(CollectionGenerator.class);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
     public void testElements() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
         CollectionGenerator<List, Integer> generator = new CollectionGenerator<List, Integer>(List.class, source, 1, 5);
@@ -50,6 +56,8 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
         checkEqualDistribution(list, 0., CollectionUtil.toSet(1));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
     public void testSize() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
         CollectionGenerator<List, Integer> generator = new CollectionGenerator<List, Integer>(List.class, source, 0, 3);
@@ -58,4 +66,5 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
             counter.count(generator.generate().size());
         checkEqualDistribution(counter, 0.1, CollectionUtil.toSet(0, 1, 2, 3));
     }
+    
 }

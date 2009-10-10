@@ -28,6 +28,7 @@ package org.databene.domain.math;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
+import org.junit.Test;
 
 /**
  * Tests the {@link PadovanSequence}.<br/>
@@ -39,6 +40,7 @@ import org.databene.benerator.test.GeneratorTest;
 
 public class PadovanSequenceTest extends GeneratorTest {
 
+	@Test
 	public void testLong() {
 		PadovanSequence padovanSequence = new PadovanSequence();
 		Generator<Integer> intGenerator = padovanSequence.createGenerator(Integer.class, 0, 10, 1);

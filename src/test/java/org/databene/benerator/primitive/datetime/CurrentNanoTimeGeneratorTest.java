@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
+import org.junit.Test;
 
 /**
  * Tests the CurrentNanoTimeGenerator.<br/>
@@ -46,6 +47,7 @@ public class CurrentNanoTimeGeneratorTest extends GeneratorClassTest {
         super(CurrentNanoTimeGenerator.class);
     }
 
+    @Test
     public void testProducts() {
         expectGenerations(new CurrentNanoTimeGenerator(), 10, new AbstractConstraintValidator<Annotation, Long>() {
 			public boolean isValid(Long generatedNanos, ConstraintValidatorContext context) {

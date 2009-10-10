@@ -32,6 +32,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
+import org.junit.Test;
 
 /**
  * Tests the CurrentMilliTimeGenerator.<br/>
@@ -45,6 +46,7 @@ public class CurrentMilliTimeGeneratorTest extends GeneratorClassTest {
         super(CurrentMilliTimeGenerator.class);
     }
 
+    @Test
     public void testProducts() {
         expectGenerations(new CurrentMilliTimeGenerator(), 10, new AbstractConstraintValidator<Annotation, Long>() {
             public boolean isValid(Long millis, ConstraintValidatorContext context) {

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.primitive.number;
 
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.SimpleRandom;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -36,9 +37,12 @@ import java.util.HashSet;
 
 /**
  * Created: 11.10.2006 23:07:35
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class SimpleRandomTest extends GeneratorTest {
 
+	@Test	
     public void testRandomInt() {
         testEqualDistribution(0, 1, 0.1, 3000);
         testEqualDistribution(0, 0, 0.1, 3000);
@@ -46,6 +50,7 @@ public class SimpleRandomTest extends GeneratorTest {
         testEqualDistribution(-1, 1, 0.1, 3000);
     }
 
+	@Test	
     public void testRandomLong() {
         testEqualDistribution( 0L,  1L, 0.1, 3000);
         testEqualDistribution( 0L,  0L, 0.1, 3000);
@@ -55,6 +60,7 @@ public class SimpleRandomTest extends GeneratorTest {
 
     // implementation --------------------------------------------------------------------------------------------------
 
+	@Test	
     private void testEqualDistribution(int min, int max, double tolerance, int iterations) {
         List<Integer> list = new ArrayList<Integer>();
         Set<Integer> expectedSet = new HashSet<Integer>(max - min + 1);
@@ -65,6 +71,7 @@ public class SimpleRandomTest extends GeneratorTest {
         checkEqualDistribution(list, tolerance, expectedSet);
     }
 
+	@Test	
     private void testEqualDistribution(long min, long max, double tolerance, int iterations) {
         List<Long> list = new ArrayList<Long>();
         Set<Long> expectedSet = new HashSet<Long>((int)(max - min + 1));
@@ -74,4 +81,5 @@ public class SimpleRandomTest extends GeneratorTest {
             list.add(SimpleRandom.randomLong(min, max));
         checkEqualDistribution(list, tolerance, expectedSet);
     }
+	
 }

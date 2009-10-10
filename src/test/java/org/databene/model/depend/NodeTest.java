@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,15 +28,17 @@ package org.databene.model.depend;
 
 import static org.databene.model.depend.NodeState.*;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the Node class.
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class NodeTest extends TestCase {
+public class NodeTest {
     
+	@Test
     public void testInitialState() {
         Node<Dep>[] nodes = createDeps();
         nodes[0].assertState(INITIALIZABLE);
@@ -44,6 +46,7 @@ public class NodeTest extends TestCase {
         nodes[2].assertState(INACTIVE);
     }
 
+	@Test
     public void testInitialization() {
         Node<Dep>[] nodes = createDeps();
         nodes[0].initialize();
@@ -65,6 +68,7 @@ public class NodeTest extends TestCase {
         nodes[2].assertState(INITIALIZED);
     }
 
+    @SuppressWarnings("unchecked")
     private Node<Dep>[] createDeps() {
         Dep da1 = new Dep("a1");
         Dep da2 = new Dep("a2");

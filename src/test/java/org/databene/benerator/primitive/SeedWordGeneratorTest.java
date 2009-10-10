@@ -27,6 +27,8 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SeedWordGenerator}.<br/>
@@ -42,6 +44,7 @@ public class SeedWordGeneratorTest extends GeneratorClassTest {
 	    super(SeedWordGenerator.class);
     }
 
+    @Test
     public void test() {
     	SeedWordGenerator generator = new SeedWordGenerator();
     	//generator.printState();

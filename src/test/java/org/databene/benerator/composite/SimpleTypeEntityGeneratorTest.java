@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,8 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link SimpleTypeEntityGenerator}.<br/><br/>
@@ -40,8 +41,9 @@ import junit.framework.TestCase;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class SimpleTypeEntityGeneratorTest extends TestCase {
-	
+public class SimpleTypeEntityGeneratorTest {
+
+	@Test
 	public void test() {
 		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(new ConstantGenerator<String>("hi"), createComplexType());
 		assertTrue(generator.available());
@@ -57,4 +59,5 @@ public class SimpleTypeEntityGeneratorTest extends TestCase {
 		type.addComponent(new ComponentDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, content));
 		return type;
 	}
+	
 }

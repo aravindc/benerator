@@ -4,10 +4,14 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * (c) Copyright 2006 by Volker Bergmann
+ * Tests the BooleanGenerator.<br/><br/>
  * Created: 09.06.2006 20:07:56
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class BooleanGeneratorTest extends GeneratorClassTest {
 
@@ -17,6 +21,7 @@ public class BooleanGeneratorTest extends GeneratorClassTest {
         super(BooleanGenerator.class);
     }
 
+    @Test
     public void testDistribution() throws IllegalGeneratorStateException {
         checkDistribution(0.5, 1000);
         checkDistribution(0.0, 1000);

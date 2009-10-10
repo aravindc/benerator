@@ -29,6 +29,8 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the RepeatGeneratorProxy.<br/>
@@ -42,6 +44,7 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
         super(RepeatGeneratorProxy.class);
     }
 
+    @Test
     public void testNonRepeating() {
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 0L, 0L);
@@ -52,6 +55,7 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
         assertFalse(generator.available());
     }
 
+    @Test
     public void testOneRepetition() {
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 1L, 1L);
@@ -65,4 +69,5 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
         assertEquals(2, (int)generator.generate());
         assertFalse(generator.available());
     }
+    
 }
