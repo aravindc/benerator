@@ -44,7 +44,6 @@ import org.databene.benerator.test.WeightFunctionMock;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
-import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -83,13 +82,13 @@ public class DescriptorUtilTest {
 		checkGetConverter(null, null, ConverterMock.class.getName(), 2);
 		
 		// test constructor spec
-		checkGetConverter(null, null, ConverterMock.class.getName() + "(2)", 3);
+		checkGetConverter(null, null, "new " + ConverterMock.class.getName() + "(2)", 3);
 		
 		// test property spec
-		checkGetConverter(null, null, ConverterMock.class.getName() + "[increment=3]", 4);
+		checkGetConverter(null, null, "new " + ConverterMock.class.getName() + "[increment=3]", 4);
 		
 		// test converter chaining
-		checkGetConverter("c", new ConverterMock(3), "c," + ConverterMock.class.getName() + "(5)", 9);
+		checkGetConverter("c", new ConverterMock(3), "c, new " + ConverterMock.class.getName() + "(5)", 9);
 	}
 
 	@Test
@@ -102,17 +101,17 @@ public class DescriptorUtilTest {
 		checkGetValidator(null, null, ValidatorMock.class.getName(), 1);
 		
 		// test constructor spec
-		checkGetValidator(null, null, ValidatorMock.class.getName() + "(2)", 2);
+		checkGetValidator(null, null, "new " + ValidatorMock.class.getName() + "(2)", 2);
 		
 		// test property spec
-		checkGetValidator(null, null, ValidatorMock.class.getName() + "[value=3]", 3);
+		checkGetValidator(null, null, "new " + ValidatorMock.class.getName() + "[value=3]", 3);
 		
 		// test converter chaining
-		checkGetValidator("c", new ValidatorMock(3), "c," + ValidatorMock.class.getName() + "(5)", null);
-		checkGetValidator("c", new ValidatorMock(3), "c," + ValidatorMock.class.getName() + "(3)", 3);
+		checkGetValidator("c", new ValidatorMock(3), "c, new " + ValidatorMock.class.getName() + "(5)", null);
+		checkGetValidator("c", new ValidatorMock(3), "c, new " + ValidatorMock.class.getName() + "(3)", 3);
 		
 		// test JSR 303 constraint validator
-		checkGetValidator(null, null, JSR303ConstraintValidatorMock.class.getName() + "(2)", 2);
+		checkGetValidator(null, null, "new " + JSR303ConstraintValidatorMock.class.getName() + "(2)", 2);
 	}
 	
 	@Test
@@ -124,10 +123,10 @@ public class DescriptorUtilTest {
 		checkGetGeneratorByName(null, null, GeneratorMock.class.getName(), 1);
 		
 		// test constructor spec
-		checkGetGeneratorByName(null, null, GeneratorMock.class.getName() + "(2)", 2);
+		checkGetGeneratorByName(null, null, "new " + GeneratorMock.class.getName() + "(2)", 2);
 		
 		// test property spec
-		checkGetGeneratorByName(null, null, GeneratorMock.class.getName() + "[value=3]", 3);
+		checkGetGeneratorByName(null, null, "new " + GeneratorMock.class.getName() + "[value=3]", 3);
 	}
 
 	@Test
@@ -144,7 +143,7 @@ public class DescriptorUtilTest {
 		assertEquals(1, consumerCheck.n);
 		
 		// test constructor syntax
-		consumer = DescriptorUtil.parseConsumersSpec(ConsumerMock.class.getName() + "(2)", context);
+		consumer = DescriptorUtil.parseConsumersSpec("new " + ConsumerMock.class.getName() + "(2)", context);
 		consumer.startConsuming(entity);
 		assertEquals(1, consumer.componentCount());
 		consumerCheck = (ConsumerMock) consumer.getComponent(0);
@@ -178,10 +177,10 @@ public class DescriptorUtilTest {
 		checkGetWeightFunction(null, null, WeightFunctionMock.class.getName(), 1);
 		
 		// test constructor spec
-		checkGetWeightFunction(null, null, WeightFunctionMock.class.getName() + "(2)", 2);
+		checkGetWeightFunction(null, null, "new " + WeightFunctionMock.class.getName() + "(2)", 2);
 		
 		// test property spec
-		checkGetWeightFunction(null, null, WeightFunctionMock.class.getName() + "[value=3]", 3);
+		checkGetWeightFunction(null, null, "new " + WeightFunctionMock.class.getName() + "[value=3]", 3);
 	}
 
 	@Test
@@ -279,7 +278,7 @@ public class DescriptorUtilTest {
 	public void testGetMaxCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
-		assertEquals(1L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(context).longValue());
+		assertNull(DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(context));
 		// explicit setting
 		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2), context).evaluate(null).longValue());
 		// override by global maxCount
@@ -341,24 +340,6 @@ public class DescriptorUtilTest {
 		assertNotNull(distribution);
 		assertTrue(distribution instanceof WeightFunction);
 		assertEquals(expectedValue, ((WeightFunction) distribution).value(0));
-	}
-
-	public static class ConsumerMock extends AbstractConsumer<Entity> {
-		
-		public Entity last;
-		public int n;
-		
-		public ConsumerMock() {
-			this(1);
-		}
-
-		public ConsumerMock(int n) {
-			this.n = n;
-		}
-
-        public void startConsuming(Entity object) {
-	        last = object;
-        }
 	}
 
 }
