@@ -40,19 +40,19 @@ import org.databene.commons.Expression;
 
 public class BeanConstruction implements Expression<Object> {
 	
-	private Expression<Class<?>> classExpression;
+	private String className;
 	private Assignment[] assignments;
 
-    public BeanConstruction(Expression<Class<?>> classExpression, Assignment[] assignments) {
-	    this.classExpression = classExpression;
+    public BeanConstruction(String className, Assignment[] assignments) {
+	    this.className = className;
 	    this.assignments = assignments;
     }
 
 	public Object evaluate(Context context) {
-		Class<?> type = classExpression.evaluate(context);
+		Class<?> type = BeanUtil.forName(className);
 	    Object bean = BeanUtil.newInstance(type);
 	    for (Assignment assignment : assignments)
-	    	BeanUtil.setPropertyValue(bean, assignment.getName(), assignment.getExpression().evaluate(context));
+	    	BeanUtil.setPropertyValue(bean, assignment.getName(), assignment.getExpression().evaluate(context), false);
 		return bean;
     }
 
