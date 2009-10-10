@@ -60,7 +60,6 @@ public class SimpleRandomTest extends GeneratorTest {
 
     // implementation --------------------------------------------------------------------------------------------------
 
-	@Test	
     private void testEqualDistribution(int min, int max, double tolerance, int iterations) {
         List<Integer> list = new ArrayList<Integer>();
         Set<Integer> expectedSet = new HashSet<Integer>(max - min + 1);
@@ -71,7 +70,6 @@ public class SimpleRandomTest extends GeneratorTest {
         checkEqualDistribution(list, tolerance, expectedSet);
     }
 
-	@Test	
     private void testEqualDistribution(long min, long max, double tolerance, int iterations) {
         List<Long> list = new ArrayList<Long>();
         Set<Long> expectedSet = new HashSet<Long>((int)(max - min + 1));

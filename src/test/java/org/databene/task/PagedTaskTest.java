@@ -81,8 +81,9 @@ public class PagedTaskTest {
         checkNonThreadSafeTask(10,  5, 2, 5); // multi-threaded, multi-paged
     }
 
-	@Test
-    public void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) throws IOException {
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
+    private void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, int expectedInstanceCount) throws IOException {
         SingleThreadedTask.instanceCount = 0;
         SingleThreadedTask task = new SingleThreadedTask() {
 			public void run(Context context) { }
@@ -94,8 +95,6 @@ public class PagedTaskTest {
         assertEquals("Unexpected instanceCount,", expectedInstanceCount, SingleThreadedTask.instanceCount);
     }
 
-	// helpers ---------------------------------------------------------------------------------------------------------
-	
     private void checkRun(int totalInvocations, int pageSize, int threads,
                           int expectedInitCount, int expectedRunCount, int expectedCloseCount) {
         CountTask countTask = new CountTask();

@@ -67,7 +67,7 @@ import static junit.framework.Assert.*;
 public class DescriptorUtilTest {
 	
 	@After
-	protected void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		ConverterMock.latestInstance = null;
 	}
 

@@ -56,7 +56,7 @@ public class DBSeqHiLoGeneratorTest {
     }
 
     @After
-    protected void tearDown() {
+    public void tearDown() {
     	dropSequence();
     }
     

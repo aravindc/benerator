@@ -48,14 +48,6 @@ import static junit.framework.Assert.*;
 
 public class BeneratorScriptParserTest {
 
-	private String stringProp;
-	private int intProp;
-
-	public BeneratorScriptParserTest(String stringProp, int intProp) {
-		this.stringProp = stringProp;
-		this.intProp = intProp;
-    }
-
 	@Test
 	public void testNullLiteral() throws Exception {
 		checkExpression(null, "null");
@@ -101,12 +93,6 @@ public class BeneratorScriptParserTest {
 		checkExpression("", "new java.lang.String()");
 		checkExpression("Test", "new java.lang.String('Test')");
 		checkExpression("Test", "new java.lang.String(new java.lang.String('Test'))");
-	}
-	
-	@Test
-	public void testBeanConstruction() throws Exception {
-		checkExpression(new BeneratorScriptParserTest("Alice", 23), 
-				"new " + getClass().getName() + "[stringProp='Alice', intProp=23]");
 	}
 	
 	@Test
@@ -410,12 +396,6 @@ public class BeneratorScriptParserTest {
 	}
 	
 	@Test
-	public void testObjectSpecByProperties() throws Exception {
-		checkBeanSpec(new BeneratorScriptParserTest("Alice", 24), 
-				"new " + getClass().getName() + "[stringProp='Alice', intProp=24]");
-	}
-	
-	@Test
 	public void testObjectSpecList() throws Exception {
 		Expression<?>[] expressions = BeneratorScriptParser.parseBeanSpecList("java.lang.String," + getClass().getName());
 		Object[] values = ExpressionUtil.evaluateAll(expressions, new DefaultContext());
@@ -426,6 +406,7 @@ public class BeneratorScriptParserTest {
 	
 	// tests migrated from BasicParserTest ---------------------------------------
 	
+	@Test
 	public void testParseCustomConstruction() throws Exception {
 		checkBeanSpec(new Person("Alice", TimeUtil.date(1972, 1, 3), 102, true, 'A'),
 				"new org.databene.benerator.test.Person('Alice', (date) '1972-02-03', 102, true, 'A')");
@@ -434,6 +415,7 @@ public class BeneratorScriptParserTest {
 	/**
 	 * Tests property-based construction
 	 */
+	@Test
 	public void testParsePropertyConstruction() throws Exception {
 		checkBeanSpec(new Person("Alice", TimeUtil.date(1972, 1, 3), 102, true, 'A'),
 				"new org.databene.benerator.test.Person[name='Alice', birthDate=(date) '1972-02-03', score=102, " +
@@ -458,31 +440,6 @@ public class BeneratorScriptParserTest {
 		public String text = "hi";
 	}
 	
-	public void setStringProp(String stringProp) {
-    	this.stringProp = stringProp;
-    }
-
-	public void setIntProp(int intProp) {
-    	this.intProp = intProp;
-    }
-
-	@Override
-    public boolean equals(Object obj) {
-	    if (this == obj)
-		    return true;
-	    if (obj == null)
-		    return false;
-	    if (getClass() != obj.getClass())
-		    return false;
-	    BeneratorScriptParserTest that = (BeneratorScriptParserTest) obj;
-	    return (this.intProp == that.intProp && this.stringProp.equals(that.stringProp));
-    }
-	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[stringProp=" + stringProp + ", intProp=" + intProp + "]";
-	}
-
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private void checkExpression(Object expected, String script) throws Exception {

@@ -40,7 +40,7 @@ import static junit.framework.Assert.*;
 public class TypeEngineTest {
 
 	@Test
-	public static void test() {
+	public void test() {
 		check(Integer.class, Integer.class, Integer.class); // same
 		check(Long.class, Integer.class, Long.class);		// 1st < 2nd
 		check(Long.class, Long.class, Integer.class);		// 2nd < 1st

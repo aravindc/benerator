@@ -31,6 +31,7 @@ import java.io.IOException;
 
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
+import org.junit.Test;
 
 import static junit.framework.Assert.*;
 
@@ -44,6 +45,7 @@ import static junit.framework.Assert.*;
 
 public class TextFileExporterTest {
 	
+	@Test
 	public void test() throws IOException {
 		String uri = "target" + File.separator + getClass().getSimpleName() + ".txt";
 		TextFileExporter<String> exporter = new TextFileExporter<String>(uri);

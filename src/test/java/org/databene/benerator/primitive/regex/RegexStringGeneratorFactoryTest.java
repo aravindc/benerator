@@ -8,6 +8,8 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.LocaleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -22,10 +24,17 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
 
     private static Logger logger = LoggerFactory.getLogger(RegexStringGeneratorFactoryTest.class);
 
-    @Override
-    protected void setUp() throws Exception {
-    	super.setUp();
+    private static Locale realLocale;
+    
+    @BeforeClass
+    public static void setUpFallbackLocale() throws Exception {
+    	realLocale = Locale.getDefault();
         Locale.setDefault(LocaleUtil.getFallbackLocale());
+    }
+    
+    @AfterClass
+    public static void restoreRealLocale() {
+    	Locale.setDefault(realLocale);
     }
 
     @Test
