@@ -161,6 +161,8 @@ public class BeneratorScriptParser {
     }
 
 	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
+		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
+		node = childAt(0, node);
 		if (node.getType() == BeneratorLexer.QUALIFIEDNAME)
 			return new QNBeanSpecExpression(convertQualifiedNameToStringArray(node));
 		else if (node.getType() == BeneratorLexer.IDENTIFIER)
@@ -170,11 +172,16 @@ public class BeneratorScriptParser {
 	}
 
     private static Expression<?>[] convertBeanSpecList(CommonTree node) throws ParseException {
-	    int childCount = node.getChildCount();
-	    Expression<?>[] specs = new Expression<?>[childCount];
-	    for (int i = 0; i < childCount; i++)
-	    	specs[i] = convertBeanSpec(childAt(i, node));
-	    return specs;
+    	if (node.getType() == BeneratorLexer.BEANSPEC)
+    		return new Expression<?>[] { convertBeanSpec(node) };
+    	else if (node.isNil()) {
+		    int childCount = node.getChildCount();
+		    Expression<?>[] specs = new Expression<?>[childCount];
+		    for (int i = 0; i < childCount; i++)
+		    	specs[i] = convertBeanSpec(childAt(i, node));
+		    return specs;
+    	} else
+    		throw new ParseException("Unexpected token: " + node.getToken(), node.getCharPositionInLine());
     }
 
 	private static Expression<?> convertNode(CommonTree node) throws ParseException {
@@ -217,7 +224,7 @@ public class BeneratorScriptParser {
 			case BeneratorLexer.AMPAMP: return convertConditionalAnd(node);
 			case BeneratorLexer.BARBAR: return convertConditionalOr(node);
 			case BeneratorLexer.QUES: return convertConditionalExpression(node);
-			default: throw new ParseException("Unknown token type: " + node.getToken(), node.getCharPositionInLine());
+			default: throw new ParseException("Unknown token type: " + node.getType(), node.getCharPositionInLine());
     	}
     }
 

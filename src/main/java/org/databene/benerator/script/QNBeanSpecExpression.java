@@ -31,6 +31,7 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.ExceptionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
 
@@ -52,12 +53,17 @@ public class QNBeanSpecExpression implements Expression<Object> {
 
     public Object evaluate(Context context) {
     	String[] qn = qnEx.evaluate(context);
-    	String className = ArrayFormat.format(".", qn);
+    	String objectOrClassName = ArrayFormat.format(".", qn);
     	try {
-    		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
+    		if (context.contains(objectOrClassName))
+    			return context.get(objectOrClassName);
+    		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
     		return BeanUtil.newInstance(type);
     	} catch (ConfigurationError e) {
-    	    return new QNExpression(qnEx).evaluate(context);
+    		if (ExceptionUtil.getRootCause(e) instanceof ClassNotFoundException)
+    			return new QNExpression(qnEx).evaluate(context);
+    		else
+    			throw new ConfigurationError("Cannot resolve " + objectOrClassName, e);
     	}
     }
 

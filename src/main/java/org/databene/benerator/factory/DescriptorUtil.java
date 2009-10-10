@@ -162,7 +162,7 @@ public class DescriptorUtil {
 	        }
 	        return result;
         } catch (ParseException e) {
-        	throw new ConfigurationError("Error parsing converter spec: " + converterSpec);
+        	throw new ConfigurationError("Error parsing converter spec: " + converterSpec, e);
         }
     }
 
