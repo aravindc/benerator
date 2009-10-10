@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <setup 
-	xmlns="http://databene.org/benerator/0.5.9"
+	xmlns="http://databene.org/benerator/0.6.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://databene.org/benerator/0.5.9 http://databene.org/benerator-0.5.9.xsd">
+	xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
 
 	<comment>
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -24,33 +24,39 @@
 		 !   You may want to try different generation quantities in  !
 		 !       shop.&lt;stage&gt;.properties                       !
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	 </comment>
+	</comment>
 	 
-	<import defaults="true"/>
-	<import domain="person"/>
-	<import domain="net"/>
-	<import domain="product"/>
+	<import defaults="true"
+			domains="person,net,product"
+			platform="db"/>
 
-	<comment>first, import stage and database specific properties</comment>
-	<include uri="{${database}/shop.${database}.properties}" />
-	<include uri="{shop.${stage}.properties}" />
+	<comment>set default values</comment>
+	<property name="dbSchema"   value="" />
+	<property name="dbPassword" value="" />
+	<property name="dbBatch"    value="false" />
+
+	<comment>import stage and database specific properties</comment>
+	<include uri="{ftl:${database}/shop.${database}.properties}" />
+	<include uri="{ftl:shop.${stage}.properties}" />
 
 	<comment>log the settings to the console</comment>
 	<echo message="Starting generation for" />
-	<echo message="{  ${product_count + 6} products}" />
-	<echo message="{  ${customer_count + 1} customers}" />
-	<echo message="{  ${orders_per_customer} orders per customer}" />
-	<echo message="{  ${items_per_order} items per order}" />
-	<echo message="{Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
-	<echo message="{JDBC URL: ${dbUri}}" />
+	<echo message="{ftl:  ${product_count + 6} products}" />
+	<echo message="{ftl:  ${customer_count + 1} customers}" />
+	<echo message="{ftl:  ${orders_per_customer} orders per customer}" />
+	<echo message="{ftl:  ${items_per_order} items per order}" />
+	<echo message="{ftl:Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
+	<echo message="{ftl:JDBC URL: ${dbUri}}" />
 
     <comment>define a database that will be referred by the id 'db' later</comment>
-    <database id="db" url="{${dbUri}}" driver="{${dbDriver}}" schema="{${dbSchema!}}"
-        user="{${dbUser}}" password="{${dbPassword!}}" batch="{${dbBatch?string!}}" />
+    <database id="db" url="{dbUri}" driver="{dbDriver}" schema="{dbSchema}"
+        user="{dbUser}" password="{dbPassword}" batch="{dbBatch}" />
 
 	<comment>drop the current tables/sequences if they exist and recreate them</comment>
-	<execute uri="{${database}/drop_tables.${database}.sql}" target="db" onError="ignore"/>
-	<execute uri="{${database}/create_tables.${database}.sql}" target="db" optimize="true"/>
+	<execute uri="{ftl:${database}/drop_tables.${database}.sql}"   target="db" onError="ignore" />
+	<execute uri="{ftl:${database}/create_tables.${database}.sql}" target="db" />
+	
+	<bean id="idGen" spec="new DBSeqHiLoGenerator('seq_id_gen', 100, db)" />
 
 	<comment>Create a valid base data set for regression testing by importing a DbUnit file</comment>
 	<create-entities source="shop.dbunit.xml" consumer="db" />
@@ -62,15 +68,10 @@
 		create-entities name="db_product" source="products.import.flat" 
 			pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /</comment>
 
-	<comment>For the db_product table, the primary keys are EAN codes, create a specific generator for them</comment>
-	<bean id="ean_generator" class="EANGenerator">
-		<property name="unique" value="true" />
-	</bean>
-
 	<comment>create products of random attributes &amp; category</comment>
-	<create-entities name="db_product" count="{ftl:${product_count}}" consumer="db">
-		<attribute name="ean_code" source="ean_generator" unique="true"/> <!-- This uses the EAN generator defined above -->
-		<attribute name="category_id" source="db" selector="select id from db_category" distribution="random" />
+	<create-entities name="db_product" count="{product_count}" consumer="db">
+		<id name="ean_code" generator="EANGenerator(true)" />
+		<reference name="category_id" targetType="db_category" source="db" distribution="random" />
 		<attribute name="price" type="big_decimal" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
 		<consumer class="FlatFileEntityExporter">
@@ -81,28 +82,28 @@
 
 	<comment>create one default order for each customer based on a DBUnit template</comment>
 	<!-- create-entities name="db_order" consumer="db">
-		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
+		<id name="id" generator="idGen" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
 		<create-entities name="db_order_item" source="default_order.dbunit.xml" consumer="db">
-			<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
+	        <id name="id" generator="idGen" />
 		</create-entities>
 	</create-entities-->
 
     <comment>create customers</comment>
-    <create-entities name="db_user" count="{ftl:${customer_count}}" consumer="db">
-        <variable name="person" generator="PersonGenerator" dataset="{${country}}" locale="{${locale}}"/>
-        <id name="id" strategy="{${idStrategy}}" param="{${idParam}}" source="db" />
-        <attribute name="name" script="{ftl:${person.givenName} ${person.familyName}}" />
+    <create-entities name="db_user" count="{customer_count}" consumer="db">
+        <variable name="person" generator="PersonGenerator" dataset="{country}" locale="{locale}"/>
+        <id name="id" generator="idGen" />
+        <attribute name="name" script="{person.givenName + ' ' + person.familyName}" />
         <attribute name="email" generator="EMailAddressGenerator" />
         <attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
         <attribute name="role_id" values="customer" />
         <create-entities name="db_customer" count="1" consumer="db">
-            <attribute name="id" source="db_user.id" />
+            <id name="id" source="db_user.id" />
             <attribute name="category" values="A,B,C" />
-            <attribute name="salutation" source="person.salutation" />
-            <attribute name="first_name" source="person.givenName" />
-            <attribute name="last_name" source="person.familyName" />
-            <attribute name="birth_date" nullable="false" generator="CurrentDateGenerator"/>
+            <attribute name="salutation" script="person.salutation" />
+            <attribute name="first_name" script="person.givenName" />
+            <attribute name="last_name" script="person.familyName" />
+            <attribute name="birth_date" nullable="false" />
             <!-- Export the customers not only to the database, but their names and passwords to a CSV file -->
             <consumer class="CSVEntityExporter">
                 <property name="uri" value="customers.csv" />
@@ -112,27 +113,28 @@
     </create-entities>
 
 	<comment>create orders for random customers and random products</comment>
-	<create-entities name="db_order" count="{ftl:${customer_count * orders_per_customer}}" consumer="db">
-		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
-		<attribute name="customer_id" source="db" selector="select id from db_customer" cyclic="true" />
+	<create-entities name="db_order" count="{customer_count * orders_per_customer}" consumer="db">
+        <id name="id" generator="idGen" />
+		<reference name="customer_id" targetType="db_customer" source="db" cyclic="true" />
         <attribute name="total_price" values="0" />
 	</create-entities>
 
 	<comment>create order items</comment>
 	<create-entities name="db_order_item"
-			count="{ftl:${customer_count * orders_per_customer * items_per_order}}" consumer="db">
+			count="{customer_count * orders_per_customer * items_per_order}" consumer="db">
 		<variable name="product" source="db" selector="select ean_code, price from db_product" distribution="cumulated" />
-		<id name="id" strategy="{${idStrategy}}" source="db" param="{${idParam}}" />
+        <id name="id" generator="idGen" />
 		<attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
-		<attribute name="order_id" source="db" selector="select id from db_order where id &gt; 1" cyclic="true" />
-		<attribute name="product_ean_code" script="{${product[0]}}" />
-		<attribute name="total_price" script="{${(product[1] * db_order_item.number_of_items)?c}}" />
+		<reference name="order_id" source="db" selector="select id from db_order where id &gt; 1" cyclic="true" />
+		<reference name="product_ean_code" script="{${product[0]}}" />
+		<attribute name="total_price" script="{product[1] * db_order_item.number_of_items}" />
 	</create-entities>
 
     <comment>fix order data</comment>
     <update-entities name="db_order" source="db">
         <attribute name="total_price" source="db" 
-            selector="{{select sum(total_price) from db_order_item where order_id = ${db_order.id}}}" cyclic="true"/>
+            selector="{{ftl:select sum(total_price) from db_order_item where order_id = ${db_order.id}}}" 
+            cyclic="true"/>
     </update-entities>
 
 </setup>
