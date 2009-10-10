@@ -103,14 +103,6 @@ public abstract class GeneratorTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> Helper expectGenerations(Generator<T> generator, int n, ConstraintValidator ... validators) {
-        expectGenerationsOnce(generator, n, validators);
-        generator.reset();
-        expectGenerationsOnce(generator, n, validators);
-        return new Helper(generator);
-    }
-
-    @SuppressWarnings("unchecked")
     protected <T> Helper expectGenerations(Generator<T> generator, int n, Validator ... validators) {
         expectGenerationsOnce(generator, n, validators);
         generator.reset();
