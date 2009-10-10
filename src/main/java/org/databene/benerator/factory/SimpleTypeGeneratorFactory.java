@@ -39,11 +39,11 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.parser.BasicParser;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.AsByteGeneratorWrapper;
@@ -215,8 +215,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             generator = GeneratorFactory.getTextLineGenerator(source, false);
         } else {
         	try {
-	        	BasicParser parser = new BasicParser();
-	        	Object sourceObject = parser.resolveConstructionOrReference(source, context, context);
+	        	Object sourceObject = BeneratorScriptParser.parseBeanSpec(source).evaluate(context);
 	        	generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
         	} catch (Exception e) {
                 generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);
