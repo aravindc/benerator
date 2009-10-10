@@ -29,43 +29,47 @@ package org.databene.platform.db;
 import org.databene.benerator.Generator;
 import org.databene.commons.db.hsql.HSQLUtil;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import static org.databene.commons.db.hsql.HSQLUtil.*;
+
 /**
  * Tests the DBSeqHiLoGenerator.<br/><br/>
  * Created: 27.01.2008 10:47:39
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class DBSeqHiLoGeneratorTest extends TestCase {
+public class DBSeqHiLoGeneratorTest {
 
     private static final String SEQUENCE_NAME = "seq_id_gen";
 
     private DBSystem db;
     
-    @Override
-    protected void setUp() throws Exception {
-    	super.setUp();
+    @Before
+    public void setUp() throws Exception {
     	String url = HSQLUtil.getInMemoryURL("beneratortest");
     	db = new DBSystem("db", url, DRIVER, DEFAULT_USER, DEFAULT_PASSWORD);
     	dropSequence();
     	db.createSequence(SEQUENCE_NAME);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    protected void tearDown() {
     	dropSequence();
-    	super.tearDown();
     }
     
     // test methods ----------------------------------------------------------------------------------------------------
     
+    @Test
     public void testMaxLo2() throws Exception {
     	DBSeqHiLoGenerator iterator = new DBSeqHiLoGenerator(SEQUENCE_NAME, 2, db);
         expectSequence(iterator, 3, 4, 5, 6);
         iterator.close();
     }
     
+    @Test
     public void testMaxLo100() throws Exception {
     	DBSeqHiLoGenerator iterator = new DBSeqHiLoGenerator(SEQUENCE_NAME, 100, db);
         expectSequence(iterator, 101, 102, 103, 104);

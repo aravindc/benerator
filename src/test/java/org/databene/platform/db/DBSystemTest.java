@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,9 @@ import java.sql.Statement;
 import org.databene.commons.db.DBUtil;
 import org.databene.model.data.Entity;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests {@link DBSystem}.<br/>
@@ -43,8 +45,9 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class DBSystemTest extends TestCase {
+public class DBSystemTest {
 
+	@Test
 	public void testReadWrite() {
 		db.setReadOnly(false);
 		
@@ -55,6 +58,7 @@ public class DBSystemTest extends TestCase {
 		db.update(new Entity("Test", "ID", 1, "NAME", "Bob"));
 	}
 	
+	@Test
 	public void testReadOnly() {
 		db.setReadOnly(true);
 
@@ -109,7 +113,7 @@ public class DBSystemTest extends TestCase {
 	
 	private DBSystem db;
 	
-	@Override
+	@Before
 	public void setUp() throws Exception {
 		Connection connection = null;
 		try {
@@ -131,4 +135,5 @@ public class DBSystemTest extends TestCase {
 			DBUtil.close(connection);
 		}
 	}
+	
 }

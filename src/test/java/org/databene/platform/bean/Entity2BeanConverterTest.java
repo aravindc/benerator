@@ -26,7 +26,8 @@
 
 package org.databene.platform.bean;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.PersonBean;
@@ -35,13 +36,16 @@ import org.databene.platform.PersonBean;
  * Tests the Entity2BeanConverter.<br/>
  * <br/>
  * Created: 29.08.2007 18:54:45
+ * @author Volker Bergmann
  */
-public class Entity2BeanConverterTest extends TestCase {
+public class Entity2BeanConverterTest {
 
+	@Test
     public void test() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         PersonBean bean = new PersonBean("Alice", 23);
         assertEquals(bean, new Entity2BeanConverter<PersonBean>(PersonBean.class).convert(entity));
     }
+	
 }

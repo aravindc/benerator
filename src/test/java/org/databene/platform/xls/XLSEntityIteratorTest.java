@@ -38,6 +38,9 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 
+import org.junit.Test;
+import static junit.framework.Assert.*;
+
 /**
  * Tests the {@link XLSEntityIterator} class.<br/>
  * <br/>
@@ -51,6 +54,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	private static final String PRODUCT_XLS = "org/databene/platform/xls/product.ent.xls";
 	private static final String IMPORT_XLS = "org/databene/platform/xls/import.ent.xls";
 
+	@Test
 	public void testImport() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
@@ -66,7 +70,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 		}
 	}
 	
-
+	@Test
 	public void testParseAll() throws Exception {
 		List<Entity> entities = XLSEntityIterator.parseAll(IMPORT_XLS, null);
 		assertEquals(3, entities.size());
@@ -75,7 +79,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 		assertPerson(PERSON1, entities.get(2));
 	}
 
-	
+	@Test
 	public void testTypes() throws Exception {
 		// Create descriptor
 		final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Product");

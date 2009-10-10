@@ -38,6 +38,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.FileUtil;
 
+import org.junit.Test;
+import static junit.framework.Assert.*;
+
 /**
  * Tests the {@link XLSEntityExporter}.<br/>
  * <br/>
@@ -55,6 +58,7 @@ public class XLSEntityExporterTest extends XLSTest {
 
 	// tests -----------------------------------------------------------------------------------------------------------
 	
+	@Test
 	public void testEmptyStandard() {
 		try {
 			XLSEntityExporter exporter = new XLSEntityExporter();
@@ -66,6 +70,7 @@ public class XLSEntityExporterTest extends XLSTest {
 		}
 	}
 
+	@Test
 	public void testSingleEntity() throws Exception {
 		try {
 			XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath());
@@ -79,6 +84,7 @@ public class XLSEntityExporterTest extends XLSTest {
 
 	}
 
+	@Test
 	public void testTwoEntities() throws Exception {
 		try {
 			XLSEntityExporter exporter = new XLSEntityExporter(CUSTOM_FILE.getAbsolutePath());

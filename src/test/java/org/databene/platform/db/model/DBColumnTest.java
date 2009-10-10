@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,15 +26,20 @@
 
 package org.databene.platform.db.model;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
+ * Tests the {@link DBColumn}.<br/><br/>
  * Created: 06.01.2007 10:41:46
+ * @author Volker Bergmann
  */
-public class DBColumnTest extends TestCase {
+public class DBColumnTest {
 
+	@Test
     public void testToString() {
         assertEquals("Column formatting failed", "ID : NUMBER(11,2)",
                 new DBColumn(null, "ID", DBColumnType.getInstance("NUMBER"), 11, 2).toString());
     }
+    
 }

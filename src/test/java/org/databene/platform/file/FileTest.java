@@ -24,13 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.platform.file;
 
 import java.io.File;
 import java.io.IOException;
-
-import junit.framework.TestCase;
 
 import org.databene.commons.IOUtil;
 
@@ -42,7 +39,7 @@ import org.databene.commons.IOUtil;
  * @author Volker Bergmann
  */
 
-public abstract class FileTest extends TestCase {
+public abstract class FileTest {
 
     protected File createSource2() throws IOException {
 	    File sourceFile2;

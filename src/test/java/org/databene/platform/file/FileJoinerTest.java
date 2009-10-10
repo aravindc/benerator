@@ -26,6 +26,9 @@
 
 package org.databene.platform.file;
 
+import org.junit.Test;
+import static junit.framework.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -42,22 +45,28 @@ import org.databene.commons.IOUtil;
 
 public class FileJoinerTest extends FileTest {
 
+	@Test
 	public void testDefault() throws Exception {
 		check(1, false, false, "ABC123");
 	}
 
+	@Test
 	public void testAppendTrue() throws Exception {
 		check(2, true, false, "ABC123ABC123");
 	}
 
+	@Test
 	public void testAppendFalse() throws Exception {
 		check(2, false, false, "ABC123");
 	}
 
+	@Test
 	public void testDeleteSources() throws Exception {
 		check(1, false, true, "ABC123");
 	}
 
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
     private void check(int executionCount, boolean append, boolean deleteSources, String result) throws IOException {
 	    File sourceFile1 = null;
 		File sourceFile2 = null;

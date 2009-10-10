@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,14 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.platform.xml;
 
 import java.util.regex.Pattern;
 
 import org.databene.model.data.TypeDescriptor;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the XMLSchemaNativeTypeProvider.<br/><br/>
@@ -39,10 +39,11 @@ import junit.framework.TestCase;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLSchemaNativeTypeProviderTest extends TestCase {
+public class XMLSchemaNativeTypeProviderTest {
     
     private XMLNativeTypeDescriptorProvider provider = new XMLNativeTypeDescriptorProvider("xs");
 
+    @Test
     public void testDurationType() {
         checkIllegalValues("duration", 
                 "PDT");
@@ -55,6 +56,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "P100D");
     }
 
+    @Test
     public void testGYearMonthType() {
         checkIllegalValues("gYearMonth", 
                 "A-B", 
@@ -74,6 +76,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "-10000-01");
     }
 
+    @Test
     public void testGYearType() {
         checkIllegalValues("gYear", 
                 "A", 
@@ -93,6 +96,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "-10000");
     }
 
+    @Test
     public void testGMonthType() {
         checkIllegalValues("gMonth", 
                 "A", 
@@ -105,6 +109,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "12");
     }
 
+    @Test
     public void testGDayType() {
         checkIllegalValues("gDay", 
                 "A", 
@@ -117,6 +122,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "31");
     }
 
+    @Test
     public void testGMonthDayType() {
         checkIllegalValues("gMonthDay", 
                 "0-1", 
@@ -130,6 +136,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "01-01");
     }
 
+    @Test
     public void testHexBinaryType() {
         checkIllegalValues("hexBinary", 
                 "0", 
@@ -143,6 +150,7 @@ public class XMLSchemaNativeTypeProviderTest extends TestCase {
                 "ff");
     }
 
+    @Test
     public void testBase64BinaryType() {
         checkIllegalValues("base64Binary", 
                 "?"); 

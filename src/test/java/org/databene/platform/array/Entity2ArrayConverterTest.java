@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.platform.array;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 
@@ -36,8 +37,11 @@ import java.util.Arrays;
  * Tests the Entity2ArrayConverter.<br/>
  * <br/>
  * Created: 29.08.2007 19:09:05
+ * @author Volker Bergmann
  */
-public class Entity2ArrayConverterTest extends TestCase {
+public class Entity2ArrayConverterTest {
+	
+	@Test
     public void test() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
@@ -45,4 +49,5 @@ public class Entity2ArrayConverterTest extends TestCase {
         String[] featureNames = { "name", "age" };
         assertTrue(Arrays.equals(array, new Entity2ArrayConverter(featureNames).convert(entity)));
     }
+	
 }

@@ -29,6 +29,8 @@ package org.databene.platform.file;
 import java.io.File;
 
 import org.databene.commons.FileUtil;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link FileDeleter}.<br/>
@@ -40,6 +42,7 @@ import org.databene.commons.FileUtil;
 
 public class FileDeleterTest extends FileTest {
 
+	@Test
 	public void test() throws Exception {
 	    File sourceFile1 = null;
 		File sourceFile2 = null;

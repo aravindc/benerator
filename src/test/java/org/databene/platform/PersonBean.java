@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ package org.databene.platform;
  * Simple JavaBean for testing, it holds a 'name' and an 'age' property.<br/>
  * <br/>
  * Created: 04.08.2007 08:40:20
+ * @author Volker Bergmann
  */
 public class PersonBean {
 
@@ -61,10 +62,12 @@ public class PersonBean {
         this.age = age;
     }
 
+    @Override
     public String toString() {
         return name + '(' + age + ')';
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
@@ -74,7 +77,9 @@ public class PersonBean {
         return (this.age == that.age && this.name.equals(that.name));
     }
 
+    @Override
     public int hashCode() {
         return name.hashCode() * 29 + age;
     }
+    
 }

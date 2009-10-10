@@ -34,7 +34,9 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link CSVEntityExporter}.<br/>
@@ -44,7 +46,7 @@ import junit.framework.TestCase;
  * @author Volker Bergmann
  */
 
-public class CSVEntityExporterTest extends TestCase {
+public class CSVEntityExporterTest {
 	
 	private static final File DEFAULT_FILE = new File("export.csv");
 	
@@ -54,8 +56,8 @@ public class CSVEntityExporterTest extends TestCase {
 	private Entity alice;
 	private Entity bob;
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() {
 		// create descriptor for 'Person' entities
 		descriptor = new ComplexTypeDescriptor("Person", "entity");
 		descriptor.addComponent(new ComponentDescriptor("name", "string"));
@@ -68,6 +70,7 @@ public class CSVEntityExporterTest extends TestCase {
 	
 	// tests -----------------------------------------------------------------------------------------------------------
 
+	@Test
 	public void testEmptyFile() throws Exception {
 		if (DEFAULT_FILE.exists())
 			DEFAULT_FILE.delete();
@@ -81,6 +84,7 @@ public class CSVEntityExporterTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testExplicitColumns() throws Exception {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), "name");
@@ -91,6 +95,7 @@ public class CSVEntityExporterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testColumnsByDescriptor() throws Exception {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), descriptor);
@@ -101,6 +106,7 @@ public class CSVEntityExporterTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testColumnsByInstance() throws Exception {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter();
@@ -111,6 +117,7 @@ public class CSVEntityExporterTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testDecimalFormat() throws Exception {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter();

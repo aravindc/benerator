@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 20072009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,29 +26,31 @@
 
 package org.databene.platform.csv;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 
 import java.util.Iterator;
 
 /**
- * Tests the {@link CSVEntitySource}.<br/>
- * <br/>
+ * Tests the {@link CSVEntitySource}.<br/><br/>
  * Created: 26.08.2007 12:45:17
  * @author Volker Bergmann
  */
-public class CSVEntitySourceTest extends TestCase {
+public class CSVEntitySourceTest {
 
     private static final String URI = "org/databene/platform/csv/person-bean.csv";
 
     // test methods ----------------------------------------------------------------------------------------------------
 
+    @Test
     public void testSingleRun() {
     	CSVEntitySource iterable = new CSVEntitySource(URI, "Person", ',');
         checkIteration(iterable.iterator());
     }
 
+    @Test
     public void testReset() {
     	CSVEntitySource iterable = new CSVEntitySource(URI, "Person", ',');
         checkIteration(iterable.iterator());
@@ -67,4 +69,5 @@ public class CSVEntitySourceTest extends TestCase {
         assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), iterator.next());
         assertFalse(iterator.hasNext());
     }
+    
 }

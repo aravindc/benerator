@@ -29,7 +29,8 @@ package org.databene.platform.array;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import org.databene.commons.Escalation;
 import org.databene.commons.Escalator;
@@ -41,9 +42,11 @@ import org.databene.model.data.ComplexTypeDescriptor;
  * Tests the Array2EntityConverter.<br/>
  * <br/>
  * Created: 29.08.2007 19:09:05
+ * @author Volker Bergmann
  */
-public class Array2EntityConverterTest extends TestCase {
+public class Array2EntityConverterTest {
 	
+	@Test
     public void testSimple() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
@@ -52,6 +55,7 @@ public class Array2EntityConverterTest extends TestCase {
         assertEquals(entity, new Array2EntityConverter(descriptor, featureNames).convert(array));
     }
 	
+	@Test
     public void testOverflow() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
@@ -75,4 +79,5 @@ public class Array2EntityConverterTest extends TestCase {
 			loggerEscalator.escalate(message, originator, cause);
 		}
     }
+    
 }

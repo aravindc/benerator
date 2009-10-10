@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.platform.flat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -39,11 +40,13 @@ import java.util.Iterator;
  * Tests the {@link FlatFileEntitySource}.<br/>
  * <br/>
  * Created: 27.08.2007 19:20:25
+ * @author Volker Bergmann
  */
-public class FlatFileEntitySourceTest extends TestCase {
+public class FlatFileEntitySourceTest {
 
     private static final String URI = "org/databene/platform/flat/person-bean.flat";
 
+    @Test
     public void test() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("person");
         FlatFileColumnDescriptor[] descriptors = new FlatFileColumnDescriptor[] {
@@ -68,4 +71,5 @@ public class FlatFileEntitySourceTest extends TestCase {
         assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), generator.next());
         assertFalse(generator.hasNext());
     }
+    
 }

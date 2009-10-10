@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,15 +26,18 @@
 
 package org.databene.platform.db.model;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Tests the DBUniqueConstraint<br/>
  * <br/>
  * Created: 31.08.2007 09:22:25
+ * @author Volker Bergmann
  */
-public class DBUniqueConstraintTest extends TestCase {
+public class DBUniqueConstraintTest {
 
+	@Test
     public void testToString() {
         DBColumnType blobType = DBColumnType.getInstance("blob");
         DBTable table = new DBTable("tablename");
@@ -44,6 +47,7 @@ public class DBUniqueConstraintTest extends TestCase {
         assertEquals("DBUniqueConstraint[tablename[column1, column2]]", constraint.toString());
     }
     
+	@Test
     public void testEquals() {
         DBTable table = new DBTable("tablename");
         DBColumnType charType = DBColumnType.getInstance("char");
@@ -61,4 +65,5 @@ public class DBUniqueConstraintTest extends TestCase {
     	assertFalse(uc1.equals(uc3));
     	assertFalse(uc3.equals(uc1));
     }
+	
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.platform.dbunit;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 import java.io.IOException;
 
@@ -41,13 +42,14 @@ import org.databene.script.ScriptUtil;
  * Created: 05.08.2007 08:05:10
  * @author Volker Bergmann
  */
-public class DbUnitEntityIterableTest extends TestCase {
+public class DbUnitEntityIterableTest {
 
+	@Test
     public void testNormalDataset() throws IOException{
         check("org/databene/platform/importer/dbunit/person+role-dbunit.xml");
     }
 
-
+	@Test
     public void testFlatDataset() throws IOException{
         check("org/databene/platform/importer/dbunit/person+role-dbunit.flat.xml");
     }

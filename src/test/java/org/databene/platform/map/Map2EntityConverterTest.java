@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,8 @@
 
 package org.databene.platform.map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.commons.CollectionUtil;
@@ -37,13 +38,16 @@ import java.util.Map;
  * Tests the Map2EntityConverter.<br/>
  * <br/>
  * Created: 29.08.2007 19:09:05
+ * @author Volker Bergmann
  */
-public class Map2EntityConverterTest extends TestCase {
+public class Map2EntityConverterTest {
 
+	@Test
     public void test() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
-        Map<String, Object> map = CollectionUtil.buildOrderedMap("name", "Alice", "age", 23);
+        Map<?,?> map = CollectionUtil.buildOrderedMap("name", "Alice", "age", 23);
         assertEquals(entity, new Map2EntityConverter(descriptor).convert(map));
     }
+    
 }

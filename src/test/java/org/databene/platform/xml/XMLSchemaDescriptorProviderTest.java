@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,22 +37,23 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
- * Tests the XMLDescriptorProvider.<br/><br/>
+ * Tests the {@link XMLSchemaDescriptorProvider}.<br/><br/>
  * Created: 26.02.2008 21:05:23
  * @since 0.5.0
-
  * @author Volker Bergmann
  */
-public class XMLSchemaDescriptorProviderTest extends TestCase {
+public class XMLSchemaDescriptorProviderTest {
     
     private static final String SIMPLE_ELEMENT_TEST_FILE = "org/databene/platform/xml/simple-element-test.xsd";
     private static final String NESTING_TEST_FILE = "org/databene/platform/xml/nesting-test.xsd";
     private static final String ANNOTATION_TEST_FILE = "org/databene/platform/xml/annotation-test.xsd";
     private static final String CHOICE_TEST_FILE = "org/databene/platform/xml/choice-test.xsd";
 
+    @Test
     public void testSimpleTypeElement() {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(SIMPLE_ELEMENT_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
@@ -65,6 +66,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         assertComplexComponentWithSimpleContent("external", rootDescriptor);
     }
 
+    @Test
     public void testNesting() {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(NESTING_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
@@ -86,6 +88,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         assertNotNull(c2);
     }
 
+    @Test
     public void testAnnotations() throws IOException {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(ANNOTATION_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
@@ -116,6 +119,7 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         g.generate();
     }
 
+    @Test
     public void testChoice() {
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(CHOICE_TEST_FILE, new BeneratorContext(null));
         ComplexTypeDescriptor rootDescriptor = (ComplexTypeDescriptor) provider.getTypeDescriptor("root");
@@ -140,6 +144,8 @@ public class XMLSchemaDescriptorProviderTest extends TestCase {
         AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getType();
         assertEquals(3, choiceXYZType.getComponents().size());
     }
+    
+    // helpers ---------------------------------------------------------------------------------------------------------
 
 	private void assertComplexComponentWithSimpleContent(String name, ComplexTypeDescriptor rootDescriptor) {
 		ComponentDescriptor stComponent = rootDescriptor.getComponent(name);

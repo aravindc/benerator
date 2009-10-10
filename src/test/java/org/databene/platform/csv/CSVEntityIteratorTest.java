@@ -26,7 +26,8 @@
 
 package org.databene.platform.csv;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 
@@ -39,12 +40,13 @@ import java.util.Iterator;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CSVEntityIteratorTest extends TestCase {
+public class CSVEntityIteratorTest {
 
     private static final String URI = "org/databene/platform/csv/person-bean.csv";
 
     // test methods ----------------------------------------------------------------------------------------------------
 
+    @Test
     public void test() throws Exception {
     	CSVEntityIterator iterator = new CSVEntityIterator(URI, "Person", ',');
         checkIteration(iterator);
@@ -62,4 +64,5 @@ public class CSVEntityIteratorTest extends TestCase {
         assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), iterator.next());
         assertFalse(iterator.hasNext());
     }
+    
 }
