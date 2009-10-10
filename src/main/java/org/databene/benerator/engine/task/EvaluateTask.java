@@ -68,45 +68,45 @@ public class EvaluateTask extends AbstractTask {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EvaluateTask.class);
 	
-	Expression<String> id;
-	Expression<String> text;
-	Expression<String> uri;
-	Expression<String> type;
-	Expression<Object> targetObject;
-    Expression<String> onError;
-    Expression<String> encoding;
-    Expression<Boolean> optimize;
-    Expression<Object> assertion;
+	Expression<String> idEx;
+	Expression<String> textEx;
+	Expression<String> uriEx;
+	Expression<String> typeEx;
+	Expression<Object> targetObjectEx;
+    Expression<String> onErrorEx;
+    Expression<String> encodingEx;
+    Expression<Boolean> optimizeEx;
+    Expression<Object> assertionEx;
 
-    public EvaluateTask(Expression<String> id, Expression<String> text, Expression<String> uri, Expression<String> type, Expression<Object> targetObject,
-            Expression<String> onError, Expression<String> encoding, Expression<Boolean> optimize,
-            Expression<Object> assertion) {
-    	this.id = id;
-    	this.text = text;
-    	this.uri = uri;
-    	this.type = type;
-    	this.targetObject = targetObject;
-    	this.onError = onError;
-    	this.encoding = encoding;
-    	this.optimize = optimize;
-    	this.assertion = assertion;
+    public EvaluateTask(Expression<String> idEx, Expression<String> textEx, Expression<String> uriEx, Expression<String> typeEx, Expression<Object> targetObjectEx,
+            Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
+            Expression<Object> assertionEx) {
+    	this.idEx = idEx;
+    	this.textEx = textEx;
+    	this.uriEx = uriEx;
+    	this.typeEx = typeEx;
+    	this.targetObjectEx = targetObjectEx;
+    	this.onErrorEx = onErrorEx;
+    	this.encodingEx = encodingEx;
+    	this.optimizeEx = optimizeEx;
+    	this.assertionEx = assertionEx;
     }
 
 	public void run(Context context) {
 		try {
 			BeneratorContext beneratorContext = (BeneratorContext) context;
 			// error handler
-			String onErrorValue = onError.evaluate(context);
+			String onErrorValue = onErrorEx.evaluate(context);
 			if (StringUtil.isEmpty(onErrorValue))
 				onErrorValue = "fatal";
 			ErrorHandler errorHandler = new ErrorHandler(getClass().getName(), Level.valueOf(onErrorValue));
 			
-			String typeValue = type.evaluate(context);
+			String typeValue = typeEx.evaluate(context);
 			// if type is not defined, derive it from the file extension
-			String uriValue = uri.evaluate(context);
-			if (type == null && uri != null) {
+			String uriValue = uriEx.evaluate(context);
+			if (typeEx == null && uriEx != null) {
 				// check for SQL file URI
-				String lcUri = uri.evaluate(context).toLowerCase();
+				String lcUri = uriEx.evaluate(context).toLowerCase();
 				// TODO v0.6 map generically and extendible (Using/Including
 				// Java Scripting?)
 				if (lcUri.endsWith(".sql"))
@@ -122,16 +122,17 @@ public class EvaluateTask extends AbstractTask {
 					typeValue = "js";
 				uriValue = IOUtil.resolveLocalUri(uriValue, beneratorContext.getContextUri());
 			}
+			Object targetObject = targetObjectEx.evaluate(beneratorContext);
 			if (typeValue == null && targetObject instanceof DBSystem)
 				typeValue = "sql";
 			
-            String textValue = text.evaluate(context);
+            String textValue = textEx.evaluate(context);
 
 			// run
 			Object result = null;
 			if ("sql".equals(typeValue))
-	            result = runSql(uriValue, targetObject, onErrorValue, encoding.evaluate(context), 
-						textValue, optimize.evaluate(context));
+	            result = runSql(uriValue, targetObject, onErrorValue, encodingEx.evaluate(context), 
+						textValue, optimizeEx.evaluate(context));
             else if ("shell".equals(typeValue)) {
 				if (!StringUtil.isEmpty(uriValue))
 					textValue = IOUtil.getContentOfURI(uriValue);
@@ -139,25 +140,25 @@ public class EvaluateTask extends AbstractTask {
 				result = runShell(null, textValue, onErrorValue); // TODO v0.6 remove null uri parameter
 			} else {
 				if (StringUtil.isEmpty(typeValue))
-					throw new ConfigurationError("script type is not defined");
+					throw new ConfigurationError("language is unclear for script: " + textValue);
 				if (!StringUtil.isEmpty(uriValue))
 					textValue = IOUtil.getContentOfURI(uriValue);
 				result = runScript(textValue, typeValue, onErrorValue, context);
 			}
 			context.set("result", result);
-			Object assertionValue = assertion.evaluate(beneratorContext);
+			Object assertionValue = assertionEx.evaluate(beneratorContext);
 			if (assertionValue instanceof String)
 				assertionValue = LiteralParser.parse((String) assertionValue);
 			if (assertionValue != null && !(assertionValue instanceof String && ((String) assertionValue).length() == 0)) {
 				if (assertionValue instanceof Boolean) {
 					if (!(Boolean) assertionValue)
-						errorHandler.handleError("Assertion failed: '" + assertion + "'");
+						errorHandler.handleError("Assertion failed: '" + assertionEx + "'");
 				} else {
 					if (!BeanUtil.equalsIgnoreType(assertionValue, result))
 						errorHandler.handleError("Assertion failed. Expected: '" + assertionValue + "', found: '" + result + "'");
 				}
 			}
-			String idValue = id.evaluate(context);
+			String idValue = idEx.evaluate(context);
 			if (idValue != null)
 				context.set(idValue, result);
 		} catch (ConversionException e) {
