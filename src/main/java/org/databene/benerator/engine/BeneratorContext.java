@@ -28,6 +28,7 @@ package org.databene.benerator.engine;
 
 import java.util.Locale;
 
+import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ClassCache;
@@ -64,6 +65,11 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
 
+    static {
+    	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
+    	ScriptUtil.setDefaultScriptEngine("ben");
+    }
+    
 	public BeneratorContext() {
 		this(".");
 	}
