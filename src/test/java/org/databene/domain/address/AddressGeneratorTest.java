@@ -57,14 +57,18 @@ public class AddressGeneratorTest extends GeneratorClassTest {
         check(Country.GERMANY, true);
     }
 
-    public void testUS() {
+    public void testUSA() {
         check(Country.US, true);
+    }
+
+    public void testBrazil() {
+        check(Country.BRAZIL, true);
     }
 
     public void testSingapore() {
         check(Country.SINGAPORE, false);
     }
-    
+  
     public void testDefaultDescriptorMapping() throws Exception {
     	Country country = Country.getDefault();
     	try {
