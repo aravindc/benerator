@@ -26,12 +26,13 @@
 
 package org.databene.benerator.engine.expression.xml;
 
+import java.text.ParseException;
+
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.task.CreateBeanTask;
-import org.databene.benerator.parser.BasicParser;
-import org.databene.benerator.parser.Construction;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -55,12 +56,10 @@ public class XMLBeanExpression implements Expression<Object> {
 
 	private static Logger logger = LoggerFactory.getLogger(CreateBeanTask.class);
 
-	private BasicParser basicParser;
 	private Element element;
 
     public XMLBeanExpression(Element element) {
         this.element = element;
-    	this.basicParser = new BasicParser();
     }
 
     public Object evaluate(Context context) {
@@ -75,9 +74,13 @@ public class XMLBeanExpression implements Expression<Object> {
 	        if (!StringUtil.isEmpty(id))
 	            BeanUtil.setPropertyValue(bean, "id", id, false);
         } else if (beanSpec != null) {
-	        logger.debug("Instantiating bean: " + beanSpec + " (id=" + id + ")");
-	        Construction construction = basicParser.parseConstruction(beanSpec, beneratorContext, beneratorContext);
-	        bean = construction.evaluate(context);
+        	try {
+		        logger.debug("Instantiating bean: " + beanSpec + " (id=" + id + ")");
+		        Expression<?> beanExpression = BeneratorScriptParser.parseBeanSpec(beanSpec);
+		        bean = beanExpression.evaluate(context);
+        	} catch (ParseException e) {
+        		throw new ConfigurationError("Error parsing bean spec: " + beanSpec, e);
+        	}
         } else
         	throw new ConfigurationError("Syntax error in definition of bean " + id);
         return bean;
