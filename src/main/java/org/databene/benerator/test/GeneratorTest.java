@@ -31,8 +31,6 @@ import junit.framework.TestCase;
 import java.util.Set;
 import java.util.Collection;
 
-import javax.validation.ConstraintValidator;
-
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
@@ -317,21 +315,6 @@ public abstract class GeneratorTest extends TestCase {
             for (Validator validator : validators) {
                 assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
                         validator.valid(product));
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> void expectGenerationsOnce(Generator<T> generator, int n, ConstraintValidator ... validators) {
-        generator.validate();
-        for (int i = 0; i < n; i++) {
-            assertTrue("Generator has gone unavailable before creating the required number of products ",
-                    generator.available());
-            T product = generator.generate();
-            logger.debug("created " + format(product));
-            for (ConstraintValidator validator : validators) {
-                assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
-                        validator.isValid(product, null));
             }
         }
     }
