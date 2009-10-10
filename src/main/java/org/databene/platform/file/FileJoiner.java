@@ -99,13 +99,17 @@ public class FileJoiner extends AbstractTask {
 		byte[] buffer = new byte[BUFFER_SIZE];
 		OutputStream out = null;
 		try {
-			File destFile = new File(destination);
+			File destFile = new File(destination); // TODO support relative uris
 			out = new FileOutputStream(destFile, append);
 			for (String source : sources) 
 				appendFile(out, source, buffer);
 			if (deleteSources)
-				for (String source : sources) 
-					new File(source).delete();
+				for (String source : sources) {
+					File file = new File(source);
+					if (!file.delete())
+						getErrorHandler(context).handleError("File could not be deleted: " + file + ". " +
+								"Probably it is locked");
+				}
 		} catch (Exception e) {
 			getErrorHandler(context).handleError("Error joining the files " + ArrayFormat.format(sources), e);
         } finally {
@@ -118,7 +122,7 @@ public class FileJoiner extends AbstractTask {
     private void appendFile(OutputStream out, String source, byte[] buffer) throws FileNotFoundException, IOException {
 	    FileInputStream in = null;
 	    try {
-	    	in = new FileInputStream(source);
+	    	in = new FileInputStream(source); // TODO support relative uris
 	    	int partLength = 0;
 	    	while ((partLength = in.read(buffer)) > 0)
 	    		out.write(buffer, 0, partLength);
