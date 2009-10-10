@@ -26,7 +26,8 @@
 
 package org.databene.benerator.test;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import static junit.framework.Assert.*;
 
 import java.util.Set;
 import java.util.Collection;
@@ -50,22 +51,14 @@ import org.slf4j.LoggerFactory;
  * Created: 15.11.2007 14:46:31
  * @author Volker Bergmann
  */
-public abstract class GeneratorTest extends TestCase {
+public abstract class GeneratorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratorTest.class);
     
     protected BeneratorContext context;
 
-    public GeneratorTest() {
-    }
-
-    public GeneratorTest(String uri) {
-        super(uri);
-    }
-
-    @Override
+    @Before
     protected void setUp() throws Exception {
-    	super.setUp();
         context = new BeneratorContext();
         context.importDefaults();
     }
@@ -218,9 +211,9 @@ public abstract class GeneratorTest extends TestCase {
     private static <E> void checkDistribution(
             ObjectCounter<E> counter, boolean equalDistribution, double tolerance, Set<E> expectedSet) {
         if (equalDistribution)
-            TestCase.assertTrue("Distribution is not equal: " + counter, counter.equalDistribution(tolerance));
+            assertTrue("Distribution is not equal: " + counter, counter.equalDistribution(tolerance));
         if (expectedSet != null)
-            TestCase.assertEquals(expectedSet, counter.objectSet());
+        	assertEquals(expectedSet, counter.objectSet());
     }
 
     public static class Helper {

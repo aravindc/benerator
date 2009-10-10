@@ -30,6 +30,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ParseUtil;
 import junit.framework.AssertionFailedError;
+import org.junit.Test;
+import static junit.framework.Assert.*;
 
 /**
  * Provides methods for testing generators and standard tests that act on generically created generator instances.<br/>
@@ -47,23 +49,20 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         this.generatorClass = generatorClass;
     }
 
-    @SuppressWarnings("unchecked")
-    public GeneratorClassTest(Class<? extends Generator> generatorClass, String uri) {
-        super(uri);
-        this.generatorClass = generatorClass;
-    }
-    
     // test methods that apply for all Generators ----------------------------------------------------------------------
 
+    @Test
     public void testDefaultConstructor() throws Throwable {
         generatorClass.newInstance();
     }
 
+    @Test
     public void testToString() throws Throwable {
         Generator<?> generator = generatorClass.newInstance();
         assertCustomToStringMethod(generator);
     }
 
+    @Test
     public void testDefaultGenerationIfValid() throws Throwable {
         Generator<?> generator = generatorClass.newInstance();
         boolean valid = true;
@@ -79,6 +78,8 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         }
     }
 
+    // helpers ---------------------------------------------------------------------------------------------------------
+    
     protected void assertCustomToStringMethod(Generator<?> generator) {
         String s = generator.toString();
         String className = generator.getClass().getName();
@@ -88,4 +89,5 @@ public abstract class GeneratorClassTest extends GeneratorTest {
             throw new AssertionFailedError("The toString() method of class " + generator.getClass() +
                     " is not customized");
     }
+
 }
