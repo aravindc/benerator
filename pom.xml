@@ -84,7 +84,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.2</version>
+            <version>4.7</version>
             <!-- NOT in test scope because Benerator provides test halper classes -->
         </dependency>
 
