@@ -64,7 +64,7 @@ public class IncludeTask extends AbstractTask {
 	public void run(Context context) {
 		if (!(context instanceof BeneratorContext))
 			throw new ConfigurationError(getClass() + " requires a BeneratorContext, found: " 
-					+ BeanUtil.simpleName(context.getClass()));
+					+ BeanUtil.simpleClassName(context));
 	    BeneratorContext beneratorContext = (BeneratorContext) context;
 		uri = IOUtil.resolveLocalUri(uri, beneratorContext.getContextUri());
         try {
