@@ -73,9 +73,11 @@ public class QNExpression extends UnaryExpression<Object> {
     			return FeatureAccessor.getValue(type, fieldName);
     		} catch (ConfigurationError e) {
     			LOGGER.debug("Class not found: " + objectOrClassName);
-    			// TODO avoid recursion overrun
-    			Object base = readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
-    			return FeatureAccessor.getValue(base, fieldName);
+    			if (qnLength > 1) {
+	    			Object base = readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
+	    			return FeatureAccessor.getValue(base, fieldName);
+    			} else
+    				throw new UnsupportedOperationException(objectOrClassName + " is not defined");
     		}
     	}
     }
