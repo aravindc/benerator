@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.databene.commons.Patterns;
 import org.databene.commons.SystemInfo;
 
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class ConsoleExporterTest {
 	@Test
 	public void testTimestamp() {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		check(timestamp, new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(timestamp));
+		check(timestamp, new SimpleDateFormat(Patterns.DEFAULT_TIMESTAMP_PATTERN).format(timestamp));
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
