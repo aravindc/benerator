@@ -28,9 +28,12 @@ package org.databene.benerator.factory;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.script.ScriptUtil;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -49,6 +52,12 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	private static final String SCRIPTED_NAMES_WGT_CSV = "org/databene/benerator/factory/scripted_names.wgt.csv";
 
 	String contextUri = ".";
+	
+	@BeforeClass
+	public static void setUpBeneneratorScript() {
+    	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
+    	ScriptUtil.setDefaultScriptEngine("ben");
+	}
 	
 	// 'value' attribute tests -----------------------------------------------------------------------------------------
 
