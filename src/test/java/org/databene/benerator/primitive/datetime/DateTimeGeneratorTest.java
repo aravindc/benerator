@@ -6,12 +6,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.script.DateArithmetic;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
 public class DateTimeGeneratorTest extends GeneratorClassTest {
+	
+	DateArithmetic arithmetic = new DateArithmetic();
 	
     public DateTimeGeneratorTest() {
 	    super(DateTimeGenerator.class);
@@ -23,7 +26,7 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
     public void testInvalidSettings() {
         new DateTimeGenerator();
     }
-    
+
 	@Test
     public void testMinMax() {
         check(TimeUtil.date(1970, 0, 1), TimeUtil.date(1970, 0,  1), TimeUtil.time(12, 0), TimeUtil.time(12, 00));
@@ -62,15 +65,15 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
             assertEquals(millisecond, cal.get(Calendar.MILLISECOND));
         }
     }
-    
+
     // private helpers ---------------------------------------------------------
     
     private void check(Date minDate, Date maxDate, Time minTime, Time maxTime) {
         DateTimeGenerator generator = createGenerator(minDate, maxDate, minTime, maxTime);
-        Date maxResult = new Date(maxDate.getTime() + maxTime.getTime());
+        Date maxResult = arithmetic.add(maxDate, maxTime);
         for (int i = 0; i < N; i++) {
             Date date = generator.generate();
-            assertFalse(date.before(minDate));
+            assertFalse("Generated date (" + date + ") is before minDate (" + minDate + ")", date.before(minDate));
             assertFalse(date.after(maxResult));
             Calendar cal = new GregorianCalendar();
             cal.setTime(date);
