@@ -103,8 +103,8 @@ assignment
 beanSpecList
     :   beanSpec (','! beanSpec)*;
 
-beanSpec // syntax does not differ to 'expression', but evaluation is different, so we need this rule!
-    :   expression;
+beanSpec
+    :   expression -> ^(BEANSPEC expression);
 
 expression 
     :   conditionalExpression
@@ -225,6 +225,7 @@ fragment INVOCATION:;
 fragment SUBINVOCATION:;
 fragment QUALIFIEDNAME:;
 fragment BEAN:;
+fragment BEANSPEC:;
 
 BOOLEANLITERAL
     :   'true'
