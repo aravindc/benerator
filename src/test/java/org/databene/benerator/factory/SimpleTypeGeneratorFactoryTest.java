@@ -155,7 +155,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testSequencedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenName");
 		type.setSource(NAME_CSV);
-		type.setDistribution("step(-1)");
+		type.setDistribution("new StepSequence(-1)");
 		Generator<String> generator = createGenerator(type, false);
 		expectGeneratedSequence(generator, "Otto", "Alice").withCeasedAvailability();
 	}

@@ -30,7 +30,6 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -62,27 +61,6 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		assertEquals(Locale.GERMAN, generator.generate().get("locale"));
 	}
 	
-	public static class MyGenerator extends LightweightGenerator<Entity> {
-		
-		private Locale locale;
-		
-		public Locale getLocale() {
-			return locale;
-		}
-
-		public void setLocale(Locale locale) {
-			this.locale = locale;
-		}
-
-		public Entity generate() {
-			return new Entity("MyEntity", "locale", locale);
-		}
-
-        public Class<Entity> getGeneratedType() {
-	        return Entity.class;
-        }
-	}
-
 	@Test
 	public void testTabbedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
@@ -127,7 +105,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	public void testSequencedCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
-		type.setDistribution("step(-1)");
+		type.setDistribution("new StepSequence(-1)");
 		Generator<Entity> generator = createGenerator(type);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
