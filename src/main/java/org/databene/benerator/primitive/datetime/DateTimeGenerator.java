@@ -47,8 +47,8 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
-    private Generator<Long> dateGenerator = null;
-    private Generator<Long> timeGenerator = null;
+    private Generator<Long> dateGenerator;
+    private Generator<Long> timeOffsetGenerator;
     
     private long minDate;
     private long maxDate;
@@ -101,15 +101,15 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     }
     
     public void setMinTime(Time minTime) {
-        this.minTime = minTime.getTime();
+        this.minTime = TimeUtil.millisSinceOwnEpoch(minTime);
     }
     
     public void setMaxTime(Time maxTime) {
-        this.maxTime = maxTime.getTime();
+        this.maxTime = TimeUtil.millisSinceOwnEpoch(maxTime);
     }
     
     public void setTimePrecision(Time timePrecision) {
-        this.timePrecision = timePrecision.getTime();
+        this.timePrecision = TimeUtil.millisSinceOwnEpoch(timePrecision);
     }
     
     public void setTimeDistribution(Distribution distribution) {
@@ -122,19 +122,19 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     public boolean available() {
     	if (!valid)
     		init();
-    	return dateGenerator.available() && timeGenerator.available();
+    	return dateGenerator.available() && timeOffsetGenerator.available();
     }
     
     public Date generate() {
     	if (!valid)
     		init();
-        return new Date(dateGenerator.generate() + timeGenerator.generate());
+    	return new Date(dateGenerator.generate() + timeOffsetGenerator.generate());
     }
 
     private void init() {
     	this.dateGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minDate, maxDate, datePrecision, dateDistribution, 0);
-    	this.timeGenerator = GeneratorFactory.getNumberGenerator(
+    	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, 0);
 	    this.valid = true;
     }
