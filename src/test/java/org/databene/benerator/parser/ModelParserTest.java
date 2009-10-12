@@ -58,23 +58,11 @@ public class ModelParserTest {
 	public void testParseBeanSpec() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
 		ModelParser parser = new ModelParser(context);
-		String beanXML = "<bean id='id' spec='" + TestBean.class.getName() + "(2)' />";
+		String beanXML = "<bean id='id' spec='new " + TestBean.class.getName() + "(2)' />";
 		Expression<?> ex = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
 		Object bean = ex.evaluate(context);
 		assertEquals(TestBean.class, bean.getClass());
 		assertEquals(2, ((TestBean) bean).n);
-	}
-	
-	public static class TestBean {
-		public int n;
-		
-		public TestBean() {
-			this(1);
-		}
-
-        public TestBean(int n) {
-        	this.n = n;
-        }
 	}
 
 }
