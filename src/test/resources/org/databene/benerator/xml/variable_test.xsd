@@ -18,17 +18,17 @@
 		<xs:complexType>
 			<xs:attribute name="string_att" type="xs:string">
 				<xs:annotation>
-					<xs:appinfo><ben:attribute script="{${string_var}}"/></xs:appinfo>
+					<xs:appinfo><ben:attribute script="{string_var}"/></xs:appinfo>
 				</xs:annotation>
 			</xs:attribute>
 			<xs:attribute name="bean_att" type="xs:string">
 				<xs:annotation>
-					<xs:appinfo><ben:attribute script="{${bean_var.name}}"/></xs:appinfo>
+					<xs:appinfo><ben:attribute script="{bean_var.name}"/></xs:appinfo>
 				</xs:annotation>
 			</xs:attribute>
 			<xs:attribute name="entity_att" type="xs:string">
 				<xs:annotation>
-					<xs:appinfo><ben:attribute script="{${entity_var.first_name}}"/></xs:appinfo>
+					<xs:appinfo><ben:attribute script="{entity_var.first_name}"/></xs:appinfo>
 				</xs:annotation>
 			</xs:attribute>
 		</xs:complexType>
