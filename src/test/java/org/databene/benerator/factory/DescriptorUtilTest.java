@@ -285,8 +285,8 @@ public class DescriptorUtilTest {
 		context.setMaxCount(3L);
 		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4), context).evaluate(null).longValue());
 		// global maxCount overrides default
-		context.setMaxCount(0L);
-		assertEquals(0L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(null).longValue());
+		context.setMaxCount(null);
+		assertEquals(null, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(null));
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
