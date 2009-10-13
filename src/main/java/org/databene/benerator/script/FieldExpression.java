@@ -31,7 +31,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.accessor.FeatureAccessor;
 
 /**
- * TODO document class FieldExpression.<br/>
+ * Evaluates an attribute of an object or class.<br/>
  * <br/>
  * Created at 08.10.2009 10:20:10
  * @since 0.6.0

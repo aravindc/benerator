@@ -31,7 +31,8 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 
 /**
- * TODO document class Construction.<br/>
+ * {@link Expression} implementation that instantiates a JavaBean by default constructor and 
+ * calls its property setters for initializing state.<br/>
  * <br/>
  * Created at 06.10.2009 11:48:59
  * @since 0.6.0

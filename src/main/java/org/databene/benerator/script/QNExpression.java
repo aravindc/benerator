@@ -38,7 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document class QNExpression.<br/>
+ * {@link Expression} implementation that evaluates a qualified name as attributes of an object reference or 
+ * static fields of a Java class.<br/>
  * <br/>
  * Created at 08.10.2009 07:18:53
  * @since 0.6.0

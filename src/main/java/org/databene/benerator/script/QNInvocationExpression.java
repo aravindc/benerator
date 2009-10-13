@@ -38,7 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO document class QNInvocationExpression.<br/>
+ * {@link Expression} implementation that evaluates an invocation syntax on a qualified name 
+ * as static method call or call on an object reference.<br/>
  * <br/>
  * Created at 07.10.2009 22:27:26
  * @since 0.6.0

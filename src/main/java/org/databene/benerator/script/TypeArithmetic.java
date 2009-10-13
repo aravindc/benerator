@@ -27,7 +27,7 @@
 package org.databene.benerator.script;
 
 /**
- * TODO document class TypeArithmetics.<br/>
+ * Parent class for defining arithmetics for special JDK or custom data types.<br/>
  * <br/>
  * Created at 06.10.2009 10:28:30
  * @since 0.6.0

@@ -32,7 +32,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
 
 /**
- * TODO document class Construction.<br/>
+ * {@link Expression} implementation that instantiates a Java object by constructor invocation.<br/>
  * <br/>
  * Created at 06.10.2009 11:48:59
  * @since 0.6.0

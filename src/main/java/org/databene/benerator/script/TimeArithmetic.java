@@ -31,7 +31,7 @@ import java.sql.Time;
 import org.databene.commons.BeanUtil;
 
 /**
- * TODO document class DateArithmetic.<br/>
+ * {@link TypeArithmetic} implementation for Time objects.<br/>
  * <br/>
  * Created at 06.10.2009 10:31:14
  * @since 0.6.0

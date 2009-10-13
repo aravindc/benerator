@@ -37,7 +37,7 @@ import java.util.Map;
 import org.databene.commons.BeanUtil;
 
 /**
- * TODO document class TypeEngine.<br/>
+ * Provides information how types can be combined in arithmetic operations.<br/>
  * <br/>
  * Created at 06.10.2009 09:49:53
  * @since 0.6.0

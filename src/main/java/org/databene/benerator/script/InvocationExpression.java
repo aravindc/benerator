@@ -32,7 +32,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 
 /**
- * TODO document class InvocationExpression.<br/>
+ * {@link Expression} implementation that evaluates a method on a class or object.<br/>
  * <br/>
  * Created at 07.10.2009 22:10:06
  * @since 0.6.0

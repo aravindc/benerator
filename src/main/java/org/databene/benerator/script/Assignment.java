@@ -29,7 +29,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Expression;
 
 /**
- * TODO document class Assignment.<br/>
+ * Represents an assignment of an expression (result) to a target name.<br/>
  * <br/>
  * Created at 08.10.2009 19:06:08
  * @since 0.6.0

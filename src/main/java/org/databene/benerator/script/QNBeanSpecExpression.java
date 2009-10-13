@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 package org.databene.benerator.script;
 
 import org.databene.commons.ArrayFormat;
@@ -36,7 +35,14 @@ import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
 
 /**
- * TODO document class QNBeanSpecExpression.<br/>
+ * {@link Expression} instance that evaluates the Benerator script notation for Java object specification
+ * as one of the following: 
+ * <ul>
+ *   <li>reference: <code>myInstance</code></li>
+ *   <li>class name: <code>com.my.SpecialClass</code></li>
+ *   <li>constructor invocation: <code>new com.my.SpecialClass(3, 'test')</code></li>
+ *   <li>JavaBean property syntax: <code>new com.my.SpecialClass[id=3, name='test']</code></li>
+ * </ul>
  * <br/>
  * Created at 08.10.2009 18:15:15
  * @since 0.6.0

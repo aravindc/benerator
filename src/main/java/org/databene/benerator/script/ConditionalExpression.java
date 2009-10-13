@@ -31,7 +31,9 @@ import org.databene.commons.Expression;
 import org.databene.commons.converter.AnyConverter;
 
 /**
- * TODO document class ConditionalExpression.<br/>
+ * {@link Expression} implementation that evaluates a boolean (condition) expression 
+ * and, depending if the result was true or false, evaluates the first or second expression delegate.
+ * The semantic is like the Java expression <code>(condition ? alt1 : alt2)</code>.<br/>
  * <br/>
  * Created at 06.10.2009 16:04:15
  * @since 0.6.0
