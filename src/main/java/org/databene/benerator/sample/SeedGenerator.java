@@ -45,14 +45,14 @@ public class SeedGenerator<E> extends LightweightGenerator<E[]>{
 	
 	private Class<E> atomType;
 	private Class<E[]> targetType;
-	private SeedAtomProvider<E> atomProvider;
+	private SeedManager<E> atomProvider;
 	
 	public SeedGenerator(Class<E> atomType, int depth) {
 		if (depth <= 0)
 			throw new IllegalArgumentException("depth: " + depth);
 		this.atomType = atomType;
 	    this.targetType = ArrayUtil.arrayType(atomType);
-	    this.atomProvider = new SeedAtomProvider<E>(atomType, depth);
+	    this.atomProvider = new SeedManager<E>(atomType, depth);
     }
 
 	private E generate(List<E> predecessors) {
@@ -63,7 +63,7 @@ public class SeedGenerator<E> extends LightweightGenerator<E[]>{
 				throw new IllegalArgumentException("Predecessor list is empty");
 			if (predecessors.get(0) != null)
 				throw new IllegalArgumentException("Predecessor list must start with null");
-			SeedAtomProvider<E> generator = atomProvider;
+			SeedManager<E> generator = atomProvider;
 			for (int i = Math.max(0, preSize - getDepth() + 1); i < preSize; i++)
 				generator = generator.getSuccessor(predecessors.get(i));
 			result = generator.randomAtom();

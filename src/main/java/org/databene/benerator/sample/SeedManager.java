@@ -40,9 +40,9 @@ import org.databene.commons.BeanUtil;
  * @author Volker Bergmann
  */
 
-public class SeedAtomProvider<E> { // TODO find better name
+public class SeedManager<E> {
 	
-	private Map<E, SeedAtomProvider<E>> successors;
+	private Map<E, SeedManager<E>> successors;
 	private int weight;
 	private int depth;
 	private boolean initialized;
@@ -51,11 +51,11 @@ public class SeedAtomProvider<E> { // TODO find better name
 	
 	// constructor and properties --------------------------------------------------------------------------------------
 	
-	public SeedAtomProvider(Class<E> generatedType, int depth) {
+	public SeedManager(Class<E> generatedType, int depth) {
 		this.generatedType = generatedType;
 		this.weight = 0;
 		this.depth = depth;
-	    this.successors = new HashMap<E, SeedAtomProvider<E>>();
+	    this.successors = new HashMap<E, SeedManager<E>>();
     }
 
     public int getDepth() {
@@ -80,7 +80,7 @@ public class SeedAtomProvider<E> { // TODO find better name
 	
     private void init() {
     	helper = new AttachedWeightSampleGenerator<E>(generatedType);
-    	for (Map.Entry<E, SeedAtomProvider<E>> entry : successors.entrySet())
+    	for (Map.Entry<E, SeedManager<E>> entry : successors.entrySet())
     		helper.addSample(entry.getKey(), entry.getValue().getWeight());
 	    initialized = true;
     }
@@ -91,10 +91,10 @@ public class SeedAtomProvider<E> { // TODO find better name
 		return helper.generate();
 	}
 
-    public SeedAtomProvider<E> getSuccessor(E atom) {
-	    SeedAtomProvider<E> result = successors.get(atom);
+    public SeedManager<E> getSuccessor(E atom) {
+	    SeedManager<E> result = successors.get(atom);
 	    if (result == null) {
-	    	result = new SeedAtomProvider<E>(generatedType, depth - 1);
+	    	result = new SeedManager<E>(generatedType, depth - 1);
 	    	successors.put(atom, result);
 	    }
 	    return result;
@@ -105,8 +105,8 @@ public class SeedAtomProvider<E> { // TODO find better name
     }
     
     public void printState(String indent) {
-    	for (Map.Entry<E, SeedAtomProvider<E>> entry : successors.entrySet()) {
-	        SeedAtomProvider<E> successor = entry.getValue();
+    	for (Map.Entry<E, SeedManager<E>> entry : successors.entrySet()) {
+	        SeedManager<E> successor = entry.getValue();
 	        System.out.println(indent + entry.getKey() + '[' + successor.getWeight() + ']');
 	        successor.printState("  " + indent);
         }
