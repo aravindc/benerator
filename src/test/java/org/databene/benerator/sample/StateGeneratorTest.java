@@ -54,8 +54,14 @@ public class StateGeneratorTest extends GeneratorTest {
 	}
 	
 	@Test
-	public void testDeterministicSequenceByStringSpec() {
-		StateGenerator<String> generator = new StateGenerator<String>("->1,1->2,2->");
+	public void testDeterministicIntSequenceByStringSpec() {
+		StateGenerator<Integer> generator = new StateGenerator<Integer>("->1,1->2,2->");
+		expectGeneratedSequence(generator, 1, 2).withCeasedAvailability();
+	}
+	
+	@Test
+	public void testDeterministicStringSequenceByStringSpec() {
+		StateGenerator<String> generator = new StateGenerator<String>("->'1', '1'->'2', '2'->");
 		expectGeneratedSequence(generator, "1", "2").withCeasedAvailability();
 	}
 	
@@ -84,7 +90,7 @@ public class StateGeneratorTest extends GeneratorTest {
 			List<String> products = GeneratorUtil.allProducts(generator);
 			assertTrue(products.size() % 2 == 0);
 			for (int i = 0; i < products.size(); i++)
-				assertEquals(String.valueOf(1 + (i % 2)), products.get(i));
+				assertEquals(1 + (i % 2), products.get(i));
 			generator.reset();
 		}
 	}
