@@ -51,8 +51,10 @@ import java.io.Closeable;
  *   <li>Implement a public default (no-arg) constructor</li>
  *   <li>make each relevant property configurable by a set-method</li>
  * </ul>
- *
+ * <br/>
  * Created: 07.06.2006 18:51:28
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public interface Generator<E> extends Closeable {
 
