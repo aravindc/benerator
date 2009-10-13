@@ -47,22 +47,22 @@ public class ModelParserTest {
     public void testParseBeanClass() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
 		ModelParser parser = new ModelParser(context);
-		String beanXML = "<bean id='id' class='" + TestBean.class.getName() + "' />";
+		String beanXML = "<bean id='id' class='" + SomeBean.class.getName() + "' />";
 		Expression<?> ex = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
 		Object bean = ex.evaluate(context);
-		assertEquals(TestBean.class, bean.getClass());
-		assertEquals(1, ((TestBean) bean).n);
+		assertEquals(SomeBean.class, bean.getClass());
+		assertEquals(1, ((SomeBean) bean).n);
 	}
 	
 	@Test
 	public void testParseBeanSpec() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
 		ModelParser parser = new ModelParser(context);
-		String beanXML = "<bean id='id' spec='new " + TestBean.class.getName() + "(2)' />";
+		String beanXML = "<bean id='id' spec='new " + SomeBean.class.getName() + "(2)' />";
 		Expression<?> ex = parser.parseBean(XMLUtil.parseStringAsElement(beanXML));
 		Object bean = ex.evaluate(context);
-		assertEquals(TestBean.class, bean.getClass());
-		assertEquals(2, ((TestBean) bean).n);
+		assertEquals(SomeBean.class, bean.getClass());
+		assertEquals(2, ((SomeBean) bean).n);
 	}
 
 }
