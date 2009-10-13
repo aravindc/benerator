@@ -32,7 +32,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.TimeUtil;
 
 /**
- * TODO document class DateArithmetic.<br/>
+ * {@link TypeArithmetic} implementation for the {@link Date} class.<br/>
  * <br/>
  * Created at 06.10.2009 10:31:14
  * @since 0.6.0
