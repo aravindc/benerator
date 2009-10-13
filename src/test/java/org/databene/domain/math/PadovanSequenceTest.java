@@ -47,8 +47,6 @@ public class PadovanSequenceTest extends GeneratorTest {
 		expectGeneratedSequence(intGenerator, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9).withCeasedAvailability();
 		intGenerator = padovanSequence.createGenerator(Integer.class, 0, null, 1);
 		expectGeneratedSequence(intGenerator, 1, 1, 1, 2, 2, 3, 4, 5, 7, 9, 12, 16).withContinuedAvailability();
-		intGenerator = padovanSequence.createGenerator(Integer.class, 4, 10, 1);
-		expectGeneratedSequence(intGenerator, 4, 5, 7, 9).withCeasedAvailability();
 	}
 	
 }

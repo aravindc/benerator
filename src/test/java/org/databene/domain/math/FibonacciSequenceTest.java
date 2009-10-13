@@ -48,8 +48,6 @@ public class FibonacciSequenceTest extends GeneratorTest {
 		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withCeasedAvailability();
 		intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, null, 1);
 		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withContinuedAvailability();
-		intGenerator = new FibonacciSequence().createGenerator(Integer.class, 4, 10, 1);
-		expectGeneratedSequence(intGenerator, 5, 8).withCeasedAvailability();
 	}
 	
 }
