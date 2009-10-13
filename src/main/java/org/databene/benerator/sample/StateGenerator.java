@@ -26,13 +26,19 @@
 
 package org.databene.benerator.sample;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
+import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
+import org.databene.commons.context.DefaultContext;
 
 /**
  * Generates states as configured by a state machine.<br/>
@@ -44,59 +50,71 @@ import org.databene.commons.StringUtil;
 
 public class StateGenerator<E> implements Generator<E> {
 	
+	private Context DUMMY_CONTEXT = new DefaultContext(); // TODO get access to BeneratorContext
+	
 	private static final int UNINITIALIZED = 0;
 	private static final int INITIALIZED = 1;
 	private static final int CLOSED = 2;
 	
-	private Class<E> stateType;
+	private Class<E> generatedType;
 	private E nextState;
 	private Map<E, MappedSampleGenerator<E>> transitions;
 	private int phase = UNINITIALIZED;
+	
+	// initialization --------------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public StateGenerator(String transitionSpec) { // TODO move String functionality to class StringStateGenerator?
-	    this((Class<E>) String.class);
+    public StateGenerator(String transitionSpec) {
+	    this((Class<E>) Object.class);
 	    setTransitions(transitionSpec);
     }
     
-    public StateGenerator(Class<E> stateType) {
-	    this.stateType = stateType;
+    public StateGenerator(Class<E> generatedType) {
+	    this.generatedType = generatedType;
 	    this.transitions = new HashMap<E, MappedSampleGenerator<E>>();
 	    this.nextState = null;
     }
     
     @SuppressWarnings("unchecked")
-    public void setTransitions(String transitionSpec) { // TODO move String functionality to class StringStateGenerator?
-    	String[] tokens = transitionSpec.split(",");
-    	for (String token : tokens) { // TODO use ANTLR for parsing
-    		int minusIndex = token.indexOf("->");
-    		String from = StringUtil.emptyToNull(token.substring(0, minusIndex));
-    		int toIndex = minusIndex + 2;
-    		int probIndex = token.indexOf('[');
-    		String to;
-    		double weight;
-    		if (probIndex >= 0) {
-    			to = StringUtil.emptyToNull(token.substring(toIndex, probIndex));
-    			weight = Double.parseDouble(token.substring(probIndex + 1, token.indexOf(']')));
-    		} else {
-    			to = StringUtil.emptyToNull(token.substring(toIndex));
-    			weight = 1.;
-    		}
-    		addTransition((E) from, (E) to, weight);
-    	}
+    public void setTransitions(String transitionSpec) {
+    	try {
+	    	String[] tokens = transitionSpec.split(",");
+	    	for (String token : tokens) { // TODO use ANTLR for parsing the complete state machine
+	    		int minusIndex = token.indexOf("->");
+	    		String fromString = StringUtil.emptyToNull(token.substring(0, minusIndex));
+	    		Object fromState = resolveExpression(fromString);
+	    		int toIndex = minusIndex + 2;
+	    		int probIndex = token.indexOf('[');
+	    		String toString;
+	    		double weight;
+	    		if (probIndex >= 0) {
+	    			toString = StringUtil.emptyToNull(token.substring(toIndex, probIndex));
+	    			weight = Double.parseDouble(token.substring(probIndex + 1, token.indexOf(']')));
+	    		} else {
+	    			toString = StringUtil.emptyToNull(token.substring(toIndex));
+	    			weight = 1.;
+	    		}
+	    		Object toState = resolveExpression(toString);
+	    		addTransition((E) fromState, (E) toState, weight);
+	    	}
+    	} catch (ParseException e) {
+    		throw new ConfigurationError("Error parsing state machine specification: " + transitionSpec, e);
+        }
     }
 
     public void addTransition(E from, E to, double weight) {
     	MappedSampleGenerator<E> subGenerator = transitions.get(from);
     	if (subGenerator == null) {
-    		subGenerator = new MappedSampleGenerator<E>(stateType);
+    		subGenerator = new MappedSampleGenerator<E>(generatedType);
     		transitions.put(from, subGenerator);
     	}
     	subGenerator.addSample(to, weight);
     }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
 
     public Class<E> getGeneratedType() {
-	    return stateType;
+	    return generatedType;
     }
     
     public void validate() throws InvalidGeneratorSetupException {
@@ -144,9 +162,18 @@ public class StateGenerator<E> implements Generator<E> {
     	phase = CLOSED;
     }
     
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + transitions;
+    }
+
+    // private methods -------------------------------------------------------------------------------------------------
+    
+	private Object resolveExpression(String fromString) throws ParseException {
+	    Expression<?> expression = BeneratorScriptParser.parseExpression(fromString);
+		return (expression != null ? expression.evaluate(DUMMY_CONTEXT) : null);
     }
 
 }
