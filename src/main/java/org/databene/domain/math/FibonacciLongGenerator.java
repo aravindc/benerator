@@ -26,8 +26,7 @@
 
 package org.databene.domain.math;
 
-import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.RecursiveNumberGenerator;
 
 /**
  * Generates <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci Numbers</a>.<br/>
@@ -37,54 +36,23 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * @author Volker Bergmann
  */
 
-public class FibonacciLongGenerator extends AbstractNumberGenerator<Long> {
+public class FibonacciLongGenerator extends RecursiveNumberGenerator<Long> {
 	
-	private Long fn_1;
-	private Long fn_2;
-
     public FibonacciLongGenerator(Long min, Long max) {
-    	super(Long.class, min, max, 1L);
-	    resetFn();
-    }
-
-    @Override
-    public boolean available() {
-    	return (max == null || calculateNext() < max); 
-    }
-    
-    public Long generate() {
-	    long result = calculateNext();
-	    if (max != null && result > max)
-	    	throw stateException(this);
-	    fn_2 = fn_1;
-	    fn_1 = result;
-	    return result;
-    }
-
-	private long calculateNext() {
-	    return (fn_2 != null ? fn_2 + fn_1 : (fn_1 != null ? 1 : 0));
+    	super(Long.class, 2, min, max);
     }
 
 	@Override
-    public void reset() {
-	    resetFn();
-	    super.reset();
+    protected Long recursion() {
+	    return recentProducts.get(0) + recentProducts.get(1);
     }
 
 	@Override
-	public void close() {
-	    fn_1 = null;
-	    fn_2 = null;
-		super.close();
-	}
-	
-	private void resetFn() {
-	    fn_1 = null;
-	    fn_2 = null;
-	    long tmp;
-	    while (min != null && (tmp = calculateNext()) < min) {
-	    	fn_2 = fn_1;
-	    	fn_1 = tmp;
+    protected Long baseValue(int n) {
+	    switch (n) {
+		    case 0 : return 0L;
+		    case 1 : return 1L;
+		    default: throw new IllegalStateException();
 	    }
     }
 

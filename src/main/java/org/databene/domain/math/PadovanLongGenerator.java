@@ -27,6 +27,7 @@
 package org.databene.domain.math;
 
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.RecursiveNumberGenerator;
 
 /**
  * Generates numbers according to the <i>Padovan Sequence</i>.<br/>
@@ -37,57 +38,20 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * @author Volker Bergmann
  */
 
-public class PadovanLongGenerator extends AbstractNumberGenerator<Long> {
-	// TODO extract common feature of FibonacciLongGenerator and PadovanLongGenerator to Recursive[Long]Generator
+public class PadovanLongGenerator extends RecursiveNumberGenerator<Long> {
 	
-	private Long pn_1;
-	private Long pn_2;
-	private Long pn_3;
-
     public PadovanLongGenerator(Long min, Long max) {
-    	super(Long.class, min, max, 1L);
-	    resetFn();
-    }
-
-    @Override
-    public boolean available() {
-    	return (max == null || calculateNext() < max); 
-    }
-    
-    public Long generate() {
-	    long result = calculateNext();
-	    if (max != null && result > max)
-	    	throw stateException(this);
-	    pn_3 = pn_2;
-	    pn_2 = pn_1;
-	    pn_1 = result;
-	    return result;
-    }
-
-	private long calculateNext() {
-	    return (pn_3 != null ? pn_2 + pn_3 : 1);
+    	super(Long.class, 3, min, max);
     }
 
 	@Override
-    public void reset() {
-	    resetFn();
-	    super.reset();
+    protected Long baseValue(int n) {
+	    return 1L;
     }
 
 	@Override
-	public void close() {
-	    pn_1 = pn_2 = pn_3 = null;
-		super.close();
-	}
-	
-	private void resetFn() {
-	    pn_1 = pn_2 = pn_3 = null;
-	    long tmp;
-	    while (min != null && (tmp = calculateNext()) < min) {
-	    	pn_3 = pn_2;
-	    	pn_2 = pn_1;
-	    	pn_1 = tmp;
-	    }
+    protected Long recursion() {
+	    return recentProducts.get(1) + recentProducts.get(2);
     }
 
 }
