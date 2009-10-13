@@ -44,6 +44,8 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> { // TODO tes
     public TimestampArithmetic() {
 	    super(Timestamp.class);
     }
+    
+    // Arithmetic interface implementation -----------------------------------------------------------------------------
 
     @Override
     public Timestamp add(Object summand1, Object summand2) {
@@ -56,14 +58,6 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> { // TODO tes
     				summand1 + ", " + summand2);
     }
 
-	private Timestamp addImpl(Timestamp summand1, Object summand2) {
-    	if (summand2 instanceof Number)
-    		return new Timestamp(summand1.getTime() + ((Number) summand2).longValue());
-    	else
-    		throw new UnsupportedOperationException("Cannot add " +
-    				BeanUtil.simpleClassName(summand2) + " to " + baseType.getClass().getName());
-    }
-
     @Override
     public Object subtract(Object minuend, Object subtrahend) {
     	if (minuend instanceof Timestamp)
@@ -73,17 +67,32 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> { // TODO tes
     				minuend + ", " + subtrahend);
     }
 
-	private Timestamp subtractImpl(Timestamp minuend, Object subtrahend) {
+    @Override
+    public Object multiply(Object factor1, Object factor2) {
+	    throw new UnsupportedOperationException("Cannot multiply timestamps");
+    }
+
+	@Override
+	public Object divide(Object quotient, Object divisor) {
+	    throw new UnsupportedOperationException("Cannot divide timestamps");
+	}
+	
+    // private methods -------------------------------------------------------------------------------------------------
+    
+    private Timestamp subtractImpl(Timestamp minuend, Object subtrahend) {
     	if (subtrahend instanceof Number)
     		return new Timestamp(minuend.getTime() - ((Number) subtrahend).longValue());
     	else
-    		throw new UnsupportedOperationException("Cannot subtract " +
+    		throw new IllegalArgumentException("Cannot subtract " +
     				BeanUtil.simpleClassName(subtrahend) + " from " + minuend.getClass().getName());
     }
 
-    @Override
-    public Object product(Object factor1, Object factor2) {
-	    throw new UnsupportedOperationException("Cannot multiply timestamps");
+	private Timestamp addImpl(Timestamp summand1, Object summand2) {
+    	if (summand2 instanceof Number)
+    		return new Timestamp(summand1.getTime() + ((Number) summand2).longValue());
+    	else
+    		throw new IllegalArgumentException("Cannot add " +
+    				BeanUtil.simpleClassName(summand2) + " to " + baseType.getClass().getName());
     }
 
 }

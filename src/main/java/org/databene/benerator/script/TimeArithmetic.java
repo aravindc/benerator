@@ -27,8 +27,10 @@
 package org.databene.benerator.script;
 
 import java.sql.Time;
+import java.util.Date;
 
 import org.databene.commons.BeanUtil;
+import org.databene.commons.TimeUtil;
 
 /**
  * {@link TypeArithmetic} implementation for Time objects.<br/>
@@ -44,6 +46,8 @@ public class TimeArithmetic extends TypeArithmetic<Time> { // TODO test
 	    super(Time.class);
     }
 
+    // Arithmetic interface implementation -----------------------------------------------------------------------------
+
     @Override
     public Time add(Object summand1, Object summand2) {
     	if (summand1 instanceof Time)
@@ -55,22 +59,42 @@ public class TimeArithmetic extends TypeArithmetic<Time> { // TODO test
     				summand1 + ", " + summand2);
     }
 
+    @Override
+    public Object subtract(Object minuend, Object subtrahend) {
+    	if (minuend instanceof Date) {
+            long minuendMillis = ((Date) minuend).getTime();
+    		if (subtrahend instanceof Date)
+	            return new Time(minuendMillis - TimeUtil.millisSinceOwnEpoch((Date) subtrahend));
+            else if (subtrahend instanceof Number)
+	    		return new Time(minuendMillis - ((Number) subtrahend).longValue());
+            else
+        		throw new IllegalArgumentException("Subtrahend must be Date, Time, Timestamp or Number, but was: " + 
+        				subtrahend.getClass().getName());
+    	} else
+    		throw new IllegalArgumentException("Minuend needs to be of type " + baseType + ", but was: " + 
+    				minuend.getClass().getName());
+    }
+
+    @Override
+    public Object multiply(Object factor1, Object factor2) {
+	    throw new UnsupportedOperationException("Cannot multiply times");
+    }
+
+    @Override
+    public Object divide(Object quotient, Object divisor) {
+	    throw new UnsupportedOperationException("Cannot divide times");
+    }
+
+    // private methods -------------------------------------------------------------------------------------------------
+    
 	private Time addImpl(Time summand1, Object summand2) {
     	if (summand2 instanceof Number)
     		return new Time(summand1.getTime() + ((Number) summand2).longValue());
+    	else if (summand2 instanceof Date)
+    		return new Time(summand1.getTime() + TimeUtil.millisSinceOwnEpoch((Date) summand2));
     	else
-    		throw new UnsupportedOperationException("Cannot add " +
+    		throw new IllegalArgumentException("Cannot add " +
     				BeanUtil.simpleClassName(summand2) + " to java.util.Date");
-    }
-
-    @Override
-    public Object subtract(Object minuend, Object subtrahend) {
-	    throw new UnsupportedOperationException("TypeArithmetic<Time>.subtract() is not implemented"); // TODO implement TypeArithmetic<Time>.subtract
-    }
-
-    @Override
-    public Object product(Object factor1, Object factor2) {
-	    throw new UnsupportedOperationException("Cannot multiply times");
     }
 
 }

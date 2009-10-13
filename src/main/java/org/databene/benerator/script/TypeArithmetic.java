@@ -46,10 +46,12 @@ public abstract class TypeArithmetic<E> {
 		return baseType;
 	}
 	
-	public abstract E add(Object base, Object simplerType);
+	public abstract E add(Object summand1, Object summand2) throws IllegalArgumentException, UnsupportedOperationException;
 
-    public abstract Object subtract(Object minuend, Object subtrahend);
+    public abstract Object subtract(Object minuend, Object subtrahend) throws IllegalArgumentException, UnsupportedOperationException;
 
-    public abstract Object product(Object factor1, Object factor2);
+    public abstract Object multiply(Object factor1, Object factor2) throws IllegalArgumentException, UnsupportedOperationException;
+
+    public abstract Object divide(Object quotient, Object divisor) throws IllegalArgumentException, UnsupportedOperationException;
 
 }

@@ -181,7 +181,7 @@ public class ArithmeticEngine {
 	    Class<?> resultType = TypeEngine.combinedType(factor1.getClass(), factor2.getClass());
 	    TypeArithmetic<?> typeArithmetic = typeArithmetics.get(resultType);
 	    if (typeArithmetic != null)
-		    return typeArithmetic.product(factor1, factor2);
+		    return typeArithmetic.multiply(factor1, factor2);
 	    Object s1 = AnyConverter.convert(factor1, resultType);
 	    Object s2 = AnyConverter.convert(factor2, resultType);
 	    if (resultType == Byte.class)
@@ -215,7 +215,7 @@ public class ArithmeticEngine {
 	    Class<?> resultType = TypeEngine.combinedType(dividend.getClass(), divisor.getClass());
 	    TypeArithmetic<?> typeArithmetic = typeArithmetics.get(resultType);
 	    if (typeArithmetic != null)
-		    return typeArithmetic.product(dividend, divisor);
+		    return typeArithmetic.multiply(dividend, divisor);
 	    Object s1 = AnyConverter.convert(dividend, resultType);
 	    Object s2 = AnyConverter.convert(divisor, resultType);
 	    if (resultType == Byte.class)

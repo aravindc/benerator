@@ -39,11 +39,13 @@ import org.databene.commons.TimeUtil;
  * @author Volker Bergmann
  */
 
-public class DateArithmetic extends TypeArithmetic<Date> { // TODO test
+public class DateArithmetic extends TypeArithmetic<Date> {
 
     public DateArithmetic() {
 	    super(Date.class);
     }
+    
+    // Arithmetic interface implementation -----------------------------------------------------------------------------
 
     @Override
     public Date add(Object summand1, Object summand2) {
@@ -56,35 +58,41 @@ public class DateArithmetic extends TypeArithmetic<Date> { // TODO test
     				summand1 + ", " + summand2);
     }
 
+    @Override
+    public Object subtract(Object minuend, Object subtrahend) {
+    	return subtractImpl((Date) minuend, subtrahend);
+    }
+
+    @Override
+    public Object multiply(Object factor1, Object factor2) {
+	    throw new UnsupportedOperationException("Cannot multiply dates");
+    }
+    
+    @Override
+    public Object divide(Object quotient, Object divisor) {
+	    throw new UnsupportedOperationException("Cannot divide dates");
+    }
+    
+    // private methods -------------------------------------------------------------------------------------------------
+
 	private Date addImpl(Date summand1, Object summand2) {
     	if (summand2 instanceof Number)
     		return new Date(summand1.getTime() + ((Number) summand2).longValue());
     	else if (summand2 instanceof Date)
     		return TimeUtil.add(summand1, (Date) summand2);
     	else
-    		throw new UnsupportedOperationException("Cannot add " +
+    		throw new IllegalArgumentException("Cannot add " +
     				BeanUtil.simpleClassName(summand2) + " to " + baseType.getClass().getName());
-    }
-
-    @Override
-    public Object subtract(Object minuend, Object subtrahend) {
-    	return subtractImpl((Date) minuend, subtrahend);
     }
 
     private Object subtractImpl(Date minuend, Object subtrahend) {
 	    if (subtrahend instanceof Number)
     		return new Date(minuend.getTime() - ((Number) subtrahend).longValue());
     	else if (subtrahend instanceof Date) {
-    		Date date2 = (Date) subtrahend;
-			return new Date(minuend.getTime() - date2.getTime() + TimeUtil.date(1970, 0, 1).getTime()); // TODO improve performance
+    		return TimeUtil.subtract(minuend,  (Date) subtrahend);
     	} else
-    		throw new UnsupportedOperationException("Cannot subtract " +
+    		throw new IllegalArgumentException("Cannot subtract " +
     				BeanUtil.simpleClassName(subtrahend) + " from " + minuend.getClass().getName());
-    }
-
-    @Override
-    public Object product(Object factor1, Object factor2) {
-	    throw new UnsupportedOperationException("Cannot multiply dates");
     }
 
 }
