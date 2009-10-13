@@ -59,10 +59,9 @@ public class DateArithmetic extends TypeArithmetic<Date> { // TODO test
 	private Date addImpl(Date summand1, Object summand2) {
     	if (summand2 instanceof Number)
     		return new Date(summand1.getTime() + ((Number) summand2).longValue());
-    	else if (summand2 instanceof Date) {
-    		Date date2 = (Date) summand2;
-			return new Date(summand1.getTime() + date2.getTime() - TimeUtil.date(1970, 0, 1).getTime()); // TODO improve performance
-    	} else
+    	else if (summand2 instanceof Date)
+    		return TimeUtil.add(summand1, (Date) summand2);
+    	else
     		throw new UnsupportedOperationException("Cannot add " +
     				BeanUtil.simpleClassName(summand2) + " to " + baseType.getClass().getName());
     }
