@@ -30,7 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * TODO document class TypeEngineTest.<br/>
+ * Tests the {@link TypeEngine}.<br/>
  * <br/>
  * Created at 06.10.2009 09:55:20
  * @since 0.6.0
