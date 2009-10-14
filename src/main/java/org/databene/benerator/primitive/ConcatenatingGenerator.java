@@ -39,11 +39,24 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  * @author Volker Bergmann
  */
 
-public class ConcatenatingGenerator extends GeneratorWrapper<String[], String> { // TODO test
+public class ConcatenatingGenerator extends GeneratorWrapper<String[], String> {
 
+	private String separator;
+	
     public ConcatenatingGenerator(Generator<String[]> source) {
-	    super(source);
+	    this(source, "");
     }
+    
+    public ConcatenatingGenerator(Generator<String[]> source, String separator) {
+	    super(source);
+	    this.separator = separator;
+    }
+    
+    public String getSeparator() {
+	    return separator;
+    }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
     
 	public Class<String> getGeneratedType() {
 	    return String.class;
@@ -51,10 +64,16 @@ public class ConcatenatingGenerator extends GeneratorWrapper<String[], String> {
 
     public String generate() throws IllegalGeneratorStateException {
         String[] parts = source.generate();
-        StringBuilder builder = new StringBuilder();
-        for (String part : parts)
-            builder.append(part);
-        return builder.toString();
+        if (parts.length > 0) {
+	        StringBuilder builder = new StringBuilder();
+	        builder.append(parts[0]);
+	        for (int i = 1; i < parts.length; i++) {
+	        	String part = parts[i];
+	            builder.append(separator).append(part);
+	        }
+	        return builder.toString();
+        } else
+        	return "";
     }
 
 }
