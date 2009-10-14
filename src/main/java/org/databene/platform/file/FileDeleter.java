@@ -40,7 +40,6 @@ import org.databene.task.AbstractTask;
  */
 
 public class FileDeleter extends AbstractTask {
-	// TODO test
 	
 	private String[] files = new String[0];
 
