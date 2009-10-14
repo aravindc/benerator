@@ -48,10 +48,10 @@ import org.databene.domain.address.Country;
  * @author Volker Bergmann
  */
 
-public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber, String> { // TODO find a suitable package for this class
+public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber, String> {
 	
 	private static final String UNLUCKY_CN = "4,14";
-	private static final String LUCKY_CN = "2,8,9,13,99,168,518,5918,814,148,1314,9413"; // TODO if a lucky number contains an unlucky number, it will not be accepted
+	private static final String LUCKY_CN = "2,8,9,13";
 
 	private static final String UNLUCKY_JP = "4,9";
 	private static final String LUCKY_JP = "8";
