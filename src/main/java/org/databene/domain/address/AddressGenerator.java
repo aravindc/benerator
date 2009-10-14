@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * Generates {@link Address} objects.<br/>
  * <br/>
  * Created: 11.06.2006 08:07:40
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class AddressGenerator extends LightweightGenerator<Address> {
