@@ -30,6 +30,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import org.databene.commons.BeanUtil;
+import org.databene.commons.TimeUtil;
 
 /**
  * {@link TypeArithmetic} implementation for the {@link Date} type.<br/>
@@ -48,20 +49,20 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> {
     // Arithmetic interface implementation -----------------------------------------------------------------------------
 
     @Override
-    public Timestamp add(Object summand1, Object summand2) {
+    public Timestamp add(Object summand1, Object summand2) { // TODO test nano precision + overrun
     	if (summand1 instanceof Timestamp)
-    		return addImpl((Timestamp) summand1, summand2);
+    		return addToTimestamp((Timestamp) summand1, summand2);
     	else if (summand2 instanceof Timestamp)
-    		return addImpl((Timestamp) summand2, summand1);
+    		return addToTimestamp((Timestamp) summand2, summand1);
     	else
     		throw new IllegalArgumentException("No argument is of type " + baseType + ": " + 
     				summand1 + ", " + summand2);
     }
 
     @Override
-    public Object subtract(Object minuend, Object subtrahend) {
+    public Object subtract(Object minuend, Object subtrahend) { // TODO test nano precision + overrun
     	if (minuend instanceof Timestamp)
-    		return subtractImpl((Timestamp) minuend, subtrahend);
+    		return subtractFromTimestamp((Timestamp) minuend, subtrahend);
     	else
     		throw new IllegalArgumentException("No argument is of type " + baseType + ": " + 
     				minuend + ", " + subtrahend);
@@ -79,20 +80,42 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> {
 	
     // private methods -------------------------------------------------------------------------------------------------
     
-    private Timestamp subtractImpl(Timestamp minuend, Object subtrahend) {
+	private Timestamp addToTimestamp(Timestamp summand1, Object summand2) {
+    	if (summand2 instanceof Number)
+    		return new Timestamp(summand1.getTime() + ((Number) summand2).longValue());
+    	else if (summand2 instanceof Timestamp)
+    		return addTimestamps(summand1, (Timestamp) summand2);
+    	else if (summand2 instanceof Date)
+    		return addTimestamps(summand1, new Timestamp(((Date) summand2).getTime()));
+    	else
+    		throw new IllegalArgumentException("Cannot add " +
+    				BeanUtil.simpleClassName(summand2) + " to " + baseType.getName());
+    }
+
+	private Timestamp addTimestamps(Timestamp summand1, Timestamp summand2) {
+	    int nanoSum = summand1.getNanos() + summand2.getNanos();
+	    Timestamp result = new Timestamp(summand1.getTime() + TimeUtil.millisSinceOwnEpoch(summand2) + nanoSum / 1000000000L);
+	    result.setNanos(nanoSum % 1000000000);
+	    return result;
+    }
+
+    private Timestamp subtractFromTimestamp(Timestamp minuend, Object subtrahend) {
     	if (subtrahend instanceof Number)
     		return new Timestamp(minuend.getTime() - ((Number) subtrahend).longValue());
+    	else if (subtrahend instanceof Timestamp)
+    		return subtractTimestamps(minuend, (Timestamp) subtrahend);
+    	else if (subtrahend instanceof Date)
+    		return subtractTimestamps(minuend, new Timestamp(((Date) subtrahend).getTime()));
     	else
     		throw new IllegalArgumentException("Cannot subtract " +
     				BeanUtil.simpleClassName(subtrahend) + " from " + minuend.getClass().getName());
     }
 
-	private Timestamp addImpl(Timestamp summand1, Object summand2) {
-    	if (summand2 instanceof Number)
-    		return new Timestamp(summand1.getTime() + ((Number) summand2).longValue());
-    	else
-    		throw new IllegalArgumentException("Cannot add " +
-    				BeanUtil.simpleClassName(summand2) + " to " + baseType.getClass().getName());
+	private Timestamp subtractTimestamps(Timestamp minuend, Timestamp subtrahend) {
+	    int nanoDiff = minuend.getNanos() - subtrahend.getNanos();
+	    Timestamp result = new Timestamp(minuend.getTime() - TimeUtil.millisSinceOwnEpoch(subtrahend) - nanoDiff / 1000000000L);
+	    result.setNanos(nanoDiff % 1000000000);
+	    return result;
     }
 
 }
