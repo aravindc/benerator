@@ -41,7 +41,7 @@ public class StreetNameGenerator extends WeightedDatasetCSVGenerator<String> {
     private static final String FILENAME_PATTERN = "org/databene/domain/address/street_{0}.csv";
 
     public StreetNameGenerator() {
-        this("DE");
+        this(Country.getDefault().getIsoCode());
     }
 
     public StreetNameGenerator(String datasetName) {
