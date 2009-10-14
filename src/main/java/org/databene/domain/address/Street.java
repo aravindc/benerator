@@ -28,7 +28,7 @@ package org.databene.domain.address;
 
 import java.util.Random;
 
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Represents a street and serves as generator for house numbers.<br/>
@@ -72,7 +72,7 @@ public class Street {
     public String[] generateHouseNumberWithZipCode() {
         return new String[] {
             String.valueOf(random(1, maxHouseNumber)),
-            SimpleRandom.randomValue(city.getPostalCodes())
+            RandomUtil.randomElement(city.getPostalCodes())
         };
     }
 
