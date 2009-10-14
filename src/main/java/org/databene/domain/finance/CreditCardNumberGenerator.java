@@ -27,7 +27,7 @@
 package org.databene.domain.finance;
 
 import org.databene.benerator.primitive.LightweightStringGenerator;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Creates credit card numbers.<br/><br/>
@@ -42,7 +42,7 @@ public class CreditCardNumberGenerator extends LightweightStringGenerator {
 		char[] digits = new char[16];
 		digits[0] = '4'; // VISA has 16-digits numbers
 		for (int i = 1; i < 15; i++)
-			digits[i] = (char) ('0' + SimpleRandom.randomInt(0, 9));
+			digits[i] = (char) ('0' + RandomUtil.randomInt(0, 9));
 		digits[15] = '0';
 		int sum = luhnSum(digits);
 		digits[15] = (sum % 10 == 0 ? '0' : (char)('0' + 10 - (sum % 10)));

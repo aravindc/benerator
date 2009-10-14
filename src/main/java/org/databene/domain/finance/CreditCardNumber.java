@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-import org.databene.domain.UnluckyNumberValidator;
+import org.databene.benerator.primitive.UnluckyNumberValidator;
 
 /**
  * Bean validation annotation (JSR 303) for fields that represent a credit card number.<br/>
