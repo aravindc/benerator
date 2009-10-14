@@ -235,7 +235,10 @@ public class BeneratorScriptParserTest {
 		checkExpression(100000000001L, "100000000000 + 1");
 		checkExpression(5, "(byte) 3 + (byte) 2)");
 		checkExpression(5, "3 + (byte) 2)");
-		// TODO check with other types
+		checkExpression(1.5, "1 + 0.5");
+		checkExpression((float)1.5, "1 + (float) 0.5");
+		checkExpression((float)1.5, "(float) (1 + 0.5)");
+		checkExpression(1, "(int) (1 + 0.5)");
 	}
 	
 	@Test
