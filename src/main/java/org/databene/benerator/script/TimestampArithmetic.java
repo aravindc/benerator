@@ -39,7 +39,7 @@ import org.databene.commons.BeanUtil;
  * @author Volker Bergmann
  */
 
-public class TimestampArithmetic extends TypeArithmetic<Timestamp> { // TODO test
+public class TimestampArithmetic extends TypeArithmetic<Timestamp> {
 
     public TimestampArithmetic() {
 	    super(Timestamp.class);
