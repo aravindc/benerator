@@ -26,25 +26,25 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link RecursiveNumberGenerator}.<br/><br/>
+ * Tests the {@link RecurrenceRelationNumberGenerator}.<br/><br/>
  * Created: 13.10.2009 19:54:23
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class RecursiveNumberGeneratorTest extends GeneratorTest {
 
 	@Test
 	public void testDepthOne() {
-		Generator<Integer> generator = new RecursiveNumberGenerator<Integer>(Integer.class, 1, 0, 5) {
+		Generator<Integer> generator = new RecurrenceRelationNumberGenerator<Integer>(Integer.class, 1, 0, 5) {
 
 			@Override
-            protected Integer baseValue(int n) {
+            protected Integer a0(int n) {
 	            return 0;
             }
 
 			@Override
-            protected Integer recursion() {
-	            return recentProducts.get(0) + 1;
+            protected Integer aN() {
+	            return aN(-1) + 1;
             }
 			
 		};
@@ -53,10 +53,10 @@ public class RecursiveNumberGeneratorTest extends GeneratorTest {
 
 	@Test
 	public void testDepthTwo() {
-		Generator<Integer> generator = new RecursiveNumberGenerator<Integer>(Integer.class, 2, 0, 5) {
+		Generator<Integer> generator = new RecurrenceRelationNumberGenerator<Integer>(Integer.class, 2, 0, 5) {
 
 			@Override
-            protected Integer baseValue(int n) {
+            protected Integer a0(int n) {
 				if (n == 0)
 					return 0;
 				else
@@ -64,8 +64,8 @@ public class RecursiveNumberGeneratorTest extends GeneratorTest {
             }
 
 			@Override
-            protected Integer recursion() {
-	            return 2 * recentProducts.get(1) + recentProducts.get(0);
+            protected Integer aN() {
+	            return 2 * aN(-2) + aN(-1);
             }
 			
 		};
