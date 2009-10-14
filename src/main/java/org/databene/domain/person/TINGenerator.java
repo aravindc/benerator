@@ -31,13 +31,13 @@ import java.util.Random;
 import org.databene.benerator.primitive.LightweightStringGenerator;
 
 /**
- * Generates German tax id numbers (Steueridentifikationsnummer).<br/>
+ * Generates European Tax Identification Numbers (like the German 'Steueridentifikationsnummer').<br/>
  * <br/>
  * Created at 27.08.2008 00:20:11
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TaxIdGenerator_DE extends LightweightStringGenerator {
+public class TINGenerator extends LightweightStringGenerator {
 	
 	private Random random = new Random();
 	
@@ -73,7 +73,7 @@ public class TaxIdGenerator_DE extends LightweightStringGenerator {
 		}
 		// append checksum
 		String s = new String(buffer);
-		int checksum = TaxIdValidator_DE.calculateChecksum(s);
+		int checksum = TINValidator.calculateChecksum(s);
 		return s + (char) (checksum + '0');
 	}
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,31 +26,55 @@
 
 package org.databene.domain.person;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.validation.ConstraintValidatorContext;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.validation.Constraint;
-
-import org.databene.benerator.primitive.UnluckyNumberValidator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * Marks a field as german tax id (according to JSR 303: BeanValidation).<br/>
+ * Validates European Tax Identification Numbers.<br/>
  * <br/>
- * Created at 03.07.2009 19:47:43
- * @since 0.6.0
+ * Created at 27.08.2008 00:06:33
+ * @since 0.5.5
  * @author Volker Bergmann
  */
+public class TINValidator extends AbstractConstraintValidator<TIN, String> {
 
-@Documented
-@Constraint(validatedBy = UnluckyNumberValidator.class)
-@Target({ METHOD, FIELD, TYPE })
-@Retention(RUNTIME)
-public @interface TaxId_DE {
+    public boolean isValid(String number, ConstraintValidatorContext context) {
+	    if (number == null || number.length() != 11)
+			return false;
+		boolean[] digitUsed = new boolean[10];
+		// assure that at most one digit is used twice
+		int doubleCount = 0;
+		for (int i = 0; i < 10; i++) {
+			int digit = number.charAt(i) - '0';
+			boolean used = digitUsed[digit];
+			if (!used)
+				digitUsed[digit] = true;
+			else {
+				doubleCount++;
+				if (doubleCount == 2)
+					return false;
+			}
+		}
+		// assure that there is exactly one digit used twice
+		if (doubleCount == 0)
+			return false;
+		int checksum = calculateChecksum(number);
+		return (number.charAt(10) == checksum + '0');
+    }
+
+	public static int calculateChecksum(String number) {
+		int product = 0;
+		for (int i = 0; i < 10; i++) {
+			int sum = (number.charAt(i) - '0' + product) % 10;
+			if (sum == 0) 
+			    sum = 10;
+			product = (sum * 2) % 11;
+		}
+		int checksum = 11 - product;
+		if (checksum == 10)
+			checksum = 0;
+		return checksum;
+	}
 
 }
