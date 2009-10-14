@@ -26,7 +26,7 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 import org.databene.model.data.Entity;
 
 /**
@@ -51,7 +51,7 @@ public class AlternativeComponentBuilder extends ComponentGroupBuilder {
 	public void buildComponentFor(Entity entity) {
 		boolean done = false;
 		do {
-			int i = SimpleRandom.randomInt(0, builders.length - 1);
+			int i = RandomUtil.randomInt(0, builders.length - 1);
 			if (builders[i].available()) {
 				builders[i].buildComponentFor(entity);
 				done = true;

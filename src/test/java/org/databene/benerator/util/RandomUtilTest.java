@@ -24,10 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive.number;
+package org.databene.benerator.util;
 
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 import org.junit.Test;
 
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.HashSet;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class SimpleRandomTest extends GeneratorTest {
+public class RandomUtilTest extends GeneratorTest {
 
 	@Test	
     public void testRandomInt() {
@@ -66,7 +66,7 @@ public class SimpleRandomTest extends GeneratorTest {
         for (int i = min; i <= max; i++)
             expectedSet.add(i);
         for (int i = 0; i < iterations; i++)
-            list.add(SimpleRandom.randomInt(min, max));
+            list.add(RandomUtil.randomInt(min, max));
         checkEqualDistribution(list, tolerance, expectedSet);
     }
 
@@ -76,7 +76,7 @@ public class SimpleRandomTest extends GeneratorTest {
         for (long i = min; i <= max; i++)
             expectedSet.add(i);
         for (int i = 0; i < iterations; i++)
-            list.add(SimpleRandom.randomLong(min, max));
+            list.add(RandomUtil.randomLong(min, max));
         checkEqualDistribution(list, tolerance, expectedSet);
     }
 	

@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.databene.benerator.util.LightweightGenerator;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Generates random {@link BigDecimal}s with a uniform distribution.
@@ -76,7 +76,7 @@ public class RandomBigDecimalGenerator extends LightweightGenerator<BigDecimal> 
 
     public BigDecimal generate() {
         long n = range.divide(precision).longValue();
-        BigDecimal i = BigDecimal.valueOf(SimpleRandom.randomLong(0, n));
+        BigDecimal i = BigDecimal.valueOf(RandomUtil.randomLong(0, n));
 		return min.add(i.multiply(precision));
     }
 

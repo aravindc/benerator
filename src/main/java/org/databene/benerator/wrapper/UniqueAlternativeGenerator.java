@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Forwards the output of other generators in random order, but at most once.<br/>
@@ -71,7 +71,7 @@ public class UniqueAlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
             throw new IllegalGeneratorStateException("Generator is not available: " + this);
         int index;
         do {
-            index = SimpleRandom.randomInt(0, sources.length - 1);
+            index = RandomUtil.randomInt(0, sources.length - 1);
         } while (!sources[index].available());
         return sources[index].generate();
     }

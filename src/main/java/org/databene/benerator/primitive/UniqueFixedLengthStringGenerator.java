@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGenerator;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CustomCounter;
@@ -73,7 +73,7 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
         Generator<Long> gen = new BitReverseNaturalNumberGenerator(length - 1);
         for (int i = 0; i < length; i++) {
             this.displayColumn[i] = gen.generate().intValue();
-            this.seed[i] = SimpleRandom.randomInt(0, length - 1);
+            this.seed[i] = RandomUtil.randomInt(0, length - 1);
         }
         reset();
     }

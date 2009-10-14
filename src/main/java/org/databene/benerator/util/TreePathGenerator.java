@@ -87,7 +87,7 @@ public class TreePathGenerator<E> extends TypedLightweightGenerator<List<E>> {
 
     private E randomChild(E node) {
         int childCount = model.getChildCount(node);
-        int index = SimpleRandom.randomInt(0, childCount - 1);
+        int index = RandomUtil.randomInt(0, childCount - 1);
         return model.getChild(node, index);
     }
 

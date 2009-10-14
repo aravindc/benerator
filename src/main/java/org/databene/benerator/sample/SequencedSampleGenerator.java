@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -152,12 +152,12 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Convenience utility method that chooses one sample out of a list with uniform random distribution */
     public static <T> T generate(T ... samples) {
-        return samples[SimpleRandom.randomInt(0, samples.length - 1)];
+        return samples[RandomUtil.randomInt(0, samples.length - 1)];
     }
 
     /** Convenience utility method that chooses one sample out of a list with uniform random distribution */
     public static <T> T generate(List<T> samples) {
-        return samples.get(SimpleRandom.randomInt(0, samples.size() - 1));
+        return samples.get(RandomUtil.randomInt(0, samples.size() - 1));
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

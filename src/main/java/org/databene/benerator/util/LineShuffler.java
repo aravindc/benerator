@@ -70,10 +70,10 @@ public class LineShuffler {
         //Generator<Integer> indexGenerator = new IntegerGenerator(0, size - 1, 1, Sequence.RANDOM);
         int iterations = size / 2;
         for (int i = 0; i < iterations; i++) {
-            int i1 = SimpleRandom.randomInt(0, size - 1);
+            int i1 = RandomUtil.randomInt(0, size - 1);
             int i2;
             do {
-                i2 = SimpleRandom.randomInt(0, size - 1);
+                i2 = RandomUtil.randomInt(0, size - 1);
             } while (i1 == i2);
             String tmp = lines.get(i1);
             lines.set(i1, lines.get(i2));

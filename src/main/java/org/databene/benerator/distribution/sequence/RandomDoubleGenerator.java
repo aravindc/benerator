@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Double Generator that implements a 'random' Double Sequence.<br/>
@@ -55,7 +55,7 @@ public class RandomDoubleGenerator extends AbstractNumberGenerator<Double> {
         if (precision == 0)
             return min + Math.random() * (max - min);
         int n = (int)((max - min) / precision);
-        return min + SimpleRandom.randomInt(0, n) * precision;
+        return min + RandomUtil.randomInt(0, n) * precision;
     }
 
 }

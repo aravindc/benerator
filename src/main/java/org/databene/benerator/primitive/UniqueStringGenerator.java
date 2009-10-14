@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
@@ -120,7 +120,7 @@ public class UniqueStringGenerator implements Generator<String> {
             throw new IllegalGeneratorStateException("Generator is no longer available");
         int generatorIndex;
         do {
-            generatorIndex = SimpleRandom.randomInt(0, maxLength - minLength);
+            generatorIndex = RandomUtil.randomInt(0, maxLength - minLength);
         } while (!subGens[generatorIndex].available());
         return subGens[generatorIndex].generate();
     }

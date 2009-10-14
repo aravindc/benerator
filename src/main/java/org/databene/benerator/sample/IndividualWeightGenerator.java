@@ -33,7 +33,7 @@ import java.util.List;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
-import org.databene.benerator.util.SimpleRandom;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Generator for {@link IndividualWeight} distributions.<br/>
@@ -144,12 +144,12 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Convenience utility method that chooses one sample out of a list with uniform random distribution */
     public static <T> T generate(T ... samples) {
-        return samples[SimpleRandom.randomInt(0, samples.length - 1)];
+        return samples[RandomUtil.randomInt(0, samples.length - 1)];
     }
 
     /** Convenience utility method that chooses one sample out of a list with uniform random distribution */
     public static <T> T generate(List<T> samples) {
-        return samples.get(SimpleRandom.randomInt(0, samples.size() - 1));
+        return samples.get(RandomUtil.randomInt(0, samples.size() - 1));
     }
 
     // implementation --------------------------------------------------------------------------------------------------
