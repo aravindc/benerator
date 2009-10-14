@@ -31,7 +31,7 @@ import static junit.framework.Assert.*;
 
 import java.io.IOException;
 
-import org.databene.platform.csv.CSVCellIterator;
+import org.databene.document.csv.CSVCellIterator;
 
 /**
  * Tests the {@link CSVCellIterator}.<br/><br/>
