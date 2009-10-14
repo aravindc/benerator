@@ -76,7 +76,7 @@ public class Entity implements Composite<Object> {
         return (descriptor != null ? descriptor.getName() : null);
     }
 
-    public ComplexTypeDescriptor getDescriptor() { // TODO rename to descriptor() ?
+    public ComplexTypeDescriptor descriptor() {
         return descriptor;
     }
     

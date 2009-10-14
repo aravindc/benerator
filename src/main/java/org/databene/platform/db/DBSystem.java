@@ -609,7 +609,7 @@ public class DBSystem extends AbstractStorageSystem {
         Collection<ComponentDescriptor> componentDescriptors = typeDescriptor.getComponents();
         List<ColumnInfo> pkInfos = new ArrayList<ColumnInfo>(componentDescriptors.size());
         List<ColumnInfo> normalInfos = new ArrayList<ColumnInfo>(componentDescriptors.size());
-        ComplexTypeDescriptor entityDescriptor = entity.getDescriptor();
+        ComplexTypeDescriptor entityDescriptor = entity.descriptor();
         for (ComponentDescriptor dbCompDescriptor : componentDescriptors) {
             ComponentDescriptor enCompDescriptor = entityDescriptor.getComponent(dbCompDescriptor.getName());
             if (enCompDescriptor != null && enCompDescriptor.getMode() == Mode.ignored)
@@ -677,7 +677,7 @@ public class DBSystem extends AbstractStorageSystem {
         List<ColumnInfo> writeColumnInfos = getWriteColumnInfos(entity, insert);
         try {
             String tableName = entity.name();
-            PreparedStatement statement = getStatement(entity.getDescriptor(), insert, writeColumnInfos);
+            PreparedStatement statement = getStatement(entity.descriptor(), insert, writeColumnInfos);
             for (int i = 0; i < writeColumnInfos.size(); i++) {
             	ColumnInfo info = writeColumnInfos.get(i);
                 Object componentValue = entity.getComponent(info.name);

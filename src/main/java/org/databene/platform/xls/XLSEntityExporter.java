@@ -162,7 +162,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 	    for (Map.Entry<String, Object> component : getComponents(entity)) {
 	        String componentName = component.getKey();
 			headerRow.createCell(colnum).setCellValue(new HSSFRichTextString(componentName));
-	        ComponentDescriptor cd = entity.getDescriptor().getComponent(componentName);
+	        ComponentDescriptor cd = entity.descriptor().getComponent(componentName);
 	        PrimitiveType primitiveType;
 	        if (cd.getType() instanceof SimpleTypeDescriptor)
 	            primitiveType = ((SimpleTypeDescriptor) cd.getType()).getPrimitiveType();
