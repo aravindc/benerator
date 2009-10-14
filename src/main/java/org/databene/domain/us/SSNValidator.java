@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.us;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -44,19 +44,19 @@ import org.databene.commons.Validator;
  * @see "http://www.socialsecurity.gov/employer/ssnvhighgroup.htm"
  */
 
-public class SSNValidator_US implements ConstraintValidator<SSN_US, String>, Validator<String> {
+public class SSNValidator implements ConstraintValidator<SSN, String>, Validator<String> {
 	
 	private int maxAreaCode;
 	
-    public SSNValidator_US() {
-	    this(SSN_US.DEFAULT_MAX_AREA_CODE);
+    public SSNValidator() {
+	    this(SSN.DEFAULT_MAX_AREA_CODE);
     }
 
-    public SSNValidator_US(int maxAreaCode) {
+    public SSNValidator(int maxAreaCode) {
 	    this.maxAreaCode = maxAreaCode;
     }
 
-	public void initialize(SSN_US parameters) {
+	public void initialize(SSN parameters) {
 	    this.maxAreaCode = parameters.maxAreaCode();
     }
 

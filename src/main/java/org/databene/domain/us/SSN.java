@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.us;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-import org.databene.domain.UnluckyNumberValidator;
+import org.databene.benerator.primitive.UnluckyNumberValidator;
 
 /**
  * Marks a field as US Social Security Number (according to JSR 303: BeanValidation).<br/>
@@ -51,7 +51,7 @@ import org.databene.domain.UnluckyNumberValidator;
 @Constraint(validatedBy = UnluckyNumberValidator.class)
 @Target({ METHOD, FIELD, TYPE })
 @Retention(RUNTIME)
-public @interface SSN_US { // TODO define dataset concept for classes
+public @interface SSN {
 
 	int DEFAULT_MAX_AREA_CODE = 772;
 	

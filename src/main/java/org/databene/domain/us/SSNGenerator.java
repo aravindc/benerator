@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.us;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
@@ -45,19 +45,19 @@ import org.databene.commons.StringUtil;
  * @see "http://www.socialsecurity.gov/employer/ssnvhighgroup.htm"
  */
 
-public class SSNGenerator_US extends LightweightStringGenerator {
+public class SSNGenerator extends LightweightStringGenerator {
 
-	// TODO v0.6 support 'unique' property
+	// TODO v0.6 support unique generation
 	
 	private AbstractNumberGenerator<Integer> areaNumberGenerator;
 	private Generator<Integer> groupNumberGenerator;
 	private Generator<Integer> serialNumberGenerator;
 
-	public SSNGenerator_US() {
+	public SSNGenerator() {
 		this(772);
 	}
 
-	public SSNGenerator_US(int maxAreaCode) {
+	public SSNGenerator(int maxAreaCode) {
 		areaNumberGenerator = new RandomIntegerGenerator(1, maxAreaCode);
 		groupNumberGenerator = new RandomIntegerGenerator(1, 99);
 		serialNumberGenerator = new RandomIntegerGenerator(1, 9999);

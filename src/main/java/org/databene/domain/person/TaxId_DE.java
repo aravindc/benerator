@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-import org.databene.domain.UnluckyNumberValidator;
+import org.databene.benerator.primitive.UnluckyNumberValidator;
 
 /**
  * Marks a field as german tax id (according to JSR 303: BeanValidation).<br/>
