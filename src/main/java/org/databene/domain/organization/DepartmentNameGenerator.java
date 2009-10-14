@@ -32,8 +32,10 @@ import org.databene.benerator.sample.WeightedCSVSampleGenerator;
 import org.databene.commons.LocaleUtil;
 
 /**
- * Generates department names.<br/>
- * <br/>
+ * Creates random department names based on a {@link Locale}-specific CSV file. 
+ * If not CSV file is found for the requested Locale, the generator falls back 
+ * to English.<br/><br/>
+ * 
  * Created at 11.07.2009 18:43:55
  * @since 0.6.0
  * @author Volker Bergmann
