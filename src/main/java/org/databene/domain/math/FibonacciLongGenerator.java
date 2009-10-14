@@ -26,34 +26,36 @@
 
 package org.databene.domain.math;
 
-import org.databene.benerator.primitive.number.RecursiveNumberGenerator;
+import org.databene.benerator.primitive.number.RecurrenceRelationNumberGenerator;
 
 /**
- * Generates <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci Numbers</a>.<br/>
+ * Generates <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci Numbers</a>.
+ * It is defined recursively by
+ * <ul>
+ *   <li>F(0) = 1</li>
+ *   <li>F(1) = 1</li>
+ *   <li>F(n) = F(n-1) + F(n-2)</li>
+ * </ul>
  * <br/>
  * Created at 03.07.2009 10:44:56
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class FibonacciLongGenerator extends RecursiveNumberGenerator<Long> {
+public class FibonacciLongGenerator extends RecurrenceRelationNumberGenerator<Long> {
 	
     public FibonacciLongGenerator(Long min, Long max) {
     	super(Long.class, 2, min, max);
     }
 
 	@Override
-    protected Long recursion() {
-	    return recentProducts.get(0) + recentProducts.get(1);
+    protected Long aN() {
+	    return aN(-1) + aN(-2);
     }
 
 	@Override
-    protected Long baseValue(int n) {
-	    switch (n) {
-		    case 0 : return 0L;
-		    case 1 : return 1L;
-		    default: throw new IllegalStateException();
-	    }
+    protected Long a0(int n) {
+		return (n == 0 ? 0L : 1L);
     }
 
 }

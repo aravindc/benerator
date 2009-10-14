@@ -26,11 +26,15 @@
 
 package org.databene.domain.math;
 
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-import org.databene.benerator.primitive.number.RecursiveNumberGenerator;
+import org.databene.benerator.primitive.number.RecurrenceRelationNumberGenerator;
 
 /**
- * Generates numbers according to the <i>Padovan Sequence</i>.<br/>
+ * Generates numbers according to the <i>Padovan Sequence</i>.
+ * It is defined recursively by
+ * <ul>
+ *   <li>P(0) = P(1) = P(2) = 1</li>
+ *   <li>P(n) = P(n-2) + P(n-3)</li>
+ * </ul>
  * <br/>
  * Created at 03.07.2009 13:22:41
  * @see PadovanSequence
@@ -38,20 +42,20 @@ import org.databene.benerator.primitive.number.RecursiveNumberGenerator;
  * @author Volker Bergmann
  */
 
-public class PadovanLongGenerator extends RecursiveNumberGenerator<Long> {
+public class PadovanLongGenerator extends RecurrenceRelationNumberGenerator<Long> {
 	
     public PadovanLongGenerator(Long min, Long max) {
     	super(Long.class, 3, min, max);
     }
 
 	@Override
-    protected Long baseValue(int n) {
+    protected Long a0(int n) {
 	    return 1L;
     }
 
 	@Override
-    protected Long recursion() {
-	    return recentProducts.get(1) + recentProducts.get(2);
+    protected Long aN() {
+	    return aN(-2) + aN(-3);
     }
 
 }
