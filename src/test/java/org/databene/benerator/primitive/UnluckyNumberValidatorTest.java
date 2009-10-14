@@ -24,8 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain;
+package org.databene.benerator.primitive;
 
+import org.databene.benerator.primitive.UnluckyNumberValidator;
 import org.databene.domain.address.Country;
 
 import org.junit.After;
