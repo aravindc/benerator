@@ -138,7 +138,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 	protected void postInitPrinter(Entity entity) {
     	if (entity != null) {
 			if (columns == null)
-				columns = CollectionUtil.toArray(entity.getComponents().keySet()); // TODO test
+				columns = CollectionUtil.toArray(entity.getComponents().keySet());
 	    	if (!append)
 		        printHeaderRow();
     	}
