@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain;
+package org.databene.benerator.primitive;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
