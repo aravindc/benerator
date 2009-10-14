@@ -78,7 +78,7 @@ public class ArithmeticEngine {
     	else if (summand2 == null)
     		return summand1;
 	    // arbitrary conversion
-	    Class<?> resultType = TypeEngine.combinedType(summand1.getClass(), summand2.getClass());
+	    Class<?> resultType = TypeManager.combinedType(summand1.getClass(), summand2.getClass());
 	    TypeArithmetic<?> typeArithmetic = typeArithmetics.get(resultType);
 	    if (typeArithmetic != null)
 		    return typeArithmetic.add(summand1, summand2);
@@ -118,7 +118,7 @@ public class ArithmeticEngine {
     	else if (minuend == null)
     		return negate(subtrahend);
 	    // arbitrary conversion
-	    Class<?> resultType = TypeEngine.combinedType(minuend.getClass(), subtrahend.getClass());
+	    Class<?> resultType = TypeManager.combinedType(minuend.getClass(), subtrahend.getClass());
 	    TypeArithmetic<?> typeArithmetic = typeArithmetics.get(resultType);
 	    if (typeArithmetic != null)
 		    return typeArithmetic.subtract(minuend, subtrahend);
@@ -178,7 +178,7 @@ public class ArithmeticEngine {
     	if (factor1 == null || factor2 == null)
     		return null;
 	    // arbitrary conversion
-	    Class<?> resultType = TypeEngine.combinedType(factor1.getClass(), factor2.getClass());
+	    Class<?> resultType = TypeManager.combinedType(factor1.getClass(), factor2.getClass());
 	    TypeArithmetic<?> typeArithmetic = typeArithmetics.get(resultType);
 	    if (typeArithmetic != null)
 		    return typeArithmetic.multiply(factor1, factor2);
@@ -212,7 +212,7 @@ public class ArithmeticEngine {
     	if (dividend == null)
 			return null;
 	    // arbitrary conversion
-	    Class<?> resultType = TypeEngine.combinedType(dividend.getClass(), divisor.getClass());
+	    Class<?> resultType = TypeManager.combinedType(dividend.getClass(), divisor.getClass());
 	    TypeArithmetic<?> typeArithmetic = typeArithmetics.get(resultType);
 	    if (typeArithmetic != null)
 		    return typeArithmetic.multiply(dividend, divisor);
@@ -244,7 +244,7 @@ public class ArithmeticEngine {
     	// null handling
     	if (part2 == null || part1 == null)
 			throw new IllegalArgumentException("Cannot compare null");
-	    Class<?> resultType = TypeEngine.combinedType(part1.getClass(), part2.getClass());
+	    Class<?> resultType = TypeManager.combinedType(part1.getClass(), part2.getClass());
 	    // convert the terms to the same type and compare them
 	    Object s1 = AnyConverter.convert(part1, resultType);
 	    Object s2 = AnyConverter.convert(part2, resultType);
@@ -260,7 +260,7 @@ public class ArithmeticEngine {
     	// null handling
     	if (part2 == null || part1 == null)
 			throw new IllegalArgumentException("Cannot compare null");
-	    Class<?> resultType = TypeEngine.combinedType(part1.getClass(), part2.getClass());
+	    Class<?> resultType = TypeManager.combinedType(part1.getClass(), part2.getClass());
 	    // convert the terms to the same type and compare them
 	    Object s1 = AnyConverter.convert(part1, resultType);
 	    Object s2 = AnyConverter.convert(part2, resultType);
@@ -276,7 +276,7 @@ public class ArithmeticEngine {
     	// null handling
     	if (part2 == null || part1 == null)
 			throw new IllegalArgumentException("Cannot compare null");
-	    Class<?> resultType = TypeEngine.combinedType(part1.getClass(), part2.getClass());
+	    Class<?> resultType = TypeManager.combinedType(part1.getClass(), part2.getClass());
 	    // convert the terms to the same type and compare them
 	    Object s1 = AnyConverter.convert(part1, resultType);
 	    Object s2 = AnyConverter.convert(part2, resultType);
@@ -296,7 +296,7 @@ public class ArithmeticEngine {
     }
 
     public Object bitwiseAnd(Object o1, Object o2) {
-        Class<?> resultType = TypeEngine.combinedType(o1.getClass(), o2.getClass());
+        Class<?> resultType = TypeManager.combinedType(o1.getClass(), o2.getClass());
 		if (resultType == Boolean.class)
 			return ((Boolean) o1).booleanValue() & ((Boolean) o2).booleanValue();
 		if (!(o1 instanceof Number))
@@ -318,7 +318,7 @@ public class ArithmeticEngine {
     }
 
     public Object bitwiseOr(Object o1, Object o2) {
-        Class<?> resultType = TypeEngine.combinedType(o1.getClass(), o2.getClass());
+        Class<?> resultType = TypeManager.combinedType(o1.getClass(), o2.getClass());
 		if (resultType == Boolean.class)
 			return ((Boolean) o1).booleanValue() | ((Boolean) o2).booleanValue();
 		if (!(o1 instanceof Number))
@@ -340,7 +340,7 @@ public class ArithmeticEngine {
     }
 
     public Object bitwiseExclusiveOr(Object o1, Object o2) {
-        Class<?> resultType = TypeEngine.combinedType(o1.getClass(), o2.getClass());
+        Class<?> resultType = TypeManager.combinedType(o1.getClass(), o2.getClass());
 		if (resultType == Boolean.class)
 			return ((Boolean) o1).booleanValue() ^ ((Boolean) o2).booleanValue();
 		if (!(o1 instanceof Number))
