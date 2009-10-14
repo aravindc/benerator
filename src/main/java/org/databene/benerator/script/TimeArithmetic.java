@@ -40,7 +40,7 @@ import org.databene.commons.TimeUtil;
  * @author Volker Bergmann
  */
 
-public class TimeArithmetic extends TypeArithmetic<Time> { // TODO test
+public class TimeArithmetic extends TypeArithmetic<Time> {
 
     public TimeArithmetic() {
 	    super(Time.class);
