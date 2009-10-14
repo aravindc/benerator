@@ -270,7 +270,6 @@ public class ModelParser {
     }
 
 	public Task parseImport(Element element) {
-		// TODO these are too many different attribs. Remove some!
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> packageImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
