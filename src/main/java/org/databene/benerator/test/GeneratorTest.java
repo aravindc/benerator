@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class GeneratorTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(GeneratorTest.class);
+    public final Logger logger = LoggerFactory.getLogger(getClass());
     
     protected BeneratorContext context;
 
