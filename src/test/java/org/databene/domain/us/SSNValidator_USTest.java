@@ -24,13 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.us;
 
+import org.databene.domain.us.SSNValidator;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SSNValidator_US}.<br/>
+ * Tests the {@link SSNValidator}.<br/>
  * <br/>
  * Created at 17.11.2008 07:32:50
  * @since 0.5.6
@@ -39,7 +40,7 @@ import static junit.framework.Assert.*;
 
 public class SSNValidator_USTest {
 	
-	private SSNValidator_US validator = new SSNValidator_US();
+	private SSNValidator validator = new SSNValidator();
 
 	@Test
 	public void testInvalidNumbers() {

@@ -24,14 +24,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.person;
+package org.databene.domain.us;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.domain.us.SSNGenerator;
+import org.databene.domain.us.SSNValidator;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SSNGenerator_US}.<br/>
+ * Tests the {@link SSNGenerator}.<br/>
  * <br/>
  * Created at 17.11.2008 07:49:03
  * @since 0.5.6
@@ -41,14 +43,14 @@ import static junit.framework.Assert.*;
 public class SSNGenerator_USTest extends GeneratorClassTest {
 
 	public SSNGenerator_USTest() {
-		super(SSNGenerator_US.class);
+		super(SSNGenerator.class);
 	}
 
 	@Test
 	public void testDefault() {
-		SSNGenerator_US generator = new SSNGenerator_US();
+		SSNGenerator generator = new SSNGenerator();
 		assertEquals(String.class, generator.getGeneratedType());
-		SSNValidator_US validator = new SSNValidator_US();
+		SSNValidator validator = new SSNValidator();
 		for (int i = 0; i < 1000; i++) {
 			String ssn = generator.generate();
 			assertTrue("Invalid SSN: " + ssn, validator.isValid(ssn, null));
