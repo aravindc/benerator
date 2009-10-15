@@ -630,6 +630,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         logger.warn("Keys are not supported, yet. Ignoring key: " + child.getAttribute("name")); 
     }
 
+    @SuppressWarnings("null")
     private ComponentDescriptor parseAttribute(Element attributeElement, ComplexTypeDescriptor owner) {
         String name = attributeElement.getAttribute(NAME);
         if (logger.isDebugEnabled())
@@ -719,10 +720,12 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     private SimpleTypeDescriptor parseSimpleTypeAppinfo(
             Annotation annotation, SimpleTypeDescriptor descriptor) {
         Element appInfo = annotation.getAppInfo();
-        Element[] infos = XMLUtil.getChildElements(appInfo);
-        if (infos.length > 1)
-            throw new ConfigurationError("Cannot handle more than one appinfo in a simple type");
-        parser.parseSimpleType(infos[0], descriptor);
+        if (appInfo != null) {
+	        Element[] infos = XMLUtil.getChildElements(appInfo);
+	        if (infos.length > 1)
+	            throw new ConfigurationError("Cannot handle more than one appinfo in a simple type");
+	        parser.parseSimpleType(infos[0], descriptor);
+        }
         return descriptor;
     }
 
