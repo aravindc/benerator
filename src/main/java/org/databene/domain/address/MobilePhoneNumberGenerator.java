@@ -26,9 +26,8 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.util.LightweightGenerator;
-import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
 
 /**
  * Generates mobile phone numbers.<br/>
@@ -36,31 +35,21 @@ import org.databene.benerator.primitive.regex.RegexStringGenerator;
  * Created: 14.10.2007 21:28:35
  * @since 0.3.01
  * @author Volker Bergmann
+ * @deprecated use MobileNumberGenerator
  */
-public class MobilePhoneNumberGenerator extends LightweightGenerator<PhoneNumber> {
-
-    private Country country;
-    private Generator<String> mobilePreCodeGenerator;
-    private Generator<String> mobileLocalCodeGenerator;
+@Deprecated
+public class MobilePhoneNumberGenerator extends MobileNumberGenerator {
+	
+	private static Escalator escalator = new LoggerEscalator();
 
     public MobilePhoneNumberGenerator() {
     	this(Country.getDefault());
     }
 
     public MobilePhoneNumberGenerator(Country country) {
-        this.country = country;
-        mobilePreCodeGenerator = new RegexStringGenerator(country.getMobileCodePattern());
-        this.mobileLocalCodeGenerator = new RegexStringGenerator("[1-9]\\d{6,7}");
-    }
-
-    public PhoneNumber generate() {
-        String preCode = mobilePreCodeGenerator.generate();
-        String localCode = mobileLocalCodeGenerator.generate();
-        return new PhoneNumber(country.getPhoneCode(), preCode, localCode, true);
-    }
-
-    public Class<PhoneNumber> getGeneratedType() {
-	    return PhoneNumber.class;
+    	super(country);
+    	escalator.escalate(getClass() + " is deprecated. Please use " 
+    			+ MobileNumberGenerator.class + "instead,", getClass(), null);
     }
 
 }
