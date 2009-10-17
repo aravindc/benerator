@@ -46,9 +46,7 @@ public class CPFValidator extends AbstractConstraintValidator<CPF, CharSequence>
 		
 		// compute 1st verification digit
 		int v1 = MathUtil.weightedSumOfDigits(number, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2);
-		v1 = 11 - v1 % 11;
-		if (v1 >= 10)
-			v1 = 0;
+		v1 = (v1 < 2 ? 0 : 11 - v1 % 11);
 
 	    // Check 1st verification digit
 		if (v1 != number.charAt(9) - '0')
@@ -57,9 +55,7 @@ public class CPFValidator extends AbstractConstraintValidator<CPF, CharSequence>
 		// compute 2nd verification digit
 		int v2 = MathUtil.weightedSumOfDigits(number, 0, 11, 10, 9, 8, 7, 6, 5, 4, 3);
 		v2 += 2 * v1;
-	    v2 = 11 - v2 % 11;
-	    if (v2 >= 10)
-	    	v2 = 0;
+		v2 = (v2 < 2 ? 0 : 11 - v2 % 11);
 	    
 	    // Check 2nd verification digit
 	    return  (v2 == number.charAt(10) - '0');
