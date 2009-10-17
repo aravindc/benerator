@@ -36,29 +36,18 @@ import org.databene.benerator.util.RandomUtil;
  * @author Volker Bergmann
  *
  */
-public class CreditCardNumberGenerator extends LightweightStringGenerator {
+public class CreditCardNumberGenerator extends LightweightStringGenerator { // TODO rename to LuhnNumberGenerator
 	
 	public String generate() {
-		char[] digits = new char[16];
-		digits[0] = '4'; // VISA has 16-digits numbers
-		for (int i = 1; i < 15; i++)
-			digits[i] = (char) ('0' + RandomUtil.randomInt(0, 9));
-		digits[15] = '0';
-		int sum = luhnSum(digits);
-		digits[15] = (sum % 10 == 0 ? '0' : (char)('0' + 10 - (sum % 10)));
-		return new String(digits);
+		// VISA has 16-digits numbers, starting with '4'
+		int length = 16;
+		StringBuilder builder = new StringBuilder(16).append('4'); 
+		for (int i = 1; i < length - 1; i++)
+			builder.append((char) (RandomUtil.randomInt('0', '9')));
+		builder.append('0');
+		char checkDigit = RandomUtil.requiredLuhnDigit(builder);
+		builder.setCharAt(length - 1, checkDigit);
+		return builder.toString();
 	}
 
-	private int luhnSum(char[] digits) {
-		int sum = 0;
-		int parity = digits.length % 2;
-		for (int i = digits.length - 1; i >= 0; i--) {
-			int digit = digits[i] - '0';
-			if (i % 2 == parity)
-				digit *= 2;
-			sum += digit > 9 ? digit - 9 : digit;
-		}
-		return sum;
-	}
-	
 }
