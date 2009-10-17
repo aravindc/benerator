@@ -27,6 +27,7 @@
 package org.databene.domain.finance;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 
@@ -45,11 +46,13 @@ public class BankGenerator extends LightweightGenerator<Bank> {
 	private Generator<String> bankCodeGenerator;
 	private Generator<String> nameGenerator;
 	private Generator<String> bicGenerator;
+	private Generator<String> binGenerator;
 
 	public BankGenerator() {
-		this.bankCodeGenerator = new RegexStringGenerator("[0-9]{8}");
+		this.bankCodeGenerator = new DigitsGenerator(8);
 		this.nameGenerator = new RegexStringGenerator("(Deutsche Bank|Dresdner Bank|Commerzbank|Spardabank|HVB)");
 		this.bicGenerator = new RegexStringGenerator("[A-Z]{4}DE[A-Z0-9]{2}");
+		this.binGenerator = new DigitsGenerator(4);
 	}
 	
     public Class<Bank> getGeneratedType() {
@@ -57,7 +60,7 @@ public class BankGenerator extends LightweightGenerator<Bank> {
     }
 
 	public Bank generate() {
-		return new Bank(nameGenerator.generate(), bankCodeGenerator.generate(), bicGenerator.generate());
+		return new Bank(nameGenerator.generate(), bankCodeGenerator.generate(), bicGenerator.generate(), binGenerator.generate());
 	}
 
 }
