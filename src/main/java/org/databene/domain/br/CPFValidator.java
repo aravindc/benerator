@@ -21,8 +21,10 @@
 
 package org.databene.domain.br;
 
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.MathUtil;
-import org.databene.commons.validator.AbstractValidator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Verifies Brazilian CPF numbers. 
@@ -35,10 +37,9 @@ import org.databene.commons.validator.AbstractValidator;
  * @author Volker Bergmann
  * @see "http://en.wikipedia.org/wiki/Cadastro_de_Pessoas_F%C3%ADsicas"
  */
-public class CPFValidator extends AbstractValidator<CharSequence> {
+public class CPFValidator extends AbstractConstraintValidator<CPF, CharSequence> {
 
-	public boolean valid(CharSequence number) {
-		
+	public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
 		// do simple checks first
 		if (number == null || number.length() != 11)
 			return false;
