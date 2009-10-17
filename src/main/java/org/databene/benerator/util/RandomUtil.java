@@ -88,7 +88,7 @@ public class RandomUtil {
      * ignoring the last digit. This is useful for creating Luhn numbers.
      * The actual evaluation if a number passes the test is done by 
      * {@link #luhnValid(CharSequence)}.
-     * @See http://en.wikipedia.org/wiki/Luhn_algorithm
+     * @see "http://en.wikipedia.org/wiki/Luhn_algorithm"
      */
 	public static char requiredLuhnDigit(CharSequence number) {
 		int sum = 0;
@@ -104,8 +104,8 @@ public class RandomUtil {
 	
     /**
      * Tests a number against the Luhn algorithm
-     * @See {@link #requiredLuhnDigit(CharSequence)}
-     * @See http://en.wikipedia.org/wiki/Luhn_algorithm
+     * @see #requiredLuhnDigit(CharSequence)
+     * @see "http://en.wikipedia.org/wiki/Luhn_algorithm"
      */
 	public static boolean luhnValid(CharSequence number) {
 		return (requiredLuhnDigit(number) == number.charAt(number.length() - 1)); 
