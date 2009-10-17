@@ -28,6 +28,8 @@ package org.databene.domain.address;
 
 import java.util.*;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
@@ -35,8 +37,7 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 
 /**
- * Represents a city.<br/>
- * <br/>
+ * Represents a city.<br/><br/>
  * Created: 11.06.2006 08:19:23
  * @since 0.1
  * @author Volker Bergmann
@@ -52,6 +53,8 @@ public class City {
     private State state;
     private Locale language;
     private int population;
+    
+    private static Generator<String> localNumberGenerator = new DigitsGenerator(7, 8, 1);
 
     public City(State state, String name, String addition, String[] postalCodes, String areaCode) {
         if (areaCode == null)
@@ -119,6 +122,10 @@ public class City {
     public void setState(State state) {
         this.state = state;
     }
+    
+    public Country getCountry() {
+    	return (state != null ? state.getCountry() : null);
+    }
 
     public String getName() {
         return name;
@@ -140,7 +147,15 @@ public class City {
 		this.population = population;
 	}
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
+	public PhoneNumber generateMobileNumber() {
+	    return getCountry().generateMobileNumber(this);
+    }
+
+	public PhoneNumber generateLandlineNumber() {
+	    return new PhoneNumber(getCountry().getPhoneCode(), areaCode, localNumberGenerator.generate());
+    }
+
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
 
 	@Override
     public String toString() {
@@ -169,4 +184,5 @@ public class City {
         result = 29 * result + NullSafeComparator.hashCode(state);
         return result;
     }
+
 }
