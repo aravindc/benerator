@@ -26,8 +26,11 @@
 
 package org.databene.benerator.util;
 
+import static org.junit.Assert.*;
+
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.commons.StringUtil;
 import org.junit.Test;
 
 import java.util.List;
@@ -41,6 +44,8 @@ import java.util.HashSet;
  * @author Volker Bergmann
  */
 public class RandomUtilTest extends GeneratorTest {
+	
+	private static final String LUHN_VALID_NUMBER = "49927398716";
 
 	@Test	
     public void testRandomInt() {
@@ -57,6 +62,21 @@ public class RandomUtilTest extends GeneratorTest {
         testEqualDistribution(-1L, -1L, 0.1, 3000);
         testEqualDistribution(-1L,  1L, 0.1, 3000);
     }
+	
+	@Test
+	public void testRequiredLuhnDigit() {
+		assertEquals('0', RandomUtil.requiredLuhnDigit("0000000009"));
+		assertEquals(StringUtil.lastChar(LUHN_VALID_NUMBER), RandomUtil.requiredLuhnDigit(LUHN_VALID_NUMBER));
+		assertEquals('0', RandomUtil.requiredLuhnDigit("1234001234560"));
+		assertEquals('1', RandomUtil.requiredLuhnDigit("234001234560"));
+	}
+
+	@Test
+	public void testLuhnValid() {
+		assertEquals(false, RandomUtil.luhnValid("0000000009"));
+		assertEquals(true, RandomUtil.luhnValid("0000000000"));
+		assertEquals(true, RandomUtil.luhnValid("1234001234560"));
+	}
 
     // implementation --------------------------------------------------------------------------------------------------
 
