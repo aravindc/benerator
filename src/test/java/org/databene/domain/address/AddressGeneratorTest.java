@@ -103,12 +103,20 @@ public class AddressGeneratorTest extends GeneratorClassTest {
         AddressGenerator generator = new AddressGenerator(country);
         for (int i = 0; i < 100; i++) {
             Address address = generator.generate();
+            if (logger.isDebugEnabled())
+            	logger.debug(address.toString());
             assertNotNull(address);
+            // check generated phone numbers
+            String cityAreaCode = address.getCity().getAreaCode();
+			if (country.isMobilePhoneCityRelated())
+            	assertEquals(cityAreaCode, address.getMobilePhone().getAreaCode());
+        	assertEquals(cityAreaCode, address.getOfficePhone().getAreaCode());
+        	assertEquals(cityAreaCode, address.getFax().getAreaCode());
+        	// check country
             if (supported)
             	assertEquals(country, address.getCountry());
             else
             	assertEquals(Country.US, address.getCountry());
-            logger.debug(address.toString());
         }
     }
     
@@ -128,10 +136,9 @@ public class AddressGeneratorTest extends GeneratorClassTest {
 		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createInstanceGenerator(descriptor, context);
         Country generatedCountry = generator.generate().getCountry();
 		if (country == null) {
-	        assertEquals(Country.GERMANY, generatedCountry);
+	        assertEquals(Country.getDefault(), generatedCountry);
         } else
 			assertEquals(country, generatedCountry);
     }
-    
 
 }
