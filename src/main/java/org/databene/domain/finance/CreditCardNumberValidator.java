@@ -28,6 +28,7 @@ package org.databene.domain.finance;
 
 import javax.validation.ConstraintValidatorContext;
 
+import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
@@ -36,21 +37,12 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CreditCardNumberValidator extends AbstractConstraintValidator<CreditCardNumber, String> {
+public class CreditCardNumberValidator extends AbstractConstraintValidator<CreditCardNumber, CharSequence> {
 
-    public boolean isValid(String number, ConstraintValidatorContext arg1) {
+    public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
 		if (number == null || number.length() < 13 || number.length() > 16)
 			return false;
-		int sum = 0;
-		byte[] digits = number.getBytes();
-		int parity = digits.length % 2;
-		for (int i = digits.length - 1; i >= 0; i--) {
-			int digit = digits[i] - '0';
-			if (i % 2 == parity)
-				digit *= 2;
-			sum += digit > 9 ? digit - 9 : digit;
-		}
-		return sum % 10 == 0;
+		return RandomUtil.luhnValid(number);
     }
 
 }
