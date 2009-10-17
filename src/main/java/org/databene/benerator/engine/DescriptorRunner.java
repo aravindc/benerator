@@ -149,7 +149,7 @@ public class DescriptorRunner implements ResourceManager {
 			// parse benerator descriptor into an AST
 			Document document = XMLUtil.parse(uri, context.isValidate());
 			Element root = document.getDocumentElement();
-			XMLUtil.mapAttributesToProperties(root, context, false);
+			XMLUtil.mapAttributesToProperties(root, context, false, true);
 			SerialTask beneratorTask = new SerialTask();
 			// process sub elements
 			for (Element element : XMLUtil.getChildElements(root)) {
