@@ -36,7 +36,7 @@ public class Address {
     public String street;
     public String houseNumber;
     public String zipCode;
-    public String city;
+    public City city;
     public String state;
     public Country country;
     public PhoneNumber privatePhone;
@@ -48,7 +48,7 @@ public class Address {
         this(null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Address(String street, String houseNumber, String zipCode, String city, String state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
+    public Address(String street, String houseNumber, String zipCode, City city, String state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.zipCode = zipCode;
@@ -85,11 +85,11 @@ public class Address {
         this.zipCode = zipCode;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
