@@ -18,14 +18,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.databene.domain.br;
 
+import org.databene.benerator.test.GeneratorClassTest;
+import org.junit.Test;
+
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link CNPJGenerator}.<br/><br/>
  * Created: 17.10.2009 08:24:59
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CNPJGeneratorTest {
+public class CNPJGeneratorTest extends GeneratorClassTest {
 
+	public CNPJGeneratorTest() {
+	    super(CNPJGenerator.class);
+    }
+
+	@Test
+	public void testByValidator() {
+		expectGenerations(new CNPJGenerator(), 100, new CNPJValidator());
+	}
+	
 }
