@@ -23,6 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.databene.domain.finance;
 
 /**
@@ -33,31 +34,52 @@ package org.databene.domain.finance;
  */
 public class Bank {
 	
+	/** The Bank Identification Number */
+	private final String bin;
+	
+	/** The name of the bank */
 	private final String name;
+	
+	/** The national bank code */
 	private final String bankCode;
+	
+	/** The international Bank Identifier Code */
 	private final String bic;
 	
-	public Bank(String name, String bankCode, String bic) {
-		super();
+	// Constructor -----------------------------------------------------------------------------------------------------
+	
+	public Bank(String name, String bankCode, String bic, String bin) {
 		this.name = name;
 		this.bankCode = bankCode;
 		this.bic = bic;
+		this.bin = bin;
 	}
+	
+	// properties ------------------------------------------------------------------------------------------------------
 
+	/** @return the name of the bank */
 	public String getName() {
 		return name;
 	}
 
+	/** @return the national bank code */
 	public String getBankCode() {
 		return bankCode;
 	}
 
+	/** @return the international Bank Identifier Code */
 	public String getBic() {
 		return bic;
 	}
 	
+	/** @return the Bank Identification Number */
+    public String getBin() {
+    	return bin;
+    }
+
 	@Override
 	public String toString() {
 		return bankCode + ' ' + name + "(BIC:" + bic + ')';
 	}
+	
 }
