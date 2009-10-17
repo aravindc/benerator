@@ -37,8 +37,6 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 
-import org.databene.benerator.primitive.UnluckyNumberValidator;
-
 /**
  * Bean validation annotation (JSR 303) for fields that represent a credit card number.<br/>
  * <br/>
@@ -48,7 +46,7 @@ import org.databene.benerator.primitive.UnluckyNumberValidator;
  */
 
 @Documented
-@Constraint(validatedBy = UnluckyNumberValidator.class)
+@Constraint(validatedBy = CreditCardNumberValidator.class)
 @Target({ METHOD, FIELD, TYPE })
 @Retention(RUNTIME)
 public @interface CreditCardNumber {
