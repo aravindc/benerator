@@ -26,6 +26,10 @@
 
 package org.databene.domain.address;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.primitive.DigitsGenerator;
+import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -45,176 +49,34 @@ import java.io.IOException;
 
 /**
  * Represents a country and provides constants for most bigger countries.
- * Country information is read from the file org/databene/domain/address/country.csv.<br/>
- * <br/>
+ * Country information is read from the file org/databene/domain/address/country.csv.<br/><br/>
  * Created: 11.06.2006 08:15:37
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class Country {
-
-    private static final String DEFAULT_PHONE_CODE = "[2-9][0-9][0-9]";
-
-	private static final String DEFAULT_MOBILE_PHONE_PATTERN = "[1-9][0-9][0-9]";
-
-	private static final Logger logger = LoggerFactory.getLogger(Country.class);
-
-    private static String FILE_NAME = "org/databene/domain/address/country.csv";
-
-    private static Map<String, Country> instances = new HashMap<String, Country>(250);
-
-    static {
-        parseConfigFile();
-    }
-
-    // German speaking countries
-    public static final Country GERMANY = getInstance("DE");
-    public static final Country AUSTRIA = getInstance("AT");
-    public static final Country SWITZERLAND = getInstance("CH");
-    public static final Country LIECHTENSTEIN = getInstance("LI");
-
-    // BeNeLux
-    public static final Country BELGIUM = getInstance("BE");
-    public static final Country NETHERLANDS = getInstance("NL");
-    public static final Country LUXEMBURG = getInstance("LU");
-
-    // Northern Europe
-    public static final Country DENMARK = getInstance("DK");
-    public static final Country FINLAND = getInstance("FI");
-    public static final Country IRELAND = getInstance("IE");
-    public static final Country ICELAND = getInstance("IS");
-    public static final Country NORWAY = getInstance("NO");
-    public static final Country SWEDEN = getInstance("SE");
-    public static final Country UNITED_KINGDOM = getInstance("GB");
-    public static final Country GREAT_BRITAIN = getInstance("GB");
-
-    // Southern Europe
-    public static final Country ITALY = getInstance("IT");
-    public static final Country SAN_MARINO = getInstance("SM");
-    public static final Country MALTA = getInstance("MT");
-    public static final Country FRANCE = getInstance("FR");
-    public static final Country MONACO = getInstance("MC");
-    public static final Country ANDORRA = getInstance("AD");
-    public static final Country SPAIN = getInstance("ES");
-    public static final Country PORTUGAL = getInstance("PT");
-
-    // South-East Europe
-    public static final Country GREECE = getInstance("GR");
-    public static final Country CYPRUS = getInstance("CY");
-    public static final Country TURKEY = getInstance("TR");
-
-    // Eastern Europe
-    public static final Country ALBANIA = getInstance("AL");
-    public static final Country BOSNIA_AND_HERZEGOVINA = getInstance("BA");
-    public static final Country BULGARIA = getInstance("BG");
-    public static final Country BELARUS = getInstance("BY");
-    public static final Country CZECH_REPUBLIC = getInstance("CZ");
-    public static final Country ESTONIA = getInstance("EE");
-    public static final Country CROATIA = getInstance("HR");
-    public static final Country HUNGARY = getInstance("HU");
-    public static final Country LITHUANIA = getInstance("LT");
-    public static final Country LATVIA = getInstance("LV");
-    public static final Country POLAND = getInstance("PL");
-    public static final Country ROMANIA = getInstance("RO");
-    public static final Country RUSSIA = getInstance("RU");
-    public static final Country SLOVENIA = getInstance("SI");
-    public static final Country SLOVAKIA = getInstance("SK");
-    public static final Country UKRAINE = getInstance("UA");
-
-    // Near East
-    public static final Country UNITED_ARAB_EMIRATES = getInstance("AE");
-    public static final Country AFGHANISTAN = getInstance("AF");
-    public static final Country BAHRAIN = getInstance("BH");
-    public static final Country ISRAEL = getInstance("IL");
-    public static final Country IRAN = getInstance("IR");
-    public static final Country IRAQ = getInstance("IQ");
-    public static final Country JORDAN = getInstance("JO");
-    public static final Country KAZAKHSTAN = getInstance("KZ");
-    public static final Country PAKISTAN = getInstance("PK");
-    public static final Country QATAR = getInstance("QA");
-    public static final Country SAUDI_ARABIA = getInstance("SA");
-    
-    // Africa
-    public static final Country ALGERIA = getInstance("AL");
-    public static final Country EGYPT = getInstance("EG");
-    public static final Country GHANA = getInstance("GH");
-    public static final Country KENYA = getInstance("KE");
-    public static final Country SOUTH_AFRICA = getInstance("ZA");
-    
-    // North America
-    public static final Country USA = getInstance("US");
-    public static final Country US = USA;
-    public static final Country CANADA = getInstance("CA");
-    
-    // Central America
-    public static final Country BAHAMAS = getInstance("BS");
-    public static final Country MEXICO = getInstance("MX");
-    
-    // South America
-    public static final Country ARGENTINA = getInstance("AR");
-    public static final Country BRAZIL = getInstance("BR");
-    public static final Country CHILE = getInstance("CL");
-    public static final Country ECUADOR = getInstance("EC");
-    
-    // Asia
-    public static final Country CHINA = getInstance("CN");
-    public static final Country INDONESIA = getInstance("ID");
-    public static final Country INDIA = getInstance("IN");
-    public static final Country JAPAN = getInstance("JP");
-    public static final Country KOREA_PR = getInstance("KP");
-    public static final Country KOREA_R = getInstance("KR");
-    public static final Country MALAYSIA = getInstance("MY");
-    public static final Country SINGAPORE = getInstance("SG");
-    public static final Country THAILAND = getInstance("TH");
-    public static final Country TAIWAN = getInstance("TW");
-    public static final Country VIETNAM = getInstance("VN");
-
-    // Australia
-    public static final Country NEW_ZEALAND = getInstance("NZ");
-    public static final Country AUSTRALIA = getInstance("AU");
-
-    private static Country defaultCountry;
-
-    static {
-        defaultCountry = Country.getInstance(LocaleUtil.getDefaultCountryCode());
-    }
-
-    private static void parseConfigFile() {
-        CSVLineIterator iterator = null;
-        try {
-            iterator = new CSVLineIterator(FILE_NAME, ',', true);
-            logger.debug("Parsing country setup file " + FILE_NAME);
-            while (iterator.hasNext()) {
-                String[] cells = iterator.next();
-                String isoCode = cells[0];
-                String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1].trim() : "en");
-                String phoneCode = (cells.length > 2 ? cells[2].trim() : null);
-                String mobilCodePattern = (cells.length > 3 ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
-                String name = (cells.length > 4 ? cells[4].trim() : null);
-                Country country = new Country(isoCode, defaultLocale, phoneCode, mobilCodePattern, name);
-                if (logger.isDebugEnabled())
-                    logger.debug("parsed " + country);
-            }
-        } catch (IOException e) {
-            throw new ConfigurationError("Country definition file could not be processed. ", e);
-        } finally {
-            if (iterator != null)
-                iterator.close();
-        }
-    }
 
     private String isoCode;
     private String name;
     private String phoneCode;
-    private String mobileCodePattern;
+	private boolean mobilePhoneCityRelated;
+	private Generator<String> mobilePrefixGenerator;
+    private DigitsGenerator localNumberGenerator;
     private Locale countryLocale;
     private Locale defaultLanguage;
     private Map<String, State> states;
+
+	private Generator<City> cityGenerator;
+
 
     private Country(String isoCode, String defaultLanguage, String phoneCode, String mobilCodePattern, String name) {
         this.isoCode = isoCode;
         this.defaultLanguage = LocaleUtil.getLocale(defaultLanguage);
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
-        this.mobileCodePattern = mobilCodePattern;
+        this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO make configuration generic
+        this.mobilePrefixGenerator = new RegexStringGenerator(mobilCodePattern);
+        this.localNumberGenerator = new DigitsGenerator(7);
         this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
         importStates();
         instances.put(isoCode, this);
@@ -273,10 +135,6 @@ public class Country {
         return phoneCode;
     }
 
-    public String getMobileCodePattern() {
-        return mobileCodePattern;
-    }
-
     public State getState(String stateId) {
         return states.get(stateId);
     }
@@ -289,8 +147,51 @@ public class Country {
         state.setCountry(this);
         states.put(state.getId(), state);
     }
+    
+    public boolean isMobilePhoneCityRelated() {
+    	return mobilePhoneCityRelated;
+    }
 
-    public static Collection<Country> getInstances() {
+	public City generateCity() {
+	    return getCityGenerator().generate();
+    }
+
+	public PhoneNumber generatePhoneNumber() {
+		if (RandomUtil.randomInt(0, 2) < 2) // generate land line numbers in 66% of the cases
+			return generateLandlineNumber();
+		else
+			return generateMobileNumber();
+    }
+
+	public PhoneNumber generateLandlineNumber() {
+		return generateCity().generateLandlineNumber();
+    }
+
+	public PhoneNumber generateMobileNumber() {
+		if (mobilePhoneCityRelated)
+			return generateCity().generateMobileNumber();
+		else
+			return generateMobileNumber(null);
+    }
+
+	public PhoneNumber generateMobileNumber(City city) {
+		if (mobilePhoneCityRelated)
+			return new PhoneNumber(phoneCode, 
+					city.getAreaCode(), 
+					localNumberGenerator.generate(mobilePrefixGenerator.generate()));
+		else
+			return new PhoneNumber(phoneCode, 
+					mobilePrefixGenerator.generate(), 
+					localNumberGenerator.generate());
+    }
+
+    private Generator<City> getCityGenerator() {
+    	if (cityGenerator == null)
+    		cityGenerator = new CityGenerator(this);
+	    return cityGenerator;
+    }
+
+	public static Collection<Country> getInstances() {
         return instances.values();
     }
 
@@ -356,5 +257,160 @@ public class Country {
 		final Country other = (Country) obj;
 		return isoCode.equals(other.isoCode);
 	}
+
+	// constants -------------------------------------------------------------------------------------------------------
+	
+	private static final Logger logger = LoggerFactory.getLogger(Country.class);
+
+	private static final String DEFAULT_PHONE_CODE = "[2-9][0-9][0-9]";
+
+	private static final String DEFAULT_MOBILE_PHONE_PATTERN = "[1-9][0-9][0-9]";
+
+    private static String FILE_NAME = "org/databene/domain/address/country.csv";
+
+    private static Map<String, Country> instances = new HashMap<String, Country>(250);
+
+    static {
+        parseConfigFile();
+    }
+
+    // German speaking countries
+    public static final Country GERMANY = getInstance("DE");
+    public static final Country AUSTRIA = getInstance("AT");
+    public static final Country SWITZERLAND = getInstance("CH");
+    public static final Country LIECHTENSTEIN = getInstance("LI");
+
+    // BeNeLux
+    public static final Country BELGIUM = getInstance("BE");
+    public static final Country NETHERLANDS = getInstance("NL");
+    public static final Country LUXEMBURG = getInstance("LU");
+
+    // Northern Europe
+    public static final Country DENMARK = getInstance("DK");
+    public static final Country FINLAND = getInstance("FI");
+    public static final Country IRELAND = getInstance("IE");
+    public static final Country ICELAND = getInstance("IS");
+    public static final Country NORWAY = getInstance("NO");
+    public static final Country SWEDEN = getInstance("SE");
+    public static final Country UNITED_KINGDOM = getInstance("GB");
+    public static final Country GREAT_BRITAIN = getInstance("GB");
+
+    // Southern Europe
+    public static final Country ITALY = getInstance("IT");
+    public static final Country SAN_MARINO = getInstance("SM");
+    public static final Country MALTA = getInstance("MT");
+    public static final Country FRANCE = getInstance("FR");
+    public static final Country MONACO = getInstance("MC");
+    public static final Country ANDORRA = getInstance("AD");
+    public static final Country SPAIN = getInstance("ES");
+    public static final Country PORTUGAL = getInstance("PT");
+
+    // South-East Europe
+    public static final Country GREECE = getInstance("GR");
+    public static final Country CYPRUS = getInstance("CY");
+    public static final Country TURKEY = getInstance("TR");
+
+    // Eastern Europe
+    public static final Country ALBANIA = getInstance("AL");
+    public static final Country BOSNIA_AND_HERZEGOVINA = getInstance("BA");
+    public static final Country BULGARIA = getInstance("BG");
+    public static final Country BELARUS = getInstance("BY");
+    public static final Country CZECH_REPUBLIC = getInstance("CZ");
+    public static final Country ESTONIA = getInstance("EE");
+    public static final Country CROATIA = getInstance("HR");
+    public static final Country HUNGARY = getInstance("HU");
+    public static final Country LITHUANIA = getInstance("LT");
+    public static final Country LATVIA = getInstance("LV");
+    public static final Country POLAND = getInstance("PL");
+    public static final Country ROMANIA = getInstance("RO");
+    public static final Country RUSSIA = getInstance("RU");
+    public static final Country SERBIA = getInstance("RS");
+    public static final Country SLOVENIA = getInstance("SI");
+    public static final Country SLOVAKIA = getInstance("SK");
+    public static final Country UKRAINE = getInstance("UA");
+
+    // Near East
+    public static final Country UNITED_ARAB_EMIRATES = getInstance("AE");
+    public static final Country AFGHANISTAN = getInstance("AF");
+    public static final Country BAHRAIN = getInstance("BH");
+    public static final Country ISRAEL = getInstance("IL");
+    public static final Country IRAN = getInstance("IR");
+    public static final Country IRAQ = getInstance("IQ");
+    public static final Country JORDAN = getInstance("JO");
+    public static final Country KAZAKHSTAN = getInstance("KZ");
+    public static final Country PAKISTAN = getInstance("PK");
+    public static final Country QATAR = getInstance("QA");
+    public static final Country SAUDI_ARABIA = getInstance("SA");
+    
+    // Africa
+    public static final Country ALGERIA = getInstance("AL");
+    public static final Country EGYPT = getInstance("EG");
+    public static final Country GHANA = getInstance("GH");
+    public static final Country KENYA = getInstance("KE");
+    public static final Country SOUTH_AFRICA = getInstance("ZA");
+    
+    // North America
+    public static final Country USA = getInstance("US");
+    public static final Country US = USA;
+    public static final Country CANADA = getInstance("CA");
+    
+    // Central America
+    public static final Country BAHAMAS = getInstance("BS");
+    public static final Country MEXICO = getInstance("MX");
+    
+    // South America
+    public static final Country ARGENTINA = getInstance("AR");
+    public static final Country BRAZIL = getInstance("BR");
+    public static final Country CHILE = getInstance("CL");
+    public static final Country ECUADOR = getInstance("EC");
+    
+    // Asia
+    public static final Country CHINA = getInstance("CN");
+    public static final Country INDONESIA = getInstance("ID");
+    public static final Country INDIA = getInstance("IN");
+    public static final Country JAPAN = getInstance("JP");
+    public static final Country KOREA_PR = getInstance("KP");
+    public static final Country KOREA_R = getInstance("KR");
+    public static final Country MALAYSIA = getInstance("MY");
+    public static final Country SINGAPORE = getInstance("SG");
+    public static final Country THAILAND = getInstance("TH");
+    public static final Country TAIWAN = getInstance("TW");
+    public static final Country VIETNAM = getInstance("VN");
+
+    // Australia
+    public static final Country NEW_ZEALAND = getInstance("NZ");
+    public static final Country AUSTRALIA = getInstance("AU");
+
+    private static Country defaultCountry;
+
+    // initialization --------------------------------------------------------------------------------------------------
+    
+    static {
+        defaultCountry = Country.getInstance(LocaleUtil.getDefaultCountryCode());
+    }
+
+    private static void parseConfigFile() {
+        CSVLineIterator iterator = null;
+        try {
+            iterator = new CSVLineIterator(FILE_NAME, ',', true);
+            logger.debug("Parsing country setup file " + FILE_NAME);
+            while (iterator.hasNext()) {
+                String[] cells = iterator.next();
+                String isoCode = cells[0];
+                String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1].trim() : "en");
+                String phoneCode = (cells.length > 2 ? cells[2].trim() : null);
+                String mobilCodePattern = (cells.length > 3 ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
+                String name = (cells.length > 4 ? cells[4].trim() : null);
+                Country country = new Country(isoCode, defaultLocale, phoneCode, mobilCodePattern, name);
+                if (logger.isDebugEnabled())
+                    logger.debug("parsed " + country);
+            }
+        } catch (IOException e) {
+            throw new ConfigurationError("Country definition file could not be processed. ", e);
+        } finally {
+            if (iterator != null)
+                iterator.close();
+        }
+    }
 
 }

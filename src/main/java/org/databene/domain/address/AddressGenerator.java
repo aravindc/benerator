@@ -45,7 +45,6 @@ public class AddressGenerator extends LightweightGenerator<Address> {
 
     private Country country;
     private CityGenerator cityGenerator;
-    private MobilePhoneNumberGenerator mobilePhoneNumberGenerator;
     private StreetNameGenerator streetNameGenerator;
     private RegexStringGenerator localPhoneNumberGenerator;
 
@@ -64,7 +63,6 @@ public class AddressGenerator extends LightweightGenerator<Address> {
 			this.country = country;
 	        this.cityGenerator = new CityGenerator(country);
 	        this.streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
-	        this.mobilePhoneNumberGenerator = new MobilePhoneNumberGenerator(country);
 	        this.localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
@@ -94,9 +92,9 @@ public class AddressGenerator extends LightweightGenerator<Address> {
         String zipCode = data[1];
         PhoneNumber privatePhone = generatePhoneNumber(city);
         PhoneNumber officePhone = generatePhoneNumber(city);
-        PhoneNumber mobilePhone = mobilePhoneNumberGenerator.generate();
+        PhoneNumber mobilePhone = country.generateMobileNumber(city);
         PhoneNumber fax = generatePhoneNumber(city);
-        return new Address(street.getName(), houseNumber, zipCode, city.getName(), city.getState().getId(), country, privatePhone, officePhone, mobilePhone, fax);
+        return new Address(street.getName(), houseNumber, zipCode, city, city.getState().getId(), country, privatePhone, officePhone, mobilePhone, fax);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
