@@ -26,7 +26,9 @@
 
 package org.databene.domain.person;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
@@ -49,6 +51,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     private GenderGenerator genderGen;
     private GivenNameGenerator maleGivenNameGen;
     private GivenNameGenerator femaleGivenNameGen;
+    private Generator<Boolean> secondNameTest;
     private FamilyNameGenerator familyNameGen;
     private Converter<String, String> femaleFamilyNameConverter;
     private TitleGenerator titleGen;
@@ -71,6 +74,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     }
 
 	private void init(String datasetName, Locale locale) {
+		secondNameTest = new BooleanGenerator(0.2);
 		genderGen = new GenderGenerator();
         birthDateGenerator = new BirthDateGenerator(15, 105);
         titleGen = new TitleGenerator(locale);
@@ -131,10 +135,14 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     public Person generate() throws IllegalGeneratorStateException {
         Person person = new Person();
         person.setGender(genderGen.generate());
-        if (Gender.MALE.equals(person.getGender()))
-            person.setGivenName(maleGivenNameGen.generate());
-        else
-            person.setGivenName(femaleGivenNameGen.generate());
+        Generator<String> givenNameGenerator 
+        	= (Gender.MALE.equals(person.getGender()) ? maleGivenNameGen : femaleGivenNameGen);
+        person.setGivenName(givenNameGenerator.generate());
+        if (secondNameTest.generate()) {
+        	do {
+        		person.setSecondGivenName(givenNameGenerator.generate());
+        	} while (person.getGivenName().equals(person.getSecondGivenName()));
+        }
         String familyName = familyNameGen.generate();
 		if (Gender.FEMALE.equals(person.getGender()))
 			familyName = femaleFamilyNameConverter.convert(familyName);
@@ -147,7 +155,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-    @Override
+	@Override
 	public String toString() {
         return getClass().getSimpleName();
     }

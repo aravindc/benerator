@@ -14,6 +14,7 @@ public class Person {
     private static final DateFormat df = DateFormat.getDateInstance();
 
     private String givenName;
+    private String secondGivenName;
     private String familyName;
     private Gender gender;
     private String salutation;
@@ -52,7 +53,15 @@ public class Person {
         this.givenName = givenName;
     }
 
-    public String getFamilyName() {
+    public String getSecondGivenName() {
+    	return secondGivenName;
+    }
+
+    public void setSecondGivenName(String secondGivenName) {
+    	this.secondGivenName = secondGivenName;
+    }
+
+	public String getFamilyName() {
         return familyName;
     }
 
@@ -70,7 +79,8 @@ public class Person {
 
     @Override
     public String toString() {
-        return salutation + ' ' + (!StringUtil.isEmpty(title) ? title + " " : "") + givenName + ' ' + familyName
-                + ", *" + df.format(birthDate);
+        return salutation + ' ' + (!StringUtil.isEmpty(title) ? title + " " : "") + givenName + ' ' + 
+        	(secondGivenName != null ? secondGivenName + ' ' : "") + familyName + ", *" + df.format(birthDate);
     }
+    
 }
