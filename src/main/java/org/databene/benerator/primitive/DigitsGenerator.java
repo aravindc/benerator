@@ -21,8 +21,6 @@
 
 package org.databene.benerator.primitive;
 
-import java.util.Random;
-
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.util.TypedLightweightGenerator;
@@ -38,8 +36,7 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
 	private int minLength;
 	private int maxLength;
 	private int minInitial;
-	
-	private Random random = new Random();
+	private String prefix;
 	
 	public DigitsGenerator(int length) {
 	    this(length, length, 0);
@@ -50,24 +47,65 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
 	    this.minLength = minLength;
 	    this.maxLength = maxLength;
 	    this.minInitial = minInitial;
+	    this.prefix = "";
+    }
+
+	public DigitsGenerator(int minLength, int maxLength, String prefix) {
+	    super(String.class);
+	    this.minLength = minLength;
+	    this.maxLength = maxLength;
+	    this.minInitial = 0;
+	    this.prefix = prefix;
+    }
+	
+	// properties ------------------------------------------------------------------------------------------------------
+
+	public int getMinLength() {
+    	return minLength;
+    }
+
+	public void setMinLength(int minLength) {
+    	this.minLength = minLength;
+    }
+
+	public int getMaxLength() {
+    	return maxLength;
+    }
+
+	public void setMaxLength(int maxLength) {
+    	this.maxLength = maxLength;
+    }
+
+	public int getMinInitial() {
+    	return minInitial;
+    }
+
+	public void setMinInitial(int minInitial) {
+    	this.minInitial = minInitial;
+    }
+
+	public String getPrefix() {
+    	return prefix;
+    }
+
+	public void setPrefix(String prefix) {
+    	this.prefix = prefix;
     }
 
 	public String generate() throws IllegalGeneratorStateException {
-	    return generate("");
+	    return generate(prefix);
     }
+	
+	// Generator interface implementation ------------------------------------------------------------------------------
 
 	public String generate(String prefix) throws IllegalGeneratorStateException {
 		int length = RandomUtil.randomInt(minLength, maxLength);
 		StringBuilder builder = new StringBuilder(prefix);
 		if (prefix.length() == 0)
-			builder.append(randomDigit(minInitial));
+			builder.append(RandomUtil.randomDigit(minInitial));
 		for (int i = builder.length(); i < length; i++)
-			builder.append(randomDigit(0));
+			builder.append(RandomUtil.randomDigit(0));
 	    return builder.toString();
     }
-
-	private int randomDigit(int min) {
-	    return '0' + min + random.nextInt(10 - min);
-    }
-
+	
 }
