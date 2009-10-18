@@ -83,32 +83,8 @@ public class RandomUtil {
         return values.get(random.nextInt(values.size()));
     }
 
-    /**
-     * Calculates the last digit expected for a number that passes the Luhn test,
-     * ignoring the last digit. This is useful for creating Luhn numbers.
-     * The actual evaluation if a number passes the test is done by 
-     * {@link #luhnValid(CharSequence)}.
-     * @see "http://en.wikipedia.org/wiki/Luhn_algorithm"
-     */
-	public static char requiredLuhnDigit(CharSequence number) {
-		int sum = 0;
-		int multiplier = 2;
-		for (int i = number.length() - 2; i >= 0; i--) {
-			int digit = number.charAt(i) - '0';
-			int partialSum = digit * multiplier;
-			sum += (partialSum > 9 ? 1 + (partialSum % 10) : partialSum);
-			multiplier = 1 + (multiplier % 2);
-		}
-		return (char) ('0' + (10 - sum % 10) % 10); 
-	}
-	
-    /**
-     * Tests a number against the Luhn algorithm
-     * @see #requiredLuhnDigit(CharSequence)
-     * @see "http://en.wikipedia.org/wiki/Luhn_algorithm"
-     */
-	public static boolean luhnValid(CharSequence number) {
-		return (requiredLuhnDigit(number) == number.charAt(number.length() - 1)); 
-	}
-	
+	public static char randomDigit(int min) {
+	    return (char) ('0' + min + random.nextInt(10 - min));
+    }
+
 }
