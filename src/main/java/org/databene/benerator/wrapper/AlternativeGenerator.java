@@ -50,7 +50,7 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
     /** Initializes the generator to a collection of source generators */
     public AlternativeGenerator(Generator<E>... sources) {
-        this(GeneratorUtil.commonTargetTypeOf(sources));
+        this(GeneratorUtil.commonTargetTypeOf(sources), sources);
     }
 
 	/** Initializes the generator to a collection of source generators */
