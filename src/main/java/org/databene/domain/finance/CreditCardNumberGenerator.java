@@ -26,8 +26,7 @@
 
 package org.databene.domain.finance;
 
-import org.databene.benerator.primitive.LightweightStringGenerator;
-import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.primitive.LuhnGenerator;
 
 /**
  * Creates credit card numbers.<br/><br/>
@@ -36,18 +35,10 @@ import org.databene.benerator.util.RandomUtil;
  * @author Volker Bergmann
  *
  */
-public class CreditCardNumberGenerator extends LightweightStringGenerator { // TODO rename to LuhnNumberGenerator
+public class CreditCardNumberGenerator extends LuhnGenerator {
 	
-	public String generate() {
-		// VISA has 16-digits numbers, starting with '4'
-		int length = 16;
-		StringBuilder builder = new StringBuilder(16).append('4'); 
-		for (int i = 1; i < length - 1; i++)
-			builder.append((char) (RandomUtil.randomInt('0', '9')));
-		builder.append('0');
-		char checkDigit = RandomUtil.requiredLuhnDigit(builder);
-		builder.setCharAt(length - 1, checkDigit);
-		return builder.toString();
-	}
+	public CreditCardNumberGenerator() {
+	    super("4", 16, 16); // VISA numbers start with '4' and can have 16 digits
+    }
 
 }
