@@ -27,7 +27,6 @@
 package org.databene.benerator.engine.task;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.Generator;
@@ -49,14 +48,18 @@ public class PagedCreateEntityTask extends PagedTask<GenerateAndConsumeEntityTas
     private Generator<Entity> generator;
 	
 	public PagedCreateEntityTask(
-			String taskName, long count, int pageSize, int threads, List<? extends Task> subTasks, 
+			String taskName, long count, int pageSize, int threads, 
 			Generator<Entity> generator, Expression<Consumer<Entity>> consumerExpr, ExecutorService executor, 
 			boolean isSubTask, Expression<ErrorHandler> errorHandler) {
-		super(new GenerateAndConsumeEntityTask(taskName, generator, consumerExpr, subTasks, isSubTask, errorHandler), 
+		super(new GenerateAndConsumeEntityTask(taskName, generator, consumerExpr, isSubTask, errorHandler), 
 				count, null, pageSize, threads, executor);
 		this.generator = generator;
 	}
 	
+    public void addSubTask(Task task) {
+    	realTask.addSubTask(task);
+    }
+    
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
 	@Override

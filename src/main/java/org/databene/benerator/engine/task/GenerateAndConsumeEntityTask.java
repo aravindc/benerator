@@ -27,11 +27,11 @@
 package org.databene.benerator.engine.task;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.commons.Assert;
-import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -50,25 +50,25 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
 
     private Generator<Entity> entityGenerator;
     private Expression<Consumer<Entity>> consumerExpr;
-    private List<? extends Task> subTasks;
+    private List<Task> subTasks;
     private boolean isSubTask;
 	private Consumer<Entity> consumer;
     
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
-    		Expression<Consumer<Entity>> consumerExpr, List<? extends Task> subTasks, 
-    		boolean isSubTask, Expression<ErrorHandler> errorHandler) {
+    		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask, Expression<ErrorHandler> errorHandler) {
     	super(taskName, errorHandler);
     	Assert.notNull(entityGenerator, "entityGenerator");
         this.entityGenerator = entityGenerator; // TODO make this an expression?
         this.consumerExpr = consumerExpr;
-        if (subTasks != null)
-        	this.subTasks = subTasks;
-        else
-        	this.subTasks = CollectionUtil.emptyList();
+    	this.subTasks = new ArrayList<Task>();
         this.isSubTask = isSubTask;
     }
 
     // interface -------------------------------------------------------------------------------------------------------
+    
+    public void addSubTask(Task task) {
+    	this.subTasks.add(task);
+    }
     
     @Override
     public boolean available() {
