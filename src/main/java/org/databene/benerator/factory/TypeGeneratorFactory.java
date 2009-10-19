@@ -98,16 +98,18 @@ public class TypeGeneratorFactory {
         }
     }
 */
-    protected static <T> Generator<T> createValidatingGenerator(
-            TypeDescriptor descriptor, Generator<T> generator, BeneratorContext context) {
-        Validator<T> validator = DescriptorUtil.getValidator(descriptor, context);
+    @SuppressWarnings("unchecked")
+    protected static Generator<?> createValidatingGenerator(
+            TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
+        Validator<?> validator = DescriptorUtil.getValidator(descriptor, context);
         if (validator != null)
-            generator = new ValidatingGeneratorProxy<T>(generator, validator);
+            generator = new ValidatingGeneratorProxy(generator, validator);
         return generator;
     }
 
-    protected static Generator createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
-        Converter converter = DescriptorUtil.getConverter(descriptor, context);
+    @SuppressWarnings("unchecked")
+    protected static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
+        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
@@ -117,44 +119,46 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-	static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, BeneratorContext context) {
-		generator = createConvertingGenerator(descriptor, generator, context);
+	@SuppressWarnings("unchecked")
+    static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, BeneratorContext context) {
+		generator = (Generator<E>) createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor)
-			generator = createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
-        generator = createValidatingGenerator(descriptor, generator, context);
+			generator = (Generator<E>) createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
+        generator = (Generator<E>) createValidatingGenerator(descriptor, generator, context);
 		return generator;
 	}
     
-    static <S, T> Generator<T> createTypeConvertingGenerator(
-            SimpleTypeDescriptor descriptor, Generator<S> generator) {
+    @SuppressWarnings("unchecked")
+    static Generator<?> createTypeConvertingGenerator(
+            SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
-            return (Generator<T>) generator;
+            return generator;
         PrimitiveType primitiveType = descriptor.getPrimitiveType();
-        Class<T> targetType = (Class<T>) primitiveType.getJavaType();
-        Converter<S, T> converter = null;
+        Class<?> targetType = primitiveType.getJavaType();
+        Converter<?,?> converter = null;
         if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
             // String needs to be converted to Date
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
                 String pattern = descriptor.getPattern();
-                converter = new ParseFormatConverter(Date.class, new SimpleDateFormat(pattern));
+                converter = new ParseFormatConverter<Date>(Date.class, new SimpleDateFormat(pattern));
             } else {
                 // we need to expect the standard date format
-                converter = new String2DateConverter();
+                converter = new String2DateConverter<Date>();
             }
         } else if (String.class.equals(targetType) && generator.getGeneratedType() == Date.class) {
             // String needs to be converted to Date
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
                 String pattern = descriptor.getPattern();
-                converter = new FormatFormatConverter(Date.class, new SimpleDateFormat(pattern));
+                converter = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat(pattern));
             } else {
                 // we need to expect the standard date format
-                converter = (Converter<S, T>) new FormatFormatConverter(Date.class, TimeUtil.createDefaultDateFormat());
+                converter = new FormatFormatConverter<Date>(Date.class, TimeUtil.createDefaultDateFormat());
             }
         } else
-        	converter = (Converter<S, T>) new AnyConverter<Object, T>(targetType, descriptor.getPattern());
-        return new ConvertingGenerator<S, T>(generator, converter);
+        	converter = new AnyConverter(targetType, descriptor.getPattern());
+        return new ConvertingGenerator(generator, converter);
     }
 
 }
