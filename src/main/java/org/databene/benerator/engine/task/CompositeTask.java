@@ -26,10 +26,13 @@
 
 package org.databene.benerator.engine.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.task.AbstractTask;
 import org.databene.task.Task;
@@ -46,7 +49,16 @@ public abstract class CompositeTask extends AbstractTask {
 	
 	protected List<Task> subTasks;
 	
-    public CompositeTask(Task... subTasks) {
+    public CompositeTask(Expression<ErrorHandler> errorHandler) {
+	    this(null, errorHandler);
+    }
+
+	public CompositeTask(String taskName, Expression<ErrorHandler> errorHandler) {
+	    super(taskName, errorHandler);
+	    this.subTasks = new ArrayList<Task>();
+    }
+
+	public CompositeTask(Task... subTasks) {
 	    this.subTasks = CollectionUtil.toList(subTasks);
     }
 
