@@ -186,7 +186,7 @@ public class DescriptorRunner implements ResourceManager {
 	private void parseRootChild(Element element, SerialTask parentTask) {
 		String elementType = element.getNodeName();
 		Task task = null;
-		if ("bean".equals(elementType))
+		if (EL_BEAN.equals(elementType))
 			task = parseBean(element);
 		else if (EL_CREATE_ENTITIES.equals(elementType) || EL_UPDATE_ENTITIES.equals(elementType))
 			task = parseEntityTask(element);
@@ -276,15 +276,15 @@ public class DescriptorRunner implements ResourceManager {
 
 	private Task parseDatabase(Element element) {
 		try {
-			Expression<String> id = new StringScriptExpression(element.getAttribute(ATT_ID));
-			Expression<String> url = new StringScriptExpression(element.getAttribute(ATT_URL));
-			Expression<String> driver = new StringScriptExpression(element.getAttribute(ATT_DRIVER));
-			Expression<String> user = new StringScriptExpression(element.getAttribute(ATT_USER));
-			Expression<String> password = new StringScriptExpression(element.getAttribute(ATT_PASSWORD));
-			Expression<String> schema = new StringScriptExpression(element.getAttribute(ATT_SCHEMA));
-			Expression<Boolean> batch = new ScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
+			Expression<String>  id        = parseStringAttr(ATT_ID,       element);
+			Expression<String>  url       = parseStringAttr(ATT_URL,      element);
+			Expression<String>  driver    = parseStringAttr(ATT_DRIVER,   element);
+			Expression<String>  user      = parseStringAttr(ATT_USER,     element);
+			Expression<String>  password  = parseStringAttr(ATT_PASSWORD, element);
+			Expression<String>  schema    = parseStringAttr(ATT_SCHEMA,   element);
+			Expression<Boolean> batch     = new ScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
 			Expression<Integer> fetchSize = new ScriptExpression<Integer>(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
-			Expression<Boolean> readOnly = new ScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
+			Expression<Boolean> readOnly  = new ScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
 			return new DefineDatabaseTask(id, url, driver, user, password, schema, batch, fetchSize, readOnly, this);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
@@ -296,16 +296,17 @@ public class DescriptorRunner implements ResourceManager {
 	}
 
 	private Task parseEvaluate(Element element) {
-		Expression<String> id = new StringScriptExpression(element.getAttribute(ATT_ID));
-		Expression<String> text = new StringScriptExpression(XMLUtil.getText(element));
-		Expression<String> uri = new StringScriptExpression(element.getAttribute(ATT_URI));
-		Expression<String> targetName = new StringScriptExpression(element.getAttribute(ATT_TARGET));
+		Expression<String> text         = parseTextElem(element);
+		Expression<String> id           = parseStringAttr(ATT_ID, element);
+		Expression<String> uri          = parseStringAttr(ATT_URI,    element);
+		Expression<String> targetName   = parseStringAttr(ATT_TARGET, element);
 		Expression<Object> targetObject = new FeatureAccessExpression(targetName);
-		Expression<String> onError = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
-		Expression<String> encoding = new StringScriptExpression(element.getAttribute(ATT_ENCODING));
-		Expression<Boolean> optimize = new ScriptExpression<Boolean>(element.getAttribute(ATT_OPTIMIZE), Boolean.class, false);
-		Expression<String> type = new StringScriptExpression(element.getAttribute(ATT_TYPE));
-		Expression<Object> assertion = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT), Object.class);
+		Expression<String> onError      = parseStringAttr(ATT_ON_ERROR, element);
+		Expression<String> encoding     = parseStringAttr(ATT_ENCODING, element);
+		Expression<Boolean> optimize    = new ScriptExpression<Boolean>(
+											element.getAttribute(ATT_OPTIMIZE), Boolean.class, false);
+		Expression<String> type         = parseStringAttr(ATT_TYPE, element);
+		Expression<Object> assertion    = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT), Object.class);
 		return new EvaluateTask(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
 	}
 
@@ -319,10 +320,10 @@ public class DescriptorRunner implements ResourceManager {
 			String beanName = parseStringAttribute(element, ATT_NAME, context);
 			logger.debug("Instantiating task '" + beanName + "'");
 			ScriptConverter scriptConverter = new ScriptConverter(context);
-			Task task = (Task) XMLElement2BeanConverter.convert(element, context, scriptConverter);
-			int count = parseIntAttribute(element, ATT_COUNT, context, 1);
+			Task task    = (Task) XMLElement2BeanConverter.convert(element, context, scriptConverter);
+			int count    = parseIntAttribute(element, ATT_COUNT, context, 1);
 			int pageSize = parseIntAttribute(element, ATT_PAGESIZE, context, context.getDefaultPagesize());
-			int threads = parseIntAttribute(element, ATT_THREADS, context, 1);
+			int threads  = parseIntAttribute(element, ATT_THREADS, context, 1);
 			PageListener pager = parsePager(element);
 			return new TaskRunnerTask(task, count, pageSize, threads, pager, executor);
 		} catch (ConversionException e) {
@@ -370,20 +371,12 @@ public class DescriptorRunner implements ResourceManager {
 		Generator<Entity> configuredGenerator = (Generator<Entity>) InstanceGeneratorFactory
 				.createInstanceGenerator(descriptor, context);
 		
-		// handle sub-create-entities
-		List<PagedCreateEntityTask> subs = new ArrayList<PagedCreateEntityTask>();
-		for (Element child : XMLUtil.getChildElements(element)) {
-			String nodeName = child.getNodeName();
-			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName))
-				subs.add(parseCreateEntities(child, true));
-		}
-		
 		// parse task properties
 		long minCount = DescriptorUtil.getMinCount(descriptor, context).evaluate(context); // TODO make use of minCount
 		Long maxCount = DescriptorUtil.getMaxCount(descriptor, context).evaluate(context);
 		// TODO support count distribution
-		int pageSize = parseIntAttribute(element, ATT_PAGESIZE, context, context.getDefaultPagesize());
-		int threads = parseIntAttribute(element, ATT_THREADS, context, 1);
+		int pageSize  = parseIntAttribute(element, ATT_PAGESIZE, context, context.getDefaultPagesize());
+		int threads   = parseIntAttribute(element, ATT_THREADS, context, 1);
 		
 		// parse consumers
 		Expression<Consumer<Entity>> consumer = parseConsumers(element, EL_CREATE_ENTITIES.equals(element.getNodeName()));
@@ -393,9 +386,17 @@ public class DescriptorRunner implements ResourceManager {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		long limit = (maxCount != null ? maxCount : -1);
-		return new PagedCreateEntityTask(taskName, limit, pageSize, // TODO v0.6 support maxCount and countDistribution
-				threads, subs, configuredGenerator, consumer, executor,
-				isSubTask, errorHandler);
+		PagedCreateEntityTask task = new PagedCreateEntityTask(taskName, limit, pageSize, // TODO v0.6 support maxCount and countDistribution
+				threads, configuredGenerator, consumer, executor, isSubTask, errorHandler);
+		
+		// handle sub-create-entities
+		for (Element child : XMLUtil.getChildElements(element)) {
+			String nodeName = child.getNodeName();
+			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName))
+				task.addSubTask(parseCreateEntities(child, true));
+		}
+		
+		return task;
 	}
 
     private Expression<Consumer<Entity>> parseConsumers(Element entityElement, boolean consumersExpected) {
@@ -442,6 +443,16 @@ public class DescriptorRunner implements ResourceManager {
 		return instance;
 	}
 	
+	// parsing support methods -----------------------------------------------------------------------------------------
+	
+	private static Expression<String> parseTextElem(Element element) {
+	    return new ScriptExpression<String>(XMLUtil.getText(element), String.class);
+    }
+
+	private static Expression<String> parseStringAttr(String attId, Element element) {
+	    return new StringScriptExpression(element.getAttribute(ATT_ID));
+    }
+
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
 
 	@Override
