@@ -51,7 +51,7 @@ public class SeedWordGeneratorTest extends GeneratorClassTest {
     	for (int i = 0; i < 10; i++) {
     		assertTrue(generator.available());
     		String word = generator.generate();
-			System.out.println(word);
+			logger.debug(word);
     		assertNotNull(word);
     		assertTrue(word.length() > 0);
     	}

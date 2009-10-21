@@ -170,7 +170,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
 	    		case 3: alt2 = true; break;
 	    		default: fail("Regex generation failed for " + pattern);
     		}
-			System.out.println(product);
+			logger.debug(product);
     	}
     	assertTrue("Regex generator does not use alternative #1 of " + pattern, alt1);
     	assertTrue("Regex generator does not use alternative #2 of " + pattern, alt2);

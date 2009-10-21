@@ -62,7 +62,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
             assertEquals('-', id.charAt(17));
             assertEquals('-', id.charAt(22));
             assertEquals('-', id.charAt(31));
-            System.out.println(id);
+            logger.debug(id);
         }
     }
     
