@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
@@ -50,9 +51,14 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
 
     private PageListener listener;
 
-    private long totalInvocations;
+    private long maxCount;
+    private long minCount;
     private long pageSize;
     private int threadCount;
+    
+    private volatile AtomicLong queuedInvocations;
+    private volatile AtomicLong queuedPages;
+    private volatile AtomicLong actualCount;
     
     private ExecutorService executor;
 
@@ -76,55 +82,72 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
         this(realTask, totalInvocations, listener, pageSize, 1, Executors.newSingleThreadExecutor());
     }
 
-    public PagedTask(E realTask, long totalInvocations, PageListener listener, long pageSize, int threads, ExecutorService executor) {
+    public PagedTask(E realTask, long maxCount, PageListener listener, long pageSize, int threads, ExecutorService executor) {
     	super(realTask);
         this.listener = listener;
-        this.totalInvocations = totalInvocations;
+        this.maxCount = maxCount;
+        this.minCount = maxCount;
         this.pageSize = pageSize;
         this.threadCount = threads;
+        this.actualCount = new AtomicLong();
+        this.queuedInvocations = new AtomicLong();
+		this.queuedPages = new AtomicLong();
         this.executor = executor;
     }
 
     // Task implementation ---------------------------------------------------------------------------------------------
 
-    /**
-     * @return the totalInvocations
-     */
-    public long getTotalInvocations() {
-        return totalInvocations;
+    public long getMinCount() {
+    	return minCount;
     }
 
-    /**
-     * @return the pageSize
-     */
-    public long getPageSize() {
+	public void setMinCount(long minCount) {
+    	this.minCount = minCount;
+    }
+
+    public long getMaxCount() {
+        return maxCount;
+    }
+    
+	public void setMaxCount(long maxCount) {
+    	this.maxCount = maxCount;
+    }
+
+    public long getActualCount() {
+    	return actualCount.get();
+    }
+
+	public long getPageSize() {
         return pageSize;
     }
 
-    /**
-     * @return the threadCount
-     */
     public int getThreadCount() {
         return threadCount;
     }
 
     @Override
     public void run(Context context) {
-    	if (totalInvocations == 0)
+    	if (maxCount == 0)
     		return;
+    	this.actualCount.set(0);
+    	queuedPages.set((maxCount + pageSize - 1) / pageSize);
+    	queuedInvocations.set(maxCount);
         this.exception = null;
-        int invocationCount = 0;
         if (logger.isDebugEnabled())
             logger.debug("Running PagedTask[" + getTaskName() + "]");
         int currentPageNo = 0;
         while (workPending(currentPageNo)) {
         	try {
 	            pageStarting(currentPageNo);
-	            long currentPageSize = (totalInvocations < 0 ? pageSize : Math.min(pageSize, totalInvocations - invocationCount));
+	            long currentPageSize = (maxCount < 0 ? pageSize : Math.min(pageSize, queuedInvocations.get()));
+	            queuedInvocations.addAndGet(- currentPageSize);
+	            long localCount;
 	            if (threadCount > 1)
-	                invocationCount += runMultiThreaded(context, currentPageNo, currentPageSize);
+	                localCount = runMultiThreaded(context, currentPageNo, currentPageSize);
 	            else
-	                invocationCount += runSingleThreaded(context, currentPageSize);
+	                localCount = runSingleThreaded(context, currentPageSize);
+	            actualCount.addAndGet(localCount);
+	            queuedPages.decrementAndGet();
 	            pageFinished(currentPageNo, context);
 	            if (exception != null)
 	                throw new RuntimeException(exception);
@@ -135,6 +158,9 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
         }
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
+        long countValue = actualCount.get();
+		if (countValue < minCount)
+        	throw new TaskUnavailableException(this, minCount, countValue);
     }
     
     @Override
@@ -152,7 +178,7 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
         CountDownLatch latch = new CountDownLatch(threadCount);
         for (int threadNo = 0; threadNo < threadCount; threadNo++) {
             int loopSize = maxLoopsPerPage;
-            if (totalInvocations >= 0 && threadNo >= threadCount - shorterLoops)
+            if (maxCount >= 0 && threadNo >= threadCount - shorterLoops)
                 loopSize--;
             if (loopSize > 0) {
                 Task task = realTask;
@@ -194,10 +220,9 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
     protected boolean workPending(int currentPageNo) {
         if (!realTask.available())
             return false;
-        if (totalInvocations < 0)
+        if (maxCount < 0)
         	return true;
-        long pages = (totalInvocations + pageSize - 1) / pageSize;
-		return (currentPageNo < pages);
+        return (queuedPages.get() > 0);
 	}
 
 	private Task cloneTask(Parallelizable task) {
