@@ -80,6 +80,13 @@ public class PagedTaskTest {
         checkNonThreadSafeTask(10, 10, 2, 3); // multi-threaded, single-paged
         checkNonThreadSafeTask(10,  5, 2, 5); // multi-threaded, multi-paged
     }
+	
+	@Test(expected = TaskUnavailableException.class)
+	public void testMinCount() {
+        CountTask countTask = new CountTask(1);
+        PagedTask<CountTask> pagedTask = new PagedTask<CountTask>(countTask, 2);
+        pagedTask.run(new DefaultContext());
+	}
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
