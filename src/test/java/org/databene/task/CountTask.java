@@ -38,15 +38,24 @@ public class CountTask implements Task, ThreadSafe {
 
     public int runCount = 0;
     public int closeCount = 0;
+    public int runLimit;
     
-    // Task interface --------------------------------------------------------------------------------------------------
+    public CountTask() {
+	    this(-1);
+    }
 
+    public CountTask(int runLimit) {
+	    this.runLimit = runLimit;
+    }
+
+    // Task interface --------------------------------------------------------------------------------------------------
+    
     public String getTaskName() {
         return getClass().getSimpleName();
     }
 
-    public boolean available() {
-        return true;
+	public boolean available() {
+        return (runLimit < 0 || runCount < runLimit);
     }
 
     public void run(Context context) {
