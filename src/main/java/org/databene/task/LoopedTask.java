@@ -32,13 +32,14 @@ import org.databene.commons.Context;
  * Task implementation that provides for repeated execution.<br/>
  * <br/>
  * Created: 06.07.2007 07:36:35
+ * @since 0.2
  * @author Volker Bergmann
  */
-public class LoopedTask extends TaskProxy {
+public class LoopedTask<E extends Task> extends TaskProxy<E> {
 
     private long loopSize;
 
-    public LoopedTask(Task realTask, long loopSize) {
+    public LoopedTask(E realTask, long loopSize) {
         super(realTask);
         this.loopSize = loopSize;
     }
