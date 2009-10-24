@@ -83,7 +83,7 @@ public class JavaInvoker extends AbstractConsumer<Object> {
 		if (target instanceof Class)
 			BeanUtil.invokeStatic((Class<?>) target, methodName, args);
 		else
-			BeanUtil.invoke(target, methodName, args);
+			BeanUtil.invoke(false, target, methodName, args);
     }
 
 	private void invokeByObject(Object object) {
