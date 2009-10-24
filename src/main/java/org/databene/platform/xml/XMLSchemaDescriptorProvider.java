@@ -45,8 +45,10 @@ import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
+import org.databene.commons.context.ContextAware;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.AlternativeGroupDescriptor;
@@ -76,7 +78,7 @@ import static org.databene.commons.xml.XMLUtil.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider implements ResourceManager {
+public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider implements ContextAware, ResourceManager {
     
     private static final String REF = "ref";
 
@@ -108,6 +110,10 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     
     // constructors ----------------------------------------------------------------------------------------------------
     
+    public XMLSchemaDescriptorProvider() {
+        this(null, null);
+    }
+    
     public XMLSchemaDescriptorProvider(String schemaUri, BeneratorContext context) {
         this(schemaUri, context, DataModel.getDefaultInstance());
     }
@@ -119,10 +125,15 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         this.context = context;
         this.dataModel = dataModel;
         this.propertiesFiles = new ArrayList<String>();
-        setSchemaUri(schemaUri);
+        if (schemaUri != null)
+        	setSchemaUri(schemaUri);
     }
     
     // interface -------------------------------------------------------------------------------------------------------
+    
+    public void setContext(Context context) {
+    	this.context = (BeneratorContext) context; // TODO make ContextAware use BeneratorContext?
+    }
     
     public void setSchemaUri(String schemaUri) {
         try {
