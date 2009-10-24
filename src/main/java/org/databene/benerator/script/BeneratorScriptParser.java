@@ -46,6 +46,7 @@ import org.databene.commons.bean.DefaultClassProvider;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.expression.BinaryExpression;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.expression.UnaryExpression;
 import org.databene.model.data.PrimitiveType;
 import org.slf4j.Logger;
@@ -89,6 +90,34 @@ public class BeneratorScriptParser {
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
+        	throw mapToParseException(e);
+        }
+    }
+	
+    public static WeightedTransition[] parseTransitionList(String text) throws ParseException {
+        if (StringUtil.isEmpty(text))
+            return null;
+        try {
+        	BeneratorParser parser = parser(text);
+	        BeneratorParser.transitionList_return r = parser.transitionList();
+	        if (parser.getNumberOfSyntaxErrors() > 0)
+	        	throw new ParseException("Illegal regex: " + text, -1);
+	        if (r != null) {
+	        	CommonTree tree = (CommonTree) r.getTree();
+	        	if (LOGGER.isDebugEnabled())
+	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
+	            return convertTransitionList(tree);
+	        } else
+	        	return null;
+        } catch (RuntimeException e) {
+        	if (e.getCause() instanceof RecognitionException)
+        		throw mapToParseException((RecognitionException) e.getCause());
+        	else
+        		throw e;
+        } catch (IOException e) {
+        	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
+        } catch (RecognitionException e) {
+        	e.printStackTrace();
         	throw mapToParseException(e);
         }
     }
@@ -160,15 +189,29 @@ public class BeneratorScriptParser {
     	return new ParseException("Error parsing Benerator expression: " + e.getMessage(), e.charPositionInLine);
     }
 
-	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
-		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
-		node = childAt(0, node);
-		if (node.getType() == BeneratorLexer.QUALIFIEDNAME)
-			return new QNBeanSpecExpression(convertQualifiedNameToStringArray(node));
-		else if (node.getType() == BeneratorLexer.IDENTIFIER)
-			return new QNBeanSpecExpression(new ConstantExpression<String[]>(new String[] { node.getText() }));
+    private static WeightedTransition[] convertTransitionList(CommonTree node) throws ParseException {
+    	if (node.getType() == BeneratorLexer.ARROW)
+    		return new WeightedTransition[] { convertTransition(node) };
+    	else if (node.isNil()) {
+		    int childCount = node.getChildCount();
+		    WeightedTransition[] transitions = new WeightedTransition[childCount];
+		    for (int i = 0; i < childCount; i++)
+		    	transitions[i] = convertTransition(childAt(i, node));
+		    return transitions;
+    	} else
+    		throw new ParseException("Unexpected token in transition list: " + node.getToken(), node.getCharPositionInLine());
+    }
+
+	private static WeightedTransition convertTransition(CommonTree node) throws ParseException {
+		Assert.isTrue(node.getType() == BeneratorLexer.ARROW, "expected transition, found: " + node.getToken());
+		Expression<?> from = convertNode(childAt(0, node));
+		Expression<?> to = convertNode(childAt(1, node));
+		Expression<Double> weight;
+		if (node.getChildCount() > 2)
+			weight = new TypeConvertingExpression<Double>(convertNode(childAt(2, node)), Double.class);
 		else
-			return convertNode(node);
+			weight = new ConstantExpression<Double>(1.);
+		return new WeightedTransition(from.evaluate(null), to.evaluate(null), weight);
 	}
 
     private static Expression<?>[] convertBeanSpecList(CommonTree node) throws ParseException {
@@ -183,6 +226,17 @@ public class BeneratorScriptParser {
     	} else
     		throw new ParseException("Unexpected token: " + node.getToken(), node.getCharPositionInLine());
     }
+
+	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
+		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
+		node = childAt(0, node);
+		if (node.getType() == BeneratorLexer.QUALIFIEDNAME)
+			return new QNBeanSpecExpression(convertQualifiedNameToStringArray(node));
+		else if (node.getType() == BeneratorLexer.IDENTIFIER)
+			return new QNBeanSpecExpression(new ConstantExpression<String[]>(new String[] { node.getText() }));
+		else
+			return convertNode(node);
+	}
 
 	private static Expression<?> convertNode(CommonTree node) throws ParseException {
     	switch (node.getType()) {
@@ -361,14 +415,11 @@ public class BeneratorScriptParser {
     	return new FieldExpression(convertNode(childAt(0, node)), convertIdentifier(childAt(1, node)).evaluate(null));
     }
 
+    @SuppressWarnings("unchecked")
     private static Expression<?> convertCast(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-	            Class<?> targetType = (Class<?>) term1.evaluate(context);
-	            Object source = term2.evaluate(context);
-	            return AnyConverter.convert(source, targetType);
-            }
-		};
+    	Class<?> targetType = (Class<?>) convertNode(childAt(0, node)).evaluate(null);
+		Expression<?> sourceExpression = convertNode(childAt(1, node));
+		return new TypeConvertingExpression(sourceExpression, targetType);
     }
 
     private static Expression<?> convertNegation(CommonTree node) throws ParseException {
