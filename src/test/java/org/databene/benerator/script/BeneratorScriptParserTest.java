@@ -34,6 +34,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.context.DefaultContext;
 import org.databene.commons.expression.ExpressionUtil;
+import org.databene.domain.person.Gender;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -93,6 +94,10 @@ public class BeneratorScriptParserTest {
 		checkExpression("", "new java.lang.String()");
 		checkExpression("Test", "new java.lang.String('Test')");
 		checkExpression("Test", "new java.lang.String(new java.lang.String('Test'))");
+	}
+	
+	@Test public void testEnum() throws Exception {
+		checkExpression(Gender.FEMALE, "org.databene.domain.person.Gender.FEMALE");	
 	}
 	
 	@Test
@@ -407,6 +412,23 @@ public class BeneratorScriptParserTest {
 		assertTrue(values[1].getClass() == this.getClass());
 	}
 	
+	@Test
+	public void testTransitionListOfLength1() throws Exception {
+		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList("'A'->'B'");
+		assertEquals(1, ts.length);
+		checkAB1Transition(ts[0]);
+	}
+
+	@Test
+	public void testTransitionList() throws Exception {
+		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList("'A'->'B',1->2[0.5]");
+		assertEquals(2, ts.length);
+		checkAB1Transition(ts[0]);
+	    assertEquals(1, ts[1].getFrom());
+		assertEquals(2, ts[1].getTo());
+		assertEquals( 0.5, ts[1].getWeight().evaluate(null));
+	}
+
 	// tests migrated from BasicParserTest ---------------------------------------
 	
 	@Test
@@ -473,4 +495,10 @@ public class BeneratorScriptParserTest {
 		assertEquals(expected, actual);
     }
     
+	private void checkAB1Transition(WeightedTransition t10) {
+	    assertEquals("A", t10.getFrom());
+		assertEquals("B", t10.getTo());
+		assertEquals(1., t10.getWeight().evaluate(null));
+    }
+	
 }
