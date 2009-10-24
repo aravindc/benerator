@@ -65,7 +65,7 @@ public class GenerateAndConsumeEntityTaskTest {
 		final ListConsumer consumer = new ListConsumer();
 		Expression<Consumer<Entity>> consumerExpr = new ConstantExpression<Consumer<Entity>>(consumer);
 		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(
-				"tn", generator, consumerExpr, null, false, null);
+				"tn", generator, consumerExpr, false, null);
 		checkIteration(task, consumer);
 		consumer.list.clear();
 		task.reset();
