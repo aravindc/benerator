@@ -58,7 +58,8 @@ public class PrimitiveType { // TODO merge this with BasicDescriptorProvider?
     public static final PrimitiveType STRING      = new PrimitiveType("string", String.class);
     public static final PrimitiveType DATE        = new PrimitiveType("date", Date.class);
     public static final PrimitiveType TIME        = new PrimitiveType("time", Time.class);
-    public static final PrimitiveType TIMESTAMP   = new PrimitiveType("timestamp", Timestamp.class); // TODO replace with datetime?
+    // TODO introduce datetime?
+    public static final PrimitiveType TIMESTAMP   = new PrimitiveType("timestamp", Timestamp.class);
     public static final PrimitiveType OBJECT      = new PrimitiveType("object", Object.class);
     public static final PrimitiveType BINARY      = new PrimitiveType("binary", byte[].class);
     
