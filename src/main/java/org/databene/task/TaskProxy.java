@@ -45,6 +45,10 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask {
         setRealTask(realTask);
     }
 
+	public E getRealTask() {
+	    return realTask;
+    }
+    
     public void setRealTask(E realTask) {
         this.realTask = realTask;
         setTaskName(realTask != null ? realTask.getClass().getSimpleName() : "undefined");
@@ -68,5 +72,5 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask {
     public String toString() {
         return getClass().getSimpleName() + '(' + realTask.toString() + ')';
     }
-    
+
 }
