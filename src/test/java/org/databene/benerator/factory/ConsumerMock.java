@@ -26,12 +26,16 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Random;
+
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 
 public class ConsumerMock extends AbstractConsumer<Entity> {
 	
-	public Entity last;
+	private Random random = new Random();
+	
+	public static Entity last;
 	public int n;
 	
 	public ConsumerMock() {
@@ -44,6 +48,12 @@ public class ConsumerMock extends AbstractConsumer<Entity> {
 
     public void startConsuming(Entity object) {
         last = object;
+    }
+    
+    public void enrolCustomer(String name, int age) throws Exception {
+        last = new Entity("Person", "name", name, "age", age);
+        System.out.println("enrolled: " + name + " (" + age + ") - " + Thread.currentThread().getName());
+        Thread.sleep(50 + random.nextInt(100));
     }
     
 }
