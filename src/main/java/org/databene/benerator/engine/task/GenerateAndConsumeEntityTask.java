@@ -70,7 +70,11 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     	this.subTasks.add(task);
     }
     
-    @Override
+    public Generator<Entity> getEntityGenerator() {
+    	return entityGenerator;
+    }
+
+	@Override
     public boolean available() {
         return entityGenerator.available();
     }
