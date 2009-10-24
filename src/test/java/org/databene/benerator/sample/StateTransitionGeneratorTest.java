@@ -29,6 +29,7 @@ package org.databene.benerator.sample;
 import java.util.List;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.script.Transition;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
 import org.junit.Test;
@@ -52,8 +53,8 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(1, 2, 1.);
 		generator.addTransition(2, null, 1.);
 		expectGeneratedSequence(generator, 
-				new StateTransition(null,    1), 
-				new StateTransition(   1,    2)
+				new Transition(null,    1), 
+				new Transition(   1,    2)
 			).withCeasedAvailability();
 	}
 	
@@ -67,13 +68,13 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(2, 1, 0.5);
 		generator.addTransition(2, null, 0.5);
 		for (int n = 0; n < 10; n++) {
-			List<StateTransition> products = GeneratorUtil.allProducts(generator);
+			List<Transition> products = GeneratorUtil.allProducts(generator);
 			assertTrue(products.size() % 2 == 0);
-			assertEquals(new StateTransition(null, 1), products.get(0));
+			assertEquals(new Transition(null, 1), products.get(0));
 			for (int i = 1; i < products.size(); i++) {
 				int oldState = 1 + ((i - 1) % 2);
 				int newState = 1 + (i % 2);
-				assertEquals(new StateTransition(oldState, newState), products.get(i));
+				assertEquals(new Transition(oldState, newState), products.get(i));
 			}
 			generator.reset();
 		}
@@ -88,10 +89,10 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(1, 1, 0.5);
 		generator.addTransition(1, null, 0.5);
 		for (int n = 0; n < 10; n++) {
-			List<StateTransition> products = GeneratorUtil.allProducts(generator);
-			assertEquals(new StateTransition(null, 1), products.get(0));
+			List<Transition> products = GeneratorUtil.allProducts(generator);
+			assertEquals(new Transition(null, 1), products.get(0));
 			for (int i = 1; i < products.size(); i++)
-				assertEquals(new StateTransition(1, 1), products.get(i));
+				assertEquals(new Transition(1, 1), products.get(i));
 			generator.reset();
 		}
 	}
