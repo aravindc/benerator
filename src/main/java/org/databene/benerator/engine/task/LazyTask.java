@@ -49,6 +49,10 @@ public class LazyTask implements Task {
 	    this.taskExpression = taskExpression;
     }
 
+	public Expression<? extends Task> getTaskExpression() {
+	    return taskExpression;
+    }
+
     public boolean available() {
 	    return (task == null || task.available());
     }
