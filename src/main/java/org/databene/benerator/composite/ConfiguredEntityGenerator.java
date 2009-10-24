@@ -45,8 +45,6 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	
     private static Logger logger = LoggerFactory.getLogger(ConfiguredEntityGenerator.class);
     
-    private static long entityCount = 0;
-
     private Generator<Entity> entityGenerator;
 	private Map<String, Generator<? extends Object>> variables;
 	private Context context;
@@ -97,7 +95,6 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
         variablesInitialized = false;
         if (logger.isDebugEnabled())
         	logger.debug("Generated " + entity);
-        entityCount++;
         return entity;
 	}
 
@@ -116,10 +113,6 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
             context.remove(variableName);
 	}
 
-	public static long entityCount() {
-	    return entityCount;
-	}
-	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
 	
 	@Override
