@@ -34,11 +34,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.script.WeightedTransition;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
-import org.databene.commons.context.DefaultContext;
 
 /**
  * Generates states as configured by a state machine.<br/>
@@ -49,8 +46,6 @@ import org.databene.commons.context.DefaultContext;
  */
 
 public class StateGenerator<E> implements Generator<E> {
-	
-	private Context DUMMY_CONTEXT = new DefaultContext(); // TODO get access to BeneratorContext
 	
 	private static final int UNINITIALIZED = 0;
 	private static final int INITIALIZED = 1;
@@ -78,25 +73,9 @@ public class StateGenerator<E> implements Generator<E> {
     @SuppressWarnings("unchecked")
     public void setTransitions(String transitionSpec) {
     	try {
-	    	String[] tokens = transitionSpec.split(",");
-	    	for (String token : tokens) { // TODO use ANTLR for parsing the complete state machine
-	    		int minusIndex = token.indexOf("->");
-	    		String fromString = StringUtil.emptyToNull(token.substring(0, minusIndex));
-	    		Object fromState = resolveExpression(fromString);
-	    		int toIndex = minusIndex + 2;
-	    		int probIndex = token.indexOf('[');
-	    		String toString;
-	    		double weight;
-	    		if (probIndex >= 0) {
-	    			toString = StringUtil.emptyToNull(token.substring(toIndex, probIndex));
-	    			weight = Double.parseDouble(token.substring(probIndex + 1, token.indexOf(']')));
-	    		} else {
-	    			toString = StringUtil.emptyToNull(token.substring(toIndex));
-	    			weight = 1.;
-	    		}
-	    		Object toState = resolveExpression(toString);
-	    		addTransition((E) fromState, (E) toState, weight);
-	    	}
+    		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList(transitionSpec);
+	    	for (WeightedTransition t : ts)
+	    		addTransition((E) t.getFrom(), (E) t.getTo(), t.getWeight().evaluate(null));
     	} catch (ParseException e) {
     		throw new ConfigurationError("Error parsing state machine specification: " + transitionSpec, e);
         }
@@ -167,13 +146,6 @@ public class StateGenerator<E> implements Generator<E> {
     @Override
     public String toString() {
         return getClass().getSimpleName() + transitions;
-    }
-
-    // private methods -------------------------------------------------------------------------------------------------
-    
-	private Object resolveExpression(String fromString) throws ParseException {
-	    Expression<?> expression = BeneratorScriptParser.parseExpression(fromString);
-		return (expression != null ? expression.evaluate(DUMMY_CONTEXT) : null);
     }
 
 }

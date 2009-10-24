@@ -27,6 +27,7 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.script.Transition;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
@@ -38,7 +39,7 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  */
 
 @SuppressWarnings("unchecked")
-public class StateTransitionGenerator<E> extends GeneratorWrapper<E, StateTransition> {
+public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition> { // TODO add textual config and test invocation from descriptor file
 	
 	private E currentState;
 	
@@ -51,14 +52,14 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, StateTransi
     	((StateGenerator) source).addTransition(from, to, weight);
     }
 
-	public Class<StateTransition> getGeneratedType() {
-	    return StateTransition.class;
+	public Class<Transition> getGeneratedType() {
+	    return Transition.class;
     }
 
-    public StateTransition generate() throws IllegalGeneratorStateException {
+    public Transition generate() throws IllegalGeneratorStateException {
     	E previousState = currentState;
     	currentState = source.generate();
-	    return new StateTransition<E>(previousState, currentState);
+	    return new Transition(previousState, currentState);
     }
 
     @Override
