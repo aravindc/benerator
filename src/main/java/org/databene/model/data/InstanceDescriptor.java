@@ -89,7 +89,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         // configs
         addConfig(COUNT,              Expression.class, null);
         addConfig(COUNT_PRECISION,    Expression.class, new ConstantExpression<Long>(1L));
-        addConfig(COUNT_DISTRIBUTION, Expression.class, null);
+        addConfig(COUNT_DISTRIBUTION, String.class, null);
         addConfig(NULL_QUOTA,         Double.class,     0.);
     }
 
@@ -187,7 +187,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         return (String) getDetailValue(COUNT_DISTRIBUTION);
     }
     
-    public void setCountDistribution(Expression<Distribution> distribution) {
+    public void setCountDistribution(String distribution) {
         setDetailValue(COUNT_DISTRIBUTION, distribution);
     }
 
