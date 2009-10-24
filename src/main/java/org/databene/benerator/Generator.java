@@ -73,7 +73,7 @@ public interface Generator<E> extends Closeable {
      * Returns an instance of the generic tpe P. If the method is called in an inappropriate state
      * (<i>constructing</i> or <i>unavailable</i>), it will throw an IllegalGeneratorStateException.
      */
-    E generate() throws IllegalGeneratorStateException;
+    E generate() throws IllegalGeneratorStateException; // TODO add Context parameter?
 
     /**
      * Resets the generator to the initial state.
@@ -96,5 +96,5 @@ public interface Generator<E> extends Closeable {
     /**
      * Declares the type of the objects returned by the generate() method.
      */
-    Class<E> getGeneratedType();
+    Class<E> getGeneratedType(); // TODO remove?
 }
