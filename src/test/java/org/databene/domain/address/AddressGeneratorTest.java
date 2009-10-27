@@ -133,7 +133,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
 		ModelParser parser = new ModelParser(context);
     	ComplexTypeDescriptor parent = new ComplexTypeDescriptor("y");
 		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
-		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createInstanceGenerator(descriptor, context);
+		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, context);
         Country generatedCountry = generator.generate().getCountry();
 		if (country == null) {
 	        assertEquals(Country.getDefault(), generatedCountry);
