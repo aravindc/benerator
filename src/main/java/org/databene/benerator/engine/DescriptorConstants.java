@@ -40,6 +40,7 @@ import org.databene.commons.CollectionUtil;
 
 public interface DescriptorConstants {
 	
+    static final String EL_SETUP = "setup";
     static final String EL_BEAN = "bean";
 	static final String EL_UPDATE_ENTITIES = "update-entities";
 	static final String EL_CREATE_ENTITIES = "create-entities";
@@ -87,6 +88,9 @@ public interface DescriptorConstants {
     static final String ATT_FETCH_SIZE = "fetchSize";
     static final String ATT_BATCH = "batch";
     static final String ATT_SCHEMA = "schema";
+	
+    static final String ATT_CLASS = "class";
+    static final String ATT_SPEC = "spec";
 
 	static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet(ATT_PAGESIZE, ATT_THREADS, ATT_CONSUMER, ATT_ON_ERROR);
