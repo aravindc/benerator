@@ -27,6 +27,9 @@
 package org.databene.benerator.engine;
 
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.LocaleUtil;
@@ -53,6 +56,9 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
     private DefaultContext properties;
 	private ClassCache classCache;
 	
+	private volatile AtomicLong totalGenerationCount = new AtomicLong();
+	private volatile AtomicLong latestGenerationCount = new AtomicLong();
+	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
     protected int     defaultPagesize      = 1;
@@ -64,6 +70,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
     public    Long    maxCount             = null;
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
+    protected ExecutorService executorService = Executors.newCachedThreadPool();
 
     static {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
@@ -100,6 +107,10 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	
 	public void setProperty(String name, Object value) {
 		properties.set(name, value);
+	}
+	
+	public void close() {
+		executorService.shutdownNow();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -239,5 +250,26 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	public void setMaxCount(Long maxCount) {
 		this.maxCount = maxCount;
 	}
+
+	public void countGenerations(long newGenerations) {
+		this.latestGenerationCount.set(newGenerations);
+		this.totalGenerationCount.addAndGet(newGenerations);
+	}
+	
+	public long getTotalGenerationCount() {
+	    return totalGenerationCount.get();
+    }
+
+	public long getLatestGenerationCount() {
+	    return latestGenerationCount.get();
+    }
+
+	public ExecutorService getExecutorService() {
+    	return executorService;
+    }
+
+	public void setExecutorService(ExecutorService executorService) {
+    	this.executorService = executorService;
+    }
 
 }
