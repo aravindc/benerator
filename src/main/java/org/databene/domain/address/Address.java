@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,13 +29,14 @@ package org.databene.domain.address;
 /**
  * Represents an address with phone numbers.<br/><br/>
  * Created: 11.06.2006 08:05:00
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class Address {
 
     public String street;
     public String houseNumber;
-    public String zipCode;
+    public String postalCode;
     public City city;
     public String state;
     public Country country;
@@ -48,10 +49,10 @@ public class Address {
         this(null, null, null, null, null, null, null, null, null, null);
     }
 
-    public Address(String street, String houseNumber, String zipCode, City city, String state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
+    public Address(String street, String houseNumber, String postalCode, City city, String state, Country country, PhoneNumber privatePhone, PhoneNumber officePhone, PhoneNumber mobilePhone, PhoneNumber fax) {
         this.street = street;
         this.houseNumber = houseNumber;
-        this.zipCode = zipCode;
+        this.postalCode = postalCode;
         this.city = city;
         this.state = state;
         this.country = country;
@@ -78,11 +79,21 @@ public class Address {
     }
 
     public String getZipCode() {
-        return zipCode;
+    	// TODO escalate deprecation warning
+        return getPostalCode();
     }
 
     public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
+    	// TODO escalate deprecation warning
+        setPostalCode(zipCode);
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public City getCity() {
