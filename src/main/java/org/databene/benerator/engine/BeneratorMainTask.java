@@ -47,7 +47,7 @@ public class BeneratorMainTask extends SerialTask {
 				if (tmp instanceof TaskProxy)
 					tmp = ((TaskProxy) tmp).getRealTask();
 				else
-					tmp = ((LazyTask) tmp).getTaskExpression().evaluate(null);
+					tmp = ((LazyTask) tmp).getTargetExpression().evaluate(null);
 				if (match(name, tmp))
 					return ((GenerateAndConsumeEntityTask) tmp).getEntityGenerator();
 			}
@@ -60,4 +60,9 @@ public class BeneratorMainTask extends SerialTask {
 	    return (task instanceof GenerateAndConsumeEntityTask && name.equals(task.getTaskName()));
     }
 	
+	@Override
+	public void close() {
+	    super.close();
+	    // TODO close resources
+	}
 }
