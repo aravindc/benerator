@@ -27,7 +27,7 @@
 package org.databene.benerator.engine.task;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DescriptorRunner;
+import org.databene.benerator.engine.ResourceManager;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.model.data.DataModel;
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class DefineDatabaseTask extends AbstractTask {
+public class DefineDatabaseTask extends AbstractTask { // TODO move to DB package?
 	
 	private static Logger logger = LoggerFactory.getLogger(DefineDatabaseTask.class);
 	
@@ -57,12 +57,12 @@ public class DefineDatabaseTask extends AbstractTask {
 	private Expression<Boolean> batch;
 	private Expression<Integer> fetchSize;
 	private Expression<Boolean> readOnly;
-	private DescriptorRunner runner;
+	private ResourceManager resourceManager;
 	
 	public DefineDatabaseTask(Expression<String> id, Expression<String> url, Expression<String> driver, 
 			Expression<String> user, Expression<String> password, 
 			Expression<String> schema, Expression<Boolean> batch, 
-			Expression<Integer> fetchSize, Expression<Boolean> readOnly, DescriptorRunner runner) {
+			Expression<Integer> fetchSize, Expression<Boolean> readOnly, ResourceManager resourceManager) {
 		this.id = id;
 	    this.url = url;
 	    this.driver = driver;
@@ -72,7 +72,7 @@ public class DefineDatabaseTask extends AbstractTask {
 	    this.batch = batch;
 	    this.fetchSize = fetchSize;
 	    this.readOnly = readOnly;
-	    this.runner = runner;
+	    this.resourceManager = resourceManager;
     }
 
     public void run(Context context) {
@@ -91,7 +91,7 @@ public class DefineDatabaseTask extends AbstractTask {
 	    context.set(idValue, db);
 	    BeneratorContext beneratorContext = (BeneratorContext) context;
 	    DataModel.getDefaultInstance().addDescriptorProvider(db, beneratorContext.isValidate());
-	    runner.addResource(db);
+	    resourceManager.addResource(db);
     }
 
 }

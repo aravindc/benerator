@@ -29,8 +29,11 @@ package org.databene.benerator.engine.task;
 import java.io.Closeable;
 
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.StringUtil;
+import org.databene.commons.context.ContextAware;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.task.AbstractTask;
@@ -46,19 +49,23 @@ import org.databene.task.Task;
 
 public class CreateBeanTask extends AbstractTask {
 	
-	private Expression<String> idExpression;
-    private Expression<Object> beanExpression;
+	private String id;
+    private Expression<?> beanExpression;
     private ResourceManager resourceManager;
 
-    public CreateBeanTask(Expression<String> idExpression, Expression<Object> beanExpression, ResourceManager resourceManager) {
-    	this.idExpression = idExpression;
+    public CreateBeanTask(String id, Expression<?> beanExpression, ResourceManager resourceManager) {
+    	this.id = id;
         this.beanExpression = beanExpression;
         this.resourceManager = resourceManager;
     }
 
 	public void run(Context context) {
         Object bean = beanExpression.evaluate(context);
-		context.set(idExpression.evaluate(context), bean);
+        if (!StringUtil.isEmpty(id))
+            BeanUtil.setPropertyValue(bean, "id", id, false);
+		context.set(id, bean);
+		if (bean instanceof ContextAware)
+			((ContextAware) bean).setContext(context);
 		if (bean instanceof DescriptorProvider)
 			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
 		if (bean instanceof Closeable)

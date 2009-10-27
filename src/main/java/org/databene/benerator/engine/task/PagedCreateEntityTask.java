@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -44,16 +45,19 @@ import org.databene.task.Task;
  * @author Volker Bergmann
  */
 public class PagedCreateEntityTask extends PagedTask<GenerateAndConsumeEntityTask> {
-    
+
+	private Expression<Long> countEx;
     private Generator<Entity> generator;
 	
 	public PagedCreateEntityTask(
-			String taskName, long count, int pageSize, int threads, 
-			Generator<Entity> generator, Expression<Consumer<Entity>> consumerExpr, ExecutorService executor, 
+			String taskName, Expression<Long> countEx, int pageSize, int threads, 
+			Generator<Entity> generator, Expression<Consumer<Entity>> consumerExpr, 
+			Expression<ExecutorService> executor, 
 			boolean isSubTask, Expression<ErrorHandler> errorHandler) {
 		super(new GenerateAndConsumeEntityTask(taskName, generator, consumerExpr, isSubTask, errorHandler), 
-				count, null, pageSize, threads, executor);
+				0, null, pageSize, threads, executor);
 		this.generator = generator;
+		this.countEx = countEx;
 	}
 	
     public void addSubTask(Task task) {
@@ -62,6 +66,13 @@ public class PagedCreateEntityTask extends PagedTask<GenerateAndConsumeEntityTas
     
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
+    @Override
+    public void run(Context context) {
+    	setMaxCount(countEx.evaluate(context));
+        super.run(context);
+        ((BeneratorContext) context).countGenerations(getActualCount());
+    }
+    
 	@Override
 	public void pageFinished(int currentPageNo, Context context) {
 		Consumer<Entity> consumer = realTask.getConsumer(context);
@@ -75,11 +86,6 @@ public class PagedCreateEntityTask extends PagedTask<GenerateAndConsumeEntityTas
 	    synchronized(generator) {
 	        generator.close();
 	    }
-	}
-	
-	@Override
-	protected boolean workPending(int currentPageNo) {
-		return realTask.available();
 	}
 	
 	public void reset() {

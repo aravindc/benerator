@@ -32,7 +32,7 @@ import org.databene.commons.IOUtil;
 import org.databene.task.Task;
 
 /**
- * {@link Task} implementation that evaluates an expression 
+ * {@link Task} implementation that evaluates an {@link Expression} 
  * which returns a Task and executes the returned Task.<br/>
  * <br/>
  * Created at 25.07.2009 16:48:52
@@ -42,33 +42,38 @@ import org.databene.task.Task;
 
 public class LazyTask implements Task {
 	
-	private Expression<? extends Task> taskExpression;
-	private Task task;
+	private Expression<? extends Task> targetExpression;
+	private Task target;
+	private boolean closed;
 
     public LazyTask(Expression<? extends Task> taskExpression) {
-	    this.taskExpression = taskExpression;
+	    this.targetExpression = taskExpression;
+	    this.target = null;
+	    this.closed = false;
     }
 
-	public Expression<? extends Task> getTaskExpression() {
-	    return taskExpression;
+	public Expression<? extends Task> getTargetExpression() {
+	    return targetExpression;
     }
 
     public boolean available() {
-	    return (task == null || task.available());
+	    return (closed || (target != null && target.available()));
     }
 
     public String getTaskName() {
-	    return (task == null ? "LazyTask(" + taskExpression + ")" : task.getTaskName());
+	    return (target == null ? "LazyTask(" + targetExpression + ")" : target.getTaskName());
     }
 
     public void run(Context context) {
-	    if (task == null)
-	    	task = taskExpression.evaluate(context);
-	    task.run(context);
+	    if (target == null)
+	    	target = targetExpression.evaluate(context);
+	    target.run(context);
     }
 
     public void close() {
-	    IOUtil.close(task);
+	    IOUtil.close(target);
+	    target = null;
+	    closed = true;
     }
 
 }

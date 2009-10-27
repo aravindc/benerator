@@ -26,11 +26,11 @@
 
 package org.databene.benerator.engine.task;
 
-import org.databene.benerator.composite.ConfiguredEntityGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.IOUtil;
-import org.databene.task.AbstractTask;
 import org.databene.task.Task;
+import org.databene.task.TaskProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,30 +43,27 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class TimedEntityTask extends AbstractTask {
+public class TimedEntityTask extends TaskProxy<Task> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimedEntityTask.class);
 
-	private Task realTask;
-
     public TimedEntityTask(Task realTask) {
-	    this.realTask = realTask;
+    	super(realTask);
     }
 
-	public void run(Context context) {
+	@Override
+    public void run(Context context) {
 	    long t0 = System.currentTimeMillis();
-		long count0 = ConfiguredEntityGenerator.entityCount();
 		try {
-			realTask.run(context);
+			super.run(context);
 		} finally {
 			IOUtil.close(realTask);
 		}
-		long dc = ConfiguredEntityGenerator.entityCount() - count0; // TODO fix entity count
+		long dc = ((BeneratorContext) context).getLatestGenerationCount();
 		long dt = System.currentTimeMillis() - t0;
 		String taskId = realTask.getTaskName();
 		if (dc == 0)
-			logger.info("No entities created from '"
-					+ taskId + "' setup");
+			logger.info("No entities created from '" + taskId + "' setup");
 		else if (dt > 0)
 			logger.info("Created " + dc + " entities from '"
 					+ taskId + "' setup in " + dt + " ms ("

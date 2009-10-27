@@ -33,6 +33,7 @@ import org.databene.benerator.parser.DefaultEntryConverter;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.script.ScriptConverter;
 import org.databene.task.AbstractTask;
@@ -51,14 +52,18 @@ public class IncludeTask extends AbstractTask {
 	
 	private static Logger logger = LoggerFactory.getLogger(IncludeTask.class);
 
-	private String uri;
+	private Expression<String> uri;
 	
-    public IncludeTask(String uri) {
+    public IncludeTask(Expression<String> uri) {
     	this.uri = uri;
     }
+    
+	public Expression<String> getUri() {
+    	return uri;
+    }
 
-    public String getUri() {
-	    return uri;
+	public void setUri(Expression<String> uri) {
+    	this.uri = uri;
     }
 
 	public void run(Context context) {
@@ -66,9 +71,9 @@ public class IncludeTask extends AbstractTask {
 			throw new ConfigurationError(getClass() + " requires a BeneratorContext, found: " 
 					+ BeanUtil.simpleClassName(context));
 	    BeneratorContext beneratorContext = (BeneratorContext) context;
-		uri = IOUtil.resolveLocalUri(uri, beneratorContext.getContextUri());
+		String uriValue = IOUtil.resolveLocalUri(uri.evaluate(context), beneratorContext.getContextUri());
         try {
-            importProperties(uri, beneratorContext);
+            importProperties(uriValue, beneratorContext);
         } catch (IOException e) {
             throw new ConfigurationError("Properties file not found for uri: " + uri);
         }
