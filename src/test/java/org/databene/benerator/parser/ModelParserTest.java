@@ -42,7 +42,7 @@ import static junit.framework.Assert.*;
  */
 
 public class ModelParserTest {
-
+/* TODO move to BeanParserTest
 	@Test
     public void testParseBeanClass() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
@@ -53,7 +53,7 @@ public class ModelParserTest {
 		assertEquals(SomeBean.class, bean.getClass());
 		assertEquals(1, ((SomeBean) bean).n);
 	}
-	
+
 	@Test
 	public void testParseBeanSpec() throws Exception {
 		BeneratorContext context = new BeneratorContext(".");
@@ -64,5 +64,6 @@ public class ModelParserTest {
 		assertEquals(SomeBean.class, bean.getClass());
 		assertEquals(2, ((SomeBean) bean).n);
 	}
+	*/
 
 }
