@@ -30,14 +30,8 @@ import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.expression.xml.XMLBeanExpression;
-import org.databene.benerator.engine.task.ImportTask;
-import org.databene.benerator.engine.task.IncludeTask;
-import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
@@ -52,7 +46,6 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.task.Task;
 
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
 
@@ -73,10 +66,6 @@ public class ModelParser {
     public ModelParser(BeneratorContext context) {
 		this.context = context;
 	}
-
-	public Expression<Object> parseBean(Element element) {
-        return new XMLBeanExpression(element);
-    }
 
     public ComponentDescriptor parseSimpleTypeComponent(Element element, ComplexTypeDescriptor owner) {
         return parseSimpleTypeComponent(element, owner, null);
@@ -156,11 +145,6 @@ public class ModelParser {
         InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
         parent.addVariable(variable);
         return variable;
-    }
-
-    public IncludeTask parseInclude(Element element) {
-        String uri = parseStringAttribute(element, "uri", context);
-        return new IncludeTask(uri);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
@@ -268,48 +252,5 @@ public class ModelParser {
             result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
         return mapInstanceDetails(element, false, result);
     }
-
-	public Task parseImport(Element element) {
-		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
-		ArrayBuilder<String> packageImports = new ArrayBuilder<String>(String.class); 
-		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
-		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 
-		
-		// defaults import
-		boolean defaults = ("true".equals(element.getAttribute("defaults")));
-		
-		// check class import
-		String attribute = element.getAttribute("class");
-		if (!StringUtil.isEmpty(attribute))
-			classImports.add(attribute);
-		
-		// domain import
-		attribute = element.getAttribute("domain");
-		if (!StringUtil.isEmpty(attribute))
-			domainImports.add(attribute);
-		
-		// multiple domain import
-		attribute = element.getAttribute("domains");
-		if (!StringUtil.isEmpty(attribute))
-			domainImports.addAll(StringUtil.tokenize(attribute, ','));
-		
-		// package import
-		attribute = element.getAttribute("package");
-		if (!StringUtil.isEmpty(attribute))
-			packageImports.add(attribute);
-		
-		// platform import
-		attribute = element.getAttribute("platform");
-		if (!StringUtil.isEmpty(attribute))
-			platformImports.add(attribute);
-		
-		// multiple platform import
-		attribute = element.getAttribute("platforms");
-		if (!StringUtil.isEmpty(attribute))
-			platformImports.addAll(StringUtil.tokenize(attribute, ','));
-		
-		return new ImportTask(defaults, classImports.toArray(), packageImports.toArray(), 
-				domainImports.toArray(), platformImports.toArray());
-	}
 
 }
