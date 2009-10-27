@@ -3,12 +3,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -26,50 +21,28 @@
 
 package org.databene.benerator.script;
 
-import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
 
 /**
- * {@link Expression} implementation that instantiates a Java object by constructor invocation.<br/>
- * <br/>
- * Created at 06.10.2009 11:48:59
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 25.10.2009 08:29:14
+ * @since TODO version
  * @author Volker Bergmann
  */
+public abstract class Construction implements Expression<Object> {
 
-public class Construction implements Expression<Object> {
-	
-	private String className;
-	private Expression<?>[] argumentExpressions;
+	protected String className;
 
-    public Construction(String className, Expression<?>[] argumentExpressions) {
-	    this.className = className;
-	    this.argumentExpressions = argumentExpressions;
+	public Construction(String className) {
+		this.className = className;
     }
-    
-    public String getClassName() {
+
+	public String getClassName() {
     	return className;
     }
 
-	public Object evaluate(Context context) {
-		Class<?> type = getType(context);
-		Object[] arguments = new Object[argumentExpressions.length];
-		for (int i = 0; i < argumentExpressions.length; i++)
-			arguments[i] = argumentExpressions[i].evaluate(context);
-	    return BeanUtil.newInstance(type, false, arguments);
-    }
-
-	public boolean classExists(Context context) {
-		try {
-			getType(context);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
     public Class<?> getType(Context context) {
 	    return DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
     }

@@ -3,12 +3,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -28,36 +23,21 @@ package org.databene.benerator.script;
 
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 
 /**
- * {@link Expression} implementation that instantiates a JavaBean by default constructor and 
- * calls its property setters for initializing state.<br/>
- * <br/>
- * Created at 06.10.2009 11:48:59
+ * TODO Document class.<br/><br/>
+ * Created: 25.10.2009 08:32:58
  * @since 0.6.0
  * @author Volker Bergmann
  */
+public class DefaultConstruction extends Construction {
 
-public class BeanConstruction implements Expression<Object> {
-	
-	private Expression<?> instantiation;
-	private Assignment[] assignments;
-
-    public BeanConstruction(String beanClassName, Assignment[] assignments) {
-	    this(new DefaultConstruction(beanClassName), assignments);
-    }
-
-    public BeanConstruction(Expression<?> instantiation, Assignment[] assignments) {
-	    this.instantiation = instantiation;
-	    this.assignments = assignments;
+	public DefaultConstruction(String className) {
+	    super(className);
     }
 
 	public Object evaluate(Context context) {
-	    Object bean = instantiation.evaluate(context);
-	    for (Assignment assignment : assignments)
-	    	BeanUtil.setPropertyValue(bean, assignment.getName(), assignment.getExpression().evaluate(context), false);
-		return bean;
+	    return BeanUtil.newInstance(getType(context));
     }
 
 }

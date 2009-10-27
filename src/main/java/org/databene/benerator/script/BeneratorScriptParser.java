@@ -351,7 +351,7 @@ public class BeneratorScriptParser {
 		List<CommonTree> childNodes = getChildNodes(node);
     	String className = parseQualifiedNameOfClass(childNodes.get(0));
     	Expression<?>[] params = parseArguments(childNodes.get(1));
-    	return new Construction(className, params);
+    	return new ParametrizedConstruction(className, params);
     }
 
     private static Expression<?> convertBean(CommonTree node) throws ParseException {

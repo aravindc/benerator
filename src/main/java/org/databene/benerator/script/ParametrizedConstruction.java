@@ -31,33 +31,37 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 
 /**
- * {@link Expression} implementation that instantiates a JavaBean by default constructor and 
- * calls its property setters for initializing state.<br/>
+ * {@link Expression} implementation that instantiates a Java object by constructor invocation.<br/>
  * <br/>
  * Created at 06.10.2009 11:48:59
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class BeanConstruction implements Expression<Object> {
+public class ParametrizedConstruction extends Construction {
 	
-	private Expression<?> instantiation;
-	private Assignment[] assignments;
+	private Expression<?>[] argumentExpressions;
 
-    public BeanConstruction(String beanClassName, Assignment[] assignments) {
-	    this(new DefaultConstruction(beanClassName), assignments);
+    public ParametrizedConstruction(String className, Expression<?>[] argumentExpressions) {
+	    super(className);
+	    this.argumentExpressions = argumentExpressions;
     }
-
-    public BeanConstruction(Expression<?> instantiation, Assignment[] assignments) {
-	    this.instantiation = instantiation;
-	    this.assignments = assignments;
-    }
-
+    
 	public Object evaluate(Context context) {
-	    Object bean = instantiation.evaluate(context);
-	    for (Assignment assignment : assignments)
-	    	BeanUtil.setPropertyValue(bean, assignment.getName(), assignment.getExpression().evaluate(context), false);
-		return bean;
+		Class<?> type = getType(context);
+		Object[] arguments = new Object[argumentExpressions.length];
+		for (int i = 0; i < argumentExpressions.length; i++)
+			arguments[i] = argumentExpressions[i].evaluate(context);
+	    return BeanUtil.newInstance(type, false, arguments);
     }
 
+	public boolean classExists(Context context) {
+		try {
+			getType(context);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 }
