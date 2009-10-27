@@ -47,6 +47,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.Level;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.db.DBUtil;
+import org.databene.commons.expression.StringExpression;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -68,19 +69,20 @@ public class EvaluateTask extends AbstractTask {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EvaluateTask.class);
 	
-	Expression<String> idEx;
-	Expression<String> textEx;
-	Expression<String> uriEx;
-	Expression<String> typeEx;
-	Expression<Object> targetObjectEx;
-    Expression<String> onErrorEx;
-    Expression<String> encodingEx;
-    Expression<Boolean> optimizeEx;
-    Expression<Object> assertionEx;
+	StringExpression idEx;
+	StringExpression textEx;
+	StringExpression uriEx;
+	StringExpression typeEx;
+	Expression targetObjectEx;
+	StringExpression onErrorEx;
+    StringExpression encodingEx;
+    Expression optimizeEx;
+    Expression assertionEx;
 
-    public EvaluateTask(Expression<String> idEx, Expression<String> textEx, Expression<String> uriEx, Expression<String> typeEx, Expression<Object> targetObjectEx,
-            Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
-            Expression<Object> assertionEx) {
+    public EvaluateTask(StringExpression idEx, StringExpression textEx, 
+    		StringExpression uriEx, StringExpression typeEx, Expression targetObjectEx,
+    		StringExpression onErrorEx, StringExpression encodingEx, Expression optimizeEx,
+            Expression assertionEx) {
     	this.idEx = idEx;
     	this.textEx = textEx;
     	this.uriEx = uriEx;
@@ -106,7 +108,7 @@ public class EvaluateTask extends AbstractTask {
 			String uriValue = uriEx.evaluate(context);
 			if (typeEx == null && uriEx != null) {
 				// check for SQL file URI
-				String lcUri = uriEx.evaluate(context).toLowerCase();
+				String lcUri = (uriEx.evaluate(context)).toLowerCase();
 				// TODO v0.6 map generically and extendible (Using/Including
 				// Java Scripting?)
 				if (lcUri.endsWith(".sql"))
@@ -127,13 +129,14 @@ public class EvaluateTask extends AbstractTask {
 				typeValue = "sql";
 			
             String textValue = textEx.evaluate(context);
+            String encoding = encodingEx.evaluate(context);
 
 			// run
 			Object result = null;
-			if ("sql".equals(typeValue))
-	            result = runSql(uriValue, targetObject, onErrorValue, encodingEx.evaluate(context), 
-						textValue, optimizeEx.evaluate(context));
-            else if ("shell".equals(typeValue)) {
+			if ("sql".equals(typeValue)) {
+	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
+						textValue, (Boolean) optimizeEx.evaluate(context));
+            } else if ("shell".equals(typeValue)) {
 				if (!StringUtil.isEmpty(uriValue))
 					textValue = IOUtil.getContentOfURI(uriValue);
 				textValue = String.valueOf(ScriptUtil.render(textValue, context));

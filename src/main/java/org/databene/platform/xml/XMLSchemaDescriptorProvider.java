@@ -263,10 +263,10 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
                 IncludeTask task = new IncludeParser().parse(child, this);
-                String filename = task.getUri().evaluate(context);
+                String filename = (String) task.getUri().evaluate(context);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
-                Expression<?> beanExpression = beanParser.parseBeanExpression(child);
+                Expression beanExpression = beanParser.parseBeanExpression(child);
                 String id = child.getAttribute("id");
 				new CreateBeanTask(id, beanExpression, this).run(context);
                 System.out.println(beanExpression.evaluate(context));
@@ -393,7 +393,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 		Assert.notNull(base, "base type");
 		if (base instanceof SimpleTypeDescriptor) {
 			complexType.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, baseName, null, 
-					new ConstantExpression<Long>(1L), new ConstantExpression<Long>(1L)));
+					new ConstantExpression(1L), new ConstantExpression(1L)));
 		} else if (base instanceof ComplexTypeDescriptor)
 			complexType.setParentName(baseName);
 		else
@@ -629,8 +629,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         Long maxOccurs = 1L;
         if (!StringUtil.isEmpty(maxOccursString))
             maxOccurs = ("unbounded".equals(maxOccursString) ? null : Long.parseLong(maxOccursString));
-        descriptor.setMinCount(new ConstantExpression<Long>(minOccurs));
-        descriptor.setMaxCount(new ConstantExpression<Long>(maxOccurs));
+        descriptor.setMinCount(new ConstantExpression(minOccurs));
+        descriptor.setMaxCount(new ConstantExpression(maxOccurs));
     }
 
     private void parseKeyRef(Element child) {
@@ -680,7 +680,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             if (!StringUtil.isEmpty(defaultValue))
                 ((SimpleTypeDescriptor) descriptor.getLocalType(false)).setValues(defaultValue);
         }
-        descriptor.setCount(new ConstantExpression<Long>(1L));
+        descriptor.setCount(new ConstantExpression(1L));
         if ("prohibited".equals(attributeElement.getAttribute("use")))
             descriptor.setMode(Mode.ignored);
         if (descriptor == null) 

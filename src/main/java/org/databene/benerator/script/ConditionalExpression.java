@@ -40,13 +40,13 @@ import org.databene.commons.converter.AnyConverter;
  * @author Volker Bergmann
  */
 
-public class ConditionalExpression implements Expression<Object> {
+public class ConditionalExpression implements Expression {
 	
-	private Expression<?> condition;
-	private Expression<?> alt1;
-	private Expression<?> alt2;
+	private Expression condition;
+	private Expression alt1;
+	private Expression alt2;
 	
-    public ConditionalExpression(Expression<?> condition, Expression<?> alt1, Expression<?> alt2) {
+    public ConditionalExpression(Expression condition, Expression alt1, Expression alt2) {
 	    this.condition = condition;
 	    this.alt1 = alt1;
 	    this.alt2 = alt2;

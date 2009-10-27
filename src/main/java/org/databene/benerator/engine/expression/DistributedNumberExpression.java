@@ -33,17 +33,17 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DistributedNumberExpression implements Expression<Long> {
+public class DistributedNumberExpression implements Expression {
 
-	Expression<Long> min;
-	Expression<Long> max;
-	Expression<Long> precision;
-	Expression<Distribution> distribution;
+	Expression min;
+	Expression max;
+	Expression precision;
+	Expression distribution;
 	
 	private Generator<Long> generator;
 
-	public DistributedNumberExpression(Expression<Distribution> distribution, 
-			Expression<Long> min, Expression<Long> max, Expression<Long> precision) {
+	public DistributedNumberExpression(Expression distribution, 
+			Expression min, Expression max, Expression precision) {
 	    this.min = min;
 	    this.max = max;
 	    this.precision = precision;
@@ -57,12 +57,13 @@ public class DistributedNumberExpression implements Expression<Long> {
     }
 
 	private void initGenerator(Context context) {
-	    Long minValue = min.evaluate(context);
-		Long maxValue = max.evaluate(context);
+	    Long minValue = (Long) min.evaluate(context);
+		Long maxValue = (Long) max.evaluate(context);
 		if (minValue == maxValue)
 			generator = new ConstantGenerator<Long>(minValue);
-		Long precisionValue = precision.evaluate(context);
-		generator = distribution.evaluate(context).createGenerator(Long.class, 
+		Long precisionValue = (Long) precision.evaluate(context);
+		Distribution distr = (Distribution) distribution.evaluate(context);
+		generator = distr.createGenerator(Long.class, 
 	    	minValue, maxValue, precisionValue);
     }
 

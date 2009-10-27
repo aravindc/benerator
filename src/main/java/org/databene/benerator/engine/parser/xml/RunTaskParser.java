@@ -24,7 +24,6 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import java.text.ParseException;
-import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
@@ -34,7 +33,6 @@ import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
-import org.databene.task.PageListener;
 import org.databene.task.Task;
 import org.databene.task.TaskRunnerTask;
 import org.w3c.dom.Element;
@@ -48,7 +46,7 @@ import org.w3c.dom.Element;
 public class RunTaskParser extends AbstractDescriptorParser {
 	
 	private BeanParser beanParser = new BeanParser();
-	private static final Expression<Integer> DEFAULT_PAGE_SIZE = new DefaultPageSizeExpression();
+	private static final DefaultPageSizeExpression DEFAULT_PAGE_SIZE = new DefaultPageSizeExpression();
 
 	public RunTaskParser() {
 	    super(EL_RUN_TASK);
@@ -57,13 +55,13 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	@SuppressWarnings("unchecked")
 	public TaskRunnerTask parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression<? extends Task> beanProvider = (Expression<? extends Task>) beanParser.parseBeanExpression(element);
-			Task task = new LazyTask(beanProvider);
-			Expression<Integer> count    = parseIntAttr(ATT_COUNT, element, 1);
-			Expression<Integer> pageSize = parseIntAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
-			Expression<Integer> threads  = parseIntAttr(ATT_THREADS, element, 1);
-			Expression<PageListener> pager = parsePager(element);
-			Expression<ExecutorService> executor = new ExecutorServiceExpression();
+			Expression taskProvider = beanParser.parseBeanExpression(element);
+			Task task = new LazyTask(taskProvider);
+			Expression count    = parseIntAttr(ATT_COUNT, element, 1);
+			Expression pageSize = parseIntAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
+			Expression threads  = parseIntAttr(ATT_THREADS, element, 1);
+			Expression pager    = parsePager(element);
+			Expression executor = new ExecutorServiceExpression();
 			return new TaskRunnerTask(task, count, pageSize, threads, pager, executor);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
@@ -72,10 +70,9 @@ public class RunTaskParser extends AbstractDescriptorParser {
         }
 	}
 
-	@SuppressWarnings("unchecked")
-    private Expression<PageListener> parsePager(Element element) throws ParseException {
+    private Expression parsePager(Element element) throws ParseException {
 		String pagerSpec = element.getAttribute(ATT_PAGER);
-		return (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(pagerSpec);
+		return BeneratorScriptParser.parseBeanSpec(pagerSpec);
 	}
 
 }

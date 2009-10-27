@@ -40,9 +40,9 @@ import org.databene.task.AbstractTask;
 
 public class EchoTask extends AbstractTask {
 	
-	private Expression<?> expression;
+	private Expression expression;
 
-    public EchoTask(Expression<?> expression) {
+    public EchoTask(Expression expression) {
 	    this.expression = expression;
     }
 

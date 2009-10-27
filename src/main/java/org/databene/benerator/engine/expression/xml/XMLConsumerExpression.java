@@ -54,7 +54,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  * @author Volker Bergmann
  */
 
-public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
+public class XMLConsumerExpression implements Expression {
 	
 	private Escalator escalator;
 
@@ -71,7 +71,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
     }
 
 	@SuppressWarnings("unchecked")
-    public Consumer<Entity> evaluate(Context context) {
+    public Consumer<Entity> evaluate(Context context) { // TODO merge with BeanParser
 		BeneratorContext beneratorContext = (BeneratorContext) context;
 		String entityName = parseStringAttribute(entityElement, "name", context);
 		ConsumerChain<Entity> consumerChain = new ConsumerChain<Entity>();
@@ -86,7 +86,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 				String consumerSpec = parseStringAttribute(consumerElement, "ref", context);
 				consumerChain.addComponent(DescriptorUtil.parseConsumersSpec(consumerSpec, beneratorContext));
 			} else if (consumerElement.hasAttribute("class")) {
-				Expression<?> beanExpr = beanParser.parseBeanExpression(consumerElement);
+				Expression beanExpr = beanParser.parseBeanExpression(consumerElement);
 				consumerChain.addComponent((Consumer<Entity>) beanExpr.evaluate(context));
 			} else
 				throw new UnsupportedOperationException(

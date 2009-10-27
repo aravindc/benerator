@@ -31,14 +31,14 @@ import org.databene.commons.Expression;
  */
 public class WeightedTransition extends Transition {
 
-	private Expression<Double> weight;
+	private Expression weight;
 	
-	public WeightedTransition(Object from, Object to, Expression<Double> weight) {
+	public WeightedTransition(Object from, Object to, Expression weight) {
 	    super(from, to);
 	    this.weight = weight;
     }
 
-	public Expression<Double> getWeight() {
+	public Expression getWeight() {
     	return weight;
     }
 

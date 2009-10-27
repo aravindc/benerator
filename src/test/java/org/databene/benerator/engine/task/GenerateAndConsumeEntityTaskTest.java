@@ -38,7 +38,6 @@ import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.consumer.AbstractConsumer;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 
 import org.junit.Test;
@@ -63,7 +62,7 @@ public class GenerateAndConsumeEntityTaskTest {
     public void testFlat() throws Exception {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();
-		Expression<Consumer<Entity>> consumerExpr = new ConstantExpression<Consumer<Entity>>(consumer);
+		Expression consumerExpr = new ConstantExpression(consumer);
 		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(
 				"tn", generator, consumerExpr, false, null);
 		checkIteration(task, consumer);

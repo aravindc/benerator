@@ -26,8 +26,6 @@ import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseAttribu
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseIntAttribute;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
-import java.util.concurrent.ExecutorService;
-
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorConstants;
@@ -45,10 +43,8 @@ import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.model.consumer.Consumer;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
@@ -80,7 +76,7 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
     }
 	
 	public Task parse(final Element element, final ResourceManager resourceManager) {
-		Expression<PagedCreateEntityTask> expression = new Expression<PagedCreateEntityTask>() {
+		Expression expression = new Expression() {
 			public PagedCreateEntityTask evaluate(Context context) {
 	            return parseCreateEntities(element, false, resourceManager, (BeneratorContext) context);
             }
@@ -96,7 +92,7 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 		InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		descriptor.setNullable(false);
 		StringScriptExpression onErrorExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
-		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(onErrorExpr, getClass().getName());
+		Expression errorHandler = new ErrorHandlerExpression(onErrorExpr, getClass().getName());
 		if (!isSubTask)
 			logger.info(descriptor.toString());
 		else if (logger.isDebugEnabled())
@@ -107,18 +103,18 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 				.createSingleInstanceGenerator(descriptor, context);
 		
 		// parse task properties
-		Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
+		Expression countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
 		int pageSize  = parseIntAttribute(element, ATT_PAGESIZE, context, context.getDefaultPagesize());
 		int threads   = parseIntAttribute(element, ATT_THREADS, context, 1);
 		
 		// parse consumers
-		Expression<Consumer<Entity>> consumer = parseConsumers(element, EL_CREATE_ENTITIES.equals(element.getNodeName()), resourceManager);
+		Expression consumer = parseConsumers(element, EL_CREATE_ENTITIES.equals(element.getNodeName()), resourceManager);
 		
 		// done
 		String taskName = descriptor.getName();
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
-		Expression<ExecutorService> executor = new ExecutorServiceExpression();
+		Expression executor = new ExecutorServiceExpression();
 		PagedCreateEntityTask task = new PagedCreateEntityTask(taskName, countExpression, pageSize,
 				threads, configuredGenerator, consumer, executor, isSubTask, errorHandler);
 		
@@ -132,7 +128,7 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 		return task;
 	}
 
-	private Expression<Consumer<Entity>> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
+	private Expression parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
 		return new XMLConsumerExpression(entityElement, consumersExpected, resourceManager);
 	}
 

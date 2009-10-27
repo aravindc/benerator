@@ -18,44 +18,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+package org.databene.platform.contiperf;
 
-package org.databene.benerator.engine.expression;
-
-import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
-import org.databene.script.ScriptUtil;
+import org.databene.contiperf.Invoker;
+import org.databene.model.consumer.Consumer;
 
 /**
  * TODO Document class.<br/><br/>
- * Created: 27.10.2009 13:48:11
+ * Created: 22.10.2009 17:23:42
  * @since TODO version
  * @author Volker Bergmann
  */
-public class ScriptExpression implements Expression {
-
-	private String script;
-	private Object defaultValue;
-
-    public ScriptExpression(String script) {
-    	this(script, null);
-    }
-
-    public ScriptExpression(String script, Object defaultValue) {
-    	this.script = script;
-    	this.defaultValue = defaultValue;
-    }
-
-	public Object evaluate(Context context) {
-		if (StringUtil.isEmpty(script))
-			return defaultValue;
-		else
-			return ScriptUtil.render(script, context);
-    }
-
-	@Override
-	public String toString() {
-		return script;
-	}
+public class ConsumerInvoker implements Invoker {
 	
+	private String id;
+	private Consumer<Object> consumer;
+
+	public ConsumerInvoker(String id, Consumer<Object> consumer) {
+		this.id = id;
+	    this.consumer = consumer;
+    }
+
+	public String getId() {
+		return id;
+	}
+
+	public void invoke(Object[] args) throws Exception {
+		consumer.startConsuming(args[0]);
+	}
+
 }

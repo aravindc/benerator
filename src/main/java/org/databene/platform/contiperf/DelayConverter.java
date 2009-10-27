@@ -19,43 +19,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.expression;
+package org.databene.platform.contiperf;
 
-import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
-import org.databene.script.ScriptUtil;
+import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
 
 /**
  * TODO Document class.<br/><br/>
- * Created: 27.10.2009 13:48:11
+ * Created: 22.10.2009 18:31:57
  * @since TODO version
  * @author Volker Bergmann
  */
-public class ScriptExpression implements Expression {
+public class DelayConverter implements Converter<Number, Number> {
 
-	private String script;
-	private Object defaultValue;
-
-    public ScriptExpression(String script) {
-    	this(script, null);
+	public boolean canConvert(Object sourceValue) {
+	    return true;
     }
 
-    public ScriptExpression(String script, Object defaultValue) {
-    	this.script = script;
-    	this.defaultValue = defaultValue;
+	public Number convert(Number sourceValue) throws ConversionException {
+	    try {
+	        Thread.sleep(sourceValue.intValue());
+        } catch (InterruptedException e) {
+	        throw new ConversionException(e);
+        }
+	    return sourceValue;
     }
 
-	public Object evaluate(Context context) {
-		if (StringUtil.isEmpty(script))
-			return defaultValue;
-		else
-			return ScriptUtil.render(script, context);
+	public Class<Number> getTargetType() {
+	    return Number.class;
     }
 
-	@Override
-	public String toString() {
-		return script;
-	}
-	
 }

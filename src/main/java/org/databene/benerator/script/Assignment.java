@@ -39,9 +39,9 @@ import org.databene.commons.Expression;
 public class Assignment {
 	
 	private String name;
-	private Expression<?> expression;
+	private Expression expression;
 
-	public Assignment(String name, Expression<?> expression) {
+	public Assignment(String name, Expression expression) {
 	    this.name = name;
 	    this.expression = expression;
     }
@@ -50,7 +50,7 @@ public class Assignment {
 		return name;
 	}
 	
-	public Expression<?> getExpression() {
+	public Expression getExpression() {
 		return expression;
 	}
 	

@@ -26,7 +26,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import java.text.ParseException;
 
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.task.CreateBeanTask;
 import org.databene.benerator.script.Assignment;
@@ -57,16 +57,16 @@ public class BeanParser extends AbstractDescriptorParser {
 	public CreateBeanTask parse(Element element, ResourceManager resourceManager) {
 		try {
 			String id = element.getAttribute(ATT_ID);
-			Expression<?> bean = parseBeanExpression(element);
+			Expression bean = parseBeanExpression(element);
 			return new CreateBeanTask(id, bean, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
 	}
 
-	public Expression<?> parseBeanExpression(Element element) {
+	public Expression parseBeanExpression(Element element) {
 		String id = element.getAttribute(ATT_ID);
-        Expression<?> instantiation;
+        Expression instantiation;
         String beanSpec = element.getAttribute(ATT_SPEC);
         String beanClass = element.getAttribute(ATT_CLASS);
         if (!StringUtil.isEmpty(beanSpec)) {
@@ -90,22 +90,22 @@ public class BeanParser extends AbstractDescriptorParser {
         for (int i = 0; i < propertyElements.length; i++) {
         	Element propertyElement = propertyElements[i];
             String propertyName = propertyElement.getAttribute("name");
-            Expression<?> propertyValueExpression;
+            Expression propertyValueExpression;
             if (propertyElement.hasAttribute("value")) {
             	// parse simple or script values
-                propertyValueExpression = new ScriptExpression<Object>(propertyElement.getAttribute("value"));
+                propertyValueExpression = new TypedScriptExpression(propertyElement.getAttribute("value"));
             } else if (propertyElement.hasAttribute("ref")) {
             	// parse references
                 String ref = propertyElement.getAttribute("ref");
                 propertyValueExpression = new ContextReference(ref);
             } else { // map child elements to a collection or array
                 Element[] childElements = XMLUtil.getChildElements(propertyElement);
-                final Expression<?>[] subExpressions = new Expression[childElements.length];
+                final Expression[] subExpressions = new Expression[childElements.length];
                 for (int j = 0; j < childElements.length; j++)
                 	subExpressions[j] = parseBeanExpression(childElements[j]);
                 if (subExpressions.length == 0)
                     throw new ConfigurationError("No valid property spec: " + XMLUtil.format(propertyElement));
-                propertyValueExpression = new Expression<Object[]>() {
+                propertyValueExpression = new Expression() {
 					public Object[] evaluate(Context context) {
 	                    return ExpressionUtil.evaluateAll(subExpressions, context);
                     }

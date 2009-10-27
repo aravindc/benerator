@@ -39,16 +39,16 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class BeanConstruction implements Expression<Object> {
+public class BeanConstruction implements Expression {
 	
-	private Expression<?> instantiation;
+	private Expression instantiation;
 	private Assignment[] assignments;
 
     public BeanConstruction(String beanClassName, Assignment[] assignments) {
 	    this(new DefaultConstruction(beanClassName), assignments);
     }
 
-    public BeanConstruction(Expression<?> instantiation, Assignment[] assignments) {
+    public BeanConstruction(Expression instantiation, Assignment[] assignments) {
 	    this.instantiation = instantiation;
 	    this.assignments = assignments;
     }

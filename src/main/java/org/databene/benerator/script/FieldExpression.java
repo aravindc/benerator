@@ -38,12 +38,12 @@ import org.databene.commons.accessor.FeatureAccessor;
  * @author Volker Bergmann
  */
 
-public class FieldExpression implements Expression<Object> {
+public class FieldExpression implements Expression {
 	
-	private Expression<?> targetEx;
+	private Expression targetEx;
 	private String featureName;
 
-    public FieldExpression(Expression<?> targetEx, String featureName) {
+    public FieldExpression(Expression targetEx, String featureName) {
     	this.targetEx = targetEx;
     	this.featureName = featureName;
     }

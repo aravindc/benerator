@@ -30,7 +30,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ContextReference implements Expression<Object> {
+public class ContextReference implements Expression {
 
 	private String ref;
 	

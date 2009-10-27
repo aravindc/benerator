@@ -42,17 +42,17 @@ import org.databene.task.Task;
 
 public class LazyTask implements Task {
 	
-	private Expression<? extends Task> targetExpression;
+	private Expression targetExpression;
 	private Task target;
 	private boolean closed;
 
-    public LazyTask(Expression<? extends Task> taskExpression) {
-	    this.targetExpression = taskExpression;
+    public LazyTask(Expression targetExpression) {
+	    this.targetExpression = targetExpression;
 	    this.target = null;
 	    this.closed = false;
     }
 
-	public Expression<? extends Task> getTargetExpression() {
+	public Expression getTargetExpression() {
 	    return targetExpression;
     }
 
@@ -66,7 +66,7 @@ public class LazyTask implements Task {
 
     public void run(Context context) {
 	    if (target == null)
-	    	target = targetExpression.evaluate(context);
+	    	target = (Task) targetExpression.evaluate(context);
 	    target.run(context);
     }
 

@@ -31,7 +31,7 @@ import org.databene.commons.bean.DefaultClassProvider;
  * @since TODO version
  * @author Volker Bergmann
  */
-public abstract class Construction implements Expression<Object> {
+public abstract class Construction implements Expression {
 
 	protected String className;
 

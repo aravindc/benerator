@@ -62,7 +62,7 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
     private volatile AtomicLong queuedPages;
     private volatile AtomicLong actualCount;
     
-    private Expression<ExecutorService> executor;
+    private Expression executor;
 
     private Throwable exception;
 
@@ -87,11 +87,11 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
     public PagedTask(E realTask, long maxCount, PageListener listener, long pageSize, int threads, 
     		ExecutorService executor) {
     	this(realTask, maxCount, listener, pageSize, threads, 
-    			new ConstantExpression<ExecutorService>(executor));
+    			new ConstantExpression(executor));
     }
 
     public PagedTask(E realTask, long maxCount, PageListener listener, long pageSize, int threads, 
-    		Expression<ExecutorService> executor) {
+    		Expression executor) {
     	super(realTask);
         this.listener = listener;
         this.maxCount = maxCount;
@@ -202,7 +202,7 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
                 }
                 task = new LoopedTask(task, loopSize); 
                 TaskRunnable thread = new TaskRunnable(task, (realTask instanceof ThreadSafe ? null : context), latch);
-                executor.evaluate(context).execute(thread);
+                ((ExecutorService) executor.evaluate(context)).execute(thread);
                 localInvocationCount += loopSize;
             } else
                 latch.countDown();

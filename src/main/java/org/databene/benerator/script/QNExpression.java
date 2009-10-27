@@ -46,11 +46,11 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class QNExpression extends UnaryExpression<Object> {
+public class QNExpression extends UnaryExpression {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeneratorScriptParser.class);
 
-	public QNExpression(Expression<?> term) {
+	public QNExpression(Expression term) {
 	    super(term);
     }
 

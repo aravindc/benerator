@@ -27,6 +27,7 @@
 package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Expression;
+import org.databene.commons.expression.StringExpression;
 
 /**
  * {@link Expression} that resolves a script as {@link String}.<br/>
@@ -36,14 +37,14 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class StringScriptExpression extends ScriptExpression<String> {
-
-    public StringScriptExpression(String script, String defaultValue) {
-	    super(script, String.class);
-    }
+public class StringScriptExpression extends StringExpression {
 
     public StringScriptExpression(String script) {
-	    super(script, String.class);
+	    this(script, null);
+    }
+    
+    public StringScriptExpression(String script, String defaultValue) {
+	    super(new ScriptExpression(script, defaultValue));
     }
 
 }

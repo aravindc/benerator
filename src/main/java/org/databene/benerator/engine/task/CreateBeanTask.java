@@ -50,10 +50,10 @@ import org.databene.task.Task;
 public class CreateBeanTask extends AbstractTask {
 	
 	private String id;
-    private Expression<?> beanExpression;
+    private Expression beanExpression;
     private ResourceManager resourceManager;
 
-    public CreateBeanTask(String id, Expression<?> beanExpression, ResourceManager resourceManager) {
+    public CreateBeanTask(String id, Expression beanExpression, ResourceManager resourceManager) {
     	this.id = id;
         this.beanExpression = beanExpression;
         this.resourceManager = resourceManager;

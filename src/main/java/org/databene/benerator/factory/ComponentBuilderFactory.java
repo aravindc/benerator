@@ -186,9 +186,10 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
-            ComponentDescriptor instance, Generator<? extends Object> generator, BeneratorContext context) {
-    	Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(instance);
-    	generator = new DynamicInstanceArrayGenerator(generator, new CachedExpression(countExpression), context);
+            ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
+    	Expression countExpression = GeneratorFactoryUtil.getCountExpression(instance);
+    	generator = new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
+    			new CachedExpression(countExpression), context);
         return (Generator<Object>) GeneratorFactory.wrapNullQuota(generator, DescriptorUtil.getNullQuota(instance));
     }
 

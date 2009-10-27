@@ -49,16 +49,16 @@ import org.databene.commons.bean.DefaultClassProvider;
  * @author Volker Bergmann
  */
 
-public class QNBeanSpecExpression implements Expression<Object> {
+public class QNBeanSpecExpression implements Expression {
 	
-	Expression<String[]> qnEx;
+	Expression qnEx;
 
-    public QNBeanSpecExpression(Expression<String[]> qnEx) {
+    public QNBeanSpecExpression(Expression qnEx) {
     	this.qnEx = qnEx;
     }
 
     public Object evaluate(Context context) {
-    	String[] qn = qnEx.evaluate(context);
+    	String[] qn = (String[]) qnEx.evaluate(context);
     	String objectOrClassName = ArrayFormat.format(".", qn);
     	try {
     		if (context.contains(objectOrClassName))

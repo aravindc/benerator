@@ -52,17 +52,17 @@ public class IncludeTask extends AbstractTask {
 	
 	private static Logger logger = LoggerFactory.getLogger(IncludeTask.class);
 
-	private Expression<String> uri;
+	private Expression uri;
 	
-    public IncludeTask(Expression<String> uri) {
+    public IncludeTask(Expression uri) {
     	this.uri = uri;
     }
     
-	public Expression<String> getUri() {
+	public Expression getUri() {
     	return uri;
     }
 
-	public void setUri(Expression<String> uri) {
+	public void setUri(Expression uri) {
     	this.uri = uri;
     }
 
@@ -71,7 +71,7 @@ public class IncludeTask extends AbstractTask {
 			throw new ConfigurationError(getClass() + " requires a BeneratorContext, found: " 
 					+ BeanUtil.simpleClassName(context));
 	    BeneratorContext beneratorContext = (BeneratorContext) context;
-		String uriValue = IOUtil.resolveLocalUri(uri.evaluate(context), beneratorContext.getContextUri());
+		String uriValue = IOUtil.resolveLocalUri((String) uri.evaluate(context), beneratorContext.getContextUri());
         try {
             importProperties(uriValue, beneratorContext);
         } catch (IOException e) {

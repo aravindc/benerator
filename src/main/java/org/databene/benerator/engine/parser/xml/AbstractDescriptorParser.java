@@ -22,12 +22,13 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.commons.Assert;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.StringExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,28 +62,28 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
 			&& (this.parentName == null || this.parentName.equals(parentName));
 	}
 	
-	protected static Expression<String> parseTextElem(Element element) {
+	protected static StringExpression parseTextElem(Element element) {
 	    return new StringScriptExpression(XMLUtil.getText(element));
     }
 
-	protected static Expression<String> parseStringAttr(String name, Element element) {
+	protected static StringExpression parseStringAttr(String name, Element element) {
 	    return new StringScriptExpression(element.getAttribute(name));
     }
 
-	protected static Expression<Integer> parseIntAttr(String name, Element element) {
-	    return new ScriptExpression<Integer>(element.getAttribute(name), Integer.class);
+	protected static Expression parseIntAttr(String name, Element element) {
+	    return new TypedScriptExpression(element.getAttribute(name), Integer.class);
     }
 
-	protected static Expression<Integer> parseIntAttr(String name, Element element, int defaultValue) {
-	    return parseIntAttr(name, element, new ConstantExpression<Integer>(defaultValue));
+	protected static Expression parseIntAttr(String name, Element element, int defaultValue) {
+	    return parseIntAttr(name, element, new ConstantExpression(defaultValue));
     }
 
-	protected static Expression<Integer> parseIntAttr(String name, Element element, Expression<Integer> defaultValue) {
+	protected static Expression parseIntAttr(String name, Element element, Expression defaultValue) {
 	    String attribute = element.getAttribute(name);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
-	    	return new ScriptExpression<Integer>(attribute, Integer.class);
+	    	return new TypedScriptExpression(attribute, Integer.class);
     }
 
 }

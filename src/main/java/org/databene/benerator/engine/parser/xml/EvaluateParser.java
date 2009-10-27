@@ -28,9 +28,11 @@ import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.task.EvaluateTask;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
+import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -47,17 +49,16 @@ public class EvaluateParser implements DescriptorParser {
     }
 
 	public EvaluateTask parse(Element element, ResourceManager resourceManager) {
-		Expression<String> text         = parseTextElem(element);
-		Expression<String> id           = parseStringAttr(ATT_ID, element);
-		Expression<String> uri          = parseStringAttr(ATT_URI,    element);
-		Expression<String> targetName   = parseStringAttr(ATT_TARGET, element);
-		Expression<Object> targetObject = new FeatureAccessExpression(targetName);
-		Expression<String> onError      = parseStringAttr(ATT_ON_ERROR, element);
-		Expression<String> encoding     = parseStringAttr(ATT_ENCODING, element);
-		Expression<Boolean> optimize    = new ScriptExpression<Boolean>(
+		StringExpression id           = parseStringAttr(ATT_ID, element);
+		StringExpression text         = parseTextElem(element);
+		StringExpression uri          = parseStringAttr(ATT_URI,  element);
+		StringExpression type         = parseStringAttr(ATT_TYPE, element);
+		Expression targetObject       = new FeatureAccessExpression(element.getAttribute(ATT_TARGET));
+		StringExpression onError      = parseStringAttr(ATT_ON_ERROR, element);
+		StringExpression encoding     = parseStringAttr(ATT_ENCODING, element);
+		Expression optimize           = new TypedScriptExpression(
 											element.getAttribute(ATT_OPTIMIZE), Boolean.class, false);
-		Expression<String> type         = parseStringAttr(ATT_TYPE, element);
-		Expression<Object> assertion    = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT), Object.class);
+		Expression assertion    = new ScriptExpression(element.getAttribute(ATT_ASSERT));
 		return new EvaluateTask(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
 	}
 

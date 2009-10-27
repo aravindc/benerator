@@ -42,7 +42,7 @@ public class IncludeParser implements DescriptorParser {
     }
 
 	public IncludeTask parse(Element element, ResourceManager resourceManager) {
-        Expression<String> uriEx = new StringScriptExpression(element.getAttribute(DescriptorConstants.ATT_URI));
+        Expression uriEx = new StringScriptExpression(element.getAttribute(DescriptorConstants.ATT_URI));
         return new IncludeTask(uriEx);
     }
 

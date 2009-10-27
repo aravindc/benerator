@@ -43,9 +43,9 @@ import org.databene.task.AbstractTask;
 public class SetGlobalPropertyTask extends AbstractTask {
 	
 	private String propertyName;
-	private Expression<?> valueExpression;
+	private Expression valueExpression;
 
-    public SetGlobalPropertyTask(String propertyName, Expression<?> valueExpression) {
+    public SetGlobalPropertyTask(String propertyName, Expression valueExpression) {
     	this.propertyName = propertyName;
     	this.valueExpression = valueExpression;
     }

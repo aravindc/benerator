@@ -43,7 +43,7 @@ import org.databene.commons.Level;
 public abstract class AbstractTask implements Task {
 
     protected String taskName;
-    private Expression<ErrorHandler> errorHandler;
+    private Expression errorHandler;
     
     // constructor -----------------------------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public abstract class AbstractTask implements Task {
         this(null, null);
     }
 
-    protected AbstractTask(Expression<ErrorHandler> errorHandler) {
+    protected AbstractTask(Expression errorHandler) {
         this(null, errorHandler);
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractTask implements Task {
         this(taskName, null);
     }
     
-    protected AbstractTask(String taskName, Expression<ErrorHandler> errorHandler) {
+    protected AbstractTask(String taskName, Expression errorHandler) {
     	if (taskName == null)
     		taskName = getClass().getSimpleName();
         setTaskName(taskName);
@@ -79,7 +79,7 @@ public abstract class AbstractTask implements Task {
     public ErrorHandler getErrorHandler(Context context) {
     	if (errorHandler == null)
     		return new ErrorHandler(taskName, Level.fatal);
-		return errorHandler.evaluate(context);
+		return (ErrorHandler) errorHandler.evaluate(context);
 	}
     
     protected void handleError(String message, Context context) {

@@ -24,38 +24,47 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.expression.xml;
+package org.databene.benerator.engine.expression;
 
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.script.ScriptUtil;
-import org.w3c.dom.Element;
 
 /**
- * {@link Expression} implementation that evaluates an XML attribute value.<br/>
+ * {@link Expression} implementation that evaluates a script.<br/>
  * <br/>
- * Created at 23.07.2009 07:53:50
+ * Created at 22.07.2009 07:19:44
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class XMLAttributeExpression<E> implements Expression {
+public class TypedScriptExpression extends ScriptExpression {
 	
-	private String text;
 	private Converter<Object, Object> converter;
 
-    public XMLAttributeExpression(Element element, String attributeName, Class<E> resultType) {
-    	this.text = element.getAttribute(attributeName);
-    	if (this.text == null)
-			throw new ConfigurationError();
-    	this.converter = new AnyConverter<Object, Object>((Class<Object>) resultType);
+    public TypedScriptExpression(String script) {
+    	this(script, Object.class);
     }
 
-	public Object evaluate(Context context) {
-		return converter.convert(ScriptUtil.render(text, context));
-	}
+    public TypedScriptExpression(String script, Class<?> resultType) {
+    	this(script, resultType, null);
+    }
 
+    @SuppressWarnings("unchecked")
+    public TypedScriptExpression(String script, Class<?> resultType, Object defaultValue) {
+    	super(script, defaultValue);
+    	this.converter = new AnyConverter(resultType);
+    }
+
+	@Override
+    public Object evaluate(Context context) {
+		return converter.convert(super.evaluate(context));
+    }
+
+	@Override
+    public String toString() {
+		return "(" + converter.getTargetType().getSimpleName() + ") " + super.toString();
+	}
+	
 }

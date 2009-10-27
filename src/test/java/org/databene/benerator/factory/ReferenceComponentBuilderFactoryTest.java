@@ -80,7 +80,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	@SuppressWarnings("null")
     public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
-		ref.setCount(new ConstantExpression<Long>(1L));
+		ref.setCount(new ConstantExpression(1L));
 		ComponentBuilder generator = createGenerator(ref);
 		assertTrue(generator != null);
 		assertTrue(generator.available());
@@ -93,7 +93,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	@SuppressWarnings("null")
     public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
-		ref.setCount(new ConstantExpression<Long>(2L));
+		ref.setCount(new ConstantExpression(2L));
 		ComponentBuilder generator = createGenerator(ref);
 		assertTrue(generator != null);
 		assertTrue(generator.available());

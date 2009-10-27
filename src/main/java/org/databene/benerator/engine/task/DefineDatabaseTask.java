@@ -30,6 +30,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.StringExpression;
 import org.databene.model.data.DataModel;
 import org.databene.platform.db.DBSystem;
 import org.databene.task.AbstractTask;
@@ -48,21 +49,21 @@ public class DefineDatabaseTask extends AbstractTask { // TODO move to DB packag
 	
 	private static Logger logger = LoggerFactory.getLogger(DefineDatabaseTask.class);
 	
-	private Expression<String> id;
-	private Expression<String> url;
-	private Expression<String> driver;
-	private Expression<String> user;
-	private Expression<String> password;
-	private Expression<String> schema;
-	private Expression<Boolean> batch;
-	private Expression<Integer> fetchSize;
-	private Expression<Boolean> readOnly;
+	private StringExpression id;
+	private StringExpression url;
+	private StringExpression driver;
+	private StringExpression user;
+	private StringExpression password;
+	private StringExpression schema;
+	private Expression batch;
+	private Expression fetchSize;
+	private Expression readOnly;
 	private ResourceManager resourceManager;
 	
-	public DefineDatabaseTask(Expression<String> id, Expression<String> url, Expression<String> driver, 
-			Expression<String> user, Expression<String> password, 
-			Expression<String> schema, Expression<Boolean> batch, 
-			Expression<Integer> fetchSize, Expression<Boolean> readOnly, ResourceManager resourceManager) {
+	public DefineDatabaseTask(StringExpression id, StringExpression url, StringExpression driver, 
+			StringExpression user, StringExpression password, 
+			StringExpression schema, Expression batch, 
+			Expression fetchSize, Expression readOnly, ResourceManager resourceManager) {
 		this.id = id;
 	    this.url = url;
 	    this.driver = driver;
@@ -85,9 +86,9 @@ public class DefineDatabaseTask extends AbstractTask { // TODO move to DB packag
 	    		user.evaluate(context), 
 	    		password.evaluate(context));
 	    db.setSchema(schema.evaluate(context));
-	    db.setBatch(batch.evaluate(context));
-	    db.setFetchSize(fetchSize.evaluate(context));
-	    db.setBatch(readOnly.evaluate(context));
+	    db.setBatch((Boolean) batch.evaluate(context));
+	    db.setFetchSize((Integer) fetchSize.evaluate(context));
+	    db.setBatch((Boolean) readOnly.evaluate(context));
 	    context.set(idValue, db);
 	    BeneratorContext beneratorContext = (BeneratorContext) context;
 	    DataModel.getDefaultInstance().addDescriptorProvider(db, beneratorContext.isValidate());

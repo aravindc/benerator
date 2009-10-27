@@ -33,7 +33,7 @@ import org.databene.commons.Expression;
  * @since TODO version
  * @author Volker Bergmann
  */
-public class ExecutorServiceExpression implements Expression<ExecutorService> {
+public class ExecutorServiceExpression implements Expression {
 
 	public ExecutorService evaluate(Context context) {
         return ((BeneratorContext) context).getExecutorService();

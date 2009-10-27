@@ -40,9 +40,9 @@ import org.databene.commons.Expression;
 
 public class ParametrizedConstruction extends Construction {
 	
-	private Expression<?>[] argumentExpressions;
+	private Expression[] argumentExpressions;
 
-    public ParametrizedConstruction(String className, Expression<?>[] argumentExpressions) {
+    public ParametrizedConstruction(String className, Expression[] argumentExpressions) {
 	    super(className);
 	    this.argumentExpressions = argumentExpressions;
     }

@@ -52,11 +52,11 @@ public class PropertyParser extends AbstractDescriptorParser {
 
 	public SetGlobalPropertyTask parse(Element element, ResourceManager resourceManager) {
 		String propertyName = element.getAttribute(ATT_NAME);
-		Expression<?> valueExpression;
+		Expression valueExpression;
 		if (element.hasAttribute(ATT_VALUE))
 			valueExpression = new ScriptedLiteral(element.getAttribute(ATT_VALUE));
 		else if (element.hasAttribute(ATT_REF))
-			valueExpression = new FeatureAccessExpression(new StringScriptExpression(element.getAttribute(ATT_REF)));
+			valueExpression = new FeatureAccessExpression(element.getAttribute(ATT_REF));
 		else if (element.hasAttribute(ATT_SOURCE)) // TODO test (like samba.ben.xml)
 			valueExpression = parseSource(element.getAttribute(ATT_SOURCE));
 		else
@@ -64,10 +64,9 @@ public class PropertyParser extends AbstractDescriptorParser {
 		return new SetGlobalPropertyTask(propertyName, valueExpression);
 	}
 
-	@SuppressWarnings("unchecked")
-    private Expression<?> parseSource(String source) {
+    private Expression parseSource(String source) {
 		try {
-			return new SourceExpression((Expression<Generator<?>>) BeneratorScriptParser.parseBeanSpec(source));
+			return new SourceExpression(BeneratorScriptParser.parseBeanSpec(source));
         } catch (ParseException e) {
             throw new ConfigurationError("Error parsing property source expression: " + source, e);
         }
@@ -79,16 +78,16 @@ public class PropertyParser extends AbstractDescriptorParser {
      * @since 0.6.0
      * @author Volker Bergmann
      */
-    public class SourceExpression implements Expression<Object> {
+    public class SourceExpression implements Expression {
     	
-    	Expression<Generator<?>> source;
+    	Expression source;
     	
-		public SourceExpression(Expression<Generator<?>> source) {
+		public SourceExpression(Expression source) {
 	        this.source = source;
         }
 
 		public Object evaluate(Context context) {
-			Generator<?> generator = source.evaluate(context);
+			Generator<?> generator = (Generator<?>) source.evaluate(context);
 			return generator.generate();
 		}
 

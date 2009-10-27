@@ -27,12 +27,10 @@
 package org.databene.benerator.engine.task;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
-import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
@@ -46,14 +44,14 @@ import org.databene.task.Task;
  */
 public class PagedCreateEntityTask extends PagedTask<GenerateAndConsumeEntityTask> {
 
-	private Expression<Long> countEx;
+	private Expression countEx;
     private Generator<Entity> generator;
 	
 	public PagedCreateEntityTask(
-			String taskName, Expression<Long> countEx, int pageSize, int threads, 
-			Generator<Entity> generator, Expression<Consumer<Entity>> consumerExpr, 
-			Expression<ExecutorService> executor, 
-			boolean isSubTask, Expression<ErrorHandler> errorHandler) {
+			String taskName, Expression countEx, int pageSize, int threads, 
+			Generator<Entity> generator, Expression consumerExpr, 
+			Expression executor, 
+			boolean isSubTask, Expression errorHandler) {
 		super(new GenerateAndConsumeEntityTask(taskName, generator, consumerExpr, isSubTask, errorHandler), 
 				0, null, pageSize, threads, executor);
 		this.generator = generator;
@@ -68,7 +66,7 @@ public class PagedCreateEntityTask extends PagedTask<GenerateAndConsumeEntityTas
 	
     @Override
     public void run(Context context) {
-    	setMaxCount(countEx.evaluate(context));
+    	setMaxCount((Long) countEx.evaluate(context));
         super.run(context);
         ((BeneratorContext) context).countGenerations(getActualCount());
     }

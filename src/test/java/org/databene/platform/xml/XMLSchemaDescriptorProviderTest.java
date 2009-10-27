@@ -131,16 +131,16 @@ public class XMLSchemaDescriptorProviderTest {
         // check choice a/b
         ComponentDescriptor choiceAB = components.get(0);
         assertNotNull(choiceAB);
-        assertEquals(1, choiceAB.getMinCount().evaluate(null).intValue());
-        assertEquals(1, choiceAB.getMaxCount().evaluate(null).intValue());
+        assertEquals(1, ((Number) choiceAB.getMinCount().evaluate(null)).intValue());
+        assertEquals(1, ((Number) choiceAB.getMaxCount().evaluate(null)).intValue());
         AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getType();
         assertEquals(2, choiceABType.getComponents().size());
         
         // check choice x/y/z
         ComponentDescriptor choiceXYZ = components.get(1);
         assertNotNull(choiceXYZ);
-        assertEquals(0, choiceXYZ.getMinCount().evaluate(null).intValue());
-        assertEquals(2, choiceXYZ.getMaxCount().evaluate(null).intValue());
+        assertEquals(0, ((Number) choiceXYZ.getMinCount().evaluate(null)).intValue());
+        assertEquals(2, ((Number) choiceXYZ.getMaxCount().evaluate(null)).intValue());
         AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getType();
         assertEquals(3, choiceXYZType.getComponents().size());
     }

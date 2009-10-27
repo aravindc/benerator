@@ -435,13 +435,13 @@ public class ArchetypeBuilder implements Runnable {
           	applyDefaults(complexType);
           	InstanceDescriptor iDesc = new InstanceDescriptor(name, complexType.getName());
 			long count = db.countEntities(name);
-			iDesc.setCount(new ConstantExpression<Long>(count));
+			iDesc.setCount(new ConstantExpression(count));
 			createEntity(iDesc);
        }
 	}
 	
 	private void createEntity(InstanceDescriptor descriptor) throws SAXException {
-		descriptor.setCount(new ConstantExpression<Long>(0L));
+		descriptor.setCount(new ConstantExpression(0L));
 		AttributesImpl attributes = new AttributesImpl();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             Object value = detail.getValue();
@@ -463,9 +463,9 @@ public class ArchetypeBuilder implements Runnable {
     private void attribute(ComponentDescriptor component) throws SAXException {
     	// normalize
     	boolean nullable = (component.isNullable() == null || component.isNullable());
-		if (component.getMaxCount() != null && component.getMaxCount().evaluate(null) == 1)
+		if (component.getMaxCount() != null && ((Number) component.getMaxCount().evaluate(null)).intValue() == 1)
 			component.setMaxCount(null);
-		if (component.getMinCount() != null && component.getMinCount().evaluate(null) == 1)
+		if (component.getMinCount() != null && ((Number) component.getMinCount().evaluate(null)).intValue() == 1)
 			component.setMinCount(null);
 		if (nullable)
 			component.setNullable(null);

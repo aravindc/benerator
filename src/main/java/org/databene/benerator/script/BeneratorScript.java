@@ -42,10 +42,10 @@ import org.databene.script.ScriptException;
 
 public class BeneratorScript extends AbstractScript {
 	
-	private Expression<?> expression;
+	private Expression expression;
 	private String text;
 	
-    public BeneratorScript(Expression<?> expression, String text) {
+    public BeneratorScript(Expression expression, String text) {
 	    this.expression = expression;
 	    this.text = text;
     }

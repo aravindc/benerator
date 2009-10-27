@@ -24,11 +24,12 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.task.DefineDatabaseTask;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -45,15 +46,15 @@ public class DatabaseParser extends AbstractDescriptorParser {
 
 	public DefineDatabaseTask parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression<String>  id        = parseStringAttr(ATT_ID,       element);
-			Expression<String>  url       = parseStringAttr(ATT_URL,      element);
-			Expression<String>  driver    = parseStringAttr(ATT_DRIVER,   element);
-			Expression<String>  user      = parseStringAttr(ATT_USER,     element);
-			Expression<String>  password  = parseStringAttr(ATT_PASSWORD, element);
-			Expression<String>  schema    = parseStringAttr(ATT_SCHEMA,   element);
-			Expression<Boolean> batch     = new ScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
-			Expression<Integer> fetchSize = new ScriptExpression<Integer>(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
-			Expression<Boolean> readOnly  = new ScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
+			StringExpression  id       = parseStringAttr(ATT_ID,       element);
+			StringExpression  url      = parseStringAttr(ATT_URL,      element);
+			StringExpression  driver   = parseStringAttr(ATT_DRIVER,   element);
+			StringExpression  user     = parseStringAttr(ATT_USER,     element);
+			StringExpression  password = parseStringAttr(ATT_PASSWORD, element);
+			StringExpression  schema   = parseStringAttr(ATT_SCHEMA,   element);
+			Expression batch     = new TypedScriptExpression(element.getAttribute(ATT_BATCH), Boolean.class, false);
+			Expression fetchSize = new TypedScriptExpression(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
+			Expression readOnly  = new TypedScriptExpression(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
 			return new DefineDatabaseTask(id, url, driver, user, password, schema, batch, fetchSize, readOnly, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);

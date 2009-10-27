@@ -38,7 +38,7 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class GeneratorExpression implements Expression<Object> {
+public class GeneratorExpression implements Expression {
 
 	private Generator<Object> generator;
 	

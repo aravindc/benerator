@@ -39,16 +39,16 @@ import org.databene.commons.converter.LiteralParser;
  * @author Volker Bergmann
  */
 
-public class ScriptedLiteral implements Expression<Object> {
+public class ScriptedLiteral implements Expression {
 
-	Expression<String> scriptExpression;
+	Expression scriptExpression;
 	
     public ScriptedLiteral(String script) {
 	    this.scriptExpression = new StringScriptExpression(script);
     }
 
 	public Object evaluate(Context context) {
-		return LiteralParser.parse(scriptExpression.evaluate(context));
+		return LiteralParser.parse((String) scriptExpression.evaluate(context));
     }
 
 }

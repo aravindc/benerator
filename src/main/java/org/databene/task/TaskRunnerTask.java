@@ -44,14 +44,14 @@ import org.databene.commons.Expression;
 
 public class TaskRunnerTask<E extends Task> extends TaskProxy<E> {
 
-    private Expression<Integer> count;
-    private Expression<Integer> pageSize;
-    private Expression<Integer> threads;
-    private Expression<PageListener> pager;
-    private Expression<ExecutorService> executor;
+    private Expression count;
+    private Expression pageSize;
+    private Expression threads;
+    private Expression pager;
+    private Expression executor;
 
-	public TaskRunnerTask(E realTask, Expression<Integer> count, Expression<Integer> pageSize, 
-			Expression<Integer> threads, Expression<PageListener> pager, Expression<ExecutorService> executor) {
+	public TaskRunnerTask(E realTask, Expression count, Expression pageSize, 
+			Expression threads, Expression pager, Expression executor) {
 	    super(realTask);
 	    this.count = count;
 	    this.pageSize = pageSize;
@@ -60,30 +60,30 @@ public class TaskRunnerTask<E extends Task> extends TaskProxy<E> {
 	    this.executor = executor;
     }
 
-	public Expression<Integer> getCount() {
+	public Expression getCount() {
     	return count;
     }
 
-	public Expression<Integer> getPageSize() {
+	public Expression getPageSize() {
     	return pageSize;
     }
 
-	public Expression<Integer> getThreads() {
+	public Expression getThreads() {
     	return threads;
     }
 
-	public Expression<PageListener> getPager() {
+	public Expression getPager() {
     	return pager;
     }
 
 	@Override
 	public void run(Context context) {
 	    TaskRunner.run(realTask, context, 
-	    		count.evaluate(context), 
-	    		(pager != null ? pager.evaluate(context) : null), 
-	    		pageSize.evaluate(context), 
-	    		threads.evaluate(context), 
-	    		executor.evaluate(context));
+	    		(Long) count.evaluate(context), 
+	    		(pager != null ? (PageListener) pager.evaluate(context) : null), 
+	    		(Long) pageSize.evaluate(context), 
+	    		(Integer) threads.evaluate(context), 
+	    		(ExecutorService) executor.evaluate(context));
 	}
 	
 }
