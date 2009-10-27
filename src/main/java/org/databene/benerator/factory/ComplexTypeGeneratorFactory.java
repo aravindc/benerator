@@ -76,6 +76,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     
     // public utility methods ------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public static Generator<Entity> createComplexTypeGenerator(
     		ComplexTypeDescriptor type, boolean unique, BeneratorContext context) {
         if (logger.isDebugEnabled())
@@ -105,10 +106,10 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
             Map<String, Generator<? extends Object>> varGens = new HashMap<String, Generator<? extends Object>>();
             for (InstanceDescriptor variable : variables) {
-                Generator<? extends Object> varGen = InstanceGeneratorFactory.createInstanceGenerator(variable, context);
+                Generator<? extends Object> varGen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
                 varGens.put(variable.getName(), varGen);
             }
-        return new ConfiguredEntityGenerator((Generator<Entity>) generator, varGens, context);
+        return new ConfiguredEntityGenerator(generator, varGens, context);
     }
 
 	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
@@ -163,7 +164,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     	return generator;
     }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private static Generator<Entity> createSourceGeneratorFromObject(ComplexTypeDescriptor descriptor,
             BeneratorContext context, Generator<Entity> generator, Object sourceObject) {
 	    if (sourceObject instanceof StorageSystem) {
@@ -173,7 +174,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 	    } else if (sourceObject instanceof EntitySource) {
 	        generator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
 	    } else if (sourceObject instanceof Generator) {
-	        generator = (Generator) sourceObject;
+	        generator = (Generator<Entity>) sourceObject;
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    return generator;
@@ -204,7 +205,8 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 		return scriptConverter;
 	}
 
-	private static Generator<Entity> createCSVSourceGenerator(
+    @SuppressWarnings("unchecked")
+    private static Generator<Entity> createCSVSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
 		Generator<Entity> generator;
 		String encoding = complexType.getEncoding();
@@ -218,18 +220,19 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
 		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator(new CSVEntitySource(dataFiles[i], complexType.getName(), separator, encoding));
-		    generator = new AlternativeGenerator(Entity.class, sources); 
+		        sources[i] = new IteratingGenerator<Entity>(new CSVEntitySource(dataFiles[i], complexType.getName(), separator, encoding));
+		    generator = new AlternativeGenerator<Entity>(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
 			CSVEntitySource iterable = new CSVEntitySource(sourceName, complexType.getName(), scriptConverter, separator, encoding);
-		    generator = new IteratingGenerator(iterable);
+		    generator = new IteratingGenerator<Entity>(iterable);
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
 		return generator;
 	}
 
-	private static Generator<Entity> createXLSSourceGenerator(
+    @SuppressWarnings("unchecked")
+    private static Generator<Entity> createXLSSourceGenerator(
 			ComplexTypeDescriptor complexType, BeneratorContext context, String sourceName) {
 		Generator<Entity> generator;
 		String encoding = complexType.getEncoding();
@@ -238,17 +241,16 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 		Converter<String, String> scriptConverter = createScriptConverter(context);
 		String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
-		char separator = DescriptorUtil.getSeparator(complexType, context);
 		if (dataset != null && nesting != null) {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
 		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator(new XLSEntitySource(dataFiles[i]));
-		    generator = new AlternativeGenerator(Entity.class, sources); 
+		        sources[i] = new IteratingGenerator<Entity>(new XLSEntitySource(dataFiles[i]));
+		    generator = new AlternativeGenerator<Entity>(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
 			XLSEntitySource iterable = new XLSEntitySource(sourceName, scriptConverter);
-		    generator = new IteratingGenerator(iterable);
+		    generator = new IteratingGenerator<Entity>(iterable);
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
 		return generator;
@@ -259,7 +261,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
         if (DescriptorUtil.isWrappedSimpleType(complexType)) {
     		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getType();
-    		Generator<Object> generator = (Generator<Object>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+    		Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
     				(SimpleTypeDescriptor) contentType, false, unique, context);
         	return new SimpleTypeEntityGenerator(generator, complexType);
         }
@@ -286,4 +288,5 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
             	componentGenerators.add(ComponentBuilderFactory.createComponentBuilder(component, context));
         return new MutatingEntityGeneratorProxy(descriptor, generator, componentGenerators, context);
     }
+	
 }

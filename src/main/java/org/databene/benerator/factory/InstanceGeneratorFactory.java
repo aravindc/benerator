@@ -33,12 +33,9 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DynamicInstanceSequenceGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.*;
-import org.databene.commons.Expression;
-import org.databene.commons.expression.ExpressionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +53,8 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
+/*  TODO remove
+
     public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
         Generator<? extends Object> generator = createSingleInstanceGenerator(descriptor, context);
         generator = createInstanceGeneratorWrapper(descriptor, generator, context);
@@ -63,10 +62,9 @@ public class InstanceGeneratorFactory {
             logger.debug("Created " + generator);
         return generator;
     }
+*/
     
-    // protected helpers for child classes -----------------------------------------------------------------------------
-
-    protected static Generator<? extends Object> createSingleInstanceGenerator(
+    public static Generator<? extends Object> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, BeneratorContext context) {
         Generator<? extends Object> generator = null;
         // create a source generator
@@ -93,23 +91,23 @@ public class InstanceGeneratorFactory {
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
-
+/* TODO remove
     @SuppressWarnings("unchecked")
     private static Generator<?> createInstanceGeneratorWrapper(
             InstanceDescriptor descriptor, Generator<?> typeGenerator, BeneratorContext context) {
-        Expression<Long> maxCountEx = DescriptorUtil.getMaxCount(descriptor, context);
+        Expression<Long> maxCountEx = DescriptorUtil.getMaxCount(descriptor);
         if (ExpressionUtil.isNull(maxCountEx))
         	return typeGenerator;
         DynamicInstanceSequenceGenerator generator = new DynamicInstanceSequenceGenerator(typeGenerator, context);
         // configure count
-        Expression<Long> minCountEx = DescriptorUtil.getMinCount(descriptor, context);
-		generator.setMinCount(minCountEx);
+        Expression<Long> countEx = DescriptorUtil.getCountExpression(descriptor);
+		generator.setMinCount(countEx);
         generator.setMaxCount(maxCountEx);
-        generator.setCountPrecision(DescriptorUtil.getCountPrecision(descriptor, context));
+        generator.setCountPrecision(DescriptorUtil.getCountPrecision(descriptor));
         generator.setCountDistribution(GeneratorFactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), false, true, context));
         return generator;
     }
-    
+*/
     public static Generator<? extends Object> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null && nullQuota.doubleValue() == 1.)
@@ -137,7 +135,7 @@ public class InstanceGeneratorFactory {
         return null;
     }
 
-/*
+/* TODO remove
     private static Generator createLimitCountGenerator(InstanceDescriptor descriptor, Generator generator) {
         if (descriptor.getCount() != null)
             generator = new NShotGeneratorProxy(generator, descriptor.getCount());

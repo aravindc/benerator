@@ -34,14 +34,18 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.expression.DistributedNumberExpression;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.storage.StorageSystem;
 
 /**
@@ -78,6 +82,32 @@ public class GeneratorFactoryUtil {
         }
     }
         
+    public static Expression<Long> getCountExpression(final InstanceDescriptor descriptor) {
+    	Expression<Long> count = DescriptorUtil.getCount(descriptor);
+    	if (count != null)
+    		return count;
+    	else {
+			final Expression<Long> min = DescriptorUtil.getMinCount(descriptor);
+			final Expression<Long> max = DescriptorUtil.getMaxCount(descriptor);
+			final Expression<Long> prec = DescriptorUtil.getCountPrecision(descriptor);
+			final Expression<Long> distSpecExpr = new Expression<Long>() {
+
+				public Long evaluate(Context context) {
+					// TODO this sucks!!!
+					Long minVal = min.evaluate(context);
+					Long maxVal = max.evaluate(context);
+					if (minVal.equals(maxVal))
+						return minVal;
+					String distSpec = descriptor.getCountDistribution();
+	                Distribution d = getDistribution(distSpec, false, true, (BeneratorContext) context);
+	    			return new DistributedNumberExpression(new ConstantExpression<Distribution>(d), min, max, prec).evaluate(context);
+                }
+				
+			};
+			return distSpecExpr;
+    	}
+    }
+
     /**
      * Extracts distribution information from the descriptor.
      * @param spec the textual representation of the distribution

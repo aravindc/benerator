@@ -40,17 +40,17 @@ import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
-import org.databene.benerator.composite.InstanceArrayGenerator;
+import org.databene.benerator.composite.DynamicInstanceArrayGenerator;
 import org.databene.benerator.composite.PlainComponentBuilder;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.databene.benerator.factory.GeneratorFactoryUtil.*;
 
 /**
  * Creates generators that generate entity components.<br/>
@@ -187,17 +187,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<? extends Object> generator, BeneratorContext context) {
-        Long maxCount = DescriptorUtil.getMaxCount(instance, context).evaluate(context);
-        long minCount = DescriptorUtil.getMinCount(instance, context).evaluate(context);
-        if (maxCount != null && maxCount != 1 && minCount != 1) {
-        	InstanceArrayGenerator wrapper = new InstanceArrayGenerator(generator);
-	        mapDetailsToBeanProperties(instance, wrapper, context);
-	        wrapper.setCountDistribution(GeneratorFactoryUtil.getDistribution(instance.getCountDistribution(), false, true, context));
-	        if (maxCount != null)
-	        	wrapper.setMaxCount(maxCount);
-			wrapper.setMinCount(minCount);
-			generator = wrapper;
-        }
+    	Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(instance);
+    	generator = new DynamicInstanceArrayGenerator(generator, new CachedExpression(countExpression), context);
         return (Generator<Object>) GeneratorFactory.wrapNullQuota(generator, DescriptorUtil.getNullQuota(instance));
     }
 

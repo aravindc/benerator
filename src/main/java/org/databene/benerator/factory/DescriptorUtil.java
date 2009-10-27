@@ -39,11 +39,15 @@ import javax.validation.ConstraintValidator;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.expression.DistributedNumberExpression;
+import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
 import org.databene.commons.LocaleUtil;
@@ -182,7 +186,7 @@ public class DescriptorUtil {
 	        	else if (bean instanceof Consumer)
 	        		consumer = (Consumer<?>) bean;
 	        	else
-	        		throw new UnsupportedOperationException("Consumer type not supported: " + bean.getClass());
+	        		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
 	        	result.addComponent(consumer);
 	        }
 	        return result;
@@ -241,38 +245,68 @@ public class DescriptorUtil {
 		return separator;
 	}
 	
+    /**
+     * Calculates the 'count' value.
+     * @return the 'count' value. If a global 'maxCount' was set too, it returns the minimum
+     * of 'count' and 'maxCount'. If no 'count' value was specified, it returns null.
+     */
 	@SuppressWarnings("unchecked")
-    public static Expression<Long> getMinCount(InstanceDescriptor descriptor, BeneratorContext context) {
+    public static Expression<Long> getCount(InstanceDescriptor descriptor) {
+		Expression<Long> result = descriptor.getCount();
+		if (result != null) {
+			Expression<Long> globalMaxCount = getGlobalMaxCount();
+			if (globalMaxCount != null)
+				result = new MinExpression<Long>(result, globalMaxCount);
+		}
+        return result;
+	}
+
+	@SuppressWarnings("unchecked")
+    public static Expression<Long> getMinCount(InstanceDescriptor descriptor) {
 		Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMinCount() != null)
         	result = descriptor.getMinCount();
-		if (result == null)
+		else
 			result = new ConstantExpression<Long>(1L);
-		Long globalMaxCount = context.getMaxCount();
-		if (globalMaxCount != null)
-			result = new MinExpression<Long>(result, new ConstantExpression<Long>(globalMaxCount));
+		Expression<Long> globalMaxCount = getGlobalMaxCount();
+		if (!ExpressionUtil.isNull(globalMaxCount))
+			result = new MinExpression<Long>(result, globalMaxCount);
         return result;
 	}
 
 	@SuppressWarnings("unchecked")
-    public static Expression<Long> getMaxCount(InstanceDescriptor descriptor, BeneratorContext context) {
+    public static Expression<Long> getMaxCount(InstanceDescriptor descriptor) {
 		Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMaxCount() != null)
         	result = descriptor.getMaxCount();
-		if (result == null)
-			result = new ConstantExpression<Long>(null); // By default, maxCount is unlimited
-		Long globalMaxCount = context.getMaxCount();
-		if (globalMaxCount != null)
-			result = new MinExpression<Long>(result, new ConstantExpression<Long>(globalMaxCount));
+		else if (descriptor instanceof ComponentDescriptor)			
+			result = new ConstantExpression<Long>(1L);
+		else
+			return getGlobalMaxCount();
+		Expression<Long> globalMaxCount = getGlobalMaxCount();
+		if (!ExpressionUtil.isNull(globalMaxCount))
+			result = new MinExpression<Long>(result, globalMaxCount);
         return result;
 	}
 
-	public static Expression<Long> getCountPrecision(InstanceDescriptor descriptor, BeneratorContext context) {
+	private static Expression<Long> getGlobalMaxCount() {
+		return new Expression<Long>() {
+			public Long evaluate(Context context) {
+	            return ((BeneratorContext) context).getMaxCount();
+            }
+		};
+    }
+
+	public static Expression<Long> getCountPrecision(InstanceDescriptor descriptor) {
 		return (descriptor.getCountPrecision() != null ? descriptor.getCountPrecision() : new ConstantExpression<Long>(1L));
 	}
-
+/*
+	static Expression<Distribution> getCountDistribution(InstanceDescriptor descriptor) {
+		return (descriptor.getCountDistribution() != null ? descriptor.getCountDistribution() : null);
+	}
+*/
 }
