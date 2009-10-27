@@ -28,7 +28,9 @@ package org.databene.task;
 
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
+import org.databene.commons.expression.ConstantExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,7 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
     private volatile AtomicLong queuedPages;
     private volatile AtomicLong actualCount;
     
-    private ExecutorService executor;
+    private Expression<ExecutorService> executor;
 
     private Throwable exception;
 
@@ -82,7 +84,14 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
         this(realTask, totalInvocations, listener, pageSize, 1, Executors.newSingleThreadExecutor());
     }
 
-    public PagedTask(E realTask, long maxCount, PageListener listener, long pageSize, int threads, ExecutorService executor) {
+    public PagedTask(E realTask, long maxCount, PageListener listener, long pageSize, int threads, 
+    		ExecutorService executor) {
+    	this(realTask, maxCount, listener, pageSize, threads, 
+    			new ConstantExpression<ExecutorService>(executor));
+    }
+
+    public PagedTask(E realTask, long maxCount, PageListener listener, long pageSize, int threads, 
+    		Expression<ExecutorService> executor) {
     	super(realTask);
         this.listener = listener;
         this.maxCount = maxCount;
@@ -170,6 +179,7 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
     
     // non-public helpers ----------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     private long runMultiThreaded(Context context, int currentPageNo, long currentPageSize) {
         long localInvocationCount = 0;
         int maxLoopsPerPage = (int)((currentPageSize + threadCount - 1) / threadCount);
@@ -190,9 +200,9 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
                                 "it must either be used single-threaded " +
                                 "or implement the Parallelizable interface");
                 }
-                task = new LoopedTask(task, loopSize); // TODO v0.6.0 leave the loop if generator has become unavailable 
+                task = new LoopedTask(task, loopSize); 
                 TaskRunnable thread = new TaskRunnable(task, (realTask instanceof ThreadSafe ? null : context), latch);
-                executor.execute(thread);
+                executor.evaluate(context).execute(thread);
                 localInvocationCount += loopSize;
             } else
                 latch.countDown();
@@ -210,6 +220,7 @@ public class PagedTask<E extends Task> extends TaskProxy<E> implements Thread.Un
         return localInvocationCount;
     }
 
+    @SuppressWarnings("unchecked")
     private long runSingleThreaded(Context context, long currentPageSize) {
         Task task = new LoopedTask(realTask, currentPageSize);
         task.run(context);
