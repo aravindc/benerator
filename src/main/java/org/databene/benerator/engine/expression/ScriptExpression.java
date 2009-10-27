@@ -47,6 +47,11 @@ public class ScriptExpression<E> implements Expression<E> {
 	private Converter<Object, E> converter;
 	private E defaultValue;
 
+    @SuppressWarnings("unchecked")
+    public ScriptExpression(String script) {
+    	this(script, (Class<E>) Object.class);
+    }
+
     public ScriptExpression(String script, Class<E> resultType) {
     	this(script, resultType, null);
     }
