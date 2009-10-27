@@ -37,7 +37,8 @@ import java.util.Set;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.expression.xml.XMLAttributeExpression;
+import org.databene.benerator.engine.parser.xml.BeanParser;
+import org.databene.benerator.engine.parser.xml.IncludeParser;
 import org.databene.benerator.engine.task.CreateBeanTask;
 import org.databene.benerator.engine.task.IncludeTask;
 import org.databene.benerator.parser.ModelParser;
@@ -106,6 +107,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     private List<String> propertiesFiles;
 	private Map<String, String> namespaces;
 	private ResourceManager resourceManager = new ResourceManagerSupport();
+
+	private BeanParser beanParser = new BeanParser();
 
     
     // constructors ----------------------------------------------------------------------------------------------------
@@ -259,14 +262,13 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                IncludeTask task = parser.parseInclude(child);
-                String filename = task.getUri();
+                IncludeTask task = new IncludeParser().parse(child, this);
+                String filename = task.getUri().evaluate(context);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
-                Expression<Object> beanExpression = parser.parseBean(child);
-                XMLAttributeExpression<String> idExpression 
-                	= new XMLAttributeExpression<String>(child, "id", String.class);
-				new CreateBeanTask(idExpression, beanExpression, this).run(context);
+                Expression<?> beanExpression = beanParser.parseBeanExpression(child);
+                String id = child.getAttribute("id");
+				new CreateBeanTask(id, beanExpression, this).run(context);
                 System.out.println(beanExpression.evaluate(context));
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " 
@@ -537,7 +539,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element info : infos) {
             String childName = XMLUtil.localName(info);
             if ("bean".equals(childName))
-                parser.parseBean(info);
+                beanParser.parseBeanExpression(info);
             else if ("variable".equals(childName))
                 parser.parseVariable(info, (ComplexTypeDescriptor) descriptor);
             else if (ATTRIBUTE.equals(childName))
