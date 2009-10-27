@@ -8,13 +8,13 @@ import java.util.Locale;
  * (c) Copyright 2006 by Volker Bergmann
  * Created: 26.06.2006 19:06:23
  */
-public class TitleGenerator extends LocalCSVGenerator<String> {
+public class AcademicTitleGenerator extends LocalCSVGenerator<String> {
 
-    public TitleGenerator() {
+    public AcademicTitleGenerator() {
         this(Locale.getDefault());
     }
 
-    public TitleGenerator(Locale locale) {
+    public AcademicTitleGenerator(Locale locale) {
         super("org/databene/domain/person/title", locale, ".csv", "utf-8");
     }
 }

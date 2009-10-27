@@ -54,7 +54,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     private Generator<Boolean> secondNameTest;
     private FamilyNameGenerator familyNameGen;
     private Converter<String, String> femaleFamilyNameConverter;
-    private TitleGenerator titleGen;
+    private AcademicTitleGenerator acadTitleGen;
     private SalutationProvider salutationProvider;
 
     private BirthDateGenerator birthDateGenerator;
@@ -77,7 +77,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 		secondNameTest = new BooleanGenerator(0.2);
 		genderGen = new GenderGenerator();
         birthDateGenerator = new BirthDateGenerator(15, 105);
-        titleGen = new TitleGenerator(locale);
+        acadTitleGen = new AcademicTitleGenerator(locale);
         salutationProvider = new SalutationProvider(locale);
 		init(datasetName);
 	}
@@ -109,11 +109,11 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	}
 	
 	public Locale getLocale() {
-		return titleGen.getLocale();
+		return acadTitleGen.getLocale();
 	}
 
 	public void setLocale(Locale locale) {
-        titleGen.setLocale(locale);
+        acadTitleGen.setLocale(locale);
         salutationProvider.setLocale(locale);
     }
 
@@ -148,7 +148,8 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 			familyName = femaleFamilyNameConverter.convert(familyName);
 		person.setFamilyName(familyName);
         person.setSalutation(salutationProvider.salutation(person.getGender()));
-        person.setTitle(titleGen.generate());
+        person.setAcademicTitle(acadTitleGen.generate());
+        // TODO generate nobility title. See http://en.wikipedia.org/wiki/Royal_and_noble_ranks and http://en.wikipedia.org/wiki/Nobility#Nobility_by_nation
         person.setBirthDate(birthDateGenerator.generate());
         return person;
     }

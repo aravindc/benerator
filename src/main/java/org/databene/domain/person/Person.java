@@ -18,7 +18,8 @@ public class Person {
     private String familyName;
     private Gender gender;
     private String salutation;
-    private String title;
+    private String academicTitle;
+    private String nobilityTitle;
     private Date birthDate;
 
     public String getSalutation() {
@@ -30,14 +31,30 @@ public class Person {
     }
 
     public String getTitle() {
-        return title;
+        return getAcademicTitle();
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.setAcademicTitle(title);
     }
 
-    public Gender getGender() {
+    public String getAcademicTitle() {
+        return academicTitle;
+    }
+
+    public void setAcademicTitle(String academicTitle) {
+        this.academicTitle = academicTitle;
+    }
+
+    public String getNobilityTitle() {
+    	return nobilityTitle;
+    }
+
+	public void setNobilityTitle(String nobilityTitle) {
+    	this.nobilityTitle = nobilityTitle;
+    }
+
+	public Gender getGender() {
         return gender;
     }
 
@@ -79,7 +96,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return salutation + ' ' + (!StringUtil.isEmpty(title) ? title + " " : "") + givenName + ' ' + 
+        return salutation + ' ' + (!StringUtil.isEmpty(academicTitle) ? academicTitle + " " : "") + givenName + ' ' + 
         	(secondGivenName != null ? secondGivenName + ' ' : "") + familyName + ", *" + df.format(birthDate);
     }
     
