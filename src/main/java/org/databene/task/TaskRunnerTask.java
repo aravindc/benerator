@@ -29,6 +29,7 @@ package org.databene.task;
 import java.util.concurrent.ExecutorService;
 
 import org.databene.commons.Context;
+import org.databene.commons.Expression;
 
 /**
  * {@link Task} implementation that executes another task 
@@ -43,13 +44,14 @@ import org.databene.commons.Context;
 
 public class TaskRunnerTask<E extends Task> extends TaskProxy<E> {
 
-    private int count;
-    private int pageSize;
-    private int threads;
-    private PageListener pager;
-    private ExecutorService executor;
+    private Expression<Integer> count;
+    private Expression<Integer> pageSize;
+    private Expression<Integer> threads;
+    private Expression<PageListener> pager;
+    private Expression<ExecutorService> executor;
 
-	public TaskRunnerTask(E realTask, int count, int pageSize, int threads, PageListener pager, ExecutorService executor) {
+	public TaskRunnerTask(E realTask, Expression<Integer> count, Expression<Integer> pageSize, 
+			Expression<Integer> threads, Expression<PageListener> pager, Expression<ExecutorService> executor) {
 	    super(realTask);
 	    this.count = count;
 	    this.pageSize = pageSize;
@@ -58,9 +60,30 @@ public class TaskRunnerTask<E extends Task> extends TaskProxy<E> {
 	    this.executor = executor;
     }
 
+	public Expression<Integer> getCount() {
+    	return count;
+    }
+
+	public Expression<Integer> getPageSize() {
+    	return pageSize;
+    }
+
+	public Expression<Integer> getThreads() {
+    	return threads;
+    }
+
+	public Expression<PageListener> getPager() {
+    	return pager;
+    }
+
 	@Override
 	public void run(Context context) {
-	    TaskRunner.run(realTask, context, count, pager, pageSize, threads, executor);
+	    TaskRunner.run(realTask, context, 
+	    		count.evaluate(context), 
+	    		(pager != null ? pager.evaluate(context) : null), 
+	    		pageSize.evaluate(context), 
+	    		threads.evaluate(context), 
+	    		executor.evaluate(context));
 	}
 	
 }
