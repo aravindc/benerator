@@ -29,9 +29,9 @@ package org.databene.benerator.engine.expression.xml;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DescriptorRunner;
+import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.factory.DescriptorUtil;
-import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Escalator;
@@ -60,13 +60,14 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 
 	private Element entityElement;
 	private boolean consumersExpected;
-	private DescriptorRunner descriptorRunner;
+	private BeanParser beanParser = new BeanParser();
+	private ResourceManager resourceManager;
 
-    public XMLConsumerExpression(Element entityElement, boolean consumersExpected, DescriptorRunner descriptorRunner) {
+    public XMLConsumerExpression(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
     	this.entityElement = entityElement;
     	this.consumersExpected = consumersExpected;
 		this.escalator = new LoggerEscalator();
-		this.descriptorRunner = descriptorRunner;
+		this.resourceManager = resourceManager;
     }
 
 	@SuppressWarnings("unchecked")
@@ -85,8 +86,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 				String consumerSpec = parseStringAttribute(consumerElement, "ref", context);
 				consumerChain.addComponent(DescriptorUtil.parseConsumersSpec(consumerSpec, beneratorContext));
 			} else if (consumerElement.hasAttribute("class")) {
-				ModelParser parser = new ModelParser((BeneratorContext) context);
-				Expression<Object> beanExpr = parser.parseBean(consumerElement);
+				Expression<?> beanExpr = beanParser.parseBeanExpression(consumerElement);
 				consumerChain.addComponent((Consumer<Entity>) beanExpr.evaluate(context));
 			} else
 				throw new UnsupportedOperationException(
@@ -95,7 +95,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 		if (consumerChain.componentCount() == 0 && consumersExpected)
 			escalator.escalate("No consumers defined for " + entityName, this, null);
 		for (Consumer<Entity> consumer : consumerChain.getComponents())
-			descriptorRunner.addResource(consumer);
+			resourceManager.addResource(consumer);
 		if (EL_UPDATE_ENTITIES.equals(entityElement.getNodeName())) {
 			String sourceName = parseStringAttribute(entityElement, "source", context);
 			Object source = context.get(sourceName);
