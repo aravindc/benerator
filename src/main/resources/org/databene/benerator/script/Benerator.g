@@ -97,6 +97,12 @@ catch (RecognitionException e) {
                           Parser section
 *********************************************************************************************/
 
+transitionList
+    :   transition (','! transition)*;
+
+transition
+    :   literal '->'^ literal ('['! expression ']'!)?;
+
 assignment
     :   IDENTIFIER '='^ expression;
 
@@ -334,6 +340,7 @@ SHIFT_LEFT:   '<<';
 GE  :   '>=';
 LT  :   '<';
 LE  :   '<=';
+ARROW:   '->';
               
 IDENTIFIER
     :   IdentifierStart IdentifierPart*
