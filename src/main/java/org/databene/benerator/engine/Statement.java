@@ -3,12 +3,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -24,40 +19,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
-
-import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.IOUtil;
-import org.databene.task.Task;
+package org.databene.benerator.engine;
 
 /**
- * Task implementation that executes a series of other tasks consecutively.<br/>
- * <br/>
- * Created at 24.07.2009 06:32:43
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 27.10.2009 15:57:12
+ * @since TODO version
  * @author Volker Bergmann
  */
-
-public class SerialTask extends CompositeTask {
-
-	public SerialTask() {
-		this(null);
-	}
-	
-    public SerialTask(Expression errorHandler) {
-	    this(null, errorHandler);
-    }
-
-	public SerialTask(String taskName, Expression errorHandler) {
-	    super(taskName, errorHandler);
-    }
-
-	public void run(Context context) {
-	    for (Task subTask : subTasks) {
-	    	subTask.run(context);
-	    	IOUtil.close(subTask);
-	    }
-    }
-	
+public interface Statement {
+	void execute(BeneratorContext context);
 }

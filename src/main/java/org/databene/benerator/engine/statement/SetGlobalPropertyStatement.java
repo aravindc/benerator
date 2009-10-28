@@ -24,49 +24,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.expression.xml;
-
-import java.util.Collection;
+package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.parser.ModelParser;
-import org.databene.commons.CollectionUtil;
-import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
-import org.databene.commons.xml.XMLUtil;
-import org.databene.model.data.ComponentDescriptor;
-import org.databene.task.AbstractTask;
-import org.w3c.dom.Element;
+import org.databene.benerator.engine.Statement;
+import org.databene.commons.Expression;
+import org.databene.commons.mutator.AnyMutator;
 
 /**
- * Parses the default setup of entity components.<br/>
+ * Sets a global Benerator property.<br/>
  * <br/>
- * Created at 23.07.2009 18:47:44
+ * Created at 23.07.2009 14:50:08
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class XMLDefaultComponentsTask extends AbstractTask {
+public class SetGlobalPropertyStatement implements Statement {
 	
-	private static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet("attribute", "part", "id", "reference");
+	private String propertyName;
+	private Expression valueExpression;
 
-	private Element element;
-
-    public XMLDefaultComponentsTask(Element element) {
-    	this.element = element;
+    public SetGlobalPropertyStatement(String propertyName, Expression valueExpression) {
+    	this.propertyName = propertyName;
+    	this.valueExpression = valueExpression;
     }
 
-	public void run(Context context) {
-		BeneratorContext beneratorContext = (BeneratorContext) context;
-		for (Element child : XMLUtil.getChildElements(element)) {
-			String childType = XMLUtil.localName(child);
-			if (COMPONENT_TYPES.contains(childType)) {
-				ModelParser parser = new ModelParser(beneratorContext);
-				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null);
-				beneratorContext.setDefaultComponentConfig(component);
-			} else
-				throw new ConfigurationError("Unexpected element: " + childType);
-		}
+	public void execute(BeneratorContext context) {
+        Object value = valueExpression.evaluate(context);
+		if (propertyName.startsWith("benerator."))
+	        AnyMutator.setValue(context, propertyName, value, true);
+        else {
+			context.setProperty(propertyName, value);
+        }
 	}
 
 }

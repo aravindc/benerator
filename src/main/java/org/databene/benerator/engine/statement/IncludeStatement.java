@@ -24,19 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
 import java.io.IOException;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.parser.DefaultEntryConverter;
-import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.script.ScriptConverter;
-import org.databene.task.AbstractTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,13 +46,13 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class IncludeTask extends AbstractTask {
+public class IncludeStatement implements Statement {
 	
-	private static Logger logger = LoggerFactory.getLogger(IncludeTask.class);
+	private static Logger logger = LoggerFactory.getLogger(IncludeStatement.class);
 
 	private Expression uri;
 	
-    public IncludeTask(Expression uri) {
+    public IncludeStatement(Expression uri) {
     	this.uri = uri;
     }
     
@@ -66,14 +64,10 @@ public class IncludeTask extends AbstractTask {
     	this.uri = uri;
     }
 
-	public void run(Context context) {
-		if (!(context instanceof BeneratorContext))
-			throw new ConfigurationError(getClass() + " requires a BeneratorContext, found: " 
-					+ BeanUtil.simpleClassName(context));
-	    BeneratorContext beneratorContext = (BeneratorContext) context;
-		String uriValue = IOUtil.resolveLocalUri((String) uri.evaluate(context), beneratorContext.getContextUri());
+	public void execute(BeneratorContext context) {
+		String uriValue = IOUtil.resolveLocalUri((String) uri.evaluate(context), context.getContextUri());
         try {
-            importProperties(uriValue, beneratorContext);
+            importProperties(uriValue, context);
         } catch (IOException e) {
             throw new ConfigurationError("Properties file not found for uri: " + uri);
         }

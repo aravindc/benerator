@@ -25,7 +25,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
-import org.databene.benerator.engine.task.DefineDatabaseTask;
+import org.databene.benerator.engine.statement.DefineDatabaseStatement;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
@@ -44,7 +44,7 @@ public class DatabaseParser extends AbstractDescriptorParser {
 	    super(EL_DATABASE);
     }
 
-	public DefineDatabaseTask parse(Element element, ResourceManager resourceManager) {
+	public DefineDatabaseStatement parse(Element element, ResourceManager resourceManager) {
 		try {
 			StringExpression  id       = parseStringAttr(ATT_ID,       element);
 			StringExpression  url      = parseStringAttr(ATT_URL,      element);
@@ -55,7 +55,7 @@ public class DatabaseParser extends AbstractDescriptorParser {
 			Expression batch     = new TypedScriptExpression(element.getAttribute(ATT_BATCH), Boolean.class, false);
 			Expression fetchSize = new TypedScriptExpression(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
 			Expression readOnly  = new TypedScriptExpression(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
-			return new DefineDatabaseTask(id, url, driver, user, password, schema, batch, fetchSize, readOnly, resourceManager);
+			return new DefineDatabaseStatement(id, url, driver, user, password, schema, batch, fetchSize, readOnly, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}

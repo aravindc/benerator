@@ -28,7 +28,7 @@ import java.text.ParseException;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
-import org.databene.benerator.engine.task.CreateBeanTask;
+import org.databene.benerator.engine.statement.CreateBeanStatement;
 import org.databene.benerator.script.Assignment;
 import org.databene.benerator.script.BeanConstruction;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -54,11 +54,11 @@ public class BeanParser extends AbstractDescriptorParser {
 	    super(EL_BEAN);
     }
 
-	public CreateBeanTask parse(Element element, ResourceManager resourceManager) {
+	public CreateBeanStatement parse(Element element, ResourceManager resourceManager) {
 		try {
 			String id = element.getAttribute(ATT_ID);
 			Expression bean = parseBeanExpression(element);
-			return new CreateBeanTask(id, bean, resourceManager);
+			return new CreateBeanStatement(id, bean, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}

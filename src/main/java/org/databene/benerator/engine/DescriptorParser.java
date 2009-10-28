@@ -21,7 +21,6 @@
 
 package org.databene.benerator.engine;
 
-import org.databene.task.Task;
 import org.w3c.dom.Element;
 
 /**
@@ -32,5 +31,5 @@ import org.w3c.dom.Element;
  */
 public interface DescriptorParser {
 	boolean supports(String elementName, String parentName);
-	Task parse(Element element, ResourceManager resourceManager);
+	Statement parse(Element element, ResourceManager resourceManager);
 }

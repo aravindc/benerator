@@ -24,11 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.commons.Assert;
@@ -36,8 +35,9 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
-import org.databene.task.AbstractTask;
+import org.databene.task.SerialTask;
 import org.databene.task.Task;
+import org.databene.task.TaskException;
 import org.databene.task.ThreadSafe;
 
 /**
@@ -45,13 +45,13 @@ import org.databene.task.ThreadSafe;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public  class GenerateAndConsumeEntityTask extends AbstractTask implements ThreadSafe {
+public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadSafe {
 
     private Generator<Entity> entityGenerator;
-    private Expression consumerExpr;
-    private List<Task> subTasks;
     private boolean isSubTask;
-	private Consumer<Entity> consumer;
+    private Expression consumerExpr;
+
+    private Consumer<Entity> consumer;
     
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
     		Expression consumerExpr, boolean isSubTask, Expression errorHandler) {
@@ -65,10 +65,6 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
 
     // interface -------------------------------------------------------------------------------------------------------
     
-    public void addSubTask(Task task) {
-    	this.subTasks.add(task);
-    }
-    
     public Generator<Entity> getEntityGenerator() {
     	return entityGenerator;
     }
@@ -78,8 +74,10 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
         return entityGenerator.available();
     }
     
+    @Override
     public void run(Context context) {
     	try {
+    		// generate entity
 	        Entity entity = null;
 	        synchronized (entityGenerator) {
 	            if (entityGenerator.available())
@@ -88,15 +86,12 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
 	                return;
 	        }
 	        if (entity != null) {
+		        // consume entity
 	        	Consumer<Entity> consumer = getConsumer(context);
 	        	if (consumer != null)
 	        		consumer.startConsuming(entity);
-	            for (Task subTask : subTasks) {
-	                if (subTask instanceof PagedCreateEntityTask)
-	                    ((PagedCreateEntityTask) subTask).reset();
-	                subTask.run(context);
-	                subTask.close();
-	            }
+	        	// generate and consume sub entities
+	        	super.run(context);
 	        	if (consumer != null)
 	        		consumer.finishConsuming(entity);
 	        }
@@ -105,15 +100,32 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     	}
     }
     
+    @Override
+    protected void runSubTask(Context context, Task subTask) {
+        try {
+	        if (subTask instanceof CreateOrUpdateEntityStatement)
+	            ((CreateOrUpdateEntityStatement) subTask).getTarget().reset();
+	        super.runSubTask(context, subTask);
+	        subTask.close();
+        } catch (IOException e) {
+	        throw new TaskException(e);
+        }
+    }
+    
     public void reset() {
 	    entityGenerator.reset();
     }
 
 	@Override
-    public void close() throws IOException {
+    public void close() {
         if (!isSubTask && consumer != null)
             consumer.flush();
         super.close();
+    }
+
+	public void flushConsumer() {
+		if (consumer != null)
+			consumer.flush();
     }
 
 	// non-public helpers ----------------------------------------------------------------------------------------------

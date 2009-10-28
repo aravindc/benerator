@@ -22,47 +22,42 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.task.GenerateAndConsumeEntityTask;
-import org.databene.benerator.engine.task.LazyTask;
-import org.databene.benerator.engine.task.SerialTask;
+import org.databene.benerator.engine.statement.CompositeStatement;
+import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
+import org.databene.benerator.engine.statement.LazyStatement;
+import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.model.data.Entity;
-import org.databene.task.Task;
-import org.databene.task.TaskProxy;
 
 /**
- * The root {@link Task} for executing descriptor file based data generation.<br/><br/>
+ * The root {@link Statement} for executing descriptor file based data generation.<br/><br/>
  * Created: 24.10.2009 11:08:46
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeneratorMainTask extends SerialTask {
+public class BeneratorRootStatement extends CompositeStatement {
 
-	@SuppressWarnings("unchecked")
     public Generator<Entity> getGenerator(String name, BeneratorContext context) {
-		for (Task subTask : subTasks) {
-			if (match(name, subTask))
-				return ((GenerateAndConsumeEntityTask) subTask).getEntityGenerator();
-			Task tmp = subTask;
-			while (tmp instanceof TaskProxy || tmp instanceof LazyTask) {
-				if (tmp instanceof TaskProxy)
-					tmp = ((TaskProxy) tmp).getRealTask();
+		// TODO use visitor pattern
+		for (Statement subStatement : subStatements) {
+			if (match(name, subStatement))
+				return ((GenerateAndConsumeEntityTask) subStatement).getEntityGenerator();
+			Statement tmp = subStatement;
+			while (tmp instanceof StatementProxy || tmp instanceof LazyStatement) {
+				if (tmp instanceof StatementProxy)
+					tmp = ((StatementProxy) tmp).getRealStatement();
 				else
-					tmp = (Task) ((LazyTask) tmp).getTargetExpression().evaluate(null);
+					tmp = (Statement) ((LazyStatement) tmp).getTargetExpression().evaluate(null);
 				if (match(name, tmp))
 					return ((GenerateAndConsumeEntityTask) tmp).getEntityGenerator();
 			}
-			subTask.run(context);
+			subStatement.execute(context);
 		}
 		throw new IllegalArgumentException("Generator not found: " + name);
 	}
 
-	private boolean match(String name, Task task) {
-	    return (task instanceof GenerateAndConsumeEntityTask && name.equals(task.getTaskName()));
+	private boolean match(String name, Statement statement) {
+		return false;
+// TODO	    return (statement instanceof GenerateAndConsumeEntityTask && name.equals(statement.getTaskName()));
     }
-	
-	@Override
-	public void close() {
-	    super.close();
-	    // TODO close resources
-	}
+
 }

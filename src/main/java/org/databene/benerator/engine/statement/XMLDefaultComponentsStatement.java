@@ -24,52 +24,47 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
+
+import java.util.Collection;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Context;
-import org.databene.commons.IOUtil;
-import org.databene.task.Task;
-import org.databene.task.TaskProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.databene.benerator.engine.Statement;
+import org.databene.benerator.parser.ModelParser;
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.xml.XMLUtil;
+import org.databene.model.data.ComponentDescriptor;
+import org.w3c.dom.Element;
 
 /**
- * {Task} implementation that acts as a proxy to another tasks, forwards calls to it, 
- * measures execution times and logs them.<br/>
+ * Parses the default setup of entity components.<br/>
  * <br/>
- * Created at 23.07.2009 06:55:46
+ * Created at 23.07.2009 18:47:44
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class TimedEntityTask extends TaskProxy<Task> {
+public class XMLDefaultComponentsStatement implements Statement { // TODO get rid of this
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimedEntityTask.class);
+	private static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet("attribute", "part", "id", "reference");
 
-    public TimedEntityTask(Task realTask) {
-    	super(realTask);
+	private Element element;
+
+    public XMLDefaultComponentsStatement(Element element) {
+    	this.element = element;
     }
 
-	@Override
-    public void run(Context context) {
-	    long t0 = System.currentTimeMillis();
-		try {
-			super.run(context);
-		} finally {
-			IOUtil.close(realTask);
+	public void execute(BeneratorContext context) {
+		for (Element child : XMLUtil.getChildElements(element)) {
+			String childType = XMLUtil.localName(child);
+			if (COMPONENT_TYPES.contains(childType)) {
+				ModelParser parser = new ModelParser(context);
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null);
+				context.setDefaultComponentConfig(component);
+			} else
+				throw new ConfigurationError("Unexpected element: " + childType);
 		}
-		long dc = ((BeneratorContext) context).getLatestGenerationCount();
-		long dt = System.currentTimeMillis() - t0;
-		String taskId = realTask.getTaskName();
-		if (dc == 0)
-			logger.info("No entities created from '" + taskId + "' setup");
-		else if (dt > 0)
-			logger.info("Created " + dc + " entities from '"
-					+ taskId + "' setup in " + dt + " ms ("
-					+ (dc * 1000 / dt) + "/s)");
-		else
-			logger.info("Created " + dc + " entities from '" + taskId);
-    }
+	}
 
 }

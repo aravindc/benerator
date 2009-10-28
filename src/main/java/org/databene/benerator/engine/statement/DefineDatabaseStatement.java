@@ -24,16 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.commons.Context;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.StringExpression;
 import org.databene.model.data.DataModel;
 import org.databene.platform.db.DBSystem;
-import org.databene.task.AbstractTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,9 +44,9 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class DefineDatabaseTask extends AbstractTask { // TODO move to DB package?
+public class DefineDatabaseStatement implements Statement { // TODO move to DB package?
 	
-	private static Logger logger = LoggerFactory.getLogger(DefineDatabaseTask.class);
+	private static Logger logger = LoggerFactory.getLogger(DefineDatabaseStatement.class);
 	
 	private StringExpression id;
 	private StringExpression url;
@@ -60,7 +59,7 @@ public class DefineDatabaseTask extends AbstractTask { // TODO move to DB packag
 	private Expression readOnly;
 	private ResourceManager resourceManager;
 	
-	public DefineDatabaseTask(StringExpression id, StringExpression url, StringExpression driver, 
+	public DefineDatabaseStatement(StringExpression id, StringExpression url, StringExpression driver, 
 			StringExpression user, StringExpression password, 
 			StringExpression schema, Expression batch, 
 			Expression fetchSize, Expression readOnly, ResourceManager resourceManager) {
@@ -76,7 +75,7 @@ public class DefineDatabaseTask extends AbstractTask { // TODO move to DB packag
 	    this.resourceManager = resourceManager;
     }
 
-    public void run(Context context) {
+	public void execute(BeneratorContext context) {
 	    logger.debug("Instantiating database with id '" + id + "'");
 	    String idValue = id.evaluate(context);
 		DBSystem db = new DBSystem(
@@ -90,8 +89,7 @@ public class DefineDatabaseTask extends AbstractTask { // TODO move to DB packag
 	    db.setFetchSize((Integer) fetchSize.evaluate(context));
 	    db.setBatch((Boolean) readOnly.evaluate(context));
 	    context.set(idValue, db);
-	    BeneratorContext beneratorContext = (BeneratorContext) context;
-	    DataModel.getDefaultInstance().addDescriptorProvider(db, beneratorContext.isValidate());
+	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate());
 	    resourceManager.addResource(db);
     }
 

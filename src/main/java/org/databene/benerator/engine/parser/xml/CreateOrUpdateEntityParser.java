@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseAttribute;
-import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseIntAttribute;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
 import org.databene.benerator.Generator;
@@ -31,13 +30,17 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
+import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.expression.StringScriptExpression;
-import org.databene.benerator.engine.expression.context.ExecutorServiceExpression;
+import org.databene.benerator.engine.expression.TypedScriptExpression;
+import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
-import org.databene.benerator.engine.task.LazyTask;
-import org.databene.benerator.engine.task.PagedCreateEntityTask;
-import org.databene.benerator.engine.task.TimedEntityTask;
+import org.databene.benerator.engine.statement.CreateOrUpdateEntityStatement;
+import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
+import org.databene.benerator.engine.statement.LazyStatement;
+import org.databene.benerator.engine.statement.TimedEntityStatement;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
@@ -51,7 +54,6 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -75,21 +77,38 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 	    		|| DescriptorConstants.EL_UPDATE_ENTITIES.equals(elementName);
     }
 	
-	public Task parse(final Element element, final ResourceManager resourceManager) {
+	public Statement parse(final Element element, final ResourceManager resourceManager) {
 		Expression expression = new Expression() {
-			public PagedCreateEntityTask evaluate(Context context) {
-	            return parseCreateEntities(element, false, resourceManager, (BeneratorContext) context);
+			public Statement evaluate(Context context) {
+				final CreateOrUpdateEntityStatement creator = parseCreateEntities(element, false, resourceManager, (BeneratorContext) context);
+				return new Statement() {
+					public void execute(BeneratorContext context) {
+						creator.execute(context);
+                    }
+				};
             }
 		};
-		return new TimedEntityTask(new LazyTask(expression));
+		return new TimedEntityStatement(new LazyStatement(expression));
 	}
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked")
-    public PagedCreateEntityTask parseCreateEntities(Element element, boolean isSubTask, 
+    public CreateOrUpdateEntityStatement parseCreateEntities(Element element, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
-		InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
+	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
+		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
+		
+		Expression countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
+		String localPageSize = element.getAttribute(ATT_PAGESIZE);
+		Expression pageSize = new ScriptExpression(localPageSize, new DefaultPageSizeExpression());
+		Expression threads = new TypedScriptExpression(element.getAttribute(ATT_THREADS), Integer.class, 1);
+		Expression pager = new ScriptExpression(element.getAttribute(ATT_PAGER), null);
+		CreateOrUpdateEntityStatement creator = new CreateOrUpdateEntityStatement(task, countExpression, pageSize, pager, threads);
+		return creator;
+	}
+
+	@SuppressWarnings("unchecked")
+    private GenerateAndConsumeEntityTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, ResourceManager resourceManager, BeneratorContext context) {
 		descriptor.setNullable(false);
 		StringScriptExpression onErrorExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
 		Expression errorHandler = new ErrorHandlerExpression(onErrorExpr, getClass().getName());
@@ -99,34 +118,28 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 			logger.debug(descriptor.toString());
 		
 		// create generator
-		Generator<Entity> configuredGenerator = (Generator<Entity>) InstanceGeneratorFactory
+		Generator<Entity> generator = (Generator<Entity>) InstanceGeneratorFactory
 				.createSingleInstanceGenerator(descriptor, context);
-		
-		// parse task properties
-		Expression countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
-		int pageSize  = parseIntAttribute(element, ATT_PAGESIZE, context, context.getDefaultPagesize());
-		int threads   = parseIntAttribute(element, ATT_THREADS, context, 1);
 		
 		// parse consumers
 		Expression consumer = parseConsumers(element, EL_CREATE_ENTITIES.equals(element.getNodeName()), resourceManager);
 		
-		// done
 		String taskName = descriptor.getName();
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
-		Expression executor = new ExecutorServiceExpression();
-		PagedCreateEntityTask task = new PagedCreateEntityTask(taskName, countExpression, pageSize,
-				threads, configuredGenerator, consumer, executor, isSubTask, errorHandler);
 		
+		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubTask, errorHandler);
+
 		// handle sub-create-entities
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String nodeName = child.getNodeName();
-			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName))
-				task.addSubTask(parseCreateEntities(child, true, resourceManager, context));
+			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName)) {
+			    InstanceDescriptor subDescriptor = mapEntityDescriptorElement(child, context);
+				task.addSubTask(parseTask(child, subDescriptor, true, resourceManager, context));
+			}
 		}
-		
 		return task;
-	}
+    }
 
 	private Expression parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
 		return new XMLConsumerExpression(entityElement, consumersExpected, resourceManager);

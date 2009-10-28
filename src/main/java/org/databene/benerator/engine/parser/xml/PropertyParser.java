@@ -29,8 +29,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.ScriptedLiteral;
-import org.databene.benerator.engine.expression.StringScriptExpression;
-import org.databene.benerator.engine.task.SetGlobalPropertyTask;
+import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -50,7 +49,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_PROPERTY);
     }
 
-	public SetGlobalPropertyTask parse(Element element, ResourceManager resourceManager) {
+	public SetGlobalPropertyStatement parse(Element element, ResourceManager resourceManager) {
 		String propertyName = element.getAttribute(ATT_NAME);
 		Expression valueExpression;
 		if (element.hasAttribute(ATT_VALUE))
@@ -61,7 +60,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 			valueExpression = parseSource(element.getAttribute(ATT_SOURCE));
 		else
 			throw new ConfigurationError("Syntax error in property definition");
-		return new SetGlobalPropertyTask(propertyName, valueExpression);
+		return new SetGlobalPropertyStatement(propertyName, valueExpression);
 	}
 
     private Expression parseSource(String source) {

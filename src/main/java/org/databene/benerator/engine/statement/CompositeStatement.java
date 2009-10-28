@@ -3,12 +3,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -24,34 +19,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
-import org.databene.commons.Context;
-import org.databene.commons.LogCategories;
-import org.databene.task.AbstractTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
+import org.databene.commons.Element;
+import org.databene.commons.Visitor;
 
 /**
- * Parses a comment and logs its content to the category 'org.databene.COMMENT'.<br/>
- * <br/>
- * Created at 22.07.2009 08:11:22
+ * TODO Document class.<br/><br/>
+ * Created: 27.10.2009 15:59:21
  * @since 0.6.0
  * @author Volker Bergmann
  */
-
-public class CommentTask extends AbstractTask {
+public class CompositeStatement implements Statement, Element<Object> {
 	
-	private static final Logger commentLogger = LoggerFactory.getLogger(LogCategories.COMMENT);
+	protected List<Statement> subStatements = new ArrayList<Statement>();
 
-	private String comment;
+	public void addSubStatement(Statement subStatement) {
+		subStatements.add(subStatement);
+	}
 	
-    public CommentTask(String comment) {
-	    this.comment = comment;
+	public void execute(BeneratorContext context) {
+	    for (Statement subStatement : subStatements)
+	    	subStatement.execute(context);
     }
 
-	public void run(Context context) {
-		commentLogger.debug(comment);
-	}
+	@SuppressWarnings("unchecked")
+    public void accept(Visitor<Object> visitor) {
+		visitor.visit(this);
+	    for (Statement subStatement : subStatements)
+	    	if (subStatement instanceof Element)
+	    		((Element) subStatement).accept(visitor);
+	    	else
+	    		visitor.visit(subStatement);
+    }
 
 }

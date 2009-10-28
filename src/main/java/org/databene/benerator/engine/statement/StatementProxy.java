@@ -3,12 +3,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -24,30 +19,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
-import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.task.AbstractTask;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 
 /**
- * Prints out a message to the console.<br/>
- * <br/>
- * Created at 22.07.2009 07:13:28
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 27.10.2009 16:06:04
+ * @since TODO version
  * @author Volker Bergmann
  */
-
-public class EchoTask extends AbstractTask {
+public class StatementProxy implements Statement {
 	
-	private Expression expression;
+	protected Statement realStatement;
 
-    public EchoTask(Expression expression) {
-	    this.expression = expression;
+	public StatementProxy(Statement realStatement) {
+	    this.realStatement = realStatement;
     }
 
-	public void run(Context context) {
-	    System.out.println(expression.evaluate(context));
+	public void execute(BeneratorContext context) {
+	    realStatement.execute(context);
+    }
+
+	public Statement getRealStatement() {
+	    return realStatement;
     }
 
 }

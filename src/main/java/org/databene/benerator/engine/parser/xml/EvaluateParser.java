@@ -29,7 +29,7 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
-import org.databene.benerator.engine.task.EvaluateTask;
+import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
 import org.databene.commons.expression.StringExpression;
@@ -48,7 +48,7 @@ public class EvaluateParser implements DescriptorParser {
 	    	|| DescriptorConstants.EL_EXECUTE.equals(elementName);
     }
 
-	public EvaluateTask parse(Element element, ResourceManager resourceManager) {
+	public EvaluateStatement parse(Element element, ResourceManager resourceManager) {
 		StringExpression id           = parseStringAttr(ATT_ID, element);
 		StringExpression text         = parseTextElem(element);
 		StringExpression uri          = parseStringAttr(ATT_URI,  element);
@@ -59,7 +59,7 @@ public class EvaluateParser implements DescriptorParser {
 		Expression optimize           = new TypedScriptExpression(
 											element.getAttribute(ATT_OPTIMIZE), Boolean.class, false);
 		Expression assertion    = new ScriptExpression(element.getAttribute(ATT_ASSERT));
-		return new EvaluateTask(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
+		return new EvaluateStatement(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
 	}
 
 }

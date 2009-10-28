@@ -24,52 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
-import java.io.Closeable;
-
-import org.databene.benerator.engine.ResourceManager;
-import org.databene.commons.BeanUtil;
-import org.databene.commons.Context;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
-import org.databene.commons.context.ContextAware;
-import org.databene.model.data.DataModel;
-import org.databene.model.data.DescriptorProvider;
-import org.databene.task.AbstractTask;
-import org.databene.task.Task;
 
 /**
- * {@link Task} implementation that instantiates a JavaBean.<br/>
+ * Prints out a message to the console.<br/>
  * <br/>
- * Created at 24.07.2009 07:00:52
+ * Created at 22.07.2009 07:13:28
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class CreateBeanTask extends AbstractTask {
+public class EchoStatement implements Statement {
 	
-	private String id;
-    private Expression beanExpression;
-    private ResourceManager resourceManager;
+	private Expression expression;
 
-    public CreateBeanTask(String id, Expression beanExpression, ResourceManager resourceManager) {
-    	this.id = id;
-        this.beanExpression = beanExpression;
-        this.resourceManager = resourceManager;
+    public EchoStatement(Expression expression) {
+	    this.expression = expression;
     }
 
-	public void run(Context context) {
-        Object bean = beanExpression.evaluate(context);
-        if (!StringUtil.isEmpty(id))
-            BeanUtil.setPropertyValue(bean, "id", id, false);
-		context.set(id, bean);
-		if (bean instanceof ContextAware)
-			((ContextAware) bean).setContext(context);
-		if (bean instanceof DescriptorProvider)
-			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
-		if (bean instanceof Closeable)
-			resourceManager.addResource((Closeable) bean);
+	public void execute(BeneratorContext context) {
+	    System.out.println(expression.evaluate(context));
     }
 
 }

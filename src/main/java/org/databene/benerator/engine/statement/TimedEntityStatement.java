@@ -24,56 +24,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.databene.commons.Assert;
-import org.databene.commons.CollectionUtil;
-import org.databene.commons.Expression;
-import org.databene.commons.IOUtil;
-import org.databene.task.AbstractTask;
-import org.databene.task.Task;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Parent class for a {@link Task} that wrap several other Tasks.<br/>
+ * {Task} implementation that acts as a proxy to another tasks, forwards calls to it, 
+ * measures execution times and logs them.<br/>
  * <br/>
- * Created at 24.07.2009 06:26:36
+ * Created at 23.07.2009 06:55:46
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public abstract class CompositeTask extends AbstractTask {
+public class TimedEntityStatement extends StatementProxy {
 	
-	protected List<Task> subTasks;
-	
-    public CompositeTask(Expression errorHandler) {
-	    this(null, errorHandler);
+	private static final Logger logger = LoggerFactory.getLogger(TimedEntityStatement.class);
+
+    public TimedEntityStatement(Statement realStatement) {
+    	super(realStatement);
     }
 
-	public CompositeTask(String taskName, Expression errorHandler) {
-	    super(taskName, errorHandler);
-	    this.subTasks = new ArrayList<Task>();
-    }
-
-	public CompositeTask(Task... subTasks) {
-	    this.subTasks = CollectionUtil.toList(subTasks);
-    }
-
-    public void addSubTask(Task task) {
-    	Assert.notNull(task, "task");
-    	subTasks.add(task);
-    }
-    
-    public Task[] getSubTasks() {
-    	return CollectionUtil.toArray(subTasks);
-    }
-    
     @Override
-    public void close() {
-	    for (Task subTask : subTasks)
-	    	IOUtil.close(subTask);
+    public void execute(BeneratorContext context) {
+	    long t0 = System.currentTimeMillis();
+		super.execute(context);
+		long dc = context.getLatestGenerationCount();
+		long dt = System.currentTimeMillis() - t0;
+		String taskId = "TODO"; // realStatement.getTaskName(); TODO
+		if (dc == 0)
+			logger.info("No entities created from '" + taskId + "' setup");
+		else if (dt > 0)
+			logger.info("Created " + dc + " entities from '"
+					+ taskId + "' setup in " + dt + " ms ("
+					+ (dc * 1000 / dt) + "/s)");
+		else
+			logger.info("Created " + dc + " entities from '" + taskId);
     }
 
 }

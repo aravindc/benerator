@@ -27,14 +27,13 @@ import java.text.ParseException;
 
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
-import org.databene.benerator.engine.expression.context.ExecutorServiceExpression;
-import org.databene.benerator.engine.task.LazyTask;
+import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
+import org.databene.task.LazyTask;
 import org.databene.task.Task;
-import org.databene.task.TaskRunnerTask;
 import org.w3c.dom.Element;
 
 /**
@@ -52,8 +51,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	    super(EL_RUN_TASK);
     }
 
-	@SuppressWarnings("unchecked")
-	public TaskRunnerTask parse(Element element, ResourceManager resourceManager) {
+	public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
 			Expression taskProvider = beanParser.parseBeanExpression(element);
 			Task task = new LazyTask(taskProvider);
@@ -61,8 +59,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
 			Expression pageSize = parseIntAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
 			Expression threads  = parseIntAttr(ATT_THREADS, element, 1);
 			Expression pager    = parsePager(element);
-			Expression executor = new ExecutorServiceExpression();
-			return new TaskRunnerTask(task, count, pageSize, threads, pager, executor);
+			return new RunTaskStatement(task, count, pageSize, threads, pager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		} catch (ParseException e) {

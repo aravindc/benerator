@@ -24,12 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
-import org.databene.task.AbstractTask;
+import org.databene.benerator.engine.Statement;
 
 /**
  * Imports classes by package, class, domain and platform definition(s).<br/>
@@ -39,7 +37,7 @@ import org.databene.task.AbstractTask;
  * @author Volker Bergmann
  */
 
-public class ImportTask extends AbstractTask {
+public class ImportStatement implements Statement {
 	
 	private boolean defaultImports;
 	private String[] classImports;
@@ -47,7 +45,7 @@ public class ImportTask extends AbstractTask {
 	private String[] domainImports;
 	private String[] platformImports;
 
-    public ImportTask(boolean defaultImports, String[] classImports, String[] packageImports, String[] domainImports,
+    public ImportStatement(boolean defaultImports, String[] classImports, String[] packageImports, String[] domainImports,
             String[] platformImports) {
 	    this.defaultImports = defaultImports;
 	    this.classImports = classImports;
@@ -56,30 +54,25 @@ public class ImportTask extends AbstractTask {
 	    this.platformImports = platformImports;
     }
 
-	public void run(Context context) {
-    	if (!(context instanceof BeneratorContext))
-    		throw new ConfigurationError("ImportTask can only be used with Contexts that extend " 
-    				+ BeneratorContext.class);
-    	BeneratorContext beneratorContext = (BeneratorContext) context;
-
+	public void execute(BeneratorContext context) {
     	if (defaultImports)
-    		beneratorContext.importDefaults();
+    		context.importDefaults();
     	
     	if (classImports != null)
     		for (String classImport : classImports)
-    			beneratorContext.importClass(classImport);
+    			context.importClass(classImport);
 		
     	if (packageImports != null)
     		for (String packageImport : packageImports)
-    			beneratorContext.importPackage(packageImport);
+    			context.importPackage(packageImport);
 		
     	if (domainImports != null)
     		for (String domainImport : domainImports)
-    			importDomain(domainImport, beneratorContext);
+    			importDomain(domainImport, context);
 		
     	if (platformImports != null)
     		for (String platformImport : platformImports)
-    			importPlatform(platformImport, beneratorContext);
+    			importPlatform(platformImport, context);
     }
 
 	public void importDomain(String domain, BeneratorContext context) {

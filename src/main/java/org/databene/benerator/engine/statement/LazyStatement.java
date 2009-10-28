@@ -19,30 +19,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.parser.xml;
+package org.databene.benerator.engine.statement;
 
-import static org.databene.benerator.engine.DescriptorConstants.*;
-
-import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.StringScriptExpression;
-import org.databene.benerator.engine.statement.EchoStatement;
-import org.w3c.dom.Element;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
+import org.databene.commons.Expression;
 
 /**
- * TODO Document class.<br/><br/>
- * Created: 25.10.2009 00:30:29
- * @since 0.6.0
+ * {@link Statement} implementation that evaluates an {@link Expression} 
+ * which returns a Task and executes the returned Task.<br/>
+ * <br/>
+ * Created: 27.10.2009 16:09:20
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class EchoParser extends AbstractDescriptorParser {
+public class LazyStatement implements Statement {
 
-	public EchoParser() {
-	    super(EL_ECHO);
+	private Expression targetExpression;
+	private Statement target;
+
+    public LazyStatement(Expression targetExpression) {
+	    this.targetExpression = targetExpression;
+	    this.target = null;
     }
 
-	public EchoStatement parse(Element element, ResourceManager resourceManager) {
-		// TODO support text like <echo>DB: {${dbUrl}}</echo>
-		return new EchoStatement(new StringScriptExpression(element.getAttribute(ATT_MESSAGE)));
+	public Expression getTargetExpression() {
+	    return targetExpression;
+    }
+
+	public void execute(BeneratorContext context) {
+	    if (target == null)
+	    	target = (Statement) targetExpression.evaluate(context);
+	    target.execute(context);
     }
 
 }

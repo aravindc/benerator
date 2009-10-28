@@ -24,40 +24,52 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
+
+import java.io.Closeable;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Context;
+import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.Expression;
-import org.databene.commons.mutator.AnyMutator;
-import org.databene.task.AbstractTask;
+import org.databene.commons.StringUtil;
+import org.databene.commons.context.ContextAware;
+import org.databene.model.data.DataModel;
+import org.databene.model.data.DescriptorProvider;
+import org.databene.task.Task;
 
 /**
- * Sets a global Benerator property.<br/>
+ * {@link Task} implementation that instantiates a JavaBean.<br/>
  * <br/>
- * Created at 23.07.2009 14:50:08
+ * Created at 24.07.2009 07:00:52
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class SetGlobalPropertyTask extends AbstractTask {
+public class CreateBeanStatement implements Statement {
 	
-	private String propertyName;
-	private Expression valueExpression;
+	private String id;
+    private Expression beanExpression;
+    private ResourceManager resourceManager;
 
-    public SetGlobalPropertyTask(String propertyName, Expression valueExpression) {
-    	this.propertyName = propertyName;
-    	this.valueExpression = valueExpression;
+    public CreateBeanStatement(String id, Expression beanExpression, ResourceManager resourceManager) {
+    	this.id = id;
+        this.beanExpression = beanExpression;
+        this.resourceManager = resourceManager;
     }
 
-	public void run(Context context) {
-        Object value = valueExpression.evaluate(context);
-		if (propertyName.startsWith("benerator."))
-	        AnyMutator.setValue(context, propertyName, value, true);
-        else {
-        	BeneratorContext beneratorContext = (BeneratorContext) context;
-			beneratorContext.setProperty(propertyName, value);
-        }
-	}
+	public void execute(BeneratorContext context) {
+        Object bean = beanExpression.evaluate(context);
+        if (!StringUtil.isEmpty(id))
+            BeanUtil.setPropertyValue(bean, "id", id, false);
+		context.set(id, bean);
+		if (bean instanceof ContextAware)
+			((ContextAware) bean).setContext(context);
+		if (bean instanceof DescriptorProvider)
+			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
+		if (bean instanceof Closeable)
+			resourceManager.addResource((Closeable) bean);
+    }
 
 }

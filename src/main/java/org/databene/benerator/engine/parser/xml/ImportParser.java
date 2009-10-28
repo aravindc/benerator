@@ -23,7 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.task.ImportTask;
+import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.StringUtil;
 import org.w3c.dom.Element;
@@ -40,7 +40,7 @@ public class ImportParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_IMPORT);
     }
 
-	public ImportTask parse(Element element, ResourceManager resourceManager) {
+	public ImportStatement parse(Element element, ResourceManager resourceManager) {
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> packageImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
@@ -79,7 +79,7 @@ public class ImportParser extends AbstractDescriptorParser {
 		if (!StringUtil.isEmpty(attribute))
 			platformImports.addAll(StringUtil.tokenize(attribute, ','));
 		
-		return new ImportTask(defaults, classImports.toArray(), packageImports.toArray(), 
+		return new ImportStatement(defaults, classImports.toArray(), packageImports.toArray(), 
 				domainImports.toArray(), platformImports.toArray());
 	}
 

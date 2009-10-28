@@ -25,7 +25,7 @@ import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.StringScriptExpression;
-import org.databene.benerator.engine.task.IncludeTask;
+import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.commons.Expression;
 import org.w3c.dom.Element;
 
@@ -41,9 +41,9 @@ public class IncludeParser implements DescriptorParser {
 	    return DescriptorConstants.EL_INCLUDE.equals(elementName);
     }
 
-	public IncludeTask parse(Element element, ResourceManager resourceManager) {
+	public IncludeStatement parse(Element element, ResourceManager resourceManager) {
         Expression uriEx = new StringScriptExpression(element.getAttribute(DescriptorConstants.ATT_URI));
-        return new IncludeTask(uriEx);
+        return new IncludeStatement(uriEx);
     }
 
 }

@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -32,6 +32,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -52,7 +53,6 @@ import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 import org.databene.script.jsr227.Jsr223ScriptFactory;
-import org.databene.task.AbstractTask;
 import org.databene.task.TaskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +65,9 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class EvaluateTask extends AbstractTask {
+public class EvaluateStatement implements Statement {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EvaluateTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(EvaluateStatement.class);
 	
 	StringExpression idEx;
 	StringExpression textEx;
@@ -79,7 +79,7 @@ public class EvaluateTask extends AbstractTask {
     Expression optimizeEx;
     Expression assertionEx;
 
-    public EvaluateTask(StringExpression idEx, StringExpression textEx, 
+    public EvaluateStatement(StringExpression idEx, StringExpression textEx, 
     		StringExpression uriEx, StringExpression typeEx, Expression targetObjectEx,
     		StringExpression onErrorEx, StringExpression encodingEx, Expression optimizeEx,
             Expression assertionEx) {
@@ -94,9 +94,8 @@ public class EvaluateTask extends AbstractTask {
     	this.assertionEx = assertionEx;
     }
 
-	public void run(Context context) {
+	public void execute(BeneratorContext context) {
 		try {
-			BeneratorContext beneratorContext = (BeneratorContext) context;
 			// error handler
 			String onErrorValue = onErrorEx.evaluate(context);
 			if (StringUtil.isEmpty(onErrorValue))
@@ -122,9 +121,9 @@ public class EvaluateTask extends AbstractTask {
 				// check for JavaScript file URI
 				if (lcUri.endsWith(".js"))
 					typeValue = "js";
-				uriValue = IOUtil.resolveLocalUri(uriValue, beneratorContext.getContextUri());
+				uriValue = IOUtil.resolveLocalUri(uriValue, context.getContextUri());
 			}
-			Object targetObject = targetObjectEx.evaluate(beneratorContext);
+			Object targetObject = targetObjectEx.evaluate(context);
 			if (typeValue == null && targetObject instanceof DBSystem)
 				typeValue = "sql";
 			
@@ -149,7 +148,7 @@ public class EvaluateTask extends AbstractTask {
 				result = runScript(textValue, typeValue, onErrorValue, context);
 			}
 			context.set("result", result);
-			Object assertionValue = assertionEx.evaluate(beneratorContext);
+			Object assertionValue = assertionEx.evaluate(context);
 			if (assertionValue instanceof String)
 				assertionValue = LiteralParser.parse((String) assertionValue);
 			if (assertionValue != null && !(assertionValue instanceof String && ((String) assertionValue).length() == 0)) {

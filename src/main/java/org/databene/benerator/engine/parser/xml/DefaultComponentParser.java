@@ -23,7 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.xml.XMLDefaultComponentsTask;
+import org.databene.benerator.engine.statement.XMLDefaultComponentsStatement;
 import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
@@ -39,8 +39,8 @@ public class DefaultComponentParser implements DescriptorParser {
 	    return EL_DEFAULT_COMPONENTS.equals(elementName);
     }
 
-	public XMLDefaultComponentsTask parse(Element element, ResourceManager resourceManager) {
-		return new XMLDefaultComponentsTask(element);
+	public XMLDefaultComponentsStatement parse(Element element, ResourceManager resourceManager) {
+		return new XMLDefaultComponentsStatement(element);
 	}
 
 }

@@ -24,56 +24,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.task;
+package org.databene.benerator.engine.statement;
 
-import org.databene.commons.Context;
-import org.databene.commons.Expression;
-import org.databene.commons.IOUtil;
-import org.databene.task.Task;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
+import org.databene.commons.LogCategories;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * {@link Task} implementation that evaluates an {@link Expression} 
- * which returns a Task and executes the returned Task.<br/>
+ * Parses a comment and logs its content to the category 'org.databene.COMMENT'.<br/>
  * <br/>
- * Created at 25.07.2009 16:48:52
+ * Created at 22.07.2009 08:11:22
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class LazyTask implements Task {
+public class CommentStatement implements Statement {
 	
-	private Expression targetExpression;
-	private Task target;
-	private boolean closed;
+	private static final Logger commentLogger = LoggerFactory.getLogger(LogCategories.COMMENT);
 
-    public LazyTask(Expression targetExpression) {
-	    this.targetExpression = targetExpression;
-	    this.target = null;
-	    this.closed = false;
+	private String comment;
+	
+    public CommentStatement(String comment) {
+	    this.comment = comment;
     }
 
-	public Expression getTargetExpression() {
-	    return targetExpression;
-    }
-
-    public boolean available() {
-	    return (closed || (target != null && target.available()));
-    }
-
-    public String getTaskName() {
-	    return (target == null ? "LazyTask(" + targetExpression + ")" : target.getTaskName());
-    }
-
-    public void run(Context context) {
-	    if (target == null)
-	    	target = (Task) targetExpression.evaluate(context);
-	    target.run(context);
-    }
-
-    public void close() {
-	    IOUtil.close(target);
-	    target = null;
-	    closed = true;
-    }
+	public void execute(BeneratorContext context) {
+		commentLogger.debug(comment);
+	}
 
 }

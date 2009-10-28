@@ -24,6 +24,7 @@ package org.databene.benerator.engine.expression;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
+import org.databene.commons.expression.ConstantExpression;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -35,20 +36,24 @@ import org.databene.script.ScriptUtil;
 public class ScriptExpression implements Expression {
 
 	private String script;
-	private Object defaultValue;
+	private Expression defaultValueExpression;
 
     public ScriptExpression(String script) {
     	this(script, null);
     }
 
     public ScriptExpression(String script, Object defaultValue) {
+    	this(script, new ConstantExpression(defaultValue));
+    }
+
+    public ScriptExpression(String script, Expression defaultValueExpression) {
     	this.script = script;
-    	this.defaultValue = defaultValue;
+    	this.defaultValueExpression = defaultValueExpression;
     }
 
 	public Object evaluate(Context context) {
 		if (StringUtil.isEmpty(script))
-			return defaultValue;
+			return (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
 		else
 			return ScriptUtil.render(script, context);
     }

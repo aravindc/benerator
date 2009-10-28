@@ -36,7 +36,6 @@ import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.DataModel;
-import org.databene.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -86,23 +85,23 @@ public class DescriptorRunner implements ResourceManager {
 
     public void run() throws IOException {
 		// parse benerator descriptor into an AST
-		BeneratorMainTask beneratorTask = parseDescriptorFile();			
-		executeTask(beneratorTask);
+		BeneratorRootStatement beneratorTask = parseDescriptorFile();			
+		execute(beneratorTask);
 	}
 
-	public BeneratorMainTask parseDescriptorFile() throws IOException {
+	public BeneratorRootStatement parseDescriptorFile() throws IOException {
 	    Document document = XMLUtil.parse(uri, context.isValidate());
 	    Element root = document.getDocumentElement();
 	    XMLUtil.mapAttributesToProperties(root, context, true, new XMLNameNormalizer());
-	    BeneratorMainTask mainTask = new BeneratorMainTask();
+	    BeneratorRootStatement mainTask = new BeneratorRootStatement();
 	    // process sub elements
 	    for (Element element : XMLUtil.getChildElements(root)) {
 	    	if (startTime == 0 && EL_CREATE_ENTITIES.equals(element.getNodeName()))
 	    		startTime = System.currentTimeMillis();
 			String elementName = element.getNodeName();
             DescriptorParser elementParser = ParserFactory.getParser(elementName, EL_SETUP);
-	    	Task task = elementParser.parse(element, this);
-	    	mainTask.addSubTask(task);
+	    	Statement statement = elementParser.parse(element, this);
+	    	mainTask.addSubStatement(statement);
 	    }
 		// prepare system
 		generatedFiles = new ArrayList<String>();
@@ -110,11 +109,11 @@ public class DescriptorRunner implements ResourceManager {
 	    return mainTask;
     }
 	
-	public void executeTask(BeneratorMainTask beneratorTask) {
+	public void execute(BeneratorRootStatement rootStatement) {
 	    try {
 			
 			// run AST
-			beneratorTask.run(context);
+			rootStatement.execute(context);
 			
 			// calculate and print statistics
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
@@ -127,7 +126,6 @@ public class DescriptorRunner implements ResourceManager {
 			if (generations.size() > 0)
 				logger.info("Generated file(s): " + generations);
 		} finally {
-			beneratorTask.close();
 			context.close();
 		}
     }
