@@ -39,8 +39,8 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.engine.parser.xml.IncludeParser;
-import org.databene.benerator.engine.task.CreateBeanTask;
-import org.databene.benerator.engine.task.IncludeTask;
+import org.databene.benerator.engine.statement.CreateBeanStatement;
+import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
@@ -262,13 +262,13 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                IncludeTask task = new IncludeParser().parse(child, this);
+                IncludeStatement task = new IncludeParser().parse(child, this);
                 String filename = (String) task.getUri().evaluate(context);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
                 Expression beanExpression = beanParser.parseBeanExpression(child);
                 String id = child.getAttribute("id");
-				new CreateBeanTask(id, beanExpression, this).run(context);
+				new CreateBeanStatement(id, beanExpression, this).execute(context);
                 System.out.println(beanExpression.evaluate(context));
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " 
