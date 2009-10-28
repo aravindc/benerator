@@ -25,7 +25,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
-import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -39,23 +38,19 @@ public class BeneratorMainTaskTest {
 
 	@Test
 	public void testGetGenerator() throws Exception {
-		BeneratorMainTask task = null;
-		try {
-			DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
-					"<create-entities name='Person' count='1'>" +
-					"<attribute name='name' values='Alice'/>" +
-					"</create-entities>" +
-					"</setup>");
-			task = runner.parseDescriptorFile();
-			Generator<Entity> generator = task.getGenerator("Person", runner.getContext());
-			assertEquals(Entity.class, generator.getGeneratedType());
-			assertNotNull(generator);
-			for (int i = 0; i < 10; i++)
-				checkGeneration(generator);
-			assertTrue(generator.available());
-		} finally {
-			IOUtil.close(task);
-		}
+		BeneratorRootStatement task = null;
+		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
+				"<create-entities name='Person' count='1'>" +
+				"<attribute name='name' values='Alice'/>" +
+				"</create-entities>" +
+				"</setup>");
+		task = runner.parseDescriptorFile();
+		Generator<Entity> generator = task.getGenerator("Person", runner.getContext());
+		assertEquals(Entity.class, generator.getGeneratedType());
+		assertNotNull(generator);
+		for (int i = 0; i < 10; i++)
+			checkGeneration(generator);
+		assertTrue(generator.available());
 	}
 
 	private void checkGeneration(Generator<Entity> generator) {

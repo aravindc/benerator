@@ -26,10 +26,10 @@ import static org.junit.Assert.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.parser.xml.RunTaskParser;
+import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.task.PageListenerMock;
 import org.databene.task.TaskMock;
-import org.databene.task.TaskRunnerTask;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -41,21 +41,21 @@ import org.w3c.dom.Document;
  */
 public class ParseRunTaskTest {
 
-	@SuppressWarnings("unchecked")
     @Test
 	public void test() throws Exception {
         String uri = "string://" +
-        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pagesize='2' pager='new org.databene.task.PageListenerMock(1)'>" +
+        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pagesize='2' " +
+        		"      pager='new org.databene.task.PageListenerMock(1)'>" +
         		"  <property name='intProp' value='42' />" +
         		"</run-task>";
         Document doc = XMLUtil.parse(uri);
         RunTaskParser parser = new RunTaskParser();
-		TaskRunnerTask task = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
+		RunTaskStatement task = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		assertEquals(5, task.getCount().evaluate(context));
 		assertEquals(2, task.getPageSize().evaluate(context));
 		assertEquals(new PageListenerMock(1), task.getPager().evaluate(context));
-		task.run(new BeneratorContext());
+		task.execute(new BeneratorContext());
 		assertEquals(5, TaskMock.count.get());
 	}
 	

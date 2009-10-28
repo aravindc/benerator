@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
