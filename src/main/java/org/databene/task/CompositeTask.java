@@ -26,64 +26,52 @@
 
 package org.databene.task;
 
-import java.util.concurrent.ExecutorService;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.databene.commons.Context;
+import org.databene.commons.Assert;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
+import org.databene.commons.IOUtil;
 
 /**
- * {@link Task} implementation that executes another task 
- * a certain number of times with a certain number of threads.
- * Depending on the Task class' abilities it may create clones 
- * of the specified tasks or runs it in a single thread.<br/>
+ * Parent class for a {@link Task} that wrap several other Tasks.<br/>
  * <br/>
- * Created at 23.07.2009 07:01:38
+ * Created at 24.07.2009 06:26:36
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class TaskRunnerTask<E extends Task> extends TaskProxy<E> {
-
-    private Expression count;
-    private Expression pageSize;
-    private Expression threads;
-    private Expression pager;
-    private Expression executor;
-
-	public TaskRunnerTask(E realTask, Expression count, Expression pageSize, 
-			Expression threads, Expression pager, Expression executor) {
-	    super(realTask);
-	    this.count = count;
-	    this.pageSize = pageSize;
-	    this.threads = threads;
-	    this.pager = pager;
-	    this.executor = executor;
-    }
-
-	public Expression getCount() {
-    	return count;
-    }
-
-	public Expression getPageSize() {
-    	return pageSize;
-    }
-
-	public Expression getThreads() {
-    	return threads;
-    }
-
-	public Expression getPager() {
-    	return pager;
-    }
-
-	@Override
-	public void run(Context context) {
-	    TaskRunner.run(realTask, context, 
-	    		(Long) count.evaluate(context), 
-	    		(pager != null ? (PageListener) pager.evaluate(context) : null), 
-	    		(Long) pageSize.evaluate(context), 
-	    		(Integer) threads.evaluate(context), 
-	    		(ExecutorService) executor.evaluate(context));
-	}
+public abstract class CompositeTask extends AbstractTask {
 	
+	protected List<Task> subTasks;
+	
+    public CompositeTask(Expression errorHandler) {
+	    this(null, errorHandler);
+    }
+
+	public CompositeTask(String taskName, Expression errorHandler) {
+	    super(taskName, errorHandler);
+	    this.subTasks = new ArrayList<Task>();
+    }
+
+	public CompositeTask(Task... subTasks) {
+	    this.subTasks = CollectionUtil.toList(subTasks);
+    }
+
+    public void addSubTask(Task task) {
+    	Assert.notNull(task, "task");
+    	subTasks.add(task);
+    }
+    
+    public Task[] getSubTasks() {
+    	return CollectionUtil.toArray(subTasks);
+    }
+    
+    @Override
+    public void close() {
+	    for (Task subTask : subTasks)
+	    	IOUtil.close(subTask);
+    }
+
 }
