@@ -35,7 +35,7 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.task.IncludeTask;
+import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.factory.TypeGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.LightweightGenerator;
@@ -86,7 +86,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
                 (Converter) new MessageConverter(filenamePattern, Locale.US));
         // parse properties files
         for (String propertiesFile : propertiesFiles)
-            IncludeTask.importProperties(propertiesFile, context);
+            IncludeStatement.importProperties(propertiesFile, context);
 
         // set up content generator
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
