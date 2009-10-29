@@ -90,7 +90,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 				consumerChain.addComponent((Consumer<Entity>) beanExpr.evaluate(context));
 			} else
 				throw new UnsupportedOperationException(
-						"Don't know how to handle " + XMLUtil.format(consumerElement));
+						"Can't handle " + XMLUtil.format(consumerElement));
 		}
 		if (consumerChain.componentCount() == 0 && consumersExpected)
 			escalator.escalate("No consumers defined for " + entityName, this, null);
