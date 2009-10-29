@@ -46,7 +46,6 @@ import static junit.framework.Assert.*;
 public class StateTransitionGeneratorTest extends GeneratorTest {
 
 	@Test
-	@SuppressWarnings("unchecked")
     public void testDeterministicSequence() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 1.);
@@ -60,7 +59,6 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 	
 	/** Tests a setup that generates Sequences null->1, (1->2, 2->1)* */
 	@Test
-	@SuppressWarnings("unchecked")
     public void testRandomSequence() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 1.);
@@ -82,7 +80,6 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 	
 	/** Tests a setup that generates Sequences 1*, e.g. (1), (1, 1), (1, 1, 1), ... */
 	@Test
-	@SuppressWarnings("unchecked")
     public void testRecursion() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 1.);

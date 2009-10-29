@@ -52,8 +52,8 @@ public class ParseRunTaskTest {
         RunTaskParser parser = new RunTaskParser();
 		RunTaskStatement task = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
-		assertEquals(5, task.getCount().evaluate(context));
-		assertEquals(2, task.getPageSize().evaluate(context));
+		assertEquals(5L, task.getCount().evaluate(context).longValue());
+		assertEquals(2L, task.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), task.getPager().evaluate(context));
 		task.execute(new BeneratorContext());
 		assertEquals(5, TaskMock.count.get());

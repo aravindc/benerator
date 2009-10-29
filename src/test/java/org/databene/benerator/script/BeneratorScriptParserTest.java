@@ -405,7 +405,7 @@ public class BeneratorScriptParserTest {
 	
 	@Test
 	public void testObjectSpecList() throws Exception {
-		Expression[] expressions = BeneratorScriptParser.parseBeanSpecList("java.lang.String," + getClass().getName());
+		Expression<?>[] expressions = BeneratorScriptParser.parseBeanSpecList("java.lang.String," + getClass().getName());
 		Object[] values = ExpressionUtil.evaluateAll(expressions, new DefaultContext());
 		assertEquals(2, values.length);
 		assertEquals("", values[0]);
@@ -472,7 +472,7 @@ public class BeneratorScriptParserTest {
     }
     
     private void checkExpression(Object expected, String script, Context context) throws Exception {
-	    Expression expression = BeneratorScriptParser.parseExpression(script);
+	    Expression<?> expression = BeneratorScriptParser.parseExpression(script);
 		Object actual = expression.evaluate(context);
 		assertEqual(expected, actual, script);
     }
@@ -482,7 +482,7 @@ public class BeneratorScriptParserTest {
     }
     
     private void checkBeanSpec(Object expected, String script, Context context) throws Exception {
-	    Expression expression = BeneratorScriptParser.parseBeanSpec(script);
+	    Expression<?> expression = BeneratorScriptParser.parseBeanSpec(script);
 		Object actual = expression.evaluate(context);
 		assertEqual(expected, actual, script);
     }

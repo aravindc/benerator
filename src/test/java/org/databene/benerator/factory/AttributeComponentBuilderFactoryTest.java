@@ -106,8 +106,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	private PartDescriptor createCSVStringAttributeDescriptor(String uri, String separator) {
 		String componentName = "name";
 		PartDescriptor name = new PartDescriptor(componentName);
-		name.setMinCount(new ConstantExpression(1L));
-		name.setMaxCount(new ConstantExpression(1L));
+		name.setMinCount(new ConstantExpression<Long>(1L));
+		name.setMaxCount(new ConstantExpression<Long>(1L));
 		name.getLocalType(false).setSource(uri);
 		name.getLocalType(false).setSeparator(separator);
 		return name;
