@@ -45,7 +45,7 @@
 				<xs:element ref="property"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="database"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="bean"              minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="defaultAttributes" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="defaultComponents" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="create-entities"   minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="update-entities"   minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="run-task"          minOccurs="0" maxOccurs="unbounded"/>
@@ -53,8 +53,6 @@
                 <xs:element ref="evaluate"          minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="echo"              minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="default-script"       type="xs:string"/> <!-- deprecated -->
-			<xs:attribute name="default-null"         type="xs:string"/> <!-- deprecated -->
 			<xs:attribute name="defaultScript"        type="xs:string"/>
 			<xs:attribute name="defaultNull"          type="xs:string"/>
             <xs:attribute name="defaultEncoding"      type="xs:string"/>
@@ -178,9 +176,10 @@
 				<xs:element ref="bean"  minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="idref" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="name"  type="xs:string"/>
-			<xs:attribute name="value" type="xs:string"/>
-			<xs:attribute name="ref"   type="xs:string"/>
+			<xs:attribute name="name"   type="xs:string"/>
+			<xs:attribute name="value"  type="xs:string"/>
+			<xs:attribute name="ref"    type="xs:string"/>
+			<xs:attribute name="source" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
@@ -197,19 +196,18 @@
 	     Invocations are executed in groups of size 'pagesize'. -->
 	<xs:element name="run-task">
 		<xs:complexType>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="comment"  minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="class"    type="xs:string"/>
-			<xs:attribute name="count"    type="xs:string"/>
-			<xs:attribute name="pagesize" type="xs:string"/>
-			<xs:attribute name="threads"  type="xs:string"/>
-			<xs:attribute name="pager"    type="xs:string"/>
+			<xs:complexContent>
+				<xs:extension base="generator-setup">
+					<xs:attribute name="count"    type="xs:string"/>
+					<xs:attribute name="pagesize" type="xs:string"/>
+					<xs:attribute name="threads"  type="xs:string"/>
+					<xs:attribute name="pager"    type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="defaultAttributes">
+	<xs:element name="defaultComponents">
 		<xs:complexType>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"  minOccurs="0" maxOccurs="unbounded"/>
@@ -242,12 +240,14 @@
                 <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="name"      type="xs:string"/>
+            <xs:attribute name="type"      type="xs:string"/>
             <xs:attribute name="count"     type="xs:string"/>
             <xs:attribute name="minCount"  type="xs:string"/>
             <xs:attribute name="maxCount"  type="xs:string"/>
             <xs:attribute name="pagesize"  type="xs:string"/>
             <xs:attribute name="threads"   type="xs:string"/>
             <xs:attribute name="source"    type="xs:string"/>
+            <xs:attribute name="separator" type="xs:string"/>
             <xs:attribute name="selector"  type="xs:string"/>
             <xs:attribute name="encoding"  type="xs:string"/>
             <xs:attribute name="converter" type="xs:string"/>
@@ -274,6 +274,7 @@
             <xs:attribute name="pagesize" type="xs:string"/>
             <xs:attribute name="threads"  type="xs:string"/>
             <xs:attribute name="source"   type="xs:string"/>
+            <xs:attribute name="separator" type="xs:string"/>
             <xs:attribute name="selector" type="xs:string"/>
             <xs:attribute name="encoding" type="xs:string"/>
             <xs:attribute name="consumer" type="xs:string"/>
@@ -289,6 +290,7 @@
 		<xs:attribute name="generator"    type="xs:string"/>
 		<xs:attribute name="validator"    type="xs:string"/>
 		<xs:attribute name="source"       type="xs:string"/>
+        <xs:attribute name="separator"    type="xs:string"/>
 		<xs:attribute name="encoding"     type="xs:string"/>
 		<xs:attribute name="selector"     type="xs:string"/>
 		<xs:attribute name="pattern"      type="xs:string"/>
