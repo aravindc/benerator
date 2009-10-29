@@ -56,7 +56,7 @@ public class JDBCDBImporterTest {
 		Connection connection = HSQLUtil.connectInMemoryDB(getClass().getSimpleName());
 		DBUtil.runScript("org/databene/platform/db/model/jdbc/create_tables.hsql.sql", "ISO-8859-1", connection, true, new ErrorHandler(getClass()));
 		// run importer
-		JDBCDBImporter importer = new JDBCDBImporter(connection, "sa", "public", true);
+		JDBCDBImporter importer = new JDBCDBImporter(connection, "sa", "public", ".*", true);
 		Database db = importer.importDatabase();
 		// check schema
 		DBSchema schema = db.getSchema("public");

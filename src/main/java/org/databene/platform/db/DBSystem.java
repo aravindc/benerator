@@ -94,6 +94,7 @@ public class DBSystem extends AbstractStorageSystem {
     private String password;
     private String driver;
     private String schema;
+    private String tableFilter;
     boolean batch;
     boolean readOnly;
     
@@ -123,6 +124,7 @@ public class DBSystem extends AbstractStorageSystem {
         setPassword(password);
         setDriver(driver);
         setSchema(null);
+        setTableFilter(".*");
         setFetchSize(DEFAULT_FETCH_SIZE);
         setBatch(false);
         setReadOnly(false);
@@ -198,7 +200,15 @@ public class DBSystem extends AbstractStorageSystem {
         this.schema = StringUtil.emptyToNull(StringUtil.trim(schema));
     }
     
-    /**
+    public String getTableFilter() {
+    	return tableFilter;
+    }
+
+	public void setTableFilter(String tableFilter) {
+    	this.tableFilter = tableFilter;
+    }
+
+	/**
      * @return the batch
      */
     public boolean isBatch() {
@@ -426,7 +436,7 @@ public class DBSystem extends AbstractStorageSystem {
         try {
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
-            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, false);
+            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
             String productName = importer.getProductName();
@@ -528,7 +538,7 @@ public class DBSystem extends AbstractStorageSystem {
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
             } else {
-                logger.error("Not implemented: Don't know how to handle composite foreign keys");
+                logger.error("Not implemented: Can't handle composite foreign keys");
             }
         }
         // process normal columns

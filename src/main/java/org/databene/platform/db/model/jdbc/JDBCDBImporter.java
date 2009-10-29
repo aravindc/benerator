@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Imports a DB model via JDBC.<br/><br/>
@@ -58,6 +59,7 @@ public final class JDBCDBImporter implements DBImporter {
     
     private String  catalogName;
     private String  schemaName;
+    private Pattern tablePattern;
     private boolean importingIndexes;
 
     private String productName;
@@ -65,17 +67,20 @@ public final class JDBCDBImporter implements DBImporter {
     private ErrorHandler errorHandler;
 
     public JDBCDBImporter(String url, String driverClassname, String user, String password) throws ConnectFailedException {
-        this(url, driverClassname, user, password, null, true);
+        this(url, driverClassname, user, password, null, ".*", true);
     }
 
-    public JDBCDBImporter(String url, String driver, String user, String password, String schemaName, boolean importingIndexes) throws ConnectFailedException {
-    	this(DBUtil.connect(url, driver, user, password), user, schemaName, importingIndexes);
+    public JDBCDBImporter(String url, String driver, String user, String password, 
+    		String schemaName, String tablePattern, boolean importingIndexes) throws ConnectFailedException {
+    	this(DBUtil.connect(url, driver, user, password), user, schemaName, tablePattern, importingIndexes);
     }
 
-    public JDBCDBImporter(Connection connection, String user, String schemaName, boolean importingIndexes) {
+    public JDBCDBImporter(Connection connection, String user, 
+    		String schemaName, String tablePattern, boolean importingIndexes) {
     	this.connection = connection;
         this.user = user;
         this.schemaName = schemaName;
+        this.tablePattern = Pattern.compile(tablePattern != null ? tablePattern : ".*");
         this.importingIndexes = importingIndexes;
         this.errorHandler = new ErrorHandler(getClass());
     }
@@ -473,7 +478,7 @@ public final class JDBCDBImporter implements DBImporter {
      }
 
 	private boolean ignoreTable(String tableName) {
-	    return tableName.contains("$");
+	    return tableName.contains("$") || !tablePattern.matcher(tableName).matches();
     }
 
     private static String removeBrackets(String defaultValue) {

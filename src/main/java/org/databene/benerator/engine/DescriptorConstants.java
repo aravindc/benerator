@@ -88,6 +88,7 @@ public interface DescriptorConstants {
     static final String ATT_FETCH_SIZE = "fetchSize";
     static final String ATT_BATCH = "batch";
     static final String ATT_SCHEMA = "schema";
+    static final String ATT_TABLE_FILTER = "tableFilter";
 	
     static final String ATT_CLASS = "class";
     static final String ATT_SPEC = "spec";

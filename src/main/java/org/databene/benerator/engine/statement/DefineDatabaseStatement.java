@@ -53,6 +53,7 @@ public class DefineDatabaseStatement implements Statement { // TODO move to DB p
 	private Expression<String> user;
 	private Expression<String> password;
 	private Expression<String> schema;
+	private Expression<String> tableFilter;
 	private Expression<Boolean> batch;
 	private Expression<Integer> fetchSize;
 	private Expression<Boolean> readOnly;
@@ -60,7 +61,8 @@ public class DefineDatabaseStatement implements Statement { // TODO move to DB p
 	
 	public DefineDatabaseStatement(Expression<String> id, Expression<String> url, Expression<String> driver, 
 			Expression<String> user, Expression<String> password, 
-			Expression<String> schema, Expression<Boolean> batch, 
+			Expression<String> schema, Expression<String> tableFilter, 
+			Expression<Boolean> batch, 
 			Expression<Integer> fetchSize, Expression<Boolean> readOnly, ResourceManager resourceManager) {
 		this.id = id;
 	    this.url = url;
@@ -84,6 +86,7 @@ public class DefineDatabaseStatement implements Statement { // TODO move to DB p
 	    		user.evaluate(context), 
 	    		password.evaluate(context));
 	    db.setSchema(schema.evaluate(context));
+	    db.setTableFilter(tableFilter.evaluate(context));
 	    db.setBatch(batch.evaluate(context));
 	    db.setFetchSize(fetchSize.evaluate(context));
 	    db.setBatch(readOnly.evaluate(context));
