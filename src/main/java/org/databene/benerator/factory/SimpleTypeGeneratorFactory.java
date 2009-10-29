@@ -109,7 +109,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         	generator = createDefaultGenerator(descriptor, unique, context);
         // by now, we must have created a generator
         if (generator == null)
-            throw new ConfigurationError("Don't know how to handle descriptor " + descriptor);
+            throw new ConfigurationError("Can't handle descriptor " + descriptor);
         // create wrappers
         generator = wrapWithPostprocessors(generator, descriptor, context);
         generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
