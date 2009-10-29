@@ -63,11 +63,11 @@ import org.slf4j.LoggerFactory;
 public class BeneratorScriptParser {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeneratorScriptParser.class);
-	private static final Expression[] EMPTY_ARGUMENT_LIST = {};
+	private static final Expression<?>[] EMPTY_ARGUMENT_LIST = {};
 
     // interface -------------------------------------------------------------------------------------------------------
 
-    public static Expression parseExpression(String text) throws ParseException {
+    public static Expression<?> parseExpression(String text) throws ParseException {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -122,7 +122,7 @@ public class BeneratorScriptParser {
         }
     }
 	
-    public static Expression[] parseBeanSpecList(String text) throws ParseException {
+    public static Expression<?>[] parseBeanSpecList(String text) throws ParseException {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -149,7 +149,7 @@ public class BeneratorScriptParser {
         }
     }
 	
-	public static Expression parseBeanSpec(String text) throws ParseException {
+	public static Expression<?> parseBeanSpec(String text) throws ParseException {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -204,22 +204,22 @@ public class BeneratorScriptParser {
 
 	private static WeightedTransition convertTransition(CommonTree node) throws ParseException {
 		Assert.isTrue(node.getType() == BeneratorLexer.ARROW, "expected transition, found: " + node.getToken());
-		Expression from = convertNode(childAt(0, node));
-		Expression to = convertNode(childAt(1, node));
-		Expression weight;
+		Expression<?> from = convertNode(childAt(0, node));
+		Expression<?> to = convertNode(childAt(1, node));
+		Expression<Double> weight;
 		if (node.getChildCount() > 2)
-			weight = new TypeConvertingExpression(convertNode(childAt(2, node)), Double.class);
+			weight = new TypeConvertingExpression<Double>(convertNode(childAt(2, node)), Double.class);
 		else
-			weight = new ConstantExpression(1.);
+			weight = new ConstantExpression<Double>(1.);
 		return new WeightedTransition(from.evaluate(null), to.evaluate(null), weight);
 	}
 
-    private static Expression[] convertBeanSpecList(CommonTree node) throws ParseException {
+    private static Expression<?>[] convertBeanSpecList(CommonTree node) throws ParseException {
     	if (node.getType() == BeneratorLexer.BEANSPEC)
-    		return new Expression[] { convertBeanSpec(node) };
+    		return new Expression<?>[] { convertBeanSpec(node) };
     	else if (node.isNil()) {
 		    int childCount = node.getChildCount();
-		    Expression[] specs = new Expression[childCount];
+		    Expression<?>[] specs = new Expression<?>[childCount];
 		    for (int i = 0; i < childCount; i++)
 		    	specs[i] = convertBeanSpec(childAt(i, node));
 		    return specs;
@@ -227,20 +227,20 @@ public class BeneratorScriptParser {
     		throw new ParseException("Unexpected token: " + node.getToken(), node.getCharPositionInLine());
     }
 
-	private static Expression convertBeanSpec(CommonTree node) throws ParseException {
+	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
 		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
 		node = childAt(0, node);
 		if (node.getType() == BeneratorLexer.QUALIFIEDNAME)
 			return new QNBeanSpecExpression(convertQualifiedNameToStringArray(node));
 		else if (node.getType() == BeneratorLexer.IDENTIFIER)
-			return new QNBeanSpecExpression(new ConstantExpression(new String[] { node.getText() }));
+			return new QNBeanSpecExpression(new String[] { node.getText() });
 		else
 			return convertNode(node);
 	}
 
-	private static Expression convertNode(CommonTree node) throws ParseException {
+	private static Expression<?> convertNode(CommonTree node) throws ParseException {
     	switch (node.getType()) {
-			case BeneratorLexer.NULL: return new ConstantExpression(null);
+			case BeneratorLexer.NULL: return new ConstantExpression<Object>(null);
 			case BeneratorLexer.BOOLEANLITERAL: return convertBooleanLiteral(node);
 			case BeneratorLexer.INTLITERAL: return convertIntLiteral(node);
 			case BeneratorLexer.DECIMALLITERAL: return convertDecimalLiteral(node);
@@ -282,44 +282,40 @@ public class BeneratorScriptParser {
     	}
     }
 
-	private static Expression convertBooleanLiteral(CommonTree node) {
-		return new ConstantExpression(Boolean.parseBoolean(node.getText()));
+	private static Expression<Boolean> convertBooleanLiteral(CommonTree node) {
+		return new ConstantExpression<Boolean>(Boolean.parseBoolean(node.getText()));
     }
 
-    private static Expression convertStringLiteral(CommonTree node) {
+    private static Expression<String> convertStringLiteral(CommonTree node) {
 		String rawString = node.getText();
-		return new ConstantExpression(rawString.substring(1, rawString.length() - 1));
+		return new ConstantExpression<String>(rawString.substring(1, rawString.length() - 1));
     }
 
-    private static Expression convertIdentifier(CommonTree node) {
-		return new ConstantExpression(node.getText());
+    private static Expression<String> convertIdentifier(CommonTree node) {
+		return new ConstantExpression<String>(node.getText());
     }
 
-    /** 
-     * This intended for top-level QNs; for QNs that are part of another expression, 
-     * use specific methods like {@link #convertQualifiedNameToStringArray(CommonTree)}. 
-     */
-    private static Expression convertQualifiedName(CommonTree node) {
+    private static Expression<?> convertQualifiedName(CommonTree node) {
     	return new QNExpression(convertQualifiedNameToStringArray(node));
     }
 
-    private static Expression convertQualifiedNameToStringArray(CommonTree node) {
+    private static String[] convertQualifiedNameToStringArray(CommonTree node) {
     	int childCount = node.getChildCount();
 		String[] result = new String[childCount];
     	List<CommonTree> childNodes = getChildNodes(node);
     	for (int i = 0; i < childCount; i++)
     		result[i] = childNodes.get(i).getText();
-		return new ConstantExpression(result);
+		return result;
     }
 
-    private static Expression convertType(CommonTree node) {
-    	Expression classNameExpression = convertQualifiedNameToStringArray(childAt(0, node));
-    	final String className = ArrayFormat.format(".", (String[]) classNameExpression.evaluate(null));
+    private static Expression<Class<?>> convertType(CommonTree node) {
+    	String[] classNameParts = convertQualifiedNameToStringArray(childAt(0, node));
+    	final String className = ArrayFormat.format(".", classNameParts);
 		PrimitiveType primitiveType = PrimitiveType.getInstance(className);
 		if (primitiveType != null)
-			return new ConstantExpression(primitiveType.getJavaType());
+			return new ConstantExpression<Class<?>>(primitiveType.getJavaType());
 		else {
-	    	return new UnaryExpression(classNameExpression) {
+	    	return new Expression<Class<?>>() {
 				public Class<?> evaluate(Context context) {
 					return DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
 	            }
@@ -327,7 +323,7 @@ public class BeneratorScriptParser {
 		}
     }
 
-    private static Expression convertIntLiteral(CommonTree node) {
+    private static Expression<? extends Number> convertIntLiteral(CommonTree node) {
 		String text = node.getText();
 		Number number = null;
 		if (text.length() > 10)
@@ -340,25 +336,25 @@ public class BeneratorScriptParser {
 				number = l;
 		} else
 			number = Integer.parseInt(text);
-		return new ConstantExpression(number);
+		return new ConstantExpression<Number>(number);
     }
 
-    private static Expression convertDecimalLiteral(CommonTree node) {
-		return new ConstantExpression(Double.parseDouble(node.getText()));
+    private static Expression<Double> convertDecimalLiteral(CommonTree node) {
+		return new ConstantExpression<Double>(Double.parseDouble(node.getText()));
     }
 
-    private static Expression convertCreator(CommonTree node) throws ParseException {
+    private static Expression<?> convertCreator(CommonTree node) throws ParseException {
 		List<CommonTree> childNodes = getChildNodes(node);
     	String className = parseQualifiedNameOfClass(childNodes.get(0));
-    	Expression[] params = parseArguments(childNodes.get(1));
-    	return new ParametrizedConstruction(className, params);
+    	Expression<?>[] params = parseArguments(childNodes.get(1));
+    	return new ParametrizedConstruction<Object>(className, params);
     }
 
-    private static Expression convertBean(CommonTree node) throws ParseException {
+    private static Expression<?> convertBean(CommonTree node) throws ParseException {
 		List<CommonTree> childNodes = getChildNodes(node);
     	String className = parseQualifiedNameOfClass(childNodes.get(0));
     	Assignment[] props = parseFieldAssignments(childNodes, 1);
-    	return new BeanConstruction(className, props);
+    	return new BeanConstruction<Object>(className, props);
     }
 
     private static Assignment[] parseFieldAssignments(List<CommonTree> nodes, int firstIndex) throws ParseException {
@@ -368,28 +364,28 @@ public class BeneratorScriptParser {
     		CommonTree nameNode = childAt(0, assignmentNode);
     		String name = nameNode.getText();
     		CommonTree exNode = childAt(1, assignmentNode);
-    		Expression ex = convertNode(exNode);
+    		Expression<?> ex = convertNode(exNode);
 			assignments[i - firstIndex] = new Assignment(name, ex);
     	}
 		return assignments;
     }
 
-	private static Expression convertInvocation(CommonTree node) throws ParseException {
-    	String[] qn = (String[]) convertQualifiedNameToStringArray(childAt(0, node)).evaluate(null);
-    	Expression[] argExpressions = parseArguments(childAt(1, node));
+	private static Expression<?> convertInvocation(CommonTree node) throws ParseException {
+    	String[] qn = convertQualifiedNameToStringArray(childAt(0, node));
+    	Expression<?>[] argExpressions = parseArguments(childAt(1, node));
     	return new QNInvocationExpression(qn, argExpressions);
     }
 
-    private static Expression convertSubInvocation(CommonTree node) throws ParseException {
-    	Expression object = convertNode(childAt(0, node));
+    private static Expression<?> convertSubInvocation(CommonTree node) throws ParseException {
+    	Expression<?> object = convertNode(childAt(0, node));
     	String methodMame = (String) convertNode(childAt(1, node)).evaluate(null);
-    	Expression[] argsExpressions = parseArguments(childAt(2, node));
-//    	Expression<Expression[]> paramExpression = new ConstantExpression<Expression[]>(params);
+    	Expression<?>[] argsExpressions = parseArguments(childAt(2, node));
+//    	Expression<Expression<?>[]> paramExpression = new ConstantExpression<Expression<?>[]>(params);
     	return new InvocationExpression(object, methodMame, argsExpressions);
     }
 
-    private static Expression convertIndex(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<?> convertIndex(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 	            Object container = term1.evaluate(context);
 	            Object indexObject = term2.evaluate(context);
@@ -411,36 +407,35 @@ public class BeneratorScriptParser {
 		};
     }
 
-    private static Expression convertField(CommonTree node) throws ParseException {
-		Expression target = convertNode(childAt(0, node));
-    	String fieldName = (String) convertIdentifier(childAt(1, node)).evaluate(null);
-		return new FieldExpression(target, fieldName);
+    private static Expression<?> convertField(CommonTree node) throws ParseException {
+    	return new FieldExpression(convertNode(childAt(0, node)), convertIdentifier(childAt(1, node)).evaluate(null));
     }
 
-    private static Expression convertCast(CommonTree node) throws ParseException {
+    @SuppressWarnings("unchecked")
+    private static Expression<?> convertCast(CommonTree node) throws ParseException {
     	Class<?> targetType = (Class<?>) convertNode(childAt(0, node)).evaluate(null);
-		Expression sourceExpression = convertNode(childAt(1, node));
+		Expression<?> sourceExpression = convertNode(childAt(1, node));
 		return new TypeConvertingExpression(sourceExpression, targetType);
     }
 
-    private static Expression convertNegation(CommonTree node) throws ParseException {
-		return new UnaryExpression(convertNode(childAt(0, node))) {
+    private static Expression<?> convertNegation(CommonTree node) throws ParseException {
+		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().negate(term.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertLogicalComplement(CommonTree node) throws ParseException {
-		return new UnaryExpression(convertNode(childAt(0, node))) {
+    private static Expression<?> convertLogicalComplement(CommonTree node) throws ParseException {
+		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().logicalComplement(term.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertBitwiseComplement(CommonTree node) throws ParseException {
-		return new UnaryExpression(convertNode(childAt(0, node))) {
+    private static Expression<?> convertBitwiseComplement(CommonTree node) throws ParseException {
+		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().bitwiseComplement(term.evaluate(context));
             }
@@ -458,11 +453,11 @@ public class BeneratorScriptParser {
 		return className.toString();
     }
 
-    private static Expression[] parseArguments(CommonTree node) throws ParseException {
+    private static Expression<?>[] parseArguments(CommonTree node) throws ParseException {
 		List<CommonTree> childNodes = getChildNodes(node);
 		if (childNodes == null)
 			return EMPTY_ARGUMENT_LIST;
-		Expression[] result = new Expression[childNodes.size()];
+		Expression<?>[] result = new Expression[childNodes.size()];
 		for (int i = 0; i < childNodes.size(); i++) {
 			CommonTree childNode = childNodes.get(i);
 			result[i] = convertNode(childNode);
@@ -470,10 +465,10 @@ public class BeneratorScriptParser {
 		return result;
     }
 
-	private static Expression convertPlus(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+	private static Expression<?> convertPlus(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
-			    Expression[] summands = { term1, term2 };
+			    Expression<?>[] summands = { term1, term2 };
 				Assert.isTrue(summands.length > 1, "At least two summands needed");
                 Object result = summands[0].evaluate(context);
                 for (int i = 1; i < summands.length; i++)
@@ -483,128 +478,128 @@ public class BeneratorScriptParser {
 		};
     }
 
-	private static Expression convertMinus(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+	private static Expression<?> convertMinus(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 			    return ArithmeticEngine.defaultInstance().subtract(term1.evaluate(context), term2.evaluate(context));
 		    }
 		};
     }
 
-	private static Expression convertStar(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+	private static Expression<?> convertStar(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 			    return ArithmeticEngine.defaultInstance().multiply(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertSlash(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<?> convertSlash(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 			    return ArithmeticEngine.defaultInstance().divide(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertPercent(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertPercent(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().mod(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertShiftLeft(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertShiftLeft(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().shiftLeft(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertShiftRight(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertShiftRight(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().shiftRight(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertShiftRight2(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertShiftRight2(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().shiftRightUnsigned(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertAnd(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertAnd(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().bitwiseAnd(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertInclusiveOr(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertInclusiveOr(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().bitwiseOr(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertExclusiveOr(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Object> convertExclusiveOr(CommonTree node) throws ParseException {
+		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().bitwiseExclusiveOr(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertEquals(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 return ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertNotEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertNotEquals(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 return !ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertLess(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertLess(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 return ArithmeticEngine.defaultInstance().less(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertLessOrEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertLessOrEquals(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 return ArithmeticEngine.defaultInstance().lessOrEquals(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertGreater(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertGreater(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 return ArithmeticEngine.defaultInstance().greater(term1.evaluate(context), term2.evaluate(context));
             }
 		};
     }
 
-    private static Expression convertGreaterOrEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertGreaterOrEquals(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 ArithmeticEngine engine = ArithmeticEngine.defaultInstance();
 				return engine.greaterOrEquals(term1.evaluate(context), term2.evaluate(context));
@@ -612,8 +607,8 @@ public class BeneratorScriptParser {
 		};
     }
 
-    private static Expression convertConditionalOr(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertConditionalOr(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
                 boolean b2 = AnyConverter.convert(term2.evaluate(context), Boolean.class);
@@ -622,8 +617,8 @@ public class BeneratorScriptParser {
 		};
     }
 
-    private static Expression convertConditionalAnd(CommonTree node) throws ParseException {
-		return new BinaryExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
+    private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws ParseException {
+		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
                 boolean b2 = AnyConverter.convert(term2.evaluate(context), Boolean.class);
@@ -632,7 +627,8 @@ public class BeneratorScriptParser {
 		};
     }
 
-    private static Expression convertConditionalExpression(CommonTree node) throws ParseException {
+    @SuppressWarnings("unchecked")
+    private static Expression<?> convertConditionalExpression(CommonTree node) throws ParseException {
 		return new ConditionalExpression(
 				convertNode(childAt(0, node)),  // condition
 				convertNode(childAt(1, node)),  // true alternative 
