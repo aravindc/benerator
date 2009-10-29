@@ -51,10 +51,11 @@ public class DatabaseParser extends AbstractDescriptorParser {
 			Expression<String>  user     = parseStringAttr(ATT_USER,     element);
 			Expression<String>  password = parseStringAttr(ATT_PASSWORD, element);
 			Expression<String>  schema   = parseStringAttr(ATT_SCHEMA,   element);
+			Expression<String>  tableFilter = parseStringAttr(ATT_TABLE_FILTER, element);
 			Expression<Boolean> batch     = new TypedScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
 			Expression<Integer> fetchSize = new TypedScriptExpression<Integer>(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
 			Expression<Boolean> readOnly  = new TypedScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
-			return new DefineDatabaseStatement(id, url, driver, user, password, schema, batch, fetchSize, readOnly, resourceManager);
+			return new DefineDatabaseStatement(id, url, driver, user, password, schema, tableFilter, batch, fetchSize, readOnly, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
