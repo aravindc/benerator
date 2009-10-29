@@ -51,7 +51,6 @@ import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
-import org.databene.script.jsr227.Jsr223ScriptFactory;
 import org.databene.task.TaskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,8 +139,7 @@ public class EvaluateStatement implements Statement {
 				textValue = String.valueOf(ScriptUtil.render(textValue, context));
 				result = runShell(null, textValue, onErrorValue); // TODO v0.6 remove null uri parameter
 			} else {
-				if (StringUtil.isEmpty(typeValue))
-					throw new ConfigurationError("language is unclear for script: " + textValue);
+				typeValue = context.getDefaultScript();
 				if (!StringUtil.isEmpty(uriValue))
 					textValue = IOUtil.getContentOfURI(uriValue);
 				result = runScript(textValue, typeValue, onErrorValue, context);
@@ -173,7 +171,7 @@ public class EvaluateStatement implements Statement {
 		ErrorHandler errorHandler = new ErrorHandler(getClass().getName(),
 				Level.valueOf(onError));
 		try {
-			Script script = Jsr223ScriptFactory.parseText(text, type);
+			Script script = ScriptUtil.parseScriptText(text, type);
 			return script.evaluate(context);
 		} catch (Exception e) {
 			errorHandler.handleError("Error in script evaluation", e);
