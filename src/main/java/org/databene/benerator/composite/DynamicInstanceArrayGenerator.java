@@ -37,10 +37,10 @@ import org.databene.commons.context.ContextAware;
  */
 public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Object> implements ContextAware {
 	
-	private CachedExpression countExpression;
+	private CachedExpression<Long> countExpression;
 	private Context context; // TODO how to get context from Benerator?
 
-    public DynamicInstanceArrayGenerator(Generator<Object> source, CachedExpression countExpression, BeneratorContext context) {
+    public DynamicInstanceArrayGenerator(Generator<Object> source, CachedExpression<Long> countExpression, BeneratorContext context) {
         super(source);
         this.countExpression = countExpression;
         this.context = context;

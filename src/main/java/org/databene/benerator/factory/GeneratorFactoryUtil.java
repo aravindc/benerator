@@ -62,7 +62,7 @@ public class GeneratorFactoryUtil {
     public static void mapDetailToBeanProperty(FeatureDescriptor descriptor, String detailName, Object bean, Context context) {
         Object detailValue = descriptor.getDetailValue(detailName);
         if (detailValue instanceof Expression)
-        	detailValue = ((Expression) detailValue).evaluate(context); // TODO is it OK to always evaluate the expression?
+        	detailValue = ((Expression<?>) detailValue).evaluate(context); // TODO is it OK to always evaluate the expression?
 		setBeanProperty(bean, detailName, detailValue, context);
     }
 
@@ -81,25 +81,25 @@ public class GeneratorFactoryUtil {
         }
     }
         
-    public static Expression getCountExpression(final InstanceDescriptor descriptor) {
-    	Expression count = DescriptorUtil.getCount(descriptor);
+    public static Expression<Long> getCountExpression(final InstanceDescriptor descriptor) {
+    	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
     		return count;
     	else {
-			final Expression min = DescriptorUtil.getMinCount(descriptor);
-			final Expression max = DescriptorUtil.getMaxCount(descriptor);
-			final Expression prec = DescriptorUtil.getCountPrecision(descriptor);
-			final Expression distSpecExpr = new Expression() {
+			final Expression<Long> min = DescriptorUtil.getMinCount(descriptor);
+			final Expression<Long> max = DescriptorUtil.getMaxCount(descriptor);
+			final Expression<Long> prec = DescriptorUtil.getCountPrecision(descriptor);
+			final Expression<Long> distSpecExpr = new Expression<Long>() {
 
 				public Long evaluate(Context context) {
 					// TODO this sucks!!!
-					Long minVal = (Long) min.evaluate(context);
-					Long maxVal = (Long) max.evaluate(context);
+					Long minVal = min.evaluate(context);
+					Long maxVal = max.evaluate(context);
 					if (minVal.equals(maxVal))
 						return minVal;
 					String distSpec = descriptor.getCountDistribution();
 	                Distribution d = getDistribution(distSpec, false, true, (BeneratorContext) context);
-	    			return new DistributedNumberExpression(new ConstantExpression(d), min, max, prec).evaluate(context);
+	    			return new DistributedNumberExpression(new ConstantExpression<Distribution>(d), min, max, prec).evaluate(context);
                 }
 				
 			};
@@ -158,9 +158,9 @@ public class GeneratorFactoryUtil {
 	}
 
     
-    public static Expression getDistributionExpression(
+    public static Expression<Distribution> getDistributionExpression(
     		final String spec, final boolean unique, final boolean required, final BeneratorContext context) {
-    	return new Expression() {
+    	return new Expression<Distribution>() {
 
 			public Distribution evaluate(Context context) {
 	            return getDistribution(spec, unique, required, (BeneratorContext) context);

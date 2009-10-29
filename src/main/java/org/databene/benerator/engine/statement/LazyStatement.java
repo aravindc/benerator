@@ -35,21 +35,21 @@ import org.databene.commons.Expression;
  */
 public class LazyStatement implements Statement {
 
-	private Expression targetExpression;
+	private Expression<Statement> targetExpression;
 	private Statement target;
 
-    public LazyStatement(Expression targetExpression) {
+    public LazyStatement(Expression<Statement> targetExpression) {
 	    this.targetExpression = targetExpression;
 	    this.target = null;
     }
 
-	public Expression getTargetExpression() {
+	public Expression<Statement> getTargetExpression() {
 	    return targetExpression;
     }
 
 	public void execute(BeneratorContext context) {
 	    if (target == null)
-	    	target = (Statement) targetExpression.evaluate(context);
+	    	target = targetExpression.evaluate(context);
 	    target.execute(context);
     }
 

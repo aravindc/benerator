@@ -49,9 +49,10 @@ public class PropertyParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_PROPERTY);
     }
 
-	public SetGlobalPropertyStatement parse(Element element, ResourceManager resourceManager) {
+	@SuppressWarnings("unchecked")
+    public SetGlobalPropertyStatement parse(Element element, ResourceManager resourceManager) {
 		String propertyName = element.getAttribute(ATT_NAME);
-		Expression valueExpression;
+		Expression<?> valueExpression;
 		if (element.hasAttribute(ATT_VALUE))
 			valueExpression = new ScriptedLiteral(element.getAttribute(ATT_VALUE));
 		else if (element.hasAttribute(ATT_REF))
@@ -63,7 +64,8 @@ public class PropertyParser extends AbstractDescriptorParser {
 		return new SetGlobalPropertyStatement(propertyName, valueExpression);
 	}
 
-    private Expression parseSource(String source) {
+    @SuppressWarnings("unchecked")
+    private Expression<?> parseSource(String source) {
 		try {
 			return new SourceExpression(BeneratorScriptParser.parseBeanSpec(source));
         } catch (ParseException e) {
@@ -77,16 +79,16 @@ public class PropertyParser extends AbstractDescriptorParser {
      * @since 0.6.0
      * @author Volker Bergmann
      */
-    public class SourceExpression implements Expression {
+    public class SourceExpression<E> implements Expression<E> {
     	
-    	Expression source;
+    	Expression<Generator<E>> source;
     	
-		public SourceExpression(Expression source) {
+		public SourceExpression(Expression<Generator<E>> source) {
 	        this.source = source;
         }
 
-		public Object evaluate(Context context) {
-			Generator<?> generator = (Generator<?>) source.evaluate(context);
+        public E evaluate(Context context) {
+			Generator<E> generator = source.evaluate(context);
 			return generator.generate();
 		}
 

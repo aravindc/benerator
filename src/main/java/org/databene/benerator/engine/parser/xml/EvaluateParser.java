@@ -32,7 +32,6 @@ import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
-import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -49,16 +48,16 @@ public class EvaluateParser implements DescriptorParser {
     }
 
 	public EvaluateStatement parse(Element element, ResourceManager resourceManager) {
-		StringExpression id           = parseStringAttr(ATT_ID, element);
-		StringExpression text         = parseTextElem(element);
-		StringExpression uri          = parseStringAttr(ATT_URI,  element);
-		StringExpression type         = parseStringAttr(ATT_TYPE, element);
-		Expression targetObject       = new FeatureAccessExpression(element.getAttribute(ATT_TARGET));
-		StringExpression onError      = parseStringAttr(ATT_ON_ERROR, element);
-		StringExpression encoding     = parseStringAttr(ATT_ENCODING, element);
-		Expression optimize           = new TypedScriptExpression(
+		Expression<String> id           = parseStringAttr(ATT_ID, element);
+		Expression<String> text         = parseTextElem(element);
+		Expression<String> uri          = parseStringAttr(ATT_URI,  element);
+		Expression<String> type         = parseStringAttr(ATT_TYPE, element);
+		Expression<?> targetObject       = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));
+		Expression<String> onError      = parseStringAttr(ATT_ON_ERROR, element);
+		Expression<String> encoding     = parseStringAttr(ATT_ENCODING, element);
+		Expression<Boolean> optimize           = new TypedScriptExpression<Boolean>(
 											element.getAttribute(ATT_OPTIMIZE), Boolean.class, false);
-		Expression assertion    = new ScriptExpression(element.getAttribute(ATT_ASSERT));
+		Expression<?> assertion    = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT));
 		return new EvaluateStatement(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
 	}
 

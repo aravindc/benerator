@@ -28,14 +28,14 @@ import org.databene.commons.Expression;
 import org.databene.commons.Level;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract implementation of the Statement interface.<br/><br/>
  * Created: 27.10.2009 20:16:20
- * @since TODO version
+ * @since 0.5.0
  * @author Volker Bergmann
  */
 public abstract class AbstractStatement implements Statement {
 
-    private Expression errorHandler;
+    private Expression<ErrorHandler> errorHandler;
 
     // constructor -----------------------------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ public abstract class AbstractStatement implements Statement {
         this(null);
     }
 
-    protected AbstractStatement(Expression errorHandler) {
+    protected AbstractStatement(Expression<ErrorHandler> errorHandler) {
         this.errorHandler = errorHandler;
     }
     
@@ -52,7 +52,7 @@ public abstract class AbstractStatement implements Statement {
     public ErrorHandler getErrorHandler(Context context) {
     	if (errorHandler == null)
     		return new ErrorHandler(getClass().getName(), Level.fatal);
-		return (ErrorHandler) errorHandler.evaluate(context);
+		return errorHandler.evaluate(context);
 	}
     
     protected void handleError(String message, Context context) {

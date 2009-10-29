@@ -27,6 +27,7 @@
 package org.databene.task;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 
 /**
@@ -43,11 +44,11 @@ public class SerialTask extends CompositeTask {
 		this(null);
 	}
 	
-    public SerialTask(Expression errorHandler) {
+    public SerialTask(Expression<ErrorHandler> errorHandler) {
 	    this(null, errorHandler);
     }
 
-	public SerialTask(String taskName, Expression errorHandler) {
+	public SerialTask(String taskName, Expression<ErrorHandler> errorHandler) {
 	    super(taskName, errorHandler);
     }
 

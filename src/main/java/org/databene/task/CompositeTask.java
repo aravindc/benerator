@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 
@@ -46,11 +47,11 @@ public abstract class CompositeTask extends AbstractTask {
 	
 	protected List<Task> subTasks;
 	
-    public CompositeTask(Expression errorHandler) {
+    public CompositeTask(Expression<ErrorHandler> errorHandler) {
 	    this(null, errorHandler);
     }
 
-	public CompositeTask(String taskName, Expression errorHandler) {
+	public CompositeTask(String taskName, Expression<ErrorHandler> errorHandler) {
 	    super(taskName, errorHandler);
 	    this.subTasks = new ArrayList<Task>();
     }

@@ -42,9 +42,9 @@ import org.databene.commons.mutator.AnyMutator;
 public class SetGlobalPropertyStatement implements Statement {
 	
 	private String propertyName;
-	private Expression valueExpression;
+	private Expression<?> valueExpression;
 
-    public SetGlobalPropertyStatement(String propertyName, Expression valueExpression) {
+    public SetGlobalPropertyStatement(String propertyName, Expression<?> valueExpression) {
     	this.propertyName = propertyName;
     	this.valueExpression = valueExpression;
     }

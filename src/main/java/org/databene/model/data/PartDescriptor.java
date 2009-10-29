@@ -48,11 +48,11 @@ public class PartDescriptor extends ComponentDescriptor {
         this(name, localType, null, null);
     }
     
-    public PartDescriptor(String name, TypeDescriptor localType, Expression minCount, Expression maxCount) {
+    public PartDescriptor(String name, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
     	this(name, null, localType, minCount, maxCount);
     }
     	
-    public PartDescriptor(String name, String type, TypeDescriptor localType, Expression minCount, Expression maxCount) {
+    public PartDescriptor(String name, String type, TypeDescriptor localType, Expression<Long> minCount, Expression<Long> maxCount) {
         super(name, type, localType);
         setMinCount(minCount);
         setMaxCount(maxCount);

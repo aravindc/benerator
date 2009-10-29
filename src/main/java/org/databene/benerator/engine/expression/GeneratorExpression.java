@@ -38,15 +38,15 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class GeneratorExpression implements Expression {
+public class GeneratorExpression<E> implements Expression<E> {
 
-	private Generator<Object> generator;
+	private Generator<E> generator;
 	
-    public GeneratorExpression(Generator<Object> generator) {
+    public GeneratorExpression(Generator<E> generator) {
 	    this.generator = generator;
     }
 
-	public Object evaluate(Context context) {
+	public E evaluate(Context context) {
 		return generator.generate();
     }
 

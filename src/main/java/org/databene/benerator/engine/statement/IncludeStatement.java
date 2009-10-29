@@ -50,22 +50,22 @@ public class IncludeStatement implements Statement {
 	
 	private static Logger logger = LoggerFactory.getLogger(IncludeStatement.class);
 
-	private Expression uri;
+	private Expression<String> uri;
 	
-    public IncludeStatement(Expression uri) {
+    public IncludeStatement(Expression<String> uri) {
     	this.uri = uri;
     }
     
-	public Expression getUri() {
+	public Expression<String> getUri() {
     	return uri;
     }
 
-	public void setUri(Expression uri) {
+	public void setUri(Expression<String> uri) {
     	this.uri = uri;
     }
 
 	public void execute(BeneratorContext context) {
-		String uriValue = IOUtil.resolveLocalUri((String) uri.evaluate(context), context.getContextUri());
+		String uriValue = IOUtil.resolveLocalUri(uri.evaluate(context), context.getContextUri());
         try {
             importProperties(uriValue, context);
         } catch (IOException e) {

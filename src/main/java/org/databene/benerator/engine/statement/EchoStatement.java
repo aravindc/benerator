@@ -40,9 +40,9 @@ import org.databene.commons.Expression;
 
 public class EchoStatement implements Statement {
 	
-	private Expression expression;
+	private Expression<?> expression;
 
-    public EchoStatement(Expression expression) {
+    public EchoStatement(Expression<?> expression) {
 	    this.expression = expression;
     }
 

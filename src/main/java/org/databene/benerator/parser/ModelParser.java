@@ -116,9 +116,9 @@ public class ModelParser {
         }
         mapInstanceDetails(element, complex, result);
         if (result.getDeclaredDetailValue("minCount") == null)
-            result.setMinCount(new ConstantExpression(1L));
+            result.setMinCount(new ConstantExpression<Long>(1L));
         if (result.getDeclaredDetailValue("maxCount") == null)
-            result.setMaxCount(new ConstantExpression(1L));
+            result.setMaxCount(new ConstantExpression<Long>(1L));
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
             if (parentComponent != null) {

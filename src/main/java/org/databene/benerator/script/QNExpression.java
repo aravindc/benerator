@@ -33,7 +33,6 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.accessor.FeatureAccessor;
 import org.databene.commons.bean.DefaultClassProvider;
-import org.databene.commons.expression.UnaryExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,16 +45,17 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class QNExpression extends UnaryExpression {
+public class QNExpression implements Expression<Object> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeneratorScriptParser.class);
 
-	public QNExpression(Expression term) {
-	    super(term);
+	private String[] qnParts;
+	
+	public QNExpression(String[] qnParts) {
+	    this.qnParts = qnParts;
     }
 
     public Object evaluate(Context context) {
-        String[] qnParts = (String[]) term.evaluate(context);
         String qn = ArrayFormat.format(".", qnParts);
         if (context.contains(qn))
         	return context.get(qn);

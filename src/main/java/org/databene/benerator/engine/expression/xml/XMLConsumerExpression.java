@@ -54,7 +54,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  * @author Volker Bergmann
  */
 
-public class XMLConsumerExpression implements Expression {
+public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 	
 	private Escalator escalator;
 

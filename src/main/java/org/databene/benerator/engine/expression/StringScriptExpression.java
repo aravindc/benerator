@@ -44,7 +44,7 @@ public class StringScriptExpression extends StringExpression {
     }
     
     public StringScriptExpression(String script, String defaultValue) {
-	    super(new ScriptExpression(script, defaultValue));
+	    super(new ScriptExpression<String>(script, defaultValue));
     }
 
 }

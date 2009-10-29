@@ -40,19 +40,19 @@ import org.databene.commons.Level;
  * @author Volker Bergmann
  */
 
-public class ErrorHandlerExpression implements Expression {
+public class ErrorHandlerExpression implements Expression<ErrorHandler> {
 	
-	private Expression nameExpr;
+	private Expression<String> nameExpr;
 	private String category;
 
 	
-    public ErrorHandlerExpression(Expression nameExpr, String category) {
+    public ErrorHandlerExpression(Expression<String> nameExpr, String category) {
 	    this.nameExpr = nameExpr;
 	    this.category = category;
     }
 
 	public ErrorHandler evaluate(Context context) {
-		String levelName = (String) (nameExpr != null ? nameExpr.evaluate(context) : null);
+		String levelName = (nameExpr != null ? nameExpr.evaluate(context) : null);
 		if (levelName == null)
 			levelName = ((BeneratorContext) context).getDefaultErrorHandler();
 		Level level = Level.valueOf(levelName);

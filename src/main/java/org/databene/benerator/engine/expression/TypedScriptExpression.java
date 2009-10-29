@@ -39,27 +39,27 @@ import org.databene.commons.converter.AnyConverter;
  * @author Volker Bergmann
  */
 
-public class TypedScriptExpression extends ScriptExpression {
+public class TypedScriptExpression<E> implements Expression<E> {
 	
-	private Converter<Object, Object> converter;
+	private ScriptExpression<Object> source;
+	private Converter<Object, E> converter;
 
+    @SuppressWarnings("unchecked")
     public TypedScriptExpression(String script) {
-    	this(script, Object.class);
+    	this(script, (Class<E>) Object.class);
     }
 
-    public TypedScriptExpression(String script, Class<?> resultType) {
+    public TypedScriptExpression(String script, Class<E> resultType) {
     	this(script, resultType, null);
     }
 
-    @SuppressWarnings("unchecked")
-    public TypedScriptExpression(String script, Class<?> resultType, Object defaultValue) {
-    	super(script, defaultValue);
-    	this.converter = new AnyConverter(resultType);
+    public TypedScriptExpression(String script, Class<E> resultType, E defaultValue) {
+    	this.source = new ScriptExpression<Object>(script, defaultValue);
+    	this.converter = new AnyConverter<Object, E>(resultType);
     }
 
-	@Override
-    public Object evaluate(Context context) {
-		return converter.convert(super.evaluate(context));
+    public E evaluate(Context context) {
+		return converter.convert(source.evaluate(context));
     }
 
 	@Override

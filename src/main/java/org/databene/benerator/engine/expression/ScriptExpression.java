@@ -28,34 +28,35 @@ import org.databene.commons.expression.ConstantExpression;
 import org.databene.script.ScriptUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Expression that evaluates a script.<br/><br/>
  * Created: 27.10.2009 13:48:11
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ScriptExpression implements Expression {
+public class ScriptExpression<E> implements Expression<E> {
 
 	private String script;
-	private Expression defaultValueExpression;
+	private Expression<E> defaultValueExpression;
 
     public ScriptExpression(String script) {
-    	this(script, null);
+    	this(script, (E) null);
     }
 
-    public ScriptExpression(String script, Object defaultValue) {
-    	this(script, new ConstantExpression(defaultValue));
+    public ScriptExpression(String script, E defaultValue) {
+    	this(script, new ConstantExpression<E>(defaultValue));
     }
 
-    public ScriptExpression(String script, Expression defaultValueExpression) {
+    public ScriptExpression(String script, Expression<E> defaultValueExpression) {
     	this.script = script;
     	this.defaultValueExpression = defaultValueExpression;
     }
 
-	public Object evaluate(Context context) {
+	@SuppressWarnings("unchecked")
+    public E evaluate(Context context) {
 		if (StringUtil.isEmpty(script))
 			return (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
 		else
-			return ScriptUtil.render(script, context);
+			return (E) ScriptUtil.render(script, context);
     }
 
 	@Override

@@ -435,13 +435,13 @@ public class ArchetypeBuilder implements Runnable {
           	applyDefaults(complexType);
           	InstanceDescriptor iDesc = new InstanceDescriptor(name, complexType.getName());
 			long count = db.countEntities(name);
-			iDesc.setCount(new ConstantExpression(count));
+			iDesc.setCount(new ConstantExpression<Long>(count));
 			createEntity(iDesc);
        }
 	}
 	
 	private void createEntity(InstanceDescriptor descriptor) throws SAXException {
-		descriptor.setCount(new ConstantExpression(0L));
+		descriptor.setCount(new ConstantExpression<Long>(0L));
 		AttributesImpl attributes = new AttributesImpl();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             Object value = detail.getValue();

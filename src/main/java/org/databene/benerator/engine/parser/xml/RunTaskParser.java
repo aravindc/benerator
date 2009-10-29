@@ -33,6 +33,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
 import org.databene.task.LazyTask;
+import org.databene.task.PageListener;
 import org.databene.task.Task;
 import org.w3c.dom.Element;
 
@@ -51,15 +52,16 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	    super(EL_RUN_TASK);
     }
 
-	public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
+	@SuppressWarnings("unchecked")
+    public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression taskProvider = beanParser.parseBeanExpression(element);
+			Expression<Task> taskProvider = (Expression<Task>) beanParser.parseBeanExpression(element);
 			Task task = new LazyTask(taskProvider);
-			Expression count    = parseIntAttr(ATT_COUNT, element, 1);
-			Expression pageSize = parseIntAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
-			Expression threads  = parseIntAttr(ATT_THREADS, element, 1);
-			Expression pager    = parsePager(element);
-			return new RunTaskStatement(task, count, pageSize, threads, pager);
+			Expression<Long> count    = parseLongAttr(ATT_COUNT, element, 1);
+			Expression<Long> pageSize = parseLongAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
+			Expression<Integer> threads  = parseIntAttr(ATT_THREADS, element, 1);
+			Expression<PageListener> pager    = parsePager(element);
+			return new RunTaskStatement(task, count, pageSize, pager, threads);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		} catch (ParseException e) {
@@ -67,9 +69,10 @@ public class RunTaskParser extends AbstractDescriptorParser {
         }
 	}
 
-    private Expression parsePager(Element element) throws ParseException {
+    @SuppressWarnings("unchecked")
+    private Expression<PageListener> parsePager(Element element) throws ParseException {
 		String pagerSpec = element.getAttribute(ATT_PAGER);
-		return BeneratorScriptParser.parseBeanSpec(pagerSpec);
+		return (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(pagerSpec);
 	}
 
 }

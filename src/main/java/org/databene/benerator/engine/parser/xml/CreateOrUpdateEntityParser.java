@@ -48,12 +48,14 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.model.consumer.Consumer;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.task.PageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -78,7 +80,7 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
     }
 	
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
-		Expression expression = new Expression() {
+		Expression<Statement> expression = new Expression<Statement>() {
 			public Statement evaluate(Context context) {
 				final CreateOrUpdateEntityStatement creator = parseCreateEntities(element, false, resourceManager, (BeneratorContext) context);
 				return new Statement() {
@@ -98,11 +100,11 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
 		
-		Expression countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
+		Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
 		String localPageSize = element.getAttribute(ATT_PAGESIZE);
-		Expression pageSize = new ScriptExpression(localPageSize, new DefaultPageSizeExpression());
-		Expression threads = new TypedScriptExpression(element.getAttribute(ATT_THREADS), Integer.class, 1);
-		Expression pager = new ScriptExpression(element.getAttribute(ATT_PAGER), null);
+		Expression<Long> pageSize = new ScriptExpression<Long>(localPageSize, new DefaultPageSizeExpression());
+		Expression<Integer> threads = new TypedScriptExpression<Integer>(element.getAttribute(ATT_THREADS), Integer.class, 1);
+		Expression<PageListener> pager = new ScriptExpression<PageListener>(element.getAttribute(ATT_PAGER), (PageListener) null);
 		CreateOrUpdateEntityStatement creator = new CreateOrUpdateEntityStatement(task, countExpression, pageSize, pager, threads);
 		return creator;
 	}
@@ -141,7 +143,7 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 		return task;
     }
 
-	private Expression parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
+	private Expression<Consumer<Entity>> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
 		return new XMLConsumerExpression(entityElement, consumersExpected, resourceManager);
 	}
 

@@ -48,18 +48,18 @@ import org.databene.task.Task;
 public class CreateOrUpdateEntityStatement implements Statement, PageListener {
 
 	protected Task task;
-	protected Expression count;
-	protected Expression pageSize;
-	protected Expression threads;
-	protected Expression pageListener;
+	protected Expression<Long> count;
+	protected Expression<Long> pageSize;
+	protected Expression<Integer> threads;
+	protected Expression<PageListener> pageListener;
 
 	public CreateOrUpdateEntityStatement(GenerateAndConsumeEntityTask task) {
-	    this(task, new ConstantExpression(1L), new ConstantExpression(1L), 
-	    		null, new ConstantExpression(1));
+	    this(task, new ConstantExpression<Long>(1L), new ConstantExpression<Long>(1L), 
+	    		null, new ConstantExpression<Integer>(1));
     }
 
 	public CreateOrUpdateEntityStatement(GenerateAndConsumeEntityTask task,
-			Expression count, Expression pageSize, Expression pageListener, Expression threads) {
+			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, Expression<Integer> threads) {
 	    this.task = task;
 	    this.count = count;
 	    this.pageSize = pageSize;
@@ -68,20 +68,16 @@ public class CreateOrUpdateEntityStatement implements Statement, PageListener {
 		this.generator = task.getEntityGenerator();
     }
 
-	protected Long evaluateCount(BeneratorContext context) {
-	    return (Long) count.evaluate(context);
-    }
-
-    private Generator<Entity> generator;
+	private Generator<Entity> generator;
 	
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
     public void execute(BeneratorContext context) {
 	    PagedTaskRunner.execute(task, context, 
-	    		evaluateCount(context), 
+	    		count.evaluate(context), 
 	    		getPageListeners(context), 
-	    		(Integer) pageSize.evaluate(context),  // TODO support pageSize of type Long
-	    		(Integer) threads.evaluate(context));
+	    		pageSize.evaluate(context),
+	    		threads.evaluate(context));
         // TODO count all generations // context.countGenerations(getActualCount());
 	    synchronized(generator) {
 	        generator.close();
@@ -91,7 +87,7 @@ public class CreateOrUpdateEntityStatement implements Statement, PageListener {
 	private List<PageListener> getPageListeners(Context context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();
 		if (pageListener != null) {
-	        PageListener listener = (PageListener) pageListener.evaluate(context);
+	        PageListener listener = pageListener.evaluate(context);
 	        if (listener != null)
 	        	listeners.add(listener);
         }

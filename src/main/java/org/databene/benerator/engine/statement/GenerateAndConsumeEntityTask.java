@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import org.databene.benerator.Generator;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
@@ -49,12 +50,13 @@ public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadS
 
     private Generator<Entity> entityGenerator;
     private boolean isSubTask;
-    private Expression consumerExpr;
+    private Expression<Consumer<Entity>> consumerExpr;
 
     private Consumer<Entity> consumer;
     
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
-    		Expression consumerExpr, boolean isSubTask, Expression errorHandler) {
+    		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask, 
+    		Expression<ErrorHandler> errorHandler) {
     	super(taskName, errorHandler);
     	Assert.notNull(entityGenerator, "entityGenerator");
         this.entityGenerator = entityGenerator; // TODO make this an expression?
@@ -130,10 +132,9 @@ public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadS
 
 	// non-public helpers ----------------------------------------------------------------------------------------------
 	
-    @SuppressWarnings("unchecked")
     Consumer<Entity> getConsumer(Context context) {
     	if (consumer == null)
-    		consumer = (Consumer<Entity>) consumerExpr.evaluate(context);
+    		consumer = consumerExpr.evaluate(context);
     	return consumer;
     }
 

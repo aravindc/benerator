@@ -42,19 +42,19 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 
-public class XMLAttributeExpression<E> implements Expression {
+public class XMLAttributeExpression<E>implements Expression<E> {
 	
 	private String text;
-	private Converter<Object, Object> converter;
+	private Converter<Object, E> converter;
 
     public XMLAttributeExpression(Element element, String attributeName, Class<E> resultType) {
     	this.text = element.getAttribute(attributeName);
     	if (this.text == null)
 			throw new ConfigurationError();
-    	this.converter = new AnyConverter<Object, Object>((Class<Object>) resultType);
+    	this.converter = new AnyConverter<Object, E>(resultType);
     }
 
-	public Object evaluate(Context context) {
+	public E evaluate(Context context) {
 		return converter.convert(ScriptUtil.render(text, context));
 	}
 

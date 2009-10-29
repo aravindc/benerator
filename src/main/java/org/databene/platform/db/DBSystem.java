@@ -521,8 +521,8 @@ public class DBSystem extends AbstractStorageSystem {
                         abstractType,
                         targetTable.getName());
                 descriptor.getLocalType(false).setSource(id);
-                descriptor.setMinCount(new ConstantExpression(1L));
-                descriptor.setMaxCount(new ConstantExpression(1L));
+                descriptor.setMinCount(new ConstantExpression<Long>(1L));
+                descriptor.setMaxCount(new ConstantExpression<Long>(1L));
                 boolean nullable = foreignKeyColumn.getForeignKeyColumn().isNullable();
 				descriptor.setNullable(nullable);
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
@@ -560,8 +560,8 @@ public class DBSystem extends AbstractStorageSystem {
             //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
             PartDescriptor descriptor = new PartDescriptor(columnName);
             descriptor.setLocalType(typeDescriptor);
-            descriptor.setMinCount(new ConstantExpression(1L));
-            descriptor.setMaxCount(new ConstantExpression(1L));
+            descriptor.setMinCount(new ConstantExpression<Long>(1L));
+            descriptor.setMaxCount(new ConstantExpression<Long>(1L));
             descriptor.setNullable(column.getNotNullConstraint() == null);
             List<DBConstraint> ukConstraints = column.getUkConstraints();
             for (DBConstraint constraint : ukConstraints) {

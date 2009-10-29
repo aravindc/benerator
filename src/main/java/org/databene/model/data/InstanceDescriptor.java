@@ -87,7 +87,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         
         // configs
         addConfig(COUNT,              Expression.class, null);
-        addConfig(COUNT_PRECISION,    Expression.class, new ConstantExpression(1L));
+        addConfig(COUNT_PRECISION,    Expression.class, new ConstantExpression<Long>(1L));
         addConfig(COUNT_DISTRIBUTION, String.class, null);
         addConfig(NULL_QUOTA,         Double.class,     0.);
     }
@@ -155,27 +155,30 @@ public class InstanceDescriptor extends FeatureDescriptor {
         setDetailValue(NULLABLE, nullable);
     }
     
-    public Expression getMinCount() {
-        return (Expression) getDetailValue(MIN_COUNT);
+    @SuppressWarnings("unchecked")
+    public Expression<Long> getMinCount() {
+        return (Expression<Long>) getDetailValue(MIN_COUNT);
     }
     
-    public void setMinCount(Expression minCount) {
+    public void setMinCount(Expression<Long> minCount) {
         setDetailValue(MIN_COUNT, minCount);
     }
 
-    public Expression getMaxCount() {
-        return (Expression) getDetailValue(MAX_COUNT);
+    @SuppressWarnings("unchecked")
+    public Expression<Long> getMaxCount() {
+        return (Expression<Long>) getDetailValue(MAX_COUNT);
     }
     
-    public void setMaxCount(Expression maxCount) {
+    public void setMaxCount(Expression<Long> maxCount) {
         setDetailValue(MAX_COUNT, maxCount);
     }
 
-    public Expression getCount() {
+    @SuppressWarnings("unchecked")
+    public Expression<Long> getCount() {
         return (Expression) getDetailValue(COUNT);
     }
     
-    public void setCount(Expression count) {
+    public void setCount(Expression<Long> count) {
         setDetailValue(COUNT, count);
     }
 
@@ -187,11 +190,12 @@ public class InstanceDescriptor extends FeatureDescriptor {
         setDetailValue(COUNT_DISTRIBUTION, distribution);
     }
 
-    public Expression getCountPrecision() {
-        return (Expression) getDetailValue(COUNT_PRECISION);
+    @SuppressWarnings("unchecked")
+    public Expression<Long> getCountPrecision() {
+        return (Expression<Long>) getDetailValue(COUNT_PRECISION);
     }
     
-    public void setCountPrecision(Expression distribution) {
+    public void setCountPrecision(Expression<Long> distribution) {
         setDetailValue(COUNT_PRECISION, distribution);
     }
 
@@ -223,13 +227,13 @@ public class InstanceDescriptor extends FeatureDescriptor {
             if (detail == null)
                 throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);
             if (detailValue instanceof Expression)
-            	detail.setValue(new TypeConvertingExpression((Expression) detailValue, Long.class));
+            	detail.setValue(new TypeConvertingExpression<Long>((Expression<?>) detailValue, Long.class));
             else if (detailValue == null)
                 detail.setValue(null);
     	    else if ((detailValue instanceof String) && ((String) detailValue).startsWith("{") && ((String) detailValue).endsWith("}"))
-                detail.setValue(new TypeConvertingExpression(new ScriptedLiteral((String) detailValue), Long.class));
+                detail.setValue(new TypeConvertingExpression<Long>(new ScriptedLiteral<Long>((String) detailValue), Long.class));
     	    else
-    	    	detail.setValue(new TypeConvertingExpression(new ConstantExpression(detailValue), Long.class));
+    	    	detail.setValue(new TypeConvertingExpression<Long>(new ConstantExpression<Long>((Long) detailValue), Long.class));
     	} else
     		super.setDetailValue(detailName, detailValue);
     }
@@ -237,17 +241,17 @@ public class InstanceDescriptor extends FeatureDescriptor {
     // convenience 'with...' methods -----------------------------------------------------------------------------------
     
     public InstanceDescriptor withCount(long count) {
-        setCount(new ConstantExpression(count));
+        setCount(new ConstantExpression<Long>(count));
         return this;
     }
     
     public InstanceDescriptor withMinCount(long minCount) {
-        setMinCount(new ConstantExpression(minCount));
+        setMinCount(new ConstantExpression<Long>(minCount));
         return this;
     }
     
     public InstanceDescriptor withMaxCount(long maxCount) {
-        setMaxCount(new ConstantExpression(maxCount));
+        setMaxCount(new ConstantExpression<Long>(maxCount));
         return this;
     }
     

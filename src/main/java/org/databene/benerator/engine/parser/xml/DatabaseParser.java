@@ -29,7 +29,6 @@ import org.databene.benerator.engine.statement.DefineDatabaseStatement;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
-import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -46,15 +45,15 @@ public class DatabaseParser extends AbstractDescriptorParser {
 
 	public DefineDatabaseStatement parse(Element element, ResourceManager resourceManager) {
 		try {
-			StringExpression  id       = parseStringAttr(ATT_ID,       element);
-			StringExpression  url      = parseStringAttr(ATT_URL,      element);
-			StringExpression  driver   = parseStringAttr(ATT_DRIVER,   element);
-			StringExpression  user     = parseStringAttr(ATT_USER,     element);
-			StringExpression  password = parseStringAttr(ATT_PASSWORD, element);
-			StringExpression  schema   = parseStringAttr(ATT_SCHEMA,   element);
-			Expression batch     = new TypedScriptExpression(element.getAttribute(ATT_BATCH), Boolean.class, false);
-			Expression fetchSize = new TypedScriptExpression(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
-			Expression readOnly  = new TypedScriptExpression(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
+			Expression<String>  id       = parseStringAttr(ATT_ID,       element);
+			Expression<String>  url      = parseStringAttr(ATT_URL,      element);
+			Expression<String>  driver   = parseStringAttr(ATT_DRIVER,   element);
+			Expression<String>  user     = parseStringAttr(ATT_USER,     element);
+			Expression<String>  password = parseStringAttr(ATT_PASSWORD, element);
+			Expression<String>  schema   = parseStringAttr(ATT_SCHEMA,   element);
+			Expression<Boolean> batch     = new TypedScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
+			Expression<Integer> fetchSize = new TypedScriptExpression<Integer>(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
+			Expression<Boolean> readOnly  = new TypedScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
 			return new DefineDatabaseStatement(id, url, driver, user, password, schema, batch, fetchSize, readOnly, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);

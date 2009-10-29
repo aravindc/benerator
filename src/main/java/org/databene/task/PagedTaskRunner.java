@@ -67,7 +67,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     private volatile AtomicLong queuedPages;
     private volatile AtomicLong actualCount;
     
-    private Expression executor;
+    private Expression<ExecutorService> executor;
 
     private Throwable exception;
 
@@ -92,11 +92,11 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     public PagedTaskRunner(Task realTask, long maxCount, List<PageListener> listeners, long pageSize, int threads, 
     		ExecutorService executor) {
     	this(realTask, maxCount, listeners, pageSize, threads, 
-    			new ConstantExpression(executor));
+    			new ConstantExpression<ExecutorService>(executor));
     }
 
     public PagedTaskRunner(Task target, long maxCount, List<PageListener> pageListeners, long pageSize, int threads, 
-    		Expression executor) {
+    		Expression<ExecutorService> executor) {
     	this.target = target;
         this.pageListeners = pageListeners;
         this.maxCount = maxCount;
@@ -217,7 +217,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
                 }
                 task = new LoopedTask(task, loopSize); 
                 TaskRunnable thread = new TaskRunnable(task, (target instanceof ThreadSafe ? null : context), latch);
-                ((ExecutorService) executor.evaluate(context)).execute(thread);
+                executor.evaluate(context).execute(thread);
                 localInvocationCount += loopSize;
             } else
                 latch.countDown();

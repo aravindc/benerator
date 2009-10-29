@@ -61,7 +61,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
-    protected int     defaultPagesize      = 1;
+    protected long    defaultPagesize      = 1;
     protected boolean defaultNull          = true;
     protected char    defaultSeparator     = ',';
     protected String  defaultErrorHandler  = "fatal";
@@ -179,11 +179,11 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 			Country.setDefault(country);
 	}
 
-	public int getDefaultPagesize() {
+	public long getDefaultPagesize() {
         return defaultPagesize;
     }
     
-    public void setDefaultPagesize(int defaultPagesize) {
+    public void setDefaultPagesize(long defaultPagesize) {
         this.defaultPagesize = defaultPagesize;
     }
     

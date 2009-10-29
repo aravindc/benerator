@@ -33,19 +33,19 @@ import org.databene.commons.expression.ExpressionProxy;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CachedExpression extends ExpressionProxy {
+public class CachedExpression<E> extends ExpressionProxy<E> {
 	
 	private boolean valid;
-	private Object cachedValue;
+	private E cachedValue;
 
-	public CachedExpression(Expression realExpression) {
+	public CachedExpression(Expression<E> realExpression) {
 	    super(realExpression);
 	    this.cachedValue = null;
 	    this.valid = false;
     }
 
 	@Override
-	public Object evaluate(Context context) {
+	public E evaluate(Context context) {
 		if (!valid) {
 			cachedValue = super.evaluate(context);
 			valid = true;

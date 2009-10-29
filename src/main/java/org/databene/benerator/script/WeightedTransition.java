@@ -31,14 +31,14 @@ import org.databene.commons.Expression;
  */
 public class WeightedTransition extends Transition {
 
-	private Expression weight;
+	private Expression<Double> weight; // TODO shouldn't we better use a fixed double value?
 	
-	public WeightedTransition(Object from, Object to, Expression weight) {
+	public WeightedTransition(Object from, Object to, Expression<Double> weight) {
 	    super(from, to);
 	    this.weight = weight;
     }
 
-	public Expression getWeight() {
+	public Expression<Double> getWeight() {
     	return weight;
     }
 

@@ -48,7 +48,6 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.Level;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.db.DBUtil;
-import org.databene.commons.expression.StringExpression;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -69,20 +68,20 @@ public class EvaluateStatement implements Statement {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EvaluateStatement.class);
 	
-	StringExpression idEx;
-	StringExpression textEx;
-	StringExpression uriEx;
-	StringExpression typeEx;
-	Expression targetObjectEx;
-	StringExpression onErrorEx;
-    StringExpression encodingEx;
-    Expression optimizeEx;
-    Expression assertionEx;
+	Expression<String> idEx;
+	Expression<String> textEx;
+	Expression<String> uriEx;
+	Expression<String> typeEx;
+	Expression<?> targetObjectEx;
+	Expression<String> onErrorEx;
+	Expression<String> encodingEx;
+    Expression<Boolean> optimizeEx;
+    Expression<?> assertionEx;
 
-    public EvaluateStatement(StringExpression idEx, StringExpression textEx, 
-    		StringExpression uriEx, StringExpression typeEx, Expression targetObjectEx,
-    		StringExpression onErrorEx, StringExpression encodingEx, Expression optimizeEx,
-            Expression assertionEx) {
+    public EvaluateStatement(Expression<String> idEx, Expression<String> textEx, 
+    		Expression<String> uriEx, Expression<String> typeEx, Expression<?> targetObjectEx,
+    		Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
+            Expression<?> assertionEx) {
     	this.idEx = idEx;
     	this.textEx = textEx;
     	this.uriEx = uriEx;
@@ -134,7 +133,7 @@ public class EvaluateStatement implements Statement {
 			Object result = null;
 			if ("sql".equals(typeValue)) {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
-						textValue, (Boolean) optimizeEx.evaluate(context));
+						textValue, optimizeEx.evaluate(context));
             } else if ("shell".equals(typeValue)) {
 				if (!StringUtil.isEmpty(uriValue))
 					textValue = IOUtil.getContentOfURI(uriValue);

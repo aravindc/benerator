@@ -38,21 +38,22 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class ParametrizedConstruction extends Construction {
+public class ParametrizedConstruction<E> extends Construction<E> {
 	
-	private Expression[] argumentExpressions;
+	private Expression<?>[] argumentExpressions;
 
-    public ParametrizedConstruction(String className, Expression[] argumentExpressions) {
+    public ParametrizedConstruction(String className, Expression<?>[] argumentExpressions) {
 	    super(className);
 	    this.argumentExpressions = argumentExpressions;
     }
     
-	public Object evaluate(Context context) {
+	@SuppressWarnings("unchecked")
+    public E evaluate(Context context) {
 		Class<?> type = getType(context);
 		Object[] arguments = new Object[argumentExpressions.length];
 		for (int i = 0; i < argumentExpressions.length; i++)
 			arguments[i] = argumentExpressions[i].evaluate(context);
-	    return BeanUtil.newInstance(type, false, arguments);
+	    return (E) BeanUtil.newInstance(type, false, arguments);
     }
 
 	public boolean classExists(Context context) {

@@ -39,13 +39,13 @@ import org.databene.commons.expression.ExpressionUtil;
  * @author Volker Bergmann
  */
 
-public class InvocationExpression implements Expression {
+public class InvocationExpression implements Expression<Object> {
 	
-	private Expression target;
+	private Expression<?> target;
 	private String methodName;
-	private Expression[] argExpressions;
+	private Expression<?>[] argExpressions;
 
-    public InvocationExpression(Expression target, String methodMame, Expression[] argExpressions) {
+    public InvocationExpression(Expression<?> target, String methodMame, Expression<?>[] argExpressions) {
     	this.target = target;
     	this.methodName = methodMame;
     	this.argExpressions = argExpressions;

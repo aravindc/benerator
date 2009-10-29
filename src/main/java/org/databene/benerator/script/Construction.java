@@ -31,7 +31,7 @@ import org.databene.commons.bean.DefaultClassProvider;
  * @since TODO version
  * @author Volker Bergmann
  */
-public abstract class Construction implements Expression {
+public abstract class Construction<E> implements Expression<E> {
 
 	protected String className;
 
@@ -43,8 +43,9 @@ public abstract class Construction implements Expression {
     	return className;
     }
 
-    public Class<?> getType(Context context) {
-	    return DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
+    @SuppressWarnings("unchecked")
+    public Class<E> getType(Context context) {
+	    return (Class<E>) DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
     }
 
 }

@@ -41,18 +41,18 @@ import org.databene.task.Task;
 public class RunTaskStatement implements Statement {
 	
 	protected Task task;
-	protected Expression count;
-	protected Expression pageSize;
-	protected Expression threads;
-	protected Expression pageListener;
+	protected Expression<Long> count;
+	protected Expression<Long> pageSize;
+	protected Expression<Integer> threads;
+	protected Expression<PageListener> pageListener;
 
 	public RunTaskStatement(Task task) {
-	    this(task, new ConstantExpression(1L), new ConstantExpression(1L), 
-	    		new ConstantExpression(null), new ConstantExpression(1));
+	    this(task, new ConstantExpression<Long>(1L), new ConstantExpression<Long>(1L), 
+	    		new ConstantExpression<PageListener>(null), new ConstantExpression<Integer>(1));
     }
 
-	public RunTaskStatement(Task task, Expression count, Expression pageSize, 
-			Expression pageListener, Expression threads) {
+	public RunTaskStatement(Task task, Expression<Long> count, Expression<Long> pageSize, 
+			Expression<PageListener> pageListener, Expression<Integer> threads) {
 	    this.task = task;
 	    this.count = count;
 	    this.pageSize = pageSize;
@@ -60,39 +60,35 @@ public class RunTaskStatement implements Statement {
 	    this.pageListener = pageListener;
     }
 
-	public Expression getCount() {
+	public Expression<Long> getCount() {
     	return count;
     }
 
-	public Expression getPageSize() {
+	public Expression<Long> getPageSize() {
     	return pageSize;
     }
 
-	public Expression getThreads() {
+	public Expression<Integer> getThreads() {
     	return threads;
     }
 
-	public Expression getPager() {
+	public Expression<PageListener> getPager() {
     	return pageListener;
     }
 
 	public void execute(BeneratorContext context) {
 	    PagedTaskRunner.execute(task, context, 
-	    		evaluateCount(context), 
+	    		count.evaluate(context), 
 	    		getPageListeners(context), 
-	    		(Long) pageSize.evaluate(context), 
-	    		(Integer) threads.evaluate(context));
+	    		pageSize.evaluate(context), 
+	    		threads.evaluate(context));
 	}
 
 	private List<PageListener> getPageListeners(BeneratorContext context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();
 	    if (pageListener != null)
-	    	listeners.add((PageListener) pageListener.evaluate(context));
+	    	listeners.add(pageListener.evaluate(context));
 	    return listeners;
-    }
-
-	protected Long evaluateCount(BeneratorContext context) {
-	    return (Long) count.evaluate(context);
     }
 
 }

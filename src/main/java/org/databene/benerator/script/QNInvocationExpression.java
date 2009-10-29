@@ -46,14 +46,14 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class QNInvocationExpression implements Expression {
+public class QNInvocationExpression implements Expression<Object> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(QNInvocationExpression.class);
 
 	private String[] qn;
-	private Expression[] argExpressions;
+	private Expression<?>[] argExpressions;
 	
-    public QNInvocationExpression(String[] qn, Expression[] argExpressions) {
+    public QNInvocationExpression(String[] qn, Expression<?>[] argExpressions) {
     	this.qn = qn;
     	this.argExpressions = argExpressions;
     }

@@ -49,16 +49,15 @@ import org.databene.commons.bean.DefaultClassProvider;
  * @author Volker Bergmann
  */
 
-public class QNBeanSpecExpression implements Expression {
+public class QNBeanSpecExpression implements Expression<Object> {
 	
-	Expression qnEx;
+	String[] qn;
 
-    public QNBeanSpecExpression(Expression qnEx) {
-    	this.qnEx = qnEx;
+    public QNBeanSpecExpression(String[] qn) {
+    	this.qn = qn;
     }
 
     public Object evaluate(Context context) {
-    	String[] qn = (String[]) qnEx.evaluate(context);
     	String objectOrClassName = ArrayFormat.format(".", qn);
     	try {
     		if (context.contains(objectOrClassName))
@@ -67,7 +66,7 @@ public class QNBeanSpecExpression implements Expression {
     		return BeanUtil.newInstance(type);
     	} catch (ConfigurationError e) {
     		if (ExceptionUtil.getRootCause(e) instanceof ClassNotFoundException)
-    			return new QNExpression(qnEx).evaluate(context);
+    			return new QNExpression(qn).evaluate(context);
     		else
     			throw new ConfigurationError("Cannot resolve " + objectOrClassName, e);
     	}

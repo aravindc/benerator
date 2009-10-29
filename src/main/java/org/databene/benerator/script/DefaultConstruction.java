@@ -25,18 +25,18 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 
 /**
- * TODO Document class.<br/><br/>
+ * Instantiates a class by default constructor.<br/><br/>
  * Created: 25.10.2009 08:32:58
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DefaultConstruction extends Construction {
+public class DefaultConstruction<E> extends Construction<E> {
 
 	public DefaultConstruction(String className) {
 	    super(className);
     }
 
-	public Object evaluate(Context context) {
+	public E evaluate(Context context) {
 	    return BeanUtil.newInstance(getType(context));
     }
 

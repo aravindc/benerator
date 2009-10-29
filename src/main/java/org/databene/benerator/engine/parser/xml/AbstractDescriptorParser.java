@@ -66,24 +66,36 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
 	    return new StringScriptExpression(XMLUtil.getText(element));
     }
 
-	protected static StringExpression parseStringAttr(String name, Element element) {
+	protected static Expression<String> parseStringAttr(String name, Element element) {
 	    return new StringScriptExpression(element.getAttribute(name));
     }
 
-	protected static Expression parseIntAttr(String name, Element element) {
-	    return new TypedScriptExpression(element.getAttribute(name), Integer.class);
+	protected static Expression<Integer> parseIntAttr(String name, Element element) {
+	    return new TypedScriptExpression<Integer>(element.getAttribute(name), Integer.class);
     }
 
-	protected static Expression parseIntAttr(String name, Element element, int defaultValue) {
-	    return parseIntAttr(name, element, new ConstantExpression(defaultValue));
+	protected static Expression<Integer> parseIntAttr(String name, Element element, int defaultValue) {
+	    return parseIntAttr(name, element, new ConstantExpression<Integer>(defaultValue));
     }
 
-	protected static Expression parseIntAttr(String name, Element element, Expression defaultValue) {
+	protected static Expression<Integer> parseIntAttr(String name, Element element, Expression<Integer> defaultValue) {
 	    String attribute = element.getAttribute(name);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
-	    	return new TypedScriptExpression(attribute, Integer.class);
+	    	return new TypedScriptExpression<Integer>(attribute, Integer.class);
+    }
+
+	protected static Expression<Long> parseLongAttr(String name, Element element, long defaultValue) {
+	    return parseLongAttr(name, element, new ConstantExpression<Long>(defaultValue));
+    }
+
+	protected static Expression<Long> parseLongAttr(String name, Element element, Expression<Long> defaultValue) {
+	    String attribute = element.getAttribute(name);
+	    if (StringUtil.isEmpty(attribute))
+	    	return defaultValue;
+	    else
+	    	return new TypedScriptExpression<Long>(attribute, Long.class);
     }
 
 }
