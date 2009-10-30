@@ -50,10 +50,12 @@ public class DBNotNullConstraint extends DBConstraint {
         this.column = column;
     }
 
+    @Override
     public DBTable getOwner() {
         return column.getTable();
     }
 
+    @Override
     public DBColumn[] getColumns() {
         return new DBColumn[] { column };
     }

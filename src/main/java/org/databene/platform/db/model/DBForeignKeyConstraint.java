@@ -56,10 +56,12 @@ public class DBForeignKeyConstraint extends DBConstraint {
         return foreignKeyColumns.get(0).getTargetColumn().getTable();
     }
 
+    @Override
     public DBTable getOwner() {
         return foreignKeyColumns.get(0).getForeignKeyColumn().getTable();
     }
 
+    @Override
     public DBColumn[] getColumns() {
         DBColumn[] columns = new DBColumn[foreignKeyColumns.size()];
         for (int i = 0; i < foreignKeyColumns.size(); i++)

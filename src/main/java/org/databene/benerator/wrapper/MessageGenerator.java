@@ -137,6 +137,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     }
 
     /** Implementation of ValidatingGenerator's generation callback method */
+    @Override
     public String generateImpl() {
         Object[] values = helper.generate();
         return MessageFormat.format(pattern, values);
@@ -159,6 +160,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     /** Returns a String representation of the generator */
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[pattern='" + pattern + "', " + minLength + "<=length<=" + maxLength + "]";
     }

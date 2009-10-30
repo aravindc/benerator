@@ -37,6 +37,7 @@ import java.util.HashMap;
  * <br/>
  * Created: 29.08.2007 18:12:58
  */
+@SuppressWarnings("unchecked")
 public class Entity2MapConverter extends FixedSourceTypeConverter<Entity, Map> {
 
 	public Entity2MapConverter() {
@@ -44,7 +45,8 @@ public class Entity2MapConverter extends FixedSourceTypeConverter<Entity, Map> {
 		
 	}
 
-	public Class<Map> getTargetType() {
+	@Override
+    public Class<Map> getTargetType() {
         return Map.class;
     }
 

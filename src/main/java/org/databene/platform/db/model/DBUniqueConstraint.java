@@ -48,10 +48,12 @@ public class DBUniqueConstraint extends DBConstraint {
         this.columns = Arrays.asList(columns);
     }
 
+    @Override
     public DBTable getOwner() {
         return columns.get(0).getTable();
     }
 
+    @Override
     public DBColumn[] getColumns() {
         DBColumn[] array = new DBColumn[columns.size()];
         return columns.toArray(array);

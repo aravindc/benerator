@@ -57,6 +57,7 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
      * Callback method implementation from ValidatingGenerator.
      * This calls the source's generate() method and returns its result.
      */
+    @Override
     protected E generateImpl() {
         return source.generate();
     }

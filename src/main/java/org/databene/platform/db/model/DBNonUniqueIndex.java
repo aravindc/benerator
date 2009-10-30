@@ -44,16 +44,20 @@ public class DBNonUniqueIndex extends DBIndex {
             this.columns.put(column.getName(), column);
     }
 
+    @Override
     public boolean isUnique() {
         return false;
     }
 
+    @Override
     public DBTable getTable() {
         return columns.get(0).getTable();
     }
 
+    @Override
     public DBColumn[] getColumns() {
         DBColumn[] array = new DBColumn[columns.size()];
         return columns.toArray(array);
     }
+    
 }

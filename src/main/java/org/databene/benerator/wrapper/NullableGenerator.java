@@ -80,6 +80,7 @@ public class NullableGenerator<E> extends GeneratorProxy<E> {
      * Forwards the generated values of the source generator,
      * including a defined quota of null values.
      */
+    @Override
     public E generate() {
         if (random.nextFloat() < nullQuota)
             return null;

@@ -59,14 +59,14 @@ public class DatasetFactory {
         if (dataset.getAtomicSubSets().size() == 0) {
             String filename = MessageFormat.format(filenamePattern, datasetName);
             if (IOUtil.isURIAvailable(filename))
-                builder.append(filename);
+                builder.add(filename);
             else
                 throw new ConfigurationError("File not found: " + filename);
         } else
             for (Dataset atomicSet : dataset.getAtomicSubSets()) {
                 String filename = MessageFormat.format(filenamePattern, atomicSet);
             if (IOUtil.isURIAvailable(filename))
-                builder.append(filename);
+                builder.add(filename);
         }
         return builder.toArray();
     }

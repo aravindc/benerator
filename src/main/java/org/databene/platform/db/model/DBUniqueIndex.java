@@ -40,15 +40,19 @@ public class DBUniqueIndex extends DBIndex {
         this.constraint = constraint;
     }
 
+    @Override
     public boolean isUnique() {
         return true;
     }
 
+    @Override
     public DBTable getTable() {
         return constraint.getOwner();
     }
 
+    @Override
     public DBColumn[] getColumns() {
         return constraint.getColumns();
     }
+    
 }

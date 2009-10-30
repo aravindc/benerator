@@ -60,10 +60,10 @@ public class VersionNumber implements Comparable<VersionNumber> {
 				= new ArrayBuilder<VersionNumberComponent>(VersionNumberComponent.class);
 			ArrayBuilder<String> delimBuilder = new ArrayBuilder<String>(String.class);
 			do {
-				componentBuilder.append(parseComponent(number, pos));
+				componentBuilder.add(parseComponent(number, pos));
 				delimiter = parseDelimiter(number, pos);
 				if (delimiter != null)
-					delimBuilder.append(delimiter);
+					delimBuilder.add(delimiter);
 			} while (delimiter != null);
 			this.components = componentBuilder.toArray();
 			this.delimiters = delimBuilder.toArray();

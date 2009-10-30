@@ -45,16 +45,19 @@ public class LoggingConsumer<E> extends AbstractConsumer<E> {
             logger.info("startConsuming(" + object + ")");
     }
     
+    @Override
     public void finishConsuming(E object) {
         if (logger.isInfoEnabled())
             logger.info("finishConsuming(" + object + ")");
     }
 
+    @Override
     public void flush() {
         if (logger.isInfoEnabled())
             logger.info("flush()");
     }
 
+    @Override
     public void close() {
         if (logger.isInfoEnabled())
             logger.info("close()");

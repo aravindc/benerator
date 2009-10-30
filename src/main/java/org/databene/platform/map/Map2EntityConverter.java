@@ -39,6 +39,7 @@ import java.util.Set;
  * Created: 29.08.2007 18:44:41
  * @author Volker Bergmann
  */
+@SuppressWarnings("unchecked")
 public class Map2EntityConverter extends FixedSourceTypeConverter<Map, Entity> {
 
     private ComplexTypeDescriptor descriptor;

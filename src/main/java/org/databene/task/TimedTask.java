@@ -37,11 +37,11 @@ import org.slf4j.LoggerFactory;
  * @since 0.2
  * @author Volker Bergmann
  */
-public class TimedTask extends TaskProxy {
+public class TimedTask<E extends Task> extends TaskProxy<E> {
 
     private static final Logger logger = LoggerFactory.getLogger(TimedTask.class);
 
-    public TimedTask(Task realTask) {
+    public TimedTask(E realTask) {
         super(realTask);
     }
 

@@ -112,6 +112,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     	return Entity.class;
     }
     
+    @Override
     public HeavyweightIterator<Entity> iterator() {
         if (!initialized)
             init();
@@ -125,6 +126,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         this.converter = createConverter(entityDescriptor, descriptors);
     }
     
+    @SuppressWarnings("unchecked")
     private Converter<String[], Entity> createConverter(ComplexTypeDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
         String[] featureNames = ArrayPropertyExtractor.convert(descriptors, "name", String.class);
         Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames);

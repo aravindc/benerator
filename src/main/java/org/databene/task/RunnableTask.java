@@ -51,6 +51,7 @@ public class RunnableTask extends AbstractTask {
         runnable.run();
     }
     
+    @Override
     public boolean available() {
     	return true;
     }
