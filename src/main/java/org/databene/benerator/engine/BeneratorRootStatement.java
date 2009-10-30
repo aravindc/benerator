@@ -46,7 +46,7 @@ public class BeneratorRootStatement extends CompositeStatement {
 				if (tmp instanceof StatementProxy)
 					tmp = ((StatementProxy) tmp).getRealStatement();
 				else
-					tmp = (Statement) ((LazyStatement) tmp).getTargetExpression().evaluate(null);
+					tmp = ((LazyStatement) tmp).getTargetExpression().evaluate(null);
 				if (match(name, tmp))
 					return ((GenerateAndConsumeEntityTask) tmp).getEntityGenerator();
 			}
