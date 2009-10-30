@@ -44,6 +44,7 @@ import org.databene.commons.mutator.AnyMutator;
  * @since 0.4.0
  * @author Volker Bergmann
  */
+@SuppressWarnings("unchecked")
 public class DefaultEntryConverter extends FixedSourceTypeConverter<Map.Entry, Map.Entry> {
     
     private BeneratorContext context;
