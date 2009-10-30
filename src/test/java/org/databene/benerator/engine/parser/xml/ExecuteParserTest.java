@@ -19,21 +19,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.parser;
+package org.databene.benerator.engine.parser.xml;
+
+import static org.junit.Assert.assertEquals;
+
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.ResourceManagerSupport;
+import org.databene.benerator.engine.statement.EvaluateStatement;
+import org.databene.commons.xml.XMLUtil;
+import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
- * JavaBean Mock class for testing.<br/><br/>
- * Created: 30.10.2009 08:16:45
+ * Tests the {@link EvaluateParser} with respect to the features used 
+ * in the &lt;execute&gt; element.<br/><br/>
+ * Created: 30.10.2009 08:11:56
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeanMock {
+public class ExecuteParserTest {
 
-	public int invocationCount;
-	public int lastValue;
-	
-	public void invoke(int value) {
-		invocationCount++;
-		lastValue = value;
+	@Test
+	public void testBeanInvocation() throws Exception {
+        String uri = "string://<execute>bean.invoke(2)</execute>";
+		Document doc = XMLUtil.parse(uri);
+		EvaluateParser parser = new EvaluateParser();
+		EvaluateStatement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
+		BeneratorContext context = new BeneratorContext();
+		BeanMock bean = new BeanMock();
+		context.set("bean", bean);
+		statement.execute(context);
+		assertEquals(1, bean.invocationCount);
+		assertEquals(2, bean.lastValue);
 	}
+	
 }

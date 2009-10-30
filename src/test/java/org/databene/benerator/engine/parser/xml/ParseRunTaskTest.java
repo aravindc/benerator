@@ -19,13 +19,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.parser;
+package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.parser.xml.RunTaskParser;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.task.PageListenerMock;
