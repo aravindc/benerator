@@ -29,7 +29,6 @@ package org.databene.benerator.sample;
 import org.databene.benerator.util.TypedLightweightGenerator;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Generates values from an unweighted list of samples.<br/><br/>

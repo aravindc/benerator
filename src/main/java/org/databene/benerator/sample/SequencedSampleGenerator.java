@@ -97,11 +97,13 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     // values property -------------------------------------------------------------------------------------------------
 
     /** Adds a value to the sample list */
+    @Override
     public void addValue(E value) {
         samples.add(value);
         this.dirty = true;
     }
 
+    @Override
     public void clear() {
     	this.samples.clear();
     	this.dirty = true;

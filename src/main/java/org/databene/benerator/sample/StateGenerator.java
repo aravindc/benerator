@@ -75,7 +75,7 @@ public class StateGenerator<E> implements Generator<E> {
     	try {
     		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList(transitionSpec);
 	    	for (WeightedTransition t : ts)
-	    		addTransition((E) t.getFrom(), (E) t.getTo(), (Double) t.getWeight().evaluate(null));
+	    		addTransition((E) t.getFrom(), (E) t.getTo(), t.getWeight().evaluate(null));
     	} catch (ParseException e) {
     		throw new ConfigurationError("Error parsing state machine specification: " + transitionSpec, e);
         }

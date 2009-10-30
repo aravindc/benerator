@@ -59,6 +59,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     // constructors ----------------------------------------------------------------------------------------------------
 
     /** Initializes the generator to an empty sample list */
+    @SuppressWarnings("unchecked")
     public AttachedWeightSampleGenerator() {
         this((Class<E>) Object.class);
     }
@@ -100,6 +101,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         return indexGenerator.getDistribution();
     }
 
+    @SuppressWarnings("unchecked")
     public void setDistribution(Distribution distribution) {
     	if (distribution instanceof IndividualWeight)
     		this.individualWeight = (IndividualWeight<E>) distribution;
@@ -152,22 +154,27 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     // values property -------------------------------------------------------------------------------------------------
 
     /** Adds an unweighted value to the sample list */
+    @Override
     public void addValue(E value) {
         samples.add(new WeightedSample<E>(value, 1));
         this.dirty = true;
     }
 
+    @Override
     public void clear() {
     	this.samples.clear();
     }
     
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Class<E> getGeneratedType() {
         return (Class<E>) samples.get(0).getClass();
     }
 
     /** Initializes all attributes */
+    @Override
     public void validate() {
         if (dirty) {
             if (samples.size() > 0) {

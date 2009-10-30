@@ -104,22 +104,27 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
     // values property -------------------------------------------------------------------------------------------------
 
     /** Adds an unweighted value to the sample list */
+    @Override
     public void addValue(E value) {
         samples.add(value);
         this.dirty = true;
     }
 
+    @Override
     public void clear() {
     	this.samples.clear();
     }
     
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
+    @Override
     public Class<E> getGeneratedType() {
         return (Class<E>) samples.get(0).getClass();
     }
 
     /** Initializes all attributes */
+    @Override
     public void validate() {
         if (dirty) {
             if (samples.size() > 0) {
