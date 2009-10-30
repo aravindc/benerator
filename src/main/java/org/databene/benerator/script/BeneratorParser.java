@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2009-10-24 08:09:00
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2009-10-24 08:09:00
 
 	package org.databene.benerator.script;
 
@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import org.antlr.runtime.tree.*;
 
+@SuppressWarnings("all")
 public class BeneratorParser extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "IDENTIFIER", "INTLITERAL", "DECIMALLITERAL", "STRINGLITERAL", "BOOLEANLITERAL", "NULL", "TYPE", "NEGATION", "INDEX", "FIELD", "ARGUMENTS", "CAST", "CONSTRUCTOR", "INVOCATION", "SUBINVOCATION", "QUALIFIEDNAME", "BEAN", "BEANSPEC", "HexPrefix", "HexDigit", "Exponent", "EscapeSequence", "WS", "COMMENT", "LINE_COMMENT", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", "SEMI", "COMMA", "DOT", "EQ", "BANG", "TILDE", "QUES", "COLON", "EQEQ", "AMPAMP", "BARBAR", "PLUS", "SUB", "STAR", "SLASH", "AMP", "BAR", "CARET", "PERCENT", "MONKEYS_AT", "BANGEQ", "GT", "SHIFT_RIGHT", "SHIFT_RIGHT2", "SHIFT_LEFT", "GE", "LT", "LE", "ARROW", "IdentifierStart", "IdentifierPart", "'new'"
@@ -105,7 +106,7 @@ public class BeneratorParser extends Parser {
     }
 
     public String[] getTokenNames() { return BeneratorParser.tokenNames; }
-    public String getGrammarFileName() { return "/Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g"; }
+    public String getGrammarFileName() { return "benerator/src/main/resources/org/databene/benerator/script/Benerator.g"; }
 
 
     protected void mismatch(IntStream input, int ttype, BitSet follow)
@@ -127,7 +128,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "transitionList"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:96:1: transitionList : transition ( ',' transition )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:96:1: transitionList : transition ( ',' transition )* ;
     public final BeneratorParser.transitionList_return transitionList() throws RecognitionException {
         BeneratorParser.transitionList_return retval = new BeneratorParser.transitionList_return();
         retval.start = input.LT(1);
@@ -144,8 +145,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 1) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:5: ( transition ( ',' transition )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:9: transition ( ',' transition )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:5: ( transition ( ',' transition )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:9: transition ( ',' transition )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -155,7 +156,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, transition1.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:20: ( ',' transition )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:20: ( ',' transition )*
             loop1:
             do {
                 int alt1=2;
@@ -168,7 +169,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt1) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:21: ',' transition
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:101:21: ',' transition
             	    {
             	    char_literal2=(Token)match(input,COMMA,FOLLOW_COMMA_in_transitionList93); if (state.failed) return retval;
             	    pushFollow(FOLLOW_transition_in_transitionList96);
@@ -214,7 +215,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "transition"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:103:1: transition : literal '->' literal ( '[' expression ']' )? ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:103:1: transition : literal '->' literal ( '[' expression ']' )? ;
     public final BeneratorParser.transition_return transition() throws RecognitionException {
         BeneratorParser.transition_return retval = new BeneratorParser.transition_return();
         retval.start = input.LT(1);
@@ -237,8 +238,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 2) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:5: ( literal '->' literal ( '[' expression ']' )? )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:9: literal '->' literal ( '[' expression ']' )?
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:5: ( literal '->' literal ( '[' expression ']' )? )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:9: literal '->' literal ( '[' expression ']' )?
             {
             root_0 = (Object)adaptor.nil();
 
@@ -259,7 +260,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, literal6.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:31: ( '[' expression ']' )?
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:31: ( '[' expression ']' )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -268,7 +269,7 @@ public class BeneratorParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:32: '[' expression ']'
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:104:32: '[' expression ']'
                     {
                     char_literal7=(Token)match(input,LBRACKET,FOLLOW_LBRACKET_in_transition120); if (state.failed) return retval;
                     pushFollow(FOLLOW_expression_in_transition123);
@@ -312,7 +313,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "assignment"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:106:1: assignment : IDENTIFIER '=' expression ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:106:1: assignment : IDENTIFIER '=' expression ;
     public final BeneratorParser.assignment_return assignment() throws RecognitionException {
         BeneratorParser.assignment_return retval = new BeneratorParser.assignment_return();
         retval.start = input.LT(1);
@@ -329,8 +330,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 3) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:107:5: ( IDENTIFIER '=' expression )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:107:9: IDENTIFIER '=' expression
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:107:5: ( IDENTIFIER '=' expression )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:107:9: IDENTIFIER '=' expression
             {
             root_0 = (Object)adaptor.nil();
 
@@ -378,7 +379,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "beanSpecList"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:109:1: beanSpecList : beanSpec ( ',' beanSpec )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:109:1: beanSpecList : beanSpec ( ',' beanSpec )* ;
     public final BeneratorParser.beanSpecList_return beanSpecList() throws RecognitionException {
         BeneratorParser.beanSpecList_return retval = new BeneratorParser.beanSpecList_return();
         retval.start = input.LT(1);
@@ -395,8 +396,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 4) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:5: ( beanSpec ( ',' beanSpec )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:9: beanSpec ( ',' beanSpec )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:5: ( beanSpec ( ',' beanSpec )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:9: beanSpec ( ',' beanSpec )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -406,7 +407,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, beanSpec13.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:18: ( ',' beanSpec )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:18: ( ',' beanSpec )*
             loop3:
             do {
                 int alt3=2;
@@ -419,7 +420,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt3) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:19: ',' beanSpec
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:110:19: ',' beanSpec
             	    {
             	    char_literal14=(Token)match(input,COMMA,FOLLOW_COMMA_in_beanSpecList164); if (state.failed) return retval;
             	    pushFollow(FOLLOW_beanSpec_in_beanSpecList167);
@@ -465,7 +466,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "beanSpec"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:112:1: beanSpec : expression -> ^( BEANSPEC expression ) ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:112:1: beanSpec : expression -> ^( BEANSPEC expression ) ;
     public final BeneratorParser.beanSpec_return beanSpec() throws RecognitionException {
         BeneratorParser.beanSpec_return retval = new BeneratorParser.beanSpec_return();
         retval.start = input.LT(1);
@@ -478,8 +479,8 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_expression=new RewriteRuleSubtreeStream(adaptor,"rule expression");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 5) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:113:5: ( expression -> ^( BEANSPEC expression ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:113:9: expression
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:113:5: ( expression -> ^( BEANSPEC expression ) )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:113:9: expression
             {
             pushFollow(FOLLOW_expression_in_beanSpec183);
             expression16=expression();
@@ -503,7 +504,7 @@ public class BeneratorParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 113:20: -> ^( BEANSPEC expression )
             {
-                // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:113:23: ^( BEANSPEC expression )
+                // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:113:23: ^( BEANSPEC expression )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BEANSPEC, "BEANSPEC"), root_1);
@@ -543,7 +544,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "expression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:115:1: expression : conditionalExpression ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:115:1: expression : conditionalExpression ;
     public final BeneratorParser.expression_return expression() throws RecognitionException {
         BeneratorParser.expression_return retval = new BeneratorParser.expression_return();
         retval.start = input.LT(1);
@@ -556,8 +557,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 6) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:116:5: ( conditionalExpression )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:116:9: conditionalExpression
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:116:5: ( conditionalExpression )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:116:9: conditionalExpression
             {
             root_0 = (Object)adaptor.nil();
 
@@ -595,7 +596,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "conditionalExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:119:1: conditionalExpression : conditionalOrExpression ( '?' expression ':' conditionalExpression )? ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:119:1: conditionalExpression : conditionalOrExpression ( '?' expression ':' conditionalExpression )? ;
     public final BeneratorParser.conditionalExpression_return conditionalExpression() throws RecognitionException {
         BeneratorParser.conditionalExpression_return retval = new BeneratorParser.conditionalExpression_return();
         retval.start = input.LT(1);
@@ -616,8 +617,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 7) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:5: ( conditionalOrExpression ( '?' expression ':' conditionalExpression )? )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:9: conditionalOrExpression ( '?' expression ':' conditionalExpression )?
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:5: ( conditionalOrExpression ( '?' expression ':' conditionalExpression )? )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:9: conditionalOrExpression ( '?' expression ':' conditionalExpression )?
             {
             root_0 = (Object)adaptor.nil();
 
@@ -627,7 +628,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, conditionalOrExpression18.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:33: ( '?' expression ':' conditionalExpression )?
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:33: ( '?' expression ':' conditionalExpression )?
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -636,7 +637,7 @@ public class BeneratorParser extends Parser {
             }
             switch (alt4) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:34: '?' expression ':' conditionalExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:120:34: '?' expression ':' conditionalExpression
                     {
                     char_literal19=(Token)match(input,QUES,FOLLOW_QUES_in_conditionalExpression229); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
@@ -690,7 +691,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "conditionalOrExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:123:1: conditionalOrExpression : conditionalAndExpression ( '||' conditionalAndExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:123:1: conditionalOrExpression : conditionalAndExpression ( '||' conditionalAndExpression )* ;
     public final BeneratorParser.conditionalOrExpression_return conditionalOrExpression() throws RecognitionException {
         BeneratorParser.conditionalOrExpression_return retval = new BeneratorParser.conditionalOrExpression_return();
         retval.start = input.LT(1);
@@ -707,8 +708,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 8) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:5: ( conditionalAndExpression ( '||' conditionalAndExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:9: conditionalAndExpression ( '||' conditionalAndExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:5: ( conditionalAndExpression ( '||' conditionalAndExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:9: conditionalAndExpression ( '||' conditionalAndExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -718,7 +719,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, conditionalAndExpression23.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:34: ( '||' conditionalAndExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:34: ( '||' conditionalAndExpression )*
             loop5:
             do {
                 int alt5=2;
@@ -731,7 +732,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt5) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:35: '||' conditionalAndExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:124:35: '||' conditionalAndExpression
             	    {
             	    string_literal24=(Token)match(input,BARBAR,FOLLOW_BARBAR_in_conditionalOrExpression266); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -781,7 +782,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "conditionalAndExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:127:1: conditionalAndExpression : inclusiveOrExpression ( '&&' inclusiveOrExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:127:1: conditionalAndExpression : inclusiveOrExpression ( '&&' inclusiveOrExpression )* ;
     public final BeneratorParser.conditionalAndExpression_return conditionalAndExpression() throws RecognitionException {
         BeneratorParser.conditionalAndExpression_return retval = new BeneratorParser.conditionalAndExpression_return();
         retval.start = input.LT(1);
@@ -798,8 +799,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 9) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:5: ( inclusiveOrExpression ( '&&' inclusiveOrExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:9: inclusiveOrExpression ( '&&' inclusiveOrExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:5: ( inclusiveOrExpression ( '&&' inclusiveOrExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:9: inclusiveOrExpression ( '&&' inclusiveOrExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -809,7 +810,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, inclusiveOrExpression26.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:31: ( '&&' inclusiveOrExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:31: ( '&&' inclusiveOrExpression )*
             loop6:
             do {
                 int alt6=2;
@@ -822,7 +823,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt6) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:32: '&&' inclusiveOrExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:128:32: '&&' inclusiveOrExpression
             	    {
             	    string_literal27=(Token)match(input,AMPAMP,FOLLOW_AMPAMP_in_conditionalAndExpression295); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -872,7 +873,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "inclusiveOrExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:131:1: inclusiveOrExpression : exclusiveOrExpression ( '|' exclusiveOrExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:131:1: inclusiveOrExpression : exclusiveOrExpression ( '|' exclusiveOrExpression )* ;
     public final BeneratorParser.inclusiveOrExpression_return inclusiveOrExpression() throws RecognitionException {
         BeneratorParser.inclusiveOrExpression_return retval = new BeneratorParser.inclusiveOrExpression_return();
         retval.start = input.LT(1);
@@ -889,8 +890,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 10) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:5: ( exclusiveOrExpression ( '|' exclusiveOrExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:9: exclusiveOrExpression ( '|' exclusiveOrExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:5: ( exclusiveOrExpression ( '|' exclusiveOrExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:9: exclusiveOrExpression ( '|' exclusiveOrExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -900,7 +901,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, exclusiveOrExpression29.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:31: ( '|' exclusiveOrExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:31: ( '|' exclusiveOrExpression )*
             loop7:
             do {
                 int alt7=2;
@@ -913,7 +914,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt7) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:32: '|' exclusiveOrExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:132:32: '|' exclusiveOrExpression
             	    {
             	    char_literal30=(Token)match(input,BAR,FOLLOW_BAR_in_inclusiveOrExpression323); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -963,7 +964,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "exclusiveOrExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:135:1: exclusiveOrExpression : andExpression ( '^' andExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:135:1: exclusiveOrExpression : andExpression ( '^' andExpression )* ;
     public final BeneratorParser.exclusiveOrExpression_return exclusiveOrExpression() throws RecognitionException {
         BeneratorParser.exclusiveOrExpression_return retval = new BeneratorParser.exclusiveOrExpression_return();
         retval.start = input.LT(1);
@@ -980,8 +981,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 11) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:5: ( andExpression ( '^' andExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:9: andExpression ( '^' andExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:5: ( andExpression ( '^' andExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:9: andExpression ( '^' andExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -991,7 +992,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, andExpression32.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:23: ( '^' andExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:23: ( '^' andExpression )*
             loop8:
             do {
                 int alt8=2;
@@ -1004,7 +1005,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt8) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:24: '^' andExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:136:24: '^' andExpression
             	    {
             	    char_literal33=(Token)match(input,CARET,FOLLOW_CARET_in_exclusiveOrExpression350); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -1054,7 +1055,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "andExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:139:1: andExpression : equalityExpression ( '&' equalityExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:139:1: andExpression : equalityExpression ( '&' equalityExpression )* ;
     public final BeneratorParser.andExpression_return andExpression() throws RecognitionException {
         BeneratorParser.andExpression_return retval = new BeneratorParser.andExpression_return();
         retval.start = input.LT(1);
@@ -1071,8 +1072,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 12) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:5: ( equalityExpression ( '&' equalityExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:9: equalityExpression ( '&' equalityExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:5: ( equalityExpression ( '&' equalityExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:9: equalityExpression ( '&' equalityExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1082,7 +1083,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, equalityExpression35.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:28: ( '&' equalityExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:28: ( '&' equalityExpression )*
             loop9:
             do {
                 int alt9=2;
@@ -1095,7 +1096,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt9) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:29: '&' equalityExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:140:29: '&' equalityExpression
             	    {
             	    char_literal36=(Token)match(input,AMP,FOLLOW_AMP_in_andExpression377); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
@@ -1145,7 +1146,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "equalityExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:143:1: equalityExpression : relationalExpression ( ( '==' | '!=' ) relationalExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:143:1: equalityExpression : relationalExpression ( ( '==' | '!=' ) relationalExpression )* ;
     public final BeneratorParser.equalityExpression_return equalityExpression() throws RecognitionException {
         BeneratorParser.equalityExpression_return retval = new BeneratorParser.equalityExpression_return();
         retval.start = input.LT(1);
@@ -1162,8 +1163,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 13) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:5: ( relationalExpression ( ( '==' | '!=' ) relationalExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:9: relationalExpression ( ( '==' | '!=' ) relationalExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:5: ( relationalExpression ( ( '==' | '!=' ) relationalExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:9: relationalExpression ( ( '==' | '!=' ) relationalExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1173,7 +1174,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, relationalExpression38.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:30: ( ( '==' | '!=' ) relationalExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:30: ( ( '==' | '!=' ) relationalExpression )*
             loop10:
             do {
                 int alt10=2;
@@ -1186,7 +1187,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt10) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:31: ( '==' | '!=' ) relationalExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:144:31: ( '==' | '!=' ) relationalExpression
             	    {
             	    set39=(Token)input.LT(1);
             	    set39=(Token)input.LT(1);
@@ -1244,7 +1245,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "relationalExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:147:1: relationalExpression : shiftExpression ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:147:1: relationalExpression : shiftExpression ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )* ;
     public final BeneratorParser.relationalExpression_return relationalExpression() throws RecognitionException {
         BeneratorParser.relationalExpression_return retval = new BeneratorParser.relationalExpression_return();
         retval.start = input.LT(1);
@@ -1261,8 +1262,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 14) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:5: ( shiftExpression ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:9: shiftExpression ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:5: ( shiftExpression ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:9: shiftExpression ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1272,7 +1273,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, shiftExpression41.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:25: ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:25: ( ( '<=' | '>=' | '<' | '>' ) shiftExpression )*
             loop11:
             do {
                 int alt11=2;
@@ -1285,7 +1286,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt11) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:26: ( '<=' | '>=' | '<' | '>' ) shiftExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:148:26: ( '<=' | '>=' | '<' | '>' ) shiftExpression
             	    {
             	    set42=(Token)input.LT(1);
             	    set42=(Token)input.LT(1);
@@ -1343,7 +1344,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "shiftExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:151:1: shiftExpression : additiveExpression ( ( '<<' | '>>>' | '>>' ) additiveExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:151:1: shiftExpression : additiveExpression ( ( '<<' | '>>>' | '>>' ) additiveExpression )* ;
     public final BeneratorParser.shiftExpression_return shiftExpression() throws RecognitionException {
         BeneratorParser.shiftExpression_return retval = new BeneratorParser.shiftExpression_return();
         retval.start = input.LT(1);
@@ -1360,8 +1361,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 15) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:5: ( additiveExpression ( ( '<<' | '>>>' | '>>' ) additiveExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:9: additiveExpression ( ( '<<' | '>>>' | '>>' ) additiveExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:5: ( additiveExpression ( ( '<<' | '>>>' | '>>' ) additiveExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:9: additiveExpression ( ( '<<' | '>>>' | '>>' ) additiveExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1371,7 +1372,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, additiveExpression44.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:28: ( ( '<<' | '>>>' | '>>' ) additiveExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:28: ( ( '<<' | '>>>' | '>>' ) additiveExpression )*
             loop12:
             do {
                 int alt12=2;
@@ -1384,7 +1385,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt12) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:29: ( '<<' | '>>>' | '>>' ) additiveExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:152:29: ( '<<' | '>>>' | '>>' ) additiveExpression
             	    {
             	    set45=(Token)input.LT(1);
             	    set45=(Token)input.LT(1);
@@ -1442,7 +1443,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "additiveExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:155:1: additiveExpression : multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:155:1: additiveExpression : multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )* ;
     public final BeneratorParser.additiveExpression_return additiveExpression() throws RecognitionException {
         BeneratorParser.additiveExpression_return retval = new BeneratorParser.additiveExpression_return();
         retval.start = input.LT(1);
@@ -1459,8 +1460,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 16) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:5: ( multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:9: multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:5: ( multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:9: multiplicativeExpression ( ( '+' | '-' ) multiplicativeExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1470,7 +1471,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, multiplicativeExpression47.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:34: ( ( '+' | '-' ) multiplicativeExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:34: ( ( '+' | '-' ) multiplicativeExpression )*
             loop13:
             do {
                 int alt13=2;
@@ -1483,7 +1484,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt13) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:35: ( '+' | '-' ) multiplicativeExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:156:35: ( '+' | '-' ) multiplicativeExpression
             	    {
             	    set48=(Token)input.LT(1);
             	    set48=(Token)input.LT(1);
@@ -1541,7 +1542,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "multiplicativeExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:159:1: multiplicativeExpression : unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:159:1: multiplicativeExpression : unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )* ;
     public final BeneratorParser.multiplicativeExpression_return multiplicativeExpression() throws RecognitionException {
         BeneratorParser.multiplicativeExpression_return retval = new BeneratorParser.multiplicativeExpression_return();
         retval.start = input.LT(1);
@@ -1558,8 +1559,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 17) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:5: ( unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:9: unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:5: ( unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:9: unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1569,7 +1570,7 @@ public class BeneratorParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) adaptor.addChild(root_0, unaryExpression50.getTree());
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:25: ( ( '*' | '/' | '%' ) unaryExpression )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:25: ( ( '*' | '/' | '%' ) unaryExpression )*
             loop14:
             do {
                 int alt14=2;
@@ -1582,7 +1583,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt14) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:26: ( '*' | '/' | '%' ) unaryExpression
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:160:26: ( '*' | '/' | '%' ) unaryExpression
             	    {
             	    set51=(Token)input.LT(1);
             	    set51=(Token)input.LT(1);
@@ -1640,7 +1641,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "unaryExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:167:1: unaryExpression : ( '-' castExpression -> ^( NEGATION castExpression ) | '~' castExpression | '!' castExpression | castExpression );
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:167:1: unaryExpression : ( '-' castExpression -> ^( NEGATION castExpression ) | '~' castExpression | '!' castExpression | castExpression );
     public final BeneratorParser.unaryExpression_return unaryExpression() throws RecognitionException {
         BeneratorParser.unaryExpression_return retval = new BeneratorParser.unaryExpression_return();
         retval.start = input.LT(1);
@@ -1666,7 +1667,7 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_castExpression=new RewriteRuleSubtreeStream(adaptor,"rule castExpression");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 18) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:168:5: ( '-' castExpression -> ^( NEGATION castExpression ) | '~' castExpression | '!' castExpression | castExpression )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:168:5: ( '-' castExpression -> ^( NEGATION castExpression ) | '~' castExpression | '!' castExpression | castExpression )
             int alt15=4;
             switch ( input.LA(1) ) {
             case SUB:
@@ -1706,7 +1707,7 @@ public class BeneratorParser extends Parser {
 
             switch (alt15) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:168:9: '-' castExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:168:9: '-' castExpression
                     {
                     char_literal53=(Token)match(input,SUB,FOLLOW_SUB_in_unaryExpression592); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_SUB.add(char_literal53);
@@ -1733,7 +1734,7 @@ public class BeneratorParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 168:28: -> ^( NEGATION castExpression )
                     {
-                        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:168:31: ^( NEGATION castExpression )
+                        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:168:31: ^( NEGATION castExpression )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(NEGATION, "NEGATION"), root_1);
@@ -1749,7 +1750,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:169:9: '~' castExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:169:9: '~' castExpression
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1768,7 +1769,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:170:9: '!' castExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:170:9: '!' castExpression
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1787,7 +1788,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:171:9: castExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:171:9: castExpression
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1827,7 +1828,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "castExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:174:1: castExpression : ( '(' type ')' postfixExpression -> ^( CAST type postfixExpression ) | postfixExpression );
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:174:1: castExpression : ( '(' type ')' postfixExpression -> ^( CAST type postfixExpression ) | postfixExpression );
     public final BeneratorParser.castExpression_return castExpression() throws RecognitionException {
         BeneratorParser.castExpression_return retval = new BeneratorParser.castExpression_return();
         retval.start = input.LT(1);
@@ -1851,12 +1852,12 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_postfixExpression=new RewriteRuleSubtreeStream(adaptor,"rule postfixExpression");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 19) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:175:5: ( '(' type ')' postfixExpression -> ^( CAST type postfixExpression ) | postfixExpression )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:175:5: ( '(' type ')' postfixExpression -> ^( CAST type postfixExpression ) | postfixExpression )
             int alt16=2;
             alt16 = dfa16.predict(input);
             switch (alt16) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:175:9: '(' type ')' postfixExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:175:9: '(' type ')' postfixExpression
                     {
                     char_literal60=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_castExpression658); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(char_literal60);
@@ -1892,7 +1893,7 @@ public class BeneratorParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 175:40: -> ^( CAST type postfixExpression )
                     {
-                        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:175:43: ^( CAST type postfixExpression )
+                        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:175:43: ^( CAST type postfixExpression )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(CAST, "CAST"), root_1);
@@ -1909,7 +1910,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:176:9: postfixExpression
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:176:9: postfixExpression
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -1949,7 +1950,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "type"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:179:1: type : qualifiedName -> ^( TYPE qualifiedName ) ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:179:1: type : qualifiedName -> ^( TYPE qualifiedName ) ;
     public final BeneratorParser.type_return type() throws RecognitionException {
         BeneratorParser.type_return retval = new BeneratorParser.type_return();
         retval.start = input.LT(1);
@@ -1962,8 +1963,8 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_qualifiedName=new RewriteRuleSubtreeStream(adaptor,"rule qualifiedName");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 20) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:180:5: ( qualifiedName -> ^( TYPE qualifiedName ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:180:9: qualifiedName
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:180:5: ( qualifiedName -> ^( TYPE qualifiedName ) )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:180:9: qualifiedName
             {
             pushFollow(FOLLOW_qualifiedName_in_type703);
             qualifiedName65=qualifiedName();
@@ -1987,7 +1988,7 @@ public class BeneratorParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 180:23: -> ^( TYPE qualifiedName )
             {
-                // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:180:26: ^( TYPE qualifiedName )
+                // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:180:26: ^( TYPE qualifiedName )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(TYPE, "TYPE"), root_1);
@@ -2027,7 +2028,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "postfixExpression"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:182:1: postfixExpression : ( primary -> primary ) ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )* ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:182:1: postfixExpression : ( primary -> primary ) ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )* ;
     public final BeneratorParser.postfixExpression_return postfixExpression() throws RecognitionException {
         BeneratorParser.postfixExpression_return retval = new BeneratorParser.postfixExpression_return();
         retval.start = input.LT(1);
@@ -2062,11 +2063,11 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_expression=new RewriteRuleSubtreeStream(adaptor,"rule expression");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 21) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:5: ( ( primary -> primary ) ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:9: ( primary -> primary ) ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:5: ( ( primary -> primary ) ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )* )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:9: ( primary -> primary ) ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )*
             {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:9: ( primary -> primary )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:10: primary
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:9: ( primary -> primary )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:183:10: primary
             {
             pushFollow(FOLLOW_primary_in_postfixExpression726);
             primary66=primary();
@@ -2097,7 +2098,7 @@ public class BeneratorParser extends Parser {
             retval.tree = root_0;}
             }
 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:184:9: ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:184:9: ( '[' expression ']' -> ^( INDEX $postfixExpression expression ) | '.' IDENTIFIER arguments -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments ) | '.' IDENTIFIER -> ^( FIELD $postfixExpression IDENTIFIER ) )*
             loop17:
             do {
                 int alt17=4;
@@ -2128,7 +2129,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt17) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:185:13: '[' expression ']'
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:185:13: '[' expression ']'
             	    {
             	    char_literal67=(Token)match(input,LBRACKET,FOLLOW_LBRACKET_in_postfixExpression755); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_LBRACKET.add(char_literal67);
@@ -2158,7 +2159,7 @@ public class BeneratorParser extends Parser {
             	    root_0 = (Object)adaptor.nil();
             	    // 185:32: -> ^( INDEX $postfixExpression expression )
             	    {
-            	        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:185:35: ^( INDEX $postfixExpression expression )
+            	        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:185:35: ^( INDEX $postfixExpression expression )
             	        {
             	        Object root_1 = (Object)adaptor.nil();
             	        root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(INDEX, "INDEX"), root_1);
@@ -2175,7 +2176,7 @@ public class BeneratorParser extends Parser {
             	    }
             	    break;
             	case 2 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:186:13: '.' IDENTIFIER arguments
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:186:13: '.' IDENTIFIER arguments
             	    {
             	    char_literal70=(Token)match(input,DOT,FOLLOW_DOT_in_postfixExpression784); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_DOT.add(char_literal70);
@@ -2205,7 +2206,7 @@ public class BeneratorParser extends Parser {
             	    root_0 = (Object)adaptor.nil();
             	    // 186:37: -> ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments )
             	    {
-            	        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:186:40: ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments )
+            	        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:186:40: ^( SUBINVOCATION $postfixExpression IDENTIFIER arguments )
             	        {
             	        Object root_1 = (Object)adaptor.nil();
             	        root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(SUBINVOCATION, "SUBINVOCATION"), root_1);
@@ -2223,7 +2224,7 @@ public class BeneratorParser extends Parser {
             	    }
             	    break;
             	case 3 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:187:13: '.' IDENTIFIER
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:187:13: '.' IDENTIFIER
             	    {
             	    char_literal73=(Token)match(input,DOT,FOLLOW_DOT_in_postfixExpression814); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_DOT.add(char_literal73);
@@ -2247,7 +2248,7 @@ public class BeneratorParser extends Parser {
             	    root_0 = (Object)adaptor.nil();
             	    // 187:28: -> ^( FIELD $postfixExpression IDENTIFIER )
             	    {
-            	        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:187:31: ^( FIELD $postfixExpression IDENTIFIER )
+            	        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:187:31: ^( FIELD $postfixExpression IDENTIFIER )
             	        {
             	        Object root_1 = (Object)adaptor.nil();
             	        root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(FIELD, "FIELD"), root_1);
@@ -2297,7 +2298,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "primary"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:191:1: primary : ( '(' expression ')' | literal | creator | qualifiedName arguments -> ^( INVOCATION qualifiedName arguments ) | qualifiedName );
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:191:1: primary : ( '(' expression ')' | literal | creator | qualifiedName arguments -> ^( INVOCATION qualifiedName arguments ) | qualifiedName );
     public final BeneratorParser.primary_return primary() throws RecognitionException {
         BeneratorParser.primary_return retval = new BeneratorParser.primary_return();
         retval.start = input.LT(1);
@@ -2325,7 +2326,7 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_qualifiedName=new RewriteRuleSubtreeStream(adaptor,"rule qualifiedName");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 22) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:192:5: ( '(' expression ')' | literal | creator | qualifiedName arguments -> ^( INVOCATION qualifiedName arguments ) | qualifiedName )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:192:5: ( '(' expression ')' | literal | creator | qualifiedName arguments -> ^( INVOCATION qualifiedName arguments ) | qualifiedName )
             int alt18=5;
             switch ( input.LA(1) ) {
             case LPAREN:
@@ -2376,7 +2377,7 @@ public class BeneratorParser extends Parser {
 
             switch (alt18) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:192:9: '(' expression ')'
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:192:9: '(' expression ')'
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -2392,7 +2393,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:193:9: literal
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:193:9: literal
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -2406,7 +2407,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:194:7: creator
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:194:7: creator
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -2420,7 +2421,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:9: qualifiedName arguments
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:9: qualifiedName arguments
                     {
                     pushFollow(FOLLOW_qualifiedName_in_primary892);
                     qualifiedName80=qualifiedName();
@@ -2450,7 +2451,7 @@ public class BeneratorParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 195:33: -> ^( INVOCATION qualifiedName arguments )
                     {
-                        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:36: ^( INVOCATION qualifiedName arguments )
+                        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:36: ^( INVOCATION qualifiedName arguments )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(INVOCATION, "INVOCATION"), root_1);
@@ -2467,7 +2468,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:196:9: qualifiedName
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:196:9: qualifiedName
                     {
                     root_0 = (Object)adaptor.nil();
 
@@ -2507,7 +2508,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "creator"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:199:1: creator : ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) );
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:199:1: creator : ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) );
     public final BeneratorParser.creator_return creator() throws RecognitionException {
         BeneratorParser.creator_return retval = new BeneratorParser.creator_return();
         retval.start = input.LT(1);
@@ -2544,12 +2545,12 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_qualifiedName=new RewriteRuleSubtreeStream(adaptor,"rule qualifiedName");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 23) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:200:5: ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:200:5: ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) )
             int alt20=2;
             alt20 = dfa20.predict(input);
             switch (alt20) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:200:9: 'new' qualifiedName arguments
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:200:9: 'new' qualifiedName arguments
                     {
                     string_literal83=(Token)match(input,66,FOLLOW_66_in_creator933); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_66.add(string_literal83);
@@ -2582,7 +2583,7 @@ public class BeneratorParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 200:39: -> ^( CONSTRUCTOR qualifiedName arguments )
                     {
-                        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:200:42: ^( CONSTRUCTOR qualifiedName arguments )
+                        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:200:42: ^( CONSTRUCTOR qualifiedName arguments )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(CONSTRUCTOR, "CONSTRUCTOR"), root_1);
@@ -2599,7 +2600,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:9: 'new' qualifiedName '[' assignment ( ',' assignment )* ']'
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:9: 'new' qualifiedName '[' assignment ( ',' assignment )* ']'
                     {
                     string_literal86=(Token)match(input,66,FOLLOW_66_in_creator957); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_66.add(string_literal86);
@@ -2619,7 +2620,7 @@ public class BeneratorParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_assignment.add(assignment89.getTree());
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:44: ( ',' assignment )*
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:44: ( ',' assignment )*
                     loop19:
                     do {
                         int alt19=2;
@@ -2632,7 +2633,7 @@ public class BeneratorParser extends Parser {
 
                         switch (alt19) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:45: ',' assignment
+                    	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:45: ',' assignment
                     	    {
                     	    char_literal90=(Token)match(input,COMMA,FOLLOW_COMMA_in_creator966); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_COMMA.add(char_literal90);
@@ -2671,13 +2672,13 @@ public class BeneratorParser extends Parser {
                     root_0 = (Object)adaptor.nil();
                     // 201:66: -> ^( BEAN qualifiedName ( assignment )* )
                     {
-                        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:69: ^( BEAN qualifiedName ( assignment )* )
+                        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:69: ^( BEAN qualifiedName ( assignment )* )
                         {
                         Object root_1 = (Object)adaptor.nil();
                         root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(BEAN, "BEAN"), root_1);
 
                         adaptor.addChild(root_1, stream_qualifiedName.nextTree());
-                        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:90: ( assignment )*
+                        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:201:90: ( assignment )*
                         while ( stream_assignment.hasNext() ) {
                             adaptor.addChild(root_1, stream_assignment.nextTree());
 
@@ -2719,7 +2720,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "arguments"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:204:1: arguments : '(' ( expression ( ',' expression )* )? ')' -> ^( ARGUMENTS ( expression )* ) ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:204:1: arguments : '(' ( expression ( ',' expression )* )? ')' -> ^( ARGUMENTS ( expression )* ) ;
     public final BeneratorParser.arguments_return arguments() throws RecognitionException {
         BeneratorParser.arguments_return retval = new BeneratorParser.arguments_return();
         retval.start = input.LT(1);
@@ -2743,13 +2744,13 @@ public class BeneratorParser extends Parser {
         RewriteRuleSubtreeStream stream_expression=new RewriteRuleSubtreeStream(adaptor,"rule expression");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 24) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:5: ( '(' ( expression ( ',' expression )* )? ')' -> ^( ARGUMENTS ( expression )* ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:9: '(' ( expression ( ',' expression )* )? ')'
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:5: ( '(' ( expression ( ',' expression )* )? ')' -> ^( ARGUMENTS ( expression )* ) )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:9: '(' ( expression ( ',' expression )* )? ')'
             {
             char_literal93=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_arguments1002); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LPAREN.add(char_literal93);
 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:13: ( expression ( ',' expression )* )?
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:13: ( expression ( ',' expression )* )?
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2758,7 +2759,7 @@ public class BeneratorParser extends Parser {
             }
             switch (alt22) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:14: expression ( ',' expression )*
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:14: expression ( ',' expression )*
                     {
                     pushFollow(FOLLOW_expression_in_arguments1005);
                     expression94=expression();
@@ -2766,7 +2767,7 @@ public class BeneratorParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_expression.add(expression94.getTree());
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:25: ( ',' expression )*
+                    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:25: ( ',' expression )*
                     loop21:
                     do {
                         int alt21=2;
@@ -2779,7 +2780,7 @@ public class BeneratorParser extends Parser {
 
                         switch (alt21) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:26: ',' expression
+                    	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:26: ',' expression
                     	    {
                     	    char_literal95=(Token)match(input,COMMA,FOLLOW_COMMA_in_arguments1008); if (state.failed) return retval; 
                     	    if ( state.backtracking==0 ) stream_COMMA.add(char_literal95);
@@ -2824,12 +2825,12 @@ public class BeneratorParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 205:49: -> ^( ARGUMENTS ( expression )* )
             {
-                // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:52: ^( ARGUMENTS ( expression )* )
+                // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:52: ^( ARGUMENTS ( expression )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(ARGUMENTS, "ARGUMENTS"), root_1);
 
-                // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:64: ( expression )*
+                // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:205:64: ( expression )*
                 while ( stream_expression.hasNext() ) {
                     adaptor.addChild(root_1, stream_expression.nextTree());
 
@@ -2869,7 +2870,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "qualifiedName"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:207:1: qualifiedName : IDENTIFIER ( '.' IDENTIFIER )* -> ^( QUALIFIEDNAME ( IDENTIFIER )* ) ;
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:207:1: qualifiedName : IDENTIFIER ( '.' IDENTIFIER )* -> ^( QUALIFIEDNAME ( IDENTIFIER )* ) ;
     public final BeneratorParser.qualifiedName_return qualifiedName() throws RecognitionException {
         BeneratorParser.qualifiedName_return retval = new BeneratorParser.qualifiedName_return();
         retval.start = input.LT(1);
@@ -2888,13 +2889,13 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 25) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:2: ( IDENTIFIER ( '.' IDENTIFIER )* -> ^( QUALIFIEDNAME ( IDENTIFIER )* ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:6: IDENTIFIER ( '.' IDENTIFIER )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:2: ( IDENTIFIER ( '.' IDENTIFIER )* -> ^( QUALIFIEDNAME ( IDENTIFIER )* ) )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:6: IDENTIFIER ( '.' IDENTIFIER )*
             {
             IDENTIFIER98=(Token)match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_qualifiedName1040); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IDENTIFIER.add(IDENTIFIER98);
 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:17: ( '.' IDENTIFIER )*
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:17: ( '.' IDENTIFIER )*
             loop23:
             do {
                 int alt23=2;
@@ -2919,7 +2920,7 @@ public class BeneratorParser extends Parser {
 
                 switch (alt23) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:18: '.' IDENTIFIER
+            	    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:18: '.' IDENTIFIER
             	    {
             	    char_literal99=(Token)match(input,DOT,FOLLOW_DOT_in_qualifiedName1043); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_DOT.add(char_literal99);
@@ -2952,12 +2953,12 @@ public class BeneratorParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 208:35: -> ^( QUALIFIEDNAME ( IDENTIFIER )* )
             {
-                // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:38: ^( QUALIFIEDNAME ( IDENTIFIER )* )
+                // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:38: ^( QUALIFIEDNAME ( IDENTIFIER )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(QUALIFIEDNAME, "QUALIFIEDNAME"), root_1);
 
-                // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:54: ( IDENTIFIER )*
+                // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:54: ( IDENTIFIER )*
                 while ( stream_IDENTIFIER.hasNext() ) {
                     adaptor.addChild(root_1, stream_IDENTIFIER.nextNode());
 
@@ -2997,7 +2998,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "literal"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:211:1: literal : ( INTLITERAL | DECIMALLITERAL | STRINGLITERAL | BOOLEANLITERAL | NULL );
+    // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:211:1: literal : ( INTLITERAL | DECIMALLITERAL | STRINGLITERAL | BOOLEANLITERAL | NULL );
     public final BeneratorParser.literal_return literal() throws RecognitionException {
         BeneratorParser.literal_return retval = new BeneratorParser.literal_return();
         retval.start = input.LT(1);
@@ -3010,8 +3011,8 @@ public class BeneratorParser extends Parser {
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 26) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:212:5: ( INTLITERAL | DECIMALLITERAL | STRINGLITERAL | BOOLEANLITERAL | NULL )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:212:5: ( INTLITERAL | DECIMALLITERAL | STRINGLITERAL | BOOLEANLITERAL | NULL )
+            // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:
             {
             root_0 = (Object)adaptor.nil();
 
@@ -3051,8 +3052,8 @@ public class BeneratorParser extends Parser {
 
     // $ANTLR start synpred34_Benerator
     public final void synpred34_Benerator_fragment() throws RecognitionException {   
-        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:9: ( qualifiedName arguments )
-        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:9: qualifiedName arguments
+        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:9: ( qualifiedName arguments )
+        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:195:9: qualifiedName arguments
         {
         pushFollow(FOLLOW_qualifiedName_in_synpred34_Benerator892);
         qualifiedName();
@@ -3071,8 +3072,8 @@ public class BeneratorParser extends Parser {
 
     // $ANTLR start synpred39_Benerator
     public final void synpred39_Benerator_fragment() throws RecognitionException {   
-        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:18: ( '.' IDENTIFIER )
-        // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:18: '.' IDENTIFIER
+        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:18: ( '.' IDENTIFIER )
+        // benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:18: '.' IDENTIFIER
         {
         match(input,DOT,FOLLOW_DOT_in_synpred39_Benerator1043); if (state.failed) return ;
         match(input,IDENTIFIER,FOLLOW_IDENTIFIER_in_synpred39_Benerator1045); if (state.failed) return ;

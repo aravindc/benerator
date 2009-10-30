@@ -8,6 +8,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings("all")
 public class BeneratorLexer extends Lexer {
     public static final int SHIFT_LEFT=59;
     public static final int INDEX=12;
