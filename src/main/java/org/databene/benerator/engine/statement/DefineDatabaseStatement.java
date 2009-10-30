@@ -30,6 +30,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.DataModel;
 import org.databene.platform.db.DBSystem;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class DefineDatabaseStatement implements Statement { // TODO move to DB p
 	    		user.evaluate(context), 
 	    		password.evaluate(context));
 	    db.setSchema(schema.evaluate(context));
-	    db.setTableFilter(tableFilter.evaluate(context));
+	    db.setTableFilter(ExpressionUtil.evaluate(tableFilter, context));
 	    db.setBatch(batch.evaluate(context));
 	    db.setFetchSize(fetchSize.evaluate(context));
 	    db.setBatch(readOnly.evaluate(context));
