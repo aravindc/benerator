@@ -256,6 +256,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 		return generator;
 	}
 
+    @SuppressWarnings("unchecked")
     private static Generator<Entity> createSyntheticEntityGenerator(
             ComplexTypeDescriptor complexType, boolean unique, BeneratorContext context) {
         List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
