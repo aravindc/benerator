@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
-import org.databene.contiperf.Percentile;
 import org.databene.contiperf.PercentileRequirement;
 import org.databene.contiperf.PerfTestController;
 import org.databene.contiperf.PerformanceRequirement;

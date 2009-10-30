@@ -43,7 +43,7 @@ public class InitialContextTest {
 			new Runnable() {
 				public void run() {
 					try {
-						ConsumerMock.last = null;
+						ConsumerMock.lastInstance = null;
 	                    DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
 	                    		"<bean id='ctx' class='org.databene.platform.jndi.InitialContext'>" +
 	                    		"  <property name='factory' value='org.databene.platform.jndi.InitialContextFactoryMock' />" +
@@ -59,8 +59,8 @@ public class InitialContextTest {
 	                    BeneratorContext context = runner.getContext();
 	                    context.setValidate(false);
 	                    runner.run();
-	                    assertNotNull("Consumer was not invoked", ConsumerMock.last);
-	                    assertEquals("Alice", ConsumerMock.last.get("name"));
+	                    assertNotNull("Consumer was not invoked", ConsumerMock.lastInstance.lastEntity);
+	                    assertEquals("Alice", ConsumerMock.lastInstance.lastEntity.get("name"));
                     } catch (IOException e) {
 	                    throw new RuntimeException(e);
                     }

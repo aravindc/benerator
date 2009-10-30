@@ -44,7 +44,7 @@ import org.databene.commons.BeanUtil;
  * @author Volker Bergmann
  */
 
-public class TypeManager {
+public class TypeManager { // TODO make use of ObjectTypeComparator
 
 	private static Map<Class<?>, Integer> complexities;
 	

@@ -105,7 +105,7 @@ public class DBSystem extends AbstractStorageSystem {
     private Map<Thread, ThreadContext> contexts;
     private Map<String, TypeDescriptor> typeDescriptors;
     
-    private TypeMapper<Class<? extends Object>> driverTypeMapper;
+    private TypeMapper driverTypeMapper;
     DatabaseDialect dialect;
     private boolean dynamicQuerySupported;
     
@@ -801,8 +801,8 @@ public class DBSystem extends AbstractStorageSystem {
         return builder.toString();
     }
 
-    private TypeMapper<Class<? extends Object>> driverTypeMapper() {
-        return new TypeMapper<Class<? extends Object>>(
+    private TypeMapper driverTypeMapper() {
+        return new TypeMapper(
                 "byte",        Byte.class,
                 "short",       Short.class,
                 "int",         Integer.class,

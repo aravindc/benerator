@@ -44,10 +44,10 @@ import java.math.BigInteger;
  */
 public class BeanDescriptorProvider implements DescriptorProvider {
     
-    private TypeMapper<Class<? extends Object>> mapper;
+    private TypeMapper mapper;
 
     public BeanDescriptorProvider() {
-        mapper = new TypeMapper<Class<? extends Object>>(
+        mapper = new TypeMapper(
                 "byte", byte.class,
                 "byte", Byte.class,
 
@@ -118,7 +118,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
     /**
      * @param concreteType
      * @return the abstract type that corresponds to the specified concrete type
-     * @see org.databene.model.data.TypeMapper#abstractType(java.lang.Object)
+     * @see org.databene.model.data.TypeMapper#abstractType(Class)
      */
     public String abstractType(Class<? extends Object> concreteType) {
         return mapper.abstractType(concreteType);
@@ -131,7 +131,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
      */
     public Class<? extends Object> concreteType(String primitiveType) {
         try {
-            Class<? extends Object> result = mapper.concreteType(primitiveType);
+            Class<?> result = mapper.concreteType(primitiveType);
             if (result == null)
                 result = Class.forName(primitiveType);
             return result;

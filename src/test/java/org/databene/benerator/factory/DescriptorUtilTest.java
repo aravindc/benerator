@@ -139,7 +139,7 @@ public class DescriptorUtilTest {
 		consumer.startConsuming(entity);
 		assertEquals(1, consumer.componentCount());
 		ConsumerMock consumerCheck = (ConsumerMock) consumer.getComponent(0);
-		assertEquals(entity, consumerCheck.last);
+		assertEquals(entity, consumerCheck.lastEntity);
 		assertEquals(1, consumerCheck.n);
 		
 		// test constructor syntax
@@ -147,7 +147,7 @@ public class DescriptorUtilTest {
 		consumer.startConsuming(entity);
 		assertEquals(1, consumer.componentCount());
 		consumerCheck = (ConsumerMock) consumer.getComponent(0);
-		assertEquals(entity, consumerCheck.last);
+		assertEquals(entity, consumerCheck.lastEntity);
 		assertEquals(2, consumerCheck.n);
 		
 		// test reference
@@ -155,15 +155,15 @@ public class DescriptorUtilTest {
 		consumer = DescriptorUtil.parseConsumersSpec("myconsumer", context);
 		consumer.startConsuming(entity);
 		assertEquals(1, consumer.componentCount());
-		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).last);
+		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).lastEntity);
 		
 		// test comma-separated combination
 		context.set("myconsumer", new ConsumerMock());
 		consumer = DescriptorUtil.parseConsumersSpec("myconsumer," + ConsumerMock.class.getName(), context);
 		consumer.startConsuming(entity);
 		assertEquals(2, consumer.componentCount());
-		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).last);
-		assertEquals(entity, ((ConsumerMock) consumer.getComponent(1)).last);
+		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).lastEntity);
+		assertEquals(entity, ((ConsumerMock) consumer.getComponent(1)).lastEntity);
 	}
 	
 	// distribution tests ----------------------------------------------------------------------------------------------

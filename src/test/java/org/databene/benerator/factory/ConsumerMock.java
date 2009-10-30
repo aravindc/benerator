@@ -35,7 +35,9 @@ public class ConsumerMock extends AbstractConsumer<Entity> {
 	
 	private Random random = new Random();
 	
-	public static Entity last;
+	public static ConsumerMock lastInstance;
+	
+	public Entity lastEntity;
 	public int n;
 	
 	public ConsumerMock() {
@@ -44,14 +46,15 @@ public class ConsumerMock extends AbstractConsumer<Entity> {
 
 	public ConsumerMock(int n) {
 		this.n = n;
+		lastInstance = this;
 	}
 
     public void startConsuming(Entity object) {
-        last = object;
+        lastEntity = object;
     }
     
     public void enrolCustomer(String name, int age) throws Exception {
-        last = new Entity("Person", "name", name, "age", age);
+        lastEntity = new Entity("Person", "name", name, "age", age);
         System.out.println("enrolled: " + name + " (" + age + ") - " + Thread.currentThread().getName());
         Thread.sleep(50 + random.nextInt(100));
     }
