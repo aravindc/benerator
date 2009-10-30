@@ -48,6 +48,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.Level;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.db.DBUtil;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -95,7 +96,7 @@ public class EvaluateStatement implements Statement {
 	public void execute(BeneratorContext context) {
 		try {
 			// error handler
-			String onErrorValue = onErrorEx.evaluate(context);
+			String onErrorValue = ExpressionUtil.evaluate(onErrorEx, context);
 			if (StringUtil.isEmpty(onErrorValue))
 				onErrorValue = "fatal";
 			ErrorHandler errorHandler = new ErrorHandler(getClass().getName(), Level.valueOf(onErrorValue));
