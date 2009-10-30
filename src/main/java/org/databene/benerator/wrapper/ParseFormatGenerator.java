@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,8 @@ import java.text.Format;
  * to convert a String into an object.<br/>
  * <br/>
  * Created: 18.06.2006 11:59:05
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class ParseFormatGenerator<S, T> extends ConvertingGenerator<S, T> {
 
@@ -44,10 +46,11 @@ public class ParseFormatGenerator<S, T> extends ConvertingGenerator<S, T> {
     }
 
     /**
-     * Initializtes the generator
+     * Initializes the generator
      * @param source the source generator
      * @param format the format to apply
      */
+    @SuppressWarnings("unchecked")
     public ParseFormatGenerator(Class<T> targetType, Generator<S> source, Format format) {
         super(source, new ParseFormatConverter(targetType, format));
     }

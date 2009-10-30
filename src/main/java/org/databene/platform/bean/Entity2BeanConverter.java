@@ -44,6 +44,7 @@ public class Entity2BeanConverter<T extends Object> extends FixedSourceTypeConve
         super(Entity.class, targetType);
     }
 
+    @SuppressWarnings("unchecked")
     public T convert(Entity entity) {
     	T result;
         if (targetType != null)

@@ -48,6 +48,7 @@ public class FormatFormatGenerator<S> extends ConvertingGenerator<S, String> {
      * @param source the source generator
      * @param format the format to apply
      */
+    @SuppressWarnings("unchecked")
     public FormatFormatGenerator(Generator<S> source, Format format) {
         super(source, new FormatFormatConverter(Object.class, format));
     }

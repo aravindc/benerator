@@ -197,13 +197,14 @@ class Node<E extends Dependent<E>> {
         return subject.hashCode();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null || getClass() != obj.getClass())
             return false;
-        final Node<E> that = (Node<E>) obj;
+        final Node that = (Node) obj;
         return (this.subject != null ? this.subject.equals(that.subject) : that.subject == null);
     }
     

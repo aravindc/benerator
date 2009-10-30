@@ -39,9 +39,10 @@ import org.databene.model.data.PrimitiveType;
  * @author Volker Bergmann
  * @since 0.3.04
  */
+@SuppressWarnings("unchecked")
 public class JdbcMetaTypeMapper {
 
-    private static final Map TYPE_MAP;
+    private static final Map<Integer, PrimitiveType> TYPE_MAP;
 
     static {
 
@@ -79,7 +80,7 @@ public class JdbcMetaTypeMapper {
 
     public static String abstractType(DBColumnType columnType) {
         int jdbcType = columnType.getJdbcType();
-        PrimitiveType primitiveType = (PrimitiveType) TYPE_MAP.get(jdbcType);
+        PrimitiveType primitiveType = TYPE_MAP.get(jdbcType);
         if (primitiveType != null)
 			return primitiveType.getName();
         else {
