@@ -37,12 +37,13 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class SimpleTypeEntityGenerator<E> extends GeneratorWrapper<E, Entity> {
+public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> {
 	
 	private ComplexTypeDescriptor complexType;
 
-	public SimpleTypeEntityGenerator(Generator<E> source, ComplexTypeDescriptor complexType) {
-		super(source);
+	@SuppressWarnings("unchecked")
+    public SimpleTypeEntityGenerator(Generator<?> source, ComplexTypeDescriptor complexType) {
+		super((Generator<Object>) source);
 		this.complexType = complexType;
 	}
 
