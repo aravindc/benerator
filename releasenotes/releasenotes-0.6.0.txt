@@ -66,6 +66,31 @@ enhancements (Find the feature request tracker at http://sourceforge.net/tracker
   - FileJoiner
   - FileDeleter
 - Supporting JSR 303 Bean Validation
+- Introduced Benerator Script language
+- LiteralParser supports time strings
+- in script="..." marker curly braces are not necessary any more
+- new DepartmentNameGenerator
+- Added support for the Luhn algorithm in validation and generation
+- Supporting Brazil (thanks to Eric Chaves for his contributions!):
+  - Generation of Brazilian postal addresses
+  - 'Brazilian style' mobile phone numbers, depending on city area codes
+  - CPF number generation and validation
+  - CPNJ number generation and validation
+- Person domain: new Person properties: 
+  - secondGivenName
+- Convenient JNDI support: org.databene.platform.jndi.InitialContext
+- JavaInvoker
+- ValueMapper
+- Programmatic access to Generators defined in descriptor file
+- 'run-task' element supports 'spec' and 'id' attributes like the bean element
+- automatic minus to camel-case name mapping: default-script -> defaultScript
+- Improved parsing framework for clarity, separation of concerns and customizability
+- new ToHexConverter
+- new separator attribute in <create-entities>, <update-entities>, <attribute>, <reference>, <id>
+- new tableFilter property <database ... tableFilter="my_.*" />
+- extended set of German names to more than 6,000,000 million possible unique combinations
+- new methods TimeUtil.month() ...dayOfMonth()
+- Defined Benerator Expression Language
 
 
 changes
@@ -92,10 +117,17 @@ changes
   - replaced destroy() with close() (from java.io.Closeable)
   - added 'context' parameter to the run() method
 - Migrated from commons-logging to slf4j
-  
+- Upgraded to JUnit 4.7
+- removed QuickScript support
+- renamed SSN classes and moved them to the new 'US' domain
+- renamed TaxId* classes to TIN*
+- Restructured, abstracted and unified descriptor parsers
+- <setup default-script="" default-null=""> -> <setup defaultScript="" defaultNull="">
+
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
 - parsing comma-separated object lists (e.g. consumers, validators)
 - removed Entity's 'name' property: getName() -> name()
+- 2879250 Error processing C:\\temp
