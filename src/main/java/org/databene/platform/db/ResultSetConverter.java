@@ -58,10 +58,11 @@ public class ResultSetConverter<E> extends FixedSourceTypeConverter<ResultSet, E
     
     // Converter interface ---------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     public E convert(ResultSet resultSet) throws ConversionException {
         Object[] tmp = convertToArray(resultSet);
         if (targetType.isArray())
-        	return (E) targetType;
+        	return (E) tmp;
         else
         	return (E) (!simplifying || tmp.length > 1 ? tmp : tmp[0]);
     }
