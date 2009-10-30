@@ -18,15 +18,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.databene.platform.contiperf;
 
 import org.databene.contiperf.Invoker;
 import org.databene.model.consumer.Consumer;
 
 /**
- * TODO Document class.<br/><br/>
+ * ContiPerf {@link Invoker} implementation which calls the {@link Consumer#startConsuming(Object)} 
+ * method with the provided argument.<br/><br/>
  * Created: 22.10.2009 17:23:42
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class ConsumerInvoker implements Invoker {

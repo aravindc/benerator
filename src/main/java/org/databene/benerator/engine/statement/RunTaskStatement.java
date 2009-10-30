@@ -33,7 +33,7 @@ import org.databene.task.PagedTaskRunner;
 import org.databene.task.Task;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Statement} that executes a {@link Task} supporting paging and multithreading.<br/><br/>
  * Created: 27.10.2009 20:29:47
  * @since 0.6.0
  * @author Volker Bergmann

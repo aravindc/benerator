@@ -25,7 +25,7 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 
 /**
- * TODO Document class.<br/><br/>
+ * Represents and resolves a reference to an object in a {@link Context}.<br/><br/>
  * Created: 25.10.2009 09:33:35
  * @since 0.6.0
  * @author Volker Bergmann

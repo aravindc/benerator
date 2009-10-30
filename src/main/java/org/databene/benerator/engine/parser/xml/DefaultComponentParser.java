@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses a &lt;defaultComponents&gt; element in a Benerator descriptor file.<br/><br/>
  * Created: 25.10.2009 00:17:04
  * @since 0.6.0
  * @author Volker Bergmann

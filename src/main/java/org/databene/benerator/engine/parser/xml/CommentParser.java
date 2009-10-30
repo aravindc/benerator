@@ -28,7 +28,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses a &lt;comment&gt; element in a Benerator descriptor file.<br/><br/>
  * Created: 25.10.2009 00:27:00
  * @since 0.6.0
  * @author Volker Bergmann

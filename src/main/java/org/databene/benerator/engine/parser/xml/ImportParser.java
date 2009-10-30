@@ -29,7 +29,7 @@ import org.databene.commons.StringUtil;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses an &lt;import&gt; element in a Benerator descriptor file.<br/><br/>
  * Created: 25.10.2009 00:53:06
  * @since 0.6.0
  * @author Volker Bergmann

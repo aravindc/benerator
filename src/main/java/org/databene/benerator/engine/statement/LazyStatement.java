@@ -30,7 +30,7 @@ import org.databene.commons.Expression;
  * which returns a Task and executes the returned Task.<br/>
  * <br/>
  * Created: 27.10.2009 16:09:20
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class LazyStatement implements Statement {

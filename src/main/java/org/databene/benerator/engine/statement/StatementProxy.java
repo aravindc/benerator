@@ -25,9 +25,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
 /**
- * TODO Document class.<br/><br/>
+ * Proxy for a {@link Statement}.<br/><br/>
  * Created: 27.10.2009 16:06:04
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class StatementProxy implements Statement {

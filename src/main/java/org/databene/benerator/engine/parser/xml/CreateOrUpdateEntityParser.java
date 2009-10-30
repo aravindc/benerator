@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses a &lt;create-entities&gt; or &lt;update-entities&gt; element in a Benerator descriptor file.<br/><br/>
  * Created: 25.10.2009 01:05:18
  * @since 0.6.0
  * @author Volker Bergmann

@@ -34,9 +34,9 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses an XML &lt;run-task&gt; element in a Benerator descriptor file.<br/><br/>
  * Created: 26.10.2009 07:07:40
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class ParseRunTaskTest {

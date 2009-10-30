@@ -26,9 +26,9 @@ import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
 
 /**
- * TODO Document class.<br/><br/>
+ * Common parent class for Expressions that instantiate a Java object.<br/><br/>
  * Created: 25.10.2009 08:29:14
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public abstract class Construction<E> implements Expression<E> {

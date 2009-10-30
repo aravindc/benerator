@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.databene.commons.Context;
 
 /**
- * TODO Document class.<br/><br/>
+ * Mock implementation of the {@link Task} interface.<br/><br/>
  * Created: 26.10.2009 07:09:12
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class TaskMock extends AbstractTask {

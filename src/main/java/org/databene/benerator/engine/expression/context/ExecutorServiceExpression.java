@@ -28,9 +28,10 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Expression} that returns the {@link ExecutorService} 
+ * of the {@link BeneratorContext}.<br/><br/>
  * Created: 26.10.2009 06:45:14
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class ExecutorServiceExpression implements Expression<ExecutorService> {

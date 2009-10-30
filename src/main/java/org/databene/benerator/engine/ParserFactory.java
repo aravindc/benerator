@@ -38,7 +38,7 @@ import org.databene.benerator.engine.parser.xml.RunTaskParser;
 import org.databene.commons.ConfigurationError;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides the parsers for a Benerator descriptor file.<br/><br/>
  * Created: 25.10.2009 00:20:33
  * @since 0.6.0
  * @author Volker Bergmann

@@ -33,7 +33,7 @@ import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerProxy;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Consumer} implementation that calls a ContiPerf {@link PerfTestConsumer}.<br/><br/>
  * Created: 22.10.2009 16:17:14
  * @since 0.6.0
  * @author Volker Bergmann

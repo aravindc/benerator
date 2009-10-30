@@ -27,9 +27,10 @@ import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Normalizes XML-valid names to Java-valid camel-case names, 
+ * e.g. default-script -> defaultScript.<br/><br/>
  * Created: 26.10.2009 09:17:53
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class XMLNameNormalizer implements Converter<String, String> {

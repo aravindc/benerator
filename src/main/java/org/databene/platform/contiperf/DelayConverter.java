@@ -25,13 +25,15 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 
 /**
- * TODO Document class.<br/><br/>
+ * Causes a delay of the number of milliseconds which are provided to the convert() method.<br/><br/>
  * Created: 22.10.2009 18:31:57
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DelayConverter implements Converter<Number, Number> {
-
+public class DelayConverter implements Converter<Number, Number> { 
+	// TODO is there a more elegant way to achieve the same goal?
+	// TODO move to an appropriate package
+	
 	public boolean canConvert(Object sourceValue) {
 	    return true;
     }

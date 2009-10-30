@@ -24,9 +24,9 @@ package org.databene.benerator.engine;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parent interface for all parsers of descriptor file elements.<br/><br/>
  * Created: 25.10.2009 00:15:01
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public interface DescriptorParser {
