@@ -139,7 +139,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
         // create file
     	if (workbook == null)
     		createWorkbook();
-        String sheetName = entity.name();
+        String sheetName = entity.type();
 		HSSFSheet sheet = workbook.getSheet(sheetName);
         if (sheet == null) {
         	sheet = workbook.createSheet(sheetName);
@@ -168,7 +168,7 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 	            primitiveType = ((SimpleTypeDescriptor) cd.getType()).getPrimitiveType();
             else
 	        	throw new UnsupportedOperationException("Can only export simple type attributes, " +
-	        			"failed to export " + entity.name() + '.' + cd.getName());
+	        			"failed to export " + entity.type() + '.' + cd.getName());
 	        Class<?> javaType = primitiveType.getJavaType();
 	        String formatString = null;
 	        if (BeanUtil.isIntegralNumberType(javaType))

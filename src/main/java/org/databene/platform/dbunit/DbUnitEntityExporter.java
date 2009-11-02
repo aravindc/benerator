@@ -128,7 +128,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
                 if (s != null)
                 	atts.addAttribute("", "", entry.getKey(), "CDATA", s);
             }
-            handler.startElement("", "", entity.name(), atts);
+            handler.startElement("", "", entity.type(), atts);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SAXException e) {
@@ -139,7 +139,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     @Override
     public void finishConsuming(Entity entity) {
         try {
-			handler.endElement("", "", entity.name());
+			handler.endElement("", "", entity.type());
 		} catch (SAXException e) {
 			throw new ConfigurationError("Error in processing element: " + entity, e);
 		}

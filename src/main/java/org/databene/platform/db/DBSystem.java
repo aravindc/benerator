@@ -280,7 +280,7 @@ public class DBSystem extends AbstractStorageSystem {
 
     public void store(Entity entity) {
 		if (readOnly)
-			throw new IllegalStateException("Tried to insert rows into table '" + entity.name() + "' " +
+			throw new IllegalStateException("Tried to insert rows into table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
         if (logger.isDebugEnabled())
             logger.debug("Storing " + entity);
@@ -289,7 +289,7 @@ public class DBSystem extends AbstractStorageSystem {
 
 	public void update(Entity entity) {
 		if (readOnly)
-			throw new IllegalStateException("Tried to update table '" + entity.name() + "' " +
+			throw new IllegalStateException("Tried to update table '" + entity.type() + "' " +
 					"though database '" + id + "' is read-only");
         if (logger.isDebugEnabled())
             logger.debug("Updating " + entity);
@@ -612,7 +612,7 @@ public class DBSystem extends AbstractStorageSystem {
 */
     
     List<ColumnInfo> getWriteColumnInfos(Entity entity, boolean insert) {
-        String tableName = entity.name();
+        String tableName = entity.type();
         DBTable table = getTable(tableName);
         List<String> pkColumnNames = CollectionUtil.toList(table.getPKColumnNames());
         ComplexTypeDescriptor typeDescriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
@@ -686,7 +686,7 @@ public class DBSystem extends AbstractStorageSystem {
         parseMetadataIfNecessary();
         List<ColumnInfo> writeColumnInfos = getWriteColumnInfos(entity, insert);
         try {
-            String tableName = entity.name();
+            String tableName = entity.type();
             PreparedStatement statement = getStatement(entity.descriptor(), insert, writeColumnInfos);
             for (int i = 0; i < writeColumnInfos.size(); i++) {
             	ColumnInfo info = writeColumnInfos.get(i);
