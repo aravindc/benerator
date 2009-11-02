@@ -98,7 +98,7 @@ public class MutatingEntityGeneratorProxy implements Generator<Entity> {
         }
         
     	currentEntity = source.generate();
-        context.set(currentEntity.name(), currentEntity);
+        context.set(currentEntity.type(), currentEntity);
         context.set("this", currentEntity);
         
         for (ComponentBuilder compGen : componentBuilders) {
