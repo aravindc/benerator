@@ -9,7 +9,7 @@
 
     <import defaults="true"/>
 
-    <create-entities name="transaction" count="100" 
+    <create-entities type="transaction" count="100" 
             consumer="XLSEntityExporter[uri='transactions.xls', columns='id,items,name,comment']">
         <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
         <attribute name="items" type="short" min="1" max="27"/>

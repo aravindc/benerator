@@ -11,7 +11,7 @@
         <property name="batch" value="true"/>
     </bean>
     
-    <create-entities name="db_product" source="db">
+    <create-entities type="db_product" source="db">
         <consumer id="flat" class="org.databene.platform.flat.FlatFileEntityExporter">
             <property name="uri" value="products.flat"/>
             <property name="properties" value="ean_code[13],name[30l],price[10r0]"/>
@@ -35,7 +35,7 @@
     </bean>
 
     <!-- this anonymizes the family name of the data extracted from the DB -->
-    <create-entities name="db_customer" source="db">
+    <create-entities type="db_customer" source="db">
         <attribute name="last_name" generator="org.databene.domain.person.FamilyNameGenerator"/>
         <consumer ref="log-csv"/>
     </create-entities>
@@ -45,12 +45,12 @@
         <property name="uri" value="snapshot.xml"/>
     </bean>
 
-    <create-entities name="db_category"   source="db" consumer="dbunit"/>
-    <create-entities name="db_product"    source="db" consumer="dbunit"/>
-    <create-entities name="db_role"       source="db" consumer="dbunit"/>
-    <create-entities name="db_user"       source="db" consumer="dbunit"/>
-    <create-entities name="db_customer"   source="db" consumer="dbunit"/>
-    <create-entities name="db_order"      source="db" consumer="dbunit"/>
-    <create-entities name="db_order_item" source="db" consumer="dbunit"/>
+    <create-entities type="db_category"   source="db" consumer="dbunit"/>
+    <create-entities type="db_product"    source="db" consumer="dbunit"/>
+    <create-entities type="db_role"       source="db" consumer="dbunit"/>
+    <create-entities type="db_user"       source="db" consumer="dbunit"/>
+    <create-entities type="db_customer"   source="db" consumer="dbunit"/>
+    <create-entities type="db_order"      source="db" consumer="dbunit"/>
+    <create-entities type="db_order_item" source="db" consumer="dbunit"/>
     
 </setup>

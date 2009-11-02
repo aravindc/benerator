@@ -43,10 +43,10 @@
 		insert into db_role (id, name, mx) values (3, 'c', 7);
 	</execute> 
 	
-	<create-entities name="dummy" count="1000" consumer="db" />
+	<create-entities type="dummy" count="1000" consumer="db" />
 	
-	<create-entities name="db_role" source="db" consumer="ConsoleExporter" >
-		<create-entities name="db_user" consumer="ConsoleExporter" >
+	<create-entities type="db_role" source="db" consumer="ConsoleExporter" >
+		<create-entities type="db_user" consumer="ConsoleExporter" >
 	  		<attribute name="index" type="int" min="0" max="10000" distribution="step"/>
 	  		<attribute name="role_fk" script="{${db_role.id}}"/>
 	  		<attribute name="_limit" source="db" selector="{{select id from dummy where id &lt;= ${db_role.mx}}}"/>

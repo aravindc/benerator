@@ -2,7 +2,7 @@
 <setup	xmlns="http://databene.org/benerator/0.6.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
-    <create-entities name="transaction" count="100">
+    <create-entities type="transaction" count="100">
         <variable name="product" type="entity" source="demo/file/products.import.csv" distribution="random"/> <!--cyclic="true"
                   proxy="skip" proxy-param1="1" proxy-param2="2"/-->
         <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
