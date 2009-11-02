@@ -72,7 +72,7 @@ public class Entity implements Composite<Object> {
     
     // interface -------------------------------------------------------------------------------------------------------
 
-    public String name() {
+    public String type() {
         return (descriptor != null ? descriptor.getName() : null);
     }
 
@@ -151,6 +151,6 @@ public class Entity implements Composite<Object> {
 
     @Override
     public String toString() {
-        return new CompositeFormatter(true, true).render(name() + '[', this, "]");
+        return new CompositeFormatter(true, true).render(type() + '[', this, "]");
     }
 }
