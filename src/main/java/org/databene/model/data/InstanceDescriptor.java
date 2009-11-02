@@ -233,7 +233,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     	    else if ((detailValue instanceof String) && ((String) detailValue).startsWith("{") && ((String) detailValue).endsWith("}"))
                 detail.setValue(new TypeConvertingExpression<Long>(new ScriptedLiteral<Long>((String) detailValue), Long.class));
     	    else
-    	    	detail.setValue(new TypeConvertingExpression<Long>(new ConstantExpression<Long>((Long) detailValue), Long.class));
+    	    	detail.setValue(new TypeConvertingExpression<Long>(new ConstantExpression<Object>(detailValue), Long.class));
     	} else
     		super.setDetailValue(detailName, detailValue);
     }
