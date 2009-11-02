@@ -118,7 +118,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 	
     private void assertProduct(Entity expected, Entity actual) {
-		assertEquals("Product", actual.name());
+		assertEquals("Product", actual.type());
 		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
 		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.0001);
 		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
@@ -128,7 +128,7 @@ public class XLSEntityIteratorTest extends XLSTest {
     }
 
     private void assertPerson(Entity expected, Entity actual) {
-		assertEquals("Person", actual.name());
+		assertEquals("Person", actual.type());
 		assertEquals(expected.get("name"), actual.get("name"));
 		assertEquals(expected.get("age"), ((Number) actual.get("age")).intValue());
     }

@@ -55,7 +55,7 @@ public class BeneratorMainTaskTest {
 
 	private void checkGeneration(Generator<Entity> generator) {
 	    Entity entity = generator.generate();
-		assertEquals("Person", entity.name());
+		assertEquals("Person", entity.type());
 		assertEquals("Alice", entity.get("name"));
     }
 	
