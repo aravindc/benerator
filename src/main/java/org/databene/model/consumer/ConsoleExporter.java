@@ -62,7 +62,7 @@ public class ConsoleExporter<E> extends FormattingConsumer<E> {
 
 	public void startConsuming(E object) {
 		if (object instanceof Entity)
-			out.println(compositeFormatter.render(((Entity) object).name() + '[', (Entity) object, "]"));
+			out.println(compositeFormatter.render(((Entity) object).type() + '[', (Entity) object, "]"));
 		else
 			out.println(plainConverter.convert(object));
     }
