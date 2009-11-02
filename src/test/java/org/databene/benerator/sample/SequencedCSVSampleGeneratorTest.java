@@ -36,8 +36,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ParseFormatConverter;
+import org.databene.commons.converter.StringConverter;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -83,7 +83,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 	    	
 	    	// test generator
 	        SequencedCSVSampleGenerator<Integer> generator 
-	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, new AnyConverter<String,Integer>(Integer.class));
+	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, new StringConverter<Integer>(Integer.class));
 	        generator.validate();
 	        for (int i = 0; i < 1000; i++) {
 	            int product = generator.generate();

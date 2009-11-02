@@ -51,7 +51,7 @@ public class XMLAttributeExpression<E>implements Expression<E> {
     	this.text = element.getAttribute(attributeName);
     	if (this.text == null)
 			throw new ConfigurationError();
-    	this.converter = new AnyConverter<Object, E>(resultType);
+    	this.converter = new AnyConverter<E>(resultType);
     }
 
 	public E evaluate(Context context) {

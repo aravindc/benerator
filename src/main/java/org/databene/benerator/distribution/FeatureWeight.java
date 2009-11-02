@@ -51,7 +51,7 @@ public class FeatureWeight extends IndividualWeight<Object> {
 
 	public FeatureWeight(String weightFeature) {
 		this.accessor = new FeatureAccessor<Object, Double>(weightFeature);
-		this.converter = new AnyConverter<Object, Double>(Double.class);
+		this.converter = new AnyConverter<Double>(Double.class);
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------

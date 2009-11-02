@@ -55,7 +55,7 @@ public class TypedScriptExpression<E> implements Expression<E> {
 
     public TypedScriptExpression(String script, Class<E> resultType, E defaultValue) {
     	this.source = new ScriptExpression<Object>(script, defaultValue);
-    	this.converter = new AnyConverter<Object, E>(resultType);
+    	this.converter = new AnyConverter<E>(resultType);
     }
 
     public E evaluate(Context context) {

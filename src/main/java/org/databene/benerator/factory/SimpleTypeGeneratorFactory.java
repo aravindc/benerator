@@ -328,9 +328,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 getMinLength(descriptor), getMaxLength(descriptor));
     }
 
+    @SuppressWarnings("unchecked")
     private static Generator<Timestamp> createTimestampGenerator(SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
         Generator<Date> source = createDateGenerator(descriptor, unique, context);
-        AnyConverter<Date, Timestamp> converter = new AnyConverter<Date, Timestamp>(Timestamp.class);
+        Converter<Date, Timestamp> converter = (Converter) new AnyConverter<Timestamp>(Timestamp.class);
 		return new ConvertingGenerator<Date, Timestamp>(source, converter);
     }
 
