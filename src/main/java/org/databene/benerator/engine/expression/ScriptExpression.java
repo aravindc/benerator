@@ -43,7 +43,7 @@ public class ScriptExpression<E> implements Expression<E> {
     }
 
     public ScriptExpression(String script, E defaultValue) {
-    	this(script, new ConstantExpression<E>(defaultValue));
+    	this(script, (defaultValue != null ? new ConstantExpression<E>(defaultValue) : null));
     }
 
     public ScriptExpression(String script, Expression<E> defaultValueExpression) {
