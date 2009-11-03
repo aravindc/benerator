@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.engine.parser.xml.CommentParser;
-import org.databene.benerator.engine.parser.xml.CreateOrUpdateEntityParser;
+import org.databene.benerator.engine.parser.xml.CreateOrUpdateEntitiesParser;
 import org.databene.benerator.engine.parser.xml.DatabaseParser;
 import org.databene.benerator.engine.parser.xml.DefaultComponentParser;
 import org.databene.benerator.engine.parser.xml.EchoParser;
@@ -51,7 +51,7 @@ public class ParserFactory {
 		parsers.add(new DefaultComponentParser());
 		parsers.add(new CommentParser());
 		parsers.add(new BeanParser());
-		parsers.add(new CreateOrUpdateEntityParser());
+		parsers.add(new CreateOrUpdateEntitiesParser());
 		parsers.add(new DatabaseParser());
 		parsers.add(new EchoParser());
 		parsers.add(new EvaluateParser());

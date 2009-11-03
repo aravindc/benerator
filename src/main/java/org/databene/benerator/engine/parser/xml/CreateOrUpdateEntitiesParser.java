@@ -68,9 +68,9 @@ import org.w3c.dom.NamedNodeMap;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CreateOrUpdateEntityParser implements DescriptorParser {
+public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CreateOrUpdateEntityParser.class);
+	private static final Logger logger = LoggerFactory.getLogger(CreateOrUpdateEntitiesParser.class);
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
@@ -82,12 +82,8 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
 		Expression<Statement> expression = new Expression<Statement>() {
 			public Statement evaluate(Context context) {
-				final CreateOrUpdateEntityStatement creator = parseCreateEntities(element, false, resourceManager, (BeneratorContext) context);
-				return new Statement() {
-					public void execute(BeneratorContext context) {
-						creator.execute(context);
-                    }
-				};
+				return parseCreateEntities(
+						element, false, resourceManager, (BeneratorContext) context);
             }
 		};
 		return new TimedEntityStatement(new LazyStatement(expression));
@@ -150,15 +146,15 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 	private InstanceDescriptor mapEntityDescriptorElement(Element element,
 			BeneratorContext context) {
 		ModelParser parser = new ModelParser(context);
-		String entityName = parseStringAttribute(element, ATT_NAME, context);
-		TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(entityName);
+		String entityType = parseStringAttribute(element, ATT_TYPE, context);
+		TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(entityType);
 		TypeDescriptor localType;
 		if (parentType != null) {
-			entityName = parentType.getName(); // take over capitalization of the parent
+			entityType = parentType.getName(); // take over capitalization of the parent
 			localType = new ComplexTypeDescriptor(parentType.getName(), (ComplexTypeDescriptor) parentType);
 		} else 
-			localType = new ComplexTypeDescriptor(entityName, "entity");
-		InstanceDescriptor instance = new InstanceDescriptor(entityName, entityName);
+			localType = new ComplexTypeDescriptor(entityType, "entity");
+		InstanceDescriptor instance = new InstanceDescriptor(entityType, entityType);
 		instance.setLocalType(localType);
 		NamedNodeMap attributes = element.getAttributes();
 		for (int i = 0; i < attributes.getLength(); i++) {
@@ -179,7 +175,7 @@ public class CreateOrUpdateEntityParser implements DescriptorParser {
 				parser.parseVariable(child, (ComplexTypeDescriptor) localType);
 			} else if (COMPONENT_TYPES.contains(childType)) {
 				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType);
-				((ComplexTypeDescriptor) instance.getType()).addComponent(component);
+				((ComplexTypeDescriptor) instance.getTypeDescriptor()).addComponent(component);
 			} else if (!EL_CREATE_ENTITIES.equals(childType)
 					&& !EL_CONSUMER.equals(childType)
 					&& !EL_VARIABLE.equals(childType))
