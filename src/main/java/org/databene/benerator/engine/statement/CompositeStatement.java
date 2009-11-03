@@ -35,7 +35,7 @@ import org.databene.commons.Visitor;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CompositeStatement implements Statement, Element<Object> {
+public class CompositeStatement implements Statement, Element<Statement> {
 	
 	protected List<Statement> subStatements = new ArrayList<Statement>();
 
@@ -49,7 +49,7 @@ public class CompositeStatement implements Statement, Element<Object> {
     }
 
 	@SuppressWarnings("unchecked")
-    public void accept(Visitor<Object> visitor) {
+    public void accept(Visitor<Statement> visitor) {
 		visitor.visit(this);
 	    for (Statement subStatement : subStatements)
 	    	if (subStatement instanceof Element)
