@@ -71,6 +71,7 @@ public class DefineDatabaseStatement implements Statement { // TODO move to DB p
 	    this.user = user;
 	    this.password = password;
 	    this.schema = schema;
+	    this.tableFilter = tableFilter;
 	    this.batch = batch;
 	    this.fetchSize = fetchSize;
 	    this.readOnly = readOnly;
