@@ -43,20 +43,20 @@ public class LazyTask implements Task {
 	
 	private Expression<Task> targetExpression;
 	private Task target;
-	private boolean closed;
 
     public LazyTask(Expression<Task> targetExpression) {
 	    this.targetExpression = targetExpression;
 	    this.target = null;
-	    this.closed = false;
     }
 
 	public Expression<Task> getTargetExpression() {
 	    return targetExpression;
     }
 
-    public boolean available() {
-	    return (closed || (target != null && target.available()));
+    public boolean available() { // TODO should we add a context param? It might be necessary to decide if the task is available
+    	if (target == null)
+    		return true; // we cannot resolve the Task here without a context, so let's assume the task would be available
+	    return target.available();
     }
 
     public String getTaskName() {
@@ -71,8 +71,11 @@ public class LazyTask implements Task {
 
     public void close() {
 	    IOUtil.close(target);
-	    target = null;
-	    closed = true;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + target + ']';
+    }
+    
 }
