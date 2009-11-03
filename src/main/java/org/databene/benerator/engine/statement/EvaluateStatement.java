@@ -95,9 +95,9 @@ public class EvaluateStatement implements Statement {
 
 	public void execute(BeneratorContext context) {
 		try {
-			// error handler
+			// error handler TODO evaluate ErrorHandler only on demand
 			String onErrorValue = ExpressionUtil.evaluate(onErrorEx, context);
-			if (StringUtil.isEmpty(onErrorValue))
+			if (onErrorValue == null)
 				onErrorValue = "fatal";
 			ErrorHandler errorHandler = new ErrorHandler(getClass().getName(), Level.valueOf(onErrorValue));
 			
