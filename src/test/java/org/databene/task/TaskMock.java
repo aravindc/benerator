@@ -21,6 +21,7 @@
 
 package org.databene.task;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.commons.Context;
@@ -43,5 +44,10 @@ public class TaskMock extends AbstractTask {
 	public void run(Context context) {
 	    count.incrementAndGet();
     }
+	
+	@Override
+	public void close() throws IOException {
+	    super.close();
+	}
 
 }

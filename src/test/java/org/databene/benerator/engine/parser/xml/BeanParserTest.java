@@ -48,7 +48,7 @@ public class BeanParserTest {
 		Object bean = context.get("id");
 		assertNotNull(bean);
 		assertEquals(BeanMock.class, bean.getClass());
-		assertEquals(-1, ((BeanMock) bean).lastValue);
+		assertEquals(0, ((BeanMock) bean).lastValue);
 	}
 
 	@Test

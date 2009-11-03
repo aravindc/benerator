@@ -33,16 +33,17 @@ public class BeanMock {
 	public int lastValue;
 	
 	public BeanMock() {
-	    this(-1);
+	    this(0);
     }
 
 	public BeanMock(int lastValue) {
 	    this.lastValue = lastValue;
+	    this.invocationCount = 0;
     }
 
 	public void invoke(int value) {
-		invocationCount++;
 		lastValue = value;
+		invocationCount++;
 	}
 	
 }

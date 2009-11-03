@@ -127,7 +127,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
-		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type, false, context);
+		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, false, context);
 	}
 	
 }

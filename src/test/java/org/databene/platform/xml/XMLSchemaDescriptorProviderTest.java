@@ -133,7 +133,7 @@ public class XMLSchemaDescriptorProviderTest {
         assertNotNull(choiceAB);
         assertEquals(1, ((Number) choiceAB.getMinCount().evaluate(null)).intValue());
         assertEquals(1, ((Number) choiceAB.getMaxCount().evaluate(null)).intValue());
-        AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getType();
+        AlternativeGroupDescriptor choiceABType = (AlternativeGroupDescriptor) choiceAB.getTypeDescriptor();
         assertEquals(2, choiceABType.getComponents().size());
         
         // check choice x/y/z
@@ -141,7 +141,7 @@ public class XMLSchemaDescriptorProviderTest {
         assertNotNull(choiceXYZ);
         assertEquals(0, ((Number) choiceXYZ.getMinCount().evaluate(null)).intValue());
         assertEquals(2, ((Number) choiceXYZ.getMaxCount().evaluate(null)).intValue());
-        AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getType();
+        AlternativeGroupDescriptor choiceXYZType = (AlternativeGroupDescriptor) choiceXYZ.getTypeDescriptor();
         assertEquals(3, choiceXYZType.getComponents().size());
     }
     
@@ -151,10 +151,10 @@ public class XMLSchemaDescriptorProviderTest {
 		ComponentDescriptor stComponent = rootDescriptor.getComponent(name);
         assertNotNull(stComponent);
         assertTrue(stComponent instanceof PartDescriptor);
-        ComplexTypeDescriptor stType = (ComplexTypeDescriptor) stComponent.getType();
+        ComplexTypeDescriptor stType = (ComplexTypeDescriptor) stComponent.getTypeDescriptor();
 		ComponentDescriptor content = stType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
         assertNotNull(content);
-        SimpleTypeDescriptor contentType = (SimpleTypeDescriptor) content.getType();
+        SimpleTypeDescriptor contentType = (SimpleTypeDescriptor) content.getTypeDescriptor();
         assertEquals("string", contentType.getPrimitiveType().getName());
 	}
 }

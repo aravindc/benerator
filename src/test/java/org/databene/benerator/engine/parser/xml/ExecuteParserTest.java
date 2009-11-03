@@ -47,6 +47,7 @@ public class ExecuteParserTest {
 		EvaluateStatement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		BeanMock bean = new BeanMock();
+		bean.invocationCount = 0;
 		context.set("bean", bean);
 		statement.execute(context);
 		assertEquals(1, bean.invocationCount);

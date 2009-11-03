@@ -34,13 +34,13 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeneratorMainTaskTest {
+public class BeneratorRootStatementTest {
 
 	@Test
 	public void testGetGenerator() throws Exception {
 		BeneratorRootStatement task = null;
 		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
-				"<create-entities name='Person' count='1'>" +
+				"<create-entities type='Person' count='1'>" +
 				"<attribute name='name' values='Alice'/>" +
 				"</create-entities>" +
 				"</setup>");

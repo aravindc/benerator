@@ -52,7 +52,7 @@ public class DescriptorRunnerTest {
     @Test
 	public void testProgrammaticInvocation() throws IOException {
 		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
-				"<create-entities name='Person' count='1' consumer='myConsumer'>" +
+				"<create-entities type='Person' count='1' consumer='myConsumer'>" +
 				"<attribute name='name' values='Alice'/>" +
 				"</create-entities>" +
 				"</setup>");
