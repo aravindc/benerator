@@ -67,11 +67,11 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
     }
 
 	protected static Expression<String> parseStringAttr(String name, Element element) {
-	    return new StringScriptExpression(element.getAttribute(name));
+	    return new StringScriptExpression(getAttribute(name, element));
     }
 
 	protected static Expression<Integer> parseIntAttr(String name, Element element) {
-	    return new TypedScriptExpression<Integer>(element.getAttribute(name), Integer.class);
+	    return new TypedScriptExpression<Integer>(getAttribute(name, element), Integer.class);
     }
 
 	protected static Expression<Integer> parseIntAttr(String name, Element element, int defaultValue) {
@@ -79,7 +79,7 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
     }
 
 	protected static Expression<Integer> parseIntAttr(String name, Element element, Expression<Integer> defaultValue) {
-	    String attribute = element.getAttribute(name);
+	    String attribute = getAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
@@ -91,11 +91,15 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
     }
 
 	protected static Expression<Long> parseLongAttr(String name, Element element, Expression<Long> defaultValue) {
-	    String attribute = element.getAttribute(name);
+	    String attribute = getAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
 	    	return new TypedScriptExpression<Long>(attribute, Long.class);
+    }
+
+	private static String getAttribute(String name, Element element) {
+	    return StringUtil.emptyToNull(element.getAttribute(name));
     }
 
 }
