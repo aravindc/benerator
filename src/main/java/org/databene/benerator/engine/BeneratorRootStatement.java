@@ -23,9 +23,13 @@ package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.statement.CompositeStatement;
+import org.databene.benerator.engine.statement.CreateOrUpdateEntityStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
+import org.databene.commons.Expression;
+import org.databene.commons.Visitor;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.Entity;
 
 /**
@@ -37,27 +41,47 @@ import org.databene.model.data.Entity;
 public class BeneratorRootStatement extends CompositeStatement {
 
     public Generator<Entity> getGenerator(String name, BeneratorContext context) {
-		// TODO use visitor pattern
-		for (Statement subStatement : subStatements) {
-			if (match(name, subStatement))
-				return ((GenerateAndConsumeEntityTask) subStatement).getEntityGenerator();
-			Statement tmp = subStatement;
-			while (tmp instanceof StatementProxy || tmp instanceof LazyStatement) {
-				if (tmp instanceof StatementProxy)
-					tmp = ((StatementProxy) tmp).getRealStatement();
-				else
-					tmp = ((LazyStatement) tmp).getTargetExpression().evaluate(null);
-				if (match(name, tmp))
-					return ((GenerateAndConsumeEntityTask) tmp).getEntityGenerator();
-			}
-			subStatement.execute(context);
-		}
-		throw new IllegalArgumentException("Generator not found: " + name);
+    	GenVisitor visitor = new GenVisitor(name, context);
+    	accept(visitor);
+    	if (visitor.getResult() == null)
+    		throw new IllegalArgumentException("Generator not found: " + name);
+    	return visitor.getResult();
 	}
 
-	private boolean match(String name, Statement statement) {
-		return false;
-// TODO	    return (statement instanceof GenerateAndConsumeEntityTask && name.equals(statement.getTaskName()));
-    }
+	class GenVisitor implements Visitor<Statement> {
+		
+		private String name;
+		private BeneratorContext context;
+		private Generator<Entity> result;
+		
+		public GenVisitor(String name, BeneratorContext context) {
+	        super();
+	        this.name = name;
+	        this.context = context;
+        }
 
+		public Generator<Entity> getResult() {
+        	return result;
+        }
+
+		public void visit(Statement element) {
+			if (result != null)
+				return;
+			if (element instanceof CreateOrUpdateEntityStatement) {
+				CreateOrUpdateEntityStatement candidate = (CreateOrUpdateEntityStatement) element;
+				GenerateAndConsumeEntityTask target = candidate.getTarget();
+				if (name.equals(target.getTaskName())) {
+					result = target.getEntityGenerator();
+					return;
+				}
+			} else if (element instanceof StatementProxy)
+				visit(((StatementProxy) element).getRealStatement());
+			else if (element instanceof LazyStatement) {
+	            Expression<Statement> targetExpression = ((LazyStatement) element).getTargetExpression();
+	            visit(ExpressionUtil.evaluate(targetExpression, context));
+            }
+			element.execute(context);
+        }
+	}
+	
 }
