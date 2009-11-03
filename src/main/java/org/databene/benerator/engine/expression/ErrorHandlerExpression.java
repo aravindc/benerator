@@ -31,6 +31,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.Level;
+import org.databene.commons.expression.ExpressionUtil;
 
 /**
  * Parses an <code>onError</code> attribute in an XML descriptor element.<br/>
@@ -52,7 +53,7 @@ public class ErrorHandlerExpression implements Expression<ErrorHandler> {
     }
 
 	public ErrorHandler evaluate(Context context) {
-		String levelName = (nameExpr != null ? nameExpr.evaluate(context) : null);
+		String levelName = ExpressionUtil.evaluate(nameExpr, context);
 		if (levelName == null)
 			levelName = ((BeneratorContext) context).getDefaultErrorHandler();
 		Level level = Level.valueOf(levelName);
