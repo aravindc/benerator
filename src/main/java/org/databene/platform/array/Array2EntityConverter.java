@@ -69,7 +69,7 @@ public class Array2EntityConverter extends FixedSourceTypeConverter<Object[], En
             String featureName = attributeNames[i];
             ComponentDescriptor component = descriptor.getComponent(featureName);
             if (component != null) {
-	            TypeDescriptor componentType = component.getType();
+	            TypeDescriptor componentType = component.getTypeDescriptor();
 	            if (componentType instanceof SimpleTypeDescriptor)
 	            	value = AnyConverter.convert(value, ((SimpleTypeDescriptor) componentType).getPrimitiveType().getJavaType());
             }

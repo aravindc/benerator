@@ -64,14 +64,14 @@ public class TypeGeneratorFactory {
     
     private static final Logger logger = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
-    public static Generator<? extends Object> createTypeGenerator(
+    public static Generator<? extends Object> createTypeGenerator(String name, 
     		TypeDescriptor descriptor, boolean unique, BeneratorContext context) {
     	if (logger.isDebugEnabled())
     		logger.debug(descriptor + ", " + unique);
         if (descriptor instanceof SimpleTypeDescriptor)
             return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, unique, context);
         else if (descriptor instanceof ComplexTypeDescriptor)
-            return ComplexTypeGeneratorFactory.createComplexTypeGenerator((ComplexTypeDescriptor) descriptor, unique, context);
+            return ComplexTypeGeneratorFactory.createComplexTypeGenerator(name, (ComplexTypeDescriptor) descriptor, unique, context);
         else
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
     }

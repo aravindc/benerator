@@ -451,7 +451,7 @@ public class ArchetypeBuilder implements Runnable {
         attributes.addAttribute("", "", "consumer", "CDATA", "db");
 		writeLfTab();
 		handler.startElement("", "", "create-entities", attributes);
-        ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getType();
+        ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getTypeDescriptor();
 		if (type.getComponents().size() > 0)
             for (ComponentDescriptor cd : type.getComponents())
                 attribute(cd);
@@ -483,8 +483,8 @@ public class ArchetypeBuilder implements Runnable {
         
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute("", "", "name", "CDATA", component.getName());
-        SimpleTypeDescriptor type = (SimpleTypeDescriptor)(component.getTypeName() != null ? 
-        		DataModel.getDefaultInstance().getTypeDescriptor(component.getTypeName()) : 
+        SimpleTypeDescriptor type = (SimpleTypeDescriptor)(component.getType() != null ? 
+        		DataModel.getDefaultInstance().getTypeDescriptor(component.getType()) : 
         		component.getLocalType());
         if (type != null) {
 			for (FeatureDetail<? extends Object> detail : type.getDetails())

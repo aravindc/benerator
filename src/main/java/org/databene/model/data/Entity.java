@@ -110,8 +110,8 @@ public class Entity implements Composite<Object> {
     	ComponentDescriptor componentDescriptor = null;
     	if (descriptor != null)
     		componentDescriptor = descriptor.getComponent(componentName);
-    	if (componentDescriptor != null && componentDescriptor.getType() instanceof SimpleTypeDescriptor) {
-    		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) componentDescriptor.getType();
+    	if (componentDescriptor != null && componentDescriptor.getTypeDescriptor() instanceof SimpleTypeDescriptor) {
+    		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) componentDescriptor.getTypeDescriptor();
     		PrimitiveType primitiveType = componentType.getPrimitiveType();
     		if (primitiveType == null)
     			primitiveType = PrimitiveType.STRING;

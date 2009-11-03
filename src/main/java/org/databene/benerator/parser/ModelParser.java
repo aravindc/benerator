@@ -109,7 +109,7 @@ public class ModelParser {
         if (descriptor instanceof PartDescriptor)
             result = (PartDescriptor) descriptor;
         else if (descriptor != null)
-            result = new PartDescriptor(descriptor.getName(), descriptor.getTypeName());
+            result = new PartDescriptor(descriptor.getName(), descriptor.getType());
         else {
             String type = normalizeNull(element.getAttribute("type"));
             result = new PartDescriptor(element.getAttribute("name"), type);
@@ -122,7 +122,7 @@ public class ModelParser {
         if (owner != null) {
             ComponentDescriptor parentComponent = owner.getComponent(result.getName());
             if (parentComponent != null) {
-                TypeDescriptor parentType = parentComponent.getType();
+                TypeDescriptor parentType = parentComponent.getTypeDescriptor();
                 result.getLocalType(false).setParent(parentType);
             }
         }
@@ -175,7 +175,7 @@ public class ModelParser {
                 if (localType == null) {
                     String partType = attributes.get("type");
                     if (partType == null)
-                    	partType = descriptor.getTypeName();
+                    	partType = descriptor.getType();
                     if (partType == null) {
                     	String sourceSpec = attributes.get("source");
                     	if (sourceSpec != null) {
@@ -235,7 +235,7 @@ public class ModelParser {
         if (descriptor instanceof IdDescriptor)
             result = (IdDescriptor) descriptor;
         else if (descriptor != null)
-            result = new IdDescriptor(descriptor.getName(), descriptor.getTypeName());
+            result = new IdDescriptor(descriptor.getName(), descriptor.getType());
         else
             result = new IdDescriptor(element.getAttribute("name"), element.getAttribute("type"));
         return mapInstanceDetails(element, false, result);
@@ -247,7 +247,7 @@ public class ModelParser {
         if (descriptor instanceof ReferenceDescriptor)
             result = (ReferenceDescriptor) descriptor;
         else if (descriptor != null)
-            result = new ReferenceDescriptor(descriptor.getName(), descriptor.getTypeName());
+            result = new ReferenceDescriptor(descriptor.getName(), descriptor.getType());
         else
             result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
         return mapInstanceDetails(element, false, result);

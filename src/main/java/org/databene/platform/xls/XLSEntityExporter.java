@@ -164,8 +164,8 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 			headerRow.createCell(colnum).setCellValue(new HSSFRichTextString(componentName));
 	        ComponentDescriptor cd = entity.descriptor().getComponent(componentName);
 	        PrimitiveType primitiveType;
-	        if (cd.getType() instanceof SimpleTypeDescriptor)
-	            primitiveType = ((SimpleTypeDescriptor) cd.getType()).getPrimitiveType();
+	        if (cd.getTypeDescriptor() instanceof SimpleTypeDescriptor)
+	            primitiveType = ((SimpleTypeDescriptor) cd.getTypeDescriptor()).getPrimitiveType();
             else
 	        	throw new UnsupportedOperationException("Can only export simple type attributes, " +
 	        			"failed to export " + entity.type() + '.' + cd.getName());

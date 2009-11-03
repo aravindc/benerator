@@ -78,7 +78,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (builder != null)
         	return builder;
         if (descriptor instanceof PartDescriptor) {
-        	TypeDescriptor type = descriptor.getType();
+        	TypeDescriptor type = descriptor.getTypeDescriptor();
         	if (type instanceof AlternativeGroupDescriptor) {
 				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, context);
 			} else
@@ -139,7 +139,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
     	
     	// TODO support 'attribute' like syntax, fall back to targetType+source+selector
-        TypeDescriptor typeDescriptor = descriptor.getType();
+        TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
         
         // check target type
         String targetTypeName = descriptor.getTargetTye();

@@ -76,7 +76,7 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
                 String typeName;
                 if (descriptor != null) {
                     ComponentDescriptor component = descriptor.getComponent(columnName);
-                    SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getType();
+                    SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getTypeDescriptor();
                     typeName = type.getPrimitiveType().getName();
                 } else
                     typeName = "string";

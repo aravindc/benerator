@@ -57,7 +57,6 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String NULL_QUOTA         = "nullQuota";
     
     private InstanceDescriptor parent;
-    private String typeName;
     private TypeDescriptor localType;
     
     // constructors ----------------------------------------------------------------------------------------------------
@@ -76,8 +75,10 @@ public class InstanceDescriptor extends FeatureDescriptor {
 
     protected InstanceDescriptor(String name, String typeName, TypeDescriptor localType) {
         super(name);
-        this.typeName = typeName;
         this.localType = localType;
+
+        addRestriction(TYPE,        String.class, null, null);
+        setType(typeName);
 
         // restrictions
         addRestriction(UNIQUE,        Boolean.class, false, new OrOperation());
@@ -98,21 +99,27 @@ public class InstanceDescriptor extends FeatureDescriptor {
     	this.parent = parent;
     }
     
-    public String getTypeName() {
-        return (typeName == null && parent != null ? parent.getTypeName() : typeName);
+    @Override
+    public String getName() {
+        String result = super.getName();
+		return (result != null ? result : getType());
     }
     
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public String getType() {
+    	String type = (String) getDetailValue(TYPE);
+        return (type == null && parent != null ? parent.getType() : type);
     }
     
-    public TypeDescriptor getType() {
+    public void setType(String type) {
+        setDetailValue(TYPE, type);
+    }
+    
+    public TypeDescriptor getTypeDescriptor() {
         if (getLocalType() != null)
             return getLocalType();
         TypeDescriptor type = null;
-        if (getTypeName() != null) {
-            type = DataModel.getDefaultInstance().getTypeDescriptor(typeName);
-        }
+        if (getType() != null)
+            type = DataModel.getDefaultInstance().getTypeDescriptor(getType());
         return type;
     }
     
@@ -126,17 +133,17 @@ public class InstanceDescriptor extends FeatureDescriptor {
         if (localType != null)
             return localType;
         if (complexType)
-            localType = new ComplexTypeDescriptor(getName(), getTypeName());
+            localType = new ComplexTypeDescriptor(getName(), getType());
         else
-            localType = new SimpleTypeDescriptor(getName(), getTypeName());
-        typeName = null;
+            localType = new SimpleTypeDescriptor(getName(), getType());
+        setType(null);
         return localType;
     }
     
     public void setLocalType(TypeDescriptor localType) {
         this.localType = localType;
         if (localType != null)
-        	typeName = null;
+        	setType(null);
     }
     
     public Boolean isUnique() {

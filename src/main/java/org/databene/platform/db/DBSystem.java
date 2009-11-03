@@ -626,7 +626,7 @@ public class DBSystem extends AbstractStorageSystem {
                 continue;
             if (dbCompDescriptor.getMode() != Mode.ignored) {
                 String name = dbCompDescriptor.getName();
-                String primitiveType = ((SimpleTypeDescriptor) dbCompDescriptor.getType()).getPrimitiveType().getName();
+                String primitiveType = ((SimpleTypeDescriptor) dbCompDescriptor.getTypeDescriptor()).getPrimitiveType().getName();
                 DBColumn column = table.getColumn(name);
                 DBColumnType columnType = column.getType();
                 int sqlType = columnType.getJdbcType();

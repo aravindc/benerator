@@ -71,12 +71,12 @@ public class InstanceGeneratorFactory {
         generator = createNullQuotaOneGenerator(descriptor);
         if (generator == null) {
             boolean unique = (descriptor instanceof IdDescriptor || DescriptorUtil.isUnique(descriptor));
-            TypeDescriptor type = descriptor.getType();
+            TypeDescriptor type = descriptor.getTypeDescriptor();
             if (type instanceof SimpleTypeDescriptor)
 				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
 						(SimpleTypeDescriptor) type, false, unique, context);
             else if (type instanceof ComplexTypeDescriptor)
-        		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
+        		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(),
         				(ComplexTypeDescriptor) type, unique, context);
             else if (type == null) {
             	if (descriptor instanceof IdDescriptor)

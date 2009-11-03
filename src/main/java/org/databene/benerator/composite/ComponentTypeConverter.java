@@ -66,7 +66,7 @@ public class ComponentTypeConverter extends FixedSourceTypeConverter<Entity, Ent
 			String componentName = entry.getKey();
 			ComponentDescriptor componentDescriptor = type.getComponent(componentName);
 			if (componentDescriptor != null) {
-				TypeDescriptor componentType = componentDescriptor.getType();
+				TypeDescriptor componentType = componentDescriptor.getTypeDescriptor();
 				Object componentValue = entry.getValue();
 				if (componentType instanceof SimpleTypeDescriptor) {
 					PrimitiveType primitive = ((SimpleTypeDescriptor) componentType).getPrimitiveType();

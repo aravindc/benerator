@@ -142,7 +142,7 @@ public class DataModel {
 
     private void validate(ComplexTypeDescriptor desc) {
         for (ComponentDescriptor component : desc.getComponents()) {
-            TypeDescriptor type = component.getType();
+            TypeDescriptor type = component.getTypeDescriptor();
             if (!(type instanceof ComplexTypeDescriptor))
                 validate(type);
         }

@@ -46,7 +46,7 @@ public class MutatingEntityGeneratorProxy implements Generator<Entity> {
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
     private String entityName;
-    private Generator<Entity> source;
+       private Generator<Entity> source;
     private List<ComponentBuilder> componentBuilders;
     private Context context;
     private Entity currentEntity;
@@ -57,18 +57,18 @@ public class MutatingEntityGeneratorProxy implements Generator<Entity> {
      * @param descriptor Entity descriptor. 
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public MutatingEntityGeneratorProxy(ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
-        this(descriptor, new BlankEntityGenerator(descriptor), componentBuilders, context);
+    public MutatingEntityGeneratorProxy(String name, ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
+        this(name, new BlankEntityGenerator(descriptor), componentBuilders, context);
     }
 
     /**
-     * @param descriptor Entity descriptor. 
+     * @param name instance name for the generated entities. 
      * @param source another Generator of entities that serves as Entity builder. 
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public MutatingEntityGeneratorProxy(ComplexTypeDescriptor descriptor, Generator<Entity> source, List<ComponentBuilder> componentBuilders, Context context) {
-        this.entityName = descriptor.getName();
+    public MutatingEntityGeneratorProxy(String name, Generator<Entity> source, List<ComponentBuilder> componentBuilders, Context context) {
+        this.entityName = name;
         this.source = source;
         this.componentBuilders = componentBuilders;
         this.context = context;
@@ -98,7 +98,7 @@ public class MutatingEntityGeneratorProxy implements Generator<Entity> {
         }
         
     	currentEntity = source.generate();
-        context.set(currentEntity.type(), currentEntity);
+        context.set(entityName, currentEntity);
         context.set("this", currentEntity);
         
         for (ComponentBuilder compGen : componentBuilders) {

@@ -52,7 +52,7 @@ public class FeatureDescriptor {
     // generic detail access -------------------------------------------------------------------------------------------
 
     public boolean supportsDetail(String name) {
-        return (details.get(name) != null);
+        return details.containsKey(name);
     }
 
     public Object getDeclaredDetailValue(String name) {
@@ -67,8 +67,6 @@ public class FeatureDescriptor {
 
     public void setDetailValue(String detailName, Object detailValue) {
         FeatureDetail<Object> detail = getDetail(detailName);
-        if (detail == null)
-            throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);
         detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
     }
 
@@ -151,10 +149,9 @@ public class FeatureDescriptor {
 
     @SuppressWarnings("unchecked")
     protected <T> FeatureDetail<T> getDetail(String name) {
-        FeatureDetail<T> detail = (FeatureDetail<T>) details.get(name);
-        if (detail == null)
+    	if (!supportsDetail(name))
             throw new UnsupportedOperationException("Feature detail '" + name + "' not supported in feature type: " 
                     + getClass().getName());
-        return detail;
+        return (FeatureDetail<T>) details.get(name);
     }
 }
