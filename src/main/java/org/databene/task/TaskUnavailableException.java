@@ -46,7 +46,7 @@ public class TaskUnavailableException extends TaskException {
 		if (actualCount == 0)
 			return "Task " + task + " not available";
 		else
-			return "Task " + task + " could only be executed " + actualCount + " times, " +
+			return "Task " + task + " could be executed only " + actualCount + " times, " +
 					"required minimum: " + requiredCount;
     }
 
