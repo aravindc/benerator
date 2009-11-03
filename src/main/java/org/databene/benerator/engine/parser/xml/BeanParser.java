@@ -106,7 +106,7 @@ public class BeanParser extends AbstractDescriptorParser {
                 	subExpressions[j] = parseBeanExpression(childElements[j]);
                 if (subExpressions.length == 0)
                     throw new ConfigurationError("No valid property spec: " + XMLUtil.format(propertyElement));
-                propertyValueExpression = new Expression<?>() {
+                propertyValueExpression = new Expression<Object[]>() {
 					public Object[] evaluate(Context context) {
 	                    return ExpressionUtil.evaluateAll(subExpressions, context);
                     }
