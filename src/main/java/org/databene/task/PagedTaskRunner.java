@@ -100,7 +100,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     	this.target = target;
         this.pageListeners = pageListeners;
         this.maxCount = maxCount;
-        this.minCount = 0;
+        this.minCount = (maxCount != null ? maxCount : 0);
         this.pageSize = pageSize;
         this.threadCount = threads;
         this.actualCount = new AtomicLong();
