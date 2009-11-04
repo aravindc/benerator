@@ -78,7 +78,7 @@ public class PooledConnectionHandler implements InvocationHandler {
 		String methodName = method.getName();
 		if ("close".equals(methodName))
 			this.close();
-		else if ("getConnection".equals(methodName) && args.length == 0)
+		else if ("getConnection".equals(methodName) && (args == null || args.length == 0))
 			return this.getConnection();
 		else if ("addConnectionEventListener".equals(methodName)) {
 			this.addConnectionEventListener((ConnectionEventListener) args[0]);
