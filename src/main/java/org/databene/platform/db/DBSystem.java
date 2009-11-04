@@ -430,12 +430,13 @@ public class DBSystem extends AbstractStorageSystem {
 	
 	public void invalidate() {
 		typeDescriptors = null;
+		tables = null;
 	} 
 	
 	public void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
-            this.tables = new OrderedNameMap<DBTable>();
+            this.tables = new HashMap<String, DBTable>();
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
@@ -590,7 +591,7 @@ public class DBSystem extends AbstractStorageSystem {
         }
 
         typeDescriptors.put(complexType.getName(), complexType);
-        tables.put(table.getName(), table);
+        tables.put(table.getName().toUpperCase(), table);
     }
 
     /*
@@ -775,7 +776,9 @@ public class DBSystem extends AbstractStorageSystem {
                 List<ColumnInfo> columnInfos) throws SQLException {
 	        PreparedStatement statement;
 	        String tableName = descriptor.getName();
-	        DBTable table = tables.get(tableName);
+	        DBTable table = tables.get(tableName.toUpperCase());
+	        if (table == null)
+	        	throw new IllegalArgumentException("Table not found: " + tableName);
 	        String sql = (insert ? 
 	        		dialect.createSQLInsert(table, columnInfos) : 
 	        		dialect.createSQLUpdate(table, getTable(tableName).getPKColumnNames(), columnInfos));
