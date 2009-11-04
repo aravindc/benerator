@@ -104,6 +104,7 @@ public class DBSystem extends AbstractStorageSystem {
 
     private Map<Thread, ThreadContext> contexts;
     private Map<String, TypeDescriptor> typeDescriptors;
+    Map<String, DBTable> tables;
     
     private TypeMapper driverTypeMapper;
     DatabaseDialect dialect;
@@ -434,6 +435,7 @@ public class DBSystem extends AbstractStorageSystem {
 	public void parseMetaData() {
         logger.debug("parsing metadata...");
         try {
+            this.tables = new OrderedNameMap<DBTable>();
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
@@ -588,6 +590,7 @@ public class DBSystem extends AbstractStorageSystem {
         }
 
         typeDescriptors.put(complexType.getName(), complexType);
+        tables.put(table.getName(), table);
     }
 
     /*
@@ -772,9 +775,10 @@ public class DBSystem extends AbstractStorageSystem {
                 List<ColumnInfo> columnInfos) throws SQLException {
 	        PreparedStatement statement;
 	        String tableName = descriptor.getName();
+	        DBTable table = tables.get(tableName);
 	        String sql = (insert ? 
-	        		dialect.createSQLInsert(descriptor.getName(), columnInfos) : 
-	        		dialect.createSQLUpdate(tableName, getTable(tableName).getPKColumnNames(), columnInfos));
+	        		dialect.createSQLInsert(table, columnInfos) : 
+	        		dialect.createSQLUpdate(table, getTable(tableName).getPKColumnNames(), columnInfos));
 	        if (jdbcLogger.isDebugEnabled())
 	            jdbcLogger.debug("Creating prepared statement: " + sql);
 	        statement = DBUtil.prepareStatement(connection, sql, readOnly);

@@ -29,6 +29,8 @@ package org.databene.platform.db;
 import java.util.List;
 
 import org.databene.commons.ArrayUtil;
+import org.databene.platform.db.model.DBCatalog;
+import org.databene.platform.db.model.DBTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +54,9 @@ public class DatabaseDialect {
         throw new UnsupportedOperationException("Sequence access not supported for " + system);
     }
     
-    public String createSQLInsert(String tableName, List<ColumnInfo> columnInfos) {
+    public String createSQLInsert(DBTable table, List<ColumnInfo> columnInfos) {
         StringBuilder builder = new StringBuilder("insert into ");
-        appendTableName(tableName, builder).append(" (");
+        appendQualifiedTableName(table, builder).append(" (");
         if (columnInfos.size() > 0)
             appendColumnName(columnInfos.get(0).name, builder);
         for (int i = 1; i < columnInfos.size(); i++) {
@@ -72,11 +74,11 @@ public class DatabaseDialect {
         return sql;
     }
 
-	public String createSQLUpdate(String tableName, String[] pkColumnNames, List<ColumnInfo> columnInfos) {
+	public String createSQLUpdate(DBTable table, String[] pkColumnNames, List<ColumnInfo> columnInfos) {
     	if (pkColumnNames.length == 0)
-    		throw new UnsupportedOperationException("Cannot update table without primary key: " + tableName);
+    		throw new UnsupportedOperationException("Cannot update table without primary key: " + table.getName());
         StringBuilder builder = new StringBuilder("update ");
-        appendTableName(tableName, builder).append(" set");
+        appendQualifiedTableName(table, builder).append(" set");
         for (int i = 0; i < columnInfos.size(); i++) {
         	if (!ArrayUtil.contains(pkColumnNames, columnInfos.get(i).name)) {
 	            builder.append(" ");
@@ -99,18 +101,24 @@ public class DatabaseDialect {
         return sql;
     }
 
-    private StringBuilder appendTableName(String tableName, StringBuilder builder) {
-    	if (quoteTableNames)
-    		return builder.append('"').append(tableName).append('"');
-    	else
-    		return builder.append(tableName);
+    private StringBuilder appendQualifiedTableName(DBTable table, StringBuilder builder) {
+    	DBCatalog catalog = table.getCatalog();
+		if (catalog != null && catalog.getName() != null)
+    		appendQuoted(catalog.getName(), builder).append('.');
+    	if (table.getSchema() != null)
+    		appendQuoted(table.getSchema().getName(), builder).append('.');
+    	return appendQuoted(table.getName(), builder);
     }
 
-    private StringBuilder appendColumnName(String columnName, StringBuilder builder) {
+	private StringBuilder appendColumnName(String columnName, StringBuilder builder) {
+    	return appendQuoted(columnName, builder);
+	}
+	
+    private StringBuilder appendQuoted(String name, StringBuilder builder) {
     	if (quoteTableNames)
-    		return builder.append('"').append(columnName).append('"');
+    		return builder.append('"').append(name).append('"');
     	else
-    		return builder.append(columnName);
+    		return builder.append(name);
     }
 
     static final Logger logger = LoggerFactory.getLogger(DBSystem.class);
