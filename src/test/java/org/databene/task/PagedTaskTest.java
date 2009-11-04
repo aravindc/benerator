@@ -89,7 +89,7 @@ public class PagedTaskTest {
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-    private void checkNonThreadSafeTask(int totalInvocations, int pageSize, int threads, 
+    private void checkNonThreadSafeTask(long totalInvocations, int pageSize, int threads, 
     		int expectedInstanceCount) {
         SingleThreadedTask.instanceCount = 0;
         SingleThreadedTask task = new SingleThreadedTask() {
@@ -101,7 +101,7 @@ public class PagedTaskTest {
         assertEquals("Unexpected instanceCount,", expectedInstanceCount, SingleThreadedTask.instanceCount);
     }
 
-    private void checkRun(int totalInvocations, int pageSize, int threads,
+    private void checkRun(long totalInvocations, int pageSize, int threads,
                           int expectedInitCount, int expectedRunCount, int expectedCloseCount) {
         CountTask countTask = new CountTask();
         PagedTaskRunner pagedTask = new PagedTaskRunner(

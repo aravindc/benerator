@@ -26,19 +26,19 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
-import org.databene.task.SerialTask;
-import org.databene.task.Task;
-import org.databene.task.TaskException;
+import org.databene.task.AbstractTask;
 import org.databene.task.ThreadSafe;
 
 /**
@@ -46,11 +46,12 @@ import org.databene.task.ThreadSafe;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadSafe {
+public  class GenerateAndConsumeEntityTask extends AbstractTask implements ThreadSafe {
 
     private Generator<Entity> entityGenerator;
     private boolean isSubTask;
     private Expression<Consumer<Entity>> consumerExpr;
+    private List<Statement> subStatements;
 
     private Consumer<Entity> consumer;
     
@@ -61,22 +62,25 @@ public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadS
     	Assert.notNull(entityGenerator, "entityGenerator");
         this.entityGenerator = entityGenerator; // TODO make this an expression?
         this.consumerExpr = consumerExpr;
-    	this.subTasks = new ArrayList<Task>();
+    	this.subStatements = new ArrayList<Statement>();
         this.isSubTask = isSubTask;
     }
 
     // interface -------------------------------------------------------------------------------------------------------
     
+    public void addSubStatement(Statement statement) {
+    	this.subStatements.add(statement);
+    }
+    
     public Generator<Entity> getEntityGenerator() {
     	return entityGenerator;
     }
-
+    
 	@Override
     public boolean available() {
         return entityGenerator.available();
     }
     
-    @Override
     public void run(Context context) {
     	try {
     		// generate entity
@@ -93,7 +97,7 @@ public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadS
 	        	if (consumer != null)
 	        		consumer.startConsuming(entity);
 	        	// generate and consume sub entities
-	        	super.run(context);
+	        	runSubTasks((BeneratorContext) context);
 	        	if (consumer != null)
 	        		consumer.finishConsuming(entity);
 	        }
@@ -102,16 +106,19 @@ public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadS
     	}
     }
     
-    @Override
-    protected void runSubTask(Context context, Task subTask) {
-        try {
-	        if (subTask instanceof CreateOrUpdateEntityStatement)
-	            ((CreateOrUpdateEntityStatement) subTask).getTarget().reset();
-	        super.runSubTask(context, subTask);
-	        subTask.close();
-        } catch (IOException e) {
-	        throw new TaskException(e);
-        }
+    private void runSubTasks(BeneratorContext context) {
+	    for (Statement subStatement : subStatements)
+	    	runSubTask(subStatement, context);
+    }
+
+    protected void runSubTask(Statement subStatement, BeneratorContext context) {
+        if (subStatement instanceof CreateOrUpdateEntityStatement) {
+            GenerateAndConsumeEntityTask target = ((CreateOrUpdateEntityStatement) subStatement).getTarget();
+			target.reset();
+	        subStatement.execute(context);
+	        target.close();
+        } else
+        	subStatement.execute(context);
     }
     
     public void reset() {
@@ -122,7 +129,6 @@ public  class GenerateAndConsumeEntityTask extends SerialTask implements ThreadS
     public void close() {
         if (!isSubTask && consumer != null)
             consumer.flush();
-        super.close();
     }
 
 	public void flushConsumer() {

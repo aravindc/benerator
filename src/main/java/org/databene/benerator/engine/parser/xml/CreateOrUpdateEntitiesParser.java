@@ -131,10 +131,8 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		// handle sub-create-entities
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String nodeName = child.getNodeName();
-			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName)) {
-			    InstanceDescriptor subDescriptor = mapEntityDescriptorElement(child, context);
-				task.addSubTask(parseTask(child, subDescriptor, true, resourceManager, context));
-			}
+			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName))
+				task.addSubStatement(parseCreateEntities(child, true, resourceManager, context));
 		}
 		return task;
     }

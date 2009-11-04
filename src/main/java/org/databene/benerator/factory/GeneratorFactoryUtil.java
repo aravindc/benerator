@@ -95,6 +95,8 @@ public class GeneratorFactoryUtil {
 					// TODO this sucks!!!
 					Long minVal = min.evaluate(context);
 					Long maxVal = max.evaluate(context);
+					if (maxVal == null)
+						return null;
 					if (minVal.equals(maxVal))
 						return minVal;
 					String distSpec = descriptor.getCountDistribution();
