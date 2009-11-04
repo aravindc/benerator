@@ -58,7 +58,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     protected Task target;
     private List<PageListener> pageListeners;
 
-    private long maxCount;
+    private Long maxCount;
     private long minCount;
     private long pageSize;
     private int  threadCount;
@@ -89,18 +89,18 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         this(realTask, totalInvocations, listeners, pageSize, 1, Executors.newSingleThreadExecutor());
     }
 
-    public PagedTaskRunner(Task realTask, long maxCount, List<PageListener> listeners, long pageSize, int threads, 
+    public PagedTaskRunner(Task realTask, Long maxCount, List<PageListener> listeners, long pageSize, int threads, 
     		ExecutorService executor) {
     	this(realTask, maxCount, listeners, pageSize, threads, 
     			new ConstantExpression<ExecutorService>(executor));
     }
 
-    public PagedTaskRunner(Task target, long maxCount, List<PageListener> pageListeners, long pageSize, int threads, 
+    public PagedTaskRunner(Task target, Long maxCount, List<PageListener> pageListeners, long pageSize, int threads, 
     		Expression<ExecutorService> executor) {
     	this.target = target;
         this.pageListeners = pageListeners;
         this.maxCount = maxCount;
-        this.minCount = maxCount;
+        this.minCount = 0;
         this.pageSize = pageSize;
         this.threadCount = threads;
         this.actualCount = new AtomicLong();
@@ -140,11 +140,13 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     }
 
     public void execute(BeneratorContext context) {
-    	if (maxCount == 0)
+    	if (maxCount != null && maxCount == 0)
     		return;
     	this.actualCount.set(0);
-    	queuedPages.set((maxCount + pageSize - 1) / pageSize);
-    	queuedInvocations.set(maxCount);
+    	if (maxCount != null) {
+	    	queuedPages.set((maxCount + pageSize - 1) / pageSize);
+	    	queuedInvocations.set(maxCount);
+    	}
         this.exception = null;
         if (logger.isDebugEnabled())
             logger.debug("Running PagedTask[" + getTaskName() + "]");
@@ -152,7 +154,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         while (workPending(currentPageNo)) {
         	try {
 	            pageStarting(currentPageNo);
-	            long currentPageSize = (maxCount < 0 ? pageSize : Math.min(pageSize, queuedInvocations.get()));
+	            long currentPageSize = (maxCount == null ? pageSize : Math.min(pageSize, queuedInvocations.get()));
 	            queuedInvocations.addAndGet(- currentPageSize);
 	            long localCount;
 	            if (threadCount > 1)
@@ -160,7 +162,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 	            else
 	                localCount = runSingleThreaded(context, currentPageSize);
 	            actualCount.addAndGet(localCount);
-	            queuedPages.decrementAndGet();
+	            if (maxCount != null)
+	            	queuedPages.decrementAndGet();
 	            pageFinished(currentPageNo, context);
 	            if (exception != null)
 	                throw new RuntimeException(exception);
@@ -180,11 +183,14 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     	return target.getTaskName();
     }
     
-    public static void execute(Task task, BeneratorContext context, long invocations,
+    public static void execute(Task task, BeneratorContext context, Long invocations,
             List<PageListener> pageListeners, long pageSize, int threadCount) {
 		if (logger.isInfoEnabled()) {
-			String invocationInfo = (invocations == 1 ? "" :
-			     invocations + " times with page size " + pageSize + " in " + threadCount + " threads");
+			String invocationInfo = (invocations == null ? "as long as available" :
+			     (invocations > 1 ? invocations + " times " : ""));
+			if (invocationInfo.length() > 0)
+				invocationInfo += " with page size " + pageSize + " in " 
+					+ (threadCount > 1 ? threadCount + " threads" : "a single thread");
 			logger.info("Running task " + task + " " + invocationInfo);
 		}
 		PagedTaskRunner pagedTask = new PagedTaskRunner(task, invocations, pageListeners, pageSize, threadCount, 
@@ -246,7 +252,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     protected boolean workPending(int currentPageNo) {
         if (!target.available())
             return false;
-        if (maxCount < 0)
+        if (maxCount == null)
         	return true;
         return (queuedPages.get() > 0);
 	}
