@@ -66,6 +66,11 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 	// Generator interface ---------------------------------------------------------------------------------------------
 
 	@Override
+	public void reset() {
+		// ignore reset - we need to generate unique values!
+	}
+	
+	@Override
 	public void close() {
 		persist();
 		super.close();
