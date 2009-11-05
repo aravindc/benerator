@@ -25,10 +25,12 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseAttribute;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
+import java.util.Set;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.DescriptorParser;
+import org.databene.benerator.engine.ParserFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
@@ -37,13 +39,14 @@ import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
-import org.databene.benerator.engine.statement.CreateOrUpdateEntityStatement;
+import org.databene.benerator.engine.statement.CreateOrUpdateEntitiesStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedEntityStatement;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
@@ -71,12 +74,14 @@ import org.w3c.dom.NamedNodeMap;
 public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrUpdateEntitiesParser.class);
+	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
+			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
 	public boolean supports(String elementName, String parentName) {
-	    return DescriptorConstants.EL_CREATE_ENTITIES.equals(elementName)
-	    		|| DescriptorConstants.EL_UPDATE_ENTITIES.equals(elementName);
+	    return EL_CREATE_ENTITIES.equals(elementName)
+	    		|| EL_UPDATE_ENTITIES.equals(elementName);
     }
 	
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
@@ -91,7 +96,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
-    public CreateOrUpdateEntityStatement parseCreateEntities(Element element, boolean isSubTask, 
+    public CreateOrUpdateEntitiesStatement parseCreateEntities(Element element, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
@@ -101,7 +106,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		Expression<Long> pageSize = new ScriptExpression<Long>(localPageSize, new DefaultPageSizeExpression());
 		Expression<Integer> threads = new TypedScriptExpression<Integer>(element.getAttribute(ATT_THREADS), Integer.class, 1);
 		Expression<PageListener> pager = new ScriptExpression<PageListener>(element.getAttribute(ATT_PAGER), (PageListener) null);
-		CreateOrUpdateEntityStatement creator = new CreateOrUpdateEntityStatement(task, countExpression, pageSize, pager, threads);
+		CreateOrUpdateEntitiesStatement creator = new CreateOrUpdateEntitiesStatement(task, countExpression, pageSize, pager, threads);
 		return creator;
 	}
 
@@ -130,9 +135,12 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 
 		// handle sub-create-entities
 		for (Element child : XMLUtil.getChildElements(element)) {
-			String nodeName = child.getNodeName();
-			if (EL_CREATE_ENTITIES.equals(nodeName) || EL_UPDATE_ENTITIES.equals(nodeName))
-				task.addSubStatement(parseCreateEntities(child, true, resourceManager, context));
+			String childName = child.getNodeName();
+			if (!PART_NAMES.contains(childName)) {
+	            DescriptorParser parser = ParserFactory.getParser(childName, element.getNodeName());
+	            Statement subStatement = parser.parse(element, resourceManager);
+				task.addSubStatement(subStatement);
+            }
 		}
 		return task;
     }

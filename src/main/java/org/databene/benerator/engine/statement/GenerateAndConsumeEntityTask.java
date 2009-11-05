@@ -112,8 +112,8 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     }
 
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
-        if (subStatement instanceof CreateOrUpdateEntityStatement) {
-            GenerateAndConsumeEntityTask target = ((CreateOrUpdateEntityStatement) subStatement).getTarget();
+        if (subStatement instanceof CreateOrUpdateEntitiesStatement) {
+            GenerateAndConsumeEntityTask target = ((CreateOrUpdateEntitiesStatement) subStatement).getTarget();
 			target.reset();
 	        subStatement.execute(context);
 	        target.close();
