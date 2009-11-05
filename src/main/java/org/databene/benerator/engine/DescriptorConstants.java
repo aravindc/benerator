@@ -58,6 +58,7 @@ public interface DescriptorConstants {
     static final String EL_VARIABLE = "variable";
     static final String EL_REFERENCE = "reference";
     static final String EL_ID = "id";
+    static final String EL_COMPOSITE_ID = "composite-id";
     static final String EL_PART = "part";
     static final String EL_ATTRIBUTE = "attribute";
 	
