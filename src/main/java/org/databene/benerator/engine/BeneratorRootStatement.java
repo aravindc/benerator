@@ -23,7 +23,7 @@ package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.statement.CompositeStatement;
-import org.databene.benerator.engine.statement.CreateOrUpdateEntityStatement;
+import org.databene.benerator.engine.statement.CreateOrUpdateEntitiesStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
@@ -67,8 +67,8 @@ public class BeneratorRootStatement extends CompositeStatement {
 		public void visit(Statement element) {
 			if (result != null)
 				return;
-			if (element instanceof CreateOrUpdateEntityStatement) {
-				CreateOrUpdateEntityStatement candidate = (CreateOrUpdateEntityStatement) element;
+			if (element instanceof CreateOrUpdateEntitiesStatement) {
+				CreateOrUpdateEntitiesStatement candidate = (CreateOrUpdateEntitiesStatement) element;
 				GenerateAndConsumeEntityTask target = candidate.getTarget();
 				if (name.equals(target.getTaskName())) {
 					result = target.getEntityGenerator();
