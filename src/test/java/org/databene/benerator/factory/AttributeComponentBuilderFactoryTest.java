@@ -214,6 +214,23 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
     }
+	
+	@Test
+	public void testMap() {
+		String componentName = "flag";
+		PartDescriptor part = new PartDescriptor(componentName);
+		part.setMinCount(new ConstantExpression<Long>(1L));
+		part.setMaxCount(new ConstantExpression<Long>(1L));
+		((SimpleTypeDescriptor) part.getLocalType(false)).setMap("1->'A',2->'B'");
+		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
+		BeneratorContext context = new BeneratorContext(null);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context);
+		Entity entity = new Entity("Entity");
+		builder.buildComponentFor(entity);
+		assertEquals("A", entity.get("flag"));
+		builder.buildComponentFor(entity);
+		assertEquals("B", entity.get("flag"));
+	}
     
     // test construction alternatives ----------------------------------------------------------------------------------
     
