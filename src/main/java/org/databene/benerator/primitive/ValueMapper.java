@@ -27,8 +27,10 @@ import java.util.Map;
 
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
+import org.databene.commons.converter.AnyConverter;
 
 /**
  * Converter implementation that maps input values in a 'Map' style.<br/><br/>
@@ -36,10 +38,13 @@ import org.databene.commons.Converter;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ValueMapper implements Converter<Object, Object> { // TODO test in descriptor
+@SuppressWarnings("unchecked")
+public class ValueMapper implements Converter {
 
-	private Map<Object, Object> mappings;
+	private Map mappings;
 	private boolean lenient;
+	private Class<?> targetType;
+	private Class<?> sourceType;
 	
 	public ValueMapper() {
 		try {
@@ -68,19 +73,22 @@ public class ValueMapper implements Converter<Object, Object> { // TODO test in 
 			WeightedTransition[] tl = BeneratorScriptParser.parseTransitionList(mappingSpec);
 			for (WeightedTransition t : tl)
 				mappings.put(t.getFrom(), t.getTo());
+			sourceType = BeanUtil.commonSubType(mappings.keySet());
+			targetType = BeanUtil.commonSuperType(mappings.values());
 		} else
 			mappings.clear();
 	}
 	
-	public Class<Object> getTargetType() {
-	    return Object.class; // TODO return common (super) type
+	public Class<?> getTargetType() {
+	    return targetType;
     }
 	
 	public boolean canConvert(Object sourceValue) {
-	    return (lenient || mappings.containsKey(sourceValue));
+	    return (lenient || mappings.containsKey(AnyConverter.convert(sourceValue, sourceType)));
     }
 
 	public Object convert(Object sourceValue) throws ConversionException {
+		sourceValue = AnyConverter.convert(sourceValue, sourceType);
 		if (!mappings.containsKey(sourceValue))
 			if (lenient)
 				return sourceValue;
