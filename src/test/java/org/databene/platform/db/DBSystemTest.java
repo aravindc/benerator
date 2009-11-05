@@ -131,6 +131,7 @@ public class DBSystemTest {
 					+ "constraint T1_PK primary key (ID)"
 					+ ");", 
 					connection);
+			db.invalidate();
 		} finally {
 			DBUtil.close(connection);
 		}
