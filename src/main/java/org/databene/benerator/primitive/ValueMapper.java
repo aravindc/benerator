@@ -75,8 +75,10 @@ public class ValueMapper implements Converter {
 				mappings.put(t.getFrom(), t.getTo());
 			sourceType = BeanUtil.commonSubType(mappings.keySet());
 			targetType = BeanUtil.commonSuperType(mappings.values());
-		} else
+		} else {
+			sourceType = Object.class;
 			mappings.clear();
+		}
 	}
 	
 	public Class<?> getTargetType() {
@@ -98,4 +100,9 @@ public class ValueMapper implements Converter {
 			return mappings.get(sourceValue);
     }
 
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName() + mappings;
+	}
+	
 }
