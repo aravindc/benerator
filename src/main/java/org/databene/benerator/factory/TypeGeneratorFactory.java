@@ -26,15 +26,18 @@
 
 package org.databene.benerator.factory;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.ScriptGenerator;
+import org.databene.benerator.primitive.ValueMapper;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
@@ -122,12 +125,29 @@ public class TypeGeneratorFactory {
 	@SuppressWarnings("unchecked")
     static <E> Generator<E> wrapWithPostprocessors(Generator<E> generator, TypeDescriptor descriptor, BeneratorContext context) {
 		generator = (Generator<E>) createConvertingGenerator(descriptor, generator, context);
-		if (descriptor instanceof SimpleTypeDescriptor)
-			generator = (Generator<E>) createTypeConvertingGenerator((SimpleTypeDescriptor) descriptor, generator);
+		if (descriptor instanceof SimpleTypeDescriptor) {
+			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
+			generator = (Generator<E>) createMappingGenerator(simpleType, generator);
+			generator = (Generator<E>) createTypeConvertingGenerator(simpleType, generator);
+		}
         generator = (Generator<E>) createValidatingGenerator(descriptor, generator, context);
 		return generator;
 	}
     
+    @SuppressWarnings("unchecked")
+    static Generator<?> createMappingGenerator(
+            SimpleTypeDescriptor descriptor, Generator<?> generator) {
+        if (descriptor == null || descriptor.getMap() == null)
+            return generator;
+        try {
+	        String mappingSpec = descriptor.getMap();
+	        ValueMapper mapper = new ValueMapper(mappingSpec);
+	        return new ConvertingGenerator(generator, mapper);
+        } catch (ParseException e) {
+        	throw new ConfigurationError("Error in the definition of type: " + descriptor.getName(), e);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     static Generator<?> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<?> generator) {
