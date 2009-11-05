@@ -187,7 +187,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
             List<PageListener> pageListeners, long pageSize, int threadCount) {
 		if (logger.isInfoEnabled()) {
 			String invocationInfo = (invocations == null ? "as long as available" :
-			     (invocations > 1 ? invocations + " times " : ""));
+			     (invocations > 1 ? invocations + " times" : ""));
 			if (invocationInfo.length() > 0)
 				invocationInfo += " with page size " + pageSize + " in " 
 					+ (threadCount > 1 ? threadCount + " threads" : "a single thread");
