@@ -57,6 +57,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     
     public static final String CONSTANT     = "constant";
     public static final String VALUES       = "values";
+    public static final String MAP          = "map";
 
     private PrimitiveType primitiveType = null;
 
@@ -88,6 +89,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         // other config
         addConfig(VALUES,               String.class, null);
         addConfig(CONSTANT,             String.class, null);
+        addConfig(MAP,                  String.class, null);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -213,6 +215,14 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     public void setConstant(String constant) {
         setDetailValue(CONSTANT, constant);
+    }
+
+    public String getMap() {
+        return (String) getDetailValue(MAP);
+    }
+
+    public void setMap(String map) {
+        setDetailValue(MAP, map);
     }
 
     // literate build helpers ------------------------------------------------------------------------------------------
