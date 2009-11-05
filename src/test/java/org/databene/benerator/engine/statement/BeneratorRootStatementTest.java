@@ -19,12 +19,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.engine.statement;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorRootStatement;
+import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
