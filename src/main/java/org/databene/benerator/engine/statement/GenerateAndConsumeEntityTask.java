@@ -101,6 +101,7 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
 	        	if (consumer != null)
 	        		consumer.finishConsuming(entity);
 	        }
+	        Thread.yield();
     	} catch (Exception e) {
     		getErrorHandler(context).handleError("Error in execution of task " + getTaskName(), e);
     	}
