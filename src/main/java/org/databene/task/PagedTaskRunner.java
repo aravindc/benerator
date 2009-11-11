@@ -272,7 +272,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 
     protected void pageStarting(int currentPageNo) {
         if (logger.isDebugEnabled())
-            logger.debug("Starting page " + (currentPageNo + 1) + " of " + getTaskName() + " with pagesize=" + pageSize);
+            logger.debug("Starting page " + (currentPageNo + 1) + " of " + getTaskName() + " with pageSize=" + pageSize);
         if (pageListeners != null)
         	for (PageListener listener : pageListeners)
         		listener.pageStarting(currentPageNo, -1);
