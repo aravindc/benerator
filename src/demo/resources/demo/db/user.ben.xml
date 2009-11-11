@@ -4,10 +4,10 @@
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
 
 	<!-- define a database that will be referred by the id 'db' later -->
-	<database id="db" url="jdbc:hsqldb:hsql" driver="org.hsqldb.jdbcDriver" user="sa" />
+	<database id="db" url="jdbc:hsqldb:hsql" driver="org.hsqldb.jdbcDriver" user="sa" tableFilter="DB_.*" />
 
 	<execute target="db" onError="warn">
-		DROP TABLE dummy;
+		DROP TABLE db_dummy;
 		DROP TABLE db_user;
 		DROP TABLE db_role;
 	</execute> 
@@ -29,7 +29,7 @@
 		);
 		CREATE INDEX user_role_fki on db_user (role_fk);
 
-		CREATE TABLE dummy (
+		CREATE TABLE db_dummy (
 		  id int NOT NULL,
 		  PRIMARY KEY (id)
 		);
@@ -43,13 +43,15 @@
 		insert into db_role (id, name, mx) values (3, 'c', 7);
 	</execute> 
 	
-	<create-entities type="dummy" count="1000" consumer="db" />
+	<create-entities type="db_dummy" count="1" consumer="db" > <!-- TODO don't use max=9 for IDs -->
+		<id name="id" generator="IncrementGenerator" />
+	</create-entities>
 	
 	<create-entities type="db_role" source="db" consumer="ConsoleExporter" >
-		<create-entities type="db_user" consumer="ConsoleExporter" >
-	  		<attribute name="index" type="int" min="0" max="10000" distribution="step"/>
-	  		<attribute name="role_fk" script="{${db_role.id}}"/>
-	  		<attribute name="_limit" source="db" selector="{{select id from dummy where id &lt;= ${db_role.mx}}}"/>
+		<create-entities type="db_user" consumer="db" count="10">
+			<id name="id" generator="LocalSequenceGenerator"/>
+	  		<attribute name="index" generator="IncrementGenerator"/>
+	  		<attribute name="role_fk" script="db_role.id"/>
 		</create-entities>
 	</create-entities>
 

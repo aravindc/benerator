@@ -13,8 +13,8 @@
 	        <attribute name="id" generator="org.databene.benerator.primitive.IncrementGenerator"/>
 			<attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)" />
 			<attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
-			<attribute name="role_id" values="customer" />
-			<attribute name="category" values="A,B,C" />
+			<attribute name="role_id" constant="customer" />
+			<attribute name="category" values="'A','B','C'" />
 			<attribute name="salutation" script="{${person.salutation}}" />
 			<attribute name="first_name" script="{${person.givenName}}" />
 			<attribute name="last_name" script="{${person.familyName}}" />

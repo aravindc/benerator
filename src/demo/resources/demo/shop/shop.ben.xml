@@ -45,7 +45,7 @@
 	<echo message="{ftl:  ${customer_count + 1} customers}" />
 	<echo message="{ftl:  ${orders_per_customer} orders per customer}" />
 	<echo message="{ftl:  ${items_per_order} items per order}" />
-	<echo message="{ftl:Setup: ${benerator.defaultEncoding} def.pagesize=${benerator.defaultPagesize} def.script=${benerator.defaultScript}}" />
+	<echo message="{ftl:Setup: ${benerator.defaultEncoding} def.pageSize=${benerator.defaultPageSize} def.script=${benerator.defaultScript}}" />
 	<echo message="{ftl:JDBC URL: ${dbUri}}" />
 
     <comment>define a database that will be referred by the id 'db' later</comment>
@@ -96,10 +96,10 @@
         <attribute name="name" script="{person.givenName + ' ' + person.familyName}" />
         <attribute name="email" generator="EMailAddressGenerator" />
         <attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
-        <attribute name="role_id" values="customer" />
+        <attribute name="role_id" constant="customer" />
         <create-entities type="db_customer" count="1" consumer="db">
             <id name="id" source="db_user.id" />
-            <attribute name="category" values="A,B,C" />
+            <attribute name="category" values="'A','B','C'" />
             <attribute name="salutation" script="person.salutation" />
             <attribute name="first_name" script="person.givenName" />
             <attribute name="last_name" script="person.familyName" />
@@ -116,7 +116,7 @@
 	<create-entities type="db_order" count="{customer_count * orders_per_customer}" consumer="db">
         <id name="id" generator="idGen" />
 		<reference name="customer_id" targetType="db_customer" source="db" cyclic="true" />
-        <attribute name="total_price" values="0" />
+        <attribute name="total_price" constant="0" />
 	</create-entities>
 
 	<comment>create order items</comment>
