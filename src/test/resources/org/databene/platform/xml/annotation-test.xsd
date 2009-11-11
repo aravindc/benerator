@@ -18,7 +18,7 @@
 
 	<xs:element name="simple-type" type="xs:string">
 		<xs:annotation>
-			<xs:appinfo><ben:type values="Alice,Bob"/></xs:appinfo>
+			<xs:appinfo><ben:type values="'Alice','Bob'"/></xs:appinfo>
 		</xs:annotation>
 	</xs:element>
 
