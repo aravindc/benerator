@@ -1,0 +1,55 @@
+/*
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License (GPL).
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.platform.db.dialect;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+/**
+ * Tests the {@link DB2Dialect}.<br/><br/>
+ * Created: 10.11.2009 17:33:48
+ * @since 0.6.0
+ * @author Volker Bergmann
+ */
+public class DB2DialectTest extends DatabaseDialectTest {
+
+	public DB2DialectTest() {
+	    super(new DB2Dialect());
+    }
+
+	@Test
+	public void testCreateSequence() {
+		assertEquals("create sequence SEQ start with 1", dialect.createSequence("SEQ", 1));
+	}
+	
+	@Test
+	public void testnextSequenceValue() {
+		assertEquals("select nextval for SEQ from sysibm.sysdummy1", dialect.nextSequenceValue("SEQ"));
+	}
+	
+	@Test
+	public void testDropSequence() {
+		assertEquals("drop sequence SEQ", dialect.dropSequence("SEQ"));
+	}
+	
+}
