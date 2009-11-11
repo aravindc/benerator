@@ -65,7 +65,7 @@ public class CumulatedLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testDistribution() throws Exception {
         checkDistribution(0, 1, 1000);
-        checkDistribution(0, 5, 5000);
+        checkDistribution(0, 5, 10000);
         //checkDistribution(0, 25, 100000);
     }
 
