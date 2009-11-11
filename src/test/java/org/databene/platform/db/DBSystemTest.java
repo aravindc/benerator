@@ -31,11 +31,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.databene.commons.db.DBUtil;
+import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.model.data.Entity;
 
 import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
+import static org.databene.commons.db.hsql.HSQLUtil.*;
 
 /**
  * Tests {@link DBSystem}.<br/>
@@ -131,7 +133,7 @@ public class DBSystemTest {
 	public void setUp() throws Exception {
 		Connection connection = null;
 		try {
-			db = new DBSystem("db", "jdbc:hsqldb:mem:benerator", "org.hsqldb.jdbcDriver", "sa", null);
+			db = new DBSystem("db", IN_MEMORY_URL_PREFIX + "benerator", DRIVER, DEFAULT_USER, DEFAULT_PASSWORD);
 			db.setSchema("public");
 			connection = db.createConnection();
 			try {
