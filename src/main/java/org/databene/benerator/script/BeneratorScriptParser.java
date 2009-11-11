@@ -36,6 +36,7 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
+import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
@@ -67,6 +68,34 @@ public class BeneratorScriptParser {
 
     // interface -------------------------------------------------------------------------------------------------------
 
+    public static WeightedSample<?>[] parseWeightedLiteralList(String text) throws ParseException {
+        if (StringUtil.isEmpty(text))
+            return null;
+        try {
+        	BeneratorParser parser = parser(text);
+	        BeneratorParser.weightedLiteralList_return r = parser.weightedLiteralList();
+	        if (parser.getNumberOfSyntaxErrors() > 0)
+	        	throw new ParseException("Illegal weightedLiteralList: " + text, -1);
+	        if (r != null) {
+	        	CommonTree tree = (CommonTree) r.getTree();
+	        	if (LOGGER.isDebugEnabled())
+	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
+	            return convertWeightedLiteralList(tree);
+	        } else
+	        	return null;
+        } catch (RuntimeException e) {
+        	if (e.getCause() instanceof RecognitionException)
+        		throw mapToParseException((RecognitionException) e.getCause());
+        	else
+        		throw e;
+        } catch (IOException e) {
+        	throw new IllegalStateException("Encountered illegal state in weightedLiteralList parsing", e);
+        } catch (RecognitionException e) {
+        	e.printStackTrace();
+        	throw mapToParseException(e);
+        }
+    }
+	
     public static Expression<?> parseExpression(String text) throws ParseException {
         if (StringUtil.isEmpty(text))
             return null;
@@ -188,6 +217,28 @@ public class BeneratorScriptParser {
     private static ParseException mapToParseException(RecognitionException e) {
     	return new ParseException("Error parsing Benerator expression: " + e.getMessage(), e.charPositionInLine);
     }
+
+    private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws ParseException {
+	    int childCount = node.getChildCount();
+	    WeightedSample<?>[] transitions = new WeightedSample[childCount];
+	    for (int i = 0; i < childCount; i++)
+	    	transitions[i] = convertWeightedLiteral(childAt(i, node));
+	    return transitions;
+    }
+
+	@SuppressWarnings("unchecked")
+    private static WeightedSample<?> convertWeightedLiteral(CommonTree node) throws ParseException {
+		if (node.getType() == BeneratorLexer.CARET) {
+			Expression<?> value = convertNode(childAt(0, node));
+			Expression<Double> weight = null;
+			if (node.getChildCount() > 1)
+				weight = new TypeConvertingExpression<Double>(convertNode(childAt(1, node)), Double.class);
+			else
+				weight = new ConstantExpression<Double>(1.);
+			return new WeightedSample(value.evaluate(null), weight.evaluate(null));
+		} else
+			return new WeightedSample(convertNode(node).evaluate(null), 1.); 
+	}
 
     private static WeightedTransition[] convertTransitionList(CommonTree node) throws ParseException {
     	if (node.getType() == BeneratorLexer.ARROW)

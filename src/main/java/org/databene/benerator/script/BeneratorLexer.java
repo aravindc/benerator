@@ -1,12 +1,9 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2009-10-24 08:09:00
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2009-11-11 14:56:31
  
 	package org.databene.benerator.script;
 
 
 import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
 
 @SuppressWarnings("all")
 public class BeneratorLexer extends Lexer {
@@ -143,8 +140,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "TYPE"
     public final void mTYPE() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:223:14: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:223:15: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:229:14: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:229:15: 
             {
             }
 
@@ -157,8 +154,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "NEGATION"
     public final void mNEGATION() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:224:18: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:224:19: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:230:18: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:230:19: 
             {
             }
 
@@ -171,8 +168,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "INDEX"
     public final void mINDEX() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:225:15: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:225:16: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:231:15: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:231:16: 
             {
             }
 
@@ -185,8 +182,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "FIELD"
     public final void mFIELD() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:226:15: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:226:16: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:232:15: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:232:16: 
             {
             }
 
@@ -199,8 +196,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "ARGUMENTS"
     public final void mARGUMENTS() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:227:19: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:227:20: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:233:19: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:233:20: 
             {
             }
 
@@ -213,8 +210,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "CAST"
     public final void mCAST() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:228:14: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:228:15: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:234:14: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:234:15: 
             {
             }
 
@@ -227,8 +224,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "CONSTRUCTOR"
     public final void mCONSTRUCTOR() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:229:21: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:229:22: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:235:21: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:235:22: 
             {
             }
 
@@ -241,8 +238,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "INVOCATION"
     public final void mINVOCATION() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:230:20: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:230:21: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:236:20: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:236:21: 
             {
             }
 
@@ -255,8 +252,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "SUBINVOCATION"
     public final void mSUBINVOCATION() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:231:23: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:231:24: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:237:23: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:237:24: 
             {
             }
 
@@ -269,8 +266,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "QUALIFIEDNAME"
     public final void mQUALIFIEDNAME() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:232:23: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:232:24: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:238:23: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:238:24: 
             {
             }
 
@@ -283,8 +280,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "BEAN"
     public final void mBEAN() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:233:14: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:233:15: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:239:14: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:239:15: 
             {
             }
 
@@ -297,8 +294,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "BEANSPEC"
     public final void mBEANSPEC() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:234:18: ()
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:234:19: 
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:240:18: ()
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:240:19: 
             {
             }
 
@@ -313,7 +310,7 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BOOLEANLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:237:5: ( 'true' | 'false' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:243:5: ( 'true' | 'false' )
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -331,7 +328,7 @@ public class BeneratorLexer extends Lexer {
             }
             switch (alt1) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:237:9: 'true'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:243:9: 'true'
                     {
                     match("true"); 
 
@@ -339,7 +336,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:238:9: 'false'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:244:9: 'false'
                     {
                     match("false"); 
 
@@ -361,7 +358,7 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = INTLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:242:5: ( '0' | '1' .. '9' ( '0' .. '9' )* | '0' ( '0' .. '7' )+ | HexPrefix ( HexDigit )+ )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:248:5: ( '0' | '1' .. '9' ( '0' .. '9' )* | '0' ( '0' .. '7' )+ | HexPrefix ( HexDigit )+ )
             int alt5=4;
             int LA5_0 = input.LA(1);
 
@@ -399,17 +396,17 @@ public class BeneratorLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:242:9: '0'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:248:9: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:243:9: '1' .. '9' ( '0' .. '9' )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:249:9: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:243:18: ( '0' .. '9' )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:249:18: ( '0' .. '9' )*
                     loop2:
                     do {
                         int alt2=2;
@@ -422,7 +419,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt2) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:243:19: '0' .. '9'
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:249:19: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -438,10 +435,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:244:9: '0' ( '0' .. '7' )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:250:9: '0' ( '0' .. '7' )+
                     {
                     match('0'); 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:244:13: ( '0' .. '7' )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:250:13: ( '0' .. '7' )+
                     int cnt3=0;
                     loop3:
                     do {
@@ -455,7 +452,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:244:14: '0' .. '7'
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:250:14: '0' .. '7'
                     	    {
                     	    matchRange('0','7'); 
 
@@ -475,10 +472,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:245:9: HexPrefix ( HexDigit )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:251:9: HexPrefix ( HexDigit )+
                     {
                     mHexPrefix(); 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:245:19: ( HexDigit )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:251:19: ( HexDigit )+
                     int cnt4=0;
                     loop4:
                     do {
@@ -492,7 +489,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt4) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:245:19: HexDigit
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:251:19: HexDigit
                     	    {
                     	    mHexDigit(); 
 
@@ -524,8 +521,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "HexPrefix"
     public final void mHexPrefix() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:250:5: ( '0x' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:250:9: '0x'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:256:5: ( '0x' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:256:9: '0x'
             {
             match("0x"); 
 
@@ -541,8 +538,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:254:5: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:254:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:5: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:9: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -567,14 +564,14 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = DECIMALLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ )
             int alt15=3;
             alt15 = dfa15.predict(input);
             switch (alt15) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )?
                     {
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:9: ( '0' .. '9' )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:9: ( '0' .. '9' )+
                     int cnt6=0;
                     loop6:
                     do {
@@ -588,7 +585,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:10: '0' .. '9'
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -605,7 +602,7 @@ public class BeneratorLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:27: ( '0' .. '9' )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:27: ( '0' .. '9' )*
                     loop7:
                     do {
                         int alt7=2;
@@ -618,7 +615,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt7) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:28: '0' .. '9'
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:28: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -630,7 +627,7 @@ public class BeneratorLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:41: ( Exponent )?
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:41: ( Exponent )?
                     int alt8=2;
                     int LA8_0 = input.LA(1);
 
@@ -639,7 +636,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt8) {
                         case 1 :
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:258:41: Exponent
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:264:41: Exponent
                             {
                             mExponent(); 
 
@@ -652,9 +649,9 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:259:9: ( '0' .. '9' )+ Exponent
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:9: ( '0' .. '9' )+ Exponent
                     {
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:259:9: ( '0' .. '9' )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:9: ( '0' .. '9' )+
                     int cnt9=0;
                     loop9:
                     do {
@@ -668,7 +665,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:259:10: '0' .. '9'
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -689,10 +686,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:9: HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:9: HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+
                     {
                     mHexPrefix(); 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:19: ( HexDigit )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:19: ( HexDigit )*
                     loop10:
                     do {
                         int alt10=2;
@@ -705,7 +702,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt10) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:20: HexDigit
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:20: HexDigit
                     	    {
                     	    mHexDigit(); 
 
@@ -717,7 +714,7 @@ public class BeneratorLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:32: ( () | ( '.' ( HexDigit )* ) )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:32: ( () | ( '.' ( HexDigit )* ) )
                     int alt12=2;
                     int LA12_0 = input.LA(1);
 
@@ -735,10 +732,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt12) {
                         case 1 :
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:34: ()
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:34: ()
                             {
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:34: ()
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:35: 
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:34: ()
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:35: 
                             {
                             }
 
@@ -746,13 +743,13 @@ public class BeneratorLexer extends Lexer {
                             }
                             break;
                         case 2 :
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:39: ( '.' ( HexDigit )* )
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:39: ( '.' ( HexDigit )* )
                             {
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:39: ( '.' ( HexDigit )* )
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:40: '.' ( HexDigit )*
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:39: ( '.' ( HexDigit )* )
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:40: '.' ( HexDigit )*
                             {
                             match('.'); 
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:44: ( HexDigit )*
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:44: ( HexDigit )*
                             loop11:
                             do {
                                 int alt11=2;
@@ -765,7 +762,7 @@ public class BeneratorLexer extends Lexer {
 
                                 switch (alt11) {
                             	case 1 :
-                            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:45: HexDigit
+                            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:45: HexDigit
                             	    {
                             	    mHexDigit(); 
 
@@ -795,7 +792,7 @@ public class BeneratorLexer extends Lexer {
                         recover(mse);
                         throw mse;}
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:75: ( '+' | '-' )?
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:75: ( '+' | '-' )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -821,7 +818,7 @@ public class BeneratorLexer extends Lexer {
 
                     }
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:90: ( '0' .. '9' )+
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:90: ( '0' .. '9' )+
                     int cnt14=0;
                     loop14:
                     do {
@@ -835,7 +832,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt14) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:260:92: '0' .. '9'
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:266:92: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -867,8 +864,8 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:5: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:9: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:271:5: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:271:9: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -879,7 +876,7 @@ public class BeneratorLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:23: ( '+' | '-' )?
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:271:23: ( '+' | '-' )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -905,7 +902,7 @@ public class BeneratorLexer extends Lexer {
 
             }
 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:38: ( '0' .. '9' )+
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:271:38: ( '0' .. '9' )+
             int cnt17=0;
             loop17:
             do {
@@ -919,7 +916,7 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:265:40: '0' .. '9'
+            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:271:40: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -949,11 +946,11 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = STRINGLITERAL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:269:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\'' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:269:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\''
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:275:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\'' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:275:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )* '\\''
             {
             match('\''); 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:269:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )*
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:275:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' | '\\r' | '\\n' ) )*
             loop18:
             do {
                 int alt18=3;
@@ -969,14 +966,14 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:269:16: EscapeSequence
+            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:275:16: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:269:33: ~ ( '\\'' | '\\\\' | '\\r' | '\\n' )
+            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:275:33: ~ ( '\\'' | '\\\\' | '\\r' | '\\n' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -1011,89 +1008,89 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:274:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:274:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:280:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ) )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:280:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             {
             match('\\'); 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:274:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:280:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )
             int alt19=11;
             alt19 = dfa19.predict(input);
             switch (alt19) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:275:18: 'b'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:281:18: 'b'
                     {
                     match('b'); 
 
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:276:18: 't'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:282:18: 't'
                     {
                     match('t'); 
 
                     }
                     break;
                 case 3 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:277:18: 'n'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:18: 'n'
                     {
                     match('n'); 
 
                     }
                     break;
                 case 4 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:278:18: 'f'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:284:18: 'f'
                     {
                     match('f'); 
 
                     }
                     break;
                 case 5 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:279:18: 'r'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:285:18: 'r'
                     {
                     match('r'); 
 
                     }
                     break;
                 case 6 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:280:18: '\\\"'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:286:18: '\\\"'
                     {
                     match('\"'); 
 
                     }
                     break;
                 case 7 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:281:18: '\\''
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:287:18: '\\''
                     {
                     match('\''); 
 
                     }
                     break;
                 case 8 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:282:18: '\\\\'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:288:18: '\\\\'
                     {
                     match('\\'); 
 
                     }
                     break;
                 case 9 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:18: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:18: ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:18: ( '0' .. '3' )
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:19: '0' .. '3'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:18: ( '0' .. '3' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:19: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:29: ( '0' .. '7' )
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:30: '0' .. '7'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:29: ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:30: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:40: ( '0' .. '7' )
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:283:41: '0' .. '7'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:40: ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:41: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1103,17 +1100,17 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 10 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:284:18: ( '0' .. '7' ) ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:290:18: ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:284:18: ( '0' .. '7' )
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:284:19: '0' .. '7'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:290:18: ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:290:19: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:284:29: ( '0' .. '7' )
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:284:30: '0' .. '7'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:290:29: ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:290:30: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1123,10 +1120,10 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 11 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:285:18: ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:291:18: ( '0' .. '7' )
                     {
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:285:18: ( '0' .. '7' )
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:285:19: '0' .. '7'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:291:18: ( '0' .. '7' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:291:19: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -1152,8 +1149,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:289:9: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:295:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:295:9: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -1183,12 +1180,12 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:295:8: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:295:12: '/*' ( options {greedy=false; } : . )* '*/'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:301:8: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:301:12: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:295:17: ( options {greedy=false; } : . )*
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:301:17: ( options {greedy=false; } : . )*
             loop20:
             do {
                 int alt20=2;
@@ -1213,7 +1210,7 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt20) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:295:44: .
+            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:301:44: .
             	    {
             	    matchAny(); 
 
@@ -1243,16 +1240,16 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* )
             int alt24=2;
             alt24 = dfa24.predict(input);
             switch (alt24) {
                 case 1 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:9: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:9: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' )
                     {
                     match("//"); 
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:14: (~ ( '\\n' | '\\r' ) )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:14: (~ ( '\\n' | '\\r' ) )*
                     loop21:
                     do {
                         int alt21=2;
@@ -1265,7 +1262,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt21) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:14: ~ ( '\\n' | '\\r' )
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:14: ~ ( '\\n' | '\\r' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -1285,7 +1282,7 @@ public class BeneratorLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:29: ( '\\r\\n' | '\\r' | '\\n' )
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:29: ( '\\r\\n' | '\\r' | '\\n' )
                     int alt22=3;
                     int LA22_0 = input.LA(1);
 
@@ -1309,7 +1306,7 @@ public class BeneratorLexer extends Lexer {
                     }
                     switch (alt22) {
                         case 1 :
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:30: '\\r\\n'
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:30: '\\r\\n'
                             {
                             match("\r\n"); 
 
@@ -1317,14 +1314,14 @@ public class BeneratorLexer extends Lexer {
                             }
                             break;
                         case 2 :
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:39: '\\r'
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:39: '\\r'
                             {
                             match('\r'); 
 
                             }
                             break;
                         case 3 :
-                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:298:46: '\\n'
+                            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:304:46: '\\n'
                             {
                             match('\n'); 
 
@@ -1340,11 +1337,11 @@ public class BeneratorLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:302:9: '//' (~ ( '\\n' | '\\r' ) )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:308:9: '//' (~ ( '\\n' | '\\r' ) )*
                     {
                     match("//"); 
 
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:302:14: (~ ( '\\n' | '\\r' ) )*
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:308:14: (~ ( '\\n' | '\\r' ) )*
                     loop23:
                     do {
                         int alt23=2;
@@ -1357,7 +1354,7 @@ public class BeneratorLexer extends Lexer {
 
                         switch (alt23) {
                     	case 1 :
-                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:302:14: ~ ( '\\n' | '\\r' )
+                    	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:308:14: ~ ( '\\n' | '\\r' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
                     	        input.consume();
@@ -1398,8 +1395,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = NULL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:308:5: ( 'null' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:308:11: 'null'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:314:5: ( 'null' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:314:11: 'null'
             {
             match("null"); 
 
@@ -1419,8 +1416,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:309:7: ( '(' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:309:11: '('
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:315:7: ( '(' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:315:11: '('
             {
             match('('); 
 
@@ -1439,8 +1436,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:310:7: ( ')' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:310:11: ')'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:316:7: ( ')' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:316:11: ')'
             {
             match(')'); 
 
@@ -1459,8 +1456,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:311:7: ( '{' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:311:11: '{'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:317:7: ( '{' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:317:11: '{'
             {
             match('{'); 
 
@@ -1479,8 +1476,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = RBRACE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:312:7: ( '}' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:312:11: '}'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:318:7: ( '}' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:318:11: '}'
             {
             match('}'); 
 
@@ -1499,8 +1496,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LBRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:313:9: ( '[' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:313:11: '['
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:319:9: ( '[' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:319:11: '['
             {
             match('['); 
 
@@ -1519,8 +1516,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = RBRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:314:9: ( ']' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:314:11: ']'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:320:9: ( ']' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:320:11: ']'
             {
             match(']'); 
 
@@ -1539,8 +1536,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SEMI;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:315:5: ( ';' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:315:9: ';'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:321:5: ( ';' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:321:9: ';'
             {
             match(';'); 
 
@@ -1559,8 +1556,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:316:6: ( ',' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:316:9: ','
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:322:6: ( ',' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:322:9: ','
             {
             match(','); 
 
@@ -1579,8 +1576,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:317:5: ( '.' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:317:9: '.'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:323:5: ( '.' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:323:9: '.'
             {
             match('.'); 
 
@@ -1599,8 +1596,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:318:5: ( '=' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:318:9: '='
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:324:5: ( '=' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:324:9: '='
             {
             match('='); 
 
@@ -1619,8 +1616,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BANG;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:319:5: ( '!' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:319:9: '!'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:325:5: ( '!' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:325:9: '!'
             {
             match('!'); 
 
@@ -1639,8 +1636,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = TILDE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:320:6: ( '~' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:320:9: '~'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:326:6: ( '~' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:326:9: '~'
             {
             match('~'); 
 
@@ -1659,8 +1656,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = QUES;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:321:5: ( '?' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:321:9: '?'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:327:5: ( '?' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:327:9: '?'
             {
             match('?'); 
 
@@ -1679,8 +1676,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:322:6: ( ':' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:322:9: ':'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:328:6: ( ':' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:328:9: ':'
             {
             match(':'); 
 
@@ -1699,8 +1696,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = EQEQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:323:5: ( '==' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:323:9: '=='
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:329:5: ( '==' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:329:9: '=='
             {
             match("=="); 
 
@@ -1720,8 +1717,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = AMPAMP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:324:7: ( '&&' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:324:9: '&&'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:330:7: ( '&&' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:330:9: '&&'
             {
             match("&&"); 
 
@@ -1741,8 +1738,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BARBAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:325:7: ( '||' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:325:9: '||'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:331:7: ( '||' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:331:9: '||'
             {
             match("||"); 
 
@@ -1762,8 +1759,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:326:5: ( '+' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:326:9: '+'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:332:5: ( '+' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:332:9: '+'
             {
             match('+'); 
 
@@ -1782,8 +1779,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SUB;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:327:5: ( '-' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:327:9: '-'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:333:5: ( '-' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:333:9: '-'
             {
             match('-'); 
 
@@ -1802,8 +1799,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = STAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:328:5: ( '*' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:328:9: '*'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:334:5: ( '*' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:334:9: '*'
             {
             match('*'); 
 
@@ -1822,8 +1819,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SLASH;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:329:6: ( '/' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:329:10: '/'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:335:6: ( '/' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:335:10: '/'
             {
             match('/'); 
 
@@ -1842,8 +1839,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = AMP;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:330:5: ( '&' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:330:9: '&'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:336:5: ( '&' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:336:9: '&'
             {
             match('&'); 
 
@@ -1862,8 +1859,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BAR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:331:5: ( '|' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:331:9: '|'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:337:5: ( '|' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:337:9: '|'
             {
             match('|'); 
 
@@ -1882,8 +1879,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = CARET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:332:6: ( '^' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:332:10: '^'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:338:6: ( '^' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:338:10: '^'
             {
             match('^'); 
 
@@ -1902,8 +1899,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = PERCENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:333:8: ( '%' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:333:10: '%'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:339:8: ( '%' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:339:10: '%'
             {
             match('%'); 
 
@@ -1922,8 +1919,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = MONKEYS_AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:334:11: ( '@' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:334:13: '@'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:340:11: ( '@' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:340:13: '@'
             {
             match('@'); 
 
@@ -1942,8 +1939,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = BANGEQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:335:7: ( '!=' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:335:9: '!='
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:341:7: ( '!=' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:341:9: '!='
             {
             match("!="); 
 
@@ -1963,8 +1960,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:336:5: ( '>' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:336:9: '>'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:342:5: ( '>' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:342:9: '>'
             {
             match('>'); 
 
@@ -1983,8 +1980,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SHIFT_RIGHT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:337:12: ( '>>' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:337:16: '>>'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:343:12: ( '>>' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:343:16: '>>'
             {
             match(">>"); 
 
@@ -2004,8 +2001,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SHIFT_RIGHT2;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:338:13: ( '>>>' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:338:17: '>>>'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:344:13: ( '>>>' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:344:17: '>>>'
             {
             match(">>>"); 
 
@@ -2025,8 +2022,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = SHIFT_LEFT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:339:11: ( '<<' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:339:15: '<<'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:345:11: ( '<<' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:345:15: '<<'
             {
             match("<<"); 
 
@@ -2046,8 +2043,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = GE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:340:5: ( '>=' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:340:9: '>='
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:346:5: ( '>=' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:346:9: '>='
             {
             match(">="); 
 
@@ -2067,8 +2064,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:341:5: ( '<' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:341:9: '<'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:347:5: ( '<' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:347:9: '<'
             {
             match('<'); 
 
@@ -2087,8 +2084,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = LE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:342:5: ( '<=' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:342:9: '<='
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:348:5: ( '<=' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:348:9: '<='
             {
             match("<="); 
 
@@ -2108,8 +2105,8 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = ARROW;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:343:6: ( '->' )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:343:10: '->'
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:349:6: ( '->' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:349:10: '->'
             {
             match("->"); 
 
@@ -2129,11 +2126,11 @@ public class BeneratorLexer extends Lexer {
         try {
             int _type = IDENTIFIER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:346:5: ( IdentifierStart ( IdentifierPart )* )
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:346:9: IdentifierStart ( IdentifierPart )*
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:352:5: ( IdentifierStart ( IdentifierPart )* )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:352:9: IdentifierStart ( IdentifierPart )*
             {
             mIdentifierStart(); 
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:346:25: ( IdentifierPart )*
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:352:25: ( IdentifierPart )*
             loop25:
             do {
                 int alt25=2;
@@ -2146,7 +2143,7 @@ public class BeneratorLexer extends Lexer {
 
                 switch (alt25) {
             	case 1 :
-            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:346:25: IdentifierPart
+            	    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:352:25: IdentifierPart
             	    {
             	    mIdentifierPart(); 
 
@@ -2172,7 +2169,7 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "IdentifierStart"
     public final void mIdentifierStart() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:351:5: ( 'A' .. 'Z' | 'a' .. 'z' | '_' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:357:5: ( 'A' .. 'Z' | 'a' .. 'z' | '_' )
             // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:
             {
             if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
@@ -2196,7 +2193,7 @@ public class BeneratorLexer extends Lexer {
     // $ANTLR start "IdentifierPart"
     public final void mIdentifierPart() throws RecognitionException {
         try {
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:358:5: ( 'A' .. 'Z' | 'a' .. 'z' | '_' | '0' .. '9' )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:364:5: ( 'A' .. 'Z' | 'a' .. 'z' | '_' | '0' .. '9' )
             // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
@@ -2598,7 +2595,7 @@ public class BeneratorLexer extends Lexer {
             this.transition = DFA15_transition;
         }
         public String getDescription() {
-            return "257:1: DECIMALLITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ );";
+            return "263:1: DECIMALLITERAL : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? | ( '0' .. '9' )+ Exponent | HexPrefix ( HexDigit )* ( () | ( '.' ( HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+ );";
         }
     }
     static final String DFA19_eotS =
@@ -2663,7 +2660,7 @@ public class BeneratorLexer extends Lexer {
             this.transition = DFA19_transition;
         }
         public String getDescription() {
-            return "274:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )";
+            return "280:14: ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' | ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) ( '0' .. '7' ) | ( '0' .. '7' ) )";
         }
     }
     static final String DFA24_eotS =
@@ -2717,7 +2714,7 @@ public class BeneratorLexer extends Lexer {
             this.transition = DFA24_transition;
         }
         public String getDescription() {
-            return "297:1: LINE_COMMENT : ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* );";
+            return "303:1: LINE_COMMENT : ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r\\n' | '\\r' | '\\n' ) | '//' (~ ( '\\n' | '\\r' ) )* );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
