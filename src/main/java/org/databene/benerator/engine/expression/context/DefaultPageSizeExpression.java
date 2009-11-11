@@ -34,7 +34,7 @@ import org.databene.commons.Expression;
 public class DefaultPageSizeExpression implements Expression<Long> {
 
 	public Long evaluate(Context context) {
-        return ((BeneratorContext) context).getDefaultPagesize();
+        return ((BeneratorContext) context).getDefaultPageSize();
     }
 
 }
