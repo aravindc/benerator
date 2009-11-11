@@ -79,7 +79,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     @SuppressWarnings("unchecked")
     public static Generator<Entity> createComplexTypeGenerator(String name, 
     		ComplexTypeDescriptor type, boolean unique, BeneratorContext context) {
-    	Assert.notNull(name, "instance name");
+    	Assert.notNull(name, "instance name"); // TODO is the 'name' parameter obsolete?
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
         // create original generator
