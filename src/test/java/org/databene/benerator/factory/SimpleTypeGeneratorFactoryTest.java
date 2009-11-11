@@ -64,16 +64,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testValues() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
-		type.setValues("A,B,C");
-		Generator<String> generator = createGenerator(type, false);
-		expectGeneratedSet(generator, "A", "B", "C").withContinuedAvailability();
-	}
-	
-	@Test
-	public void testValuesWithCustomSeparator() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
-		type.setValues("A|B|C");
-		type.setSeparator("|");
+		type.setValues("'A','B','C'");
 		Generator<String> generator = createGenerator(type, false);
 		expectGeneratedSet(generator, "A", "B", "C").withContinuedAvailability();
 	}
@@ -81,7 +72,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testUniqueValues() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
-		type.setValues("A,B,C");
+		type.setValues("'A','B','C'");
 		Generator<String> generator = createGenerator(type, true);
 		expectGeneratedSet(generator, "A", "B", "C").withCeasedAvailability();
 	}
@@ -93,17 +84,15 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateSampleGeneratorUnweighted() {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("a,b"), false, null);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), false, null);
 		expectRelativeWeights(generator, 100, "a", 1, "b", 1);
-		generator = SimpleTypeGeneratorFactory.createSampleGenerator((SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("a|b").withSeparator("|"), false, null);
-		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
-		generator = SimpleTypeGeneratorFactory.createSampleGenerator((SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("a|b,c").withSeparator("|"), false, null);
+		generator = SimpleTypeGeneratorFactory.createSampleGenerator((SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("'a','b,c'").withSeparator("|"), false, null);
 		expectRelativeWeights(generator, 1000, "a", 1, "b,c", 1);
 	}
 
 	@Test
 	public void testCreateSampleGeneratorWeighted() {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("a[2],b"), false, null);
+		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), false, null);
 		expectRelativeWeights(generator, 1000, "a", 2, "b", 1);
 	}
 	
