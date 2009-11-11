@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.bean;
+package org.databene.platform.java;
 
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
