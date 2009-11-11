@@ -109,6 +109,20 @@ public class DBSystemTest {
 		}
 	}
 
+	@Test
+	public void testSequence() throws Exception {
+		String seq = getClass().getSimpleName();
+		try { 
+			db.createSequence(seq);
+			assertEquals(1, db.nextSequenceValue(seq));
+			assertEquals(2, db.nextSequenceValue(seq));
+			db.incrementSequenceValue(seq, 5);
+			assertEquals(7, db.nextSequenceValue(seq));
+		} finally {
+			db.dropSequence(seq);
+		}
+	}
+	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	private DBSystem db;
