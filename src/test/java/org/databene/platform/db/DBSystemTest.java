@@ -31,7 +31,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.databene.commons.db.DBUtil;
-import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.model.data.Entity;
 
 import org.junit.Before;
