@@ -3,7 +3,7 @@
 		<id name="ID" strategy="increment"/>
 		<id name="UUID" strategy="uuid"/>
 
-		<attribute name="VERSION" values="1"/>
+		<attribute name="VERSION" constant="1"/>
 
         <attribute name="CREATEDDATE" generator="org.databene.benerator.primitive.datetime.CurrentDateGenerator"/>
         <attribute name="CREATEDBY" script="{${user.name}}"/>
