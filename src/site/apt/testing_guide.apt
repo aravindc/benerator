@@ -1,9 +1,0 @@
-				-------------
-				testing guide
-				-------------
-
-testing guide
-
- inherit unit test class from GeneratorClassTest
-
- close each generator after testing
