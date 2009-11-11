@@ -97,11 +97,17 @@ catch (RecognitionException e) {
                           Parser section
 *********************************************************************************************/
 
+weightedLiteralList
+    :   weightedLiteral (','! weightedLiteral)*;
+	
+weightedLiteral
+    :   literal ('^'^ expression)?;
+
 transitionList
     :   transition (','! transition)*;
 
 transition
-    :   literal '->'^ literal ('['! expression ']'!)?;
+    :   literal '->'^ literal ('^'! expression)?;
 
 assignment
     :   IDENTIFIER '='^ expression;
