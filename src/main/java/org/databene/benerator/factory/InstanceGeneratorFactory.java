@@ -55,8 +55,8 @@ public class InstanceGeneratorFactory {
 
 /*  TODO remove
 
-    public static Generator<? extends Object> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
-        Generator<? extends Object> generator = createSingleInstanceGenerator(descriptor, context);
+    public static Generator<?> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
+        Generator<?> generator = createSingleInstanceGenerator(descriptor, context);
         generator = createInstanceGeneratorWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -64,9 +64,9 @@ public class InstanceGeneratorFactory {
     }
 */
     
-    public static Generator<? extends Object> createSingleInstanceGenerator(
+    public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, BeneratorContext context) {
-        Generator<? extends Object> generator = null;
+        Generator<?> generator = null;
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
         if (generator == null) {
@@ -108,7 +108,7 @@ public class InstanceGeneratorFactory {
         return generator;
     }
 */
-    public static Generator<? extends Object> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
+    public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null && nullQuota.doubleValue() == 1.)
             return new ConstantGenerator<Object>(null);
@@ -128,7 +128,7 @@ public class InstanceGeneratorFactory {
         return generator;
     }
 
-    public static Generator<? extends Object> createNullableGenerator(
+    public static Generator<?> createNullableGenerator(
     		InstanceDescriptor descriptor, BeneratorContext context) {
         if (!descriptor.overwritesParent() && descriptor.isNullable() && context.isDefaultNull()) 
             return new ConstantGenerator<Object>(null);

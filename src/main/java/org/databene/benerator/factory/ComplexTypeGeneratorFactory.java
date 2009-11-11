@@ -105,9 +105,9 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     private static Generator<Entity> wrapGeneratorWithVariables(
             ComplexTypeDescriptor type, BeneratorContext context, Generator<Entity> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-            Map<String, Generator<? extends Object>> varGens = new HashMap<String, Generator<? extends Object>>();
+            Map<String, Generator<?>> varGens = new HashMap<String, Generator<?>>();
             for (InstanceDescriptor variable : variables) {
-                Generator<? extends Object> varGen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
+                Generator<?> varGen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
                 varGens.put(variable.getName(), varGen);
             }
         return new ConfiguredEntityGenerator(generator, varGens, context);

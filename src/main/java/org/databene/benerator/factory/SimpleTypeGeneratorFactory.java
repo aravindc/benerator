@@ -92,7 +92,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
         // try constructive setup
-        Generator<? extends Object> generator = createConstructiveGenerator(descriptor, context);
+        Generator<?> generator = createConstructiveGenerator(descriptor, context);
         // fall back to descriptive setup
         if (generator == null)
         	generator = createConstantGenerator(descriptor, unique, context);

@@ -115,7 +115,7 @@ public class Entity implements Composite<Object> {
     		PrimitiveType primitiveType = componentType.getPrimitiveType();
     		if (primitiveType == null)
     			primitiveType = PrimitiveType.STRING;
-			Class<? extends Object> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName());
+			Class<?> javaType = BEAN_DESCRIPTOR_PROVIDER.concreteType(primitiveType.getName());
 			component = AnyConverter.convert(component, javaType);
     	}
         String internalComponentName = componentDescriptor != null ? componentDescriptor.getName() : componentName;

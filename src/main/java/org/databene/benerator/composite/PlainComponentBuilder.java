@@ -38,9 +38,9 @@ import org.databene.model.data.Entity;
 public class PlainComponentBuilder implements ComponentBuilder {
 	
 	private String name;
-	private Generator<? extends Object> source;
+	private Generator<?> source;
 	
-	public PlainComponentBuilder(String name, Generator<? extends Object> source) {
+	public PlainComponentBuilder(String name, Generator<?> source) {
 		this.name = name;
 		this.source = source;
 	}

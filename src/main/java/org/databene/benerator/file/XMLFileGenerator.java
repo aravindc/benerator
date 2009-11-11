@@ -63,7 +63,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     private String root;
     private String filenamePattern;
     private Generator<String> fileNameGenerator;
-    private Generator<? extends Object> contentGenerator;
+    private Generator<?> contentGenerator;
     private DataModel dataModel;
     
     @SuppressWarnings("unchecked")

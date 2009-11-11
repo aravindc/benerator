@@ -92,12 +92,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
     private static ComponentBuilder createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
-    	Generator<? extends Object> generator = InstanceGeneratorFactory.createNullQuotaOneGenerator(descriptor);
+    	Generator<?> generator = InstanceGeneratorFactory.createNullQuotaOneGenerator(descriptor);
     	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
 	}
 
     private static ComponentBuilder createNullableBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
-    	Generator<? extends Object> generator = InstanceGeneratorFactory.createNullableGenerator(descriptor, context);
+    	Generator<?> generator = InstanceGeneratorFactory.createNullableGenerator(descriptor, context);
     	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
 	}
 
@@ -113,7 +113,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	}
 
 /*
-    private static Generator<? extends Object> createComponentGenerator(
+    private static Generator<?> createComponentGenerator(
             ComponentDescriptor descriptor, Context context, GeneratioComponentnSetup setup) {
         if (logger.isDebugEnabled())
             logger.debug("createComponentGenerator(" + descriptor.getName() + ')');
@@ -129,7 +129,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 */
     public static ComponentBuilder createPartBuilder(
             PartDescriptor part, BeneratorContext context) {
-        Generator<? extends Object> generator = createSingleInstanceGenerator(part, context);
+        Generator<?> generator = createSingleInstanceGenerator(part, context);
         generator = createMultiplicityWrapper(part, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -144,7 +144,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         // check target type
         String targetTypeName = descriptor.getTargetTye();
 		ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
-        Generator<? extends Object> generator = null;
+        Generator<?> generator = null;
         if (targetType == null)
             throw new ConfigurationError("Type not defined: " + targetTypeName);
         
@@ -175,7 +175,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
     public static ComponentBuilder createIdBuilder(IdDescriptor id, BeneratorContext context) {
-        Generator<? extends Object> generator = createSingleInstanceGenerator(id, context);
+        Generator<?> generator = createSingleInstanceGenerator(id, context);
         generator = createMultiplicityWrapper(id, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);

@@ -63,7 +63,7 @@ public class Bean2EntityConverter extends FixedSourceTypeConverter<Object, Entit
         return entity;
     }
 
-    private ComplexTypeDescriptor createBeanDescriptor(Class<? extends Object> beanClass) {
+    private ComplexTypeDescriptor createBeanDescriptor(Class<?> beanClass) {
         return (ComplexTypeDescriptor) beanDescriptorProvider.getTypeDescriptor(beanClass.getName());
     }
 }

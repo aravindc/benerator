@@ -59,7 +59,7 @@ public class XLSEntitySource extends AbstractEntitySource {
         this(uri, new NoOpConverter<String>());
     }
 
-    public XLSEntitySource(String uri, Converter<String, ? extends Object> preprocessor) {
+    public XLSEntitySource(String uri, Converter<String, ?> preprocessor) {
         this.uri = uri;
         this.preprocessor = preprocessor;
     }

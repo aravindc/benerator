@@ -38,7 +38,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 
 public class GeneratorProxyMock<E> extends GeneratorProxy<E> {
 	
-	public static GeneratorProxyMock<? extends Object> instance;
+	public static GeneratorProxyMock<?> instance;
 	
 	public int param1;
 	public int param2;
@@ -52,7 +52,7 @@ public class GeneratorProxyMock<E> extends GeneratorProxy<E> {
 		this.param2 = param2;
 	}
 
-	public static void setInstance(GeneratorProxyMock<? extends Object> instance) {
+	public static void setInstance(GeneratorProxyMock<?> instance) {
 		GeneratorProxyMock.instance = instance;
 	}
 

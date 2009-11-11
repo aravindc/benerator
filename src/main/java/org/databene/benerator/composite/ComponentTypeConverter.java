@@ -72,7 +72,7 @@ public class ComponentTypeConverter extends FixedSourceTypeConverter<Entity, Ent
 					PrimitiveType primitive = ((SimpleTypeDescriptor) componentType).getPrimitiveType();
 					if (primitive == null)
 						primitive = PrimitiveType.STRING;
-			        Class<? extends Object> javaType = primitive.getJavaType();
+			        Class<?> javaType = primitive.getJavaType();
 			        Object javaValue = AnyConverter.convert(componentValue, javaType);
 			        components.put(componentName, javaValue);
 				} else {

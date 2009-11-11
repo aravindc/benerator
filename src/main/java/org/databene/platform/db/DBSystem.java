@@ -613,7 +613,7 @@ public class DBSystem extends AbstractStorageSystem {
                 DBColumn column = table.getColumn(name);
                 DBColumnType columnType = column.getType();
                 int sqlType = columnType.getJdbcType();
-                Class<? extends Object> javaType = driverTypeMapper.concreteType(primitiveType);
+                Class<?> javaType = driverTypeMapper.concreteType(primitiveType);
                 ColumnInfo info = new ColumnInfo(name, sqlType, javaType);
                 if (pkColumnNames.contains(name))
     				pkInfos.add(info);

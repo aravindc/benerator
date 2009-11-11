@@ -256,7 +256,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
             if (parentDescriptor == null)
                 throw new ConfigurationError("Unknown type: " + parentName);
             if (parentDescriptor.supportsDetail(name)) {
-                FeatureDetail<? extends Object> detail = parentDescriptor.getDetail(name);
+                FeatureDetail<?> detail = parentDescriptor.getDetail(name);
                 if (detail.isRestriction())
                     value = detail.getValue();
             }

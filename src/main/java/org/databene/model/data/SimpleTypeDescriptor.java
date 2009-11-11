@@ -281,7 +281,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
 /*
     public void setDetail(String detailName, Object detailValue) {
-        Class<? extends Object> targetType = getDetailType(detailName);
+        Class<?> targetType = getDetailType(detailName);
         if (targetType == Distribution.class && detailValue.getClass() == String.class)
             detailValue = mapDistribution((String) detailValue);
         else if (targetType == Converter.class && detailValue.getClass() == String.class)
@@ -292,13 +292,13 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
 // private helpers -------------------------------------------------------------------------------------------------
 /*
-    private Converter<? extends Object, ? extends Object> mapConverter(String converterString) {
+    private Converter<?, ?> mapConverter(String converterString) {
         Object result = BeanUtil.newInstance(converterString);
         if (result instanceof Format)
             result = new ParseFormatConverter(Object.class, (Format) result);
         else if (!(result instanceof Converter))
             throw new ConfigurationError("Class is no Converter: " + result.getClass());
-        return (Converter<? extends Object, ? extends Object>) result;
+        return (Converter<?, ?>) result;
     }
 
     private static Distribution mapDistribution(String distributionName) {

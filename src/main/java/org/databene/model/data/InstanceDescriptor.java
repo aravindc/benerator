@@ -218,7 +218,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public Object getDetailValue(String name) {
         Object value = super.getDetailValue(name);
         if (value == null && parent != null && parent.supportsDetail(name)) {
-            FeatureDetail<? extends Object> detail = parent.getDetail(name);
+            FeatureDetail<?> detail = parent.getDetail(name);
             if (detail.isRestriction())
                 value = detail.getValue();
         }

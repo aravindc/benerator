@@ -87,9 +87,9 @@ public class DescriptorUtil {
 	}
 
     @SuppressWarnings("unchecked")
-	public static Generator<? extends Object> getGeneratorByName(TypeDescriptor descriptor, BeneratorContext context) {
+	public static Generator<?> getGeneratorByName(TypeDescriptor descriptor, BeneratorContext context) {
     	try {
-	        Generator<? extends Object> generator = null;
+	        Generator<?> generator = null;
 	        String generatorClassName = descriptor.getGenerator();
 	        if (generatorClassName != null) {
 	        	generator = (Generator) BeneratorScriptParser.parseBeanSpec(generatorClassName).evaluate(context);

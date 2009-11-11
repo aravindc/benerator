@@ -55,7 +55,7 @@ import org.databene.model.storage.StorageSystem;
 public class GeneratorFactoryUtil {
 
     public static void mapDetailsToBeanProperties(FeatureDescriptor descriptor, Object bean, Context context) {
-        for (FeatureDetail<? extends Object> detail : descriptor.getDetails())
+        for (FeatureDetail<?> detail : descriptor.getDetails())
             mapDetailToBeanProperty(descriptor, detail.getName(), bean, context);
     }
 

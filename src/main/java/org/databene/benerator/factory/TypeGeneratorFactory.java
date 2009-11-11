@@ -67,7 +67,7 @@ public class TypeGeneratorFactory {
     
     private static final Logger logger = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
-    public static Generator<? extends Object> createTypeGenerator(String name, 
+    public static Generator<?> createTypeGenerator(String name, 
     		TypeDescriptor descriptor, boolean unique, BeneratorContext context) {
     	if (logger.isDebugEnabled())
     		logger.debug(descriptor + ", " + unique);
@@ -79,8 +79,8 @@ public class TypeGeneratorFactory {
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
     }
 
-    protected static Generator<? extends Object> createScriptGenerator(TypeDescriptor descriptor, Context context) {
-        Generator<? extends Object> generator = null;
+    protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
+        Generator<?> generator = null;
         String scriptText = descriptor.getScript();
         if (scriptText != null) {
             Script script = ScriptUtil.parseScriptText(scriptText);
@@ -92,7 +92,7 @@ public class TypeGeneratorFactory {
 /*
     public static void checkUsedDetails(TypeDescriptor descriptor,
             Set<String> usedDetails) {
-        for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
+        for (FeatureDetail<?> detail : descriptor.getDetails()) {
             String name = detail.getName();
             if (!NAME.equals(name) && detail.getValue() != null
                     && !usedDetails.contains(name))

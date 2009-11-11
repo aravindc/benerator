@@ -109,7 +109,7 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
             return resultSet.getString(columnIndex);
         // try generic conversion
         Object driverValue = resultSet.getObject(columnIndex);
-        Class<? extends Object> javaType = beanDescriptorProvider.concreteType(primitiveType);
+        Class<?> javaType = beanDescriptorProvider.concreteType(primitiveType);
         Object javaValue = AnyConverter.convert(driverValue, javaType);
         return javaValue;
     }

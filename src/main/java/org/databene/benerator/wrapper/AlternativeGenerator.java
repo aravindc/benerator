@@ -78,7 +78,7 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
     @Override
     public boolean available() {
         validate();
-        for (Generator<? extends Object> source : sources)
+        for (Generator<?> source : sources)
             if (source.available())
                 return true;
         return false;

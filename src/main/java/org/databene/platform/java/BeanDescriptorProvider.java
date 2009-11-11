@@ -120,7 +120,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
      * @return the abstract type that corresponds to the specified concrete type
      * @see org.databene.model.data.TypeMapper#abstractType(Class)
      */
-    public String abstractType(Class<? extends Object> concreteType) {
+    public String abstractType(Class<?> concreteType) {
         return mapper.abstractType(concreteType);
     }
 
@@ -129,7 +129,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
      * @return the abstract type that corresponds to the specified primitive type
      * @see org.databene.model.data.TypeMapper#concreteType(java.lang.String)
      */
-    public Class<? extends Object> concreteType(String primitiveType) {
+    public Class<?> concreteType(String primitiveType) {
         try {
             Class<?> result = mapper.concreteType(primitiveType);
             if (result == null)
@@ -141,7 +141,7 @@ public class BeanDescriptorProvider implements DescriptorProvider {
     }
 
     private TypeDescriptor createTypeDescriptor(String typeName) {
-        Class<? extends Object> beanClass = BeanUtil.forName(typeName);
+        Class<?> beanClass = BeanUtil.forName(typeName);
         ComplexTypeDescriptor td = new ComplexTypeDescriptor(typeName);
         for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
             if ("class".equals(propertyDescriptor.getName()))
@@ -158,8 +158,8 @@ public class BeanDescriptorProvider implements DescriptorProvider {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    public Class<? extends Object> javaTypeForAbstractType(String abstractType) {
-        Class<? extends Object> type = mapper.concreteType(abstractType);
+    public Class<?> javaTypeForAbstractType(String abstractType) {
+        Class<?> type = mapper.concreteType(abstractType);
         if (type == null)
             throw new UnsupportedOperationException("Not mapped to a Java type: " + abstractType);
         return type;

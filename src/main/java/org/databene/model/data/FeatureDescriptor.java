@@ -75,7 +75,7 @@ public class FeatureDescriptor {
         return detail.getDefault();
     }
 
-    public List<FeatureDetail<? extends Object>> getDetails() {
+    public List<FeatureDetail<?>> getDetails() {
         return details.values();
     }
 
@@ -88,7 +88,7 @@ public class FeatureDescriptor {
             name = "anonymous";
         StringBuilder buffer = new StringBuilder(name).append("[");
         boolean empty = true;
-        for (FeatureDetail<? extends Object> descriptor : details.values())
+        for (FeatureDetail<?> descriptor : details.values())
             if (descriptor.getValue() != null && !NAME.equals(descriptor.getName())) {
                 if (!empty)
                     buffer.append(", ");
@@ -106,7 +106,7 @@ public class FeatureDescriptor {
         if (o == null || getClass() != o.getClass())
             return false;
         final FeatureDescriptor that = (FeatureDescriptor) o;
-        for (FeatureDetail<? extends Object> detail : details.values()) {
+        for (FeatureDetail<?> detail : details.values()) {
             String detailName = detail.getName();
             if (!NullSafeComparator.equals(detail.getValue(), that.getDetailValue(detailName)))
                 return false;
@@ -121,8 +121,8 @@ public class FeatureDescriptor {
 
     // helpers ---------------------------------------------------------------------------------------------------------
 
-    protected Class<? extends Object> getDetailType(String detailName) {
-        FeatureDetail<? extends Object> detail = details.get(detailName);
+    protected Class<?> getDetailType(String detailName) {
+        FeatureDetail<?> detail = details.get(detailName);
         if (detail == null)
             throw new UnsupportedOperationException("Feature detail not supported: " + detailName);
         return detail.getType();

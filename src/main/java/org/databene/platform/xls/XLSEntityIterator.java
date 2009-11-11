@@ -59,7 +59,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 
 	private int sheetNo;
 	
-	private Converter<String, ? extends Object> preprocessor;
+	private Converter<String, ?> preprocessor;
 	
 	private HeavyweightIterator<Entity> source;
 	
@@ -69,7 +69,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		this(uri, new NoOpConverter<String>());
 	}
 
-	public XLSEntityIterator(String uri, Converter<String, ? extends Object> preprocessor) 
+	public XLSEntityIterator(String uri, Converter<String, ?> preprocessor) 
 			throws IOException {
 		this.uri = uri;
 		this.preprocessor = preprocessor;
@@ -102,7 +102,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	
 	// convenience methods ---------------------------------------------------------------------------------------------
 
-	public static List<Entity> parseAll(String uri, Converter<String, ? extends Object> preprocessor) 
+	public static List<Entity> parseAll(String uri, Converter<String, ?> preprocessor) 
 			throws IOException {
     	List<Entity> list = new ArrayList<Entity>();
     	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor);
@@ -133,7 +133,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
     }
 
 	private static HeavyweightIterator<Entity> createSheetIterator(
-			HSSFSheet sheet, String sheetName, Converter<String, ? extends Object> preprocessor) {
+			HSSFSheet sheet, String sheetName, Converter<String, ?> preprocessor) {
 	    XLSLineIterator sheetIterator = new XLSLineIterator(sheet, preprocessor);
 	    String featureNames[] = sheetIterator.getHeaders();
 	    DataModel dataModel = DataModel.getDefaultInstance();

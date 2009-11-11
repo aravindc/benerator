@@ -443,7 +443,7 @@ public class ArchetypeBuilder implements Runnable {
 	private void createEntity(InstanceDescriptor descriptor) throws SAXException {
 		descriptor.setCount(new ConstantExpression<Long>(0L));
 		AttributesImpl attributes = new AttributesImpl();
-        for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
+        for (FeatureDetail<?> detail : descriptor.getDetails()) {
             Object value = detail.getValue();
             if (value != null && !NullSafeComparator.equals(value, detail.getDefault()))
                 attributes.addAttribute("", "", detail.getName(), "CDATA", toStringConverter.convert(value));
@@ -487,10 +487,10 @@ public class ArchetypeBuilder implements Runnable {
         		DataModel.getDefaultInstance().getTypeDescriptor(component.getType()) : 
         		component.getLocalType());
         if (type != null) {
-			for (FeatureDetail<? extends Object> detail : type.getDetails())
+			for (FeatureDetail<?> detail : type.getDetails())
 	            format(detail, attributes);
 	    }
-        for (FeatureDetail<? extends Object> detail : component.getDetails())
+        for (FeatureDetail<?> detail : component.getDetails())
             format(detail, attributes);
         if (nullable)
         	attributes.addAttribute("", "", "nullQuota", "CDATA", "1");
@@ -512,7 +512,7 @@ public class ArchetypeBuilder implements Runnable {
 */
     }
 
-	private void format(FeatureDetail<? extends Object> detail, AttributesImpl attributes) {
+	private void format(FeatureDetail<?> detail, AttributesImpl attributes) {
 		if (!"name".equals(detail.getName()) && detail.getValue() != null && !dbConstraint(detail.getName()))
 		    attributes.addAttribute("", "", detail.getName(), "CDATA", toStringConverter.convert(detail.getValue()));
 	}

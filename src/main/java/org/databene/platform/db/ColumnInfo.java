@@ -35,9 +35,9 @@ public class ColumnInfo {
     
     public final String name;
     public final int sqlType;
-    public final Class<? extends Object> type;
+    public final Class<?> type;
     
-    public ColumnInfo(String name, int sqlType, Class<? extends Object> type) {
+    public ColumnInfo(String name, int sqlType, Class<?> type) {
         super();
         this.name = name;
         this.sqlType = sqlType;

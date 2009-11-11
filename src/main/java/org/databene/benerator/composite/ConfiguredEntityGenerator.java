@@ -46,11 +46,11 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
     private static Logger logger = LoggerFactory.getLogger(ConfiguredEntityGenerator.class);
     
     private Generator<Entity> entityGenerator;
-	private Map<String, Generator<? extends Object>> variables;
+	private Map<String, Generator<?>> variables;
 	private Context context;
 	private boolean variablesInitialized;
 	
-	public ConfiguredEntityGenerator(Generator<Entity> entityGenerator, Map<String, Generator<? extends Object>> variables, Context context) {
+	public ConfiguredEntityGenerator(Generator<Entity> entityGenerator, Map<String, Generator<?>> variables, Context context) {
 		this.entityGenerator = entityGenerator;
 		this.variables = variables;
 		this.context = context;
@@ -64,21 +64,21 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	}
 
 	public void validate() {
-        for (Generator<? extends Object> varGen : variables.values())
+        for (Generator<?> varGen : variables.values())
         	varGen.validate();
         entityGenerator.validate();
 	}
 
 	public boolean available() {
 		if (!variablesInitialized) {
-	        for (Generator<? extends Object> varGen : variables.values()) {
+	        for (Generator<?> varGen : variables.values()) {
 	            if (!varGen.available()) {
 	            	if (logger.isDebugEnabled())
 	            		logger.debug("No more available: " + varGen);
 	                return false;
 	            }
 	        }
-	        for (Map.Entry<String, Generator<? extends Object>> entry : variables.entrySet())
+	        for (Map.Entry<String, Generator<?>> entry : variables.entrySet())
 	            context.set(entry.getKey(), entry.getValue().generate());
 	        variablesInitialized = true;
 		}
@@ -99,14 +99,14 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	}
 
 	public void reset() {
-		for (Generator<? extends Object> variable : variables.values())
+		for (Generator<?> variable : variables.values())
 			variable.reset();
 		variablesInitialized = false;
 		entityGenerator.reset();
 	}
 
 	public void close() {
-		for (Generator<? extends Object> variable : variables.values())
+		for (Generator<?> variable : variables.values())
 			variable.close();
 		entityGenerator.close();
         for (String variableName : variables.keySet())
