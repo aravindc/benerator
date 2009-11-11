@@ -37,7 +37,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.platform.bean.BeanDescriptorProvider;
+import org.databene.platform.java.BeanDescriptorProvider;
 
 /**
  * Iterates a ResultSet returning Entity objects.
