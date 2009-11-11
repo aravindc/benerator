@@ -31,7 +31,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
@@ -50,7 +49,6 @@ import org.databene.benerator.wrapper.AsByteGeneratorWrapper;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
@@ -140,38 +138,32 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		String valueSpec = descriptor.getValues();
 		if (StringUtil.isEmpty(valueSpec))
 			return null;
-		char separator = DescriptorUtil.getSeparator(descriptor, context);
-		String[] tokens = StringUtil.tokenize(valueSpec, separator);
-		Distribution distribution;
-		if (valueSpec.contains("[") && valueSpec.contains("]")) {
-			AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
-			for (int i = 0; i < tokens.length; i++)
-				generator.addSample(parseWeightedSample(tokens[i], targetType));
-			return generator;
-		} else {
-			Object[] values = new Object[tokens.length];
-			for (int i = 0; i < tokens.length; i++)
-				values[i] = LiteralParser.parse(tokens[i]);
-			distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, true, context);
-	        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)));
-		}
+        try {
+			WeightedSample<?>[] samples;
+		        samples = BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
+			Distribution distribution;
+			if (weightsUsed(samples)) { // TODO introduce '^' literal for weights and parse elements with Benerator Script Parser
+				AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
+				for (int i = 0; i < samples.length; i++)
+					generator.addSample(samples[i]);
+				return generator;
+			} else {
+				Object[] values = new Object[samples.length];
+				for (int i = 0; i < samples.length; i++)
+					values[i] = samples[i].getValue();
+				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, true, context);
+		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)));
+			}
+        } catch (ParseException e) {
+	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
+        }
     }
 
-    private static <T> WeightedSample<T> parseWeightedSample(String sampleSpec, Class<T> targetType) {
-    	T value = null;
-    	Double weight = null;
-		String[] tokens = sampleSpec.split("(\\[|\\])");
-		Iterator<String> iterator = ArrayUtil.iterator(tokens);
-		while (iterator.hasNext()) {
-			String token = iterator.next().trim();
-			if (value == null)
-				value = AnyConverter.convert(token, targetType);
-			else
-				weight = Double.parseDouble(token);
-		}
-		if (weight == null)
-			weight = 1.;
-		return new WeightedSample<T>(value, weight);
+    private static boolean weightsUsed(WeightedSample<?>[] samples) {
+	    for (WeightedSample<?> sample : samples)
+	    	if (sample.getWeight() != 1)
+	    		return true;
+	    return false;
     }
 
 	@SuppressWarnings("unchecked")
