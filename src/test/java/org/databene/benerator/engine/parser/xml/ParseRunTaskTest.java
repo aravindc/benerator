@@ -43,7 +43,7 @@ public class ParseRunTaskTest {
     @Test
 	public void test() throws Exception {
         String uri = "string://" +
-        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pagesize='2' " +
+        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pageSize='2' " +
         		"      pager='new org.databene.task.PageListenerMock(1)'>" +
         		"  <property name='intProp' value='42' />" +
         		"</run-task>";
