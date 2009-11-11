@@ -26,6 +26,7 @@
 
 package org.databene.benerator.script;
 
+import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.Person;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
@@ -421,7 +422,7 @@ public class BeneratorScriptParserTest {
 
 	@Test
 	public void testTransitionList() throws Exception {
-		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList("'A'->'B',1->2[0.5]");
+		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList("'A'->'B',1->2^0.5");
 		assertEquals(2, ts.length);
 		checkAB1Transition(ts[0]);
 	    assertEquals(1, ts[1].getFrom());
@@ -429,6 +430,17 @@ public class BeneratorScriptParserTest {
 		assertEquals( 0.5, ts[1].getWeight().evaluate(null));
 	}
 
+	@Test
+	public void testWeightedLiteralList() throws Exception {
+		WeightedSample<?>[] ts = BeneratorScriptParser.parseWeightedLiteralList("'A',1^0.5");
+		assertEquals(2, ts.length);
+	    assertEquals("A", ts[0].getValue());
+	    assertEquals(1., ts[0].getWeight());
+		assertEquals(1, ts[1].getValue());
+		assertEquals(0.5, ts[1].getWeight());
+	}
+
+	
 	// tests migrated from BasicParserTest ---------------------------------------
 	
 	@Test
@@ -447,8 +459,6 @@ public class BeneratorScriptParserTest {
 				"registered=true, rank='A']");
 	}
 
-	
-	
 	// test members to be read or called from the tested script expressions --------------------------------------------
 	
 	public static String exclamate(String arg) {
