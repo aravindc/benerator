@@ -85,7 +85,7 @@ public class StateGeneratorTest extends GeneratorTest {
 	/** Tests a setup that generates Sequences (1, 2)*, e.g. (1, 2), (1, 2, 1, 2), (1, 2, 1, 2, 1, 2), ... */
 	@Test
 	public void testRandomSequenceByStringSpec() {
-		StateGenerator<String> generator = new StateGenerator<String>("null->1,1->2,2->1[0.5],2->null[0.5]");
+		StateGenerator<String> generator = new StateGenerator<String>("null->1,1->2,2->1^0.5,2->null^0.5");
 		for (int n = 0; n < 10; n++) {
 			List<String> products = GeneratorUtil.allProducts(generator);
 			assertTrue(products.size() % 2 == 0);
