@@ -19,11 +19,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.bean;
+package org.databene.platform.java;
 
 import static org.junit.Assert.*;
 
 import org.databene.model.data.Entity;
+import org.databene.platform.java.JavaInvoker;
 import org.junit.Test;
 
 /**

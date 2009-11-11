@@ -24,13 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.bean;
+package org.databene.platform.java;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.PersonBean;
+import org.databene.platform.java.Entity2BeanConverter;
 
 /**
  * Tests the Entity2BeanConverter.<br/>
