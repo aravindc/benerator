@@ -43,7 +43,7 @@ public class BeneratorRootStatementTest {
 		BeneratorRootStatement task = null;
 		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
 				"<create-entities type='Person' count='1'>" +
-				"<attribute name='name' values='Alice'/>" +
+				"<attribute name='name' constant='Alice'/>" +
 				"</create-entities>" +
 				"</setup>");
 		task = runner.parseDescriptorFile();

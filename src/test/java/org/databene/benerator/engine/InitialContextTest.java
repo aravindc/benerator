@@ -52,7 +52,7 @@ public class InitialContextTest {
 	                    		"  <property name='password' value='drowssap' />" +
 	                    		"</bean>" +
 	                    		"<create-entities name='Person' count='1' consumer=\"ctx.lookup('cons')\">" +
-	                    		"  <attribute name='name' values='Alice'/>" +
+	                    		"  <attribute name='name' constant='Alice'/>" +
 	                    		"</create-entities>" +
 	                    		"</setup>");
 	                    
