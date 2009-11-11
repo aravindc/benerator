@@ -39,7 +39,6 @@ import org.databene.commons.bean.ClassProvider;
 import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
-import org.databene.commons.context.PropertiesContext;
 import org.databene.domain.address.Country;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -61,7 +60,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
-    protected long    defaultPagesize      = 1;
+    protected long    defaultPageSize      = 1;
     protected boolean defaultNull          = true;
     protected char    defaultSeparator     = ',';
     protected String  defaultErrorHandler  = "fatal";
@@ -85,8 +84,8 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		this.contextUri = contextUri;
 		validate = !("false".equals(System.getProperty("benerator.validate")));
 		properties = new DefaultContext();
-		push(new PropertiesContext(java.lang.System.getenv()));
-		push(new PropertiesContext(java.lang.System.getProperties()));
+		push(new DefaultContext(java.lang.System.getenv()));
+		push(new DefaultContext(java.lang.System.getProperties()));
 		push(properties);
 		push(new CaseInsensitiveContext(true));
 		set("benerator", this);
@@ -179,12 +178,12 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 			Country.setDefault(country);
 	}
 
-	public long getDefaultPagesize() {
-        return defaultPagesize;
+	public long getDefaultPageSize() {
+        return defaultPageSize;
     }
     
-    public void setDefaultPagesize(long defaultPagesize) {
-        this.defaultPagesize = defaultPagesize;
+    public void setDefaultPageSize(long defaultPageSize) {
+        this.defaultPageSize = defaultPageSize;
     }
     
     public String getDefaultScript() {
