@@ -30,7 +30,7 @@ import org.databene.commons.Composite;
 import org.databene.commons.CompositeFormatter;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.platform.bean.BeanDescriptorProvider;
+import org.databene.platform.java.BeanDescriptorProvider;
 
 import java.util.Map;
 
