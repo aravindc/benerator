@@ -32,6 +32,9 @@ import org.databene.commons.db.hsql.HSQLUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static junit.framework.Assert.*;
 import static org.databene.commons.db.hsql.HSQLUtil.*;
 
@@ -44,6 +47,7 @@ import static org.databene.commons.db.hsql.HSQLUtil.*;
 public class DBSeqHiLoGeneratorTest {
 
     private static final String SEQUENCE_NAME = "seq_id_gen";
+    private static Logger logger = LoggerFactory.getLogger(DBSeqHiLoGeneratorTest.class);
 
     private DBSystem db;
     
@@ -82,6 +86,7 @@ public class DBSeqHiLoGeneratorTest {
 	    try {
     		db.dropSequence(SEQUENCE_NAME);
     	} catch (Exception e) {
+    		logger.error(e.getMessage(), e);
     	}
     }
     
