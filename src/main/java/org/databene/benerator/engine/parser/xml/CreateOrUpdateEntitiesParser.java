@@ -47,7 +47,6 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
@@ -138,7 +137,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
 	            DescriptorParser parser = ParserFactory.getParser(childName, element.getNodeName());
-	            Statement subStatement = parser.parse(element, resourceManager);
+	            Statement subStatement = parser.parse(child, resourceManager);
 				task.addSubStatement(subStatement);
             }
 		}
@@ -182,10 +181,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 			} else if (COMPONENT_TYPES.contains(childType)) {
 				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType);
 				((ComplexTypeDescriptor) instance.getTypeDescriptor()).addComponent(component);
-			} else if (!EL_CREATE_ENTITIES.equals(childType)
-					&& !EL_CONSUMER.equals(childType)
-					&& !EL_VARIABLE.equals(childType))
-				throw new ConfigurationError("Unexpected element: " + childType);
+			}
 		}
 		return instance;
 	}
