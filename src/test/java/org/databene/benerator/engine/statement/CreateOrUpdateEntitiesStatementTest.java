@@ -58,8 +58,11 @@ public class CreateOrUpdateEntitiesStatementTest {
 		statement.execute(new BeneratorContext());
 		
 		assertEquals(INVOCATION_COUNT, entityGenerator.invocationCount);
-		assertEquals(THREAD_COUNT, entityGenerator.threads.size());
+		int found = entityGenerator.threads.size();
+		assertTrue("Exprected at least " + THREAD_COUNT + " threads, but had only " + found, found >= THREAD_COUNT);
 	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	class EntityGeneratorMock extends LightweightGenerator<Entity> {
 		
