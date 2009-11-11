@@ -39,7 +39,7 @@ import org.databene.platform.db.DatabaseDialect;
 public class FirebirdDialect extends DatabaseDialect {
 
     public FirebirdDialect() {
-	    super("Firebird", true);
+	    super("Firebird", true, false); // TODO does Firebird really not support sequences?
     }
 
 }

@@ -26,9 +26,12 @@
 
 package org.databene.platform.db;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.model.DBCatalog;
 import org.databene.platform.db.model.DBTable;
 import org.slf4j.Logger;
@@ -44,17 +47,48 @@ public class DatabaseDialect {
 	
     private String system;
     protected boolean quoteTableNames;
+    protected boolean sequenceSupported;
     
-    public DatabaseDialect(String system, boolean quoteTableNames) {
+    public DatabaseDialect(String system, boolean quoteTableNames, boolean sequenceSupported) {
         this.system = system;
         this.quoteTableNames = quoteTableNames;
+        this.sequenceSupported = sequenceSupported;
     }
 
-    public String sequenceAccessorSql(String sequenceName) {
-        throw new UnsupportedOperationException("Sequence access not supported for " + system);
+    public boolean isSequenceSupported() {
+    	return sequenceSupported;
+    }
+
+	public String querySequences() {
+		return "select sequence_name from information_schema.system_sequences";
+	}
+
+	public String createSequence(String name, long initialValue) {
+		if (sequenceSupported)
+			return "create sequence " + name + " start with " + initialValue;
+		else
+			throw checkSequenceSupport("createSequence");
     }
     
-    public String createSQLInsert(DBTable table, List<ColumnInfo> columnInfos) {
+    public String nextSequenceValue(String sequenceName) {
+		throw checkSequenceSupport("nextSequenceValue");
+    }
+
+    public void incrementSequence(String sequenceName, long increment, Connection connection) throws SQLException {
+		if (sequenceSupported)
+			DBUtil.executeUpdate("alter sequence " + sequenceName + " increment by " + increment, connection);
+		else
+			throw checkSequenceSupport("incrementSequence");
+    }
+    
+	public String dropSequence(String sequenceName) {
+		if (sequenceSupported)
+			return "drop sequence " + sequenceName;
+		else
+			throw checkSequenceSupport("dropSequence");
+    }
+    
+    public String insert(DBTable table, List<ColumnInfo> columnInfos) {
         StringBuilder builder = new StringBuilder("insert into ");
         appendQualifiedTableName(table, builder).append(" (");
         if (columnInfos.size() > 0)
@@ -74,7 +108,7 @@ public class DatabaseDialect {
         return sql;
     }
 
-	public String createSQLUpdate(DBTable table, String[] pkColumnNames, List<ColumnInfo> columnInfos) {
+	public String update(DBTable table, String[] pkColumnNames, List<ColumnInfo> columnInfos) {
     	if (pkColumnNames.length == 0)
     		throw new UnsupportedOperationException("Cannot update table without primary key: " + table.getName());
         StringBuilder builder = new StringBuilder("update ");
@@ -101,6 +135,8 @@ public class DatabaseDialect {
         return sql;
     }
 
+	// private helpers -------------------------------------------------------------------------------------------------
+	
     private StringBuilder appendQualifiedTableName(DBTable table, StringBuilder builder) {
     	DBCatalog catalog = table.getCatalog();
 		if (catalog != null && catalog.getName() != null)
@@ -120,7 +156,14 @@ public class DatabaseDialect {
     	else
     		return builder.append(name);
     }
+    
+    private UnsupportedOperationException checkSequenceSupport(String methodName) {
+		if (!sequenceSupported)
+			return new UnsupportedOperationException("Sequence not supported in " + system);
+		else
+			return new UnsupportedOperationException(methodName + "() not implemented");
+    }
 
     static final Logger logger = LoggerFactory.getLogger(DBSystem.class);
-    
+
 }

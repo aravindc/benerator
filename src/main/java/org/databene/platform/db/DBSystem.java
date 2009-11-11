@@ -26,7 +26,6 @@
 
 package org.databene.platform.db;
 
-import org.databene.platform.db.dialect.HSQLDialect;
 import org.databene.platform.db.dialect.UnknownDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
@@ -35,7 +34,6 @@ import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
-import org.databene.commons.converter.NumberConverter;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.*;
@@ -52,7 +50,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
@@ -62,7 +59,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.sql.PooledConnection;
 
@@ -340,19 +336,8 @@ public class DBSystem extends AbstractStorageSystem {
     public long countEntities(String tableName) {
         if (logger.isDebugEnabled())
             logger.debug("countEntities(" + tableName + ")");
-        String sql = "select count(*) from " + tableName;
-        try {
-            Connection connection = getThreadContext().connection;
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            resultSet.next();
-            long count = resultSet.getLong(1);
-            resultSet.close();
-            statement.close();
-            return count;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error in counting rows of table " + tableName + ". SQL = " + sql, e);
-        }
+        String query = "select count(*) from " + tableName;
+        return DBUtil.queryLong(query, getThreadContext().connection);
     }
 
     public <T> TypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
@@ -379,20 +364,13 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public void createSequence(String name) throws SQLException {
-    	parseMetadataIfNecessary();
-        execute("create sequence " + name);
-        if (dialect instanceof HSQLDialect) { // TODO move this to HSQLDialect
-        	String helperTable = "dual_" + name;
-        	execute("create table " + helperTable + " ( id int )");
-        	execute("insert into " + helperTable + " (id) values (1)");
-        	nextSequenceValue(name);
-        }
+    	parseMetadataIfNecessary(); // TODO is this necessary?
+		execute(dialect.createSequence(name, 1));
     }
 
     public void dropSequence(String name) throws SQLException {
-        execute("drop sequence " + name);
-        if (dialect instanceof HSQLDialect)
-        	execute("drop table dual_" + name);
+    	parseMetadataIfNecessary(); // TODO is this necessary?
+        execute(dialect.dropSequence(name));
     }
 
     public void execute(String sql) throws SQLException {
@@ -400,12 +378,13 @@ public class DBSystem extends AbstractStorageSystem {
     }
     
     public long nextSequenceValue(String sequenceName) {
-    	parseMetadataIfNecessary();
-    	TypedIterable<Object> result = query(dialect.sequenceAccessorSql(sequenceName), null);
-    	Iterator<Object> iterator = result.iterator();
-    	Number next = (Number) iterator.next();
-    	IOUtil.close((Closeable) iterator);
-    	return NumberConverter.convert(next, Long.class);
+    	parseMetadataIfNecessary(); // TODO is this necessary?
+    	return DBUtil.queryLong(dialect.nextSequenceValue(sequenceName), getThreadContext().connection);
+    }
+    
+    public void incrementSequenceValue(String sequenceName, long increment) throws SQLException {
+    	parseMetadataIfNecessary(); // TODO is this necessary?
+    	dialect.incrementSequence(sequenceName, increment, getThreadContext().connection);
     }
     
     public Connection createConnection() {
@@ -780,8 +759,8 @@ public class DBSystem extends AbstractStorageSystem {
 	        if (table == null)
 	        	throw new IllegalArgumentException("Table not found: " + tableName);
 	        String sql = (insert ? 
-	        		dialect.createSQLInsert(table, columnInfos) : 
-	        		dialect.createSQLUpdate(table, getTable(tableName).getPKColumnNames(), columnInfos));
+	        		dialect.insert(table, columnInfos) : 
+	        		dialect.update(table, getTable(tableName).getPKColumnNames(), columnInfos));
 	        if (jdbcLogger.isDebugEnabled())
 	            jdbcLogger.debug("Creating prepared statement: " + sql);
 	        statement = DBUtil.prepareStatement(connection, sql, readOnly);

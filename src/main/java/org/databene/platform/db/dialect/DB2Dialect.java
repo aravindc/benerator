@@ -37,11 +37,11 @@ import org.databene.platform.db.DatabaseDialect;
 public class DB2Dialect extends DatabaseDialect {
 
     public DB2Dialect() {
-	    super("DB2", false);
+	    super("DB2", false, true);
     }
 
 	@Override
-    public String sequenceAccessorSql(String sequenceName) {
+    public String nextSequenceValue(String sequenceName) {
         String table = "sysibm.sysdummy1";
         String sequence = sequenceName;
         int sep = sequenceName.lastIndexOf('.');
@@ -49,7 +49,7 @@ public class DB2Dialect extends DatabaseDialect {
             table = sequenceName.substring(0, sep);
             sequence = sequenceName.substring(sep + 1);
         }
-        return "SELECT NEXTVAL FOR " + sequence + " FROM " + table;
+        return "select nextval for " + sequence + " from " + table;
     }
 
 }

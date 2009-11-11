@@ -37,7 +37,7 @@ import org.databene.platform.db.DatabaseDialect;
 public class UnknownDialect extends DatabaseDialect {
 
     public UnknownDialect(String system) {
-	    super(system, false);
+	    super(system, false, false);
     }
 
 }

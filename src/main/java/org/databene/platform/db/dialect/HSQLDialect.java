@@ -26,6 +26,10 @@
 
 package org.databene.platform.db.dialect;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.DatabaseDialect;
 
 /**
@@ -37,18 +41,25 @@ import org.databene.platform.db.DatabaseDialect;
 public class HSQLDialect extends DatabaseDialect {
     
     public HSQLDialect() {
-	    super("HSQL", false);
+	    super("HSQL", false, true);
     }
 
 	@Override
-    public String sequenceAccessorSql(String sequenceName) {
-        String table = "dual_" + sequenceName;
-        String sequence = sequenceName;
-        int sep = sequenceName.lastIndexOf('.');
-        if (sep > 0) {
-            table = sequenceName.substring(0, sep);
-            sequence = sequenceName.substring(sep + 1);
-        }
-        return "SELECT NEXT VALUE FOR " + sequence + " FROM " + table;
+    public String nextSequenceValue(String sequenceName) {
+        return "call next value for " + sequenceName;
     }
+
+	@Override
+	public void incrementSequence(String sequenceName, long increment, Connection connection) throws SQLException {
+		// TODO figure out if this can be changed to a one-line command and returned as string here
+		long tmp = DBUtil.queryLong(nextSequenceValue(sequenceName), connection);
+	    String command = "alter sequence " + sequenceName + " restart with " + (tmp + increment - 1);
+		DBUtil.executeUpdate(command, connection);
+	}
+	
+	@Override
+	public String dropSequence(String name) {
+		return "drop sequence " + name;
+	}
+	
 }

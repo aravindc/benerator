@@ -37,11 +37,12 @@ import org.databene.platform.db.DatabaseDialect;
 public class OracleDialect extends DatabaseDialect {
     
     public OracleDialect() {
-	    super("Oracle", true);
+	    super("Oracle", true, true);
     }
 
 	@Override
-    public String sequenceAccessorSql(String sequenceName) {
-        return "SELECT " + sequenceName + ".NEXTVAL FROM dual";
+    public String nextSequenceValue(String sequenceName) {
+        return "select " + sequenceName + ".nextval from dual";
     }
+	
 }
