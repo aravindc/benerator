@@ -60,7 +60,7 @@
             <xs:attribute name="defaultTimeZone"      type="xs:string"/>
             <xs:attribute name="defaultLocale"        type="xs:string"/>
             <xs:attribute name="defaultDataset"       type="xs:string"/>
-			<xs:attribute name="defaultPagesize"      type="xs:string"/>
+			<xs:attribute name="defaultPageSize"      type="xs:string"/>
 			<xs:attribute name="defaultSeparator"     type="xs:string"/>
 			<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
 			<xs:attribute name="maxCount"             type="xs:string"/>
@@ -193,13 +193,13 @@
 	<!-- Instantiates and executes a JavaBean that implements the Task interface.
 	     Properties are handled like in the &lt;bean&gt; tag.
 	     The task is executed 'count' times in a number of 'threads' parallel threads.
-	     Invocations are executed in groups of size 'pagesize'. -->
+	     Invocations are executed in groups of size 'pageSize'. -->
 	<xs:element name="run-task">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="generator-setup">
 					<xs:attribute name="count"    type="xs:string"/>
-					<xs:attribute name="pagesize" type="xs:string"/>
+					<xs:attribute name="pageSize" type="xs:string"/>
 					<xs:attribute name="threads"  type="xs:string"/>
 					<xs:attribute name="pager"    type="xs:string"/>
 				</xs:extension>
@@ -217,7 +217,7 @@
 			</xs:sequence>
 			<xs:attribute name="name"     type="xs:string"/>
 			<xs:attribute name="count"    type="xs:string"/>
-			<xs:attribute name="pagesize" type="xs:string"/>
+			<xs:attribute name="pageSize" type="xs:string"/>
 			<xs:attribute name="threads"  type="xs:string"/>
 			<xs:attribute name="source"   type="xs:string"/>
 			<xs:attribute name="encoding" type="xs:string"/>
@@ -231,20 +231,21 @@
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"         minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="id"              minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="composite-id"    minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="compositeId"    minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="attribute"       minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="execute"         minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="name"      type="xs:string"/>
+            <!-- <xs:attribute name="name"      type="xs:string"/> -->
             <xs:attribute name="type"      type="xs:string"/>
             <xs:attribute name="count"     type="xs:string"/>
             <xs:attribute name="minCount"  type="xs:string"/>
             <xs:attribute name="maxCount"  type="xs:string"/>
-            <xs:attribute name="pagesize"  type="xs:string"/>
+            <xs:attribute name="pageSize"  type="xs:string"/>
             <xs:attribute name="threads"   type="xs:string"/>
             <xs:attribute name="source"    type="xs:string"/>
             <xs:attribute name="separator" type="xs:string"/>
@@ -253,6 +254,7 @@
             <xs:attribute name="converter" type="xs:string"/>
             <xs:attribute name="validator" type="xs:string"/>
             <xs:attribute name="consumer"  type="xs:string"/>
+            <xs:attribute name="onError"  type="errorhandler-type"/>
         </xs:complexType>
     </xs:element>
 
@@ -268,21 +270,24 @@
                 <xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="execute"         minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="name"     type="xs:string"/>
-            <xs:attribute name="count"    type="xs:string"/>
-            <xs:attribute name="pagesize" type="xs:string"/>
-            <xs:attribute name="threads"  type="xs:string"/>
-            <xs:attribute name="source"   type="xs:string"/>
+            <xs:attribute name="name"      type="xs:string"/>
+            <xs:attribute name="count"     type="xs:string"/>
+            <xs:attribute name="pageSize"  type="xs:string"/>
+            <xs:attribute name="threads"   type="xs:string"/>
+            <xs:attribute name="source"    type="xs:string"/>
             <xs:attribute name="separator" type="xs:string"/>
-            <xs:attribute name="selector" type="xs:string"/>
-            <xs:attribute name="encoding" type="xs:string"/>
-            <xs:attribute name="consumer" type="xs:string"/>
+            <xs:attribute name="selector"  type="xs:string"/>
+            <xs:attribute name="encoding"  type="xs:string"/>
+            <xs:attribute name="converter" type="xs:string"/>
+            <xs:attribute name="consumer"  type="xs:string"/>
+            <xs:attribute name="onError"   type="errorhandler-type"/>
         </xs:complexType>
     </xs:element>
 
 	<!-- Defines a variable that is recreated by a generator on each entity creation -->
-	<xs:element name="variable" type="attribute-generator-setup"/>
+	<xs:element name="variable" type="component-generator-setup"/>
 
 	<xs:complexType name="generator-setup">
 		<xs:attribute name="name"         type="xs:string" use="required"/>
@@ -301,8 +306,6 @@
 		<xs:attribute name="locale"       type="xs:string"/>
 		<xs:attribute name="unique"       type="xs:string"/>
 		<xs:attribute name="distribution" type="xs:string"/>
-		<xs:attribute name="variation1"   type="xs:string"/>
-		<xs:attribute name="variation2"   type="xs:string"/>
 		<xs:attribute name="cyclic"       type="xs:string"/>
 		<xs:attribute name="proxy">
 			<xs:simpleType>
@@ -321,13 +324,11 @@
 		</xs:attribute>
 	</xs:complexType>
 	
-	<xs:element name="attribute" type="attribute-generator-setup"/>
-	
-	<xs:complexType name="attribute-generator-setup">
+	<xs:complexType name="component-generator-setup">
 		<xs:complexContent>
 			<xs:extension base="generator-setup">
 			
-				<xs:attribute name="unique-key"   type="xs:string"/>
+				<xs:attribute name="uniqueKey"   type="xs:string"/>
 
 				<xs:attribute name="nullable"     type="xs:string"/>
 				<xs:attribute name="mode"         type="xs:string"/>
@@ -354,35 +355,46 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
+	<xs:element name="attribute" type="attribute-generator-setup" />
+	
+	<xs:complexType name="attribute-generator-setup">
+		<xs:complexContent>
+			<xs:extension base="component-generator-setup">
+				<xs:attribute name="map" type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<!-- Defines an ID generator. -->
-	<xs:element name="id" type="attribute-generator-setup"/>
+	<xs:element name="id" type="component-generator-setup"/>
 
-    <xs:element name="composite-id">
+    <xs:element name="compositeId">
         <xs:complexType>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="attribute"           minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="reference"           minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="composite-reference" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="compositeReference" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
 	<xs:element name="reference" type="reference-generator-setup"/>
 	
-    <xs:element name="composite-reference">
+    <xs:element name="compositeReference">
         <xs:complexType>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="attribute"           minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="reference"           minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="composite-reference" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="compositeReference" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
 	<xs:complexType name="reference-generator-setup">
 		<xs:complexContent>
-			<xs:extension base="attribute-generator-setup">
+			<xs:extension base="component-generator-setup">
 				<xs:attribute name="targetType" type="xs:string" />
+				<xs:attribute name="map" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
