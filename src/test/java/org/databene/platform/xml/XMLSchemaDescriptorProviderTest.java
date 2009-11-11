@@ -103,7 +103,7 @@ public class XMLSchemaDescriptorProviderTest {
         // check simple-type
         SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) provider.getTypeDescriptor("simple-type");
         assertNotNull(simpleType);
-        assertEquals("Alice,Bob", simpleType.getValues());
+        assertEquals("'Alice','Bob'", simpleType.getValues());
         
         // check component root.complex-type
         ComponentDescriptor complexTypeComponent = rootDescriptor.getComponent("complex-type");
