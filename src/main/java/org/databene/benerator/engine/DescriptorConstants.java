@@ -76,7 +76,7 @@ public interface DescriptorConstants {
     static final String ATT_ON_ERROR = "onError";
     static final String ATT_CONSUMER = "consumer";
     static final String ATT_THREADS = "threads";
-    static final String ATT_PAGESIZE = "pagesize";
+    static final String ATT_PAGESIZE = "pageSize";
     static final String ATT_PAGER = "pager";
     static final String ATT_COUNT = "count";
     static final String ATT_ASSERT = "assert";
