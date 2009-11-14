@@ -101,8 +101,8 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
 		
 		Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
-		String localPageSize = element.getAttribute(ATT_PAGESIZE);
-		Expression<Long> pageSize = new ScriptExpression<Long>(localPageSize, new DefaultPageSizeExpression());
+		Expression<Long> pageSize = new TypedScriptExpression<Long>(element.getAttribute(ATT_PAGESIZE), 
+				Long.class, new DefaultPageSizeExpression());
 		Expression<Integer> threads = new TypedScriptExpression<Integer>(element.getAttribute(ATT_THREADS), Integer.class, 1);
 		Expression<PageListener> pager = new ScriptExpression<PageListener>(element.getAttribute(ATT_PAGER), (PageListener) null);
 		CreateOrUpdateEntitiesStatement creator = new CreateOrUpdateEntitiesStatement(task, countExpression, pageSize, pager, threads);
