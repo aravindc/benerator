@@ -47,7 +47,8 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 	
     static final String FILENAME = LocalSequenceGenerator.class.getSimpleName() + ".properties";
     
-	private static final Map<String, IncrementGenerator> MAP = new HashMap<String, IncrementGenerator>();
+	private static final Map<String, IncrementalIdGenerator> MAP 
+		= new HashMap<String, IncrementalIdGenerator>();
 	
 	// Initialization --------------------------------------------------------------------------------------------------
 
@@ -83,7 +84,7 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 	        try {
 	    	    Map<String, String> values = IOUtil.readProperties(FILENAME);
 	            for (Map.Entry<String, String> entry : values.entrySet())
-	            	MAP.put(entry.getKey(), new IncrementGenerator(Integer.parseInt(entry.getValue())));
+	            	MAP.put(entry.getKey(), new IncrementalIdGenerator(Long.parseLong(entry.getValue())));
             } catch (Exception e) {
             	throw new ConfigurationError(e);
             }
@@ -92,7 +93,7 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 	
     private static void persist() {
     	Map<String, String> values = new HashMap<String, String>();
-    	for (Map.Entry<String, IncrementGenerator> entry : MAP.entrySet())
+    	for (Map.Entry<String, IncrementalIdGenerator> entry : MAP.entrySet())
     		values.put(entry.getKey(), String.valueOf(entry.getValue().getCursor()));
 		try {
 	        IOUtil.writeProperties(values, FILENAME);
@@ -102,9 +103,9 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
     }
 
 	private static Generator<Long> getOrCreateSource(String name) {
-		IncrementGenerator generator = MAP.get(name);
+		IncrementalIdGenerator generator = MAP.get(name);
 		if (generator == null) {
-			generator = new IncrementGenerator();
+			generator = new IncrementalIdGenerator();
 			MAP.put(name, generator);
 		}
 		return generator;

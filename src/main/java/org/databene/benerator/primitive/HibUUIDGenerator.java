@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive;
 
 import java.net.InetAddress;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.commons.NumberUtil;
 
@@ -43,7 +44,7 @@ public class HibUUIDGenerator extends LightweightStringGenerator {
     private static final String IP_ADDRESS;
     private static final String JVM_ID = NumberUtil.formatHex((int) (System.currentTimeMillis() >>> 8), 8);
 
-    private static short counter = (short) 0;
+    private static volatile AtomicInteger counter = new AtomicInteger();
 
     private String ipJvm;
     private String separator;
@@ -79,12 +80,9 @@ public class HibUUIDGenerator extends LightweightStringGenerator {
 
     public String generate() {
         long time = System.currentTimeMillis();
-        short count;
-        synchronized(getClass()) {
-            if (counter < 0)
-                counter = 0;
-            count = counter++;
-        }
+        short count = counter.shortValue();
+        if (count < 0)
+        	count += Short.MAX_VALUE + 1;
         return new StringBuilder(36)
             .append(ipJvm)
             .append(NumberUtil.formatHex((short) (time >>> 32), 4)).append(separator)

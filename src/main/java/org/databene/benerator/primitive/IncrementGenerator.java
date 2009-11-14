@@ -26,6 +26,9 @@
 
 package org.databene.benerator.primitive;
 
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ConfigurationError;
 
@@ -45,7 +48,7 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     private long max;
     private long increment;
     
-    private long cursor;
+    volatile AtomicLong cursor = new AtomicLong();
     
     // constructors ----------------------------------------------------------------------------------------------------
     
@@ -75,7 +78,7 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     
     public void setMin(Long min) {
         this.min = min;
-        this.cursor = min;
+        this.cursor.set(min);
     }
     
     public long getMax() {
@@ -96,10 +99,6 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
     	this.increment = increment;
     }
 
-    public long getCursor() {
-	    return cursor;
-    }
-
     // Generator interface ---------------------------------------------------------------------------------------------
 
 	public Class<Long> getGeneratedType() {
@@ -108,16 +107,18 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
 
     @Override
     public boolean available() {
-        return cursor < max;
+        return (cursor.get() < max);
     }
     
     public Long generate() {
-        return cursor++;
+    	if (!available())
+    		throw GeneratorUtil.stateException(this);
+        return cursor.getAndAdd(increment);
     }
     
     @Override
     public void reset() {
-        this.cursor = min;
+        this.cursor.set(min);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
