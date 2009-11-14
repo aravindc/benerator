@@ -46,7 +46,6 @@ public class ErrorHandlerExpression implements Expression<ErrorHandler> {
 	private Expression<String> nameExpr;
 	private String category;
 
-	
     public ErrorHandlerExpression(Expression<String> nameExpr, String category) {
 	    this.nameExpr = nameExpr;
 	    this.category = category;
