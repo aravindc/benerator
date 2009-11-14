@@ -138,17 +138,17 @@ public class DescriptorUtilTest {
 		ConsumerChain<Entity> consumer = DescriptorUtil.parseConsumersSpec(ConsumerMock.class.getName(), context);
 		consumer.startConsuming(entity);
 		assertEquals(1, consumer.componentCount());
-		ConsumerMock consumerCheck = (ConsumerMock) consumer.getComponent(0);
-		assertEquals(entity, consumerCheck.lastEntity);
-		assertEquals(1, consumerCheck.n);
+		ConsumerMock consumerMock = (ConsumerMock) consumer.getComponent(0);
+		assertEquals(entity, consumerMock.lastEntity);
+		assertEquals(1, consumerMock.id);
 		
 		// test constructor syntax
 		consumer = DescriptorUtil.parseConsumersSpec("new " + ConsumerMock.class.getName() + "(2)", context);
 		consumer.startConsuming(entity);
 		assertEquals(1, consumer.componentCount());
-		consumerCheck = (ConsumerMock) consumer.getComponent(0);
-		assertEquals(entity, consumerCheck.lastEntity);
-		assertEquals(2, consumerCheck.n);
+		consumerMock = (ConsumerMock) consumer.getComponent(0);
+		assertEquals(entity, consumerMock.lastEntity);
+		assertEquals(2, consumerMock.id);
 		
 		// test reference
 		context.set("myconsumer", new ConsumerMock());
