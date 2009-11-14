@@ -63,6 +63,34 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
             "type", "unique", "nullable", "minCount", "maxCount", "count", "nullQuota");
     
 */
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testSingleValuesAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setValues("'A'");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		for (int i = 0; i < 10; i++)
+			assertEquals("A", helper.generate());
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testMultiValuesAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setValues("'A','B'");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		for (int i = 0; i < 10; i++) {
+			String s = helper.generate();
+			assertTrue("A".equals(s) || "B".equals(s));
+		}
+	}
+
 	// csv string source -----------------------------------------------------------------------------------------------
 	
 	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
@@ -204,9 +232,9 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
     @SuppressWarnings("cast")
     public void testAlternative() {
     	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
-    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("1");
+    	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("'1'");
 		alternativeType.addComponent(new PartDescriptor("a", typeA));
-    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("2");
+    	SimpleTypeDescriptor typeB = (SimpleTypeDescriptor) new SimpleTypeDescriptor("B", "string").withValues("'2'");
 		alternativeType.addComponent(new PartDescriptor("b", typeB));
 		BeneratorContext context = new BeneratorContext(null);
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
