@@ -140,7 +140,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
 
     // Consumer interface ----------------------------------------------------------------------------------------------
 
-	public final void startConsuming(E data) {
+	public final synchronized void startConsuming(E data) {
         try {
             if (printer == null)
                 initPrinter(data);
