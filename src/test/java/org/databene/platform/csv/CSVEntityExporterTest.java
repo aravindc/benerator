@@ -27,16 +27,23 @@
 package org.databene.platform.csv;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.databene.commons.IOUtil;
+import org.databene.commons.ReaderLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.PartDescriptor;
 
 import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the {@link CSVEntityExporter}.<br/>
@@ -128,6 +135,42 @@ public class CSVEntityExporterTest {
 			exporter.finishConsuming(entity);
 			exporter.close();
 			assertEquals("value\r\n1-00", getContent(DEFAULT_FILE));
+		} finally {
+			DEFAULT_FILE.delete();
+		}
+	}
+	
+	@Test
+	public void testMultiThreaded() throws Exception {
+		try {
+			ComplexTypeDescriptor type = new ComplexTypeDescriptor("testtype");
+			type.addComponent(new PartDescriptor("a", "string"));
+			type.addComponent(new PartDescriptor("b", "string"));
+			type.addComponent(new PartDescriptor("c", "string"));
+			final CSVEntityExporter exporter = new CSVEntityExporter(
+					DEFAULT_FILE.getAbsolutePath(), type);
+			final Entity entity = new Entity(type, "a", "0123456789", "b", "5555555555", "c", "9876543210");
+			ExecutorService service = Executors.newCachedThreadPool();
+			Runnable runner = new Runnable() {
+				public void run() {
+					for (int i = 0; i < 500; i++)
+						exporter.startConsuming(entity);
+					exporter.finishConsuming(entity);
+	            }
+			};
+			for (int i = 0; i < 20; i++)
+				service.execute(runner);
+			service.shutdown();
+			service.awaitTermination(2, TimeUnit.SECONDS);
+			exporter.close();
+			ReaderLineIterator iterator = new ReaderLineIterator(new FileReader(DEFAULT_FILE));
+			assertEquals("a,b,c", iterator.next());
+			String expectedContent = "0123456789,5555555555,9876543210";
+			while (iterator.hasNext()) {
+				String line = iterator.next();
+				assertEquals(expectedContent, line);
+			}
+			iterator.close();
 		} finally {
 			DEFAULT_FILE.delete();
 		}
