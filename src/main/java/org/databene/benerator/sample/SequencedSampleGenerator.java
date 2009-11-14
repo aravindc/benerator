@@ -123,7 +123,7 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     public void validate() {
         if (dirty) {
             if (samples.size() == 0) 
-            	throw new InvalidGeneratorSetupException("No samples defined");
+            	throw new InvalidGeneratorSetupException("No samples defined in " + this);
             else {
             	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1);
             	indexGenerator.validate();
