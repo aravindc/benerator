@@ -50,10 +50,15 @@ public class TypedScriptExpression<E> implements Expression<E> {
     }
 
     public TypedScriptExpression(String script, Class<E> resultType) {
-    	this(script, resultType, null);
+    	this(script, resultType, (E) null);
     }
 
     public TypedScriptExpression(String script, Class<E> resultType, E defaultValue) {
+    	this.source = new ScriptExpression<Object>(script, defaultValue);
+    	this.converter = new AnyConverter<E>(resultType);
+    }
+
+    public TypedScriptExpression(String script, Class<E> resultType, Expression<E> defaultValue) {
     	this.source = new ScriptExpression<Object>(script, defaultValue);
     	this.converter = new AnyConverter<E>(resultType);
     }
