@@ -117,8 +117,8 @@ public class DBSystemTest {
 			db.createSequence(seq);
 			assertEquals(1, db.nextSequenceValue(seq));
 			assertEquals(2, db.nextSequenceValue(seq));
-			db.incrementSequenceValue(seq, 5);
-			assertEquals(7, db.nextSequenceValue(seq));
+			db.setSequenceValue(seq, 5);
+			assertEquals(5, db.nextSequenceValue(seq));
 		} finally {
 			db.dropSequence(seq);
 		}

@@ -50,12 +50,13 @@ public class HSQLDialect extends DatabaseDialect {
     }
 
 	@Override
-	public void incrementSequence(String sequenceName, long increment, Connection connection) throws SQLException {
-		// TODO figure out if this can be changed to a one-line command and returned as string here
-		long tmp = DBUtil.queryLong(nextSequenceValue(sequenceName), connection);
-	    String command = "alter sequence " + sequenceName + " restart with " + (tmp + increment - 1);
-		DBUtil.executeUpdate(command, connection);
+	public void setSequenceValue(String sequenceName, long value, Connection connection) throws SQLException {
+	    DBUtil.executeUpdate(setSequenceValue(sequenceName, value), connection);
 	}
+
+	public String setSequenceValue(String sequenceName, long value) {
+	    return "alter sequence " + sequenceName + " restart with " + value;
+    }
 	
 	@Override
 	public String dropSequence(String name) {

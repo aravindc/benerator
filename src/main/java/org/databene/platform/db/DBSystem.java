@@ -382,9 +382,9 @@ public class DBSystem extends AbstractStorageSystem {
     	return DBUtil.queryLong(dialect.nextSequenceValue(sequenceName), getThreadContext().connection);
     }
     
-    public void incrementSequenceValue(String sequenceName, long increment) throws SQLException {
+    public void setSequenceValue(String sequenceName, long increment) throws SQLException {
     	parseMetadataIfNecessary(); // TODO is this necessary?
-    	dialect.incrementSequence(sequenceName, increment, getThreadContext().connection);
+    	dialect.setSequenceValue(sequenceName, increment, getThreadContext().connection);
     }
     
     public Connection createConnection() {

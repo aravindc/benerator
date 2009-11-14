@@ -26,10 +26,6 @@
 
 package org.databene.platform.db.dialect;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.DatabaseDialect;
 
 /**
@@ -48,10 +44,5 @@ public class PostgreSQLDialect extends DatabaseDialect {
     public String nextSequenceValue(String sequenceName) {
         return "select nextval('" + sequenceName + "')";
     }
-	
-	@Override
-	public void incrementSequence(String sequenceName, long increment, Connection connection) throws SQLException {
-	    DBUtil.executeUpdate("alter sequence " + sequenceName + " increment by " + increment, connection); // TODO test
-	}
 	
 }

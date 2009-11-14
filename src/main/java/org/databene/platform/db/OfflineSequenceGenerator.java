@@ -43,7 +43,6 @@ public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
 	private DBSystem target;
 	private String sequenceName;
 	private boolean initialized;
-	private long initial;
 	private long next;
 	
 	public OfflineSequenceGenerator() {
@@ -87,7 +86,7 @@ public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
 	
 	public Long generate() throws IllegalGeneratorStateException {
 	    if (!initialized)
-	    	next = initial = target.nextSequenceValue(sequenceName);
+	    	next = target.nextSequenceValue(sequenceName);
 	    return next++;
     }
 	
@@ -95,7 +94,7 @@ public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
 	public void close() {
 	    try {
 	        super.close();
-	        target.incrementSequenceValue(sequenceName, next - initial);
+	        target.setSequenceValue(sequenceName, next);
         } catch (SQLException e) {
 	        throw new RuntimeException(e);
         }

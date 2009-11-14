@@ -74,10 +74,16 @@ public class DatabaseDialect {
 		throw checkSequenceSupport("nextSequenceValue");
     }
 
-    public void incrementSequence(String sequenceName, long increment, Connection connection) throws SQLException {
-		if (sequenceSupported)
+    public void setSequenceValue(String sequenceName, long value, Connection connection) throws SQLException {
+		if (sequenceSupported) {
+			long old = DBUtil.queryLong(nextSequenceValue(sequenceName), connection) - 1;
+			long increment = value - old;
+			if (increment < 0)
+				throw new RuntimeException("Trying to decrease value of sequence " + sequenceName + " from " + old + " to " + value);
 			DBUtil.executeUpdate("alter sequence " + sequenceName + " increment by " + increment, connection);
-		else
+			DBUtil.queryLong(nextSequenceValue(sequenceName), connection);
+			DBUtil.executeUpdate("alter sequence " + sequenceName + " increment by 1", connection);
+		} else
 			throw checkSequenceSupport("incrementSequence");
     }
     
