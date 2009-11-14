@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
 public class CreateOrUpdateEntitiesParserTest {
 
 	@Test
-	public void testBeanInvocation() throws Exception {
+	public void testSubExecute() throws Exception {
         String uri = "string://<create-entities type='dummy' count='3'>" +
         		"<execute>bean.invoke(2)</execute>" +
         		"</create-entities>";
