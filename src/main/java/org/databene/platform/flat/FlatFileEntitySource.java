@@ -27,7 +27,9 @@
 package org.databene.platform.flat;
 
 import org.databene.commons.Converter;
+import org.databene.commons.Escalator;
 import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.LoggerEscalator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.converter.ArrayConverter;
@@ -52,6 +54,8 @@ import org.databene.platform.array.Array2EntityConverter;
  */
 public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> implements EntitySource {
 
+	private static final Escalator escalator = new LoggerEscalator();
+	
     private String uri;
     private String encoding;
     private ComplexTypeDescriptor entityDescriptor;
@@ -98,9 +102,14 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         this.entityDescriptor = new ComplexTypeDescriptor(entity);
     }
 
-    // TODO v0.6 rename property to 'columns' and print a deprecation warning
     public void setProperties(String properties) {
-        this.descriptors = FlatFileUtil.parseProperties(properties);
+    	escalator.escalate("The property 'properties' of class " + getClass() + "' has been renamed to 'columns'. " +
+    			"Please fix the property name in your configuration", this.getClass(), "setProperties()");
+        setColumns(properties);
+    }
+
+    public void setColumns(String columns) {
+        this.descriptors = FlatFileUtil.parseProperties(columns);
     }
 
     // Iterable interface ----------------------------------------------------------------------------------------------
