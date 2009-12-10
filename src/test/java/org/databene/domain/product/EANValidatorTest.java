@@ -26,29 +26,46 @@
 
 package org.databene.domain.product;
 
+import org.databene.commons.validator.SimpleValidatorTest;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
- * Tests validation of an EAN code.<br/>
+ * Tests the validation of EAN codes with the {@link EANValidator}.<br/>
  * <br/>
  * Created: 29.07.2007 08:04:09
  * @author Volker Bergmann
  */
-public class EANValidatorTest {
+public class EANValidatorTest extends SimpleValidatorTest<String> {
 
-    private static String EAN_VOLVIC           = "3057640182693";
+    public EANValidatorTest() {
+	    super(new EANValidator());
+    }
+
+	private static String EAN_VOLVIC           = "3057640182693";
+    private static String ISBN_ISM2            = "9783981304602";
     private static String EAN_INVALID_CHECKSUM = "3057640182692";
     private static String EAN_INVALID_LENGTH   = "3057640182";
 
     @Test
-    public void test() {
-    	EANValidator validator = new EANValidator();
-        assertTrue(validator.isValid(EAN_VOLVIC, null));
-        assertFalse(validator.isValid(null, null));
-        assertFalse(validator.isValid("", null));
-        assertFalse(validator.isValid(EAN_INVALID_CHECKSUM, null));
-        assertFalse(validator.isValid(EAN_INVALID_LENGTH, null));
+    public void testValidEAN() {
+        assertValid(EAN_VOLVIC);
+    }
+    
+    @Test
+    public void testValidISBN() {
+        assertValid(ISBN_ISM2);
+    }
+    
+    @Test
+    public void testIllegalValues() {
+        assertInvalid(null);
+        assertInvalid("");
+    }
+    
+    @Test
+    public void testInvalidChecksums() {
+    	assertInvalid(EAN_INVALID_CHECKSUM);
+    	assertInvalid(EAN_INVALID_LENGTH);
     }
     
 }
