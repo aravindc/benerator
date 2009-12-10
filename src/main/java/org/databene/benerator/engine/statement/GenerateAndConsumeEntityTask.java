@@ -85,7 +85,7 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     	try {
     		// generate entity
 	        Entity entity = null;
-	        synchronized (entityGenerator) {
+	        synchronized (entityGenerator) { // TODO get rid of synchronized block, e.g. by generateIfAvailable()?
 	            if (entityGenerator.available())
 	                entity = entityGenerator.generate();
 	            else
