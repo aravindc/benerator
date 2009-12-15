@@ -107,7 +107,7 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
 
     @Override
     public boolean available() {
-        return (cursor.get() < max);
+        return (cursor.get() <= max);
     }
     
     public Long generate() {
