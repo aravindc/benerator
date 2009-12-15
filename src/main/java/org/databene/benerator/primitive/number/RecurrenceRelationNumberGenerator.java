@@ -72,6 +72,7 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
     	super(targetType, min, max, AnyConverter.convert(1, targetType));
     	this.depth = depth;
     	this.recentProducts = new LinkedList<E>();
+    	this.n = 0;
 	    reset();
     }
     
@@ -79,6 +80,10 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
     	return depth;
     }
 
+    public int getN() {
+    	return n;
+    }
+    
     // generator interface ---------------------------------------------------------------------------------------------
     
 	/** See {@link org.databene.benerator.Generator#available()} */
