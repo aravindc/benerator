@@ -93,10 +93,10 @@ public class GeneratorFactory {
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, T precision,
-            Distribution distribution, double nullQuota) {
+            Distribution distribution, boolean unique, double nullQuota) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
-        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, nullQuota);
+        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique, nullQuota);
     }
     
     /**
@@ -111,10 +111,10 @@ public class GeneratorFactory {
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
-            Distribution distribution, double nullQuota) {
+            Distribution distribution, boolean unique, double nullQuota) {
         if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
-        Generator<T> source = distribution.createGenerator(numberType, min, max, precision); // TODO support WeightFunction, fractionDigits 
+        Generator<T> source = distribution.createGenerator(numberType, min, max, precision, unique); // TODO support WeightFunction, fractionDigits 
         /*
         if (Integer.class.equals(type) || Long.class.equals(type) || Byte.class.equals(type) || Short.class.equals(type) || BigInteger.class.equals(type))
             source = new IntegralNumberGenerator<T>(type, min, max, precision, distribution);

@@ -165,7 +165,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(
     			typeDescriptor.getDistribution(), descriptor.isUnique(), false, context);
         if (distribution != null)
-            generator = distribution.applyTo(generator);
+            generator = distribution.applyTo(generator, descriptor.isUnique());
         
         // check multiplicity
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);

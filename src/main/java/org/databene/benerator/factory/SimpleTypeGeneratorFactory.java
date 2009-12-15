@@ -92,7 +92,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
         // try constructive setup
-        Generator<?> generator = createConstructiveGenerator(descriptor, context);
+        Generator<?> generator = createConstructiveGenerator(descriptor, unique, context);
         // fall back to descriptive setup
         if (generator == null)
         	generator = createConstantGenerator(descriptor, unique, context);
@@ -120,11 +120,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private static Generator<?> createConstructiveGenerator(
-			SimpleTypeDescriptor descriptor, BeneratorContext context) {
+			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
 		Generator<?> generator;
 		generator = DescriptorUtil.getGeneratorByName(descriptor, context);
         if (generator == null)
-            generator = createSourceAttributeGenerator(descriptor, context);
+            generator = createSourceAttributeGenerator(descriptor, unique, context);
         if (generator == null)
             generator = createScriptGenerator(descriptor, context);
 		return generator;
@@ -152,7 +152,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 				for (int i = 0; i < samples.length; i++)
 					values[i] = samples[i].getValue();
 				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, true, context);
-		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)));
+		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)), unique);
 			}
         } catch (ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
@@ -188,7 +188,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     @SuppressWarnings("unchecked")
     public static Generator<?> createSourceAttributeGenerator(
-    		SimpleTypeDescriptor descriptor, BeneratorContext context) {
+    		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
     	// TODO v0.6 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();
@@ -206,7 +206,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             else
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
-            return createSimpleTypeCSVSourceGenerator(descriptor, source, context);
+            return createSimpleTypeCSVSourceGenerator(descriptor, source, unique, context);
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactory.getTextLineGenerator(source, false);
         } else {
@@ -218,9 +218,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         	}
         }
 
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, false, context);
         if (distribution != null)
-            generator = distribution.applyTo(generator);
+            generator = distribution.applyTo(generator, unique);
         
     	return generator;
     }
@@ -242,7 +242,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 	@SuppressWarnings("unchecked")
     private static Generator<?> createSimpleTypeCSVSourceGenerator(
-			SimpleTypeDescriptor descriptor, String sourceName, BeneratorContext context) {
+			SimpleTypeDescriptor descriptor, String sourceName, boolean unique, BeneratorContext context) {
 		Generator<?> generator;
 		char separator = DescriptorUtil.getSeparator(descriptor, context);
 		String encoding = descriptor.getEncoding();
@@ -268,7 +268,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     		Iterable<Object> iterable = new ConvertingIterable<String[], Object>(src, converterChain);
     	    generator = new IteratingGenerator<Object>(new DefaultTypedIterable<Object>(Object.class, iterable));
             if (distribution != null)
-            	generator = distribution.applyTo(generator);
+            	generator = distribution.applyTo(generator, unique);
         }
 		return generator;
 	}
@@ -382,7 +382,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), unique, true, context);
         return GeneratorFactory.getNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, 0);
+                targetType, min, max, totalDigits, fractionDigits, precision, distribution, unique, 0);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, boolean unique) {

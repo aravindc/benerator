@@ -215,6 +215,14 @@ public class DescriptorUtil {
             unique = false;
         return unique;
     }
+	
+	public static Expression<Boolean> getUniqueness(final InstanceDescriptor descriptor) {
+		return new Expression<Boolean>() {
+			public Boolean evaluate(Context context) {
+				return isUnique(descriptor);
+            }
+		};
+    }
 
     public static double getNullQuota(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
@@ -308,4 +316,5 @@ public class DescriptorUtil {
 		return (descriptor.getCountDistribution() != null ? descriptor.getCountDistribution() : null);
 	}
 */
+
 }

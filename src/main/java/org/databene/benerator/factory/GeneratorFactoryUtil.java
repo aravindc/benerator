@@ -89,6 +89,7 @@ public class GeneratorFactoryUtil {
 			final Expression<Long> min = DescriptorUtil.getMinCount(descriptor);
 			final Expression<Long> max = DescriptorUtil.getMaxCount(descriptor);
 			final Expression<Long> prec = DescriptorUtil.getCountPrecision(descriptor);
+			final Expression<Boolean> unique = DescriptorUtil.getUniqueness(descriptor);
 			final Expression<Long> distSpecExpr = new Expression<Long>() {
 
 				public Long evaluate(Context context) {
@@ -101,7 +102,9 @@ public class GeneratorFactoryUtil {
 						return minVal;
 					String distSpec = descriptor.getCountDistribution();
 	                Distribution d = getDistribution(distSpec, false, true, (BeneratorContext) context);
-	    			return new DistributedNumberExpression(new ConstantExpression<Distribution>(d), min, max, prec).evaluate(context);
+	    			DistributedNumberExpression distributedNumberExpression 
+	    				= new DistributedNumberExpression(new ConstantExpression<Distribution>(d), min, max, prec, unique);
+					return distributedNumberExpression.evaluate(context);
                 }
 				
 			};
@@ -123,7 +126,7 @@ public class GeneratorFactoryUtil {
         // handle absence of distribution spec
         if (StringUtil.isEmpty(spec)) {
         	if (unique)
-        		return Sequence.BIT_REVERSE;
+        		return Sequence.EXPAND;
         	else if (required)
         		return Sequence.RANDOM;
         	else

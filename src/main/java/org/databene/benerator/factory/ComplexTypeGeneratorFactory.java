@@ -86,7 +86,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         Generator<Entity> generator = null;
         generator = (Generator<Entity>) DescriptorUtil.getGeneratorByName(type, context);
         if (generator == null)
-            generator = createSourceGenerator(type, context);
+            generator = createSourceGenerator(type, unique, context);
         if (generator == null)
             generator = createSyntheticEntityGenerator(name, type, unique, context);
         else
@@ -124,7 +124,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, BeneratorContext context) {
+    private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
         if (sourceName == null)
@@ -161,7 +161,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         	generator = new SimpleTypeEntityGenerator(generator, descriptor);
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
         if (distribution != null)
-        	generator = distribution.applyTo(generator);
+        	generator = distribution.applyTo(generator, unique);
     	return generator;
     }
 
