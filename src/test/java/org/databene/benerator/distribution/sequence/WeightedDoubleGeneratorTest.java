@@ -27,12 +27,12 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.WeightedDoubleGenerator;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link WeightedDoubleGenerator}.<br/><br/>
@@ -49,11 +49,11 @@ public class WeightedDoubleGeneratorTest extends GeneratorClassTest {
     @Test
     public void testSingleValueGeneration() throws IllegalGeneratorStateException {
         checkProductSet(
-                new WeightedDoubleGenerator( 0,  0, 0, new ConstantFunction(1)), 300, CollectionUtil.toSet(0.));
+                new WeightedDoubleGenerator( 0,  0, 1, new ConstantFunction(1)), 300, CollectionUtil.toSet(0.));
         checkProductSet(
                 new WeightedDoubleGenerator( 1,  1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(1.));
         checkProductSet(
-                new WeightedDoubleGenerator(-1, -1, 0, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1.));
+                new WeightedDoubleGenerator(-1, -1, 1, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1.));
     }
 
     @Test
@@ -64,30 +64,19 @@ public class WeightedDoubleGeneratorTest extends GeneratorClassTest {
                 new WeightedDoubleGenerator(-1, 1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0., 0.5, 1.));
     }
 
-    @Test
-    public void testInvalidPrecisions() throws IllegalGeneratorStateException {
-        try {
-            new WeightedDoubleGenerator( 0,  1, -1, new ConstantFunction(1)); // negative precision
-            fail("IllegalArgumentException expected for negative precision");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behaviour
-        }
-        try {
-            new WeightedDoubleGenerator( 0,  1,  0, new ConstantFunction(1)); // precision == 0
-            fail("IllegalArgumentException expected for precision == 0");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behaviour
-        }
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testNegativePrecision() throws IllegalGeneratorStateException {
+        new WeightedDoubleGenerator( 0,  1, -1, new ConstantFunction(1)).validate(); // negative precision
     }
 
-    @Test
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testZeroPrecision() throws IllegalGeneratorStateException {
+        new WeightedDoubleGenerator( 0,  1,  0, new ConstantFunction(1)).validate(); // precision == 0
+    }
+
+    @Test(expected = InvalidGeneratorSetupException.class)
     public void testInvalidRange() throws IllegalGeneratorStateException {
-        try {
-            new WeightedDoubleGenerator( 2,  1,  1, new ConstantFunction(1)); // min > max
-            fail("IllegalArgumentException expected if min > max");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behaviour
-        }
+    	new WeightedDoubleGenerator( 2,  1,  1, new ConstantFunction(1)).validate(); // min > max
     }
     
 }

@@ -46,6 +46,8 @@ public class IncrementGeneratorTest extends GeneratorClassTest {
 	public void testIncrementAndMax() {
 		IncrementGenerator generator = new IncrementGenerator(10, 20, 60);
 		expectGeneratedSequence(generator, 10L, 30L, 50L).withCeasedAvailability();
+		generator = new IncrementGenerator(10, 20, 50);
+		expectGeneratedSequence(generator, 10L, 30L, 50L).withCeasedAvailability();
 	}
 	
 	public void testDefaultMax() {

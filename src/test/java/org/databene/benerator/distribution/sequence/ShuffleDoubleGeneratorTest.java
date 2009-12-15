@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.sequence.ShuffleDoubleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
@@ -45,75 +46,61 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testSingleValue() throws Exception {
-        check( 1,  1, 1, 0,   1,  1);
-        check(-1, -1, 1, 0,  -1, -1);
-        check( 0,  0, 1, 0,   0,  0);
-    }
-
-    @Test
     public void testIncrementOne() throws Exception {
-        check( 0, 2, 1, 1,   0,  1, 2,  0);
-        check(-2, 0, 1, 1,  -2, -1, 0, -2);
+        check( 0, 2, 1, 1,   0,  1, 2);
+        check(-2, 0, 1, 1,  -2, -1, 0);
     }
 
     @Test
     public void testIncrementTwo() throws Exception {
-        check( 0, 2, 1, 2,   0,  2, 1,  0);
-        check(-2, 0, 1, 2,  -2, 0, -1, -2);
+        check( 0, 2, 1, 2,   0,  2, 1);
+        check(-2, 0, 1, 2,  -2, 0, -1);
     }
 
     @Test
     public void testFractionalPrecision() throws Exception {
-        check( 0, 1, 0.5, 1,   0, 1,  0.5,  0);
-        check(-1, 0, 0.5, 1,  -1, 0, -0.5, -1);
+        check( 0, 1, 0.5, 1,   0, 1,  0.5);
+        check(-1, 0, 0.5, 1,  -1, 0, -0.5);
     }
 
-    @Test
-    public void testInvalidSetup() {
-        try {
-            new ShuffleDoubleGenerator(1, 0,  1, 1);
-            fail("IllegalArgumentException expected if min > max");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behavior
-        }
-        try {
-            new ShuffleDoubleGenerator(0, 1,  1, 0);
-            fail("IllegalArgumentException expected for increment == 0");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behavior
-        }
-        try {
-            new ShuffleDoubleGenerator(0, 1, 1, -1);
-            fail("IllegalArgumentException expected for negative increment");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behavior
-        }
-        try {
-            new ShuffleDoubleGenerator(0, 1, 0, 1);
-            fail("IllegalArgumentException expected for precision == 0");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behavior
-        }
-        try {
-            new ShuffleDoubleGenerator(0, 1, -1, 1);
-            fail("IllegalArgumentException expected for negative precision");
-        } catch (IllegalArgumentException e) {
-            // this is the desired behavior
-        }
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testMinGreaterMax() {
+        new ShuffleDoubleGenerator(1, 0,  1, 1).validate();
+    }
+
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testZeroIncrement() {
+        new ShuffleDoubleGenerator(0, 1,  1, 0).validate();
+    }
+
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testNegativeIncrement() {
+        new ShuffleDoubleGenerator(0, 1, 1, -1).validate();
+    }
+
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testZeroPrecision() {
+        new ShuffleDoubleGenerator(0, 1, 0, 1).validate();
+    }
+
+    @Test(expected = InvalidGeneratorSetupException.class)
+    public void testNegativePrecision() {
+        new ShuffleDoubleGenerator(0, 1, -1, 1).validate();
     }
 
     @Test
     public void testReset() throws Exception {
     	ShuffleDoubleGenerator generator = new ShuffleDoubleGenerator(0., 3., 1., 2.);
-        expectGeneratedSequence(generator, 0., 2., 1., 3., 0.).withContinuedAvailability();
+        expectGeneratedSequence(generator, 0., 2., 1., 3.).withCeasedAvailability();
     }
+    
+    // helper methods --------------------------------------------------------------------------------------------------
 
     private void check(double min, double max, double precision, double increment, double ... expectedProducts) {
         Generator<Double> generator = new ShuffleDoubleGenerator(min, max, precision, increment);
-        for (double product : expectedProducts) {
+        for (double product : expectedProducts)
             assertEquals(product, generator.generate());
-        }
+        assertUnavailable(generator);
     }
 
 }
