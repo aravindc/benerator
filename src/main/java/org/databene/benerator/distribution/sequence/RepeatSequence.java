@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.RepeatGeneratorProxy;
+import org.databene.commons.ConfigurationError;
 
 /**
  * Distribution that repeats consecutive elements or numbers.<br/>
@@ -67,15 +68,21 @@ public class RepeatSequence extends Sequence { // TODO test
 	    this.repetitionDistribution = repetitionDistribution;
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
-		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision);
-		return applyTo(source);
+    public <T extends Number> Generator<T> createGenerator(
+    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	if (minRepetitions > maxRepetitions)
+    		throw new ConfigurationError("minRepetitions (" + minRepetitions + ") > " +
+    				"maxRepetitions (" + maxRepetitions + ")");
+    	if (unique && (minRepetitions > 0 || maxRepetitions > 0))
+    		throw new ConfigurationError("Uniqueness can't be assured for minRepetitions=" + minRepetitions
+    				+ " and maxRepetitions=" + maxRepetitions);
+		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision, unique);
+		return applyTo(source, unique);
 	}
 	
-	@SuppressWarnings("unchecked")
     @Override
-	public <S, P> Generator<P> applyTo(Generator<S> source) {
-	    return (Generator<P>) new RepeatGeneratorProxy<S>(source, minRepetitions, maxRepetitions, 
+	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+	    return new RepeatGeneratorProxy<T>(source, minRepetitions, maxRepetitions, 
 	    		repetitionPrecision, repetitionDistribution);
 	}
 	

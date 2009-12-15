@@ -29,9 +29,11 @@ package org.databene.benerator.distribution.sequence;
 import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.MathUtil;
 
 /**
  * Random Walk {@link Sequence} implementation that supports a variable step width.<br/>
@@ -45,6 +47,8 @@ public class RandomWalkSequence extends Sequence {
 	
 	private BigDecimal minStep;
 	private BigDecimal maxStep;
+	
+	// constructors ----------------------------------------------------------------------------------------------------
 
     public RandomWalkSequence() {
 	    this(BigDecimal.ONE, BigDecimal.ONE);
@@ -55,16 +59,32 @@ public class RandomWalkSequence extends Sequence {
 	    this.minStep = minStep;
 	    this.maxStep = maxStep;
     }
+    
+    // Distribution interface implementation ---------------------------------------------------------------------------
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
-			base = new RandomWalkLongGenerator(
-					toLong(min), toLong(max), toLong(precision), toLong(initial(min)), toLong(minStep), toLong(maxStep));
+			base = createLongGenerator(toLong(min), toLong(max), toLong(precision), unique);
 		else
-			base = new RandomWalkDoubleGenerator(
-					toDouble(min), toDouble(max), toDouble(precision), toDouble(minStep), toDouble(maxStep));
+			base = createDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision), unique);
 		return WrapperFactory.wrapNumberGenerator(numberType, base);
+    }
+    
+    // helper methods --------------------------------------------------------------------------------------------------
+
+	private <T> Generator<? extends Number> createDoubleGenerator(double min, double max, double precision, boolean unique) {
+	    if (unique && MathUtil.rangeIncludes(0., min, max)) // check if uniqueness requirements can be met
+	    	throw new InvalidGeneratorSetupException("Cannot guarantee uniqueness for [min=" + min + ",max=" + max + "]");
+	    return new RandomWalkDoubleGenerator(
+	    		toDouble(min), toDouble(max), toDouble(precision), toDouble(minStep), toDouble(maxStep));
+    }
+
+	private <T> Generator<? extends Number> createLongGenerator(long min, long max, long precision, boolean unique) {
+	    if (unique && MathUtil.rangeIncludes(0, min, max)) // check if uniqueness requirements can be met
+	    	throw new InvalidGeneratorSetupException("Cannot guarantee uniqueness for [min=" + min + ",max=" + max + "]");
+	    return new RandomWalkLongGenerator(
+	    		min, max, toLong(precision), toLong(initial(min)), toLong(minStep), toLong(maxStep));
     }
 
     private <T extends Number> T initial(T min) {

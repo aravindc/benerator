@@ -43,13 +43,8 @@ import org.databene.commons.BeanUtil;
 public abstract class AbstractWeightFunction implements WeightFunction {
 
     @SuppressWarnings("unchecked")
-    public <S, P> Generator<P> applyTo(Generator<S> source) {
-    	// TODO this generator does not look appropriate
-	    return (Generator<P>) new AttachedWeightSampleGenerator<S>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(
+    		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (Long.class.equals(numberType))
     		return (Generator<T>) createLongGenerator(min, max, precision);
     	else if (Double.class.equals(numberType))
@@ -59,6 +54,13 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     	else
     		return WrapperFactory.wrapNumberGenerator(numberType, createDoubleGenerator(min, max, precision));
     }
+
+    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+    	// TODO this generator does not look appropriate
+	    return new AttachedWeightSampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+    }
+    
+    // helper methods --------------------------------------------------------------------------------------------------
 
 	private <T extends Number> WeightedLongGenerator createLongGenerator(T min, T max, T precision) {
 	    return new WeightedLongGenerator(min.longValue(), max.longValue(), precision.longValue(), this);

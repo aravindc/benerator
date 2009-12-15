@@ -33,6 +33,7 @@ import java.util.Map;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.sequence.BitReverseSequence;
 import org.databene.benerator.distribution.sequence.CumulatedSequence;
+import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.distribution.sequence.RandomSequence;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
@@ -54,13 +55,14 @@ public abstract class Sequence implements Distribution {
 	
     private static Map<String, Sequence> instances = new HashMap<String, Sequence>();
 
-    public static final Sequence RANDOM      = new RandomSequence();
+    public static final Sequence RANDOM      = new RandomSequence(); // TODO move constants for child classes somewhere else?
     public static final Sequence SHUFFLE     = new ShuffleSequence();
     public static final Sequence CUMULATED   = new CumulatedSequence();
     public static final Sequence RANDOM_WALK = new RandomWalkSequence();
     public static final Sequence STEP        = new StepSequence();
     public static final Sequence WEDGE       = new WedgeSequence();
     public static final Sequence BIT_REVERSE = new BitReverseSequence();
+    public static final Sequence EXPAND      = new ExpandSequence();
     
     private String name;
     
@@ -89,9 +91,8 @@ public abstract class Sequence implements Distribution {
         return name;
     }
 
-    @SuppressWarnings("unchecked")
-    public <S, P> Generator<P> applyTo(Generator<S> source) {
-	    return (Generator<P>) new SequencedSampleGenerator<S>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+	    return new SequencedSampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
     }
     
 	protected <T extends Number> Long toLong(T value) {

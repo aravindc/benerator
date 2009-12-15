@@ -41,13 +41,16 @@ public abstract class IndividualWeight<E> implements Distribution {
 	
 	public abstract double weight(E object);
 	
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(
+    		Class<T> numberType, T min, T max, T precision, boolean unique) {
 	    throw new UnsupportedOperationException("createGenerator() is not supported by " + getClass());
     }
 
     @SuppressWarnings("unchecked")
-    public <S, P> Generator<P> applyTo(Generator<S> source) {
-    	return new IndividualWeightGenerator(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+    	// TODO err on unique=true
+    	return new IndividualWeightGenerator<T>(source.getGeneratedType(), (IndividualWeight<T>) this, 
+    			GeneratorUtil.allProducts(source));
     }
 
 }

@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -38,7 +39,7 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     private double increment;
 
-    private double cursor;
+    private Double next;
 
     public ShuffleDoubleGenerator() {
         this(Double.MIN_VALUE, Double.MAX_VALUE, 2, 1);
@@ -46,10 +47,6 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     public ShuffleDoubleGenerator(double min, double max, double precision, double increment) {
         super(Double.class, min, max, precision);
-        if (precision <= 0)
-            throw new IllegalArgumentException("Precision must be greater than zero, but is " + precision);
-        if (min < max && increment <= 0)
-            throw new IllegalArgumentException("Unsupported increment value: " + increment);
         this.increment = increment;
         reset();
     }
@@ -72,17 +69,38 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     // source interface ---------------------------------------------------------------------------------------------
 
+    @Override
+    public void validate() throws InvalidGeneratorSetupException {
+    	if (dirty) {
+            if (precision <= 0)
+                throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
+            if (min < max && increment <= 0)
+                throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
+    		super.validate();
+    	}
+    }
+    
+    @Override
+    public boolean available() {
+        return (next != null && super.available());
+    }
+    
     public Double generate() throws IllegalGeneratorStateException {
-        double result = cursor;
-        if (cursor + increment <= max)
-            cursor += increment;
-        else
-            cursor = min + ((cursor - min + precision) % increment);
+    	if (!available())
+    		throw new IllegalGeneratorStateException("Generator is unavailable");
+        double result = next;
+        if (next + increment <= max)
+            next += increment;
+        else {
+            double newOffset = (next - min + precision) % increment;
+			next = (newOffset > 0 ? min + newOffset : null);
+        }
         return result;
     }
 
     @Override
     public void reset() {
-        this.cursor = min;
+        this.next = min;
     }
+    
 }

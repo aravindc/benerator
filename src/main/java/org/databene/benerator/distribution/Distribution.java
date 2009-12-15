@@ -36,6 +36,6 @@ import org.databene.benerator.Generator;
  * @author Volker Bergmann
  */
 public interface Distribution {
-    <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision);
-    <S, P> Generator<P> applyTo(Generator<S> source);
+    <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique);
+    <T> Generator<T> applyTo(Generator<T> source, boolean unique);
 }

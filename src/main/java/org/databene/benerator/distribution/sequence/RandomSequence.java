@@ -51,20 +51,32 @@ public class RandomSequence extends Sequence {
 	    super(NAME);
     }
 	
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
 		Generator<? extends Number> base;
-		if (Integer.class.equals(numberType.getClass()))
-			base = new RandomIntegerGenerator(toInteger(min), toInteger(max), toInteger(precision));
-		else if (BigInteger.class.equals(numberType.getClass()))
-			base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(max), toBigInteger(precision));
-		else if (BigDecimal.class.equals(numberType.getClass()))
-			base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(max), toBigDecimal(precision));
-		else if (BeanUtil.isIntegralNumberType(numberType))
-			base = new RandomLongGenerator(toLong(min), toLong(max), toLong(precision));
-		else
-			base = new RandomDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision));
+    	if (unique) {
+    		return Sequence.EXPAND.createGenerator(numberType, min, max, precision, unique);
+    	} else {	
+			if (Integer.class.equals(numberType.getClass()))
+				base = new RandomIntegerGenerator(toInteger(min), toInteger(max), toInteger(precision));
+			else if (BigInteger.class.equals(numberType.getClass()))
+				base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(max), toBigInteger(precision));
+			else if (BigDecimal.class.equals(numberType.getClass()))
+				base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(max), toBigDecimal(precision));
+			else if (BeanUtil.isIntegralNumberType(numberType))
+				base = new RandomLongGenerator(toLong(min), toLong(max), toLong(precision));
+			else
+				base = new RandomDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision));
+    	}
 		return WrapperFactory.wrapNumberGenerator(numberType, base);
 	}
+
+    @Override
+    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+    	if (unique)
+    		return super.applyTo(source, unique);
+    	else
+    		return super.applyTo(source, unique);
+    }
 
 	@Override
 	public String toString() {

@@ -27,10 +27,15 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
- * Long Generator that implements a 'shuffle' Long Sequence.<br/>
+ * Long Generator that implements a 'shuffle' Long Sequence: 
+ * It starts with min and produced numbers by continuously incrementing the cursor 
+ * by a fix <code>increment</code> value; when <code>max</code> is reached, it 
+ * repeats the procedure starting by min+1, later min+2 and so on.
+ * The generated numbers are unique as long as the generator is not reset.<br/>
  * <br/>
  * Created: 18.06.2006 14:40:29
  * @since 0.1
@@ -38,7 +43,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  */
 public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TODO support precision (see version for double)
 
-    private long cursor;
+    private Long next;
     private long increment;
 
     public ShuffleLongGenerator() {
@@ -46,7 +51,7 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TOD
     }
 
     public ShuffleLongGenerator(long min, long max) {
-        this(min, max, 1);
+        this(min, max, 2);
     }
 
     public ShuffleLongGenerator(long min, long max, long increment) {
@@ -71,27 +76,38 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TOD
     @Override
 	public void validate() {
         if (dirty) {
-            cursor = min;
+        	if (increment == 0)
+        		throw new InvalidGeneratorSetupException("increment must be greater than 0, but was: " + increment);
+            next = min;
             super.validate();
-            this.dirty = false;
         }
     }
 
+    @Override
+    public boolean available() {
+        return (next != null && super.available());
+    }
+    
     public Long generate() throws IllegalGeneratorStateException {
         if (dirty)
             validate();
-        long result = cursor;
+        if (!available())
+        	throw new IllegalGeneratorStateException("Generator " + this + " is unavailable. " +
+        			"Check available() before calling generate()");
+        long result = next;
         long increment = getIncrement();
-        if (cursor + increment <= max)
-            cursor += increment;
-        else
-            cursor = min + ((cursor - min + 1) % increment);
+        if (next + increment <= max)
+        	next += increment;
+        else {
+        	long newOffset = (next - min + 1) % increment;
+        	next = (newOffset != 0 ? min + newOffset : null);
+        }
         return result;
     }
     
     @Override
     public void reset() {
-    	this.cursor = min;
+    	this.next = min;
     }
 
 }

@@ -91,7 +91,8 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     @Override
     public void validate() {
         if (dirty) {
-            incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, precision);
+            incrementGenerator = incrementDistribution.createGenerator(
+            		Long.class, minIncrement, maxIncrement, precision, false);
             if (minIncrement < 0 && maxIncrement <= 0)
                 initial = max;
             else if (minIncrement >= 0 && maxIncrement > 0)

@@ -56,8 +56,6 @@ public class WeightedDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     public WeightedDoubleGenerator(double min, double max, double precision, WeightFunction function) {
         super(Double.class, min, max, precision);
-        if (min < max && precision <= 0)
-            throw new IllegalArgumentException("precision value not supported: "+ precision);
         this.function = function;
         this.random = new Random();
     }
@@ -71,6 +69,10 @@ public class WeightedDoubleGenerator extends AbstractNumberGenerator<Double> {
     @Override
 	public void validate() {
         if (dirty) {
+        	if (min > max)
+                throw new InvalidGeneratorSetupException("min ("+ min + ") > max(" + max + ")");
+            if (precision <= 0)
+                throw new InvalidGeneratorSetupException("precision value not supported: "+ precision);
             int sampleCount = (int) ((max - min) / precision) + 1;
             if (sampleCount > 100000)
                 throw new InvalidGeneratorSetupException("precision", "too small, resulting in a set of " + sampleCount + " samples");

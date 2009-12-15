@@ -31,7 +31,8 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 
 /**
- * {@link Sequence} implementation that creates Number {@link Generator} with a wedge distribution.<br/>
+ * {@link Sequence} implementation that creates Number {@link Generator} with a wedge distribution.
+ * The number sequences a related generator produces is unique as long as the generator is not reset.<br/>
  * <br/>
  * Created at 23.09.2009 18:59:30
  * @see WedgeLongGenerator
@@ -45,7 +46,7 @@ public class WedgeSequence extends Sequence {
     	super("wedge");
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
 		Generator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(precision));
 		return WrapperFactory.wrapNumberGenerator(numberType, base);
     }

@@ -29,8 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-
-import java.util.Random;
+import org.databene.benerator.util.RandomUtil;
 
 /**
  * Long Generator that implements a 'random' Long Sequence.<br/>
@@ -43,8 +42,6 @@ public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
     private static final long DEFAULT_MIN = Long.MIN_VALUE / 2 + 1; // test if it works with these min/max values
 	private static final long DEFAULT_MAX = Long.MAX_VALUE / 2 - 1;
 	private static final long DEFAULT_PRECISION = 1;
-
-	private static Random random = new Random();
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -62,26 +59,30 @@ public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @Override
+    public void validate() {
+    	if (dirty) {
+	        if (min > max)
+	            throw new InvalidGeneratorSetupException(
+	                    new PropertyMessage("min", "greater than max"),
+	                    new PropertyMessage("max", "less than min"));
+	        super.validate();
+    	}
+    }
+    
     public Long generate() {
+    	if (dirty)
+    		validate();
         return generate(min, max, precision);
     }
     
     // public convenience method ---------------------------------------------------------------------------------------
 
     public static long generate(long min, long max, long precision) {
-        if (min > max)
-            throw new InvalidGeneratorSetupException(
-                    new PropertyMessage("min", "greater than max"),
-                    new PropertyMessage("max", "less than min"));
-        long range = (max - min + precision) / precision;
-        long result;
-        if (range != 0)
-            result = min + Math.abs(random.nextLong() % range) * precision;
-        else
-            result = random.nextLong() * precision;
-        if (result < min)
-            result += range;
-        return result;
+    	if (min == max)
+    		return min;
+        long range = (max - min) / precision;
+        return min + RandomUtil.randomLong(0, range) * precision;
     }
 
 }

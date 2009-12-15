@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.ConfigurationError;
 
 /**
  * {@link Sequence} implementation for an efficient bell-like distribution.<br/>
@@ -45,7 +46,9 @@ public class CumulatedSequence extends Sequence {
     	super("cumulated");
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	if (unique)
+    		throw new ConfigurationError(getClass().getSimpleName() + " does not support uniqueness");
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = new CumulatedLongGenerator(

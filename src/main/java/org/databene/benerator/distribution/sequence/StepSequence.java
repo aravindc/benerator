@@ -29,6 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
@@ -70,7 +71,10 @@ public class StepSequence extends Sequence {
     	return initial;
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+    public <T extends Number> Generator<T> createGenerator(
+    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	if (unique && increment.compareTo(BigDecimal.ZERO) == 0)
+    		throw new InvalidGeneratorSetupException("Can't generate unique numbers with an increment of 0.");
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = new StepLongGenerator(
