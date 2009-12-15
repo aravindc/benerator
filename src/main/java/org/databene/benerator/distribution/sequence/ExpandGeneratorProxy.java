@@ -1,0 +1,162 @@
+/*
+ * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License (GPL).
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.benerator.distribution.sequence;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.databene.benerator.Generator;
+import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.wrapper.GeneratorProxy;
+
+/**
+ * TODO Document class.<br/><br/>
+ * Created: 10.12.2009 11:32:35
+ * @since 0.6.0
+ * @author Volker Bergmann
+ */
+public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
+
+	public static final int DEFAULT_CACHE_SIZE = 100000;
+	public static final int MIN_BUCKET_SIZE = 10;
+	public static final float DEFAULT_DUPLICATION_QUOTA = 0.5f;
+	
+	private float duplicationQuota;
+	private int cacheSize;
+	private int bucketSize;
+	private List<ValueBucket<E>> buckets;
+	
+	// construction ----------------------------------------------------------------------------------------------------
+
+	public ExpandGeneratorProxy(Generator<E> source, float duplicationQuota) {
+    	this(source, duplicationQuota, DEFAULT_CACHE_SIZE);
+    }
+	
+	public ExpandGeneratorProxy(Generator<E> source, float duplicationQuota, int cacheSize) {
+    	this(source, duplicationQuota, DEFAULT_CACHE_SIZE, defaultBucketSize(cacheSize));
+    }
+
+	public ExpandGeneratorProxy(Generator<E> source, float duplicationQuota, int cacheSize, int bucketSize) {
+    	super(source);
+    	this.duplicationQuota = duplicationQuota;
+    	this.cacheSize = cacheSize;
+    	this.bucketSize = bucketSize;
+    }
+	
+	public static <T> ExpandGeneratorProxy<T> uniqueProxy(Generator<T> source, int cacheSize, int bucketSize) {
+		return new ExpandGeneratorProxy<T>(source, 0, cacheSize, bucketSize);
+	}
+	
+	public static int defaultBucketSize(int cacheSize) {
+	    return Math.max((int) Math.sqrt(cacheSize), MIN_BUCKET_SIZE);
+    }
+
+	// properties ------------------------------------------------------------------------------------------------------
+	
+	public int getCacheSize() {
+    	return cacheSize;
+    }
+
+	public void setCacheSize(int cacheSize) {
+    	this.cacheSize = cacheSize;
+    }
+
+	public float getDuplicationQuota() {
+    	return duplicationQuota;
+    }
+
+	public void setDuplicationQuota(float duplicationQuota) {
+    	this.duplicationQuota = duplicationQuota;
+    }
+
+	public int getBucketSize() {
+    	return bucketSize;
+    }
+
+	public void setBucketSize(int bucketSize) {
+    	this.bucketSize = bucketSize;
+    }
+	
+	// Generator interface implementation ------------------------------------------------------------------------------
+
+	@Override
+	public void validate() {
+	    if (dirty) {
+	    	super.validate();
+	    	createBuckets();
+	    }
+	}
+	
+	@Override
+	public boolean available() {
+		if (dirty)
+			validate();
+		return !buckets.isEmpty();
+	}
+	
+	@Override
+    public E generate() {
+		if (dirty)
+			validate();
+		int bucketIndex = RandomUtil.randomIndex(buckets);
+	    ValueBucket<E> bucket = buckets.get(bucketIndex);
+	    E result;
+	    if (duplicationQuota > 0 && RandomUtil.randomProbability() < duplicationQuota) {
+	    	return bucket.getRandomElement();
+	    } else if (super.available()) {
+		    result = bucket.getAndReplaceRandomElement(super.generate());
+	    } else {
+	    	result = bucket.getAndRemoveRandomElement();
+		    if (bucket.isEmpty())
+		    	buckets.remove(bucketIndex);
+	    }
+	    return result;
+    }
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
+
+	public void printState() {
+		for (ValueBucket<E> bucket : buckets)
+			System.out.println(bucket);
+	}
+	
+	private void createBuckets() {
+		int bucketCount = (cacheSize + bucketSize - 1) / bucketSize;
+		ArrayList<ValueBucket<E>> infantry = new ArrayList<ValueBucket<E>>(bucketCount);
+		buckets = new ArrayList<ValueBucket<E>>(bucketCount);
+		for (int i = 0; i < bucketCount; i++)
+			infantry.add(new ValueBucket<E>(bucketSize));
+		for (int i = 0; i < cacheSize && super.available(); i++) {
+			int bucketIndex = RandomUtil.randomIndex(infantry);
+			ValueBucket<E> bucket = infantry.get(bucketIndex);
+			bucket.add(super.generate());
+			if (bucket.size() == bucketSize) {
+				infantry.remove(bucketIndex);
+				buckets.add(bucket);
+			}
+		}
+		for (ValueBucket<E> bucket : infantry)
+			if (bucket.size() > 0)
+				buckets.add(bucket);
+    }
+	
+}
