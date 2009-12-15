@@ -78,13 +78,21 @@ public class RandomUtil {
     }
     
     public static <T> T randomElement(List<T> values) {
+        return values.get(randomIndex(values));
+    }
+
+    public static int randomIndex(List<?> values) {
     	if (values.size() == 0)
-    		throw new IllegalArgumentException("Cannot choose random value from an empty array");
-        return values.get(random.nextInt(values.size()));
+    		throw new IllegalArgumentException("Cannot create random index for an empty array");
+        return random.nextInt(values.size());
     }
 
 	public static char randomDigit(int min) {
 	    return (char) ('0' + min + random.nextInt(10 - min));
+    }
+
+	public static float randomProbability() {
+	    return random.nextFloat();
     }
 
 }
