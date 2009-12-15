@@ -39,15 +39,17 @@ public class DistributedNumberExpression implements Expression<Long> {
 	Expression<Long> max;
 	Expression<Long> precision;
 	Expression<Distribution> distribution;
+	Expression<Boolean> unique;
 	
 	private Generator<Long> generator;
 
 	public DistributedNumberExpression(Expression<Distribution> distribution, 
-			Expression<Long> min, Expression<Long> max, Expression<Long> precision) {
+			Expression<Long> min, Expression<Long> max, Expression<Long> precision, Expression<Boolean> unique) {
 	    this.min = min;
 	    this.max = max;
 	    this.precision = precision;
 	    this.distribution = distribution;
+	    this.unique = unique;
     }
 
 	public Long evaluate(Context context) {
@@ -61,10 +63,9 @@ public class DistributedNumberExpression implements Expression<Long> {
 		Long maxValue = max.evaluate(context);
 		if (minValue == maxValue)
 			generator = new ConstantGenerator<Long>(minValue);
-		Long precisionValue = precision.evaluate(context);
 		Distribution distr = distribution.evaluate(context);
 		generator = distr.createGenerator(Long.class, 
-	    	minValue, maxValue, precisionValue);
+	    	minValue, maxValue, precision.evaluate(context), unique.evaluate(context));
     }
 
 }
