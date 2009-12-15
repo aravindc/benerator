@@ -41,7 +41,7 @@ import org.databene.commons.converter.AnyConverter;
 
 public class TypedScriptExpression<E> implements Expression<E> {
 	
-	private ScriptExpression<Object> source;
+	private ScriptExpression<?> source;
 	private Converter<Object, E> converter;
 
     @SuppressWarnings("unchecked")
@@ -58,8 +58,8 @@ public class TypedScriptExpression<E> implements Expression<E> {
     	this.converter = new AnyConverter<E>(resultType);
     }
 
-    public TypedScriptExpression(String script, Class<E> resultType, Expression<E> defaultValue) {
-    	this.source = new ScriptExpression<Object>(script, defaultValue);
+    public TypedScriptExpression(String script, Class<E> resultType, Expression<?> defaultValue) {
+    	this.source = ScriptExpression.createWithDefaultExpression(script, defaultValue);
     	this.converter = new AnyConverter<E>(resultType);
     }
 
