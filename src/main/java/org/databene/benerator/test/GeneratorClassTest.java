@@ -78,6 +78,16 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         }
     }
 
+    public static void assertUnavailable(Generator<?> generator) {
+        assertFalse("Generator " + generator + " is expected to be unavailable but was available", 
+        		generator.available());
+    }
+
+    public static void assertAvailable(Generator<?> generator) {
+        assertTrue("Generator " + generator + " is expected to be available but was unavailable", 
+        		generator.available());
+    }
+
     // helpers ---------------------------------------------------------------------------------------------------------
     
     protected void assertCustomToStringMethod(Generator<?> generator) {
