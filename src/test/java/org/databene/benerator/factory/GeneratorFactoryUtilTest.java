@@ -48,7 +48,7 @@ public class GeneratorFactoryUtilTest {
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
 		BeneratorContext context = new BeneratorContext(null);
 		assertNull(GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context));
-		assertEquals(Sequence.BIT_REVERSE, GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), true, true, context));
+		assertEquals(Sequence.EXPAND, GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), true, true, context));
 	}
 
 }
