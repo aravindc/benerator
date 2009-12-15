@@ -34,6 +34,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
 
@@ -52,7 +53,7 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     
     private long minDate;
     private long maxDate;
-    private long datePrecision;
+    private long datePrecision = Period.DAY.getMillis();
     private Distribution dateDistribution;
     
     private long minTime;
@@ -60,7 +61,7 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     private long timePrecision;
     private Distribution timeDistribution;
     
-    boolean valid;
+    boolean dirty;
     
     public DateTimeGenerator() {
         this(
@@ -79,7 +80,7 @@ public class DateTimeGenerator extends LightweightDateGenerator {
         setTimeDistribution(Sequence.RANDOM);
         setDatePrecision("00-00-01");
         setTimePrecision(TimeUtil.time(0, 1));
-        this.valid = false;
+        this.dirty = true;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -119,24 +120,27 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     // Generator interface ---------------------------------------------------------------------------------------------
     
     @Override
+    public void validate() {
+        super.validate();
+    	// TODO support uniqueness?
+    	this.dateGenerator = GeneratorFactory.getNumberGenerator(
+    			Long.class, minDate, maxDate, datePrecision, dateDistribution, false, 0);
+    	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
+    			Long.class, minTime, maxTime, timePrecision, timeDistribution, false, 0);
+        dirty = false;
+    }
+    
+    @Override
     public boolean available() {
-    	if (!valid)
-    		init();
+    	if (dirty)
+    		validate();
     	return dateGenerator.available() && timeOffsetGenerator.available();
     }
     
     public Date generate() {
-    	if (!valid)
-    		init();
+    	if (dirty)
+    		validate();
     	return new Date(dateGenerator.generate() + timeOffsetGenerator.generate());
-    }
-
-    private void init() {
-    	this.dateGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minDate, maxDate, datePrecision, dateDistribution, 0);
-    	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minTime, maxTime, timePrecision, timeDistribution, 0);
-	    this.valid = true;
     }
 
 }
