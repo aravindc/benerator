@@ -46,9 +46,14 @@ public class ScriptExpression<E> implements Expression<E> {
     	this(script, (defaultValue != null ? new ConstantExpression<E>(defaultValue) : null));
     }
 
-    public ScriptExpression(String script, Expression<E> defaultValueExpression) {
+    private ScriptExpression(String script, Expression<E> defaultValueExpression) {
     	this.script = script;
     	this.defaultValueExpression = defaultValueExpression;
+    }
+    
+    public static <T> ScriptExpression<T> createWithDefaultExpression(
+    		String script, Expression<T> defaultValueExpression) {
+    	return new ScriptExpression<T>(script, defaultValueExpression);
     }
 
 	@SuppressWarnings("unchecked")
