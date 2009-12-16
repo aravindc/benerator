@@ -3,6 +3,7 @@ package org.databene.domain.person;
 import java.util.Locale;
 
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.commons.Encodings;
 
 /**
  * (c) Copyright 2006 by Volker Bergmann
@@ -23,7 +24,7 @@ public class GivenNameGenerator extends WeightedDatasetCSVGenerator<String> {
     }
 
     public GivenNameGenerator(String datasetName, String nesting, String baseName, Gender gender) {
-        super(genderBaseName(baseName, gender) + "_{0}.csv", datasetName, nesting, "UTF-8");
+        super(genderBaseName(baseName, gender) + "_{0}.csv", datasetName, nesting, Encodings.UTF_8);
     }
 
     private static String genderBaseName(String baseName, Gender gender) {

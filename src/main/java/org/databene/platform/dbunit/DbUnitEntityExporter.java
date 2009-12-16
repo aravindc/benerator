@@ -39,6 +39,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Encodings;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ToStringConverter;
@@ -60,7 +61,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
 
     private static final Logger logger = LoggerFactory.getLogger(DbUnitEntityExporter.class);
 
-    private static final String DEFAULT_FILE_ENCODING = "UTF-8";
+    private static final String DEFAULT_FILE_ENCODING = Encodings.UTF_8;
     private static final String DEFAULT_URI = "data.dbunit.xml";
 
 	private static final String DATE_PATTERN = "yyyy-MM-dd";

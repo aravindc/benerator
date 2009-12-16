@@ -29,6 +29,7 @@ package org.databene.domain.organization;
 import java.util.Locale;
 
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.commons.Encodings;
 import org.databene.commons.LocaleUtil;
 
 /**
@@ -50,7 +51,7 @@ public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> 
     }
 
     public DepartmentNameGenerator(Locale locale) {
-        super(LocaleUtil.availableLocaleUrl(FILENAME_PREFIX, locale, ".csv"), "UTF-8");
+        super(LocaleUtil.availableLocaleUrl(FILENAME_PREFIX, locale, ".csv"), Encodings.UTF_8);
     }
 
 }

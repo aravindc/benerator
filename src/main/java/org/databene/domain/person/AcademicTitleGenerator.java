@@ -1,6 +1,7 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.csv.LocalCSVGenerator;
+import org.databene.commons.Encodings;
 
 import java.util.Locale;
 
@@ -15,6 +16,6 @@ public class AcademicTitleGenerator extends LocalCSVGenerator<String> {
     }
 
     public AcademicTitleGenerator(Locale locale) {
-        super("org/databene/domain/person/title", locale, ".csv", "utf-8");
+        super("org/databene/domain/person/title", locale, ".csv", Encodings.UTF_8);
     }
 }

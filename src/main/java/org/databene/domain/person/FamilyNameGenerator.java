@@ -29,6 +29,7 @@ package org.databene.domain.person;
 import java.util.Locale;
 
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.commons.Encodings;
 
 /**
  * Generates family names.<br/>
@@ -50,7 +51,7 @@ public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> {
     }
 
     public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {
-        super(fileNamePattern, datasetName, nesting, "UTF-8");
+        super(fileNamePattern, datasetName, nesting, Encodings.UTF_8);
     }
     
 }

@@ -36,6 +36,7 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.NullableGenerator;
+import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.City;
 import org.databene.domain.address.CityGenerator;
@@ -167,7 +168,8 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 	private void initSectorGenerator(String datasetName) {
 	    if (sector) {
         	try {
-        		sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(ORG + "sector_{0}.csv", datasetName, REGION, "UTF-8"), 0.7);
+        		sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(
+        				ORG + "sector_{0}.csv", datasetName, REGION, Encodings.UTF_8), 0.7);
         	} catch (Exception e) {
         		logger.info("Cannot create sector generator: " + e.getMessage());
         	}
@@ -177,7 +179,8 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 	private void initLegalFormGenerator(String datasetName) {
 	    if (legalForm) {
         	try {
-        		legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", datasetName, REGION, "UTF-8");
+        		legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", 
+        				datasetName, REGION, Encodings.UTF_8);
         	} catch (Exception e) {
         		logger.info("Cannot create legal form generator: " + e.getMessage());
         	}
