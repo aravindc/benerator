@@ -66,14 +66,14 @@ public class CreateOrUpdateEntitiesTest {
 		CreateOrUpdateEntitiesParser parser = new CreateOrUpdateEntitiesParser();
 		Statement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
-		ConsumerMock consumer1 = new ConsumerMock(1);
-		context.set("cons1", consumer1);
+		ConsumerMock outerConsumer = new ConsumerMock(1);
+		context.set("cons1", outerConsumer);
 		statement.execute(context);
-		assertEquals(3, consumer1.invocationCount.get());
-		assertFalse(consumer1.closed);
-		ConsumerMock consumer2 = ConsumerMock.instances.get(2);
-		assertEquals(2, consumer2.invocationCount.get());
-		assertTrue(consumer2.closed);
+		assertEquals(3, outerConsumer.invocationCount.get());
+		assertFalse(outerConsumer.closed);
+		ConsumerMock innerConsumer = ConsumerMock.instances.get(2);
+		assertEquals(6, innerConsumer.invocationCount.get());
+		assertTrue(innerConsumer.closed);
 	}
 
 	@Test
