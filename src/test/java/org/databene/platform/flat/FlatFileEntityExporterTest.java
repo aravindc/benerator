@@ -21,19 +21,49 @@
 
 package org.databene.platform.flat;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileReader;
+
+import org.databene.commons.Encodings;
+import org.databene.commons.FileUtil;
+import org.databene.commons.ReaderLineIterator;
+import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link FlatFileEntityExporter}.<br/><br/>
  * Created: 14.11.2009 10:04:46
  * @since 0.6.0
  * @author Volker Bergmann
  */
 public class FlatFileEntityExporterTest {
 
+	private static final String ENCODING = Encodings.UTF_8;
+
 	@Test
-	public void testMultiThreaded() {
-		throw new UnsupportedOperationException(); // TODO implement like CSVEntityExporterTest.testMultiThreaded()
+	public void testMultiThreaded() throws Exception {
+		File file = File.createTempFile(getClass().getSimpleName(), ".flat", new File("target"));
+		String uri = file.getAbsolutePath();
+		FlatFileEntityExporter exporter = new FlatFileEntityExporter(uri, ENCODING, "name[10],age[3r0]");
+		try {
+			Entity entity = new Entity("Person", "name", "Alice", "age", 23);
+			exporter.startConsuming(entity);
+			exporter.finishConsuming(entity);
+		} finally {
+			exporter.close();
+		}
+		assertTrue(file.exists());
+		ReaderLineIterator iterator = new ReaderLineIterator(new FileReader(file));
+		try {
+			assertTrue(iterator.hasNext());
+			String line = iterator.next();
+			assertEquals("Alice     023", line);
+		} finally {
+			iterator.close();
+		}
+		FileUtil.deleteIfExists(file);
 	}
 	
 }
