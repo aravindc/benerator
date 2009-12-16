@@ -176,9 +176,10 @@ public class TypeGeneratorFactory {
                 // we need to expect the standard date format
                 converter = new FormatFormatConverter<Date>(Date.class, TimeUtil.createDefaultDateFormat());
             }
-        } else
+        } else if (targetType != generator.getGeneratedType()) {
         	converter = new AnyConverter(targetType, descriptor.getPattern());
-        return new ConvertingGenerator(generator, converter);
+        }
+    	return (converter != null ? new ConvertingGenerator(generator, converter) : generator);
     }
 
 }
