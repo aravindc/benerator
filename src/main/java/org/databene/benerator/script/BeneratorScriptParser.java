@@ -219,11 +219,15 @@ public class BeneratorScriptParser {
     }
 
     private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws ParseException {
-	    int childCount = node.getChildCount();
-	    WeightedSample<?>[] transitions = new WeightedSample[childCount];
-	    for (int i = 0; i < childCount; i++)
-	    	transitions[i] = convertWeightedLiteral(childAt(i, node));
-	    return transitions;
+    	if (!node.isNil())
+    		return new WeightedSample[] { convertWeightedLiteral(node) };
+    	else {
+		    int childCount = node.getChildCount();
+		    WeightedSample<?>[] transitions = new WeightedSample[childCount];
+		    for (int i = 0; i < childCount; i++)
+		    	transitions[i] = convertWeightedLiteral(childAt(i, node));
+		    return transitions;
+    	}
     }
 
 	@SuppressWarnings("unchecked")
