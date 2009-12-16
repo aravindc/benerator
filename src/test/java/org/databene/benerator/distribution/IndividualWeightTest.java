@@ -50,7 +50,7 @@ public class IndividualWeightTest extends GeneratorTest {
 	public void testApplyTo() {
 		SequenceGenerator<Integer> source = new SequenceGenerator<Integer>(Integer.class, 1, 2, 3);
 		Generator<Integer> generator = createWeight().applyTo(source, false);
-		expectRelativeWeights(generator, 1000, 1, 1, 2, 2, 3, 3);
+		expectRelativeWeights(generator, 2000, 1, 1, 2, 2, 3, 3);
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
