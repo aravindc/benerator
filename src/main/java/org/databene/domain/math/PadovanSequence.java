@@ -46,8 +46,8 @@ public class PadovanSequence extends LongBasedSequence {
     }
 
     @Override
-    protected Generator<Long> createLongGenerator(Long min, Long max, Long precision) {
-	    return new PadovanLongGenerator(min, max);
+    protected Generator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique) {
+	    return new PadovanLongGenerator(min, max, unique);
     }
     
 }

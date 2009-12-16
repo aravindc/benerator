@@ -43,10 +43,16 @@ import org.databene.benerator.primitive.number.RecurrenceRelationNumberGenerator
  */
 
 public class PadovanLongGenerator extends RecurrenceRelationNumberGenerator<Long> {
+
+	private boolean unique;
 	
-    public PadovanLongGenerator(Long min, Long max) {
+    public PadovanLongGenerator(Long min, Long max, boolean unique) {
     	super(Long.class, 3, min, max);
+    	this.unique = unique;
+    	reset();
     }
+    
+    // RecurrenceRelationNumberGenerator interface implementation ------------------------------------------------------
 
 	@Override
     protected Long a0(int n) {
@@ -57,5 +63,15 @@ public class PadovanLongGenerator extends RecurrenceRelationNumberGenerator<Long
     protected Long aN() {
 	    return aN(-2) + aN(-3);
     }
+
+	@Override
+	public void reset() {
+	    super.reset();
+    	if (unique) {
+    		// take out the first two '1' elements
+    		generate();
+    		generate();
+    	}
+	}
 
 }

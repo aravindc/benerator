@@ -46,8 +46,8 @@ public class FibonacciSequence extends LongBasedSequence {
     }
 
     @Override
-    protected Generator<Long> createLongGenerator(Long min, Long max, Long precision) {
-	    return new FibonacciLongGenerator(min, max);
+    protected Generator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique) {
+	    return new FibonacciLongGenerator(min, max, unique);
     }
 
 }

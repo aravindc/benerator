@@ -44,9 +44,15 @@ import org.databene.benerator.primitive.number.RecurrenceRelationNumberGenerator
 
 public class FibonacciLongGenerator extends RecurrenceRelationNumberGenerator<Long> {
 	
-    public FibonacciLongGenerator(Long min, Long max) {
+	private boolean unique;
+	
+    public FibonacciLongGenerator(Long min, Long max, boolean unique) {
     	super(Long.class, 2, min, max);
+    	this.unique = unique;
+    	reset();
     }
+    
+    // RecurrenceRelationNumberGenerator interface implementation ------------------------------------------------------
 
 	@Override
     protected Long aN() {
@@ -57,5 +63,14 @@ public class FibonacciLongGenerator extends RecurrenceRelationNumberGenerator<Lo
     protected Long a0(int n) {
 		return (n == 0 ? 0L : 1L);
     }
+
+	@Override
+	public void reset() {
+	    super.reset();
+	    if (unique) {
+	    	generate();
+	    	generate();
+	    }
+	}
 
 }
