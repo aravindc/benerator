@@ -44,7 +44,7 @@ public class RandomUtil {
     /** Generates a random long value in the range from min to max */
     public static long randomLong(long min, long max) {
         if (min > max)
-            throw new IllegalArgumentException("min > max: " + min + " > " + max);
+            throw new IllegalArgumentException("min(" + min + ") > max(" + max + ")");
         long range = max - min + 1;
         long result;
         if (range != 0)
