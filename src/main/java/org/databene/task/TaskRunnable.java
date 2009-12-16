@@ -43,27 +43,28 @@ public class TaskRunnable implements Runnable {
     private Task target;
     private Context context;
     private CountDownLatch latch;
+	private boolean closeAfterwards;
 
     /**
-     * Initializes a TaskThread. If the context is null,
-     * the target task's init() and destroy() methods will not be called.
+     * Initializes a TaskThread.
      * @param target
      * @param context
      */
-    public TaskRunnable(Task target, Context context) {
-        this(target, context, null);
+    public TaskRunnable(Task target, Context context, boolean closeAfterwards) {
+        this(target, context, null, closeAfterwards);
     }
 
-    public TaskRunnable(Task target, Context context, CountDownLatch latch) {
-        this.target = target;
+    public TaskRunnable(Task target, Context context, CountDownLatch latch, boolean closeAfterwards) {
+        this.target  = target;
         this.context = context;
-        this.latch = latch;
+        this.latch   = latch;
+        this.closeAfterwards = closeAfterwards;
     }
 
     public void run() {
         try {
             target.run(context);
-            if (context != null)
+            if (closeAfterwards)
                 IOUtil.close(target);
         } finally {
             if (latch != null)

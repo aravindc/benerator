@@ -222,7 +222,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
                                 "or implement the Parallelizable interface");
                 }
                 task = new LoopedTask(task, loopSize); 
-                TaskRunnable thread = new TaskRunnable(task, (target instanceof ThreadSafe ? null : context), latch);
+                TaskRunnable thread = new TaskRunnable(task, context, latch, !(target instanceof ThreadSafe)); // TODO synchronize context access if target is not thread-safe
                 executor.evaluate(context).execute(thread);
                 localInvocationCount += loopSize;
             } else
