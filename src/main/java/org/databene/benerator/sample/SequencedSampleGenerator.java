@@ -54,6 +54,8 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Flag that indicates if the generator needs to be initialized */
     private boolean dirty = true;
+    
+    private boolean unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -94,7 +96,7 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
         setValues(values);
     }
 
-    // values property -------------------------------------------------------------------------------------------------
+    // properties ------------------------------------------------------------------------------------------------------
 
     /** Adds a value to the sample list */
     @Override
@@ -103,7 +105,15 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
         this.dirty = true;
     }
 
-    @Override
+    public boolean isUnique() {
+    	return unique;
+    }
+
+	public void setUnique(boolean unique) {
+    	this.unique = unique;
+    }
+
+	@Override
     public void clear() {
     	this.samples.clear();
     	this.dirty = true;
@@ -125,7 +135,7 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
             if (samples.size() == 0) 
             	throw new InvalidGeneratorSetupException("No samples defined in " + this);
             else {
-            	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1);
+            	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1, unique);
             	indexGenerator.validate();
             }
             this.dirty = false;
