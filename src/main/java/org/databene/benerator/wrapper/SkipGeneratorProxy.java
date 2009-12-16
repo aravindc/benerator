@@ -79,7 +79,7 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> { // TODO merge con
         	throw new InvalidGeneratorSetupException("maxIncrement is less than zero");
         if (minIncrement > maxIncrement)
         	throw new InvalidGeneratorSetupException("minIncrement (" + minIncrement + ") is larger than maxIncrement (" + maxIncrement + ")");
-        this.incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, 1L);
+        this.incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, 1L, false);
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------

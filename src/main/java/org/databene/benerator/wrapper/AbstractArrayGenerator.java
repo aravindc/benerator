@@ -51,7 +51,7 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
         super(source);
         this.componentType = componentType;
         this.generatedType = generatedType;
-        this.sizeGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1);
+        this.sizeGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
     }
 
     // configuration properties ----------------------------------------------------------------------------------------

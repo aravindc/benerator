@@ -76,7 +76,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     @Override
     public void validate() {
     	if (dirty) {
-	        this.countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision);
+	        this.countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision, false);
 	        super.validate();
     	}
     }
