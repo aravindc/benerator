@@ -72,6 +72,7 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - created naming platform
     - Convenient JNDI support: org.databene.platform.jndi.InitialContext
   - db
+    - new OfflineSequenceGenerator that mimics a real db sequence and saves db round trips
     - logging database, driver and JDBC version info on first connect
     - supporting access to arbitrary schema
   - xls
@@ -88,6 +89,10 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - SeedSentenceGenerator
   - LuhnGenerator
 
+- New Distributions:
+  - 'expand' sequence
+  - supporting distribution='random' unique='true'
+  
 - new Converters:
   - URLEncodeConverter
   - URLDecodeConverter
@@ -151,3 +156,4 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - avoiding duplicate SQL logs
 - 2892420 DbUnitEntityExporter generates nested elements
 - 2892888 Thread count is too low
+- Made TextFileExporter thread-safe (and indirectly CSVEntityExporter and FlatFileEntityExporter)
