@@ -54,7 +54,10 @@ public class ErrorHandlerExpression implements Expression<ErrorHandler> {
 	public ErrorHandler evaluate(Context context) {
 		String levelName = ExpressionUtil.evaluate(nameExpr, context);
 		if (levelName == null)
-			levelName = ((BeneratorContext) context).getDefaultErrorHandler();
+			if (context != null)
+				levelName = ((BeneratorContext) context).getDefaultErrorHandler();
+			else
+				levelName = Level.fatal.name();
 		Level level = Level.valueOf(levelName);
 		return new ErrorHandler(category, level);
     }
