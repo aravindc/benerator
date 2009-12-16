@@ -21,6 +21,8 @@
 
 package org.databene.domain.br;
 
+import java.util.regex.Pattern;
+
 import javax.validation.ConstraintValidatorContext;
 
 import org.databene.commons.MathUtil;
@@ -37,11 +39,22 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @author Volker Bergmann
  * @see "http://en.wikipedia.org/wiki/Cadastro_de_Pessoas_F%C3%ADsicas"
  */
-public class CPFValidator extends AbstractConstraintValidator<CPF, CharSequence> {
+public class CPFValidator extends AbstractConstraintValidator<CPF, String> {
+	
+	private Pattern pattern = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
 
-	public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
+	public boolean isValid(String number, ConstraintValidatorContext context) {
 		// do simple checks first
-		if (number == null || number.length() != 11)
+		if (number == null)
+			return false;
+		
+		if (number.length() == 14)
+			if (pattern.matcher(number).matches())
+				number = number.substring(0, 3) + number.substring(4, 7) + number.substring(8, 11) + number.substring(12, 14);
+			else
+				return false;
+			
+		if (number.length() != 11)
 			return false;
 		
 		// compute 1st verification digit
