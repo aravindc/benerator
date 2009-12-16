@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link CreateOrUpdateEntitiesParser}.<br/><br/>
  * Created: 10.11.2009 15:08:46
  * @since TODO version
  * @author Volker Bergmann
