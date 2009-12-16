@@ -40,7 +40,7 @@ import static junit.framework.Assert.*;
  * @since 0.2
  * @author Volker Bergmann
  */
-public class PagedTaskTest {
+public class PagedTaskRunnerTest {
 
 	@Test
     public void testSingleInvocation() throws Exception {
