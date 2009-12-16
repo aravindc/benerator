@@ -26,6 +26,7 @@
 
 package org.databene.benerator.primitive.number;
 
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.comparator.NumberComparator;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -50,8 +51,6 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
     // constructors ----------------------------------------------------------------------------------------------------
 
     public AbstractNumberGenerator(Class<E> generatedType, E min, E max, E precision) {
-    	if (min != null && max != null && NumberComparator.compareNumbers(min, max) > 0)
-    		throw new IllegalArgumentException("min (" + min + ") is greater than max (" + max + ")");
     	this.generatedType = generatedType;
         setMin(min);
         setMax(max);
@@ -94,4 +93,13 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
     	return generatedType;
     }
     
+    @Override
+    public void validate() {
+    	if (dirty) {
+	    	if (min != null && max != null && NumberComparator.compareNumbers(min, max) > 0)
+	    		throw new InvalidGeneratorSetupException("min (" + min + ") is greater than max (" + max + ")");
+	        super.validate();
+	        dirty = false;
+    	}
+    }
 }
