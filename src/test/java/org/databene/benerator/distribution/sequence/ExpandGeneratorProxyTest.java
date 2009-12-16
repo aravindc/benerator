@@ -37,7 +37,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class UniqueRandomGeneratorProxyTest extends GeneratorTest {
+public class ExpandGeneratorProxyTest extends GeneratorTest {
 	
 	private static final int N = 100;
 	private static final int CACHE_SIZE = 30;
