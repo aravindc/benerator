@@ -24,6 +24,7 @@ package org.databene.domain.br;
 import java.util.ArrayList;
 import java.util.Random;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.commons.Encodings;
 
 /**
  * Generates Brazilian CNPJ numbers.
@@ -47,7 +48,7 @@ public class CNPJGenerator extends WeightedCSVSampleGenerator<String>{
 	}
 
 	public CNPJGenerator(boolean formatted) {
-		super(LOCAL, "UTF-8");
+		super(LOCAL, Encodings.UTF_8);
 		this.random = new Random();
 		this.formatted = formatted;
 	}
