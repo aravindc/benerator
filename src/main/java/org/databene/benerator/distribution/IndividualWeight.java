@@ -29,6 +29,7 @@ package org.databene.benerator.distribution;
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.IndividualWeightGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.commons.ConfigurationError;
 
 /**
  * Distribution type that provides an individual weight for each object.<br/>
@@ -48,7 +49,8 @@ public abstract class IndividualWeight<E> implements Distribution {
 
     @SuppressWarnings("unchecked")
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-    	// TODO err on unique=true
+    	if (unique)
+    		throw new ConfigurationError("Uniqueness is not supported by " + getClass());
     	return new IndividualWeightGenerator<T>(source.getGeneratedType(), (IndividualWeight<T>) this, 
     			GeneratorUtil.allProducts(source));
     }
