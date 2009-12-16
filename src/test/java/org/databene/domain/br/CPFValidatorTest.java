@@ -30,7 +30,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CPFValidatorTest extends SimpleValidatorTest<CharSequence> {
+public class CPFValidatorTest extends SimpleValidatorTest<String> {
 
 	public CPFValidatorTest() {
 	    super(new CPFValidator());
@@ -39,7 +39,7 @@ public class CPFValidatorTest extends SimpleValidatorTest<CharSequence> {
 	@Test
 	public void testValidSamples() {
 		assertValid("04303340790");
-		// TODO accept formatted numbers, e.g. assertValid("043.033.407-90");
+		assertValid("043.033.407-90");
 	}
 	
 	@Test
@@ -54,6 +54,8 @@ public class CPFValidatorTest extends SimpleValidatorTest<CharSequence> {
 	public void testInvalidSamples() {
 		assertInvalid("04303340791"); // last check digit wrong
 		assertInvalid("04303340780"); // first check digit wrong
+		assertInvalid("043.033.407-91"); // last check digit wrong
+		assertInvalid("043.033.407-80"); // first check digit wrong
 	}
 	
 }

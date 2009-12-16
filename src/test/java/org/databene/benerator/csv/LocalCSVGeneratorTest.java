@@ -27,6 +27,7 @@
 package org.databene.benerator.csv;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.Encodings;
 import org.databene.benerator.test.GeneratorClassTest;
 
 import java.util.Set;
@@ -54,7 +55,7 @@ public class LocalCSVGeneratorTest extends GeneratorClassTest {
     public void testEnglish() {
         Set<String> enNames = CollectionUtil.toSet("Alice", "Bob", "Charly");
         LocalCSVGenerator<String> enGen = new LocalCSVGenerator<String>(
-        		CSV_LOCAL_FILENAME, Locale.ENGLISH, ".csv", "UTF-8");
+        		CSV_LOCAL_FILENAME, Locale.ENGLISH, ".csv", Encodings.UTF_8);
         for (int i = 0; i < 10; i++) {
             String name = enGen.generate();
             assertTrue(enNames.contains(name));
@@ -65,7 +66,7 @@ public class LocalCSVGeneratorTest extends GeneratorClassTest {
     public void testGerman() {
         Set<String> deNames = CollectionUtil.toSet("Elise", "Robert", "Karl");
         LocalCSVGenerator<String> deGen = new LocalCSVGenerator<String>(
-        		CSV_LOCAL_FILENAME, Locale.GERMAN, ".csv", "UTF-8");
+        		CSV_LOCAL_FILENAME, Locale.GERMAN, ".csv", Encodings.UTF_8);
         for (int i = 0; i < 10; i++) {
             String name = deGen.generate();
             assertTrue(deNames.contains(name));

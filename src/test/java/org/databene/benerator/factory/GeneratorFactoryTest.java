@@ -151,7 +151,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetDateGeneratorFromSource() {
         String url = "org/databene/benerator/factory/dates.csv";
-        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, "UTF-8", "dd.MM.yyyy", 0);
+        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, Encodings.UTF_8, "dd.MM.yyyy", 0);
         checkGenerator(generator);
     }
 
