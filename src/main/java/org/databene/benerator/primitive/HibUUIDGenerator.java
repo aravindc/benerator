@@ -80,7 +80,7 @@ public class HibUUIDGenerator extends LightweightStringGenerator {
 
     public String generate() {
         long time = System.currentTimeMillis();
-        short count = counter.shortValue();
+        short count = (short) counter.getAndIncrement();
         if (count < 0)
         	count += Short.MAX_VALUE + 1;
         return new StringBuilder(36)
