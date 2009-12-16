@@ -29,17 +29,23 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
- * Long Generator that implements a 'cumulated' Long Sequence.<br/>
+ * Long Generator that implements a 'cumulated' Long Sequence.
+ * Uniqueness cannot be supported since it contradicts the 
+ * purpose of this generator.<br/>
  * <br/>
  * Created: 07.06.2006 19:33:37
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
 
+    private static final long DEFAULT_MAX = Long.MAX_VALUE / 2;
+	private static final long DEFAULT_MIN = Long.MIN_VALUE / 2;
+
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public CumulatedLongGenerator() {
-        this(Long.MIN_VALUE, Long.MAX_VALUE);
+	public CumulatedLongGenerator() {
+        this(DEFAULT_MIN, DEFAULT_MAX);
     }
 
     public CumulatedLongGenerator(long min, long max) {
