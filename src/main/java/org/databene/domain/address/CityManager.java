@@ -90,7 +90,8 @@ public class CityManager {
     private static void parseStateFile(Country country) {
 		try {
 			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
-					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", "State", ',', "UTF-8"),
+					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
+							"State", ',', Encodings.UTF_8),
 					new Entity2BeanConverter(State.class));
 			while (iterator.hasNext()) {
 				State state = iterator.next();
@@ -102,7 +103,7 @@ public class CityManager {
 	}
 
 	private static int parseCityFile(Country country, String filename, Map<String, String> defaults) throws IOException {
-		CSVLineIterator iterator = new CSVLineIterator(filename, ';', "UTF-8");
+		CSVLineIterator iterator = new CSVLineIterator(filename, ';', Encodings.UTF_8);
         String[] header = iterator.next();
         int warnCount = 0;
         while (iterator.hasNext()) {

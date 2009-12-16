@@ -33,6 +33,7 @@ import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Encodings;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.LocaleUtil;
@@ -89,7 +90,7 @@ public class Country {
         	logger.debug("No states defined for " + this);
         	return;
         }
-		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', "UTF-8");
+		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', Encodings.UTF_8);
         HeavyweightIterator<Entity> iterator = source.iterator();
         while (iterator.hasNext()) {
         	Entity entity = iterator.next();

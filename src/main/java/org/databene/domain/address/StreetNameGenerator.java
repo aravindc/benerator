@@ -27,6 +27,7 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.commons.Encodings;
 
 /**
  * Generates a street name for a region.<br/>
@@ -45,7 +46,7 @@ public class StreetNameGenerator extends WeightedDatasetCSVGenerator<String> {
     }
 
     public StreetNameGenerator(String datasetName) {
-        super(FILENAME_PATTERN, datasetName, REGION, "UTF-8");
+        super(FILENAME_PATTERN, datasetName, REGION, Encodings.UTF_8);
     }
 
 }
