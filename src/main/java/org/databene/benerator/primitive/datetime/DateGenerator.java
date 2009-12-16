@@ -52,6 +52,7 @@ public class DateGenerator implements Generator<Date> {
     private long max;
     private long precision;
     private Distribution distribution;
+    private boolean unique;
     
     private boolean initialized = false;
 
@@ -69,11 +70,17 @@ public class DateGenerator implements Generator<Date> {
 
     /** Initializes the generator to create dates of a Sequence or WeightFunction */
     public DateGenerator(Date min, Date max, long precision, Distribution distribution) {
+        this(min, max, precision, distribution, false);
+    }
+
+    /** Initializes the generator to create dates of a Sequence or WeightFunction */
+    public DateGenerator(Date min, Date max, long precision, Distribution distribution, boolean unique) {
         this.distribution = distribution;
 		this.min = (min != null ? min.getTime() : Long.MIN_VALUE);
 		this.max = (max != null ? max.getTime() : Long.MAX_VALUE);
 		this.precision = precision;
-        source = distribution.createGenerator(Long.class, this.min, this.max, this.precision);
+		this.unique = unique;
+        source = distribution.createGenerator(Long.class, this.min, this.max, this.precision, this.unique);
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -136,7 +143,7 @@ public class DateGenerator implements Generator<Date> {
     // implementation --------------------------------------------------------------------------------------------------
 
     private void init() {
-    	this.source = distribution.createGenerator(Long.class, min, max, precision);
+    	this.source = distribution.createGenerator(Long.class, min, max, precision, unique);
     }
     
     /** Returns the default start date as 80 years ago */
