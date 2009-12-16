@@ -26,11 +26,15 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
@@ -46,12 +50,13 @@ import org.databene.task.ThreadSafe;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public  class GenerateAndConsumeEntityTask extends AbstractTask implements ThreadSafe {
+public  class GenerateAndConsumeEntityTask extends AbstractTask implements ThreadSafe, ResourceManager {
 
     private Generator<Entity> entityGenerator;
     private boolean isSubTask;
     private Expression<Consumer<Entity>> consumerExpr;
     private List<Statement> subStatements;
+    private ResourceManager resourceManager = new ResourceManagerSupport();
 
     private Consumer<Entity> consumer;
     
@@ -117,7 +122,11 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
             GenerateAndConsumeEntityTask target = ((CreateOrUpdateEntitiesStatement) subStatement).getTarget();
 			target.reset();
 	        subStatement.execute(context);
-	        target.close();
+	        try {
+	        	target.close();
+	        } catch (IOException e) {
+	        	throw new RuntimeException(e);
+	        }
         } else
         	subStatement.execute(context);
     }
@@ -127,7 +136,8 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     }
 
 	@Override
-    public void close() {
+    public void close() throws IOException {
+		resourceManager.close();
         if (!isSubTask && consumer != null)
             consumer.flush();
     }
@@ -135,6 +145,10 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
 	public void flushConsumer() {
 		if (consumer != null)
 			consumer.flush();
+    }
+
+	public boolean addResource(Closeable resource) {
+	    return resourceManager.addResource(resource);
     }
 
 	// non-public helpers ----------------------------------------------------------------------------------------------

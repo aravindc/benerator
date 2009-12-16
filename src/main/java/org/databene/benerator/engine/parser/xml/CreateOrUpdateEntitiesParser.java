@@ -110,7 +110,8 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 	}
 
 	@SuppressWarnings("unchecked")
-    private GenerateAndConsumeEntityTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, ResourceManager resourceManager, BeneratorContext context) {
+    private GenerateAndConsumeEntityTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, 
+    		ResourceManager resourceManager, BeneratorContext context) {
 		descriptor.setNullable(false);
 		StringScriptExpression onErrorExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
 		Expression errorHandler = new ErrorHandlerExpression(onErrorExpr, getClass().getName());
@@ -137,7 +138,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
 	            DescriptorParser parser = ParserFactory.getParser(childName, element.getNodeName());
-	            Statement subStatement = parser.parse(child, resourceManager);
+	            Statement subStatement = parser.parse(child, task);
 				task.addSubStatement(subStatement);
             }
 		}
