@@ -25,10 +25,13 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Sequence} implementation that makes use of Benerator's {@link ExpandGeneratorProxy} 
+ * for distributing data of unlimited volume in a unique or non-unique manner.<br/>
+ * <br/>
  * Created: 13.12.2009 08:59:34
  * @since 0.6.0
  * @author Volker Bergmann
+ * @see ExpandGeneratorProxy
  */
 public class ExpandSequence extends Sequence {
 
