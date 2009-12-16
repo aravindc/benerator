@@ -25,11 +25,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link GeneratorProxy} implementation that supports distribution of unlimited data volumes 
+ * (provided by a source generator) in a unique or non-unique manner. 
+ * Handling of unlimited data volume is provided with a cache of limited size, 
+ * distribution is implemented by distributing source data randomly over buckets
+ * and uniqueness can be assured (when setting duplicationQuota to 0) by removing 
+ * used data from its bucket.<br/>
+ * For maximum efficiency, source data first is randomly distributed over buckets of limited size.
+ * As long as further source data is available, the proxy randomly selects an entry from a random 
+ * bucket returns it to the caller and replaces it with new data if no duplicates are allowed or 
+ * should not be applied in this case. 
+ * If no more source data is available, the proxy returns the last element from a bucket, allowing 
+ * to reduce the used bucket size without shifting elements. If a bucket is empty, it is removed.<br/> 
+ * The buckets were introduced for quickly freeing RAM after usage and for allowing a more erratic 
+ * behavior in the phase when no more source data is available and elements are taken from bucket end 
+ * to beginning.
+ * <br/>
+ * <br/>
  * Created: 10.12.2009 11:32:35
  * @since 0.6.0
  * @author Volker Bergmann
@@ -115,8 +132,9 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	
 	@Override
     public E generate() {
-		if (dirty)
-			validate();
+		if (!available())
+			throw new IllegalGeneratorStateException("Generator is not available. " +
+					"Check available() before calling generate()");
 		int bucketIndex = RandomUtil.randomIndex(buckets);
 	    ValueBucket<E> bucket = buckets.get(bucketIndex);
 	    E result;
@@ -131,6 +149,12 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	    }
 	    return result;
     }
+	
+	@Override
+	public void reset() {
+	    super.reset();
+	    createBuckets();
+	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
