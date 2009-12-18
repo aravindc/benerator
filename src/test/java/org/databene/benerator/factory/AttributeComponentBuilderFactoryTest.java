@@ -34,7 +34,9 @@ import org.databene.benerator.primitive.HibUUIDGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.Validator;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.validator.StringValidator;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -43,6 +45,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.junit.Test;
+
 import static junit.framework.Assert.*;
 
 /**
@@ -65,15 +68,15 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 */
 	@SuppressWarnings("unchecked")
     @Test
-	public void testSingleValuesAttribute() {
+	public void testEmptyConstantAttribute() {
 		String componentName = "name";
 		PartDescriptor name = new PartDescriptor(componentName);
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
-		type.setValues("'A'");
+		type.setConstant("");
 		ComponentBuilder builder = createComponentBuilder(name);
 		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++)
-			assertEquals("A", helper.generate());
+			assertEquals("Invalid product: ", "", helper.generate());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,6 +92,62 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 			String s = helper.generate();
 			assertTrue("A".equals(s) || "B".equals(s));
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testSingleValuesAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setValues("'A'");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		for (int i = 0; i < 10; i++)
+			assertEquals("A", helper.generate());
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testEmptyValuesAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setValues("");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		for (int i = 0; i < 10; i++)
+			assertEquals("", helper.generate());
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testPatternAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setPattern("\\d{2,4}");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Validator<Character> charValidator = new Validator<Character>() {
+			public boolean valid(Character c) {
+	            return ('0' <= c && c <= '9');
+            }
+		};
+		expectGenerations(helper, 20, new StringValidator(charValidator, 2, 4));
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testEmptyPatternAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setPattern("");
+		ComponentBuilder builder = createComponentBuilder(name);
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		for (int i = 0; i < 10; i++)
+			assertEquals("", helper.generate());
 	}
 
 	// csv string source -----------------------------------------------------------------------------------------------
