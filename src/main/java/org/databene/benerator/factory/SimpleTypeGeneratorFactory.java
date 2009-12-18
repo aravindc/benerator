@@ -52,7 +52,6 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
-import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
@@ -136,8 +135,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     	PrimitiveType primitiveType = descriptor.getPrimitiveType();
 		Class<?> targetType = (primitiveType != null ? primitiveType.getJavaType() : String.class);
 		String valueSpec = descriptor.getValues();
-		if (StringUtil.isEmpty(valueSpec))
+		if (valueSpec == null)
 			return null;
+		if ("".equals(valueSpec))
+			return new ConstantGenerator<String>("");
         try {
 			WeightedSample<?>[] samples;
 		        samples = BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
@@ -171,8 +172,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
         Generator<?> generator = null;
         // check for constant
-        if (!StringUtil.isEmpty(descriptor.getConstant())) {
-        	Object value = LiteralParser.parse(descriptor.getConstant());
+        String constant = descriptor.getConstant();
+        if ("".equals(constant))
+        	generator = new ConstantGenerator<String>("");
+        else if (constant != null) {
+        	Object value = LiteralParser.parse(constant);
             generator = new ConstantGenerator(value);
         }
         return generator;
@@ -398,17 +402,23 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 maxLength = 10000;
         }
 
-        // evaluate min length
-        Integer minLength = descriptor.getMinLength();
-        if (minLength == null) {
-            int defaultMinLength = (Integer) descriptor.getDetailDefault(MIN_LENGTH);
-            minLength = Math.min(maxLength, defaultMinLength);
-        }
-
-        // evaluate pattern
+        // check pattern against null
         String pattern = descriptor.getPattern();
         if (pattern == null)
             pattern = (String) descriptor.getDetailDefault(PATTERN);
+
+        // evaluate min length
+        Integer minLength = descriptor.getMinLength();
+        if (minLength == null) {
+        	if (pattern != null && pattern.length() == 0)
+        		minLength = 0;
+        	else {
+	            int defaultMinLength = (Integer) descriptor.getDetailDefault(MIN_LENGTH);
+	            minLength = Math.min(maxLength, defaultMinLength);
+        	}
+        }
+
+        // evaluate pattern
         if (pattern == null)
             pattern = "[A-Z]{" + minLength + ',' + maxLength + '}';
 
