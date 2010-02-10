@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Expression} that resolves to a number with statistical properties.<br/><br/>
  * Created: 19.10.2009 10:44:51
  * @since 0.6.0
  * @author Volker Bergmann
