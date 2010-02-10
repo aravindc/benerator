@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,12 @@
 
 package org.databene.benerator.composite;
 
+import java.util.List;
+
+import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
+import org.databene.commons.CollectionUtil;
+import org.databene.model.data.Entity;
 
 /**
  * Abstract parent class for all builders that relate to a group of components.<br/><br/>
@@ -34,16 +39,22 @@ import org.databene.commons.ArrayFormat;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public abstract class ComponentGroupBuilder implements ComponentBuilder {
+public abstract class MultiComponentBuilder implements ComponentBuilder {
 	
 	protected ComponentBuilder[] builders;
+	private List<ComponentBuilder> avalailableBuilders;
 
-	public ComponentGroupBuilder(ComponentBuilder[] builders) {
+	public MultiComponentBuilder(ComponentBuilder[] builders) {
 		this.builders = builders;
+		this.avalailableBuilders = CollectionUtil.toList(builders);
 	}
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
 
+	public Class<?> getGeneratedType() {
+	    return (builders != null && builders.length > 0 ? builders[0].getGeneratedType() : Object.class);
+	}
+	
 	public void validate() {
 		for (ComponentBuilder builder : builders)
 			builder.validate();
@@ -52,11 +63,24 @@ public abstract class ComponentGroupBuilder implements ComponentBuilder {
 	public void reset() {
 		for (ComponentBuilder builder : builders)
 			builder.reset();
+		this.avalailableBuilders = CollectionUtil.toList(builders);
 	}
 
 	public void close() {
 		for (ComponentBuilder builder : builders)
 			builder.close();
+		this.avalailableBuilders.clear();
+	}
+	
+	public boolean buildRandomComponentFor(Entity entity) {
+		if (avalailableBuilders.size() == 0)
+			return false;
+		boolean success;
+		do {
+			int builderIndex = RandomUtil.randomIndex(avalailableBuilders);
+			success = avalailableBuilders.get(builderIndex).buildComponentFor(entity);
+		} while (!success && avalailableBuilders.size() > 0);
+	    return success;
 	}
 	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -65,4 +89,5 @@ public abstract class ComponentGroupBuilder implements ComponentBuilder {
 	public String toString() {
 		return getClass().getSimpleName() + ArrayFormat.format(builders);
 	}
+	
 }
