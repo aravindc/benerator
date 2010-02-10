@@ -43,16 +43,16 @@ import org.databene.commons.expression.ExpressionUtil;
 
 public class ErrorHandlerExpression implements Expression<ErrorHandler> {
 	
-	private Expression<String> nameExpr;
 	private String category;
+	private Expression<String> levelExpr;
 
-    public ErrorHandlerExpression(Expression<String> nameExpr, String category) {
-	    this.nameExpr = nameExpr;
+    public ErrorHandlerExpression(String category, Expression<String> levelExpr) {
+	    this.levelExpr = levelExpr;
 	    this.category = category;
     }
 
 	public ErrorHandler evaluate(Context context) {
-		String levelName = ExpressionUtil.evaluate(nameExpr, context);
+		String levelName = ExpressionUtil.evaluate(levelExpr, context);
 		if (levelName == null)
 			if (context != null)
 				levelName = ((BeneratorContext) context).getDefaultErrorHandler();
