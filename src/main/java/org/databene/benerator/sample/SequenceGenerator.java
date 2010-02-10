@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,6 @@ import org.databene.benerator.Generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.databene.benerator.util.GeneratorUtil.*;
-
 /**
  * Creates a predefined sequence of objects.<br/>
  * <br/>
@@ -59,13 +57,9 @@ public class SequenceGenerator<E> implements Generator<E> {
     public void validate() {
     }
 
-    public boolean available() {
-        return cursor >= 0;
-    }
-
     public E generate() {
         if (cursor < 0)
-            throw stateException(this);
+            return null;
         E result = values[cursor];
         if (cursor < values.length - 1)
             cursor++;

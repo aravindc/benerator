@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,35 +42,45 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
 public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition> { // TODO add textual config and test invocation from descriptor file
 	
 	private E currentState;
+	private boolean done;
 	
     public StateTransitionGenerator(Class<E> stateType) {
 	    super(new StateGenerator<E>(stateType));
 	    this.currentState = null;
+	    this.done = false;
     }
 
     public void addTransition(E from, E to, double weight) {
     	((StateGenerator) source).addTransition(from, to, weight);
     }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
 
 	public Class<Transition> getGeneratedType() {
 	    return Transition.class;
     }
 
     public Transition generate() throws IllegalGeneratorStateException {
+    	if (done)
+    		return null;
     	E previousState = currentState;
     	currentState = source.generate();
+    	if (currentState == null)
+    		done = true;
 	    return new Transition(previousState, currentState);
     }
 
     @Override
     public void reset() {
     	currentState = null;
+	    this.done = false;
     	super.reset();
     }
 
     @Override
     public void close() {
     	currentState = null;
+	    this.done = true;
     	super.close();
     }
     

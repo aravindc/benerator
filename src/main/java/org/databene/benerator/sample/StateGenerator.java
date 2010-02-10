@@ -122,7 +122,7 @@ public class StateGenerator<E> implements Generator<E> {
     
     public E generate() throws IllegalGeneratorStateException {
     	if (phase == CLOSED)
-    		throw new IllegalGeneratorStateException("Generator not available: " + this);
+    		return null;
     	if (phase == UNINITIALIZED)
     		validate();
     	E result = nextState;

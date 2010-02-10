@@ -120,14 +120,14 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     }
     
     // Generator implementation ----------------------------------------------------------------------------------------
-
+/*
     @Override
     public boolean available() {
     	if (dirty)
     		validate();
-    	return samples.size() > 0 && indexGenerator.available();
+    	return samples.size() > 0 && indexGenerator.isAvailable();
     }
-    
+*/    
     /** Initializes all attributes */
     @Override
     public void validate() {
@@ -145,9 +145,11 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     public E generate() {
         if (dirty)
             validate();
-        if (samples.size() == 0)
+        Integer index;
+        if (samples.size() > 0 && (index = indexGenerator.generate()) != null)
+        	return samples.get(index);
+        else
             return null;
-        return samples.get(indexGenerator.generate());
     }
     
     @Override

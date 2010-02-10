@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,18 +48,14 @@ public class OneShotGenerator<E> implements Generator<E> {
 	    this.used = false;
     }
 
-	public boolean available() {
-	    return !used;
-    }
-
     public void close() {
     	used = true;
 	    value = null;
     }
 
     public E generate() throws IllegalGeneratorStateException {
-	    if (!available())
-	    	throw new IllegalGeneratorStateException("not available. Check available() before calling generate()");
+	    if (used)
+	    	return null;
 	    used = true;
 	    return value;
     }

@@ -26,9 +26,9 @@
 
 package org.databene.benerator.sample;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.Generator;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
@@ -153,11 +153,11 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> { // TODO mer
     public void close() {
         source.close();
     }
-
+/*
     public boolean available() {
         return source.available();
     }
-
+*/
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
