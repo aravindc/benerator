@@ -74,10 +74,6 @@ public class QueryGenerator<E> implements Generator<E> {
 	    return targetType;
     }
 
-    public boolean available() {
-	    return sourceGen.available();
-    }
-
     public void close() {
 	    sourceGen.close();
     }

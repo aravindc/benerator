@@ -23,7 +23,6 @@ package org.databene.platform.db;
 
 import java.sql.SQLException;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.StringUtil;
@@ -84,7 +83,7 @@ public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
 	    return Long.class;
     }
 	
-	public Long generate() throws IllegalGeneratorStateException {
+	public Long generate() {
 	    if (!initialized)
 	    	next = target.nextSequenceValue(sequenceName);
 	    return next++;
