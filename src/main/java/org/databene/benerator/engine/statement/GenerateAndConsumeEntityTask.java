@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,17 +40,18 @@ import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.ThreadSupport;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.task.AbstractTask;
-import org.databene.task.ThreadSafe;
 
 /**
  * Task that creates one entity instance per run() invocation and sends it to the specified consumer.<br/><br/>
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public  class GenerateAndConsumeEntityTask extends AbstractTask implements ThreadSafe, ResourceManager {
+public  class GenerateAndConsumeEntityTask extends AbstractTask implements ResourceManager {
 
     private Generator<Entity> entityGenerator;
     private boolean isSubTask;
@@ -61,9 +62,8 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     private Consumer<Entity> consumer;
     
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
-    		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask, 
-    		Expression<ErrorHandler> errorHandler) {
-    	super(taskName, errorHandler);
+    		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask) {
+    	super(taskName);
     	Assert.notNull(entityGenerator, "entityGenerator");
         this.entityGenerator = entityGenerator; // TODO make this an expression?
         this.consumerExpr = consumerExpr;
@@ -81,34 +81,33 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
     	return entityGenerator;
     }
     
-	@Override
-    public boolean available() {
-        return entityGenerator.available();
+    @Override
+    public ThreadSupport getThreading() {
+        return ThreadSupport.MULTI_THREADED;
     }
     
-    public void run(Context context) {
+    public boolean executeStep(Context ctx, ErrorHandler errorHandler) {
+    	BeneratorContext context = (BeneratorContext) ctx;
     	try {
     		// generate entity
-	        Entity entity = null;
-	        synchronized (entityGenerator) { // TODO get rid of synchronized block, e.g. by generateIfAvailable()?
-	            if (entityGenerator.available())
-	                entity = entityGenerator.generate();
-	            else
-	                return;
+	        Entity entity = entityGenerator.generate();
+	        if (entity == null) {
+		        Thread.yield();
+	        	return false;
 	        }
-	        if (entity != null) {
-		        // consume entity
-	        	Consumer<Entity> consumer = getConsumer(context);
-	        	if (consumer != null)
-	        		consumer.startConsuming(entity);
-	        	// generate and consume sub entities
-	        	runSubTasks((BeneratorContext) context);
-	        	if (consumer != null)
-	        		consumer.finishConsuming(entity);
-	        }
+	        // consume entity
+        	Consumer<Entity> consumer = getConsumer(context);
+        	if (consumer != null)
+        		consumer.startConsuming(entity);
+        	// generate and consume sub entities
+        	runSubTasks(context);
+        	if (consumer != null)
+        		consumer.finishConsuming(entity);
 	        Thread.yield();
+	        return true;
     	} catch (Exception e) {
-    		getErrorHandler(context).handleError("Error in execution of task " + getTaskName(), e);
+			errorHandler.handleError("Error in execution of task " + getTaskName(), e);
+    		return true; // stay available if the ErrorHandler has not canceled execution
     	}
     }
     
@@ -155,7 +154,7 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Threa
 	
     Consumer<Entity> getConsumer(Context context) {
     	if (consumer == null)
-    		consumer = consumerExpr.evaluate(context);
+    		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;
     }
 

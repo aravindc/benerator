@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,10 +31,9 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.Statement;
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.Entity;
 import org.databene.task.PageListener;
 import org.databene.task.PagedTaskRunner;
@@ -45,7 +44,7 @@ import org.databene.task.Task;
  * Created: 01.02.2008 14:43:15
  * @author Volker Bergmann
  */
-public class CreateOrUpdateEntitiesStatement implements Statement, PageListener {
+public class CreateOrUpdateEntitiesStatement extends AbstractStatement implements PageListener {
 
 	protected Task task;
 	protected Expression<Long> count;
@@ -53,13 +52,9 @@ public class CreateOrUpdateEntitiesStatement implements Statement, PageListener 
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
 
-	public CreateOrUpdateEntitiesStatement(GenerateAndConsumeEntityTask task) {
-	    this(task, new ConstantExpression<Long>(1L), new ConstantExpression<Long>(1L), 
-	    		null, new ConstantExpression<Integer>(1));
-    }
-
 	public CreateOrUpdateEntitiesStatement(GenerateAndConsumeEntityTask task,
-			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, Expression<Integer> threads) {
+			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, 
+			Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
 	    this.task = task;
 	    this.count = count;
 	    this.pageSize = pageSize;
@@ -77,7 +72,9 @@ public class CreateOrUpdateEntitiesStatement implements Statement, PageListener 
 	    		count.evaluate(context), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
-	    		threads.evaluate(context));
+	    		threads.evaluate(context),
+	    		context.getExecutorService(),
+	    		getErrorHandler(context));
         // TODO count all generations // context.countGenerations(getActualCount());
 	    synchronized(generator) {
 	        generator.close();

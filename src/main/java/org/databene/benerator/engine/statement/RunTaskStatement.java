@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.task.PageListener;
 import org.databene.task.PagedTaskRunner;
 import org.databene.task.Task;
@@ -38,26 +38,25 @@ import org.databene.task.Task;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class RunTaskStatement implements Statement {
+public class RunTaskStatement extends AbstractStatement {
 	
+	protected Expression<? extends Task> taskProvider;
 	protected Task task;
 	protected Expression<Long> count;
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
+	protected Expression<ErrorHandler> errorHandler;
 
-	public RunTaskStatement(Task task) {
-	    this(task, new ConstantExpression<Long>(1L), new ConstantExpression<Long>(1L), 
-	    		new ConstantExpression<PageListener>(null), new ConstantExpression<Integer>(1));
-    }
-
-	public RunTaskStatement(Task task, Expression<Long> count, Expression<Long> pageSize, 
-			Expression<PageListener> pageListener, Expression<Integer> threads) {
-	    this.task = task;
+	public RunTaskStatement(Expression<? extends Task> taskProvider, Expression<Long> count, Expression<Long> pageSize, 
+			Expression<PageListener> pageListener, Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
+		super(errorHandler);
+	    this.taskProvider = taskProvider;
 	    this.count = count;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
+	    this.errorHandler = errorHandler;
     }
 
 	public Expression<Long> getCount() {
@@ -77,12 +76,20 @@ public class RunTaskStatement implements Statement {
     }
 
 	public void execute(BeneratorContext context) {
-	    PagedTaskRunner.execute(task, context, 
+	    PagedTaskRunner.execute(getTask(context), context, 
 	    		count.evaluate(context), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context), 
-	    		threads.evaluate(context));
+	    		threads.evaluate(context),
+	    		context.getExecutorService(),
+	    		getErrorHandler(context));
 	}
+
+	private synchronized Task getTask(BeneratorContext context) {
+		if (task == null)
+			task = taskProvider.evaluate(context);
+	    return task;
+    }
 
 	private List<PageListener> getPageListeners(BeneratorContext context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();
