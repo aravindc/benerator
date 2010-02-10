@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.script.BeneratorScriptFactory;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.Level;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ClassCache;
@@ -63,7 +65,6 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
     protected long    defaultPageSize      = 1;
     protected boolean defaultNull          = true;
     protected char    defaultSeparator     = ',';
-    protected String  defaultErrorHandler  = "fatal";
     protected String  contextUri           = "./";
     public    boolean validate             = true;
     public    Long    maxCount             = null;
@@ -93,16 +94,6 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
-	
-	@Override
-    public synchronized Object get(String key) {
-        for (int i = contexts.size() - 1; i >= 0; i--) {
-            Object result = contexts.get(i).get(key);
-            if (result != null)
-                return result;
-        }
-        return null;
-    }
 	
 	public void setProperty(String name, Object value) {
 		properties.set(name, value);
@@ -219,11 +210,11 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	}
 
 	public String getDefaultErrorHandler() {
-		return defaultErrorHandler;
+		return ErrorHandler.getDefaultLevel().name();
 	}
 
 	public void setDefaultErrorHandler(String defaultErrorHandler) {
-		this.defaultErrorHandler = defaultErrorHandler;
+		ErrorHandler.setDefaultLevel(Level.valueOf(defaultErrorHandler));
 	}
 
 	public String getContextUri() {
