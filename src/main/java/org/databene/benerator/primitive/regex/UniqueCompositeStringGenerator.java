@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,31 +34,34 @@ import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
  * Uses n String generators and appends the output of each one in each generate() call.<br/>
  * <br/>
  * Created: 17.11.2007 17:33:21
+ * @author Volker Bergmann
  */
-public class UniqueFixedCountCompositeStringGenerator extends GeneratorWrapper<String[], String> {
+public class UniqueCompositeStringGenerator extends GeneratorWrapper<String[], String> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public UniqueFixedCountCompositeStringGenerator() {
+    public UniqueCompositeStringGenerator() {
         super(null);
     }
 
-    public UniqueFixedCountCompositeStringGenerator(Generator<String>... sources) {
+    public UniqueCompositeStringGenerator(Generator<String>... sources) {
         super(wrap(sources));
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public String generate() {
-        StringBuilder builder = new StringBuilder();
-        Object[] parts = source.generate();
-        for (Object part : parts)
-            builder.append(part);
-        return builder.toString();
-    }
-
     public Class<String> getGeneratedType() {
         return String.class;
+    }
+
+    public String generate() {
+        StringBuilder builder = new StringBuilder();
+        String[] parts = source.generate();
+        if (parts == null)
+        	return null;
+        for (String part : parts)
+            builder.append(part);
+        return builder.toString();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
