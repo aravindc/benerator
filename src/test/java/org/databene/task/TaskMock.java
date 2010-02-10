@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 
 /**
  * Mock implementation of the {@link Task} interface.<br/><br/>
@@ -41,8 +42,9 @@ public class TaskMock extends AbstractTask {
     	this.intProp = intProp;
     }
 
-	public void run(Context context) {
+	public boolean executeStep(Context context, ErrorHandler errorHandler) {
 	    count.incrementAndGet();
+	    return true;
     }
 	
 	@Override

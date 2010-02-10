@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,10 @@
 
 package org.databene.task;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.databene.commons.ThreadSupport;
+
 /**
  * Abstract parent class for tasks that do not support multithreaded execution, 
  * but can be cloned and executed in several parallel instances.<br/><br/>
@@ -33,18 +37,23 @@ package org.databene.task;
  * @since 0.2
  * @author Volker Bergmann
  */
-public abstract class SingleThreadedTask extends AbstractTask implements Parallelizable {
+public abstract class ParallelizableCounterTask extends AbstractTask implements Cloneable {
 
-    static int instanceCount = 0;
+    static AtomicInteger instanceCount = new AtomicInteger();
 
-    public SingleThreadedTask() {
+    public ParallelizableCounterTask() {
         super();
-        instanceCount++;
+        instanceCount.addAndGet(1);
     }
 
     @Override
+    public ThreadSupport getThreading() {
+        return ThreadSupport.PARALLELIZABLE;
+    }
+    
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        instanceCount++;
+        instanceCount.addAndGet(1);
         return super.clone();
     }
     

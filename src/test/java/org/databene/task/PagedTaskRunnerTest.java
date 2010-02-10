@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -84,21 +85,23 @@ public class PagedTaskRunnerTest {
 	public void testMinCount() {
         CountTask countTask = new CountTask(1);
         PagedTaskRunner pagedTask = new PagedTaskRunner(countTask, 2);
-        pagedTask.execute(new BeneratorContext());
+        pagedTask.execute(new BeneratorContext(), ErrorHandler.getDefault());
 	}
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
     private void checkNonThreadSafeTask(long totalInvocations, int pageSize, int threads, 
     		int expectedInstanceCount) {
-        SingleThreadedTask.instanceCount = 0;
-        SingleThreadedTask task = new SingleThreadedTask() {
-			public void run(Context context) { }
+        ParallelizableCounterTask.instanceCount.set(0);
+        ParallelizableCounterTask task = new ParallelizableCounterTask() {
+			public boolean executeStep(Context context, ErrorHandler errorHandler) { 
+				return true;
+			}
         };
-        PagedTaskRunner pagedTask = new PagedTaskRunner(
-        		task, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
-        pagedTask.execute(new BeneratorContext());
-        assertEquals("Unexpected instanceCount,", expectedInstanceCount, SingleThreadedTask.instanceCount);
+        PagedTaskRunner pagedTask = new PagedTaskRunner(task, 
+        		totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
+        pagedTask.execute(new BeneratorContext(), ErrorHandler.getDefault());
+        assertEquals("Unexpected instanceCount,", expectedInstanceCount, ParallelizableCounterTask.instanceCount.get());
     }
 
     private void checkRun(long totalInvocations, int pageSize, int threads,
@@ -106,7 +109,7 @@ public class PagedTaskRunnerTest {
         CountTask countTask = new CountTask();
         PagedTaskRunner pagedTask = new PagedTaskRunner(
         		countTask, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
-        pagedTask.execute(new BeneratorContext());
+        pagedTask.execute(new BeneratorContext(), ErrorHandler.getDefault());
         assertEquals("Unexpected runCount,", expectedRunCount, countTask.runCount);
         assertEquals("Unexpected closeCount,", expectedCloseCount, countTask.closeCount);
     }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,8 @@
 package org.databene.task;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.ThreadSupport;
 
 /**
  * Helper class for testing Task handling.<br/><br/>
@@ -34,7 +36,7 @@ import org.databene.commons.Context;
  * @since 0.2
  * @author Volker Bergmann
  */
-public class CountTask implements Task, ThreadSafe {
+public class CountTask implements Task {
 
     public int runCount = 0;
     public int closeCount = 0;
@@ -54,12 +56,13 @@ public class CountTask implements Task, ThreadSafe {
         return getClass().getSimpleName();
     }
 
-	public boolean available() {
-        return (runLimit < 0 || runCount < runLimit);
+	public ThreadSupport getThreading() {
+	    return ThreadSupport.MULTI_THREADED;
     }
 
-    public void run(Context context) {
+    public boolean executeStep(Context context, ErrorHandler errorHandler) {
         runCount++;
+        return (runLimit < 0 || runCount < runLimit);
     }
 
     public void close() {
