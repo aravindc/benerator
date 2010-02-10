@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,12 +27,9 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Test;
 
 /**
@@ -85,8 +82,6 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
     
     static class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
 
-        private static final Logger logger = LoggerFactory.getLogger(NShotGeneratorProxy.class);
-
         private long shots;
 
         private long remainingShots;
@@ -96,22 +91,22 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
             this.shots = shots;
             this.remainingShots = shots;
         }
-
+/*
         @Override
         public boolean available() {
             if (remainingShots <= 0) {
-                logger.debug("requested count reached for " + source);
                 return false;
             }
-            return super.available();
+            return super.isAvailable();
         }
-
+*/
         @Override
         public E generate() {
-            if (remainingShots <= 0)
-                throw new IllegalGeneratorStateException("Generator not available.");
+        	E product;
+            if (remainingShots <= 0 || (product = super.generate()) == null)
+                return null;
             this.remainingShots--;
-            return super.generate();
+            return product;
         }
 
         @Override

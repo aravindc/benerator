@@ -56,7 +56,7 @@ public class SequenceTestGenerator<E> implements Generator<E> {
 
     public E generate() {
         if (cursor >= sequence.length)
-            throw new IllegalGeneratorStateException("End of sequence reached");
+            return null;
         return sequence[cursor++];
     }
 

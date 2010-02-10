@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,9 @@ package org.databene.benerator.wrapper;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.TypedLightweightGenerator;
 
 /**
  * Tests the {@link CyclicGeneratorProxy}.<br/>
@@ -41,14 +41,14 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * @author Volker Bergmann
  */
 
-public class CyclicGeneratorProxyTest {
+public class CyclicGeneratorProxyTest extends GeneratorTest {
 	
 	@Test
 	public void testSingleIteration() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
 		expect12(proxy);
 		proxy.close();
-		assertFalse(proxy.available());
+		assertUnavailable(proxy);
 	}
 
 	@Test
@@ -57,56 +57,48 @@ public class CyclicGeneratorProxyTest {
 		expect12(proxy);
 		expect12(proxy);
 		proxy.close();
-		assertFalse(proxy.available());
+		assertUnavailable(proxy);
 	}
 
 	@Test
 	public void testReset() {
 		CyclicGeneratorProxy<Integer> proxy = new CyclicGeneratorProxy<Integer>(new Source12());
-		assertTrue(proxy.available());
+		assertAvailable(proxy);
 		proxy.reset();
 		expect12(proxy);
 		proxy.close();
-		assertFalse(proxy.available());
+		assertUnavailable(proxy);
 	}
 	
 	// helper methods --------------------------------------------------------------------------------------------------
 
 	private void expect12(CyclicGeneratorProxy<Integer> wrapper) {
-	    assertTrue(wrapper.available());
 		assertEquals(1, (int) wrapper.generate());
-		assertTrue(wrapper.available());
 		assertEquals(2, (int) wrapper.generate());
     }
 
-	static class Source12 implements Generator<Integer> {
+	static class Source12 extends TypedLightweightGenerator<Integer> {
 		
+		public Source12() {
+	        super(Integer.class);
+        }
+
 		private int n = 0;
 		
-        public Class<Integer> getGeneratedType() {
-	        return Integer.class;
-        }
-
-		public boolean available() {
-			return (n < 2);
-		}
-
         public Integer generate() throws IllegalGeneratorStateException {
-	        n = (n < 3 ? n + 1 : 1);
-	        return n;
+	        return (n < 2 ? ++n : null);
         }
 
+        @Override
         public void close() {
 	        n = 3;
         }
 
+        @Override
         public void reset() throws IllegalGeneratorStateException {
 	        n = 0;
         }
 
-        public void validate() throws InvalidGeneratorSetupException {
-	        // always valid
-        }
 	}
 
 }

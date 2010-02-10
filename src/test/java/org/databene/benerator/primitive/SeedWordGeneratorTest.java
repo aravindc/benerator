@@ -49,13 +49,13 @@ public class SeedWordGeneratorTest extends GeneratorClassTest {
     	SeedWordGenerator generator = new SeedWordGenerator();
     	//generator.printState();
     	for (int i = 0; i < 10; i++) {
-    		assertTrue(generator.available());
     		String word = generator.generate();
+    		assertNotNull(word);
 			logger.debug(word);
     		assertNotNull(word);
     		assertTrue(word.length() > 0);
     	}
-		assertTrue(generator.available());
+		assertAvailable(generator);
     }
     
 }

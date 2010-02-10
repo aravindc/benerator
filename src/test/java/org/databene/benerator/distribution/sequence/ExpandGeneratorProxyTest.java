@@ -53,7 +53,7 @@ public class ExpandGeneratorProxyTest extends GeneratorTest {
 	public void testEmptySource() {
 		SequenceTestGenerator<Long> emptyFeed = new SequenceTestGenerator<Long>();
 		Generator<Long> generator = new ExpandGeneratorProxy<Long>(emptyFeed, CACHE_SIZE, BUCKET_SIZE);
-		assertFalse(generator.available());
+		assertUnavailable(generator);
 	}
 	
 	@Test
@@ -63,13 +63,13 @@ public class ExpandGeneratorProxyTest extends GeneratorTest {
 			= ExpandGeneratorProxy.uniqueProxy(feed, CACHE_SIZE, BUCKET_SIZE);
 		UniqueLongValidator validator = new UniqueLongValidator(N);
 		for (int i = 0; i < N; i++) {
-			assertTrue(generator.available());
 			Long product = generator.generate();
+			assertNotNull(product);
 			assertTrue("Not unique: " + product, validator.valid(product));
 			assertTrue(product <= N);
 			assertTrue(product >= 1);
 		}
-		assertFalse(generator.available());
+		assertUnavailable(generator);
 	}
 	
 }

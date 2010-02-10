@@ -46,8 +46,8 @@ public class SimpleTypeEntityGeneratorTest {
 	@Test
 	public void test() {
 		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(new ConstantGenerator<String>("hi"), createComplexType());
-		assertTrue(generator.available());
 		Entity entity = generator.generate();
+		assertNotNull(entity);
 		String content = (String) entity.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
 		assertTrue(content != null);
 		generator.close();

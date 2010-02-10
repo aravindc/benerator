@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,8 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.TypedLightweightGenerator;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -41,7 +42,7 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class GeneratorWrapperTest {
+public class GeneratorWrapperTest extends GeneratorTest {
 	
 	@Test
 	public void testReset() {
@@ -51,13 +52,13 @@ public class GeneratorWrapperTest {
 		expect12(wrapper);
 		wrapper.close();
 	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void expect12(MyWrapper wrapper) {
-	    assertTrue(wrapper.available());
 		assertEquals(1, (int) wrapper.generate());
-		assertTrue(wrapper.available());
 		assertEquals(2, (int) wrapper.generate());
-		assertFalse(wrapper.available());
+		assertUnavailable(wrapper);
     }
 	
 	static class MyWrapper extends GeneratorWrapper<Integer, Integer> {
@@ -76,34 +77,28 @@ public class GeneratorWrapperTest {
 
 	}
 	
-	static class Source12 implements Generator<Integer> {
+	static class Source12 extends TypedLightweightGenerator<Integer> {
 		
 		private int n = 0;
 		
-        public Class<Integer> getGeneratedType() {
-	        return Integer.class;
+		public Source12() {
+	        super(Integer.class);
         }
-
-		public boolean available() {
-			return (n < 2);
-		}
 
         public Integer generate() throws IllegalGeneratorStateException {
-	        n = (n < 3 ? n + 1 : 1);
-	        return n;
+        	return (n < 2 ? ++n : null);
         }
 
+        @Override
         public void close() {
 	        n = 3;
         }
 
+        @Override
         public void reset() throws IllegalGeneratorStateException {
 	        n = 0;
         }
 
-        public void validate() throws InvalidGeneratorSetupException {
-	        // always valid
-        }
 	}
 	
 }

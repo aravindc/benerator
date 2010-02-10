@@ -29,6 +29,7 @@ import java.util.Set;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.Entity;
@@ -49,12 +50,13 @@ public class CreateOrUpdateEntitiesStatementTest {
 	public void testThreadCount() {
 		EntityGeneratorMock entityGenerator = new EntityGeneratorMock();
 		
-		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask("myTask", entityGenerator, null, false, null);
+		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask("myTask", entityGenerator, null, false);
 		
 		Expression<Long> count = new ConstantExpression<Long>(INVOCATION_COUNT);
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
 		Expression<Integer> threads = new ConstantExpression<Integer>(THREAD_COUNT);
-		CreateOrUpdateEntitiesStatement statement = new CreateOrUpdateEntitiesStatement(task, count, pageSize, null, threads);
+		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
+		CreateOrUpdateEntitiesStatement statement = new CreateOrUpdateEntitiesStatement(task, count, pageSize, null, threads, errorHandler);
 		statement.execute(new BeneratorContext());
 		
 		assertEquals(INVOCATION_COUNT, entityGenerator.invocationCount);
@@ -76,8 +78,8 @@ public class CreateOrUpdateEntitiesStatementTest {
 		public Entity generate() throws IllegalGeneratorStateException {
 			int tmp = invocationCount;
 			threads.add(Thread.currentThread());
-            invocationCount = tmp + 1; // update is slightly delayed in order to provoke update errors 
-	        return null;               // in case of concurrency issues
+            invocationCount = tmp + 1; 						// update is slightly delayed in order to provoke update errors 
+	        return new Entity("Person", "name", "Alice");   // in case of concurrency issues
         }
 	}
 	

@@ -58,7 +58,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	public void testMissingType() {
 		try {
 			ReferenceDescriptor ref = createDescriptor("ref", null, "Storage");
-			createGenerator(ref);
+			createBuilder(ref);
 			fail(ConfigurationError.class.getSimpleName() + " expected");
 		} catch (ConfigurationError e) {
 			// this is expected
@@ -69,7 +69,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	public void testMissingSource() {
 		try {
 			ReferenceDescriptor ref = createDescriptor("ref", "Referee", null);
-			createGenerator(ref);
+			createBuilder(ref);
 			fail(ConfigurationError.class.getSimpleName() + " expected");
 		} catch (ConfigurationError e) {
 			// this is expected
@@ -81,9 +81,8 @@ public class ReferenceComponentBuilderFactoryTest {
     public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(1L));
-		ComponentBuilder generator = createGenerator(ref);
+		ComponentBuilder generator = createBuilder(ref);
 		assertTrue(generator != null);
-		assertTrue(generator.available());
 		Entity entity = new Entity("Person");
 		generator.buildComponentFor(entity);
 		assertEquals("Alice", entity.get("ref"));
@@ -94,11 +93,10 @@ public class ReferenceComponentBuilderFactoryTest {
     public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(2L));
-		ComponentBuilder generator = createGenerator(ref);
-		assertTrue(generator != null);
-		assertTrue(generator.available());
+		ComponentBuilder builder = createBuilder(ref);
+		assertTrue(builder != null);
 		Entity entity = new Entity("Person");
-		generator.buildComponentFor(entity);
+		builder.buildComponentFor(entity);
 		String[] product = (String[]) entity.get("ref");
 		assertEquals(2, product.length);
 		assertEquals("Alice", product[0]);
@@ -115,7 +113,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		return descriptor;
 	}
 
-	private ComponentBuilder createGenerator(ReferenceDescriptor ref) {
+	private ComponentBuilder createBuilder(ReferenceDescriptor ref) {
 		BeneratorContext context = new BeneratorContext(null);
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);

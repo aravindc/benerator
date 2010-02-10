@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.util;
 
+import java.io.Closeable;
 import java.util.Iterator;
 
 import org.databene.benerator.Generator;
@@ -38,24 +39,32 @@ import org.databene.benerator.Generator;
  * @author Volker Bergmann
  */
 
-public class GeneratorIterator<E> implements Iterator<E> {
+public class GeneratorIterator<E> implements Iterator<E>, Closeable {
 	
 	private Generator<E> source;
+	private E next;
 	
 	public GeneratorIterator(Generator<E> source) {
 		this.source = source;
+		this.next = source.generate();
 	}
 
     public boolean hasNext() {
-	    return source.available();
+	    return next != null;
     }
 
     public E next() {
-	    return source.generate();
+    	E result = next;
+    	next = source.generate();
+	    return result;
     }
 
     public void remove() {
 	    throw new UnsupportedOperationException("removal is not supported by " + getClass());
     }
 
+    public void close() {
+        source.close();
+    }
+    
 }

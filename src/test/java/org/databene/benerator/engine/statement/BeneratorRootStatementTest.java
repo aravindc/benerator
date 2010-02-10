@@ -27,6 +27,7 @@ import static org.junit.Assert.*;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeneratorRootStatementTest {
+public class BeneratorRootStatementTest extends GeneratorTest {
 
 	@Test
 	public void testGetGenerator() throws Exception {
@@ -52,7 +53,7 @@ public class BeneratorRootStatementTest {
 		assertNotNull(generator);
 		for (int i = 0; i < 10; i++)
 			checkGeneration(generator);
-		assertTrue(generator.available());
+		assertAvailable(generator);
 	}
 
 	private void checkGeneration(Generator<Entity> generator) {

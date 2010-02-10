@@ -87,8 +87,8 @@ public class XMLFileGeneratorTest extends TestCase {
 
     private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
         XMLFileGenerator generator = new XMLFileGenerator(schemaUri, root, filename);
-        assertTrue(generator.available());
         File file = generator.generate();
+        assertNotNull(file);
         logger.debug("Generated " + file);
         generator.close();
         // validate the generated file

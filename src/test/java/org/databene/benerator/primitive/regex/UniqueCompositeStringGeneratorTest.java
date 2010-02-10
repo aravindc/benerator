@@ -38,16 +38,16 @@ import org.junit.Test;
  * Created: 17.11.2007 17:45:41
  * @author Volker Bergmann
  */
-public class UniqueFixedCountCompositeStringGeneratorTest extends GeneratorClassTest {
+public class UniqueCompositeStringGeneratorTest extends GeneratorClassTest {
 
-    public UniqueFixedCountCompositeStringGeneratorTest() {
-        super(UniqueFixedCountCompositeStringGenerator.class);
+    public UniqueCompositeStringGeneratorTest() {
+        super(UniqueCompositeStringGenerator.class);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testConstant() {
-        Generator<String> generator = new UniqueFixedCountCompositeStringGenerator(
+        Generator<String> generator = new UniqueCompositeStringGenerator(
                 new ConstantGenerator("0"),
                 new ConstantGenerator("1"));
         expectUniqueFromSet(generator,  "01").withCeasedAvailability();
@@ -56,7 +56,7 @@ public class UniqueFixedCountCompositeStringGeneratorTest extends GeneratorClass
     @Test
     @SuppressWarnings("unchecked")
     public void testVariable() {
-        Generator<String> generator = new UniqueFixedCountCompositeStringGenerator(
+        Generator<String> generator = new UniqueCompositeStringGenerator(
                 new SequenceTestGenerator("A", "B", "C"),
                 new SequenceTestGenerator("0", "1"));
         expectUniqueFromSet(generator, "A0", "B0", "C0", "A1", "B1", "C1").withCeasedAvailability();

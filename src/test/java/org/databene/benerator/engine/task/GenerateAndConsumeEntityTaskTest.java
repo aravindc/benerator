@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,7 @@ import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
+import org.databene.task.test.AbstractTaskTest;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -53,7 +54,7 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class GenerateAndConsumeEntityTaskTest {
+public class GenerateAndConsumeEntityTaskTest extends AbstractTaskTest {
 	
     static final Entity ALICE = new Entity("Person", "name", "Alice");
     static final Entity BOB = new Entity("Person", "name", "Bob");
@@ -66,17 +67,15 @@ public class GenerateAndConsumeEntityTaskTest {
 		final ListConsumer consumer = new ListConsumer();
 		Expression<Consumer<Entity>> consumerExpr = new ConstantExpression<Consumer<Entity>>(consumer);
 		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(
-				"tn", generator, consumerExpr, false, null);
+				"tn", generator, consumerExpr, false);
 		checkIteration(task, consumer);
 		consumer.list.clear();
 		task.reset();
 		checkIteration(task, consumer);
 		task.close();
-		assertFalse(task.available());
 		assertEquals("tn", task.getTaskName());
-		assertEquals("fatal", task.getErrorHandler(null).getLevel().name());
 	}
-/*
+/* TODO
     @Test
     public void testRecursive() throws Exception {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
@@ -100,11 +99,9 @@ public class GenerateAndConsumeEntityTaskTest {
 	private void checkIteration(GenerateAndConsumeEntityTask task, final ListConsumer consumer) {
 		BeneratorContext context = new BeneratorContext();
 		// check life cycle
-	    assertTrue(task.available());
-		task.run(context);
-		assertTrue(task.available());
-		task.run(context);
-		assertFalse(task.available());
+	    executeStepAndAssertAvailability(task, context);
+	    executeStepAndAssertAvailability(task, context);
+	    executeStepAndAssertUnavailability(task, context);
 		// check output
 		assertEquals(2, consumer.list.size());
 		assertEquals(ALICE, consumer.list.get(0));

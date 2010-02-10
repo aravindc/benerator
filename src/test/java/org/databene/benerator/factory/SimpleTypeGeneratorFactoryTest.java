@@ -85,7 +85,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testCreateSampleGeneratorUnweighted() {
 		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), false, null);
-		expectRelativeWeights(generator, 100, "a", 1, "b", 1);
+		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
 		generator = SimpleTypeGeneratorFactory.createSampleGenerator((SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("'a','b,c'").withSeparator("|"), false, null);
 		expectRelativeWeights(generator, 1000, "a", 1, "b,c", 1);
 	}
@@ -168,7 +168,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 			counter.count(generator.generate());
 		assertEquals(1, counter.getCount("Alice"));
 		assertEquals(1, counter.getCount("Otto"));
-		assertFalse(generator.available());
+		assertUnavailable(generator);
 	}
 	
 	@Test

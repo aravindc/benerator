@@ -57,12 +57,7 @@ public class SkipGeneratorProxyTest extends GeneratorClassTest {
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source);
         assertEquals(1, (int)generator.generate());
         assertEquals(2, (int)generator.generate());
-        try {
-            generator.generate();
-            fail("IllegalGeneratorStateException expected");
-        } catch (IllegalGeneratorStateException e) {
-            // expected
-        }
+        assertUnavailable(generator);
     }
 
     @Test

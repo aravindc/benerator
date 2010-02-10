@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
 /**
  * Tests the {@link CreateOrUpdateEntitiesParser}.<br/><br/>
  * Created: 10.11.2009 15:08:46
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class CreateOrUpdateEntitiesParserTest {

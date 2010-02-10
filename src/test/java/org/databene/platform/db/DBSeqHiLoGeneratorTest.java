@@ -92,8 +92,9 @@ public class DBSeqHiLoGeneratorTest {
     
     private void expectSequence(Generator<Long> generator, long ... values) {
         for (long expectedValue : values) {
-            assertTrue("Generator is not available: " + generator, generator.available());
-            assertEquals(expectedValue, generator.generate().longValue());
+            Long product = generator.generate();
+            assertNotNull("Generator is not available: " + generator, product);
+			assertEquals(expectedValue, product.longValue());
         }
     }
 

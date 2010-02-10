@@ -57,8 +57,9 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setDetailValue("locale", "de");
 		Generator<Entity> generator = createGenerator(type);
 		generator.validate();
-		assertTrue(generator.available());
-		assertEquals(Locale.GERMAN, generator.generate().get("locale"));
+		Entity product = generator.generate();
+		assertNotNull(product);
+		assertEquals(Locale.GERMAN, product.get("locale"));
 	}
 	
 	@Test

@@ -26,14 +26,15 @@
 
 package org.databene.benerator.factory;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
 import org.databene.benerator.primitive.HibUUIDGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
-import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.test.NullableGeneratorTest;
+import org.databene.benerator.util.NullableGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Validator;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.validator.StringValidator;
@@ -54,7 +55,7 @@ import static junit.framework.Assert.*;
  * Created: 10.08.2007 12:40:41
  * @author Volker Bergmann
  */
-public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
+public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest {
 	
 	// TODO v0.6 define tests for all syntax paths
 	
@@ -74,9 +75,10 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setConstant("");
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
-			assertEquals("Invalid product: ", "", helper.generate());
+			assertEquals("Invalid product: ", "", helper.generate(wrapper).product);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,9 +89,9 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A','B'");
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++) {
-			String s = helper.generate();
+			String s = helper.generate(new ProductWrapper<String>()).product;
 			assertTrue("A".equals(s) || "B".equals(s));
 		}
 	}
@@ -102,9 +104,9 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A'");
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++)
-			assertEquals("A", helper.generate());
+			assertEquals("A", helper.generate(new ProductWrapper<String>()).product);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -115,9 +117,9 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("");
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++)
-			assertEquals("", helper.generate());
+			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,7 +130,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setPattern("\\d{2,4}");
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		Validator<Character> charValidator = new Validator<Character>() {
 			public boolean valid(Character c) {
 	            return ('0' <= c && c <= '9');
@@ -145,9 +147,9 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setPattern("");
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++)
-			assertEquals("", helper.generate());
+			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
 	}
 
 	// csv string source -----------------------------------------------------------------------------------------------
@@ -208,8 +210,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		String componentName = "id";
 		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(reference);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
-		expectNulls(helper, 10);
+		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectNullGenerations(helper, 10);
 	}
 
 	@Test
@@ -218,8 +220,8 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		String componentName = "part";
 		PartDescriptor attribute = (PartDescriptor) new PartDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(attribute);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
-		expectNulls(helper, 10);
+		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		expectNullGenerations(helper, 10);
 	}
 
 	// Id Descriptor tests ---------------------------------------------------------------------------------------------
@@ -236,7 +238,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		type.setGenerator(HibUUIDGenerator.class.getName());
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
-		Generator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
 		expectUniqueGenerations(helper, 10);
 	}
 	
@@ -252,7 +254,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		type.setGenerator(IncrementGenerator.class.getName());
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
-		Generator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
 		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
 	}
 	
@@ -266,9 +268,9 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		String componentName = "id";
 		IdDescriptor id = new IdDescriptor(componentName);
 		ComponentBuilder builder = createComponentBuilder(id);
-		Generator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
 		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-		assertTrue(helper.available());
+		assertNotNull(helper.generate(new ProductWrapper<Long>()));
 	}
 	
 	/**
@@ -283,7 +285,7 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		type.setGenerator(IncrementGenerator.class.getName());
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
-		Generator<Byte> helper2 = new ComponentBuilderGenerator(builder, componentName);
+		ComponentBuilderGenerator<Byte> helper2 = new ComponentBuilderGenerator(builder, componentName);
 		expectGeneratedSequenceOnce(helper2, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
 	}
 	
@@ -619,39 +621,38 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		return ComponentBuilderFactory.createComponentBuilder(component, context);
 	}
 	
-	public static final class ComponentBuilderGenerator<E> extends LightweightGenerator<E> {
+	public static final class ComponentBuilderGenerator<E> implements NullableGenerator<E> {
 		
 		private ComponentBuilder builder;
 		private String componentName;
 
-		public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
+        public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
 			this.builder = builder;
 			this.componentName = componentName;
 		}
 
-        @SuppressWarnings("unchecked")
-        public Class<E> getGeneratedType() {
-	        return (Class<E>) Object.class;
+		public void validate() throws InvalidGeneratorSetupException {
+	        builder.validate();
         }
 
-        @Override
-		public boolean available() {
-			return builder.available();
-		}
-		
 		@SuppressWarnings("unchecked")
-        public E generate() {
+        public Class<E> getGeneratedType() {
+	        return (Class<E>) builder.getGeneratedType();
+        }
+
+		@SuppressWarnings("unchecked")
+        public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 			Entity entity = new Entity("Test");
-			builder.buildComponentFor(entity);
-			return (E) entity.get(componentName);
+			if (!builder.buildComponentFor(entity))
+				return null;
+			wrapper.product = (E) entity.get(componentName);
+			return wrapper;
 		}
 		
-		@Override
 		public void reset() {
 			builder.reset();
 		}
 		
-		@Override
 		public void close() {
 			builder.close();
 		}
@@ -661,16 +662,17 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
     private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSequence(helper, products).withCeasedAvailability();
 	}
 
 	@SuppressWarnings("unchecked")
     private <T> void expectUniqueSet(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		expectGeneratedSet(helper, products).withCeasedAvailability();
 	}
+	
 	/*
 	private <T> void expectSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -678,4 +680,14 @@ public class AttributeComponentBuilderFactoryTest extends GeneratorTest {
 		expectGeneratedSet(helper, products).withContinuedAvailability();
 	}
 	*/
+
+	private void expectNullGenerations(ComponentBuilderGenerator<String> gen, int n) {
+	    ProductWrapper<String> wrapper = new ProductWrapper<String>();
+	    for (int i = 0; i < n; i++) {
+	    	wrapper = gen.generate(wrapper);
+	    	assertNotNull(wrapper);
+	    	assertNull(wrapper.product);
+	    }
+    }
+
 }

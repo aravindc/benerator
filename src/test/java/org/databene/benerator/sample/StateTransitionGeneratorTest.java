@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.script.Transition;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -53,7 +54,8 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(2, null, 1.);
 		expectGeneratedSequence(generator, 
 				new Transition(null,    1), 
-				new Transition(   1,    2)
+				new Transition(   1,    2),
+				new Transition(   2,    null)
 			).withCeasedAvailability();
 	}
 	
@@ -67,13 +69,14 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(2, null, 0.5);
 		for (int n = 0; n < 10; n++) {
 			List<Transition> products = GeneratorUtil.allProducts(generator);
-			assertTrue(products.size() % 2 == 0);
+			assertTrue("Expected an odd number of products, but found: " + products.size(), products.size() % 2 == 1);
 			assertEquals(new Transition(null, 1), products.get(0));
-			for (int i = 1; i < products.size(); i++) {
+			for (int i = 1; i < products.size() - 1; i++) {
 				int oldState = 1 + ((i - 1) % 2);
 				int newState = 1 + (i % 2);
 				assertEquals(new Transition(oldState, newState), products.get(i));
 			}
+			assertEquals(new Transition(2, null), CollectionUtil.lastElement(products));
 			generator.reset();
 		}
 	}
@@ -88,8 +91,9 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		for (int n = 0; n < 10; n++) {
 			List<Transition> products = GeneratorUtil.allProducts(generator);
 			assertEquals(new Transition(null, 1), products.get(0));
-			for (int i = 1; i < products.size(); i++)
+			for (int i = 1; i < products.size() - 1; i++)
 				assertEquals(new Transition(1, 1), products.get(i));
+			assertEquals(new Transition(1, null), CollectionUtil.lastElement(products));
 			generator.reset();
 		}
 	}

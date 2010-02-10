@@ -54,8 +54,9 @@ public class OfflinceSequenceGeneratorTest extends GeneratorClassTest {
 			Generator<Long> generator = new OfflineSequenceGenerator(db, seq);
 			generator.validate();
 			for (int i = 0; i < 10; i++) {
-				assertTrue(generator.available());
-				assertEquals(++n, generator.generate().longValue());
+				Long product = generator.generate();
+				assertNotNull(product);
+				assertEquals(++n, product.longValue());
 			}
 			// assure that after closing the generator, the DB sequence continues as if it had been used itself
 			generator.close();

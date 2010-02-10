@@ -135,7 +135,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetDateGeneratorByDistributionType() {
         for (Sequence sequence : Sequence.getInstances())
-            GeneratorFactory.getDateGenerator(date(2006, 0, 1), date(2006, 11, 31), Period.DAY.getMillis(), sequence, 0);
+            GeneratorFactory.getDateGenerator(date(2006, 0, 1), date(2006, 11, 31), Period.DAY.getMillis(), sequence);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         Date min = date(2006, 0, 1);
         Date max = date(2006, 11, 31);
         for (WeightFunction distributionFunction : getDistributionFunctions(min.getTime(), max.getTime())) {
-            Generator<Date> generator = GeneratorFactory.getDateGenerator(min, max, Period.DAY.getMillis(), distributionFunction, 0);
+            Generator<Date> generator = GeneratorFactory.getDateGenerator(min, max, Period.DAY.getMillis(), distributionFunction);
             checkGenerator(generator);
         }
     }
@@ -151,7 +151,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetDateGeneratorFromSource() {
         String url = "org/databene/benerator/factory/dates.csv";
-        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, Encodings.UTF_8, "dd.MM.yyyy", 0);
+        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, Encodings.UTF_8, "dd.MM.yyyy");
         checkGenerator(generator);
     }
 
@@ -174,7 +174,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     private void checkCharacterGeneratorOfLocale(Locale locale) {
-        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(null, locale, 0);
+        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(null, locale);
         List<Character> specialChars;
         specialChars = new ArrayList<Character>(LocaleUtil.letters(locale));
         int[] specialCount = new int[specialChars.size()];
@@ -192,14 +192,14 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetCharacterGeneratorByRegex() {
         String pattern = "[A-Za-z0-1]";
-        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(pattern, Locale.GERMAN, 0);
+        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(pattern, Locale.GERMAN);
         checkGenerator(generator);
     }
 
     @Test
     public void testGetCharacterGeneratorBySet() {
         Set<Character> set = new CharSet('A', 'Z').getSet();
-        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(set, 0);
+        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(set);
         checkGenerator(generator);
     }
 
@@ -218,7 +218,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     private void checkRegexGenerator(String pattern, int minLength, int maxLength, boolean nullable) {
         Generator<String> generator = GeneratorFactory.getRegexStringGenerator(
-                pattern, minLength, maxLength, Locale.GERMAN, 0);
+                pattern, minLength, maxLength, Locale.GERMAN);
         RegexStringGeneratorFactoryTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
 
@@ -226,7 +226,8 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetConstantGenerator() {
-        checkGenerator(GeneratorFactory.getConstantGenerator(null));
+        Generator<Object> generator = GeneratorFactory.getConstantGenerator(null);
+        assertNull(generator.generate());
         checkGenerator(GeneratorFactory.getConstantGenerator(""));
         checkGenerator(GeneratorFactory.getConstantGenerator(5));
     }
@@ -409,8 +410,8 @@ public class GeneratorFactoryTest extends GeneratorTest {
 */
     private <T> void checkGenerator(Generator<T> generator) {
         for (int i = 0; i < 5; i++) {
-        	assertTrue("Generator unexpectedly invalid: " + generator.toString(), generator.available());
-            generator.generate();
+            T product = generator.generate();
+        	assertNotNull("Generator unexpectedly invalid: " + generator.toString(), product);
         }
     }
 

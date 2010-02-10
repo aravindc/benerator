@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import static junit.framework.Assert.*;
 /**
  * Tests the {@link ConstantGenerator}.<br/><br/>
  * Created: 11.10.2006 23:07:35
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class ConstantGeneratorTest extends GeneratorClassTest {

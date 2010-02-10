@@ -46,28 +46,36 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
 
     @Test
     public void testNonRepeating() {
+    	// TODO shorten
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 0L, 0L);
-        assertTrue(generator.available());
-        assertEquals(1, (int)generator.generate());
-        assertTrue(generator.available());
-        assertEquals(2, (int)generator.generate());
-        assertFalse(generator.available());
+        Integer product = generator.generate();
+        assertNotNull(product);
+		assertEquals(1, (int) product);
+		product = generator.generate();
+        assertNotNull(product);
+		assertEquals(2, (int) product);
+        assertUnavailable(generator);
     }
 
     @Test
     public void testOneRepetition() {
+    	// TODO shorten
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 1L, 1L);
-        assertTrue(generator.available());
-        assertEquals(1, (int)generator.generate());
-        assertTrue(generator.available());
-        assertEquals(1, (int)generator.generate());
-        assertTrue(generator.available());
-        assertEquals(2, (int)generator.generate());
-        assertTrue(generator.available());
-        assertEquals(2, (int)generator.generate());
-        assertFalse(generator.available());
+        Integer product = generator.generate();
+        assertNotNull(product);
+        assertEquals(1, (int) product);
+        product = generator.generate();
+        assertNotNull(product);
+        assertEquals(1, (int) product);
+        
+        product = generator.generate();
+        assertNotNull(product);
+        assertEquals(2, (int) product);
+        product = generator.generate();
+        assertNotNull(product);
+        assertEquals(2, (int) product);
     }
     
 }
