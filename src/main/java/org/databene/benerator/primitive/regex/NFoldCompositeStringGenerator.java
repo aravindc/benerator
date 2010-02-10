@@ -58,10 +58,16 @@ class NFoldCompositeStringGenerator extends GeneratorProxy<String> { // TODO fin
     @Override
     public String generate() {
         StringBuilder builder = new StringBuilder();
-        int count = quantityGenerator.generate();
-        for (int i = 0; i < count; i++)
-            if (source.available())
-                builder.append(source.generate());
+        Integer count = quantityGenerator.generate();
+        if (count == null) 
+        	return null;
+        for (int i = 0; i < count; i++) {
+        	String partResult = super.generate();
+            if (partResult != null)
+                builder.append(partResult);
+            else
+            	break;
+        }
         return builder.toString();
     }
 
@@ -71,4 +77,5 @@ class NFoldCompositeStringGenerator extends GeneratorProxy<String> { // TODO fin
     public String toString() {
         return getClass().getSimpleName() + "[source=" + source + ", " + minCount + "<=partCount<=" + maxcount + ']';
     }
+    
 }

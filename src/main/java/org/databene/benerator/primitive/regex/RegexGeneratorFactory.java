@@ -157,7 +157,7 @@ public class RegexGeneratorFactory {
 				Generator<String>[] altGens = createComponents(alternatives, quantityLimit, true);
                 subGens[j] = new UniqueAlternativeGenerator<String>(String.class, altGens);
             }
-            sources[length - min] = new UniqueFixedCountCompositeStringGenerator(subGens);
+            sources[length - min] = new UniqueCompositeStringGenerator(subGens);
         }
         return new UniqueAlternativeGenerator<String>(String.class, sources);
     }
@@ -180,7 +180,7 @@ public class RegexGeneratorFactory {
             for (int j = 0; j < length; j++) {
                 subGens[j] = createFromObject(group.getRegex(), quantityLimit, true);
             }
-            sources[length - min] = new UniqueFixedCountCompositeStringGenerator(subGens);
+            sources[length - min] = new UniqueCompositeStringGenerator(subGens);
         }
         return new UniqueAlternativeGenerator<String>(String.class, sources);
     }
