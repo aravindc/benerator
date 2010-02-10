@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,8 @@ package org.databene.task;
 import java.io.IOException;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.ThreadSupport;
 
 /**
  * Wraps a Task and forwards invocations.<br/>
@@ -54,18 +56,18 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask {
         setTaskName(realTask != null ? realTask.getClass().getSimpleName() : "undefined");
     }
     
-    @Override
-    public boolean available() {
-    	return realTask.available();
-    }
-
-    public void run(Context context) {
-        realTask.run(context);
+    public boolean executeStep(Context context, ErrorHandler errorHandler) {
+        return realTask.executeStep(context, errorHandler);
     }
 
     @Override
     public void close() throws IOException {
         realTask.close();
+    }
+    
+    @Override
+    public ThreadSupport getThreading() {
+        return realTask.getThreading();
     }
 
     @Override

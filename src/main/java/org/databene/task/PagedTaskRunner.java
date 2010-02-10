@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,13 +26,13 @@
 
 package org.databene.task;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
-import org.databene.commons.Level;
+import org.databene.commons.ThreadSupport;
 import org.databene.commons.expression.ConstantExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,11 +42,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
 
 /**
- * Task implementation that provides for repeated, paged, multithreaded Task execution.<br/>
+ * Task implementation that provides for repeated, paged, multi-threaded Task execution.<br/>
  * <br/>
  * Created: 16.07.2007 19:25:30
  * @author Volker Bergmann
@@ -55,7 +53,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(PagedTaskRunner.class);
 
-    protected Task target;
+    protected StateTrackingTaskProxy<? extends Task> target;
     private List<PageListener> pageListeners;
 
     private Long maxCount;
@@ -97,7 +95,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 
     public PagedTaskRunner(Task target, Long maxCount, List<PageListener> pageListeners, long pageSize, int threads, 
     		Expression<ExecutorService> executor) {
-    	this.target = target;
+    	this.target = new StateTrackingTaskProxy<Task>(target);
         this.pageListeners = pageListeners;
         this.maxCount = maxCount;
         this.minCount = (maxCount != null ? maxCount : 0);
@@ -138,8 +136,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     public int getThreadCount() {
         return threadCount;
     }
-
-    public void execute(BeneratorContext context) {
+    
+    public void execute(Context context, ErrorHandler errorHandler) {
     	if (maxCount != null && maxCount == 0)
     		return;
     	this.actualCount.set(0);
@@ -151,16 +149,16 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         if (logger.isDebugEnabled())
             logger.debug("Running PagedTask[" + getTaskName() + "]");
         int currentPageNo = 0;
-        while (workPending(currentPageNo)) {
+        do {
         	try {
 	            pageStarting(currentPageNo);
 	            long currentPageSize = (maxCount == null ? pageSize : Math.min(pageSize, queuedInvocations.get()));
 	            queuedInvocations.addAndGet(- currentPageSize);
 	            long localCount;
 	            if (threadCount > 1)
-	                localCount = runMultiThreaded(context, currentPageNo, currentPageSize);
+	                localCount = executePageMultiThreaded(context, errorHandler, currentPageNo, currentPageSize);
 	            else
-	                localCount = runSingleThreaded(context, currentPageSize);
+	                localCount = executePageSingleThreaded(context, errorHandler, currentPageSize);
 	            actualCount.addAndGet(localCount);
 	            if (maxCount != null)
 	            	queuedPages.decrementAndGet();
@@ -169,9 +167,9 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 	                throw new RuntimeException(exception);
 	            currentPageNo++;
         	} catch (Exception e) {
-        		getErrorHandler(context).handleError("Error in execution of task " + getTaskName(), e);
+        		errorHandler.handleError("Error in execution of task " + getTaskName(), e);
         	}
-        }
+        } while (workPending());
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
         long countValue = actualCount.get();
@@ -183,8 +181,9 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     	return target.getTaskName();
     }
     
-    public static void execute(Task task, BeneratorContext context, Long invocations,
-            List<PageListener> pageListeners, long pageSize, int threadCount) {
+    public static void execute(Task task, Context context, Long invocations,
+            List<PageListener> pageListeners, long pageSize, int threadCount, 
+            ExecutorService executorService, ErrorHandler errorHandler) {
 		if (logger.isInfoEnabled()) {
 			String invocationInfo = (invocations == null ? "as long as available" :
 			     (invocations > 1 ? invocations + " times" : ""));
@@ -193,18 +192,27 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 					+ (threadCount > 1 ? threadCount + " threads" : "a single thread");
 			logger.info("Running task " + task + " " + invocationInfo);
 		}
-		PagedTaskRunner pagedTask = new PagedTaskRunner(task, invocations, pageListeners, pageSize, threadCount, 
-				context.getExecutorService());
-		pagedTask.execute(context);
+		PagedTaskRunner pagedTask = new PagedTaskRunner(task, invocations, pageListeners, 
+				pageSize, threadCount, executorService);
+		pagedTask.execute(context, errorHandler);
 	}
 	
     // non-public helpers ----------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    private long runMultiThreaded(Context context, int currentPageNo, long currentPageSize) {
+    private long executePageSingleThreaded(Context context, ErrorHandler errorHandler, long currentPageSize) {
+        Task task = new LoopedTask(target, currentPageSize);
+        task.executeStep(context, errorHandler);
+        IOUtil.close(task);
+        return currentPageSize;
+    }
+
+    @SuppressWarnings("unchecked")
+    private long executePageMultiThreaded(Context context, ErrorHandler errorHandler, int currentPageNo, long currentPageSize) {
         long localInvocationCount = 0;
         int maxLoopsPerPage = (int)((currentPageSize + threadCount - 1) / threadCount);
         int shorterLoops = (int)(threadCount * maxLoopsPerPage - currentPageSize);
+        ThreadSupport threadSupport = target.getThreading();
         // create threads for a page
         CountDownLatch latch = new CountDownLatch(threadCount);
         for (int threadNo = 0; threadNo < threadCount; threadNo++) {
@@ -213,17 +221,18 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
                 loopSize--;
             if (loopSize > 0) {
                 Task task = target;
-                if (threadCount > 1 && !(task instanceof ThreadSafe)) {
-                    if (task instanceof Parallelizable)
-                        task = cloneTask((Parallelizable) task);
+                boolean multiThreadsSupported = (threadSupport == ThreadSupport.MULTI_THREADED);
+				if (threadCount > 1 && !multiThreadsSupported) {
+                    if (threadSupport == ThreadSupport.PARALLELIZABLE)
+                        task = BeanUtil.clone(task);
                     else
                         throw new ConfigurationError("Since the task is not marked as thread-safe," +
-                                "it must either be used single-threaded " +
-                                "or implement the Parallelizable interface");
+                                "it must either be used in a single thread or be parallelizable.");
                 }
                 task = new LoopedTask(task, loopSize); 
-                TaskRunnable thread = new TaskRunnable(task, context, latch, !(target instanceof ThreadSafe)); // TODO synchronize context access if target is not thread-safe
-                executor.evaluate(context).execute(thread);
+                TaskRunnable thread = new TaskRunnable(task, context, latch, !multiThreadsSupported, errorHandler);
+                ExecutorService executorService = executor.evaluate(context);
+				executorService.execute(thread);
                 localInvocationCount += loopSize;
             } else
                 latch.countDown();
@@ -236,39 +245,18 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (target instanceof ThreadSafe)
+        if (threadSupport == ThreadSupport.MULTI_THREADED)
             IOUtil.close(target);
         return localInvocationCount;
     }
 
-    @SuppressWarnings("unchecked")
-    private long runSingleThreaded(Context context, long currentPageSize) {
-        Task task = new LoopedTask(target, currentPageSize);
-        task.run(context);
-        IOUtil.close(task);
-        return currentPageSize;
-    }
-
-    protected boolean workPending(int currentPageNo) {
-        if (!target.available())
+    protected boolean workPending() {
+        if (!target.isAvailable())
             return false;
         if (maxCount == null)
         	return true;
         return (queuedPages.get() > 0);
 	}
-
-	private Task cloneTask(Parallelizable task) {
-        try {
-            Method cloneMethod = task.getClass().getMethod("clone");
-            return (Task) cloneMethod.invoke(task);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Unexpected exception", e); // This is not supposed to happen
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Unexpected exception", e); // This is not supposed to happen
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Execption occured in clone() method", e);
-        }
-    }
 
     protected void pageStarting(int currentPageNo) {
         if (logger.isDebugEnabled())
@@ -284,10 +272,6 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         if (pageListeners != null)
         	for (PageListener listener : pageListeners)
         		listener.pageFinished(currentPageNo, -1);
-    }
-
-    private ErrorHandler getErrorHandler(Context context) {
-	    return new ErrorHandler(getClass().getName(), Level.fatal); // TODO read config
     }
 
     public void uncaughtException(Thread t, Throwable e) {

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,8 +31,6 @@ import java.util.List;
 
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 
 /**
@@ -47,16 +45,13 @@ public abstract class CompositeTask extends AbstractTask {
 	
 	protected List<Task> subTasks;
 	
-    public CompositeTask(Expression<ErrorHandler> errorHandler) {
-	    this(null, errorHandler);
-    }
-
-	public CompositeTask(String taskName, Expression<ErrorHandler> errorHandler) {
-	    super(taskName, errorHandler);
+	public CompositeTask(String taskName) {
+	    super(taskName);
 	    this.subTasks = new ArrayList<Task>();
     }
 
 	public CompositeTask(Task... subTasks) {
+		super(); // parent class default constructor chooses name
 	    this.subTasks = CollectionUtil.toList(subTasks);
     }
 

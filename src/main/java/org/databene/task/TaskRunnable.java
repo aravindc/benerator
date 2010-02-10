@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.task;
 import java.util.concurrent.CountDownLatch;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 
 /**
@@ -41,29 +42,23 @@ import org.databene.commons.IOUtil;
 public class TaskRunnable implements Runnable {
 
     private Task target;
-    private Context context;
     private CountDownLatch latch;
 	private boolean closeAfterwards;
-
-    /**
-     * Initializes a TaskThread.
-     * @param target
-     * @param context
-     */
-    public TaskRunnable(Task target, Context context, boolean closeAfterwards) {
-        this(target, context, null, closeAfterwards);
-    }
-
-    public TaskRunnable(Task target, Context context, CountDownLatch latch, boolean closeAfterwards) {
+	private Context context;
+	private ErrorHandler errorHandler;
+	
+    public TaskRunnable(Task target, Context context, CountDownLatch latch, boolean closeAfterwards,
+    		ErrorHandler errorHandler) {
         this.target  = target;
         this.context = context;
         this.latch   = latch;
         this.closeAfterwards = closeAfterwards;
+        this.errorHandler = errorHandler;
     }
 
     public void run() {
         try {
-            target.run(context);
+            target.executeStep(context, errorHandler);
             if (closeAfterwards)
                 IOUtil.close(target);
         } finally {
@@ -71,4 +66,5 @@ public class TaskRunnable implements Runnable {
             	latch.countDown();
         }
     }
+    
 }

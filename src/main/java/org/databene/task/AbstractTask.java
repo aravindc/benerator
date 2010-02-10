@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,10 +28,7 @@ package org.databene.task;
 
 import java.io.IOException;
 
-import org.databene.commons.Context;
-import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
-import org.databene.commons.Level;
+import org.databene.commons.ThreadSupport;
 
 /**
  * Simple abstract implementation of the Task interface.<br/>
@@ -43,27 +40,17 @@ import org.databene.commons.Level;
 public abstract class AbstractTask implements Task {
 
     protected String taskName;
-    private Expression<ErrorHandler> errorHandler;
     
     // constructor -----------------------------------------------------------------------------------------------------
 
     protected AbstractTask() {
-        this(null, null);
-    }
-
-    protected AbstractTask(Expression<ErrorHandler> errorHandler) {
-        this(null, errorHandler);
+        this(null);
     }
 
     protected AbstractTask(String taskName) {
-        this(taskName, null);
-    }
-    
-    protected AbstractTask(String taskName, Expression<ErrorHandler> errorHandler) {
     	if (taskName == null)
     		taskName = getClass().getSimpleName();
         setTaskName(taskName);
-        this.errorHandler = errorHandler;
     }
     
     // Task interface --------------------------------------------------------------------------------------------------
@@ -76,24 +63,10 @@ public abstract class AbstractTask implements Task {
         this.taskName = taskName;
     }
 
-    public ErrorHandler getErrorHandler(Context context) {
-    	if (errorHandler == null)
-    		return new ErrorHandler(taskName, Level.fatal);
-		return errorHandler.evaluate(context);
-	}
-    
-    protected void handleError(String message, Context context) {
-    	getErrorHandler(context).handleError(message);
+    public ThreadSupport getThreading() {
+        return ThreadSupport.UNSAFE;
     }
     
-    protected void handleError(String message, Context context, Throwable t) {
-    	getErrorHandler(context).handleError(message, t);
-    }
-    
-    public boolean available() {
-    	return true;
-    }
-
     @SuppressWarnings("unused")
     public void close() throws IOException {
     	// empty

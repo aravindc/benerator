@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.task;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.context.ContextAware;
 
 /**
@@ -45,15 +46,11 @@ public class RunnableTask extends AbstractTask {
         this.runnable = runnable;
     }
 
-    public void run(Context context) {
+    public boolean executeStep(Context context, ErrorHandler errorHandler) {
     	if (runnable instanceof ContextAware)
     		((ContextAware) runnable).setContext(context);
         runnable.run();
-    }
-    
-    @Override
-    public boolean available() {
-    	return true;
+        return true;
     }
     
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.task;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 
 /**
  * Task implementation that provides for repeated execution.<br/>
@@ -45,9 +46,12 @@ public class LoopedTask<E extends Task> extends TaskProxy<E> {
     }
 
     @Override
-    public void run(Context context) {
-        for (int i = 0; i < loopSize && realTask.available(); i++)
-            super.run(context);
+    public boolean executeStep(Context context, ErrorHandler errorHandler) {
+        for (int i = 0; i < loopSize; i++) {
+            if (!super.executeStep(context, errorHandler))
+            	return false;
+        }
+        return true;
     }
 
 	public void setLoopSize(long loopSize) {
