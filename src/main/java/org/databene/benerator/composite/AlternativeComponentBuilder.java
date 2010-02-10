@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.util.RandomUtil;
 import org.databene.model.data.Entity;
 
 /**
@@ -35,27 +34,14 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class AlternativeComponentBuilder extends ComponentGroupBuilder {
+public class AlternativeComponentBuilder extends MultiComponentBuilder {
 	
 	public AlternativeComponentBuilder(ComponentBuilder[] alternatives) {
 		super(alternatives);
 	}
 
-	public boolean available() {
-		for (ComponentBuilder builder : builders)
-			if (builder.available())
-				return true;
-		return false;
+	public boolean buildComponentFor(Entity entity) {
+		return buildRandomComponentFor(entity);
 	}
 
-	public void buildComponentFor(Entity entity) {
-		boolean done = false;
-		do {
-			int i = RandomUtil.randomInt(0, builders.length - 1);
-			if (builders[i].available()) {
-				builders[i].buildComponentFor(entity);
-				done = true;
-			}
-		} while (!done);
-	}
 }

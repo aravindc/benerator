@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,8 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.wrapper.NullableGeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.Entity;
 
 /**
@@ -38,27 +40,33 @@ import org.databene.model.data.Entity;
 public class PlainComponentBuilder implements ComponentBuilder {
 	
 	private String name;
-	private Generator<?> source;
+	private NullableGeneratorProxy<Object> source;
 	
-	public PlainComponentBuilder(String name, Generator<?> source) {
+    @SuppressWarnings("unchecked")
+    public PlainComponentBuilder(String name, Generator<?> source, double nullQuota) {
 		this.name = name;
-		this.source = source;
+		this.source = new NullableGeneratorProxy<Object>((Generator<Object>) source, nullQuota);
 	}
 
 	public String getName() {
 		return name;
 	}
 	
-	public void buildComponentFor(Entity entity) {
-		entity.setComponent(name, source.generate());
+	public Class<?> getGeneratedType() {
+	    return source.getGeneratedType();
+	}
+	
+	public boolean buildComponentFor(Entity entity) {
+		ProductWrapper<Object> wrapper = new ProductWrapper<Object>(); // TODO reuse wrapper
+		wrapper = source.generate(wrapper);
+		if (wrapper == null)
+			return false;
+		entity.setComponent(name, wrapper.product);
+		return true;
 	}
 	
 	public void close() {
     	source.close();
-	}
-
-	public boolean available() {
-		return source.available();
 	}
 
 	public void validate() {
@@ -73,4 +81,5 @@ public class PlainComponentBuilder implements ComponentBuilder {
 	public String toString() {
 		return getClass().getSimpleName() + '[' + name + ',' + source + ']';
 	}
+	
 }

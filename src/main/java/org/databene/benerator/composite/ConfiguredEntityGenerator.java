@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,8 @@ package org.databene.benerator.composite;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.util.NullableGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.model.data.Entity;
 import org.slf4j.Logger;
@@ -46,15 +47,13 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
     private static Logger logger = LoggerFactory.getLogger(ConfiguredEntityGenerator.class);
     
     private Generator<Entity> entityGenerator;
-	private Map<String, Generator<?>> variables;
+	private Map<String, NullableGenerator<?>> variables;
 	private Context context;
-	private boolean variablesInitialized;
 	
-	public ConfiguredEntityGenerator(Generator<Entity> entityGenerator, Map<String, Generator<?>> variables, Context context) {
+	public ConfiguredEntityGenerator(Generator<Entity> entityGenerator, Map<String, NullableGenerator<?>> variables, Context context) {
 		this.entityGenerator = entityGenerator;
 		this.variables = variables;
 		this.context = context;
-		this.variablesInitialized = false;
 	}
 	
 	// Generator implementation ----------------------------------------------------------------------------------------
@@ -64,49 +63,41 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	}
 
 	public void validate() {
-        for (Generator<?> varGen : variables.values())
+        for (NullableGenerator<?> varGen : variables.values())
         	varGen.validate();
         entityGenerator.validate();
 	}
 
-	public boolean available() {
-		if (!variablesInitialized) {
-	        for (Generator<?> varGen : variables.values()) {
-	            if (!varGen.available()) {
-	            	if (logger.isDebugEnabled())
-	            		logger.debug("No more available: " + varGen);
-	                return false;
-	            }
-	        }
-	        for (Map.Entry<String, Generator<?>> entry : variables.entrySet())
-	            context.set(entry.getKey(), entry.getValue().generate());
-	        variablesInitialized = true;
-		}
-        return entityGenerator.available();
-	}
+	@SuppressWarnings("unchecked")
+    public Entity generate() {
+		// initialize variables
+		for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
+			NullableGenerator<?> generator = entry.getValue();
+			ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
+			if (productWrapper == null) {
+	        	if (logger.isDebugEnabled())
+	        		logger.debug("No more available: " + generator);
+	            return null;
+			}
+            context.set(entry.getKey(), productWrapper.product);
+        }
 
-	public Entity generate() {
-		if (!available())
-			throw new IllegalGeneratorStateException("Generator is not available");
-        Object product = entityGenerator.generate();
-        Entity entity = (Entity) product;
-//        for (String variableName : variables.keySet())
-//            context.remove(variableName);
-        variablesInitialized = false;
+        Entity entity = entityGenerator.generate();
+        if (entity == null)
+        	return null;
         if (logger.isDebugEnabled())
         	logger.debug("Generated " + entity);
         return entity;
 	}
 
 	public void reset() {
-		for (Generator<?> variable : variables.values())
+		for (NullableGenerator<?> variable : variables.values())
 			variable.reset();
-		variablesInitialized = false;
 		entityGenerator.reset();
 	}
 
 	public void close() {
-		for (Generator<?> variable : variables.values())
+		for (NullableGenerator<?> variable : variables.values())
 			variable.close();
 		entityGenerator.close();
         for (String variableName : variables.keySet())

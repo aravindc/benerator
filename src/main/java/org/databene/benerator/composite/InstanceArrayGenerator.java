@@ -58,7 +58,8 @@ public class InstanceArrayGenerator<S> extends CardinalGenerator<S, Object> {
         else {
             Object[] result = ArrayUtil.newInstance(source.getGeneratedType(), count);
             for (int i = 0; i < count; i++) {
-                if (source.available())
+            	Object part = source.generate();
+                if (part != null)
                     result[i] = source.generate();
                 else {
                     // source generator went unavailable, 

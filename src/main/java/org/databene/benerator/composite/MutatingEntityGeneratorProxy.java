@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -86,35 +86,27 @@ public class MutatingEntityGeneratorProxy implements Generator<Entity> {
         for (ComponentBuilder compGen : componentBuilders)
             compGen.validate();
     }
-
-    public boolean available() {
-    	if (currentEntity != null)
-    		return true;
+    
+    public synchronized Entity generate() {
     	
-        if (!source.available()) {
+    	currentEntity = source.generate();
+        if (currentEntity == null) {
             if (stateLogger.isDebugEnabled())
                 stateLogger.debug("Source for entity '" + entityName + "' is not available any more: " + source);
-            return false;
+            return null;
         }
         
-    	currentEntity = source.generate();
         context.set(entityName, currentEntity);
         context.set("this", currentEntity);
         
-        for (ComponentBuilder compGen : componentBuilders) {
-            if (!compGen.available()) {
-                if (stateLogger.isDebugEnabled())
-                    stateLogger.debug("Generator for entity '" + entityName + "' is not available any more: " + compGen);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public Entity generate() {
         for (ComponentBuilder componentBuilder : componentBuilders) {
             try {
-                componentBuilder.buildComponentFor(currentEntity);
+                if (!componentBuilder.buildComponentFor(currentEntity)) {
+                    if (stateLogger.isDebugEnabled())
+                        stateLogger.debug("Component generator for entity '" + entityName + 
+                        		"' is not available any more: " + componentBuilder);
+                    return null;
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of entity '" + entityName + "'", e);
             }

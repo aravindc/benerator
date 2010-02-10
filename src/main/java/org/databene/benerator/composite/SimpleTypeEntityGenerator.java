@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,15 +49,17 @@ public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> 
 
 	// Generator interface implementation ------------------------------------------------------------------------------
 
+	public Class<Entity> getGeneratedType() {
+		return Entity.class;
+	}
+	
 	public Entity generate() {
 		Object content = source.generate();
+		if (content == null)
+			return null;
 		Entity entity = new Entity(complexType);
 		entity.setComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT, content);
 		return entity;
 	}
 
-	public Class<Entity> getGeneratedType() {
-		return Entity.class;
-	}
-	
 }

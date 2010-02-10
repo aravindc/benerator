@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,8 +36,8 @@ import org.databene.model.data.Entity;
  */
 public interface ComponentBuilder {
 	void validate();
-	boolean available();
-	void buildComponentFor(Entity entity);
+	Class<?> getGeneratedType();
+	boolean buildComponentFor(Entity entity);
 	void close();
 	void reset();
 }
