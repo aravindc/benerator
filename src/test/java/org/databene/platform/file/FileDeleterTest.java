@@ -28,6 +28,8 @@ package org.databene.platform.file;
 
 import java.io.File;
 
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.FileUtil;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -53,7 +55,7 @@ public class FileDeleterTest extends FileTest {
 			assertTrue(sourceFile2.exists());
 			FileDeleter deleter = new FileDeleter();
 			deleter.setFiles(new String[] { sourceFile1.getAbsolutePath(), sourceFile2.getAbsolutePath() });
-			deleter.run(null);
+			deleter.executeStep(new BeneratorContext(), ErrorHandler.getDefault());
 			assertFalse(sourceFile1.exists());
 			assertFalse(sourceFile2.exists());
 		} finally {

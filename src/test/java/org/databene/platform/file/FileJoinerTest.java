@@ -32,6 +32,9 @@ import static junit.framework.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
@@ -71,6 +74,7 @@ public class FileJoinerTest extends FileTest {
 	    File sourceFile1 = null;
 		File sourceFile2 = null;
 		File destFile = null;
+		Context context = new BeneratorContext();
 		try {
 			sourceFile1 = createSource1();
 			sourceFile2 = createSource2();
@@ -81,7 +85,7 @@ public class FileJoinerTest extends FileTest {
 			joiner.setDestination(destFile.getAbsolutePath());
 			joiner.setDeleteSources(deleteSources);
 			for (int i = 0; i < executionCount; i++)
-				joiner.run(null);
+				joiner.executeStep(context, ErrorHandler.getDefault());
 			assertEquals(deleteSources, !sourceFile1.exists());
 			assertEquals(deleteSources, !sourceFile2.exists());
 			assertEquals(result, IOUtil.getContentOfURI(destFile.getAbsolutePath()));
