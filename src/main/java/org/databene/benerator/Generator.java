@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,8 @@ package org.databene.benerator;
 
 import java.io.Closeable;
 
+import org.databene.commons.Resettable;
+
 /**
  * This is the basic Generator interface, the mother of all generators.<br/>
  * <br/>
@@ -46,7 +48,7 @@ import java.io.Closeable;
  * </ul>
  *
  * <b>Developer Notes:</b><br/>
- * When implementing a custom generator, make it a JavaBean:
+ * When implementing a custom generator, you should make it a JavaBean:
  * <ul>
  *   <li>Implement a public default (no-arg) constructor</li>
  *   <li>make each relevant property configurable by a set-method</li>
@@ -56,7 +58,12 @@ import java.io.Closeable;
  * @since 0.1
  * @author Volker Bergmann
  */
-public interface Generator<E> extends Closeable {
+public interface Generator<E> extends Resettable, Closeable {
+
+    /**
+     * Declares the type of the objects returned by the generate() method.
+     */
+    Class<E> getGeneratedType(); // TODO remove?
 
     /**
      * This is a convenience method for checking the validity of a Generator's setup.
@@ -70,31 +77,13 @@ public interface Generator<E> extends Closeable {
     void validate() throws InvalidGeneratorSetupException;
 
     /**
-     * Returns an instance of the generic tpe P. If the method is called in an inappropriate state
-     * (<i>constructing</i> or <i>unavailable</i>), it will throw an IllegalGeneratorStateException.
+     * Returns an instance of the generic type E.
      */
-    E generate() throws IllegalGeneratorStateException; // TODO add Context parameter?
-
-    /**
-     * Resets the generator to the initial state.
-     * When called, the Generator is expected to act as if 'restarted'.
-     * After invocation the state has to be <i>available</i>.
-     */
-    void reset() throws IllegalGeneratorStateException;
+    E generate(); // TODO add Context parameter?
 
     /**
      * Closes the generator. After invocation the state is <i>unavailable</i>.
      */
     void close();
 
-    /**
-     * Tells if the Generator is in <i>available</i> state. If this returns <i>true</i>,
-     * the next invocation of generate() must return a valid product.
-     */
-    boolean available();
-
-    /**
-     * Declares the type of the objects returned by the generate() method.
-     */
-    Class<E> getGeneratedType(); // TODO remove?
 }
