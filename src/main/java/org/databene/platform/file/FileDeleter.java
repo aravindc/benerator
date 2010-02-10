@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.platform.file;
 import java.io.File;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.task.AbstractTask;
 
 /**
@@ -51,20 +52,21 @@ public class FileDeleter extends AbstractTask {
     	this.files = files;
     }
 
-	public void run(Context context) {
+	public boolean executeStep(Context context, ErrorHandler errorHandler) {
 		for (String filename : files) {
 			File file = new File(filename);
 			if (file.exists()) {
 				try {
 					if (!file.delete())
-						handleError("File could not be deleted: " + filename + ". " +
-								"Probably it is locked.", context);
+						errorHandler.handleError("File could not be deleted: " + filename + ". " +
+								"Probably it is locked.");
 				} catch (Exception e) {
-					handleError("Error deleting file " + file, context);
+					errorHandler.handleError("Error deleting file " + file);
 				}
 			} else
-				handleError("File not found: " + file, context);
+				errorHandler.handleError("File not found: " + file);
 		}
+		return false;
     }
 
 }

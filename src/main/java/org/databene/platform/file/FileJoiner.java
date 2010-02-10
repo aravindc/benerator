@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,9 +33,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.databene.commons.ArrayFormat;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 import org.databene.task.AbstractTask;
 
@@ -94,7 +94,7 @@ public class FileJoiner extends AbstractTask {
 
 	// Task interface implementation -----------------------------------------------------------------------------------
 
-	public void run(Context context) {
+	public boolean executeStep(Context context, ErrorHandler errorHandler) {
 		Assert.notNull(destination, "property 'destination'");
 		byte[] buffer = new byte[BUFFER_SIZE];
 		OutputStream out = null;
@@ -107,14 +107,15 @@ public class FileJoiner extends AbstractTask {
 				for (String source : sources) {
 					File file = new File(source);
 					if (!file.delete())
-						handleError("File could not be deleted: " + file + ". " +
-								"Probably it is locked", context);
+						errorHandler.handleError("File could not be deleted: " + file + ". " +
+								"Probably it is locked");
 				}
-		} catch (Exception e) {
-			handleError("Error joining the files " + ArrayFormat.format(sources), context, e);
+        } catch (IOException e) {
+        	errorHandler.handleError("Error joining files: " + sources, e);
         } finally {
 			IOUtil.close(out);
 		}
+        return false;
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
