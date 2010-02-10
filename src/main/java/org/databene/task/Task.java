@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,10 +29,12 @@ package org.databene.task;
 import java.io.Closeable;
 
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.ThreadAware;
 
 /**
  * Interface for the GoF 'Command' pattern.
- * General usage is to call the run() method once or several times for executing the task's work.
+ * General usage is to call the executeStep() method once or several times for executing the task's work.
  * After usage, close() must be called. 
  * When implementing the Task interface, you should preferably inherit from 
  * {@link AbstractTask}, this may compensate for future interface changes.<br/>
@@ -41,15 +43,15 @@ import org.databene.commons.Context;
  * @since 0.2
  * @author Volker Bergmann
  */
-public interface Task extends Closeable {
+public interface Task extends ThreadAware, Closeable {
 
     /** @return the name of the task. */
     String getTaskName();
-
-    /** executes the task's work, possibly interacting with the context. */
-    void run(Context context); // TODO rename to execute?
-
-    /** indicates if the task can be executed */
-    boolean available();
     
+    /** 
+     * Executes the task's work, possibly interacting with the context.
+     * @return true if it should be called again, else false
+     */
+    boolean executeStep(Context context, ErrorHandler errorHandler);
+
 }
