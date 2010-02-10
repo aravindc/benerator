@@ -197,11 +197,12 @@
 	<xs:element name="run-task">
 		<xs:complexType>
 			<xs:complexContent>
-				<xs:extension base="generator-setup">
+				<xs:extension base="generator-setup"> <!-- TODO this looks like nonsense -->
 					<xs:attribute name="count"    type="xs:string"/>
 					<xs:attribute name="pageSize" type="xs:string"/>
 					<xs:attribute name="threads"  type="xs:string"/>
 					<xs:attribute name="pager"    type="xs:string"/>
+	                <xs:attribute name="onError"  type="errorhandler-type"/>
 				</xs:extension>
 			</xs:complexContent>
 		</xs:complexType>
