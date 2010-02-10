@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.wrapper;
 import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 
 /**
  * Converts the {@link Number} products of another {@link Generator} to {@link BigDecimal}.<br/>
@@ -49,8 +48,9 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 	    return BigDecimal.class;
     }
 
-    public BigDecimal generate() throws IllegalGeneratorStateException {
-	    return BigDecimal.valueOf(source.generate().doubleValue());
+    public BigDecimal generate() {
+	    E feed = source.generate();
+		return (feed != null ? BigDecimal.valueOf(feed.doubleValue()) : null);
     }
 
 }

@@ -35,6 +35,8 @@ import org.databene.benerator.util.GeneratorUtil;
  * calls its generate() method and returns the product.<br/>
  * <br/>
  * Created: 30.08.2006 21:56:59
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
@@ -75,25 +77,11 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
         }
     }
     
-    @Override
-    public boolean available() {
-        validate();
-        for (Generator<?> source : sources)
-            if (source.available())
-                return true;
-        return false;
-    }
-
     /** @see org.databene.benerator.Generator#generate() */
     public E generate() {
-        if (!available())
-            GeneratorUtil.stateException(this);
-        for (int i = 0; i < 1000; i++) {
-            Generator<E> generator = getSource(indexGenerator.generate());
-            if (generator.available())
-                return generator.generate();
-        }
-        throw new IllegalStateException("Unable to choose an available generator");
+    	if (dirty)
+    		validate();
+    	return generateFromRandomSource();
     }
 
 }

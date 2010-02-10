@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 
@@ -70,29 +69,20 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
         }
     }
 
-    @Override
-	public boolean available() {
-        if (dirty)
-            validate();
-        return repCount < totalReps;
-    }
-
 	public E generate() {
-        if (dirty)
-            validate();
+        validate();
         if (next == null)
-            throw new IllegalGeneratorStateException("Generator is not available");
+            return null;
         E result = next;
         repCount++;
         if (repCount >= totalReps) {
-            if (source.available()) {
-                next = source.generate();
+            next = source.generate();
+            if (next != null) {
                 totalReps = countGenerator.generate();
                 repCount = -1;
-            } else {
-                next = null;
             }
         }
         return result;
     }
+	
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,12 +26,18 @@
 
 package org.databene.benerator.wrapper;
 
+import java.lang.reflect.Array;
+import java.util.List;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
+import org.databene.commons.CollectionUtil;
 
 /**
- * Wraps several other generators (in a <i>sources</i> property) and refines a composite state from them.<br/>
+ * Parent class for wrapping several other generators (in a <i>sources</i> property) 
+ * and refining a composite state from them.<br/>
  * <br/>
  * Created: 19.12.2006 07:05:29
  * @since 0.1
@@ -40,6 +46,7 @@ import org.databene.commons.ArrayFormat;
 public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
 
     protected Generator<S>[] sources;
+    protected List<Generator<S>> availableSources;
     protected boolean dirty;
     
     public MultiGeneratorWrapper(Generator<S> ... sources) {
@@ -53,9 +60,10 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
         return sources;
     }
     
-    public void setSources(Generator<S> ... sources) {
-        dirty = true;
+    public synchronized void setSources(Generator<S> ... sources) {
+        this.dirty = true;
         this.sources = sources;
+        this.availableSources = CollectionUtil.toList(sources);
     }
 
     public Generator<S> getSource(int index) {
@@ -64,17 +72,17 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
     }
     
     @SuppressWarnings("unchecked")
-    public void addSource(Generator<S> source) {
+    public synchronized void addSource(Generator<S> source) {
         dirty = true;
     	Generator<S>[] newSources = new Generator[sources.length + 1];
     	System.arraycopy(sources, 0, newSources, 0, sources.length);
     	newSources[sources.length] = source;
-    	sources = newSources;
+    	setSources(newSources);
     }
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
-    public void validate() {
+    public synchronized void validate() {
         if (dirty) {
             if (sources.length == 0)
                 throw new InvalidGeneratorSetupException("sources", "is empty");
@@ -84,31 +92,57 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
         }
     }
 
-    public boolean available() {
+    public synchronized void reset() {
         validate();
-        for (Generator<S> source : sources)
-            if (!source.available())
-                return false;
-        return true;
-    }
-
-    public void reset() {
-        validate();
-        dirty = true;
         for (Generator<S> source : sources)
             source.reset();
+        this.availableSources = CollectionUtil.toList(sources);
     }
 
-    public void close() {
+    public synchronized void close() {
         validate();
         for (Generator<S> source : sources)
             source.close();
+        this.availableSources.clear();
+    }
+    
+    // helpers ---------------------------------------------------------------------------------------------------------
+    
+    protected synchronized S generateFromRandomSource() {
+    	validate();
+    	if (availableSources.size() == 0)
+    		return null;
+    	S product;
+    	do {
+        	int sourceIndex = RandomUtil.randomIndex(availableSources);
+    		product = availableSources.get(sourceIndex).generate();
+    		if (product == null)
+    			availableSources.remove(sourceIndex);
+    	} while (product == null && availableSources.size() > 0);
+    	return product;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected synchronized S[] generateFromAllSources(Class<S> componentType) {
+    	validate();
+    	if (availableSources.size() < sources.length)
+    		return null;
+    	S[] result = (S[]) Array.newInstance(componentType, sources.length);
+    	for (int i = 0; i < sources.length; i++) {
+    		S product = sources[i].generate();
+    		if (product == null) {
+    			availableSources.remove(i);
+    			return null;
+    		}
+    		result[i] = product;
+    	}
+    	return result;
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override
-    public String toString() {
+    public synchronized String toString() {
         return getClass().getSimpleName() + "[" + ArrayFormat.format(sources) + "]";
     }
 

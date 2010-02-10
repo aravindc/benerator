@@ -29,7 +29,6 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.TypedIterable;
 
@@ -86,22 +85,21 @@ public class IteratingGenerator<E> implements Generator<E> {
     public Class<E> getGeneratedType() {
         return iterable.getType();
     }
-
+/*
     public boolean available() {
-    	if (state == NEW) {
-    		iterator = iterable.iterator();
-    		if (iterator.hasNext())
-    			state = AVAILABLE;
-    		else 
-    			utilized();
-    	}
-        return (state == AVAILABLE);
     }
-
+*/
     public E generate() {
         try {
-        	if (!available())
-        		throw GeneratorUtil.stateException(this);
+        	if (state == NEW) {
+        		iterator = iterable.iterator();
+        		if (iterator.hasNext())
+        			state = AVAILABLE;
+        		else 
+        			utilized();
+        	}
+            if (state != AVAILABLE)
+        		return null;
         	E result = iterator.next();
         	if (!iterator.hasNext())
 	            utilized();

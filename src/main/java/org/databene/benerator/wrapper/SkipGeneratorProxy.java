@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
@@ -93,12 +92,13 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> { // TODO merge con
     /** @see org.databene.benerator.Generator#reset() */
     @Override
     public E generate() {
-        if (!source.available())
-            throw new IllegalGeneratorStateException("source is not available");
-        long increment = incrementGenerator.generate();
-        for (long i = 0; i < increment - 1; i++)
-            source.generate();
-        return source.generate();
+    	Long increment = incrementGenerator.generate();
+    	if (increment != null) {
+	        for (long i = 0; i < increment - 1; i++)
+	            source.generate();
+	        return source.generate();
+    	} else
+    		return null;
     }
 
     @Override

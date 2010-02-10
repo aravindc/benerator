@@ -140,7 +140,10 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     @Override
     public String generateImpl() {
         Object[] values = helper.generate();
-        return MessageFormat.format(pattern, values);
+        if (values == null)
+        	return null;
+        else
+        	return MessageFormat.format(pattern, values);
     }
 
     /** @see org.databene.benerator.Generator#reset() */
@@ -151,10 +154,6 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     /** @see org.databene.benerator.Generator#close() */
     public void close() {
         helper.close();
-    }
-
-    public boolean available() {
-        return helper.available();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

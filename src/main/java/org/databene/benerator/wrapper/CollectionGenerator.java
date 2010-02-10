@@ -106,8 +106,8 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
     public C generate() {
         if (dirty)
             validate();
-        C collection = BeanUtil.newInstance(collectionType);
         int size = countGenerator.generate().intValue();
+        C collection = BeanUtil.newInstance(collectionType);
         for (int i = 0; i < size; i++)
             collection.add(source.generate());
         return collection;

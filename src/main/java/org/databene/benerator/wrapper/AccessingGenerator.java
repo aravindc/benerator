@@ -33,39 +33,21 @@ import org.databene.commons.Accessor;
  * Returns the results of an accessor that is applied on a constant provider object.<br/>
  * <br/>
  * Created: 22.08.2007 19:05:40
+ * @author Volker Bergmann
  */
 public class AccessingGenerator<S, P> extends TypedLightweightGenerator<P> {
 
     private Accessor<S, P> accessor;
     private S provider;
 
-    private boolean fetched;
-    private P next;
-
     public AccessingGenerator(Class<P> targetType, Accessor<S, P> accessor, S provider) {
         super(targetType);
         this.accessor = accessor;
         this.provider = provider;
-        this.fetched = false;
-        this.next = null;
-    }
-
-    @Override
-    public boolean available() {
-        if (!fetched)
-            fetchNext();
-        return (next != null);
     }
 
     public P generate() {
-        if (!fetched)
-            fetchNext();
-        fetched = false;
-        return next;
-    }
-
-    private void fetchNext() {
-        next = accessor.getValue(provider);
+        return accessor.getValue(provider);
     }
 
     @Override

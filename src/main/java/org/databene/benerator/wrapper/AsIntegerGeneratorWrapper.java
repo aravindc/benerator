@@ -47,7 +47,8 @@ public class AsIntegerGeneratorWrapper<E extends Number> extends GeneratorWrappe
     }
 
     public Integer generate() {
-	    return source.generate().intValue();
+	    E feed = source.generate();
+	    return (feed != null ? feed.intValue() : null);
     }
 
 }

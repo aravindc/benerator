@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.NullSafeComparator;
@@ -50,7 +49,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     private static final Logger logger = LoggerFactory.getLogger(UniqueCompositeArrayGenerator.class);
 
     private Class<S> componentType;
-    private Object[] products;
+    private Object[] next;
     private boolean dirty;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -83,21 +82,14 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
             super.validate();
             if (sources.length == 0)
                 throw new InvalidGeneratorSetupException("source", "is null");
-            products = new Object[sources.length];
-            for (int i = 0; i < products.length; i++)
-                if (sources[i].available())
-                    products[i] = sources[i].generate();
-                else
+            next = new Object[sources.length];
+            for (int i = 0; i < next.length; i++) {
+                next[i] = sources[i].generate();
+                if (next[i] == null)
                     throw new InvalidGeneratorSetupException("Sub generator not available: " + sources[i]);
+            }
             dirty = false;
         }
-    }
-
-    @Override
-    public boolean available() {
-        if (dirty)
-            validate();
-        return (products != null);
     }
 
     /**
@@ -105,10 +97,12 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
      */
     @SuppressWarnings("cast")
     public S[] generate() {
-        if (!available())
-            throw new IllegalGeneratorStateException("Generator is not available");
-        S[] result = (S[]) ArrayUtil.copyOfRange(products, 0, products.length, componentType);
-        fetchNext(0);
+    	if (dirty)
+    		validate();
+    	if (next == null)
+    		return null;
+        S[] result = (S[]) ArrayUtil.copyOfRange(next, 0, next.length, componentType);
+        fetchNextArrayItem(0);
         if (logger.isDebugEnabled())
             logger.debug("generated: " + ArrayFormat.format(result));
         return result;
@@ -120,28 +114,30 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         dirty = true;
     }
 
-    private void fetchNext(int index) {
+    private void fetchNextArrayItem(int index) {
         // check for overrun
         if (index >= sources.length) {
-            products = null;
+            next = null;
             return;
         }
         // if available, fetch the digit's next value
         boolean rep = false;
         Generator<S> gen = sources[index];
-        if (gen.available()) {
-            Object tmp = gen.generate();
-            if (!NullSafeComparator.equals(products[index], tmp)) {
-                products[index] = tmp;
+        
+        Object tmp = gen.generate();
+        if (tmp != null) {
+            if (!NullSafeComparator.equals(next[index], tmp)) {
+                next[index] = tmp;
                 return;
             } else
                 rep = true;
         }
         // sources[index] was not available or returned the same value as before
-        fetchNext(index + 1);
-        if (products != null && !rep) {
+        fetchNextArrayItem(index + 1);
+        if (next != null && !rep) {
             gen.reset();
-            products[index] = gen.generate();
+            next[index] = gen.generate();
         }
     }
+    
 }

@@ -47,7 +47,8 @@ public class AsFloatGeneratorWrapper<E extends Number> extends GeneratorWrapper<
     }
 
     public Float generate() {
-	    return source.generate().floatValue();
+	    E feed = source.generate();
+		return (feed != null ? feed.floatValue() : null);
     }
 
 }

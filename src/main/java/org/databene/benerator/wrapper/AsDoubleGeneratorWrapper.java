@@ -45,7 +45,8 @@ public class AsDoubleGeneratorWrapper<E extends Number> extends GeneratorWrapper
     }
 
     public Double generate() {
-        return source.generate().doubleValue();
+        E number = source.generate();
+		return (number != null ? number.doubleValue() : null);
     }
 
 }

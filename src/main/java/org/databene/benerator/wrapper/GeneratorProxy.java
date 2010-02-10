@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,7 @@ import org.databene.benerator.Generator;
  * @author Volker Bergmann
  */
 public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
-
+	
     // constructors ----------------------------------------------------------------------------------------------------
 
     protected GeneratorProxy() {

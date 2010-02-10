@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 
 /**
  * Generator proxy that 'loops' through a source Generator,
@@ -36,6 +35,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
  * unavailable after a reset.<br/>
  * <br/>
  * Created: 18.08.2007 16:55:21
+ * @author Volker Bergmann
  */
 public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
 	
@@ -45,23 +45,26 @@ public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
         super(source);
         this.closed = false;
     }
-
+/*
     @Override
     public boolean available() {
     	if (source == null || closed)
     		return false;
-        if (!source.available())
+        if (!source.isAvailable())
             reset();
-        return source.available(); // return false only if the source is not available after reset()
+        return source.isAvailable(); // return false only if the source is not available after reset()
     }
-
+*/
     @Override
     public E generate() {
     	if (source == null || closed)
-    		throw new IllegalGeneratorStateException(getClass().getSimpleName() + " is not available");
-        if (!source.available())
+    		return null;
+    	E generation = source.generate();
+        if (generation == null) {
             reset();
-        return source.generate();
+            generation = source.generate();
+        }
+        return generation;
     }
     
     @Override
@@ -75,4 +78,5 @@ public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
         super.close();
         closed = true;
     }
+    
 }

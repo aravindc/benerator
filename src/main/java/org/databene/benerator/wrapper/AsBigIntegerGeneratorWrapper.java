@@ -50,7 +50,8 @@ public class AsBigIntegerGeneratorWrapper<E extends Number> extends GeneratorWra
     }
 
     public BigInteger generate() throws IllegalGeneratorStateException {
-	    return BigInteger.valueOf(source.generate().longValue());
+	    E feed = source.generate();
+		return (feed != null ? BigInteger.valueOf(feed.longValue()) : null);
     }
 
 }

@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 
 /**
  * Creates a stochastic number of instances in subsequent calls before it becomes unavailable.
@@ -77,18 +76,16 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
         }
     }
     
-    @Override
-    public boolean available() {
-        validate();
-        return super.available() && (lengthSoFar < sequenceLength || !limited);
-    }
-
     public E generate() {
         validate();
-        if (!available())
-            throw new IllegalGeneratorStateException("Generator not available.");
-        this.lengthSoFar++;
-        return source.generate();
+        if (limited && lengthSoFar >= sequenceLength)
+        	return null;
+        E product = source.generate();
+        if (product != null) {
+	        this.lengthSoFar++;
+	        return product;
+        } else
+        	return null;
     }
 
     @Override

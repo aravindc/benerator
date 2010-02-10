@@ -34,12 +34,13 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * and delegates life cycle control to it.<br/>
  * <br/>
  * Created: 12.12.2006 19:13:55
+ * @since 0.1
  * @author Volker Bergmann
  */
 public abstract class GeneratorWrapper<S, P> implements Generator<P> {
 
     protected Generator<S> source;
-    protected boolean dirty;
+	protected boolean dirty;
 
     public GeneratorWrapper(Generator<S> source) {
         this.source = source;
@@ -81,12 +82,6 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
             validate();
         source.close();
     }
-
-    public boolean available() {
-        if (dirty)
-            validate();
-        return source.available();
-    }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
@@ -94,4 +89,5 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
     public String toString() {
         return getClass().getSimpleName() + '[' + source + ']';
     }
+    
 }

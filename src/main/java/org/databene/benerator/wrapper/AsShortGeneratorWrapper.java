@@ -48,7 +48,8 @@ public class AsShortGeneratorWrapper<E extends Number> extends GeneratorWrapper<
     }
 
     public Short generate() throws IllegalGeneratorStateException {
-	    return source.generate().shortValue();
+	    E feed = source.generate();
+		return (feed != null ? feed.shortValue() : null);
     }
 
 }

@@ -75,16 +75,18 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
             dirty = false;
         }
     }
-    
+/*
     @Override
     public boolean available() {
         validate();
-        return (super.available() && sizeGenerator.available());
+        return (super.isAvailable() && sizeGenerator.isAvailable());
     }
-
+*/
     @SuppressWarnings("unchecked")
     public A generate() {
-        int length = sizeGenerator.generate().intValue();
+        Integer length = sizeGenerator.generate();
+        if (length == null)
+        	return null;
         E[] array = ArrayUtil.newInstance(componentType, length);
         for (int i = 0; i < length; i++)
             array[i] = source.generate();

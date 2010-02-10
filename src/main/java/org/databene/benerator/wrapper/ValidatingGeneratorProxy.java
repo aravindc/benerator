@@ -75,11 +75,11 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
     public void close() {
         source.close();
     }
-
+/*
     public boolean available() {
-        return source.available();
+        return source.isAvailable();
     }
-
+*/
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + source + ']';

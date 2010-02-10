@@ -45,7 +45,8 @@ public class AsLongGeneratorWrapper<E extends Number> extends GeneratorWrapper<E
     }
 
     public Long generate() {
-        return source.generate().longValue();
+        E feed = source.generate();
+		return (feed != null ? feed.longValue() : null);
     }
 
 }
