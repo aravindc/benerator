@@ -65,9 +65,9 @@ public class Entity implements Composite<Object> {
             setComponent((String)componentKeyValuePairs[i], componentKeyValuePairs[i + 1]);
     }
     
-    public Entity(Entity that) {
-        this.descriptor = that.descriptor;
-        this.components = new OrderedNameMap<Object>(that.components);
+    public Entity(Entity prototype) {
+        this.descriptor = prototype.descriptor;
+        this.components = new OrderedNameMap<Object>(prototype.components);
     }
     
     // interface -------------------------------------------------------------------------------------------------------
