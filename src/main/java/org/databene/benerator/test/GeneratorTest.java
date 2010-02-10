@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,11 +33,11 @@ import java.util.Set;
 import java.util.Collection;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.Resettable;
 import org.databene.commons.Validator;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.validator.UniqueValidator;
@@ -97,6 +97,9 @@ public abstract class GeneratorTest {
     protected <T> Helper expectGenerations(Generator<T> generator, int n, Validator ... validators) {
         expectGenerationsOnce(generator, n, validators);
         generator.reset();
+        for (Validator validator : validators)
+        	if (validator instanceof Resettable)
+        		((Resettable) validator).reset();
         expectGenerationsOnce(generator, n, validators);
         return new Helper(generator);
     }
@@ -110,6 +113,19 @@ public abstract class GeneratorTest {
 
     protected <T>String format(T product) {
         return ToStringConverter.convert(product, "[null]");
+    }
+    
+    public static void assertUnavailable(Generator<?> generator) {
+        assertNull("Generator " + generator + " is expected to be unavailable", 
+        		generator.generate());
+    }
+
+    public static void assertAvailable(Generator<?> generator) {
+        assertAvailable("Generator " + generator + " is expected to be available", generator);
+    }
+
+    public static void assertAvailable(String message, Generator<?> generator) {
+        assertNotNull(message, generator.generate());
     }
 
     // Number generator tests ------------------------------------------------------------------------------------------
@@ -139,13 +155,6 @@ public abstract class GeneratorTest {
             counter.count(generator.generate());
         checkDistribution(counter, equalDistribution, tolerance, expectedSet);
     }
-
-	public static void expectNulls(Generator<String> generator, int n) {
-		for (int i = 0; i < n; i++) {
-			assertTrue(generator.available());
-			assertNull(generator.generate());
-		}
-	}
 
     // unspecific generator tests --------------------------------------------------------------------------------------
 
@@ -224,26 +233,15 @@ public abstract class GeneratorTest {
         }
 
         public void withCeasedAvailability() {
-            assertFalse("Generator is expected to be unavailable: " + generator, generator.available());
-            try {
-                generator.generate();
-                fail("When generator " + generator + " is unavailable, a generate() call is expected " +
-                        "to cause an " + IllegalGeneratorStateException.class.getSimpleName());
-            } catch (IllegalGeneratorStateException e) {
-                // exception is expected
-            } catch (Throwable t) {
-                t.printStackTrace();
-                fail("When generator " + generator + " is unavailable, a generate() call is expected " +
-                        "to cause an " + IllegalGeneratorStateException.class.getSimpleName() + ". " +
-                        "Instead an exception of different type was thrown");
-                t.printStackTrace();
+        	try {
+        		assertUnavailable(generator);
             } finally {
                 generator.close();
             }
         }
 
         public void withContinuedAvailability() {
-            assertTrue(generator.available());
+            assertAvailable(generator);
         }
     }
 
@@ -252,8 +250,9 @@ public abstract class GeneratorTest {
     protected static <T>void expectGeneratedSequenceOnce(Generator<T> generator, T... products) {
         generator.validate();
         for (T expectedProduct : products) {
-            assertTrue("Generator is unexpectedly unavailable: " + generator, generator.available());
-            assertEquals(expectedProduct, generator.generate());
+            T generatedProduct = generator.generate();
+            assertNotNull("Generator is unexpectedly unavailable: " + generator, generatedProduct);
+			assertEquals(expectedProduct, generatedProduct);
         }
     }
 
@@ -261,12 +260,12 @@ public abstract class GeneratorTest {
         generator.validate();
         Set<T> expectedSet = CollectionUtil.toSet(products);
         for (int i = 0; i < products.length; i++) {
-            assertTrue("Generator has gone unavailable before creating a number of products " +
-                    "that matches the expected set.", generator.available());
-            T product = generator.generate();
-            logger.debug("created " + format(product));
-            assertTrue("The generated value '" + format(product) + "' was not in the expected set: " + expectedSet,
-                    expectedSet.contains(product));
+        	T generation = generator.generate();
+            assertNotNull("Generator has gone unavailable before creating a number of products " +
+                    "that matches the expected set.", generation);
+            logger.debug("created " + format(generation));
+            assertTrue("The generated value '" + format(generation) + "' was not in the expected set: " + expectedSet,
+                    expectedSet.contains(generation));
         }
     }
 
@@ -275,9 +274,9 @@ public abstract class GeneratorTest {
         Set<T> expectedSet = CollectionUtil.toSet(products);
         UniqueValidator<Object> validator = new UniqueValidator<Object>();
         for (int i = 0; i < products.length; i++) {
-            assertTrue("Generator has gone unavailable before creating the expected number of products. " +
-                    generator, generator.available());
-            T product = generator.generate();
+        	T product = generator.generate();
+            assertNotNull("Generator has gone unavailable after " + i + " products, " +
+            		"expected " + products.length + " products. ", product);
             logger.debug("created " + format(product));
             assertTrue("Product is not unique: " + product, validator.valid(product));
             assertTrue("The generated value '" + format(product) + "' was not in the expected set: " 
@@ -290,8 +289,8 @@ public abstract class GeneratorTest {
         generator.validate();
         UniqueValidator validator = new UniqueValidator();
         for (int i = 0; i < n; i++) {
-            assertTrue("Generator is not available: " + generator, generator.available());
-            T product = generator.generate();
+        	T product = generator.generate();
+            assertNotNull("Generator is not available: " + generator, product);
             logger.debug("created: " + format(product));
             assertTrue("Product is not unique: " + product, validator.valid(product));
         }
@@ -301,9 +300,9 @@ public abstract class GeneratorTest {
     private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
         generator.validate();
         for (int i = 0; i < n; i++) {
-            assertTrue("Generator has gone unavailable before creating the required number of products ",
-                    generator.available());
-            T product = generator.generate();
+        	T product = generator.generate();
+            assertNotNull("Generator has gone unavailable before creating the required number of products ",
+                    product);
             logger.debug("created " + format(product));
             for (Validator validator : validators) {
                 assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
@@ -317,14 +316,13 @@ public abstract class GeneratorTest {
         UniqueValidator validator = new UniqueValidator();
         generator.validate();
         for (int i = 0; i < n; i++) {
-            assertTrue("Generator has gone unavailable before creating the required number of products ",
-                    generator.available());
-            T product = generator.generate();
+        	T product = generator.generate();
+            assertNotNull("Generator has gone unavailable before creating the required number of products ",
+                    product);
             logger.debug("created " + format(product));
             assertTrue("The generated value '" + format(product) + "' is not unique. Generator is " + generator, 
                     validator.valid(product));
         }
     }
-
 
 }

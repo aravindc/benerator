@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,6 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ParseUtil;
 import junit.framework.AssertionFailedError;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
  * Provides methods for testing generators and standard tests that act on generically created generator instances.<br/>
@@ -73,19 +72,8 @@ public abstract class GeneratorClassTest extends GeneratorTest {
             valid = false;
         }
         if (valid) { // must be outside of catch block, else exceptions would be ignored
-            assertTrue(generator.available());
             generator.generate();
         }
-    }
-
-    public static void assertUnavailable(Generator<?> generator) {
-        assertFalse("Generator " + generator + " is expected to be unavailable but was available", 
-        		generator.available());
-    }
-
-    public static void assertAvailable(Generator<?> generator) {
-        assertTrue("Generator " + generator + " is expected to be available but was unavailable", 
-        		generator.available());
     }
 
     // helpers ---------------------------------------------------------------------------------------------------------
