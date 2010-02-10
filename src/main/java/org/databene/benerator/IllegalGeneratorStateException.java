@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,10 +27,12 @@
 package org.databene.benerator;
 
 /**
- * Indicates exceptional genertor states that stem from inappropriate
+ * Indicates exceptional generator states that stem from inappropriate
  * generator setup or use.<br/>
  * <br/>
  * Created: 07.06.2006 22:13:57
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class IllegalGeneratorStateException extends RuntimeException {
 
@@ -47,4 +49,5 @@ public class IllegalGeneratorStateException extends RuntimeException {
     public IllegalGeneratorStateException(Throwable cause) {
         super("Illegal Generator state: ", cause);
     }
+    
 }
