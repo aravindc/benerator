@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  * Generates 8-digit EAN codes.<br/>
  * <br/>
  * Created: 30.07.2007 21:47:30
+ * @author Volker Bergmann
  */
 public class EAN8Generator extends GeneratorWrapper<String, String> {
 
@@ -56,7 +57,7 @@ public class EAN8Generator extends GeneratorWrapper<String, String> {
         if (unique)
             setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{7}", 7, 7, null));
         else
-            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7, null, 0));
+            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7, null));
     }
 
     // Generator interface --------------------------------------------------------------------

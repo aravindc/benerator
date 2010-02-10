@@ -35,7 +35,8 @@ import org.databene.benerator.sample.SequencedCSVSampleGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
-import org.databene.benerator.wrapper.NullableGenerator;
+import org.databene.benerator.wrapper.NullableGeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.City;
@@ -64,9 +65,9 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
     private boolean legalForm;
     
     private AlternativeGenerator<String> core;
-    private Generator<String> sectorGenerator;
+    private NullableGeneratorProxy<String> sectorGenerator;
     private Generator<String> legalFormGenerator;
-    private Generator<String> locationGenerator;
+    private NullableGeneratorProxy<String> locationGenerator;
     
     public CompanyNameGenerator() {
     	this(true, true, true);
@@ -103,15 +104,16 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 
 	public String generate() {
         StringBuilder builder = new StringBuilder(core.generate());
+        ProductWrapper<String> wrapper = new ProductWrapper<String>();
         if (sectorGenerator != null) {
-	        String sec = sectorGenerator.generate();
+			String sec = sectorGenerator.generate(wrapper).product;
 	        if (sec != null)
 	            builder.append(' ').append(sec);
         }
         if (locationGenerator != null) {
-	        String loc = locationGenerator.generate();
-	        if (loc != null)
-	            builder.append(' ').append(loc);
+        	wrapper = locationGenerator.generate(wrapper);
+        	if (wrapper != null && wrapper.product != null)
+	            builder.append(' ').append(wrapper.product);
         }
         if (legalFormGenerator != null) {
         	builder.append(' ').append(legalFormGenerator.generate());
@@ -168,7 +170,7 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 	private void initSectorGenerator(String datasetName) {
 	    if (sector) {
         	try {
-        		sectorGenerator = new NullableGenerator<String>(new WeightedDatasetCSVGenerator<String>(
+        		sectorGenerator = new NullableGeneratorProxy<String>(new WeightedDatasetCSVGenerator<String>(
         				ORG + "sector_{0}.csv", datasetName, REGION, Encodings.UTF_8), 0.7);
         	} catch (Exception e) {
         		logger.info("Cannot create sector generator: " + e.getMessage());
@@ -189,24 +191,23 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 
 	@SuppressWarnings("unchecked")
     private void initLocationGenerator(String datasetName) {
+		double nullQuota = 0.8;
 	    Country country = Country.getInstance(datasetName);
+	    Generator<String> locationBaseGen;
         if (location && country != null) {
         	try {
 	            Generator<String> city = new ConvertingGenerator<City, String>(
 	            		new CityGenerator(country), new PropertyAccessConverter("name"));
-	            locationGenerator = new NullableGenerator<String>(
-	                    	new AlternativeGenerator<String>(String.class, 
+	            locationBaseGen = new AlternativeGenerator<String>(String.class, 
 	                    			new ConstantGenerator<String>(country.getLocalName()), 
-	                    			city), 
-	                    	0.8
-	                );
+	                    			city);
         	} catch (Exception e) {
         		logger.info("Cannot create location generator: " + e.getMessage());
-                locationGenerator = new ConstantGenerator<String>(null);
+                locationBaseGen = new ConstantGenerator<String>(null);
         	}
         } else
-            locationGenerator = new ConstantGenerator<String>(null);
+        	locationBaseGen = new ConstantGenerator<String>(null);
+        locationGenerator = new NullableGeneratorProxy<String>(locationBaseGen, nullQuota);
     }
-
 
 }

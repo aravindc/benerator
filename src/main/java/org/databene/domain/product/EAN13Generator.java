@@ -52,7 +52,7 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
         if (unique)
             setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{12}", 12, 12, null));
         else
-            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{12}", 12, 12, null, 0));
+            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{12}", 12, 12, null));
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------

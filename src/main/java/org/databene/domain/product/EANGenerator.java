@@ -87,13 +87,6 @@ public class EANGenerator extends GeneratorProxy<String> {
     }
 
     @Override
-    public boolean available() {
-        if (dirty)
-            validate();
-        return super.available();
-    }
-
-    @Override
     public String generate() {
         if (dirty)
             validate();
