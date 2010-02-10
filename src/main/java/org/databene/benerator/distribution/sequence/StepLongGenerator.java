@@ -79,19 +79,13 @@ public class StepLongGenerator extends AbstractNumberGenerator<Long> {
         }
     }
 
-    @Override
-    public boolean available() {
-    	validate();
-        return (increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min));
-    }
-
-    public Long generate() throws IllegalGeneratorStateException {
-        if (!available())
-        	throw new IllegalGeneratorStateException(
-        			"Generator " + this + " is not available. Check this by calling available() before generate()");
-        long value = next;
-        next += increment;
-        return value;
+    public synchronized Long generate() throws IllegalGeneratorStateException {
+        if ((increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min))) {
+        	long value = next;
+		    next += increment;
+	        return value;
+        } else
+        	return null;
     }
 
     @Override

@@ -26,7 +26,6 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
@@ -83,17 +82,11 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TOD
         }
     }
 
-    @Override
-    public boolean available() {
-        return (next != null && super.available());
-    }
-    
-    public Long generate() throws IllegalGeneratorStateException {
+    public Long generate() {
         if (dirty)
             validate();
-        if (!available())
-        	throw new IllegalGeneratorStateException("Generator " + this + " is unavailable. " +
-        			"Check available() before calling generate()");
+        if (next == null)
+        	return null;
         long result = next;
         long increment = getIncrement();
         if (next + increment <= max)

@@ -80,18 +80,11 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
         }
     }
 
-    @Override
-	public boolean available() {
-        if (dirty)
-            validate();
-        return next != null;
-    }
-
     public Long generate() throws IllegalGeneratorStateException {
         if (dirty)
             validate();
         if (next == null)
-            throw new IllegalGeneratorStateException("No numbers available any more");
+            return null;
         long result = next;
         do {
             cursor++;

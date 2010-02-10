@@ -61,17 +61,13 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
         }
     }
 
-    @Override
-	public boolean available() {
-        if (dirty)
-            validate();
-        return indexGenerator.available();
-    }
-
     public Long generate() throws IllegalGeneratorStateException {
         if (dirty)
             validate();
-        return min + indexGenerator.generate() * precision;
+        Long index = indexGenerator.generate();
+        if (index == null)
+        	return null;
+		return min + index * precision;
     }
 
     @Override

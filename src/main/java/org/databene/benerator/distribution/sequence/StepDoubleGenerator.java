@@ -26,7 +26,6 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -74,19 +73,14 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
         }
     }
 
-    @Override
-    public boolean available() {
+    public synchronized Double generate() {
     	validate();
-        return (increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min));
-    }
-
-    public Double generate() {
-        if (!available())
-        	throw new IllegalGeneratorStateException(
-        			"Generator " + this + " is not available. Check this by calling available() before generate()");
-        double value = next;
-        next += increment;
-        return value;
+    	if (increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min)) {
+	        double value = next;
+	        next += increment;
+	        return value;
+    	} else
+    		return null;
     }
 
 	@Override

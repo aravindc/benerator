@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
@@ -124,28 +123,25 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	}
 	
 	@Override
-	public boolean available() {
+    public synchronized E generate() {
 		if (dirty)
 			validate();
-		return !buckets.isEmpty();
-	}
-	
-	@Override
-    public E generate() {
-		if (!available())
-			throw new IllegalGeneratorStateException("Generator is not available. " +
-					"Check available() before calling generate()");
+		if (buckets.isEmpty())
+			return null;
 		int bucketIndex = RandomUtil.randomIndex(buckets);
 	    ValueBucket<E> bucket = buckets.get(bucketIndex);
 	    E result;
 	    if (duplicationQuota > 0 && RandomUtil.randomProbability() < duplicationQuota) {
 	    	return bucket.getRandomElement();
-	    } else if (super.available()) {
-		    result = bucket.getAndReplaceRandomElement(super.generate());
 	    } else {
-	    	result = bucket.getAndRemoveRandomElement();
-		    if (bucket.isEmpty())
-		    	buckets.remove(bucketIndex);
+	    	E feed = super.generate();
+	    	if (feed != null) {
+			    result = bucket.getAndReplaceRandomElement(feed);
+		    } else {
+		    	result = bucket.getAndRemoveRandomElement();
+			    if (bucket.isEmpty())
+			    	buckets.remove(bucketIndex);
+		    }
 	    }
 	    return result;
     }
@@ -169,10 +165,11 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 		buckets = new ArrayList<ValueBucket<E>>(bucketCount);
 		for (int i = 0; i < bucketCount; i++)
 			infantry.add(new ValueBucket<E>(bucketSize));
-		for (int i = 0; i < cacheSize && super.available(); i++) {
+		E feed;
+		for (int i = 0; i < cacheSize && (feed = super.generate()) != null; i++) {
 			int bucketIndex = RandomUtil.randomIndex(infantry);
 			ValueBucket<E> bucket = infantry.get(bucketIndex);
-			bucket.add(super.generate());
+			bucket.add(feed);
 			if (bucket.size() == bucketSize) {
 				infantry.remove(bucketIndex);
 				buckets.add(bucket);

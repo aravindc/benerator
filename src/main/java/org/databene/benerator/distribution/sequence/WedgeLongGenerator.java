@@ -74,16 +74,11 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
         }
     }
 
-    @Override
-	public boolean available() {
-        return (cursor != null);
-    }
-
     public Long generate() throws IllegalGeneratorStateException {
         if (dirty)
             validate();
         if (cursor == null)
-            throw new IllegalGeneratorStateException("No numbers available any more");
+            return null;
         long result = cursor;
         if (cursor == end)
             cursor = null;

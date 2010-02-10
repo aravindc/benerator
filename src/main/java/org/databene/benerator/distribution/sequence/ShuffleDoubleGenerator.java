@@ -80,14 +80,10 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
     	}
     }
     
-    @Override
-    public boolean available() {
-        return (next != null && super.available());
-    }
-    
     public Double generate() throws IllegalGeneratorStateException {
-    	if (!available())
-    		throw new IllegalGeneratorStateException("Generator is unavailable");
+    	validate();
+    	if (next == null)
+    		return null;
         double result = next;
         if (next + increment <= max)
             next += increment;
