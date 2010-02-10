@@ -169,15 +169,16 @@ public class CharacterGenerator implements Generator<Character> {
             validate();
         source.close();
     }
-
+/*
     public boolean available() {
         if (dirty)
             validate();
-        return source.available();
+        return source.isAvailable();
     }
-
+*/
     @Override
 	public String toString() {
         return getClass().getSimpleName() + values;
     }
+    
 }

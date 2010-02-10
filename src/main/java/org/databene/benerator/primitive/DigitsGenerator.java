@@ -92,7 +92,7 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
     	this.prefix = prefix;
     }
 
-	public String generate() throws IllegalGeneratorStateException {
+	public String generate() {
 	    return generate(prefix);
     }
 	

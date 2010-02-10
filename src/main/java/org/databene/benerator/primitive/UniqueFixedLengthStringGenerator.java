@@ -87,14 +87,9 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
         this.cycleCounter = 0;
     }
 
-    @Override
-    public boolean available() {
-        return counter != null;
-    }
-
     public String generate() {
         if (counter == null)
-            throw new IllegalGeneratorStateException("Generator is not available any more. Check with available() before calling!");
+            return null;
         int[] digits = counter.getDigits();
         char[] tmp = new char[length];
         for (int i = 0; i < digits.length; i++)

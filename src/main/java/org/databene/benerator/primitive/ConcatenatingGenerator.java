@@ -64,6 +64,8 @@ public class ConcatenatingGenerator extends GeneratorWrapper<String[], String> {
 
     public String generate() throws IllegalGeneratorStateException {
         String[] parts = source.generate();
+        if (parts == null)
+        	return null;
         if (parts.length > 0) {
 	        StringBuilder builder = new StringBuilder();
 	        builder.append(parts[0]);

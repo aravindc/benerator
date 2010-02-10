@@ -28,7 +28,6 @@ package org.databene.benerator.primitive;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ConfigurationError;
 
@@ -105,15 +104,11 @@ public class IncrementGenerator extends LightweightGenerator<Long> {
 	    return Long.class;
     }
 
-    @Override
-    public boolean available() {
-        return (cursor.get() <= max);
-    }
-    
-    public Long generate() {
-    	if (!available())
-    		throw GeneratorUtil.stateException(this);
-        return cursor.getAndAdd(increment);
+	public Long generate() {
+    	if (cursor.get() <= max)
+    		return cursor.getAndAdd(increment);
+    	else
+    		return null;
     }
     
     @Override

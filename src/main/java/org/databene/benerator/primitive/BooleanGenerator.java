@@ -70,7 +70,7 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
 
     /** generates boolean values with a quota of true values according to the trueQuota property */
     public Boolean generate() {
-        return Math.random() <= trueQuota;
+        return (Math.random() <= trueQuota);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

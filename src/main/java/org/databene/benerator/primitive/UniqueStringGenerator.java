@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.util.RandomUtil;
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
 import org.databene.commons.ArrayFormat;
@@ -41,12 +40,11 @@ import java.util.Set;
  * Created: 16.11.2007 11:56:15
  * @author Volker Bergmann
  */
-public class UniqueStringGenerator implements Generator<String> {
+public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String> {
 
     private int minLength;
     private int maxLength;
     private char[] charSet;
-    private Generator<String>[] subGens;
     private boolean dirty;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -64,7 +62,6 @@ public class UniqueStringGenerator implements Generator<String> {
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.charSet = charSet;
-        this.subGens = new Generator[0];
         dirty = true;
     }
     
@@ -94,53 +91,23 @@ public class UniqueStringGenerator implements Generator<String> {
         return String.class;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void validate() {
         if (dirty) {
-            this.subGens = new Generator[maxLength - minLength + 1];
+        	// create sub generators
+            Generator<String>[] subGens = new Generator[maxLength - minLength + 1];
             for (int i = minLength; i <= maxLength; i++)
                 subGens[i - minLength] = new UniqueFixedLengthStringGenerator(i, charSet);
+            setSources(subGens);
             dirty = false;
         }
     }
 
-    public boolean available() {
-        if (dirty)
-            validate();
-        if (subGens == null)
-        	return false;
-        for (int i = maxLength - minLength; i >= 0; i--)
-            if (subGens[i].available())
-                return true;
-        return false;
-    }
-
     public String generate() {
-        if (!available())
-            throw new IllegalGeneratorStateException("Generator is no longer available");
-        int generatorIndex;
-        do {
-            generatorIndex = RandomUtil.randomInt(0, maxLength - minLength);
-        } while (!subGens[generatorIndex].available());
-        return subGens[generatorIndex].generate();
+    	return generateFromRandomSource();
     }
 
-    public void reset() {
-    	if (subGens != null)
-	        for (Generator<String> generator : subGens)
-	            generator.reset();
-        dirty = true;
-    }
-
-    public void close() {
-    	if (subGens != null) {
-	        for (Generator<String> generator : subGens)
-	            generator.close();
-	        subGens = null;
-    	}
-        dirty = true;
-    }
-    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override

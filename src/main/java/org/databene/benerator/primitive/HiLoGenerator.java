@@ -46,7 +46,7 @@ public class HiLoGenerator implements Generator<Long> {
     protected int maxLo;
     
     private int lo;
-    private long hi;
+    private Long hi;
 
     protected Generator<Long> hiGenerator;
     protected boolean dirty;
@@ -65,7 +65,7 @@ public class HiLoGenerator implements Generator<Long> {
         this.hiGenerator = hiGenerator;
         setMaxLo(maxLo);
         this.lo = -1;
-        this.hi = -1;
+        this.hi = -1L;
         this.dirty = true;
     }
     
@@ -107,17 +107,13 @@ public class HiLoGenerator implements Generator<Long> {
         }
     }
 
-    public boolean available() {
-        if (dirty)
-            validate();
-        return hiGenerator.available();
-    }
-
-    public Long generate() {
+    public synchronized Long generate() {
         if (dirty)
             validate();
         if (hi == -1 || lo >= maxLo) {
             hi = hiGenerator.generate();
+            if (hi == null)
+            	return null;
             if (logger.isDebugEnabled())
                 logger.debug("fetched new hi value: " + hi);
             lo = 0;
@@ -130,7 +126,7 @@ public class HiLoGenerator implements Generator<Long> {
         if (dirty)
             validate();
         hiGenerator.reset();
-        hi = -1;
+        hi = -1L;
         dirty = true;
     }
 
