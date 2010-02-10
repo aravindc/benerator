@@ -70,8 +70,11 @@ public class XmlCreator {
         long start = System.currentTimeMillis();
         XMLFileGenerator fileGenerator = new XMLFileGenerator(schemaUri, root, pattern, propertiesFiles);
         try {
-	        for (long i = 0; i < fileCount && fileGenerator.available(); i++) {
+	        for (long i = 0; i < fileCount; i++) {
 	            File file = fileGenerator.generate();
+	            if (file == null)
+	            	throw new RuntimeException("Unable to create the expected number of files. " +
+	            			"Created " + i + " of " + fileCount + " files");
 	            logger.info("created file: " + file);
 	        }
         } finally {
