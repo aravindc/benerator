@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,6 +48,7 @@ import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
@@ -105,7 +106,12 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 				Long.class, new DefaultPageSizeExpression());
 		Expression<Integer> threads = new TypedScriptExpression<Integer>(element.getAttribute(ATT_THREADS), Integer.class, 1);
 		Expression<PageListener> pager = new ScriptExpression<PageListener>(element.getAttribute(ATT_PAGER), (PageListener) null);
-		CreateOrUpdateEntitiesStatement creator = new CreateOrUpdateEntitiesStatement(task, countExpression, pageSize, pager, threads);
+		
+		String name = element.getAttribute(ATT_NAME);
+		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
+		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
+		CreateOrUpdateEntitiesStatement creator = new CreateOrUpdateEntitiesStatement(
+				task, countExpression, pageSize, pager, threads, errorHandler);
 		return creator;
 	}
 
@@ -113,8 +119,6 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
     private GenerateAndConsumeEntityTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 		descriptor.setNullable(false);
-		StringScriptExpression onErrorExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
-		Expression errorHandler = new ErrorHandlerExpression(onErrorExpr, getClass().getName());
 		if (!isSubTask)
 			logger.info(descriptor.toString());
 		else if (logger.isDebugEnabled())
@@ -131,7 +135,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		
-		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubTask, errorHandler);
+		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubTask);
 
 		// handle sub-create-entities
 		for (Element child : XMLUtil.getChildElements(element)) {

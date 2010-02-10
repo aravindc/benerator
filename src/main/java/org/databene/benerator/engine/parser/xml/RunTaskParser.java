@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,13 +26,14 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import java.text.ParseException;
 
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
+import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
-import org.databene.task.LazyTask;
 import org.databene.task.PageListener;
 import org.databene.task.Task;
 import org.w3c.dom.Element;
@@ -56,12 +57,12 @@ public class RunTaskParser extends AbstractDescriptorParser {
     public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
 			Expression<Task> taskProvider = (Expression<Task>) beanParser.parseBeanExpression(element);
-			Task task = new LazyTask(taskProvider);
 			Expression<Long> count    = parseLongAttr(ATT_COUNT, element, 1);
 			Expression<Long> pageSize = parseLongAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
 			Expression<Integer> threads  = parseIntAttr(ATT_THREADS, element, 1);
 			Expression<PageListener> pager    = parsePager(element);
-			return new RunTaskStatement(task, count, pageSize, pager, threads);
+			Expression<ErrorHandler> errorHandler = parseErrorHandler(element);
+			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, errorHandler);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		} catch (ParseException e) {
@@ -69,7 +70,13 @@ public class RunTaskParser extends AbstractDescriptorParser {
         }
 	}
 
-    @SuppressWarnings("unchecked")
+    private Expression<ErrorHandler> parseErrorHandler(Element element) {
+    	String id = element.getAttribute(ATT_ID);
+		Expression<String> level = parseStringAttr(ATT_ON_ERROR, element);
+		return new ErrorHandlerExpression(id, level);
+    }
+
+	@SuppressWarnings("unchecked")
     private Expression<PageListener> parsePager(Element element) throws ParseException {
 		String pagerSpec = element.getAttribute(ATT_PAGER);
 		return (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(pagerSpec);
