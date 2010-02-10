@@ -32,15 +32,16 @@ import org.databene.benerator.util.LightweightGenerator;
  * Generates Long values that represent the current time in milliseconds.<br/>
  * <br/>
  * Created: 17.11.2007 13:14:55
+ * @author Volker Bergmann
  */
 public class CurrentMilliTimeGenerator extends LightweightGenerator<Long> {
 
-	public Long generate() {
-        return System.currentTimeMillis();
-    }
-
     public Class<Long> getGeneratedType() {
     	return Long.class;
+    }
+
+	public Long generate() {
+        return System.currentTimeMillis();
     }
 
 }

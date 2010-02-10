@@ -129,18 +129,23 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, false, 0);
         dirty = false;
     }
-    
+/*    
     @Override
     public boolean available() {
     	if (dirty)
     		validate();
-    	return dateGenerator.available() && timeOffsetGenerator.available();
+    	return dateGenerator.isAvailable() && timeOffsetGenerator.isAvailable();
     }
-    
+*/    
     public Date generate() {
     	if (dirty)
     		validate();
-    	return new Date(dateGenerator.generate() + timeOffsetGenerator.generate());
+    	Long dateGeneration = dateGenerator.generate();
+    	Long timeOffsetGeneration = timeOffsetGenerator.generate();
+    	if (dateGeneration!= null && timeOffsetGeneration != null)
+    		return new Date(dateGeneration + timeOffsetGeneration);
+    	else
+    		return null;
     }
 
 }

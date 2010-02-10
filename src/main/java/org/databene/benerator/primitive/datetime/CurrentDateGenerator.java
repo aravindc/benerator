@@ -34,6 +34,7 @@ import java.util.Date;
  * Generates java.util.Date objects that represent the current Date (time is 00:00:00).<br/>
  * <br/>
  * Created: 17.11.2007 13:11:49
+ * @author Volker Bergmann
  */
 public class CurrentDateGenerator extends LightweightDateGenerator {
 

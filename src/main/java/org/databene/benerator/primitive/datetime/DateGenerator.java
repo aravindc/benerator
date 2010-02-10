@@ -39,6 +39,7 @@ import java.util.GregorianCalendar;
  * creates date values by a LongGenerator.
  * <br/>
  * Created: 07.06.2006 22:54:28
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class DateGenerator implements Generator<Date> {
@@ -118,18 +119,22 @@ public class DateGenerator implements Generator<Date> {
     		this.initialized = true;
     	}
     }
-
+/*
     public boolean available() {
     	if (!initialized)
     		validate();
-        return source.available();
+        return source.isAvailable();
     }
-
+*/
     /** Generates a Date by creating a millisecond value from the source generator and wrapping it into a Date */
     public Date generate() {
     	if (!initialized)
     		validate();
-        return new Date(source.generate());
+        Long millis = source.generate();
+        if (millis != null)
+        	return new Date(millis);
+        else
+        	return null;
     }
 
     public void reset() {
@@ -169,4 +174,5 @@ public class DateGenerator implements Generator<Date> {
     public String toString() {
     	return getClass().getSimpleName() + '[' + source + ']';
     }
+    
 }

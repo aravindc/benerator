@@ -23,7 +23,6 @@ package org.databene.benerator.primitive.number;
 
 import java.util.LinkedList;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.domain.math.FibonacciLongGenerator;
 
@@ -85,8 +84,7 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
     }
     
     // generator interface ---------------------------------------------------------------------------------------------
-    
-	/** See {@link org.databene.benerator.Generator#available()} */
+/*     
     @SuppressWarnings("unchecked")
     @Override
     public boolean available() {
@@ -94,18 +92,19 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
     	Comparable<E> c = (Comparable<E>) next;
     	return (max == null || (c.compareTo(min) >= 0 && c.compareTo(max) <= 0));
     }
-    
+*/
 	/** See {@link org.databene.benerator.Generator#generate()} */
-    public E generate() {
-    	if (!available())
-    		throw new IllegalGeneratorStateException("Generator not available any more. " +
-    				"Query available() before calling generate().");
-	    E result = calculateNext();
+    @SuppressWarnings("unchecked")
+    public synchronized E generate() {
+    	E next = calculateNext();
+    	Comparable<E> c = (Comparable<E>) next;
+    	if (max != null && !(c.compareTo(min) >= 0 && c.compareTo(max) <= 0))
+    		return null;
 	    if (n >= depth)
 	    	recentProducts.removeLast();
 	    n++;
-	    recentProducts.push(result);
-	    return result;
+	    recentProducts.push(next);
+	    return next;
     }
 
 	/** See {@link org.databene.benerator.Generator#reset()} */
