@@ -27,15 +27,18 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.BeanUtil;
 
 /**
  * Helper class for generators that do not have a life cycle.
  * For these, the close() and reset() methods are implemented with
- * an empty body.<br/>
+ * a no-op implementation. The developer only needs to implement the 
+ * methods {@link Generator#getGeneratedType()} and 
+ * {@link Generator#generate()}<br/>
  * <br/>
  * Created: 15.08.2006 09:12:55
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public abstract class LightweightGenerator<E> implements Generator<E> {
 
@@ -55,10 +58,6 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
     public void close() {
     }
 
-    public boolean available() {
-        return true;
-    }
-
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
@@ -66,11 +65,4 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
         return BeanUtil.toString(this);
     }
     
-    // protected helpers for child classes -----------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    protected static IllegalGeneratorStateException stateException(Generator generator) {
-        return GeneratorUtil.stateException(generator);
-    }
-
 }

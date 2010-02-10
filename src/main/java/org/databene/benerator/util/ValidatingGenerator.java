@@ -65,12 +65,14 @@ public abstract class ValidatingGenerator<P> implements Generator<P> {
      */
 
     public P generate() {
-        P product;
         boolean valid;
         int count = 0;
+        P product;
         do {
-            product = generateImpl();
-            valid = validator.valid(product);
+        	product = generateImpl();
+        	if (product == null)
+        		return null;
+			valid = validator.valid(product);
             count++;
             if (count >= ERROR_THRESHOLD)
                 throw new IllegalGeneratorStateException("Aborting generation, because of " + ERROR_THRESHOLD
@@ -87,4 +89,5 @@ public abstract class ValidatingGenerator<P> implements Generator<P> {
      * This is to be implemented by child classes.
      */
     protected abstract P generateImpl();
+    
 }

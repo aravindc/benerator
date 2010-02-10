@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 
@@ -50,15 +49,12 @@ public class GeneratorUtil {
 		return "benerator.xml".equals(lcFilename) || lcFilename.endsWith(".ben.xml");
 	}
 
-    public static <T> IllegalGeneratorStateException stateException(Generator<T> generator) {
-        return new IllegalGeneratorStateException("Generator is not available: " + generator);        
-    }
-
 	public static <T> List<T> allProducts(Generator<T> generator) {
 		List<T> list = new ArrayList<T>();
 		int count = 0;
-		while (generator.available()) {
-			list.add(generator.generate());
+		T product;
+		while ((product = generator.generate()) != null) {
+			list.add(product);
 			if (count++ > MAX_SIZE)
 				throw new ConfigurationError("Dataset is to large");
 		}

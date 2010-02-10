@@ -28,7 +28,7 @@ package org.databene.benerator.util;
 
 /**
  * {@link LightweightGenerator} implementation that stores the generated type.
- * It is identical to the former {@link LightweightGenerator}.<br/>
+ * It is identical to the former implementation of {@link LightweightGenerator}.<br/>
  * <br/>
  * Created at 26.05.2009 16:31:23
  * @since 0.6.0
