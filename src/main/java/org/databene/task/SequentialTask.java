@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.task;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.Expression;
 
 /**
  * Task implementation that executes a series of other tasks consecutively.<br/>
@@ -38,27 +37,27 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class SerialTask extends CompositeTask {
+public class SequentialTask extends CompositeTask {
 
-	public SerialTask() {
-		this(null);
+	public SequentialTask(Task... subTasks) {
+		super(subTasks);
 	}
 	
-    public SerialTask(Expression<ErrorHandler> errorHandler) {
-	    this(null, errorHandler);
+	public SequentialTask(String taskName) {
+	    super(taskName);
     }
 
-	public SerialTask(String taskName, Expression<ErrorHandler> errorHandler) {
-	    super(taskName, errorHandler);
+	public boolean executeStep(Context context, ErrorHandler errorHandler) {
+		boolean repeat = true;
+	    for (Task subTask : subTasks) {
+	    	if (!runSubTask(subTask, context, errorHandler))
+	    		repeat = false;
+	    }
+	    return repeat;
     }
 
-	public void run(Context context) {
-	    for (Task subTask : subTasks)
-	        runSubTask(context, subTask);
-    }
-
-	protected void runSubTask(Context context, Task subTask) {
-	    subTask.run(context);
+	protected boolean runSubTask(Task subTask, Context context, ErrorHandler errorHandler) {
+	    return subTask.executeStep(context, errorHandler);
     }
 	
 }
