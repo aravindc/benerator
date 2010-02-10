@@ -338,7 +338,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), unique, true, context);
-	    return GeneratorFactory.getDateGenerator(min, max, precision, distribution, 0);
+	    return GeneratorFactory.getDateGenerator(min, max, precision, distribution);
     }
 
     private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, boolean unique) {
@@ -349,7 +349,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (unique)
             return GeneratorFactory.getUniqueCharacterGenerator(pattern, locale);
         else
-            return GeneratorFactory.getCharacterGenerator(pattern, locale, 0);
+            return GeneratorFactory.getCharacterGenerator(pattern, locale);
     }
 
     private static Date parseDate(SimpleTypeDescriptor descriptor, String detailName, Date defaultDate) {
@@ -430,7 +430,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (unique)
             return GeneratorFactory.getUniqueRegexStringGenerator(pattern, minLength, maxLength, locale);
         else
-            return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, locale, 0);
+            return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, locale);
     }
     
     @SuppressWarnings("unchecked")

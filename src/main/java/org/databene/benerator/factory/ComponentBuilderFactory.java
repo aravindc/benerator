@@ -93,12 +93,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     private static ComponentBuilder createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
     	Generator<?> generator = InstanceGeneratorFactory.createNullQuotaOneGenerator(descriptor);
-    	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
+    	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator, 1) : null);
 	}
 
     private static ComponentBuilder createNullableBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
     	Generator<?> generator = InstanceGeneratorFactory.createNullableGenerator(descriptor, context);
-    	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator) : null);
+    	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator, 1) : null);
 	}
 
 	private static ComponentBuilder createAlternativeGroupBuilder(
@@ -133,7 +133,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         generator = createMultiplicityWrapper(part, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
-        return new PlainComponentBuilder(part.getName(), generator);
+        return new PlainComponentBuilder(part.getName(), generator, DescriptorUtil.getNullQuota(part));
     }
 
     public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
@@ -171,7 +171,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
-        return new PlainComponentBuilder(descriptor.getName(), generator);
+        return new PlainComponentBuilder(descriptor.getName(), generator, DescriptorUtil.getNullQuota(descriptor));
     }
 
     public static ComponentBuilder createIdBuilder(IdDescriptor id, BeneratorContext context) {
@@ -179,7 +179,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         generator = createMultiplicityWrapper(id, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
-        return new PlainComponentBuilder(id.getName(), generator);
+        return new PlainComponentBuilder(id.getName(), generator, DescriptorUtil.getNullQuota(id));
     }
 
     // non-public helpers ----------------------------------------------------------------------------------------------
@@ -188,9 +188,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
     	Expression countExpression = GeneratorFactoryUtil.getCountExpression(instance);
-    	generator = new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
+    	return new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
     			new CachedExpression(countExpression), context);
-        return (Generator<Object>) GeneratorFactory.wrapNullQuota(generator, DescriptorUtil.getNullQuota(instance));
     }
 
 }

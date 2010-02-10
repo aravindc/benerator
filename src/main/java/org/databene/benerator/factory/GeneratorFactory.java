@@ -74,8 +74,7 @@ public class GeneratorFactory {
      * @return a Boolean generator of the desired characteristics
      */
     public static Generator<Boolean> getBooleanGenerator(double trueQuota, double nullQuota) {
-        BooleanGenerator realGenerator = new BooleanGenerator(trueQuota);
-        return wrapNullQuota(realGenerator, nullQuota);
+        return new BooleanGenerator(trueQuota);
     }
 
     // number generators -----------------------------------------------------------------------------------------------
@@ -134,7 +133,7 @@ public class GeneratorFactory {
         else
             throw new UnsupportedOperationException("Number type not supported: " + type.getName());
         */
-        return wrapNullQuota(source, nullQuota);
+        return source;
     }
 /*
     private static <T> T max(Class<T> type, T max, int totalDigits, int fractionDigits) {
@@ -246,13 +245,11 @@ public class GeneratorFactory {
      * @param max          The latest Date to generate
      * @param precision    the time resolution of dates in milliseconds
      * @param distribution the distribution to use
-     * @param nullQuota    the quota of null values to generate
      * @return a generator of the desired characteristics
      */
     public static Generator<Date> getDateGenerator(
-            Date min, Date max, long precision, Distribution distribution, double nullQuota) {
-        DateGenerator generator = new DateGenerator(min, max, precision, distribution);
-        return wrapNullQuota(generator, nullQuota);
+            Date min, Date max, long precision, Distribution distribution) {
+        return new DateGenerator(min, max, precision, distribution);
     }
 
     /**
@@ -260,32 +257,27 @@ public class GeneratorFactory {
      *
      * @param uri       the uri of the CSV file.
      * @param pattern   the pattern to use for parsing the CSV cells
-     * @param nullQuota the quota of null values to generate
      * @return a generator of the desired characteristics
      */
-    public static Generator<Date> getDateGenerator(String uri, String encoding, String pattern, double nullQuota) {
+    public static Generator<Date> getDateGenerator(String uri, String encoding, String pattern) {
         DateFormat format = new SimpleDateFormat(pattern);
         Converter<String, Date> converter = new ParseFormatConverter<Date>(Date.class, format);
-        WeightedCSVSampleGenerator<Date> generator = new WeightedCSVSampleGenerator<Date>(uri, encoding, converter);
-        return wrapNullQuota(generator, nullQuota);
+        return new WeightedCSVSampleGenerator<Date>(uri, encoding, converter);
     }
 
     // text generators -------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a Character generator that creates characters of a locale which match a regular expresseion.
+     * Creates a Character generator that creates characters of a Locale which match a regular expression.
      *
      * @param pattern   the regular expression that indicates the available range of values.
      *                  If null, any letters of the specified locale will be used
      * @param locale    the locale to use for '\w' evaluation
-     * @param nullQuota the quota of null values to generate
      * @return a generator of the desired characteristics
      */
-    public static Generator<Character> getCharacterGenerator(String pattern, Locale locale, double nullQuota) {
-        CharacterGenerator generator;
+    public static Generator<Character> getCharacterGenerator(String pattern, Locale locale) {
         Collection<Character> chars = charSet(pattern, locale);
-        generator = new CharacterGenerator(chars);
-        return wrapNullQuota(generator, nullQuota);
+        return new CharacterGenerator(chars);
     }
 
     private static Collection<Character> charSet(String pattern, Locale locale) {
@@ -307,25 +299,23 @@ public class GeneratorFactory {
     }
 
     /**
-     * Creates a character generator that creates values from a collection of charcters
+     * Creates a character generator that creates values from a collection of characters
      *
      * @param characters the set of characters to choose from
-     * @param nullQuota  the quota of null values to generate
      * @return a generator of the desired characteristics
      */
-    public static Generator<Character> getCharacterGenerator(Collection<Character> characters, double nullQuota) {
-        return wrapNullQuota(new CharacterGenerator(characters), nullQuota);
+    public static Generator<Character> getCharacterGenerator(Collection<Character> characters) {
+        return new CharacterGenerator(characters);
     }
 
     /**
-     * Creates a character generator that creates values from a set of charcters
+     * Creates a character generator that creates values from a set of characters
      *
      * @param characters the set of characters to choose from
-     * @param nullQuota  the quota of null values to generate
      * @return a generator of the desired characteristics
      */
-    public static Generator<Character> getCharacterGenerator(double nullQuota, Character ... characters) {
-        return wrapNullQuota(new CharacterGenerator(Arrays.asList(characters)), nullQuota);
+    public static Generator<Character> getCharacterGenerator(Character ... characters) {
+        return new CharacterGenerator(Arrays.asList(characters));
     }
 
     /**
@@ -335,15 +325,13 @@ public class GeneratorFactory {
      * @param minLength the minimum length of the products
      * @param maxLength the maximum length of the products
      * @param locale    the locale to use for '\w' expressions
-     * @param nullQuota the quota of null values to generate
      * @return a generator of the desired characteristics
      * @throws ConfigurationError 
      */
     public static Generator<String> getRegexStringGenerator(
-            String pattern, int minLength, Integer maxLength, Locale locale, double nullQuota) 
+            String pattern, int minLength, Integer maxLength, Locale locale) 
             	throws ConfigurationError {
-        Generator<String> generator = getUniqueRegexStringGenerator(pattern, minLength, maxLength, locale);
-        return wrapNullQuota(generator, nullQuota);
+        return getUniqueRegexStringGenerator(pattern, minLength, maxLength, locale);
     }
 
     public static Generator<String> getUniqueRegexStringGenerator(
@@ -480,20 +468,4 @@ public class GeneratorFactory {
         return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
     
-    // helpers ---------------------------------------------------------------------------------------------------------
-
-    /**
-     * Wraps a generator and forwards its products on generate(), but inserts a quota of null values.
-     *
-     * @param source    the generator to use for input
-     * @param nullQuota the quota of null values to generate
-     * @return a generator of the desired characteristics
-     */
-    static <T> Generator<T> wrapNullQuota(final Generator<T> source, double nullQuota) {
-        Generator<T> generator = source;
-        if (nullQuota > 0)
-            generator = new NullableGenerator<T>(source, (float) nullQuota);
-        return generator;
-    }
-
 }

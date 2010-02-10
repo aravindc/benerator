@@ -35,9 +35,6 @@ import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.wrapper.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Creates entity generators from entity metadata.<br/>
@@ -47,20 +44,14 @@ import org.slf4j.LoggerFactory;
  */
 public class InstanceGeneratorFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstanceGeneratorFactory.class);
-
     // protected constructor for preventing instantiation --------------------------------------------------------------
     
     protected InstanceGeneratorFactory() {}
 
 /*  TODO remove
-
     public static Generator<?> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(descriptor, context);
-        generator = createInstanceGeneratorWrapper(descriptor, generator, context);
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
-        return generator;
+        return createInstanceGeneratorWrapper(descriptor, generator, context);
     }
 */
     
@@ -85,7 +76,6 @@ public class InstanceGeneratorFactory {
             		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
             } else
             	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
-            generator = wrapWithNullQuota(generator, descriptor);
         }
         return generator;
     }
@@ -113,19 +103,6 @@ public class InstanceGeneratorFactory {
         if (nullQuota != null && nullQuota.doubleValue() == 1.)
             return new ConstantGenerator<Object>(null);
         return null;
-    }
-
-    private static <T> Generator<T> wrapWithNullQuota(
-            Generator<T> generator, InstanceDescriptor descriptor) {
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota != null && nullQuota > 0) {
-            if (descriptor.isNullable() != null && !descriptor.isNullable())
-                logger.error("nullQuota is set to " + nullQuota + " but the value is not nullable. " +
-                        "Ignoring nullQuota for: " + descriptor);
-            else
-                generator = new NullableGenerator<T>(generator, nullQuota);
-        }
-        return generator;
     }
 
     public static Generator<?> createNullableGenerator(

@@ -44,6 +44,7 @@ import org.databene.benerator.composite.SimpleTypeEntityGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.util.NullableGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.ConverterChain;
@@ -102,12 +103,14 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     
     // private helpers -------------------------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
     private static Generator<Entity> wrapGeneratorWithVariables(
             ComplexTypeDescriptor type, BeneratorContext context, Generator<Entity> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-            Map<String, Generator<?>> varGens = new HashMap<String, Generator<?>>();
+            Map<String, NullableGenerator<?>> varGens = new HashMap<String, NullableGenerator<?>>();
             for (InstanceDescriptor variable : variables) {
-                Generator<?> varGen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
+                Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
+				NullableGenerator<?> varGen = new NullableGeneratorProxy(gen, variable.getNullQuota());
                 varGens.put(variable.getName(), varGen);
             }
         return new ConfiguredEntityGenerator(generator, varGens, context);

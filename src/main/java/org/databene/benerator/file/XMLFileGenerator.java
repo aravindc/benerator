@@ -100,11 +100,6 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     }
 
     @Override
-    public boolean available() {
-        return super.available() && contentGenerator.available();
-    }
-    
-    @Override
     public void validate() {
         super.validate();
         contentGenerator.validate();
@@ -112,7 +107,10 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     
     public File generate() {
         Object content = contentGenerator.generate();
-        return persistContent(content);
+        if (content != null)
+        	return persistContent(content);
+        else
+        	return null;
     }
 
     private File persistContent(Object content) {
