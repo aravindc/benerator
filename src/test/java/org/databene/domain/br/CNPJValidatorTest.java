@@ -37,8 +37,21 @@ public class CNPJValidatorTest extends SimpleValidatorTest<CharSequence> {
     }
 
 	@Test
-	public void testValidNumbers() {
+	public void testValidPlainNumbers() {
 		assertValid("16701716000156");
+		assertValid("01679152000125");
+	}
+
+	@Test
+	public void testValidFormattedNumbers() {
+		assertValid("16.701.716/0001-56");
+		assertValid("01.679.152/0001-25");
+	}
+
+	@Test
+	public void testInvalidFormattedNumbers() {
+		assertInvalid("16.701.716-0001-56");
+		assertInvalid("01/679.152/0001-25");
 	}
 
 	@Test
@@ -49,8 +62,6 @@ public class CNPJValidatorTest extends SimpleValidatorTest<CharSequence> {
 		assertInvalid("1234567890123456789");
 	}
 	
-	// TODO implement and test validation of formatted CNPJ numbers
-
 	@Test
 	public void testInvalidNumbers() {
 		assertInvalid("16701716000157"); // ultimate verification digit wrong
