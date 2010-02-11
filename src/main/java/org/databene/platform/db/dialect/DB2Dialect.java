@@ -41,7 +41,7 @@ public class DB2Dialect extends DatabaseDialect {
     }
 
 	@Override
-    public String nextSequenceValue(String sequenceName) {
+    public String renderFetchSequenceValue(String sequenceName) {
         String table = "sysibm.sysdummy1";
         String sequence = sequenceName;
         int sep = sequenceName.lastIndexOf('.');

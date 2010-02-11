@@ -41,7 +41,7 @@ public class PostgreSQLDialect extends DatabaseDialect {
     }
 
 	@Override
-    public String nextSequenceValue(String sequenceName) {
+    public String renderFetchSequenceValue(String sequenceName) {
         return "select nextval('" + sequenceName + "')";
     }
 	

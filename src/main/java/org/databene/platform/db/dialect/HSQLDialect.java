@@ -45,7 +45,13 @@ public class HSQLDialect extends DatabaseDialect {
     }
 
 	@Override
-    public String nextSequenceValue(String sequenceName) {
+    public String[] querySequences(Connection connection) throws SQLException {
+        String query = "select sequence_name from information_schema.system_sequences";
+        return DBUtil.queryScalarArray(query, String.class, connection);
+	}
+
+	@Override
+    public String renderFetchSequenceValue(String sequenceName) {
         return "call next value for " + sequenceName;
     }
 
@@ -59,7 +65,7 @@ public class HSQLDialect extends DatabaseDialect {
     }
 	
 	@Override
-	public String dropSequence(String name) {
+	public String renderDropSequence(String name) {
 		return "drop sequence " + name;
 	}
 	

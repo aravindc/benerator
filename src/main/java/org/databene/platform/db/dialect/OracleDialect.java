@@ -41,7 +41,7 @@ public class OracleDialect extends DatabaseDialect {
     }
 
 	@Override
-    public String nextSequenceValue(String sequenceName) {
+    public String renderFetchSequenceValue(String sequenceName) {
         return "select " + sequenceName + ".nextval from dual";
     }
 	

@@ -365,12 +365,12 @@ public class DBSystem extends AbstractStorageSystem {
 
     public void createSequence(String name) throws SQLException {
     	parseMetadataIfNecessary(); // TODO is this necessary?
-		execute(dialect.createSequence(name, 1));
+		dialect.createSequence(name, 1, getThreadContext().connection);
     }
 
     public void dropSequence(String name) throws SQLException {
     	parseMetadataIfNecessary(); // TODO is this necessary?
-        execute(dialect.dropSequence(name));
+        execute(dialect.renderDropSequence(name));
     }
 
     public void execute(String sql) throws SQLException {
@@ -379,7 +379,7 @@ public class DBSystem extends AbstractStorageSystem {
     
     public long nextSequenceValue(String sequenceName) {
     	parseMetadataIfNecessary(); // TODO is this necessary?
-    	return DBUtil.queryLong(dialect.nextSequenceValue(sequenceName), getThreadContext().connection);
+    	return DBUtil.queryLong(dialect.renderFetchSequenceValue(sequenceName), getThreadContext().connection);
     }
     
     public void setSequenceValue(String sequenceName, long increment) throws SQLException {

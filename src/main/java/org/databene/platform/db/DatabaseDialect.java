@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,35 +59,36 @@ public class DatabaseDialect {
     	return sequenceSupported;
     }
 
-	public String querySequences() {
-		return "select sequence_name from information_schema.system_sequences";
+	@SuppressWarnings("unused")
+    public String[] querySequences(Connection connection) throws SQLException {
+		throw new UnsupportedOperationException();
 	}
 
-	public String createSequence(String name, long initialValue) {
+	public void createSequence(String name, long initialValue, Connection connection) throws SQLException {
 		if (sequenceSupported)
-			return "create sequence " + name + " start with " + initialValue;
+			DBUtil.executeUpdate("create sequence " + name + " start with " + initialValue, connection);
 		else
 			throw checkSequenceSupport("createSequence");
     }
     
-    public String nextSequenceValue(String sequenceName) {
+    public String renderFetchSequenceValue(String sequenceName) {
 		throw checkSequenceSupport("nextSequenceValue");
     }
 
     public void setSequenceValue(String sequenceName, long value, Connection connection) throws SQLException {
 		if (sequenceSupported) {
-			long old = DBUtil.queryLong(nextSequenceValue(sequenceName), connection) - 1;
+			long old = DBUtil.queryLong(renderFetchSequenceValue(sequenceName), connection) - 1;
 			long increment = value - old;
 			if (increment < 0)
 				throw new RuntimeException("Trying to decrease value of sequence " + sequenceName + " from " + old + " to " + value);
 			DBUtil.executeUpdate("alter sequence " + sequenceName + " increment by " + increment, connection);
-			DBUtil.queryLong(nextSequenceValue(sequenceName), connection);
+			DBUtil.queryLong(renderFetchSequenceValue(sequenceName), connection);
 			DBUtil.executeUpdate("alter sequence " + sequenceName + " increment by 1", connection);
 		} else
 			throw checkSequenceSupport("incrementSequence");
     }
     
-	public String dropSequence(String sequenceName) {
+	public String renderDropSequence(String sequenceName) {
 		if (sequenceSupported)
 			return "drop sequence " + sequenceName;
 		else
