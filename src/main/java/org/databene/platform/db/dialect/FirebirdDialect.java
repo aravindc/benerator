@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,11 @@
 
 package org.databene.platform.db.dialect;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.databene.commons.StringUtil;
+import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.DatabaseDialect;
 
 /**
@@ -39,7 +44,47 @@ import org.databene.platform.db.DatabaseDialect;
 public class FirebirdDialect extends DatabaseDialect {
 
     public FirebirdDialect() {
-	    super("Firebird", true, false); // TODO does Firebird really not support sequences?
+	    super("Firebird", true, true);
     }
 
+    public String getJDBCDriverClass() {
+    	return "org.firebirdsql.jdbc.FBDriver";
+    }
+    
+    @Override
+    public void createSequence(String name, long initialValue, Connection connection) throws SQLException {
+    	DBUtil.executeUpdate(renderCreateSequence(name), connection);
+    	DBUtil.executeUpdate(renderSetSequenceValue(name, initialValue), connection);
+    }
+    
+    public String renderCreateSequence(String name) {
+        return "create generator " + name;
+    }
+    
+    @Override
+    public String renderDropSequence(String sequenceName) {
+        return "drop generator " + sequenceName;
+    }
+    
+    @Override
+    public String renderFetchSequenceValue(String sequenceName) {
+        return "select gen_id(" + sequenceName + ", 1) from RDB$DATABASE;";
+    }
+    
+    @Override
+    public String[] querySequences(Connection connection) throws SQLException {
+        String query = "select * from RDB$GENERATORS where RDB$GENERATOR_NAME NOT LIKE '%$%'";
+        String[] sequences = DBUtil.queryScalarArray(query, String.class, connection);
+		return StringUtil.trimAll(sequences);
+    }
+    
+    @Override
+    public void setSequenceValue(String sequenceName, long value, Connection connection) throws SQLException {
+    	DBUtil.executeUpdate("set generator " + sequenceName + " to " + value, connection);
+    }
+    
+    public String renderSetSequenceValue(String sequenceName, long value) {
+        return "set generator " + sequenceName + " to " + (value - 1);
+    }
+    
 }
