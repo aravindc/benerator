@@ -26,6 +26,9 @@
 
 package org.databene.domain.address;
 
+import org.databene.commons.Escalator;
+import org.databene.commons.LoggerEscalator;
+
 /**
  * Represents an address with phone numbers.<br/><br/>
  * Created: 11.06.2006 08:05:00
@@ -33,6 +36,8 @@ package org.databene.domain.address;
  * @author Volker Bergmann
  */
 public class Address {
+	
+	private static final Escalator escalator = new LoggerEscalator();
 
     public String street;
     public String houseNumber;
@@ -79,12 +84,12 @@ public class Address {
     }
 
     public String getZipCode() {
-    	// TODO escalate deprecation warning
+    	escalator.escalate("Property 'zipCode' is deprecated and replaced with 'areaCode'", getClass(), "zipCode");
         return getPostalCode();
     }
 
     public void setZipCode(String zipCode) {
-    	// TODO escalate deprecation warning
+    	escalator.escalate("Property 'zipCode' is deprecated and replaced with 'areaCode'", getClass(), "zipCode");
         setPostalCode(zipCode);
     }
 
