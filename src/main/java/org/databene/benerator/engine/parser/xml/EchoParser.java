@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,8 +24,8 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.statement.EchoStatement;
+import org.databene.commons.StringUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -41,8 +41,10 @@ public class EchoParser extends AbstractDescriptorParser {
     }
 
 	public EchoStatement parse(Element element, ResourceManager resourceManager) {
-		// TODO support text like <echo>DB: {${dbUrl}}</echo>
-		return new EchoStatement(new StringScriptExpression(element.getAttribute(ATT_MESSAGE)));
+		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
+			return new EchoStatement(parseStringAttr(ATT_MESSAGE, element));
+		else
+			return new EchoStatement(parseTextElem(element));
     }
 
 }
