@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
  * Tests the RepeatGeneratorProxy.<br/>
@@ -46,36 +45,16 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
 
     @Test
     public void testNonRepeating() {
-    	// TODO shorten
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 0L, 0L);
-        Integer product = generator.generate();
-        assertNotNull(product);
-		assertEquals(1, (int) product);
-		product = generator.generate();
-        assertNotNull(product);
-		assertEquals(2, (int) product);
-        assertUnavailable(generator);
+        expectGeneratedSequence(generator, 1, 2).withCeasedAvailability();
     }
 
     @Test
     public void testOneRepetition() {
-    	// TODO shorten
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
-        generator = new RepeatGeneratorProxy<Integer>(generator, 1L, 1L);
-        Integer product = generator.generate();
-        assertNotNull(product);
-        assertEquals(1, (int) product);
-        product = generator.generate();
-        assertNotNull(product);
-        assertEquals(1, (int) product);
-        
-        product = generator.generate();
-        assertNotNull(product);
-        assertEquals(2, (int) product);
-        product = generator.generate();
-        assertNotNull(product);
-        assertEquals(2, (int) product);
+        generator = new RepeatGeneratorProxy<Integer>(generator, 2L, 2L);
+        expectGeneratedSequence(generator, 1, 1, 1, 2, 2, 2).withCeasedAvailability();
     }
     
 }
