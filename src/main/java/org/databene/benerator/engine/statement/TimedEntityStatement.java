@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,8 +44,11 @@ public class TimedEntityStatement extends StatementProxy {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimedEntityStatement.class);
 
-    public TimedEntityStatement(Statement realStatement) {
+	private String name;
+	
+    public TimedEntityStatement(String name, Statement realStatement) {
     	super(realStatement);
+    	this.name = name;
     }
 
     @Override
@@ -54,15 +57,14 @@ public class TimedEntityStatement extends StatementProxy {
 		super.execute(context);
 		long dc = context.getLatestGenerationCount();
 		long dt = System.currentTimeMillis() - t0;
-		String taskId = "TODO"; // realStatement.getTaskName(); TODO
 		if (dc == 0)
-			logger.info("No entities created from '" + taskId + "' setup");
+			logger.info("No entities created for '" + name + "' setup");
 		else if (dt > 0)
 			logger.info("Created " + dc + " entities from '"
-					+ taskId + "' setup in " + dt + " ms ("
+					+ name + "' setup in " + dt + " ms ("
 					+ (dc * 1000 / dt) + "/s)");
 		else
-			logger.info("Created " + dc + " entities from '" + taskId);
+			logger.info("Created " + dc + " entities for '" + name);
     }
 
 }
