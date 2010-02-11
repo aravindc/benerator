@@ -38,18 +38,13 @@ public class OracleDialectTest extends DatabaseDialectTest {
     }
 
 	@Test
-	public void testCreateSequence() {
-		assertEquals("create sequence SEQ start with 1", dialect.createSequence("SEQ", 1));
-	}
-	
-	@Test
 	public void testnextSequenceValue() {
-		assertEquals("select SEQ.nextval from dual", dialect.nextSequenceValue("SEQ"));
+		assertEquals("select SEQ.nextval from dual", dialect.renderFetchSequenceValue("SEQ"));
 	}
 	
 	@Test
 	public void testDropSequence() {
-		assertEquals("drop sequence SEQ", dialect.dropSequence("SEQ"));
+		assertEquals("drop sequence SEQ", dialect.renderDropSequence("SEQ"));
 	}
 	
 }

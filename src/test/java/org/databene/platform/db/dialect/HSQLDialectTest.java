@@ -38,18 +38,18 @@ public class HSQLDialectTest extends DatabaseDialectTest {
     }
 
 	@Test
-	public void testCreateSequence() {
-		assertEquals("create sequence SEQ start with 1", dialect.createSequence("SEQ", 1));
-	}
-	
-	@Test
 	public void testnextSequenceValue() {
-		assertEquals("call next value for SEQ", dialect.nextSequenceValue("SEQ"));
+		assertEquals("call next value for SEQ", dialect.renderFetchSequenceValue("SEQ"));
 	}
 	
 	@Test
 	public void testDropSequence() {
-		assertEquals("drop sequence SEQ", dialect.dropSequence("SEQ"));
+		assertEquals("drop sequence SEQ", dialect.renderDropSequence("SEQ"));
+	}
+	
+	@Test
+	public void testSequencesOnline() throws Exception {
+		testSequencesOnline("hsqlmem");
 	}
 	
 }

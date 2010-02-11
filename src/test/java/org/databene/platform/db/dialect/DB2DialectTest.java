@@ -38,18 +38,13 @@ public class DB2DialectTest extends DatabaseDialectTest {
     }
 
 	@Test
-	public void testCreateSequence() {
-		assertEquals("create sequence SEQ start with 1", dialect.createSequence("SEQ", 1));
-	}
-	
-	@Test
 	public void testnextSequenceValue() {
-		assertEquals("select nextval for SEQ from sysibm.sysdummy1", dialect.nextSequenceValue("SEQ"));
+		assertEquals("select nextval for SEQ from sysibm.sysdummy1", dialect.renderFetchSequenceValue("SEQ"));
 	}
 	
 	@Test
 	public void testDropSequence() {
-		assertEquals("drop sequence SEQ", dialect.dropSequence("SEQ"));
+		assertEquals("drop sequence SEQ", dialect.renderDropSequence("SEQ"));
 	}
 	
 }

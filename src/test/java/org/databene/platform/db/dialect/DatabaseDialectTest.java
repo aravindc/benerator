@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,14 @@ package org.databene.platform.db.dialect;
 
 import static org.junit.Assert.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.databene.commons.ConnectFailedException;
+import org.databene.commons.DatabeneTestUtil;
+import org.databene.commons.StringUtil;
+import org.databene.commons.db.DBUtil;
+import org.databene.commons.db.JDBCConnectData;
 import org.databene.platform.db.DatabaseDialect;
 import org.junit.Test;
 
@@ -51,31 +59,43 @@ public abstract class DatabaseDialectTest {
 
 	private void assertSequenceSupported() {
 	    String sequence = "DUMMY_SEQ";
-	    dialect.createSequence(sequence, 1);
-	    dialect.nextSequenceValue(sequence);
-	    dialect.dropSequence(sequence);
+	    dialect.renderFetchSequenceValue(sequence);
+	    dialect.renderDropSequence(sequence);
     }
 	
 	private void assertSequenceNotSupported() {
 	    String sequence = "DUMMY_SEQ";
 	    try {
-	    	dialect.createSequence(sequence, 1);
+	    	dialect.renderFetchSequenceValue(sequence);
 	    	fail("UnsupportedOperationException expected");
 	    } catch (UnsupportedOperationException e) {
 	    	// this is expected
 	    }
 	    try {
-	    	dialect.nextSequenceValue(sequence);
-	    	fail("UnsupportedOperationException expected");
-	    } catch (UnsupportedOperationException e) {
-	    	// this is expected
-	    }
-	    try {
-	    	dialect.dropSequence(sequence);
+	    	dialect.renderDropSequence(sequence);
 	    	fail("UnsupportedOperationException expected");
 	    } catch (UnsupportedOperationException e) {
 	    	// this is expected
 	    }
     }
+	
+	protected void testSequencesOnline(String databaseId) throws SQLException, ConnectFailedException {
+		JDBCConnectData data = DatabeneTestUtil.getConnectData(databaseId);
+		if (data == null) {
+			System.out.println("Skipping test: testSequencesOnline(" + databaseId + ")");
+			return;
+		}
+		String sequenceName = getClass().getSimpleName();
+		Connection connection = DBUtil.connect(data);
+		try {
+			dialect.createSequence(sequenceName, 23, connection);
+			String[] sequences = dialect.querySequences(connection);
+			assertTrue(StringUtil.containsIgnoreCase(sequenceName, sequences));
+			assertEquals(23L, DBUtil.queryLong(dialect.renderFetchSequenceValue(sequenceName), connection));
+		} finally {
+			DBUtil.executeUpdate(dialect.renderDropSequence(sequenceName), connection);
+			DBUtil.close(connection);
+		}
+	}
 	
 }
