@@ -47,7 +47,7 @@ public class ParserFactory {
 	
 	private static List<DescriptorParser> parsers = new ArrayList<DescriptorParser>();
 	
-	static { // TODO define extension mechanism (e.g. by PlatformDescriptor?)
+	static { // TODO v0.7 define extension mechanism (e.g. by PlatformDescriptor?)
 		parsers.add(new DefaultComponentParser());
 		parsers.add(new CommentParser());
 		parsers.add(new BeanParser());
