@@ -46,6 +46,7 @@ import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.ShellUtil;
 import org.databene.commons.StringUtil;
 import org.databene.commons.Level;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.expression.ExpressionUtil;
@@ -95,11 +96,9 @@ public class EvaluateStatement implements Statement {
 
 	public void execute(BeneratorContext context) {
 		try {
-			// error handler TODO evaluate ErrorHandler only on demand
 			String onErrorValue = ExpressionUtil.evaluate(onErrorEx, context);
 			if (onErrorValue == null)
 				onErrorValue = "fatal";
-			ErrorHandler errorHandler = new ErrorHandler(getClass().getName(), Level.valueOf(onErrorValue));
 			
 			String typeValue = typeEx.evaluate(context);
 			// if type is not defined, derive it from the file extension
@@ -107,13 +106,23 @@ public class EvaluateStatement implements Statement {
 			if (typeEx == null && uriEx != null) {
 				// check for SQL file URI
 				String lcUri = (uriEx.evaluate(context)).toLowerCase();
-				// TODO v0.6 map generically and extendible (Using/Including
-				// Java Scripting?)
+				// TODO v0.6 map generically and extendible (Using/Including Java Scripting?)
 				if (lcUri.endsWith(".sql"))
 					typeValue = "sql";
 				// check for shell file URI
-				if ((lcUri.endsWith(".bat") || lcUri.endsWith(".sh")))
+				if (lcUri.endsWith(".bat") || lcUri.endsWith(".cmd") || lcUri.endsWith(".exe") || lcUri.endsWith(".com")) {
+					if (SystemInfo.isWindows())
+						typeValue = "shell";
+					else
+						throw new ConfigurationError("Need Windows to run file: " + uriValue);
+				}
+				if (lcUri.endsWith(".sh")) {
 					typeValue = "shell";
+					if (!SystemInfo.isWindows())
+						typeValue = "shell";
+					else
+						throw new ConfigurationError("Need Unix system to run file: " + uriValue);
+				}
 				// check for jar file URI
 				if (lcUri.endsWith(".jar"))
 					typeValue = "jar";
@@ -135,10 +144,7 @@ public class EvaluateStatement implements Statement {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
 						textValue, optimizeEx.evaluate(context));
             } else if ("shell".equals(typeValue)) {
-				if (!StringUtil.isEmpty(uriValue))
-					textValue = IOUtil.getContentOfURI(uriValue);
-				textValue = String.valueOf(ScriptUtil.render(textValue, context));
-				result = runShell(null, textValue, onErrorValue); // TODO v0.6 remove null uri parameter
+				result = runShell(uriValue, textValue, onErrorValue);
 			} else {
 				typeValue = context.getDefaultScript();
 				if (!StringUtil.isEmpty(uriValue))
@@ -152,10 +158,10 @@ public class EvaluateStatement implements Statement {
 			if (assertionValue != null && !(assertionValue instanceof String && ((String) assertionValue).length() == 0)) {
 				if (assertionValue instanceof Boolean) {
 					if (!(Boolean) assertionValue)
-						errorHandler.handleError("Assertion failed: '" + assertionEx + "'");
+						getErrorHandler(onErrorValue).handleError("Assertion failed: '" + assertionEx + "'");
 				} else {
 					if (!BeanUtil.equalsIgnoreType(assertionValue, result))
-						errorHandler.handleError("Assertion failed. Expected: '" + assertionValue + "', found: '" + result + "'");
+						getErrorHandler(onErrorValue).handleError("Assertion failed. Expected: '" + assertionValue + "', found: '" + result + "'");
 				}
 			}
 			String idValue = idEx.evaluate(context);
@@ -166,6 +172,11 @@ public class EvaluateStatement implements Statement {
 		} catch (IOException e) {
 			throw new ConfigurationError(e);
 		}
+    }
+
+	private ErrorHandler getErrorHandler(String level) {
+	    ErrorHandler errorHandler = new ErrorHandler(getClass().getName(), Level.valueOf(level));
+	    return errorHandler;
     }
 
 	private Object runScript(String text, String type, String onError, Context context) {
@@ -186,15 +197,9 @@ public class EvaluateStatement implements Statement {
 		if (text != null)
 			return ShellUtil.runShellCommands(new ReaderLineIterator(
 					new StringReader(text)), errorHandler);
-		else if (uri != null) {
-			try {
-				return ShellUtil.runShellCommands(new ReaderLineIterator(IOUtil
-						.getReaderForURI(uri)), errorHandler);
-			} catch (IOException e) {
-				errorHandler.handleError("Error in shell invocation", e);
-				return 1;
-			}
-		} else
+		else if (uri != null)
+			return ShellUtil.runShellCommand(uri, errorHandler);
+		else
 			throw new ConfigurationError(
 					"At least uri or text must be provided in <execute>");
 	}
