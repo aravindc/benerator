@@ -256,40 +256,38 @@ public class DescriptorUtilTest {
 		assertEquals(';', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x").withSeparator(";"), context));
 	}
 	
-	/* TODO adapt tests
 	@Test
 	public void testGetMinCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
-		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
+		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
 		// set explicitly
-		assertEquals(2, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(2), context).evaluate(context).intValue());
+		assertEquals(2, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(2)).evaluate(context).intValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(4), context).evaluate(context).intValue());
+		assertEquals(3, DescriptorUtil.getMinCount(new InstanceDescriptor("x").withMinCount(4)).evaluate(context).intValue());
 		// ignore global maxCount in default case
 		context.setMaxCount(5L);
-		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
+		assertEquals(1, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
 		// global maxCount overrides default
 		context.setMaxCount(0L);
-		assertEquals(0, DescriptorUtil.getMinCount(new InstanceDescriptor("x"), context).evaluate(context).intValue());
+		assertEquals(0, DescriptorUtil.getMinCount(new InstanceDescriptor("x")).evaluate(context).intValue());
 	}
 	
 	@Test
 	public void testGetMaxCount() {
 		BeneratorContext context = new BeneratorContext(".");
 		// default
-		assertNull(DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(context));
+		assertNull(DescriptorUtil.getMaxCount(new InstanceDescriptor("x")).evaluate(context));
 		// explicit setting
-		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2), context).evaluate(null).longValue());
+		assertEquals(2L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(2)).evaluate(context).longValue());
 		// override by global maxCount
 		context.setMaxCount(3L);
-		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4), context).evaluate(null).longValue());
+		assertEquals(3L, DescriptorUtil.getMaxCount(new InstanceDescriptor("x").withMaxCount(4)).evaluate(context).longValue());
 		// global maxCount overrides default
 		context.setMaxCount(null);
-		assertEquals(null, DescriptorUtil.getMaxCount(new InstanceDescriptor("x"), context).evaluate(null));
+		assertEquals(null, DescriptorUtil.getMaxCount(new InstanceDescriptor("x")).evaluate(context));
 	}
-	*/
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
