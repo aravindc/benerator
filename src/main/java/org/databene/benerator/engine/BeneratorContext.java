@@ -120,7 +120,7 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		importPackage("org.databene.benerator.primitive.datetime");
 		importPackage("org.databene.benerator.distribution.sequence");
 		importPackage("org.databene.benerator.distribution.function");
-		importPackage("org.databene.benerator.sample"); // TODO remove? Attention: StateGenerator is in there
+		importPackage("org.databene.benerator.sample");
 		importPackage("org.databene.benerator.primitive");
 		importPackage("org.databene.platform.flat");
 		importPackage("org.databene.platform.csv");
