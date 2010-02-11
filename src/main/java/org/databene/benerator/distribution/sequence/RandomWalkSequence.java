@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,7 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.MathUtil;
+import org.databene.commons.converter.NumberConverter;
 
 /**
  * Random Walk {@link Sequence} implementation that supports a variable step width.<br/>
@@ -45,6 +46,7 @@ import org.databene.commons.MathUtil;
 
 public class RandomWalkSequence extends Sequence {
 	
+	private BigDecimal initial;
 	private BigDecimal minStep;
 	private BigDecimal maxStep;
 	
@@ -55,9 +57,14 @@ public class RandomWalkSequence extends Sequence {
     }
 
     public RandomWalkSequence(BigDecimal minStep, BigDecimal maxStep) {
+	    this(minStep, maxStep, null);
+    }
+    
+    public RandomWalkSequence(BigDecimal minStep, BigDecimal maxStep, BigDecimal initial) {
 	    super("randomWalk");
 	    this.minStep = minStep;
 	    this.maxStep = maxStep;
+	    this.initial = initial;
     }
     
     // Distribution interface implementation ---------------------------------------------------------------------------
@@ -84,11 +91,18 @@ public class RandomWalkSequence extends Sequence {
 	    if (unique && MathUtil.rangeIncludes(0, min, max)) // check if uniqueness requirements can be met
 	    	throw new InvalidGeneratorSetupException("Cannot guarantee uniqueness for [min=" + min + ",max=" + max + "]");
 	    return new RandomWalkLongGenerator(
-	    		min, max, toLong(precision), toLong(initial(min)), toLong(minStep), toLong(maxStep));
+	    		min, max, toLong(precision), toLong(initial(min, max, Long.class)), toLong(minStep), toLong(maxStep));
     }
 
-    private <T extends Number> T initial(T min) {
-	    return min; // TODO choose initial according to min/maxStep or predefined value
+    private <T extends Number> T initial(T min, T max, Class<T> numberType) {
+    	if (initial != null)
+    		return NumberConverter.convert(initial, numberType);
+    	if (minStep.doubleValue() > 0)
+    		return min;
+		if (maxStep.doubleValue() > 0)
+			return NumberConverter.convert((min.doubleValue() + max.doubleValue()) / 2, numberType);
+		else
+			return max;
     }
 
 }
