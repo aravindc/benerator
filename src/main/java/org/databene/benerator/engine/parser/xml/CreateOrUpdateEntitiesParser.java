@@ -91,11 +91,20 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 						element, false, resourceManager, (BeneratorContext) context);
             }
 		};
-		return new TimedEntityStatement(new LazyStatement(expression));
+		return new TimedEntityStatement(getNameOrType(element), new LazyStatement(expression));
 	}
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
+	private String getNameOrType(Element element) {
+		String result = element.getAttribute(ATT_NAME);
+		if (result == null)
+			result = element.getAttribute(ATT_TYPE);
+		if (result == null)
+			result = "anonymous";
+		return result;
+	}
+	
     public CreateOrUpdateEntitiesStatement parseCreateEntities(Element element, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
