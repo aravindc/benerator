@@ -39,6 +39,14 @@ public class CNPJValidator extends AbstractConstraintValidator<CNPJ, CharSequenc
 	
 	private boolean acceptingFormattedNumbers = true;
 	
+	public CNPJValidator() {
+	    this(false);
+    }
+
+	public CNPJValidator(boolean acceptingFormattedNumbers) {
+	    this.acceptingFormattedNumbers = acceptingFormattedNumbers;
+    }
+
 	public boolean isAcceptingFormattedNumbers() {
     	return acceptingFormattedNumbers;
     }
