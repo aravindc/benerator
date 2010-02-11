@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,8 @@
 
 package org.databene.platform.db.dialect;
 
+import org.junit.Test;
+
 /**
  * Tests the {@link FirebirdDialect}.<br/><br/>
  * Created: 10.11.2009 18:18:04
@@ -28,9 +30,14 @@ package org.databene.platform.db.dialect;
  * @author Volker Bergmann
  */
 public class FirebirdDialectTest extends DatabaseDialectTest {
-
+	
 	public FirebirdDialectTest() {
 	    super(new FirebirdDialect());
     }
 
+	@Test
+	public void testSequencesOnline() throws Exception {
+		testSequencesOnline("firebird");
+	}
+	
 }
