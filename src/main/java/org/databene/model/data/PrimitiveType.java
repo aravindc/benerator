@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,7 +58,6 @@ public class PrimitiveType { // TODO merge this with BasicDescriptorProvider?
     public static final PrimitiveType STRING      = new PrimitiveType("string", String.class);
     public static final PrimitiveType DATE        = new PrimitiveType("date", Date.class);
     public static final PrimitiveType TIME        = new PrimitiveType("time", Time.class);
-    // TODO introduce datetime?
     public static final PrimitiveType TIMESTAMP   = new PrimitiveType("timestamp", Timestamp.class);
     public static final PrimitiveType OBJECT      = new PrimitiveType("object", Object.class);
     public static final PrimitiveType BINARY      = new PrimitiveType("binary", byte[].class);

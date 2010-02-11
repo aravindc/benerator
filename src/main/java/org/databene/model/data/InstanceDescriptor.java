@@ -83,8 +83,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
         // restrictions
         addRestriction(UNIQUE,        Boolean.class, false, new OrOperation());
         addRestriction(NULLABLE,      Boolean.class, false, new AndOperation());
-        addRestriction(MIN_COUNT,     Expression.class, null, null); // TODO combination operation?
-        addRestriction(MAX_COUNT,     Expression.class, null, null); // TODO combination operation?
+        addRestriction(MIN_COUNT,     Expression.class, null, null);
+        addRestriction(MAX_COUNT,     Expression.class, null, null);
         
         // configs
         addConfig(COUNT,              Expression.class, null);
