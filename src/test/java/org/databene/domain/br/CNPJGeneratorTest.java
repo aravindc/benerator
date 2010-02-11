@@ -21,6 +21,9 @@
 
 package org.databene.domain.br;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
@@ -39,6 +42,17 @@ public class CNPJGeneratorTest extends GeneratorClassTest {
 	@Test
 	public void testByValidator() {
 		expectGenerations(new CNPJGenerator(), 100, new CNPJValidator());
+	}
+	
+	@Test
+	public void testFormattedNumberGeneration() {
+		CNPJGenerator generator = new CNPJGenerator(true);
+		CNPJValidator validator = new CNPJValidator(true);
+		for (int i = 0; i < 100; i++) {
+			String cnpj = generator.generate();
+			assertEquals(18, cnpj.length());
+			assertTrue(validator.valid(cnpj));
+		}
 	}
 	
 }

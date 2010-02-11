@@ -21,6 +21,8 @@
 
 package org.databene.domain.br;
 
+import static org.junit.Assert.*;
+
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
@@ -41,6 +43,15 @@ public class CPFGeneratorTest extends GeneratorClassTest {
 		expectGenerations(new CPFGenerator(), 100, new CPFValidator());
 	}
 
-	// TODO test generation of formatted numbers
+	@Test
+	public void testFormattedNumberGeneration() {
+		CPFGenerator generator = new CPFGenerator(true);
+		CPFValidator validator = new CPFValidator(true);
+		for (int i = 0; i < 100; i++) {
+			String cpf = generator.generate();
+			assertEquals(14, cpf.length());
+			assertTrue(validator.valid(cpf));
+		}
+	}
 	
 }
