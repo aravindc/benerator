@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,6 +55,8 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     private FamilyNameGenerator familyNameGen;
     private Converter<String, String> femaleFamilyNameConverter;
     private AcademicTitleGenerator acadTitleGen;
+    private NobilityTitleGenerator maleNobilityTitleGen;
+    private NobilityTitleGenerator femaleNobilityTitleGen;
     private SalutationProvider salutationProvider;
 
     private BirthDateGenerator birthDateGenerator;
@@ -78,6 +80,8 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 		genderGen = new GenderGenerator();
         birthDateGenerator = new BirthDateGenerator(15, 105);
         acadTitleGen = new AcademicTitleGenerator(locale);
+        maleNobilityTitleGen = new NobilityTitleGenerator(Gender.MALE, locale);
+        femaleNobilityTitleGen = new NobilityTitleGenerator(Gender.FEMALE, locale);
         salutationProvider = new SalutationProvider(locale);
 		init(datasetName);
 	}
@@ -106,6 +110,15 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	
 	public void setFemaleQuota(double femaleQuota) {
 		genderGen.setFemaleQuota(femaleQuota);
+	}
+	
+	public double getNobleQuota() {
+		return maleNobilityTitleGen.getNobleQuota();
+	}
+	
+	public void setNobleQuota(double nobleQuota) {
+		maleNobilityTitleGen.setNobleQuota(nobleQuota);
+		femaleNobilityTitleGen.setNobleQuota(nobleQuota);
 	}
 	
 	public Locale getLocale() {
@@ -149,7 +162,9 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 		person.setFamilyName(familyName);
         person.setSalutation(salutationProvider.salutation(person.getGender()));
         person.setAcademicTitle(acadTitleGen.generate());
-        // TODO generate nobility title. See http://en.wikipedia.org/wiki/Royal_and_noble_ranks and http://en.wikipedia.org/wiki/Nobility#Nobility_by_nation
+        Generator<String> nobTitleGenerator 
+    		= (Gender.MALE.equals(person.getGender()) ? maleNobilityTitleGen : femaleNobilityTitleGen);
+        person.setNobilityTitle(nobTitleGenerator.generate());
         person.setBirthDate(birthDateGenerator.generate());
         return person;
     }
