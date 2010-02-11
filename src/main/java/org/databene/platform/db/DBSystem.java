@@ -364,12 +364,12 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public void createSequence(String name) throws SQLException {
-    	parseMetadataIfNecessary(); // TODO is this necessary?
+    	checkDialect();
 		dialect.createSequence(name, 1, getThreadContext().connection);
     }
 
     public void dropSequence(String name) throws SQLException {
-    	parseMetadataIfNecessary(); // TODO is this necessary?
+    	checkDialect();
         execute(dialect.renderDropSequence(name));
     }
 
@@ -378,12 +378,12 @@ public class DBSystem extends AbstractStorageSystem {
     }
     
     public long nextSequenceValue(String sequenceName) {
-    	parseMetadataIfNecessary(); // TODO is this necessary?
+    	checkDialect();
     	return DBUtil.queryLong(dialect.renderFetchSequenceValue(sequenceName), getThreadContext().connection);
     }
     
     public void setSequenceValue(String sequenceName, long increment) throws SQLException {
-    	parseMetadataIfNecessary(); // TODO is this necessary?
+    	checkDialect();
     	dialect.setSequenceValue(sequenceName, increment, getThreadContext().connection);
     }
     
@@ -418,11 +418,10 @@ public class DBSystem extends AbstractStorageSystem {
             this.tables = new HashMap<String, DBTable>();
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
+            checkDialect();
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
-            String productName = importer.getProductName();
-            mapStrategy(productName);
             List<DBTable> tables = dependencyOrderedTables(database);
             for (DBTable table : tables)
                 parseTable(table);
@@ -430,9 +429,9 @@ public class DBSystem extends AbstractStorageSystem {
 			throw new ConfigurationError("Database not available. ", e);
         } catch (ImportFailedException e) {
             throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
-		}
+        }
     }
-
+	
 	// java.lang.Object overrides ------------------------------------------------------------------
 	
     @Override
@@ -442,6 +441,17 @@ public class DBSystem extends AbstractStorageSystem {
 
     // private helpers ------------------------------------------------------------------------------
 
+    private void checkDialect() {
+    	if (dialect == null) {
+        	try {
+        		DatabaseMetaData metaData = getThreadContext().connection.getMetaData();
+				mapStrategy(metaData.getDatabaseProductName());
+    		} catch (SQLException e) {
+    	        throw new ConfigurationError("Database meta data access failed", e);
+    		}
+    	}
+    }
+    
 	private QueryIterable createQuery(String query, Context context, Connection connection) {
 	    return new QueryIterable(connection, query, fetchSize, (dynamicQuerySupported ? context : null));
     }
