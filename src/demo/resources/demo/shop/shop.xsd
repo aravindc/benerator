@@ -297,7 +297,7 @@
 				</xs:element>
 			</xs:sequence>
 			<xs:attribute name="id" type="surrogate-id" use="required"/>
-			<xs:attribute name="customer_id" type="surrogate-id" use="required"/> <!-- TODO: v1.0 refer only existing customers -->
+			<xs:attribute name="customer_id" type="surrogate-id" use="required"/> <!-- TODO v1.0 refer only existing customers -->
 			<xs:attributeGroup ref="audited-updateable"/>
 		</xs:complexType>
 	</xs:element>
