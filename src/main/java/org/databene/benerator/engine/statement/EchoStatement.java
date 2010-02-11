@@ -40,10 +40,14 @@ import org.databene.commons.Expression;
 
 public class EchoStatement implements Statement {
 	
-	private Expression<?> expression;
+	private final Expression<?> expression;
 
     public EchoStatement(Expression<?> expression) {
 	    this.expression = expression;
+    }
+
+	public Expression<?> getExpression() {
+    	return expression;
     }
 
 	public void execute(BeneratorContext context) {
