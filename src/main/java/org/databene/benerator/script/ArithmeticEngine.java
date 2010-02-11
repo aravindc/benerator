@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,7 +50,7 @@ public class ArithmeticEngine {
 	
 	static {
 		typeArithmetics = new HashMap<Class<?>, TypeArithmetic<?>>();
-		addTypeArithmetics( // TODO allow for user extension and probably merge with ConverterManager setup
+		addTypeArithmetics( // TODO v0.8 allow for user extension and probably merge with ConverterManager setup
 			new DateArithmetic(), 
 			new TimeArithmetic(), 
 			new TimestampArithmetic());
