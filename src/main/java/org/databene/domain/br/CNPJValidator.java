@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,12 +36,39 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @author Volker Bergmann
  */
 public class CNPJValidator extends AbstractConstraintValidator<CNPJ, CharSequence> {
+	
+	private boolean acceptingFormattedNumbers = true;
+	
+	public boolean isAcceptingFormattedNumbers() {
+    	return acceptingFormattedNumbers;
+    }
+
+	public void setAcceptingFormattedNumbers(boolean acceptingFormattedNumbers) {
+    	this.acceptingFormattedNumbers = acceptingFormattedNumbers;
+    }
+	
+	@Override
+	public void initialize(CNPJ params) {
+	    super.initialize(params);
+	    acceptingFormattedNumbers = params.formatted();
+	}
 
 	public boolean isValid(CharSequence number, ConstraintValidatorContext context) {
 		// do simple checks first
-		if (number == null || number.length() != 14)
+		if (number == null)
 			return false;
-		
+		int length = number.length();
+		boolean formattedNumber = (acceptingFormattedNumbers && length == 18);
+		if (length != 14 && !formattedNumber)
+			return false;
+		if (formattedNumber) {
+			// check grouping characters
+			if (number.charAt(2) != '.' || number.charAt(6) != '.' || number.charAt(10) != '/' || number.charAt(15) != '-')
+				return false;
+			// remove grouping
+			number = "" + number.subSequence(0, 2) + number.subSequence(3, 6) + number.subSequence(7, 10) + 
+				number.subSequence(11,15) + number.subSequence(16, 18);
+		}
 		// compute 1st verification digit
 		int v1 = MathUtil.weightedSumOfDigits(number, 0, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2);
 		v1 = 11 - v1 % 11;

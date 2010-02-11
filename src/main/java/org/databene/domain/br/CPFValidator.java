@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,13 +43,29 @@ public class CPFValidator extends AbstractConstraintValidator<CPF, String> {
 	
 	private Pattern pattern = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
 
+	private boolean acceptingFormattedNumbers = true;
+	
+	public boolean isAcceptingFormattedNumbers() {
+    	return acceptingFormattedNumbers;
+    }
+
+	public void setAcceptingFormattedNumbers(boolean acceptingFormattedNumbers) {
+    	this.acceptingFormattedNumbers = acceptingFormattedNumbers;
+    }
+	
+	@Override
+	public void initialize(CPF params) {
+	    super.initialize(params);
+	    acceptingFormattedNumbers = params.formatted();
+	}
+	
 	public boolean isValid(String number, ConstraintValidatorContext context) {
 		// do simple checks first
 		if (number == null)
 			return false;
 		
 		if (number.length() == 14)
-			if (pattern.matcher(number).matches())
+			if (acceptingFormattedNumbers && pattern.matcher(number).matches())
 				number = number.substring(0, 3) + number.substring(4, 7) + number.substring(8, 11) + number.substring(12, 14);
 			else
 				return false;
