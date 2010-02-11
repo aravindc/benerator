@@ -41,10 +41,18 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  */
 public class CPFValidator extends AbstractConstraintValidator<CPF, String> {
 	
-	private Pattern pattern = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
+	private static final Pattern pattern = Pattern.compile("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
 
 	private boolean acceptingFormattedNumbers = true;
 	
+	public CPFValidator() {
+	    this(false);
+    }
+
+	public CPFValidator(boolean acceptingFormattedNumbers) {
+	    this.acceptingFormattedNumbers = acceptingFormattedNumbers;
+    }
+
 	public boolean isAcceptingFormattedNumbers() {
     	return acceptingFormattedNumbers;
     }
