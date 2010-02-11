@@ -143,7 +143,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			WeightedSample<?>[] samples;
 		        samples = BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
 			Distribution distribution;
-			if (weightsUsed(samples)) { // TODO introduce '^' literal for weights and parse elements with Benerator Script Parser
+			if (weightsUsed(samples)) {
 				AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
 				for (int i = 0; i < samples.length; i++)
 					generator.addSample(samples[i]);
