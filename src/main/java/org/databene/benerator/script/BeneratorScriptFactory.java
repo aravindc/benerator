@@ -27,10 +27,9 @@
 package org.databene.benerator.script;
 
 import java.io.IOException;
-import java.text.ParseException;
 
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.databene.commons.ParseException;
 import org.databene.script.Script;
 import org.databene.script.ScriptFactory;
 
@@ -44,15 +43,11 @@ import org.databene.script.ScriptFactory;
 
 public class BeneratorScriptFactory implements ScriptFactory {
 
-    public Script parseText(String text) {
-	    try {
-	        return new BeneratorScript(BeneratorScriptParser.parseExpression(text), text);
-        } catch (ParseException e) {
-        	throw new ConfigurationError("Error parsing script: " + text); // TODO throw scriptexpression? ParseExpression?
-        }
+    public Script parseText(String text) throws ParseException {
+        return new BeneratorScript(BeneratorScriptParser.parseExpression(text), text);
     }
 
-    public Script readFile(String uri) throws IOException {
+    public Script readFile(String uri) throws ParseException, IOException {
 	    String text = IOUtil.getContentOfURI(uri);
 	    return parseText(text);
     }

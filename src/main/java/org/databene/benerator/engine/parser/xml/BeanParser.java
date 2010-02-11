@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
-import java.text.ParseException;
-
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
@@ -37,6 +35,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
+import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;

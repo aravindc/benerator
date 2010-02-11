@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.factory;
 import java.lang.annotation.Annotation;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -155,7 +154,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, true, context);
 		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)), unique);
 			}
-        } catch (ParseException e) {
+        } catch (org.databene.commons.ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
         }
     }
@@ -360,7 +359,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 return dateFormat.parse(detail);
             } else
                 return defaultDate;
-        } catch (ParseException e) {
+        } catch (java.text.ParseException e) {
             logger.error("Error parsing date " + detail, e);
             return defaultDate;
         }

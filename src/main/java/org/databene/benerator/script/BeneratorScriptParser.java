@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.benerator.script;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +41,7 @@ import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.bean.DefaultClassProvider;
 import org.databene.commons.converter.AnyConverter;
@@ -75,7 +75,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.weightedLiteralList_return r = parser.weightedLiteralList();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal weightedLiteralList: " + text, -1);
+	        	throw new ParseException("Illegal weightedLiteralList: " + text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -103,7 +103,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.expression_return r = parser.expression();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1);
+	        	throw new ParseException("Illegal regex: " + text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -130,7 +130,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.transitionList_return r = parser.transitionList();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1);
+	        	throw new ParseException("Illegal regex: " + text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -158,7 +158,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpecList_return r = parser.beanSpecList();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1);
+	        	throw new ParseException("Illegal regex: " + text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -185,7 +185,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpec_return r = parser.beanSpec();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1);
+	        	throw new ParseException("Illegal regex: " + text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -215,7 +215,7 @@ public class BeneratorScriptParser {
     }
 	
     private static ParseException mapToParseException(RecognitionException e) {
-    	return new ParseException("Error parsing Benerator expression: " + e.getMessage(), e.charPositionInLine);
+    	return new ParseException("Error parsing Benerator expression: " + e.getMessage(), e.line, e.charPositionInLine);
     }
 
     private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws ParseException {
@@ -254,7 +254,7 @@ public class BeneratorScriptParser {
 		    	transitions[i] = convertTransition(childAt(i, node));
 		    return transitions;
     	} else
-    		throw new ParseException("Unexpected token in transition list: " + node.getToken(), node.getCharPositionInLine());
+    		throw new ParseException("Unexpected token in transition list: " + node.getToken(), node.getLine(), node.getCharPositionInLine());
     }
 
 	private static WeightedTransition convertTransition(CommonTree node) throws ParseException {
@@ -279,7 +279,7 @@ public class BeneratorScriptParser {
 		    	specs[i] = convertBeanSpec(childAt(i, node));
 		    return specs;
     	} else
-    		throw new ParseException("Unexpected token: " + node.getToken(), node.getCharPositionInLine());
+    		throw new ParseException("Unexpected token: " + node.getToken(), node.getLine(), node.getCharPositionInLine());
     }
 
 	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
@@ -333,7 +333,7 @@ public class BeneratorScriptParser {
 			case BeneratorLexer.AMPAMP: return convertConditionalAnd(node);
 			case BeneratorLexer.BARBAR: return convertConditionalOr(node);
 			case BeneratorLexer.QUES: return convertConditionalExpression(node);
-			default: throw new ParseException("Unknown token type: " + node.getType(), node.getCharPositionInLine());
+			default: throw new ParseException("Unknown token type: " + node.getType(), node.getLine(), node.getCharPositionInLine());
     	}
     }
 
