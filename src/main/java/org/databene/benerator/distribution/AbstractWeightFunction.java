@@ -56,7 +56,6 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-    	// TODO this generator does not look appropriate
 	    return new AttachedWeightSampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
     }
     
