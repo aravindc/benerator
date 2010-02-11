@@ -85,4 +85,11 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
         return result;
     }
 	
+	@Override
+	public void reset() {
+		next = null;
+	    dirty = true;
+	    source.reset();
+	}
+	
 }
