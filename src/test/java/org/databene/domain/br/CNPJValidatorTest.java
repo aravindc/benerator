@@ -21,6 +21,8 @@
 
 package org.databene.domain.br;
 
+import static org.junit.Assert.*;
+
 import org.databene.commons.validator.SimpleValidatorTest;
 import org.junit.Test;
 
@@ -44,8 +46,11 @@ public class CNPJValidatorTest extends SimpleValidatorTest<CharSequence> {
 
 	@Test
 	public void testValidFormattedNumbers() {
-		assertValid("16.701.716/0001-56");
-		assertValid("01.679.152/0001-25");
+		CNPJValidator validator = new CNPJValidator(true);
+		assertTrue(validator.valid("16.701.716/0001-56"));
+		assertTrue(validator.valid("01.679.152/0001-25"));
+		assertTrue(validator.valid("16701716000156"));
+		assertTrue(validator.valid("01679152000125"));
 	}
 
 	@Test

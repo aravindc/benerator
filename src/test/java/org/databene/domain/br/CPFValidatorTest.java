@@ -21,6 +21,8 @@
 
 package org.databene.domain.br;
 
+import static org.junit.Assert.*;
+
 import org.databene.commons.validator.SimpleValidatorTest;
 import org.junit.Test;
 
@@ -37,9 +39,15 @@ public class CPFValidatorTest extends SimpleValidatorTest<String> {
     }
 
 	@Test
-	public void testValidSamples() {
+	public void testValidPlainSamples() {
 		assertValid("04303340790");
-		assertValid("043.033.407-90");
+	}
+	
+	@Test
+	public void testValidFormattedSamples() {
+		CPFValidator validator = new CPFValidator(true);
+		assertTrue(validator.valid("043.033.407-90"));
+		assertTrue(validator.valid("04303340790"));
 	}
 	
 	@Test
