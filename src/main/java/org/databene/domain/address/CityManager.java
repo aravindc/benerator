@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,39 +51,20 @@ public class CityManager {
 
     private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
 
-    private static Set<String> simpleLocatorWords = CollectionUtil.toSet(
-            "b.", "bei", "im", "am", "ob", "zum", "sopra", "di", "in");
-    private static Set<String[]> complexLocatorWords = CollectionUtil.toSet(
-            new String[] {"in", "der"},
-            new String[] {"an", "der"},
-            new String[] {"ob", "der"}
-        );
-    private static Set<String> prefixes = CollectionUtil.toSet(
-            "St.", "S.", "Alt", "Bad", // CH
-            "Markt", "Hofamt", "Maria", "Deutsch", "Moorbad", "Bairisch", "Klein", "Hohe", "Gro�", // AT
-            "La", "Le", "Les", // CH
-            "San", "Santa", "Val", "Monte", "Ponte", "Castel", "Riva", "Villa", // CH
-            "Santa Maria"); // TODO v0.6 "Santa Maria" are two words
-    private static Set<String> suffixes = CollectionUtil.toSet(
-            "Stadt", "Land", // CH
-            "Umgebung", "Kurort", "Markt", "Neustadt", "Neudorf", "II", // AT
-            "Inferiore", "Superiore"); // CH
-
-    private static Set<String> suspectiveNames = new HashSet<String>();
-
-    public static void readCities(Country country, String filename) throws IOException { // TODO v0.6 improve interface
+    public static void readCities(Country country) {
+        String filename = "org/databene/domain/address/city_" + Country.GERMANY.getIsoCode() + ".csv";
         readCities(country, filename, new HashMap<String, String>());
     }
 
-    public static void readCities(Country country, String filename, Map<String, String> defaults) throws IOException {
-    	parseStateFile(country);
-        int warnCount = parseCityFile(country, filename, defaults);
-        if (warnCount > 0)
-            logger.warn(warnCount + " warnings");
-/*
-        if (suspectiveNames.size() > 0)
-            logger.info("Suspective names: " + suspectiveNames);
-*/
+    public static void readCities(Country country, String filename, Map<String, String> defaults) {
+    	try {
+	    	parseStateFile(country);
+	        int warnCount = parseCityFile(country, filename, defaults);
+	        if (warnCount > 0)
+	            logger.warn(warnCount + " warnings");
+    	} catch (IOException e) {
+    		throw new ConfigurationError("Error reading cities file: " + filename, e);
+    	}
     }
 
 	@SuppressWarnings("unchecked")
@@ -135,21 +116,21 @@ public class CityManager {
                 country.addState(state);
             }
 
-            String cityIdString = instance.get("municipality");
             CityId cityId;
-            if (StringUtil.isEmpty(cityIdString))
-                cityIdString = instance.get("city");
-            if (!StringUtil.isEmpty(cityIdString)) {
-                cityId = parseCityName(cityIdString, stateId, true);
-            } else {
+            if (!StringUtil.isEmpty(instance.get("municipality")))
+            	cityId = new CityId(instance.get("municipality"), null);
+            else if (!StringUtil.isEmpty(instance.get("city")))
+                cityId = new CityId(instance.get("city"), null);
+            else if (!StringUtil.isEmpty(instance.get("name"))) {
                 String cityName = instance.get("name");
                 String cityNameExtension = instance.get("nameExtension");
                 cityId = new CityId(cityName, cityNameExtension);
-            }
+            } else 
+            	throw new ParseException("Unable to parse city: " + instance, iterator.lineCount(), 1);
 
             // create/setup city
             CityHelper city = (CityHelper) state.getCity(cityId);
-            String zipCode = instance.get("zipCode");
+            String postalCode = instance.get("postalCode");
             String lang = getValue(instance, "language", defaults);
             if (city == null) {
                 String areaCode = getValue(instance, "areaCode", defaults);
@@ -157,13 +138,13 @@ public class CityManager {
                     warnCount++;
                     logger.warn("areaCode is not provided for city: '" + cityId);
                 }
-                city = new CityHelper(state, cityId, new String[] { zipCode }, areaCode);
+                city = new CityHelper(state, cityId, new String[] { postalCode }, areaCode);
                 if (!StringUtil.isEmpty(lang))
                 	city.setLanguage(LocaleUtil.getLocale(lang));
                 state.addCity(cityId, city);
                 city.setState(state);
             } else
-                city.addPostalCode(zipCode);
+                city.addPostalCode(postalCode);
         }
 		return warnCount;
 	}
@@ -176,7 +157,7 @@ public class CityManager {
         for (State state : country.getStates()) {
             for (City city : state.getCities())
                 for (String zipCode : city.getPostalCodes()) {
-                    ((CityHelper)city).setZipCode(zipCode);
+                    ((CityHelper)city).setPostalCode(zipCode);
                     writer.writeElement(city);
                 }
         }
@@ -191,161 +172,21 @@ public class CityManager {
             value = defaults.get(key);
         return value;
     }
-/*
-    private static CityId parseCityName(String cityName, String stateId) {
-        return parseCityName(cityName, stateId, false);
-    }
-*/
-    static CityId parseCityName(String cityName, String stateId, boolean quiet) {
-        // parse city id by pattern
-        // Cityname = [Prefix] Name [Extension] [district] [institution]
-        // Prefix = 'St.' | 'S.' | 'La' | 'Le' | 'Les' ...
-        // Extension = State | '(' Text ')' | Locator
-        // Locator = ('b.' | 'im' | 'am' | 'in der' | 'an der' | 'ob' | 'sopra' | 'di') (Word | Words)
-
-        // TODO v0.6 check for double names like Frantschach-St. Gertraud
-        // TODO v0.6 make use of district and institution info
-    	
-    	Assert.notNull(StringUtil.isEmpty(cityName), "name");
-
-        String[] nameParts = StringUtil.tokenize(cityName, ' ');
-        // check prefix
-        String name = "";
-        String extension = "";
-
-//        String district = null;
-//        String institution = null;
-//        int warnCount = 0;
-
-        // process prefixes
-        while (nameParts.length > 1 && prefixes.contains(nameParts[0])) {
-            name = append(name, nameParts[0]);
-            nameParts = ArrayUtil.remove(nameParts, 0);
-        }
-
-        // check for district and institution
-        for (int i = 0; i < nameParts.length; i++) {
-            if (ParseUtil.isPositiveNumber(nameParts[i])) {
-                //district = nameParts[i];
-                if (i < nameParts.length - 1) {
-                    //String[] institutionParts = ArrayUtil.copyOfRange(nameParts, i + 1, nameParts.length - i - 1);
-                    //institution = ArrayFormat.format(" ", institutionParts);
-                    nameParts = ArrayUtil.copyOfRange(nameParts, 0, i);
-                } else
-                    nameParts = ArrayUtil.remove(nameParts, nameParts.length - 1);
-                break;
-            }
-        }
-
-        // check extension
-        if (nameParts.length > 1 && nameParts[nameParts.length - 1].equals(stateId)) {
-            // state pattern
-            extension = nameParts[nameParts.length - 1];
-            nameParts = ArrayUtil.remove(nameParts, nameParts.length - 1);
-        } else {
-            // check for '(' ... ')'
-            int bracketStart = -1;
-            for (int i = 1; i < nameParts.length; i++) {
-                if (nameParts[i].charAt(0) == '(') {
-                    bracketStart = i;
-                    break;
-                }
-            }
-            if (bracketStart > 0 && nameParts[nameParts.length - 1].endsWith(")")) {
-                extension = ArrayFormat.format(" ", ArrayUtil.copyOfRange(nameParts, bracketStart, nameParts.length - bracketStart));
-                nameParts = ArrayUtil.copyOfRange(nameParts, 0, bracketStart);
-            } else if (nameParts.length >= 4) {
-                // check each defined complex locator
-                for (String[] locator : complexLocatorWords) {
-                    int locatorStartIndex = -1;
-                    boolean match = false;
-                    // check through each start index
-                    for (int startIndex = 1; !match && startIndex < nameParts.length - 2; startIndex++) {
-                        // check each locator part from start index
-                        if (nameParts.length - startIndex > locator.length) {
-                            match = true;
-                            for (int i = 0; i < locator.length; i++) {
-                                if (!nameParts[startIndex + i].equals(locator[i]))
-                                    match = false;
-                            }
-                        }
-                        if (match)
-                            locatorStartIndex = startIndex;
-                    }
-                    if (match) {
-                        String[] locatorParts = ArrayUtil.copyOfRange(
-                            nameParts,
-                            locatorStartIndex,
-                            nameParts.length - locatorStartIndex);
-                        extension = ArrayFormat.format(" ", locatorParts);
-                        nameParts = ArrayUtil.copyOfRange(nameParts, 0, locatorStartIndex);
-                        break;
-                    }
-                }
-            }
-            if (nameParts.length >= 3) {
-                // check for simple locator
-                for (int startIndex = 1; startIndex < nameParts.length - 1; startIndex++) {
-                    if (simpleLocatorWords.contains(nameParts[startIndex])) {
-                        String locationString = ArrayFormat.format(" ", ArrayUtil.copyOfRange(nameParts, startIndex, nameParts.length - startIndex));
-                        extension = append(locationString, extension);
-                        nameParts = ArrayUtil.copyOfRange(nameParts, 0, startIndex);
-                        break;
-                    }
-                }
-            }
-        }
-        // check for suffix
-        if (nameParts.length > 1 && suffixes.contains(nameParts[nameParts.length - 1])) {
-            extension = append(extension, nameParts[nameParts.length - 1]);
-            nameParts = ArrayUtil.remove(nameParts, nameParts.length - 1);
-        }
-
-        // put together the parts
-        name = append(name, ArrayFormat.format(" ", nameParts));
-        if (nameParts.length != 1) {
-            suspectiveNames.add(name);
-            if (!quiet)
-                logger.info("Double name or possible parsing error: " + name);
-        }
-        name = StringUtil.normalizeName(name);
-        CityId cityId = new CityId(name, extension);
-        // check recomposition against original name
-        return cityId;
-    }
-
-    private static String append(String name, String namePart) {
-        return append(name, namePart, " ");
-    }
-
-    private static String append(String name, String namePart, String separator) {
-        if (StringUtil.isEmpty(name)) {
-            if (StringUtil.isEmpty(namePart))
-                return "";
-            else
-                return namePart;
-        } else {
-            if (StringUtil.isEmpty(namePart))
-                return name;
-            else
-                return name + separator + namePart;
-        }
-    }
 
     public static class CityHelper extends City {
 
-        private String zipCode;
+        private String postalCode;
 
         public CityHelper(State state, CityId cityId, String[] zipCodes, String areaCode) {
             super(state, cityId.getName(), cityId.getNameExtension(), zipCodes, areaCode);
         }
 
-        public String getZipCode() {
-            return zipCode;
+        public String getPostalCode() {
+            return postalCode;
         }
 
-        public void setZipCode(String zipCode) {
-            this.zipCode = zipCode;
+        public void setPostalCode(String zipCode) {
+            this.postalCode = zipCode;
         }
     }
 

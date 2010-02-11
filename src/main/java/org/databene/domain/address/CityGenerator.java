@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,12 +27,9 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.commons.ConfigurationError;
-
-import java.io.IOException;
 
 /**
- * Generates City objects.<br/>
+ * Generates {@link City} objects.<br/>
  * <br/>
  * Created: 14.10.2007 21:24:25
  * @author Volker Bergmann
@@ -40,14 +37,10 @@ import java.io.IOException;
 public class CityGenerator extends AttachedWeightSampleGenerator<City> {
 
     public CityGenerator(Country country) {
-        String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
-        try {
-            CityManager.readCities(country, filename);
-            for (State state : country.getStates())
-                for (City city : state.getCities())
-                    addValue(city);
-        } catch (IOException e) {
-            throw new ConfigurationError("Error in parsing of file " + filename, e);
-        }
+    	country.checkCities();
+        for (State state : country.getStates())
+            for (City city : state.getCities())
+                addValue(city);
     }
+
 }
