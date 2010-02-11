@@ -78,9 +78,9 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     // public utility methods ------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public static Generator<Entity> createComplexTypeGenerator(String name, 
+    public static Generator<Entity> createComplexTypeGenerator(String instanceName, 
     		ComplexTypeDescriptor type, boolean unique, BeneratorContext context) {
-    	Assert.notNull(name, "instance name"); // TODO is the 'name' parameter obsolete?
+    	Assert.notNull(instanceName, "instance name");
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
         // create original generator
@@ -89,9 +89,9 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         if (generator == null)
             generator = createSourceGenerator(type, unique, context);
         if (generator == null)
-            generator = createSyntheticEntityGenerator(name, type, unique, context);
+            generator = createSyntheticEntityGenerator(instanceName, type, unique, context);
         else
-            generator = createMutatingEntityGenerator(name, type, context, generator);
+            generator = createMutatingEntityGenerator(instanceName, type, context, generator);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
         generator = wrapGeneratorWithVariables(type, context, generator);
