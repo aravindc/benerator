@@ -50,7 +50,7 @@ public class ArithmeticEngine {
 	
 	static {
 		typeArithmetics = new HashMap<Class<?>, TypeArithmetic<?>>();
-		addTypeArithmetics( // TODO v0.8 allow for user extension and probably merge with ConverterManager setup
+		addTypeArithmetics( // TODO v0.7 allow for user extension and probably merge with ConverterManager setup
 			new DateArithmetic(), 
 			new TimeArithmetic(), 
 			new TimestampArithmetic());
