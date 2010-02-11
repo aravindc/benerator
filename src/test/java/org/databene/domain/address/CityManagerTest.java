@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -26,35 +21,22 @@
 
 package org.databene.domain.address;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link CityManager}.<br/><br/>
- * Created at 06.05.2008 06:26:40
- * @since 0.5.3
+ * Created: 11.02.2010 18:27:23
+ * @since TODO version
  * @author Volker Bergmann
  */
 public class CityManagerTest {
-	
-	@Test
-	public void testParseCityName() {
-		check("Unterhaching", "Unterhaching", "");
-		check("Bad Wiessee", "Bad Wiessee", "");
-		check("Bad Neustadt an der Saale", "Bad Neustadt", "an der Saale");
-		check("Bern Land", "Bern", "Land");
-		check("Bern 8003", "Bern", "");
-		check("Bern 8003 R�tlibank", "Bern", "");
-		check("Neustadt (Aisch)", "Neustadt", "(Aisch)");
-		check("Neustadt am Kulm", "Neustadt", "am Kulm");
-		check("Munich BY", "Munich", "BY");
-		
-	}
 
-	private void check(String name, String idName, String idExtension) {
-		CityId id = CityManager.parseCityName(name, "BY", false);
-		assertEquals("Name does not match", idName, id.getName());
-		assertEquals("name extension does not match", idExtension, id.getNameExtension());
+	@Test
+	public void testGermany() throws Exception {
+		CityManager.readCities(Country.GERMANY);
+		assertNotNull(Country.GERMANY.generateCity());
 	}
 	
 }
