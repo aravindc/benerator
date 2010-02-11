@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,7 +21,6 @@
 
 package org.databene.benerator.primitive;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,28 +46,24 @@ public class ValueMapper implements Converter {
 	private Class<?> sourceType;
 	
 	public ValueMapper() {
-		try {
-	        init(null, false);
-        } catch (ParseException e) {
-	        // this cannot happen
-        }
+	    init(null, false);
 	}
 
-	public ValueMapper(String mappingSpec) throws ParseException {
+	public ValueMapper(String mappingSpec) {
 		this(mappingSpec, false);
 	}
 
-	public ValueMapper(String mappingSpec, boolean lenient) throws ParseException {
+	public ValueMapper(String mappingSpec, boolean lenient) {
 		init(mappingSpec, lenient);
 	}
 
-	private void init(String mappingSpec, boolean lenient) throws ParseException {
+	private void init(String mappingSpec, boolean lenient) {
 	    this.mappings = new HashMap<Object, Object>();
 		setMappings(mappingSpec);
 		this.lenient = lenient;
     }
 
-	public void setMappings(String mappingSpec) throws ParseException {
+	public void setMappings(String mappingSpec) {
 		if (mappingSpec != null) {
 			WeightedTransition[] tl = BeneratorScriptParser.parseTransitionList(mappingSpec);
 			for (WeightedTransition t : tl)

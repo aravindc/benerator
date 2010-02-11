@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.factory;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,7 +36,6 @@ import org.databene.benerator.primitive.ValueMapper;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
@@ -139,13 +137,9 @@ public class TypeGeneratorFactory {
             SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getMap() == null)
             return generator;
-        try {
-	        String mappingSpec = descriptor.getMap();
-	        ValueMapper mapper = new ValueMapper(mappingSpec);
-	        return new ConvertingGenerator(generator, mapper);
-        } catch (ParseException e) {
-        	throw new ConfigurationError("Error in the definition of type: " + descriptor.getName(), e);
-        }
+        String mappingSpec = descriptor.getMap();
+        ValueMapper mapper = new ValueMapper(mappingSpec);
+        return new ConvertingGenerator(generator, mapper);
     }
 
     @SuppressWarnings("unchecked")

@@ -23,8 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
-import java.text.ParseException;
-
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
@@ -65,8 +63,6 @@ public class RunTaskParser extends AbstractDescriptorParser {
 			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, errorHandler);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
-		} catch (ParseException e) {
-			throw new ConfigurationError(e);
         }
 	}
 
@@ -77,7 +73,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
     }
 
 	@SuppressWarnings("unchecked")
-    private Expression<PageListener> parsePager(Element element) throws ParseException {
+    private Expression<PageListener> parsePager(Element element) {
 		String pagerSpec = element.getAttribute(ATT_PAGER);
 		return (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(pagerSpec);
 	}
