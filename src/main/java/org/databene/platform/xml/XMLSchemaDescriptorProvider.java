@@ -135,7 +135,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     // interface -------------------------------------------------------------------------------------------------------
     
     public void setContext(Context context) {
-    	this.context = (BeneratorContext) context; // TODO make ContextAware use BeneratorContext?
+    	this.context = (BeneratorContext) context;
     }
     
     public void setSchemaUri(String schemaUri) {
