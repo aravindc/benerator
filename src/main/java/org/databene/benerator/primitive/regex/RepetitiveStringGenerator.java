@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,12 +31,13 @@ import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * Calls another string generator a variable number of times and appends a variable number of times.<br/>
+ * Calls another string generator a variable number of times 
+ * and merges each result into one larger result string.<br/>
  * <br/>
  * Created: 17.11.2007 16:37:43
  * @author Volker Bergmann
  */
-class NFoldCompositeStringGenerator extends GeneratorProxy<String> { // TODO find a better name
+class RepetitiveStringGenerator extends GeneratorProxy<String> {
 
     private int minCount;
 
@@ -45,8 +46,8 @@ class NFoldCompositeStringGenerator extends GeneratorProxy<String> { // TODO fin
     /** A number generator for generating quantities */
     private Generator<Integer> quantityGenerator;
 
-    public NFoldCompositeStringGenerator(Generator<String> patternGenerator, int minCount, int maxCount) {
-        super(patternGenerator);
+    public RepetitiveStringGenerator(Generator<String> partGenerator, int minCount, int maxCount) {
+        super(partGenerator);
         this.minCount = minCount;
         this.maxcount = maxCount;
         this.quantityGenerator = new RandomIntegerGenerator(minCount, maxCount, 1);

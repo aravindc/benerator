@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -218,7 +218,7 @@ public class RegexGeneratorFactory {
     	if (min == 1 && max == 1)
     		return atomGenerator;
     	else
-    		return new NFoldCompositeStringGenerator(atomGenerator, min, max);
+    		return new RepetitiveStringGenerator(atomGenerator, min, max);
     }
 
 }
