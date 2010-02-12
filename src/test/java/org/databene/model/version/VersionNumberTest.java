@@ -137,6 +137,9 @@ public class VersionNumberTest {
 		assertEquals(-1, vd.compareTo(v10));
 		assertEquals( 1, v10.compareTo(vd));
 		
+		assertEquals(-1, vd.compareTo(v2ss1));
+		assertEquals( 1, v2ss1.compareTo(vd));
+		
 		assertEquals(-1, v10.compareTo(v2));
 		assertEquals( 1, v2.compareTo(v10));
 		
