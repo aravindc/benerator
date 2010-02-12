@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -94,15 +95,16 @@ public class FileJoiner extends AbstractTask {
 
 	// Task interface implementation -----------------------------------------------------------------------------------
 
-	public boolean executeStep(Context context, ErrorHandler errorHandler) {
+	public boolean executeStep(Context ctx, ErrorHandler errorHandler) {
 		Assert.notNull(destination, "property 'destination'");
+		BeneratorContext context = (BeneratorContext) ctx;
 		byte[] buffer = new byte[BUFFER_SIZE];
 		OutputStream out = null;
 		try {
-			File destFile = new File(destination); // TODO support relative uris
+			File destFile = new File(context.resolveRelativeUri(destination));
 			out = new FileOutputStream(destFile, append);
 			for (String source : sources) 
-				appendFile(out, source, buffer);
+				appendFile(out, source, buffer, context);
 			if (deleteSources)
 				for (String source : sources) {
 					File file = new File(source);
@@ -117,13 +119,13 @@ public class FileJoiner extends AbstractTask {
 		}
         return false;
     }
-    
+
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void appendFile(OutputStream out, String source, byte[] buffer) throws FileNotFoundException, IOException {
+    private void appendFile(OutputStream out, String source, byte[] buffer, BeneratorContext context) throws FileNotFoundException, IOException {
 	    FileInputStream in = null;
 	    try {
-	    	in = new FileInputStream(source); // TODO support relative uris
+	    	in = new FileInputStream(context.resolveRelativeUri(source));
 	    	int partLength = 0;
 	    	while ((partLength = in.read(buffer)) > 0)
 	    		out.write(buffer, 0, partLength);
