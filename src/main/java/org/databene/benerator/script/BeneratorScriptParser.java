@@ -266,7 +266,7 @@ public class BeneratorScriptParser {
 			weight = new TypeConvertingExpression<Double>(convertNode(childAt(2, node)), Double.class);
 		else
 			weight = new ConstantExpression<Double>(1.);
-		return new WeightedTransition(from.evaluate(null), to.evaluate(null), weight);
+		return new WeightedTransition(from.evaluate(null), to.evaluate(null), weight.evaluate(null));
 	}
 
     private static Expression<?>[] convertBeanSpecList(CommonTree node) throws ParseException {

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -427,7 +427,7 @@ public class BeneratorScriptParserTest {
 		checkAB1Transition(ts[0]);
 	    assertEquals(1, ts[1].getFrom());
 		assertEquals(2, ts[1].getTo());
-		assertEquals( 0.5, ts[1].getWeight().evaluate(null));
+		assertEquals( 0.5, ts[1].getWeight());
 	}
 
 	@Test
@@ -508,7 +508,7 @@ public class BeneratorScriptParserTest {
 	private void checkAB1Transition(WeightedTransition t10) {
 	    assertEquals("A", t10.getFrom());
 		assertEquals("B", t10.getTo());
-		assertEquals(1., t10.getWeight().evaluate(null));
+		assertEquals(1., t10.getWeight());
     }
 	
 }

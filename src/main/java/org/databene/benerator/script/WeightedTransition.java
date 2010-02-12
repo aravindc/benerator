@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,8 +21,6 @@
 
 package org.databene.benerator.script;
 
-import org.databene.commons.Expression;
-
 /**
  * Transition class that adds a weight property.<br/><br/>
  * Created: 24.10.2009 08:20:21
@@ -31,14 +29,14 @@ import org.databene.commons.Expression;
  */
 public class WeightedTransition extends Transition {
 
-	private Expression<Double> weight; // TODO shouldn't we better use a fixed double value?
+	private double weight;
 	
-	public WeightedTransition(Object from, Object to, Expression<Double> weight) {
+	public WeightedTransition(Object from, Object to, double weight) {
 	    super(from, to);
 	    this.weight = weight;
     }
 
-	public Expression<Double> getWeight() {
+	public double getWeight() {
     	return weight;
     }
 
