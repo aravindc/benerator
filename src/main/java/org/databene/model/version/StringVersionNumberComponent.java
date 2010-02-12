@@ -50,6 +50,8 @@ public class StringVersionNumberComponent extends VersionNumberComponent {
 		"sp"
 	};
 	
+	public static final StringVersionNumberComponent SNAPSHOT = new StringVersionNumberComponent("snapshot");
+	
 	static final Map<String, Integer> ordinals;
 	
 	static {
