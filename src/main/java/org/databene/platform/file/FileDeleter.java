@@ -28,6 +28,7 @@ package org.databene.platform.file;
 
 import java.io.File;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.task.AbstractTask;
@@ -52,9 +53,10 @@ public class FileDeleter extends AbstractTask {
     	this.files = files;
     }
 
-	public boolean executeStep(Context context, ErrorHandler errorHandler) {
+	public boolean executeStep(Context ctx, ErrorHandler errorHandler) {
+		BeneratorContext context = (BeneratorContext) ctx;
 		for (String filename : files) {
-			File file = new File(filename);
+			File file = new File(context.resolveRelativeUri(filename));
 			if (file.exists()) {
 				try {
 					if (!file.delete())
