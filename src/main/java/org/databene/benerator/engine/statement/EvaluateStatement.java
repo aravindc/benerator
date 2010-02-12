@@ -131,7 +131,7 @@ public class EvaluateStatement implements Statement {
 						typeValue = SHELL;
 			}
 			if (uriValue != null)
-				uriValue = IOUtil.resolveLocalUri(uriValue, context.getContextUri());
+				uriValue = context.resolveRelativeUri(uriValue);
 			Object targetObject = ExpressionUtil.evaluate(targetObjectEx, context);
 			if (typeValue == null && targetObject instanceof DBSystem)
 				typeValue = "sql";

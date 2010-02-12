@@ -140,16 +140,16 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         else {
         	String lcSourceName = sourceName.toLowerCase();
         	if (lcSourceName.endsWith(".xml")) {
-        		String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+        		String uri = context.resolveRelativeUri(sourceName);
 	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(uri, context));
 	        } else if (lcSourceName.endsWith(".csv")) {
-	        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+	        	String uri = context.resolveRelativeUri(sourceName);
 	            generator = createCSVSourceGenerator(descriptor, context, uri);
 	        } else if (lcSourceName.endsWith(".flat")) {
-	        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+	        	String uri = context.resolveRelativeUri(sourceName);
 	            generator = createFlatSourceGenerator(descriptor, context, uri);
 	        } else if (lcSourceName.endsWith(".xls")) {
-	        	String uri = IOUtil.resolveLocalUri(sourceName, context.getContextUri());
+	        	String uri = context.resolveRelativeUri(sourceName);
 	            generator = createXLSSourceGenerator(descriptor, context, uri);
 	        } else {
 	        	try {

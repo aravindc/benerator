@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.IOUtil;
 import org.databene.commons.Level;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.SystemInfo;
@@ -261,5 +262,9 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 	public void setExecutorService(ExecutorService executorService) {
     	this.executorService = executorService;
     }
-
+	
+	public String resolveRelativeUri(String relativeUri) {
+	    return IOUtil.resolveRelativeUri(relativeUri, contextUri);
+    }
+    
 }

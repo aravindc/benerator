@@ -65,7 +65,7 @@ public class IncludeStatement implements Statement {
     }
 
 	public void execute(BeneratorContext context) {
-		String uriValue = IOUtil.resolveLocalUri(uri.evaluate(context), context.getContextUri());
+		String uriValue = context.resolveRelativeUri(uri.evaluate(context));
         try {
             importProperties(uriValue, context);
         } catch (IOException e) {
