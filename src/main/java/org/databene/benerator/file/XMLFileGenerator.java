@@ -92,7 +92,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
-		contentGenerator = TypeGeneratorFactory.createTypeGenerator("root", rootDescriptor, false, context); // TODO which name to use?
+		contentGenerator = TypeGeneratorFactory.createTypeGenerator(root, rootDescriptor, false, context);
     }
 
     public Class<File> getGeneratedType() {
