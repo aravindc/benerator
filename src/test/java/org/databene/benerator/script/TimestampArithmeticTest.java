@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,9 +38,11 @@ import org.junit.Test;
  */
 public class TimestampArithmeticTest {
 
-	private static final Timestamp TS_BASE   = TimeUtil.timestamp(2009, 9, 14, 1, 2, 3, 123456789);
-	private static final Timestamp TS_OFFSET = TimeUtil.timestamp(1970, 0,  1, 6, 5, 4, 876543210);
-	private static final Timestamp TS_SUM    = TimeUtil.timestamp(2009, 9, 14, 7, 7, 7, 999999999);
+	private static final Timestamp TS_BASE    = TimeUtil.timestamp(2009, 9, 14, 1, 2, 3, 123456789);
+	private static final Timestamp TS_OFFSET  = TimeUtil.timestamp(1970, 0,  1, 6, 5, 4, 876543210);
+	private static final Timestamp TS_SUM     = TimeUtil.timestamp(2009, 9, 14, 7, 7, 7, 999999999);
+	private static final Timestamp TS_OFFSET2 = TimeUtil.timestamp(1970, 0,  1, 0, 0, 0, 999999999);
+	private static final Timestamp TS_SUM2    = TimeUtil.timestamp(2009, 9, 14, 1, 2, 4, 123456788);
 	private static final long ONE_OUR_MILLIS = 3600L * 1000;
 	
 	TimestampArithmetic arithmetic = new TimestampArithmetic();
@@ -52,7 +54,10 @@ public class TimestampArithmeticTest {
 	
 	@Test
 	public void testAdd_Timestamp() {
+		// simple test
 		assertEquals(TS_SUM, arithmetic.add(TS_BASE, TS_OFFSET));
+		// testing nano overrun
+		assertEquals(TS_SUM2, arithmetic.add(TS_BASE, TS_OFFSET2));
 	}
 
 	@Test
@@ -67,8 +72,17 @@ public class TimestampArithmeticTest {
 
 	@Test
 	public void testSubtract() {
+		// normal test
 		assertEquals(TS_BASE, arithmetic.subtract(TS_SUM, TS_OFFSET));
 		assertEquals(TS_OFFSET, arithmetic.subtract(TS_SUM, TS_BASE));
+		// testing nano underrrun
+		assertEquals(TS_BASE, arithmetic.subtract(TS_SUM2, TS_OFFSET2));
+		assertEquals(TS_OFFSET2, arithmetic.subtract(TS_SUM2, TS_BASE));
+	}
+
+	@Test
+	public void testSubtract_Millis() {
+		assertEquals(TimeUtil.add(TS_BASE, Calendar.HOUR, -1), arithmetic.subtract(TS_BASE, ONE_OUR_MILLIS));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
