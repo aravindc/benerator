@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,7 +49,7 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> {
     // Arithmetic interface implementation -----------------------------------------------------------------------------
 
     @Override
-    public Timestamp add(Object summand1, Object summand2) { // TODO test nano precision + overrun
+    public Timestamp add(Object summand1, Object summand2) {
     	if (summand1 instanceof Timestamp)
     		return addToTimestamp((Timestamp) summand1, summand2);
     	else if (summand2 instanceof Timestamp)
@@ -60,7 +60,7 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> {
     }
 
     @Override
-    public Object subtract(Object minuend, Object subtrahend) { // TODO test nano precision + overrun
+    public Object subtract(Object minuend, Object subtrahend) {
     	if (minuend instanceof Timestamp)
     		return subtractFromTimestamp((Timestamp) minuend, subtrahend);
     	else
@@ -113,7 +113,9 @@ public class TimestampArithmetic extends TypeArithmetic<Timestamp> {
 
 	private Timestamp subtractTimestamps(Timestamp minuend, Timestamp subtrahend) {
 	    int nanoDiff = minuend.getNanos() - subtrahend.getNanos();
-	    Timestamp result = new Timestamp(minuend.getTime() - TimeUtil.millisSinceOwnEpoch(subtrahend) - nanoDiff / 1000000000L);
+	    if (nanoDiff < 0)
+	    	nanoDiff += 1000000000;
+	    Timestamp result = new Timestamp(minuend.getTime() - TimeUtil.millisSinceOwnEpoch(subtrahend) - nanoDiff / 1000000);
 	    result.setNanos(nanoDiff % 1000000000);
 	    return result;
     }
