@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,16 +34,12 @@ import org.databene.commons.StringUtil;
 import org.databene.domain.address.Country;
 
 /**
- * Generates {@link BankAccount}s.<br/><br/>
+ * Generates German {@link BankAccount}s with low validity requirements.<br/><br/>
  * Created at 24.06.2008 08:36:32
  * @since 0.5.4
  * @author Volker Bergmann
  */
 public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
-	
-	// TODO v0.6 support Country/Region
-	// TODO v0.6 support uniqueness
-	// TODO v0.6 improve validity
 	
 	private Generator<Bank> bankGenerator = new BankGenerator();
 	private Generator<String> accountNumberGenerator = new RegexStringGenerator("[0-9]{8}");
