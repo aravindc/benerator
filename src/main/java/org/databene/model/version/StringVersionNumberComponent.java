@@ -42,6 +42,7 @@ import org.databene.commons.comparator.IntComparator;
 public class StringVersionNumberComponent extends VersionNumberComponent {
 	
 	static final String[] KEY_ORDER = {
+		"snapshot", 
 		"alpha",
 		"beta",
 		"rc", "cr",

@@ -39,7 +39,6 @@ import org.databene.commons.StringUtil;
  * Created at 22.12.2008 16:46:24
  * @since 0.5.7
  * @author Volker Bergmann
- * TODO v0.6 how to handle Date components like 20073004 ?
  */
 
 public class VersionNumber implements Comparable<VersionNumber> {
