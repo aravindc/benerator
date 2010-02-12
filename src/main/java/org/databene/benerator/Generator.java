@@ -41,7 +41,7 @@ import org.databene.commons.Resettable;
  *       The generator may transit into the available state automatically
  *       or manually when the validate() method is called.</li>
  *   <li><i>available</i>: Generator construction is done and the generator is available.
- *       The user may loop the Generator via available() and generate().</li>
+ *       The user may loop the Generator via generate().</li>
  *   <li><i>unavailable</i>: The Generator may become unavailable automatically if its value space is depleted or
  *        manually when close() has been invoked. The Generator may be made <i>available</i> again by calling reset().
  *        When <i>unavailable</i>, the generator must be in a state in which it can be safely garbage collected.</li>
@@ -63,7 +63,7 @@ public interface Generator<E> extends Resettable, Closeable {
     /**
      * Declares the type of the objects returned by the generate() method.
      */
-    Class<E> getGeneratedType(); // TODO remove?
+    Class<E> getGeneratedType();
 
     /**
      * This is a convenience method for checking the validity of a Generator's setup.
