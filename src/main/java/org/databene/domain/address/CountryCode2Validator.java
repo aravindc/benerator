@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,6 @@
 
 package org.databene.domain.address;
 
-import java.lang.annotation.Annotation;
-
 import javax.validation.ConstraintValidatorContext;
 
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
@@ -40,7 +38,7 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
  * @author Volker Bergmann
  * @see "http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2"
  */
-public class CountryCode2Validator extends AbstractConstraintValidator<Annotation, String> { // TODO define appropriate annotation, improve name (ISO...?)
+public class CountryCode2Validator extends AbstractConstraintValidator<CountryCode2, String> {
 
 	public boolean isValid(String countryCode, ConstraintValidatorContext context) {
 	    if (countryCode == null || countryCode.length() != 2)
