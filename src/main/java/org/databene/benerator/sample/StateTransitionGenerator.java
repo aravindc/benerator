@@ -27,8 +27,11 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.Transition;
+import org.databene.benerator.script.WeightedTransition;
 import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.commons.converter.AnyConverter;
 
 /**
  * Generates state transitions of a state machine.<br/>
@@ -39,13 +42,24 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  */
 
 @SuppressWarnings("unchecked")
-public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition> { // TODO add textual config and test invocation from descriptor file
+public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition> {
 	
+	private Class<E> stateType;
 	private E currentState;
 	private boolean done;
 	
     public StateTransitionGenerator(Class<E> stateType) {
+	    this(stateType, null);
+    }
+
+    public StateTransitionGenerator(Class<E> stateType, String transitionSpec) {
 	    super(new StateGenerator<E>(stateType));
+	    this.stateType = stateType;
+	    if (transitionSpec != null) {
+	    	WeightedTransition[] transitions = BeneratorScriptParser.parseTransitionList(transitionSpec);
+	    	for (WeightedTransition t : transitions)
+	    		addTransition(convert(t.getFrom()), convert(t.getTo()), t.getWeight());
+	    }
 	    this.currentState = null;
 	    this.done = false;
     }
@@ -82,6 +96,12 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
     	currentState = null;
 	    this.done = true;
     	super.close();
+    }
+    
+    // private helpers -------------------------------------------------------------------------------------------------
+    
+    private E convert(Object object) {
+    	return AnyConverter.convert(object, stateType);
     }
     
 }

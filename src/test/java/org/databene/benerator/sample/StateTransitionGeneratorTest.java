@@ -88,14 +88,18 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(null, 1, 1.);
 		generator.addTransition(1, 1, 0.5);
 		generator.addTransition(1, null, 0.5);
-		for (int n = 0; n < 10; n++) {
-			List<Transition> products = GeneratorUtil.allProducts(generator);
-			assertEquals(new Transition(null, 1), products.get(0));
-			for (int i = 1; i < products.size() - 1; i++)
-				assertEquals(new Transition(1, 1), products.get(i));
-			assertEquals(new Transition(1, null), CollectionUtil.lastElement(products));
-			generator.reset();
-		}
+		checkRecursion(generator);
+	}
+
+	/** Tests the textual specification of transitions */
+	@Test
+    public void testTextualSpec() {
+		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(
+				Integer.class, "null->1, 1->1^0.5, 1->null^0.5");
+		generator.addTransition(null, 1, 1.);
+		generator.addTransition(1, 1, 0.5);
+		generator.addTransition(1, null, 0.5);
+		checkRecursion(generator);
 	}
 	
 	@Test
@@ -121,5 +125,18 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 			// we expect that
 		}
 	}
+	
+	// private helpers -------------------------------------------------------------------------------------------------
+	
+	private void checkRecursion(StateTransitionGenerator<Integer> generator) {
+	    for (int n = 0; n < 10; n++) {
+			List<Transition> products = GeneratorUtil.allProducts(generator);
+			assertEquals(new Transition(null, 1), products.get(0));
+			for (int i = 1; i < products.size() - 1; i++)
+				assertEquals(new Transition(1, 1), products.get(i));
+			assertEquals(new Transition(1, null), CollectionUtil.lastElement(products));
+			generator.reset();
+		}
+    }
 	
 }
