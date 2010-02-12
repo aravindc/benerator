@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -96,6 +96,8 @@ public class VersionNumberTest {
 	@Test
 	public void testCompareMixed() {
 		VersionNumber v10 = new VersionNumber("1.0");
+		VersionNumber v2ss1 = new VersionNumber("2-snapshot-20100101");
+		VersionNumber v2ss2 = new VersionNumber("2-SNAPSHOT-20100201");
 		VersionNumber v2 = new VersionNumber("2");
 		VersionNumber v2a = new VersionNumber("2-alpha");
 		VersionNumber v2A = new VersionNumber("2-ALPHA");
@@ -104,29 +106,42 @@ public class VersionNumberTest {
 		VersionNumber v20 = new VersionNumber("2.0");
 		VersionNumber v20f = new VersionNumber("2.0-FINAL");
 		VersionNumber v20s = new VersionNumber("2.0-SP");
-		VersionNumber v20s2 = new VersionNumber("2.0-SP2");
+		VersionNumber v20sp2 = new VersionNumber("2.0-SP2");
 		VersionNumber v21a = new VersionNumber("2.1-alpha");
 		VersionNumber v3 = new VersionNumber("3");
 		
 		assertEquals(-1, v10.compareTo(v2));
 		assertEquals( 1, v2.compareTo(v10));
+		
+		assertEquals(-1, v10.compareTo(v2ss1));
+		assertEquals( 1, v2ss1.compareTo(v10));
+		
+		assertEquals(-1, v2ss1.compareTo(v2ss2));
+		assertEquals( 1, v2ss2.compareTo(v2ss1));
+		
+		assertEquals(-1, v2ss2.compareTo(v2a));
+		assertEquals( 1, v2a.compareTo(v2ss2));
+		
 		assertEquals(-1, v2a.compareTo(v2));
 		assertEquals( 1, v2.compareTo(v2a));
 		assertEquals( 0, v2a.compareTo(v2A));
+		
 		assertEquals(-1, v2a.compareTo(v20a));
 		assertEquals( 1, v20a.compareTo(v2a));
 		assertEquals(-1, v20a.compareTo(v20b));
+		
 		assertEquals( 1, v20b.compareTo(v20a));
 		assertEquals(-1, v20b.compareTo(v20));
+		
 		assertEquals( 1, v20.compareTo(v20b));
 		assertEquals( 0, v20.compareTo(v20f));
 		assertEquals( 0, v20f.compareTo(v20));
 		assertEquals(-1, v20f.compareTo(v20s));
 		assertEquals( 1, v20s.compareTo(v20f));
-		assertEquals(-1, v20s.compareTo(v20s2));
-		assertEquals( 1, v20s2.compareTo(v20s));
-		assertEquals(-1, v20s2.compareTo(v21a));
-		assertEquals( 1, v21a.compareTo(v20s2));
+		assertEquals(-1, v20s.compareTo(v20sp2));
+		assertEquals( 1, v20sp2.compareTo(v20s));
+		assertEquals(-1, v20sp2.compareTo(v21a));
+		assertEquals( 1, v21a.compareTo(v20sp2));
 		assertEquals(-1, v21a.compareTo(v3));
 		assertEquals( 1, v3.compareTo(v21a));
 	}
