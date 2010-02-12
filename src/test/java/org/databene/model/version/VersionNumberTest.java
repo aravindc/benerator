@@ -94,30 +94,54 @@ public class VersionNumberTest {
 	}
 	
 	@Test
+	public void testCompareDate() {
+		VersionNumber v1 = new VersionNumber("20100211");
+		VersionNumber v2 = new VersionNumber("20100212");
+		assertTrue(v1.compareTo(v1) ==  0);
+		assertTrue(v1.compareTo(v2) == -1);
+		assertTrue(v2.compareTo(v1) ==  1);
+	}
+	
+	@Test
 	public void testCompareMixed() {
+
+		// non-numbered snapshot
+		VersionNumber vd = new VersionNumber("20100101");
+		
+		// final version 1.0
 		VersionNumber v10 = new VersionNumber("1.0");
+		
+		// snapshot versions
 		VersionNumber v2ss1 = new VersionNumber("2-snapshot-20100101");
 		VersionNumber v2ss2 = new VersionNumber("2-SNAPSHOT-20100201");
+		
+		// final version 2.0
 		VersionNumber v2 = new VersionNumber("2");
+		VersionNumber v20 = new VersionNumber("2.0");
+		VersionNumber v20f = new VersionNumber("2.0-FINAL");
+
+		// 2.0 stages
 		VersionNumber v2a = new VersionNumber("2-alpha");
 		VersionNumber v2A = new VersionNumber("2-ALPHA");
 		VersionNumber v20a = new VersionNumber("2.0-alpha");
 		VersionNumber v20b = new VersionNumber("2.0-beta");
-		VersionNumber v20 = new VersionNumber("2.0");
-		VersionNumber v20f = new VersionNumber("2.0-FINAL");
 		VersionNumber v20s = new VersionNumber("2.0-SP");
 		VersionNumber v20sp2 = new VersionNumber("2.0-SP2");
+		
+		// version 2.1 alpha
 		VersionNumber v21a = new VersionNumber("2.1-alpha");
+		
+		// version 3
 		VersionNumber v3 = new VersionNumber("3");
+		
+		assertEquals(-1, vd.compareTo(v10));
+		assertEquals( 1, v10.compareTo(vd));
 		
 		assertEquals(-1, v10.compareTo(v2));
 		assertEquals( 1, v2.compareTo(v10));
 		
 		assertEquals(-1, v10.compareTo(v2ss1));
 		assertEquals( 1, v2ss1.compareTo(v10));
-		
-		assertEquals(-1, v2ss1.compareTo(v2ss2));
-		assertEquals( 1, v2ss2.compareTo(v2ss1));
 		
 		assertEquals(-1, v2ss2.compareTo(v2a));
 		assertEquals( 1, v2a.compareTo(v2ss2));
