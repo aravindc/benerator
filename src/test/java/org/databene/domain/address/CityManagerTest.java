@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Tests the {@link CityManager}.<br/><br/>
  * Created: 11.02.2010 18:27:23
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class CityManagerTest {
