@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.model.version;
 
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Arrays;
 
@@ -98,10 +99,22 @@ public class VersionNumber implements Comparable<VersionNumber> {
 	private VersionNumberComponent parseComponent(String number, ParsePosition pos) {
 		char c = number.charAt(pos.getIndex());
 		if (Character.isDigit(c))
-			return new NumberVersionNumberComponent(parseNonNegativeInteger(number, pos));
+			return parseNumberOrDateComponent(number, pos);
 		else
 			return new StringVersionNumberComponent(parseLetters(number, pos));
 	}
+
+	private VersionNumberComponent parseNumberOrDateComponent(String text, ParsePosition pos) {
+	    String number = parseNonNegativeInteger(text, pos);
+	    if (number.length() == 8) {
+	    	try {
+	    		return new DateVersionNumberComponent(number);
+	    	} catch (ParseException e) {
+	    		// oops - no date. Fall back to NumberVersionNumberComponent in the following code
+	    	}
+	    }
+    	return new NumberVersionNumberComponent(number);
+    }
 
 	private String parseNonNegativeInteger(String number, ParsePosition pos) {
 		int index = pos.getIndex();
