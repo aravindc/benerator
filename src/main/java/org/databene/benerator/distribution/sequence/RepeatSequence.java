@@ -40,7 +40,7 @@ import org.databene.commons.ConfigurationError;
  * @author Volker Bergmann
  */
 
-public class RepeatSequence extends Sequence { // TODO test
+public class RepeatSequence extends Sequence {
 
     private static final String NAME = "repeat";
     
