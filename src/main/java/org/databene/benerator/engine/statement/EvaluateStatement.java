@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
@@ -69,6 +71,18 @@ public class EvaluateStatement implements Statement {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EvaluateStatement.class);
 	
+	private static final String SHELL = "shell";
+	
+	private static final Map<String, String> extensionMap;
+	
+	static {
+		try {
+			extensionMap = IOUtil.readProperties("org/databene/benerator/engine/statement/fileTypes.properties");
+		} catch (IOException e) {
+			throw new ConfigurationError(e);
+		}
+	}
+	
 	Expression<String> idEx;
 	Expression<String> textEx;
 	Expression<String> uriEx;
@@ -100,42 +114,29 @@ public class EvaluateStatement implements Statement {
 			if (onErrorValue == null)
 				onErrorValue = "fatal";
 			
-			String typeValue = typeEx.evaluate(context);
+			String typeValue = ExpressionUtil.evaluate(typeEx, context);
 			// if type is not defined, derive it from the file extension
-			String uriValue = uriEx.evaluate(context);
+			String uriValue = ExpressionUtil.evaluate(uriEx, context);
 			if (typeEx == null && uriEx != null) {
-				// check for SQL file URI
-				String lcUri = (uriEx.evaluate(context)).toLowerCase();
-				// TODO v0.6 map generically and extendible (Using/Including Java Scripting?)
-				if (lcUri.endsWith(".sql"))
-					typeValue = "sql";
-				// check for shell file URI
-				if (lcUri.endsWith(".bat") || lcUri.endsWith(".cmd") || lcUri.endsWith(".exe") || lcUri.endsWith(".com")) {
-					if (SystemInfo.isWindows())
-						typeValue = "shell";
-					else
-						throw new ConfigurationError("Need Windows to run file: " + uriValue);
-				}
-				if (lcUri.endsWith(".sh")) {
-					typeValue = "shell";
+				typeValue = mapExtensionOf(uriValue);
+				if ("winshell".equals(typeValue))
 					if (!SystemInfo.isWindows())
-						typeValue = "shell";
+						throw new ConfigurationError("Need Windows to run file: " + uriValue);
 					else
+						typeValue = SHELL;
+				else if ("unixshell".equals(typeValue))
+					if (SystemInfo.isWindows())
 						throw new ConfigurationError("Need Unix system to run file: " + uriValue);
-				}
-				// check for jar file URI
-				if (lcUri.endsWith(".jar"))
-					typeValue = "jar";
-				// check for JavaScript file URI
-				if (lcUri.endsWith(".js"))
-					typeValue = "js";
-				uriValue = IOUtil.resolveLocalUri(uriValue, context.getContextUri());
+					else
+						typeValue = SHELL;
 			}
-			Object targetObject = targetObjectEx.evaluate(context);
+			if (uriValue != null)
+				uriValue = IOUtil.resolveLocalUri(uriValue, context.getContextUri());
+			Object targetObject = ExpressionUtil.evaluate(targetObjectEx, context);
 			if (typeValue == null && targetObject instanceof DBSystem)
 				typeValue = "sql";
 			
-            String textValue = textEx.evaluate(context);
+            String textValue = ExpressionUtil.evaluate(textEx, context);
             String encoding = encodingEx.evaluate(context);
 
 			// run
@@ -143,16 +144,17 @@ public class EvaluateStatement implements Statement {
 			if ("sql".equals(typeValue)) {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
 						textValue, optimizeEx.evaluate(context));
-            } else if ("shell".equals(typeValue)) {
+            } else if (SHELL.equals(typeValue)) {
 				result = runShell(uriValue, textValue, onErrorValue);
-			} else {
-				typeValue = context.getDefaultScript();
+            } else {
+            	if (typeValue == null) 
+            		typeValue = context.getDefaultScript();
 				if (!StringUtil.isEmpty(uriValue))
 					textValue = IOUtil.getContentOfURI(uriValue);
 				result = runScript(textValue, typeValue, onErrorValue, context);
 			}
 			context.set("result", result);
-			Object assertionValue = assertionEx.evaluate(context);
+			Object assertionValue = ExpressionUtil.evaluate(assertionEx, context);
 			if (assertionValue instanceof String)
 				assertionValue = LiteralParser.parse((String) assertionValue);
 			if (assertionValue != null && !(assertionValue instanceof String && ((String) assertionValue).length() == 0)) {
@@ -172,6 +174,14 @@ public class EvaluateStatement implements Statement {
 		} catch (IOException e) {
 			throw new ConfigurationError(e);
 		}
+    }
+
+	private String mapExtensionOf(String uri) {
+		String lcUri = uri.toLowerCase();
+		for (Entry<String, String> entry : extensionMap.entrySet())
+			if (lcUri.endsWith(entry.getKey()))
+				return entry.getValue();
+	    return null;
     }
 
 	private ErrorHandler getErrorHandler(String level) {
