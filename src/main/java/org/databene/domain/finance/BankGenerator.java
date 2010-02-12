@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,16 +32,12 @@ import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
- * Generates {@link BankAccount}s.<br/><br/>
+ * Generates {@link BankAccount}s with low validity requirements.<br/><br/>
  * Created at 23.06.2008 11:08:48
  * @since 0.5.4
  * @author Volker Bergmann
  */
 public class BankGenerator extends LightweightGenerator<Bank> {
-	
-	// TODO v0.6 support Country/Region
-	// TODO v0.6 support uniqueness
-	// TODO v0.6 improve validity
 	
 	private Generator<String> bankCodeGenerator;
 	private Generator<String> nameGenerator;
