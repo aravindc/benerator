@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,13 +48,6 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
-/*  TODO remove
-    public static Generator<?> createInstanceGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
-        Generator<?> generator = createSingleInstanceGenerator(descriptor, context);
-        return createInstanceGeneratorWrapper(descriptor, generator, context);
-    }
-*/
-    
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, BeneratorContext context) {
         Generator<?> generator = null;
@@ -81,23 +74,7 @@ public class InstanceGeneratorFactory {
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
-/* TODO remove
-    @SuppressWarnings("unchecked")
-    private static Generator<?> createInstanceGeneratorWrapper(
-            InstanceDescriptor descriptor, Generator<?> typeGenerator, BeneratorContext context) {
-        Expression<Long> maxCountEx = DescriptorUtil.getMaxCount(descriptor);
-        if (ExpressionUtil.isNull(maxCountEx))
-        	return typeGenerator;
-        DynamicInstanceSequenceGenerator generator = new DynamicInstanceSequenceGenerator(typeGenerator, context);
-        // configure count
-        Expression<Long> countEx = DescriptorUtil.getCountExpression(descriptor);
-		generator.setMinCount(countEx);
-        generator.setMaxCount(maxCountEx);
-        generator.setCountPrecision(DescriptorUtil.getCountPrecision(descriptor));
-        generator.setCountDistribution(GeneratorFactoryUtil.getDistributionExpression(descriptor.getCountDistribution(), false, true, context));
-        return generator;
-    }
-*/
+
     public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null && nullQuota.doubleValue() == 1.)
@@ -112,11 +89,4 @@ public class InstanceGeneratorFactory {
         return null;
     }
 
-/* TODO remove
-    private static Generator createLimitCountGenerator(InstanceDescriptor descriptor, Generator generator) {
-        if (descriptor.getCount() != null)
-            generator = new NShotGeneratorProxy(generator, descriptor.getCount());
-        return generator;
-    }
-*/
 }
