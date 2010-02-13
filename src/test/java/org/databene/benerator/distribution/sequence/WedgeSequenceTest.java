@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.sequence.WedgeLongGenerator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.wrapper.AsDoubleGeneratorWrapper;
 import org.junit.Test;
 
 /**
@@ -77,7 +76,7 @@ public class WedgeSequenceTest extends GeneratorTest {
         expectGeneratedSequence(doubleGenerator(-16., -1., 5.), -16., -1., -11., -6.).withCeasedAvailability();
         expectGeneratedSequence(doubleGenerator(-11.,  4., 5.), -11.,  4.,  -6., -1.).withCeasedAvailability();
     }
-/* TODO support precision < 1
+
 	@Test
     public void testDoublePrecision0_5() throws Exception {
         expectGeneratedSequence(doubleGenerator( 0.5,  1.5, 0.5),  0.5,  1.5,  1.0).withCeasedAvailability();
@@ -87,13 +86,13 @@ public class WedgeSequenceTest extends GeneratorTest {
         expectGeneratedSequence(doubleGenerator(-0.5,  0.5, 0.5), -0.5,  0.5, 0.0).withCeasedAvailability();
         expectGeneratedSequence(doubleGenerator(-1.0,  0.5, 0.5), -1.0,  0.5, -0.5,  0.0).withCeasedAvailability();
     }
-*/
+
     private Generator<Long> longGenerator(long min, long max, long precision) {
         return new WedgeLongGenerator(min,  max, precision);
     }
 
     private Generator<Double> doubleGenerator(double min, double max, double precision) {
-        return new AsDoubleGeneratorWrapper<Long>(new WedgeLongGenerator((long) min, (long) max, (long) precision));
+        return new WedgeDoubleGenerator(min, max, precision);
     }
 
 }
