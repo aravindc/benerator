@@ -53,7 +53,7 @@ public abstract class XLSTest extends IteratorTestCase {
     protected static final Timestamp  UPDATED1 = TimeUtil.timestamp(2009, 6, 18, 0, 27, 38, 0);
     
     protected static final String     EAN2   = "9876543210987";
-    protected static final BigDecimal PRICE2 = new BigDecimal("321.123");
+    protected static final BigDecimal PRICE2 = new BigDecimal("1.95");
     protected static final Date		  DATE2 = DATE1;
     protected static final Boolean	  AVAIL2 = false;
     protected static final Timestamp  UPDATED2 = TimeUtil.timestamp(2009, 6, 18, 0, 27, 38, 0);

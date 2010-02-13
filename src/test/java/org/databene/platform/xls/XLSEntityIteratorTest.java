@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,8 +51,8 @@ import static junit.framework.Assert.*;
 
 public class XLSEntityIteratorTest extends XLSTest {
 	
-	private static final String PRODUCT_XLS = "org/databene/platform/xls/product.ent.xls";
-	private static final String IMPORT_XLS = "org/databene/platform/xls/import.ent.xls";
+	private static final String PRODUCT_XLS = "org/databene/platform/xls/product-singlesheet.ent.xls";
+	private static final String IMPORT_XLS = "org/databene/platform/xls/import-multisheet.ent.xls";
 
 	@Test
 	public void testImport() throws Exception {
@@ -61,7 +61,8 @@ public class XLSEntityIteratorTest extends XLSTest {
 			assertTrue(iterator.hasNext());
 			assertProduct(PROD1, iterator.next());
 			assertTrue(iterator.hasNext());
-			assertProduct(PROD2, iterator.next());
+			Entity next = iterator.next();
+			assertProduct(PROD2, next); // TODO 1.95 is imported as 1.9500...2
 			assertTrue(iterator.hasNext());
 			assertPerson(PERSON1, iterator.next());
 			assertFalse(iterator.hasNext());
@@ -97,17 +98,14 @@ public class XLSEntityIteratorTest extends XLSTest {
 			}
 		};
 		DataModel.getDefaultInstance().addDescriptorProvider(dp);
-		// TODO v0.6 in which timezone should parsed dates be served by the XLSLineIterator?
-		// TODO v0.6 1.95 is parsed as 9500000000000002
 		
 		// test import
 		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
 		try {
 			assertTrue(iterator.hasNext());
-			Entity next = iterator.next();
-			assertEquals(PROD1, next);
+			assertProduct(PROD1, iterator.next());
 			assertTrue(iterator.hasNext());
-			assertEquals(PROD2, iterator.next());
+			assertProduct(PROD2, iterator.next());
 			assertFalse(iterator.hasNext());
 		} finally {
 			iterator.close();
@@ -120,7 +118,7 @@ public class XLSEntityIteratorTest extends XLSTest {
     private void assertProduct(Entity expected, Entity actual) {
 		assertEquals("Product", actual.type());
 		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
-		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.0001);
+		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
 		assertEquals(expected.getComponent("date"), actual.getComponent("date"));
 		assertEquals(expected.getComponent("avail"), actual.getComponent("avail"));
 		assertEquals(((Date) expected.getComponent("updated")).getTime(), 
