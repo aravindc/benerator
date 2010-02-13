@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,11 @@
 
 package org.databene.benerator;
 
+import java.io.IOException;
+
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.IOUtil;
+
 /**
  * Provides information about the Benerator version.<br/>
  * <br/>
@@ -36,9 +41,18 @@ package org.databene.benerator;
 
 public class Version {
 
-	public static final String VERSION = "0.6.0"; // TODO generate this from the maven version settings
+	public static final String VERSION = readVersion();
 
 	public static void main(String[] args) {
 		System.out.println(VERSION);
 	}
+
+	private static String readVersion() {
+	    try {
+	        return IOUtil.getContentOfURI("org/databene/benerator/version.txt");
+        } catch (IOException e) {
+	        throw new ConfigurationError("Error reading version info file", e);
+        }
+    }
+	
 }
