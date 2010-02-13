@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-import org.databene.commons.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,11 +101,4 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
         this.cursor = null;
     }
     
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-	public String toString() {
-        return BeanUtil.toString(this);
-    }
-
 }
