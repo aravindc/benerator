@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,13 +30,15 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.validation.ConstraintValidatorContext;
+
 import org.databene.commons.Assert;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.Validator;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
  * Filters {@link Date}s by their day of week.
- * All days of the week are supported by default. 
+ * All days of the week are accepted by default. 
  * Attention: The weekday array begins with Monday (as defined in ISO_8601), 
  * not with Sunday (as used in {@link java.util.Calendar}).<br/>
  * <br/>
@@ -46,45 +48,58 @@ import org.databene.commons.Validator;
  * @see <a href="http://en.wikipedia.org/wiki/ISO_8601#Week_dates">ISO 8601</a>
  */
 
-public class DayOfWeekValidator implements Validator<Date> { // TODO rename Validator to Filter?
-// TODO merge with javax.validation?
+public class DayOfWeekValidator extends AbstractConstraintValidator<DayOfWeek, Date> {
 	
 	/** 
-	 * holds a flag for each weekday that tells if it is supported. 
+	 * holds a flag for each weekday that tells if it is accepted. 
 	 */
-	private boolean daysOfWeekSupported[];
+	private boolean daysOfWeekAccepted[];
 	
     public DayOfWeekValidator() {
-    	this.daysOfWeekSupported = new boolean[7];
-    	Arrays.fill(daysOfWeekSupported, true);
+    	this.daysOfWeekAccepted = new boolean[7];
+    	Arrays.fill(daysOfWeekAccepted, true);
     }
     
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setDaysOfWeekSupported(boolean... daysOfWeekSupported) {
-    	Assert.equals(7, daysOfWeekSupported.length, getClass().getName() + ".day");
-    	System.arraycopy(daysOfWeekSupported, 0, this.daysOfWeekSupported, 0, 7);
+    public void setDaysOfWeekAccepted(boolean... daysOfWeekAccepted) {
+    	Assert.equals(7, daysOfWeekAccepted.length, getClass().getName() + ".day");
+    	System.arraycopy(daysOfWeekAccepted, 0, this.daysOfWeekAccepted, 0, 7);
     }
     
-    public void setWeekdaysSupported(boolean weekdaySupported) {
-    	Arrays.fill(daysOfWeekSupported, 0, 5, weekdaySupported);
+    public void setWeekdaysAccepted(boolean weekdayAccepted) {
+    	Arrays.fill(daysOfWeekAccepted, 0, 5, weekdayAccepted);
     }
     
-    public void setWeekendsSupported(boolean weekendSupported) {
-    	daysOfWeekSupported[6] = weekendSupported;
-    	daysOfWeekSupported[5] = weekendSupported;
+    public void setWeekendsAccepted(boolean weekendAccepted) {
+    	daysOfWeekAccepted[6] = weekendAccepted;
+    	daysOfWeekAccepted[5] = weekendAccepted;
     }
     
-	public boolean valid(Date candidate) {
-	    int isoDayOfWeek = dayOfWeekIndex(candidate);
-		return daysOfWeekSupported[isoDayOfWeek];
+    @Override
+    public void initialize(DayOfWeek params) {
+        Arrays.fill(daysOfWeekAccepted, false);
+        for (int dayOfWeek : params.daysOfWeekAccepted())
+        	daysOfWeekAccepted[isoDayOfWeek(dayOfWeek) - 1] = true;
+    }
+    
+	public boolean isValid(Date candidate, ConstraintValidatorContext ctx) {
+	    int isoDayOfWeek = isoDayOfWeek(candidate);
+		return daysOfWeekAccepted[isoDayOfWeek - 1];
     }
 
-    static int dayOfWeekIndex(Date candidate) {
+    static int isoDayOfWeek(Date candidate) {
 	    Calendar calendar = TimeUtil.calendar(candidate);
 		int javaDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-		int isoDayOfWeek = (javaDayOfWeek == Calendar.SUNDAY ? 6 : javaDayOfWeek - Calendar.MONDAY);
-	    return isoDayOfWeek;
+		return isoDayOfWeek(javaDayOfWeek);
+    }
+
+    /** 
+     * Calculates the day of the week (1=monday - 7=sunday) according to ISO 8601 
+     * for the day of week returned by Calendar.get(DAY_OF_WEEK).
+     */
+	private static int isoDayOfWeek(int calendarDayOfWeek) {
+	    return (calendarDayOfWeek == Calendar.SUNDAY ? 7 : calendarDayOfWeek - 1);
     }
 
 }
