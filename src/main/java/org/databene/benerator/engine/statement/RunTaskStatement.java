@@ -85,7 +85,7 @@ public class RunTaskStatement extends AbstractStatement {
 	    		getErrorHandler(context));
 	}
 
-	private synchronized Task getTask(BeneratorContext context) {
+	public synchronized Task getTask(BeneratorContext context) {
 		if (task == null)
 			task = taskProvider.evaluate(context);
 	    return task;
