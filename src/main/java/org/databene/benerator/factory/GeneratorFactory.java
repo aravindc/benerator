@@ -324,19 +324,17 @@ public class GeneratorFactory {
      * @param pattern   the regular expression
      * @param minLength the minimum length of the products
      * @param maxLength the maximum length of the products
-     * @param locale    the locale to use for '\w' expressions
      * @return a generator of the desired characteristics
      * @throws ConfigurationError 
      */
-    public static Generator<String> getRegexStringGenerator(
-            String pattern, int minLength, Integer maxLength, Locale locale) 
+    public static Generator<String> getRegexStringGenerator(String pattern, int minLength, Integer maxLength) 
             	throws ConfigurationError {
-        return getUniqueRegexStringGenerator(pattern, minLength, maxLength, locale);
+        return getUniqueRegexStringGenerator(pattern, minLength, maxLength);
     }
 
     public static Generator<String> getUniqueRegexStringGenerator(
-            String pattern, int minLength, Integer maxLength, Locale locale) throws ConfigurationError {
-        Generator<String> generator = RegexGeneratorFactory.create(pattern, locale, maxLength, true);
+            String pattern, int minLength, Integer maxLength) throws ConfigurationError {
+        Generator<String> generator = RegexGeneratorFactory.create(pattern, maxLength, true);
         return new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength));
     }

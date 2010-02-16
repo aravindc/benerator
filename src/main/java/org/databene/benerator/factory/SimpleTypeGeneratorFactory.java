@@ -427,9 +427,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             locale = (Locale) descriptor.getDetailDefault(LOCALE);
         // evaluate uniqueness and create generator
         if (unique)
-            return GeneratorFactory.getUniqueRegexStringGenerator(pattern, minLength, maxLength, locale);
+            return GeneratorFactory.getUniqueRegexStringGenerator(pattern, minLength, maxLength);
         else
-            return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, locale);
+            return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength);
     }
     
     @SuppressWarnings("unchecked")

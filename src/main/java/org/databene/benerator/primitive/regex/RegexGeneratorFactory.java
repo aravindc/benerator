@@ -27,7 +27,6 @@
 package org.databene.benerator.primitive.regex;
 
 import java.text.ParseException;
-import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -57,13 +56,10 @@ public class RegexGeneratorFactory {
 	public static final int DEFAULT_QUANTITY_LIMIT = 10;
 
     public static Generator<String> create(String pattern) {
-        return create(pattern, null, DEFAULT_QUANTITY_LIMIT, false);
+        return create(pattern, DEFAULT_QUANTITY_LIMIT, false);
     }
 
-    public static Generator<String> create(String pattern, Locale locale, int quantityLimit, boolean unique) {
-    	// TODO support locale
-    	if (locale == null)
-    		locale = Locale.getDefault();
+    public static Generator<String> create(String pattern, int quantityLimit, boolean unique) {
 		try {
 	        Object regex = new RegexParser().parseRegex(pattern);
 	        return createFromObject(regex, quantityLimit, unique);

@@ -55,9 +55,9 @@ public class EAN8Generator extends GeneratorWrapper<String, String> {
     private void setUnique(boolean unique) {
         this.unique = unique;
         if (unique)
-            setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{7}", 7, 7, null));
+            setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{7}", 7, 7));
         else
-            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7, null));
+            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7));
     }
 
     // Generator interface --------------------------------------------------------------------

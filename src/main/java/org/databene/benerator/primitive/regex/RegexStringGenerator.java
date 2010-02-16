@@ -72,16 +72,12 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
 
     /** Initializes the generator to the fallback locale */
     public RegexStringGenerator(String pattern, int quantityLimit) {
-        this(pattern, null, quantityLimit);
-    }
-
-    public RegexStringGenerator(String pattern, Locale locale, Integer quantityLimit) {
-        this(pattern, locale, quantityLimit, false);
+        this(pattern, quantityLimit, false);
     }
 
     /** Initializes the generator with the String representation of a regular expression */
-    public RegexStringGenerator(String pattern, Locale locale, Integer quantityLimit, boolean unique) {
-        super(RegexGeneratorFactory.create(pattern, locale, quantityLimit, unique));
+    public RegexStringGenerator(String pattern, Integer quantityLimit, boolean unique) {
+        super(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
         this.pattern = pattern;
         this.quantityLimit = quantityLimit;
         this.unique = unique;
@@ -128,7 +124,7 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     public void validate() {
         if (dirty) {
             try {
-                setSource(RegexGeneratorFactory.create(pattern, locale, quantityLimit, unique));
+                setSource(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
                 super.validate();
             } catch (Exception e) {
                 throw new InvalidGeneratorSetupException(e);
