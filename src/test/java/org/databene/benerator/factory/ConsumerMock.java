@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,10 +30,12 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.databene.commons.Context;
+import org.databene.commons.context.ContextAware;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.data.Entity;
 
-public class ConsumerMock extends AbstractConsumer<Entity> {
+public class ConsumerMock extends AbstractConsumer<Entity> implements ContextAware {
 	
 	public static final HashMap<Integer, ConsumerMock> instances 
 		= new HashMap<Integer, ConsumerMock>();
@@ -45,6 +47,7 @@ public class ConsumerMock extends AbstractConsumer<Entity> {
 	public int id;
 	public AtomicInteger invocationCount;
 	public boolean closed;
+	public Context context;
 	
 	public ConsumerMock() {
 		this(1);
@@ -56,6 +59,10 @@ public class ConsumerMock extends AbstractConsumer<Entity> {
 		this.closed = false;
 		lastInstance = this;
 		instances.put(id, this);
+	}
+	
+	public void setContext(Context context) {
+	    this.context = context;
 	}
 
     public void startConsuming(Entity object) {
