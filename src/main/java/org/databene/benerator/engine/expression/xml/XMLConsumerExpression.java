@@ -88,6 +88,9 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 			} else if (consumerElement.hasAttribute("class")) {
 				Expression beanExpr = beanParser.parseBeanExpression(consumerElement);
 				consumerChain.addComponent((Consumer<Entity>) beanExpr.evaluate(context));
+			} else if (consumerElement.hasAttribute("spec")) {
+				Expression beanExpr = beanParser.parseBeanExpression(consumerElement);
+				consumerChain.addComponent((Consumer<Entity>) beanExpr.evaluate(context));
 			} else
 				throw new UnsupportedOperationException(
 						"Can't handle " + XMLUtil.format(consumerElement));
