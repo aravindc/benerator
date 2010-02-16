@@ -39,6 +39,8 @@ import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -48,6 +50,8 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class BeanParser extends AbstractDescriptorParser {
+	
+	private static final Logger logger =  LoggerFactory.getLogger(BeanParser.class);
 	
 	public BeanParser() {
 	    super(EL_BEAN);
@@ -64,7 +68,7 @@ public class BeanParser extends AbstractDescriptorParser {
 	}
 
 	@SuppressWarnings("unchecked")
-    public Expression<?> parseBeanExpression(Element element) {
+    public static Expression<?> parseBeanExpression(Element element) {
 		String id = element.getAttribute(ATT_ID);
         Expression<?> instantiation;
         String beanSpec = element.getAttribute(ATT_SPEC);
@@ -81,11 +85,11 @@ public class BeanParser extends AbstractDescriptorParser {
         } else
         	throw new ConfigurationError("Syntax error in definition of bean " + id);
         Element[] propertyElements = XMLUtil.getChildElements(element, false, EL_PROPERTY);
-		Assignment[] propertyAssignments = parsePropertyAssignments(propertyElements);
-        return new BeanConstruction(instantiation, propertyAssignments);
+		Assignment[] propertyDefinitions = mapPropertyDefinitions(propertyElements);
+        return new BeanConstruction(instantiation, propertyDefinitions);
     }
 
-	private Assignment[] parsePropertyAssignments(Element[] propertyElements) {
+	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements) {
 		Assignment[] assignments = new Assignment[propertyElements.length];
         for (int i = 0; i < propertyElements.length; i++) {
         	Element propertyElement = propertyElements[i];
