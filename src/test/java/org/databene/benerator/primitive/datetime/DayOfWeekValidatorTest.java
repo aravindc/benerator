@@ -30,6 +30,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.validation.Constraint;
+
+import org.databene.commons.BeanUtil;
+import org.databene.commons.Validator;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -71,15 +75,19 @@ public class DayOfWeekValidatorTest {
 	
 	@Test
 	public void testAnnotation() throws Exception {
-		DayOfWeekValidator validator = new DayOfWeekValidator();
-		DayOfWeek annotation = Dummy.class.getField("date").getAnnotation(DayOfWeek.class);
-		validator.initialize(annotation);
+		DayOfWeek validationAnnotation = Dummy.class.getField("date").getAnnotation(DayOfWeek.class);
+		// instantiate validator from annotation info
+		Constraint validatorAnnotation = DayOfWeek.class.getAnnotation(Constraint.class);
+		Class<?>[] validatorClass = validatorAnnotation.validatedBy();
+		DayOfWeekValidator validator = (DayOfWeekValidator) BeanUtil.newInstance(validatorClass[0]);
+		validator.initialize(validationAnnotation);
+		// test
 		check(validator, true, false, true, false, false, false, false);
 	}
 	
 	// private helper method -------------------------------------------------------------------------------------------
 
-    private void check(DayOfWeekValidator validator, 
+    private void check(Validator<Date> validator, 
     		boolean monday, boolean tuesday, boolean wednesday, boolean thursday, boolean friday,
             boolean saturday, boolean sunday) {
 	    Calendar cal = new GregorianCalendar();
