@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,13 +49,14 @@ public class ParseRunTaskTest {
         		"</run-task>";
         Document doc = XMLUtil.parse(uri);
         RunTaskParser parser = new RunTaskParser();
-		RunTaskStatement task = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
+		RunTaskStatement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
-		assertEquals(5L, task.getCount().evaluate(context).longValue());
-		assertEquals(2L, task.getPageSize().evaluate(context).longValue());
-		assertEquals(new PageListenerMock(1), task.getPager().evaluate(context));
-		task.execute(new BeneratorContext());
+		assertEquals(5L, statement.getCount().evaluate(context).longValue());
+		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
+		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
+		statement.execute(new BeneratorContext());
 		assertEquals(5, TaskMock.count.get());
+		assertNotNull("Context not injected", ((TaskMock) statement.getTask(context)).context);
 	}
 	
 }
