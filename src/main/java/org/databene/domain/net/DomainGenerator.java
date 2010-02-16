@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,7 +38,6 @@ import org.databene.domain.address.Country;
  */
 public class DomainGenerator extends AlternativeGenerator<String> {
 	
-	// TODO v0.6 improve domain name generation algorithm
 	public DomainGenerator() {
 		this(Country.getDefault().getIsoCode());
 	}
@@ -54,6 +53,5 @@ public class DomainGenerator extends AlternativeGenerator<String> {
 	public void setDataset(String datasetName) {
 		((CompanyDomainGenerator) sources[2]).setDataset(datasetName);
 	}
-	
 	
 }
