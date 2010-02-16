@@ -54,5 +54,16 @@ public class CreateOrUpdateEntitiesParserTest {
 		assertEquals(3, bean.invocationCount);
 		assertEquals(2, bean.lastValue);
 	}
-
+	
+	@Test
+	public void testContextAwareness() throws Exception {
+        String uri = "string://<create-entities type='dummy' count='3' " +
+        		"generator='new org.databene.benerator.engine.parser.xml.GeneratorMock()'/>";
+		Document doc = XMLUtil.parse(uri);
+		CreateOrUpdateEntitiesParser parser = new CreateOrUpdateEntitiesParser();
+		Statement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
+		BeneratorContext context = new BeneratorContext();
+		statement.execute(context);
+	}
+	
 }
