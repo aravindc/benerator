@@ -44,7 +44,6 @@ import org.w3c.dom.Element;
  */
 public class RunTaskParser extends AbstractDescriptorParser {
 	
-	private BeanParser beanParser = new BeanParser();
 	private static final DefaultPageSizeExpression DEFAULT_PAGE_SIZE = new DefaultPageSizeExpression();
 
 	public RunTaskParser() {
@@ -54,7 +53,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	@SuppressWarnings("unchecked")
     public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression<Task> taskProvider = (Expression<Task>) beanParser.parseBeanExpression(element);
+			Expression<Task> taskProvider = (Expression<Task>) BeanParser.parseBeanExpression(element);
 			Expression<Long> count    = parseLongAttr(ATT_COUNT, element, 1);
 			Expression<Long> pageSize = parseLongAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
 			Expression<Integer> threads  = parseIntAttr(ATT_THREADS, element, 1);
