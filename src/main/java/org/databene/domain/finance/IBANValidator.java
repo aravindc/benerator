@@ -52,7 +52,6 @@ public class IBANValidator extends AbstractConstraintValidator<IBAN, String> {
 		String countryCode = iban.substring(0, 2);
 		if (!countryCodeValidator.valid(countryCode))
 			return false;
-		// TODO v0.6 check country-specific length
 		// check checksum
 		int checksum = IBANUtil.checksum(iban);
 		return (checksum == 1);
