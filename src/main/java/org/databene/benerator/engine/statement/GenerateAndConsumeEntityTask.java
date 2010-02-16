@@ -65,7 +65,7 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
     		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask) {
     	super(taskName);
     	Assert.notNull(entityGenerator, "entityGenerator");
-        this.entityGenerator = entityGenerator; // TODO make this an expression?
+        this.entityGenerator = entityGenerator;
         this.consumerExpr = consumerExpr;
     	this.subStatements = new ArrayList<Statement>();
         this.isSubTask = isSubTask;
