@@ -21,6 +21,17 @@
 
 package org.databene.domain.address;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+
 /**
  * Bean validation annotation (JSR 303) for fields that represent a country code 
  * according to ISO-3166-1 alpha-2.<br/><br/>
@@ -28,6 +39,10 @@ package org.databene.domain.address;
  * @since 0.6.0
  * @author Volker Bergmann
  */
+@Documented
+@Constraint(validatedBy = CountryCode2Validator.class)
+@Target({ METHOD, FIELD, TYPE })
+@Retention(RUNTIME)
 public @interface CountryCode2 {
 
 }
