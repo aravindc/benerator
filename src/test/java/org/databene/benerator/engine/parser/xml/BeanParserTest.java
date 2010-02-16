@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,6 +49,7 @@ public class BeanParserTest {
 		assertNotNull(bean);
 		assertEquals(BeanMock.class, bean.getClass());
 		assertEquals(0, ((BeanMock) bean).lastValue);
+		assertNotNull(((BeanMock) bean).getContext());
 	}
 
 	@Test
@@ -59,7 +60,10 @@ public class BeanParserTest {
 		assertNotNull(bean);
 		assertEquals(BeanMock.class, bean.getClass());
 		assertEquals(2, ((BeanMock) bean).lastValue);
+		assertNotNull(((BeanMock) bean).getContext());
 	}
+	
+	// test helpers ----------------------------------------------------------------------------------------------------
 
 	private BeneratorContext parseAndExecute(String xml) throws IOException {
 	    Element element = XMLUtil.parseStringAsElement(xml);
