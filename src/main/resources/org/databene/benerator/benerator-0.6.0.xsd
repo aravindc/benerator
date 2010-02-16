@@ -101,15 +101,22 @@
     	 If the JavaBean itself has a property named 'id', this one is set to the value specified here. -->
 	<xs:element name="bean">
 		<xs:complexType>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="comment"  minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="id"    type="xs:string" use="required"/>
-			<xs:attribute name="class" type="xs:string"/>
-			<xs:attribute name="spec"  type="xs:string"/>
+			<xs:complexContent>
+				<xs:extension base="bean-type">
+					<xs:attribute name="id"    type="xs:string" use="required"/>
+				</xs:extension>
+			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
+
+	<xs:complexType name="bean-type">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element ref="comment"  minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="class" type="xs:string"/>
+		<xs:attribute name="spec"  type="xs:string"/>
+	</xs:complexType>
 
 	<!-- connects to a database -->
 	<xs:element name="database">
@@ -197,9 +204,9 @@
 	<xs:element name="run-task">
 		<xs:complexType>
 			<xs:complexContent>
-				<xs:extension base="generator-setup"> <!-- TODO this looks like nonsense -->
+				<xs:extension base="bean-type">
 					<xs:attribute name="count"    type="xs:string"/>
-					<xs:attribute name="pageSize" type="xs:string"/>
+					<xs:attribute name="pageSize" type="xs:string"/> <!-- TODO v0.7 support min/maxCount? -->
 					<xs:attribute name="threads"  type="xs:string"/>
 					<xs:attribute name="pager"    type="xs:string"/>
 	                <xs:attribute name="onError"  type="errorhandler-type"/>
