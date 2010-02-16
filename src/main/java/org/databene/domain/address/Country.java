@@ -75,7 +75,7 @@ public class Country {
         this.defaultLanguage = LocaleUtil.getLocale(defaultLanguage);
         this.phoneCode = phoneCode;
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
-        this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO make configuration generic
+        this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO v1.0 make configuration generic
         this.mobilePrefixGenerator = new RegexStringGenerator(mobilCodePattern);
         this.localNumberGenerator = new DigitsGenerator(7);
         this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
