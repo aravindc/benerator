@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,6 +37,7 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.NullableGeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.City;
@@ -69,6 +70,8 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
     private Generator<String> legalFormGenerator;
     private NullableGeneratorProxy<String> locationGenerator;
     
+    private transient ThreadLocalProductWrapper<String> productWrapper;
+    
     public CompanyNameGenerator() {
     	this(true, true, true);
     }
@@ -87,6 +90,7 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
     	this.legalForm = legalForm;
         this.datasetName = datasetName;
         setDataset(datasetName);
+        this.productWrapper = new ThreadLocalProductWrapper<String>();
     }
     
     public void setDataset(String datasetName) {
@@ -104,7 +108,7 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 
 	public String generate() {
         StringBuilder builder = new StringBuilder(core.generate());
-        ProductWrapper<String> wrapper = new ProductWrapper<String>();
+        ProductWrapper<String> wrapper = productWrapper.get();
         if (sectorGenerator != null) {
 			String sec = sectorGenerator.generate(wrapper).product;
 	        if (sec != null)
