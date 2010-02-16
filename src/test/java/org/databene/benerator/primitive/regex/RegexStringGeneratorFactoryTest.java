@@ -209,7 +209,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
     }
     
     private static Generator<String> gen(String pattern, int maxLimit, boolean unique) {
-    	return RegexGeneratorFactory.create(pattern, null, maxLimit, unique);
+    	return RegexGeneratorFactory.create(pattern, maxLimit, unique);
     }
     
 }

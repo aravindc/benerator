@@ -212,13 +212,13 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetUniqueRegexGenerator() {
-      Generator<String> generator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{3}", 3, 3, null);
+      Generator<String> generator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{3}", 3, 3);
       expectUniqueGenerations(generator, 1000).withCeasedAvailability();
   }
 
     private void checkRegexGenerator(String pattern, int minLength, int maxLength, boolean nullable) {
         Generator<String> generator = GeneratorFactory.getRegexStringGenerator(
-                pattern, minLength, maxLength, Locale.GERMAN);
+                pattern, minLength, maxLength);
         RegexStringGeneratorFactoryTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
 
