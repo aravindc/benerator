@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,19 @@
 
 package org.databene.domain.finance;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+
+import org.databene.domain.br.CPFValidator;
+
 /**
  * Bean validation annotation (JSR 303) for fields that represent an IBAN.<br/>
  * <br/>
@@ -34,6 +47,10 @@ package org.databene.domain.finance;
  * @author Volker Bergmann
  */
 
+@Documented
+@Constraint(validatedBy = CPFValidator.class)
+@Target({ METHOD, FIELD, TYPE })
+@Retention(RUNTIME)
 public @interface IBAN {
 
 }
