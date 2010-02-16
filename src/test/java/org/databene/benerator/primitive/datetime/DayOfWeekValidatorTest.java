@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,9 +27,11 @@
 package org.databene.benerator.primitive.datetime;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.junit.Test;
+
 import static junit.framework.Assert.*;
 
 /**
@@ -49,22 +51,30 @@ public class DayOfWeekValidatorTest {
 	@Test
 	public void testWeekend() {
 		DayOfWeekValidator validator = new DayOfWeekValidator();
-		validator.setWeekdaysSupported(false);
+		validator.setWeekdaysAccepted(false);
 		check(validator, false, false, false, false, false, true, true);
 	}
 
 	@Test
 	public void testWeekdays() {
 		DayOfWeekValidator validator = new DayOfWeekValidator();
-		validator.setWeekendsSupported(false);
+		validator.setWeekendsAccepted(false);
 		check(validator, true, true, true, true, true, false, false);
 	}
 
 	@Test
 	public void testExplicitly() {
 		DayOfWeekValidator validator = new DayOfWeekValidator();
-		validator.setDaysOfWeekSupported(true, false, true, false, true, false, true);
+		validator.setDaysOfWeekAccepted(true, false, true, false, true, false, true);
 		check(validator, true, false, true, false, true, false, true);
+	}
+	
+	@Test
+	public void testAnnotation() throws Exception {
+		DayOfWeekValidator validator = new DayOfWeekValidator();
+		DayOfWeek annotation = Dummy.class.getField("date").getAnnotation(DayOfWeek.class);
+		validator.initialize(annotation);
+		check(validator, true, false, true, false, false, false, false);
 	}
 	
 	// private helper method -------------------------------------------------------------------------------------------
@@ -91,4 +101,9 @@ public class DayOfWeekValidatorTest {
 	    }
     }
 	
+    class Dummy {
+    	@DayOfWeek(daysOfWeekAccepted = { DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY }) 
+    	public Date date;
+    }
+    
 }
