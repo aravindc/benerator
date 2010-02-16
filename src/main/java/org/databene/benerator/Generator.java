@@ -79,7 +79,7 @@ public interface Generator<E> extends Resettable, Closeable {
     /**
      * Returns an instance of the generic type E.
      */
-    E generate(); // TODO add Context parameter?
+    E generate();
 
     /**
      * Closes the generator. After invocation the state is <i>unavailable</i>.
