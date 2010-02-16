@@ -108,10 +108,9 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 	private Map<String, String> namespaces;
 	private ResourceManager resourceManager = new ResourceManagerSupport();
 
-	private BeanParser beanParser = new BeanParser();
 
-    
-    // constructors ----------------------------------------------------------------------------------------------------
+	
+	// constructors ----------------------------------------------------------------------------------------------------
     
     public XMLSchemaDescriptorProvider() {
         this(null, null);
@@ -266,7 +265,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 String filename = task.getUri().evaluate(context);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
-                Expression<?> beanExpression = beanParser.parseBeanExpression(child);
+                Expression<?> beanExpression = BeanParser.parseBeanExpression(child);
                 String id = child.getAttribute("id");
 				new CreateBeanStatement(id, beanExpression, this).execute(context);
                 System.out.println(beanExpression.evaluate(context));
@@ -539,7 +538,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element info : infos) {
             String childName = XMLUtil.localName(info);
             if ("bean".equals(childName))
-                beanParser.parseBeanExpression(info);
+                BeanParser.parseBeanExpression(info);
             else if ("variable".equals(childName))
                 parser.parseVariable(info, (ComplexTypeDescriptor) descriptor);
             else if (ATTRIBUTE.equals(childName))
