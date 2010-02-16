@@ -51,6 +51,7 @@ import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
+import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.expression.ConstantExpression;
@@ -90,9 +91,11 @@ public class DescriptorUtil {
 	public static Generator<?> getGeneratorByName(TypeDescriptor descriptor, BeneratorContext context) {
     	try {
 	        Generator<?> generator = null;
-	        String generatorClassName = descriptor.getGenerator();
-	        if (generatorClassName != null) {
-	        	generator = (Generator) BeneratorScriptParser.parseBeanSpec(generatorClassName).evaluate(context);
+	        String generatorSpec = descriptor.getGenerator();
+	        if (generatorSpec != null) {
+	        	generator = (Generator) BeneratorScriptParser.parseBeanSpec(generatorSpec).evaluate(context);
+	        	if (generator instanceof ContextAware)
+	        		((ContextAware) generator).setContext(context);
 	            mapDetailsToBeanProperties(descriptor, generator, context);
 	        }
 	        return generator;
