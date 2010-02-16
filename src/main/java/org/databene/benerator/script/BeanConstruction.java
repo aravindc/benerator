@@ -29,6 +29,7 @@ package org.databene.benerator.script;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.context.ContextAware;
 
 /**
  * {@link Expression} implementation that instantiates a JavaBean by default constructor and 
@@ -57,6 +58,8 @@ public class BeanConstruction<E> implements Expression<E> {
 	    E bean = instantiation.evaluate(context);
 	    for (Assignment assignment : assignments)
 	    	BeanUtil.setPropertyValue(bean, assignment.getName(), assignment.getExpression().evaluate(context), false);
+	    if (bean instanceof ContextAware)
+	    	((ContextAware) bean).setContext(context);
 		return bean;
     }
 
