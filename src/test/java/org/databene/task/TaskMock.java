@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.context.ContextAware;
 
 /**
  * Mock implementation of the {@link Task} interface.<br/><br/>
@@ -33,11 +34,16 @@ import org.databene.commons.ErrorHandler;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class TaskMock extends AbstractTask {
+public class TaskMock extends AbstractTask implements ContextAware {
 
 	public static volatile AtomicInteger count = new AtomicInteger();
 	public int intProp;
+	public Context context;
 	
+	public void setContext(Context context) {
+		this.context = context;
+    }
+
 	public void setIntProp(int intProp) {
     	this.intProp = intProp;
     }
