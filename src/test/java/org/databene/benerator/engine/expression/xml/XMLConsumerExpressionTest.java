@@ -41,14 +41,27 @@ public class XMLConsumerExpressionTest {
 	
 	@SuppressWarnings("unchecked")
     @Test
-	public void testInlineConumer() throws Exception {
+	public void testInlineConsumerClass() throws Exception {
 		Document doc = XMLUtil.parseString("<create-entities " +
-				"consumer='new org.databene.benerator.factory.ConsumerMock()'/>");
+				"consumer='org.databene.benerator.factory.ConsumerMock'/>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
 		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new BeneratorContext());
 		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
 		assertNotNull("Context not set", consumerMock.context);
+	}
+	
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testInlineConsumerSpec() throws Exception {
+		Document doc = XMLUtil.parseString("<create-entities " +
+				"consumer='new org.databene.benerator.factory.ConsumerMock(2)'/>");
+		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
+				new ResourceManagerSupport());
+		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new BeneratorContext());
+		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		assertNotNull("Context not set", consumerMock.context);
+		assertEquals(2, consumerMock.id);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -62,6 +75,36 @@ public class XMLConsumerExpressionTest {
 		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new BeneratorContext());
 		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
 		assertNotNull("Context not set", consumerMock.context);
+	}
+	
+    @Test
+	public void testConsumerBeanRef() throws Exception {
+		Document doc = XMLUtil.parseString("<create-entities>" +
+				"    <consumer ref='myc'/>" +
+				"</create-entities>");
+		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
+				new ResourceManagerSupport());
+		BeneratorContext context = new BeneratorContext();
+		context.set("myc", new ConsumerMock(3));
+		ConsumerChain<?> consumerChain = (ConsumerChain<?>) expression.evaluate(context);
+		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		assertEquals(3, consumerMock.id);
+	}
+	
+	@Test
+	public void testInlineConsumerList() throws Exception {
+		Document doc = XMLUtil.parseString("<create-entities " +
+			"consumer='myc,new org.databene.benerator.factory.ConsumerMock(5)'/>");
+		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
+				new ResourceManagerSupport());
+		BeneratorContext context = new BeneratorContext();
+		context.set("myc", new ConsumerMock());
+		ConsumerChain<?> consumerChain = (ConsumerChain<?>) expression.evaluate(context);
+		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		assertEquals(2, consumerChain.componentCount());
+		assertEquals(consumerMock, consumerChain.getComponent(0));
+		ConsumerMock component2 = (ConsumerMock) consumerChain.getComponent(1);
+		assertEquals(5, component2.id);
 	}
 	
 }
