@@ -156,7 +156,9 @@ public class DescriptorUtil {
 	            	converter = (Converter) bean;
 	            else
 	            	throw new ConfigurationError(bean + " is not an instance of " + Converter.class);
-
+	            if (converter instanceof ContextAware)
+	            	((ContextAware) converter).setContext(context);
+	            
 	        	if (result == null)
 	        		result = converter;
 	        	else if (result instanceof ConverterChain)
@@ -187,6 +189,8 @@ public class DescriptorUtil {
 	        		consumer = (Consumer<?>) bean;
 	        	else
 	        		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
+	        	if (bean instanceof ContextAware)
+	        		((ContextAware) bean).setContext(context);
 	        	result.addComponent(consumer);
 	        }
 	        return result;
