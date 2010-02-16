@@ -59,15 +59,10 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
-import org.databene.model.consumer.Consumer;
-import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.storage.StorageSystem;
-import org.databene.model.storage.StorageSystemConsumer;
 
 /**
  * Utility class for parsing and combining descriptor settings.<br/>
@@ -171,33 +166,6 @@ public class DescriptorUtil {
         	throw new ConfigurationError("Error parsing converter spec: " + converterSpec, e);
         }
     }
-
-	@SuppressWarnings("unchecked")
-    public static ConsumerChain<Entity> parseConsumersSpec(String consumerSpec, BeneratorContext context) {
-        try {
-	        if (StringUtil.isEmpty(consumerSpec))
-	            return null;
-	        Expression[] beanSpecs = BeneratorScriptParser.parseBeanSpecList(consumerSpec);
-	        ConsumerChain<Entity> result = new ConsumerChain<Entity>();
-	        for (Expression beanSpec : beanSpecs) {
-	        	Consumer consumer;
-	        	Object bean = beanSpec.evaluate(context);
-	        	// check consumer type
-	        	if (bean instanceof StorageSystem)
-	        		consumer = new StorageSystemConsumer((StorageSystem) bean, true);
-	        	else if (bean instanceof Consumer)
-	        		consumer = (Consumer<?>) bean;
-	        	else
-	        		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
-	        	if (bean instanceof ContextAware)
-	        		((ContextAware) bean).setContext(context);
-	        	result.addComponent(consumer);
-	        }
-	        return result;
-        } catch (ParseException e) {
-        	throw new ConfigurationError("Error parsing consumer spec: " + consumerSpec, e);
-        }
-	}
 
 	public static Locale getLocale(TypeDescriptor descriptor) {
         Locale locale = descriptor.getLocale();
