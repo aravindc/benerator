@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,13 +21,16 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import org.databene.benerator.util.ContextHolder;
+import org.databene.commons.Context;
+
 /**
  * JavaBean Mock class for testing.<br/><br/>
  * Created: 30.10.2009 08:16:45
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeanMock {
+public class BeanMock extends ContextHolder {
 
 	public int invocationCount;
 	public int lastValue;
@@ -41,6 +44,10 @@ public class BeanMock {
 	    this.invocationCount = 0;
     }
 
+	public Context getContext() {
+		return context;
+	}
+	
 	public void invoke(int value) {
 		lastValue = value;
 		invocationCount++;
