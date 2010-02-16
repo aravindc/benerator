@@ -44,9 +44,7 @@ import org.databene.benerator.test.WeightFunctionMock;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
-import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -129,43 +127,6 @@ public class DescriptorUtilTest {
 		checkGetGeneratorByName(null, null, "new " + GeneratorMock.class.getName() + "[value=3]", 3);
 	}
 
-	@Test
-	public void testParseConsumers() {
-		Entity entity = new Entity("Person", "name", "Alice");
-		BeneratorContext context = new BeneratorContext(".");
-		
-		// test constructor syntax
-		ConsumerChain<Entity> consumer = DescriptorUtil.parseConsumersSpec(ConsumerMock.class.getName(), context);
-		consumer.startConsuming(entity);
-		assertEquals(1, consumer.componentCount());
-		ConsumerMock consumerMock = (ConsumerMock) consumer.getComponent(0);
-		assertEquals(entity, consumerMock.lastEntity);
-		assertEquals(1, consumerMock.id);
-		
-		// test constructor syntax
-		consumer = DescriptorUtil.parseConsumersSpec("new " + ConsumerMock.class.getName() + "(2)", context);
-		consumer.startConsuming(entity);
-		assertEquals(1, consumer.componentCount());
-		consumerMock = (ConsumerMock) consumer.getComponent(0);
-		assertEquals(entity, consumerMock.lastEntity);
-		assertEquals(2, consumerMock.id);
-		
-		// test reference
-		context.set("myconsumer", new ConsumerMock());
-		consumer = DescriptorUtil.parseConsumersSpec("myconsumer", context);
-		consumer.startConsuming(entity);
-		assertEquals(1, consumer.componentCount());
-		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).lastEntity);
-		
-		// test comma-separated combination
-		context.set("myconsumer", new ConsumerMock());
-		consumer = DescriptorUtil.parseConsumersSpec("myconsumer," + ConsumerMock.class.getName(), context);
-		consumer.startConsuming(entity);
-		assertEquals(2, consumer.componentCount());
-		assertEquals(entity, ((ConsumerMock) consumer.getComponent(0)).lastEntity);
-		assertEquals(entity, ((ConsumerMock) consumer.getComponent(1)).lastEntity);
-	}
-	
 	// distribution tests ----------------------------------------------------------------------------------------------
 	
 	@Test
