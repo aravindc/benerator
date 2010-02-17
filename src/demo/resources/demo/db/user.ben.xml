@@ -43,7 +43,7 @@
 		insert into db_role (id, name, mx) values (3, 'c', 7);
 	</execute> 
 	
-	<create-entities type="db_dummy" count="1" consumer="db" > <!-- TODO don't use max=9 for IDs -->
+	<create-entities type="db_dummy" count="1" consumer="db" >
 		<id name="id" generator="IncrementGenerator" />
 	</create-entities>
 	
