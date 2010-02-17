@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.csv.SequencedDatasetCSVGenerator;
+import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
@@ -256,11 +258,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
 		if (dataset != null && nesting != null) {
-			generator = null;
-			/*TODO support csv datasets
-		    generator = new WeightedDatasetCSVGenerator(sourceName, separator, dataset, nesting, encoding);
-		    generator = new ConvertingGenerator(generator, preprocessor);
-		    */
+			if (uniqueness.isUnique()) {
+			    generator = new SequencedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
+			    		distribution, encoding, new ScriptConverter(context));
+			} else {
+			    generator = new WeightedDatasetCSVGenerator(sourceName, separator, dataset, nesting, 
+			    		encoding, new ScriptConverter(context));
+			}
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
         	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverter(context));
         } else {
