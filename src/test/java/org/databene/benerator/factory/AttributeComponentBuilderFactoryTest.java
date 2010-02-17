@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -57,9 +57,10 @@ import static junit.framework.Assert.*;
  */
 public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest {
 	
-	// TODO v0.6 define tests for all syntax paths
+	// TODO v1.0 define tests for all syntax paths
 	
-	private String contextUri = "./";
+	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
+
 /*
     private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
     
@@ -67,6 +68,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
             "type", "unique", "nullable", "minCount", "maxCount", "count", "nullQuota");
     
 */
+
 	@SuppressWarnings("unchecked")
     @Test
 	public void testEmptyConstantAttribute() {
@@ -154,8 +156,6 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 
 	// csv string source -----------------------------------------------------------------------------------------------
 	
-	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
-
 	@Test
 	public void testCSVStringAttribute() {
 		PartDescriptor name = createCSVStringAttributeDescriptor();
@@ -178,15 +178,13 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		expectUniqueSet(name, "Alice", "Bob", "Charly");
 	}
 
-	/** TODO v0.6 support random unique
 	@Test
 	public void testCSVStringAttributeRandomUnique() {
-		PartDescriptor name = createCSVStringAttributeBuilder();
-		name.getLocalType().setDistribution(Sequence.RANDOM);
+		PartDescriptor name = createCSVStringAttributeDescriptor();
+		name.getLocalType().setDistribution("random");
 		name.setUnique(true);
-		expectGeneratedSet(name, "Alice", "Bob", "Charly");
+		expectUniqueSet(name, "Alice", "Bob", "Charly");
 	}
-	*/
 
 	private PartDescriptor createCSVStringAttributeDescriptor() {
 		return createCSVStringAttributeDescriptor(NAMES_CSV, ",");
@@ -614,7 +612,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private ComponentBuilder createComponentBuilder(ComponentDescriptor component) {
-		return createComponentBuilder(component, new BeneratorContext(contextUri));
+		return createComponentBuilder(component, new BeneratorContext());
 	}
 	
 	private ComponentBuilder createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
