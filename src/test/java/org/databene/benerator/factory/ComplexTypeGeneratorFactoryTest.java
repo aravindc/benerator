@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -112,21 +113,25 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
 	
-/*
 	@Test
-	public void testUniqueCSVImport() { // TODO v0.6.0 uniqueness
-		ComplexTypeDescriptor type = new ComplexTypeDescriptor("Person");
+	public void testUniqueCSVImport() {
+		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource("org/databene/benerator/factory/person.csv");
 		InstanceDescriptor instance = new InstanceDescriptor("person", type);
 		instance.setUnique(true);
-		Generator<Entity> generator = createGenerator(type);
+		Generator<Entity> generator = createGenerator(instance);
 		Entity person1 = generator.generate();
 		Entity person2 = generator.generate();
 		assertTrue(alice.equals(person1) && otto.equals(person2) || otto.equals(person1) && alice.equals(person2));
-		assertFalse(generator.available());
+		assertUnavailable(generator);
 	}
-*/
+
 	// private helpers -------------------------------------------------------------------------------------------------
+	
+	private Generator<Entity> createGenerator(InstanceDescriptor instance) {
+		ComplexTypeDescriptor type = (ComplexTypeDescriptor) instance.getTypeDescriptor();
+		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, instance.getUniqueness(), context);
+	}
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
 		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, Uniqueness.NONE, context);
