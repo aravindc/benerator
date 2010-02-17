@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,14 +40,19 @@ import static junit.framework.Assert.*;
 public class TypeManagerTest {
 
 	@Test
-	public void test() {
-		check(Integer.class, Integer.class, Integer.class); // same
+	public void testSame() {
+		check(Integer.class, Integer.class, Integer.class);
+		check(Long.class, Long.class, Long.class);
+	}
+
+	@Test
+	public void testDifferent() {
 		check(Long.class, Integer.class, Long.class);		// 1st < 2nd
 		check(Long.class, Long.class, Integer.class);		// 2nd < 1st
 	}
 
-    private static void check(Class<?> expected, Class<?> type1, Class<?> type2) {
-	    assertEquals(expected, TypeManager.combinedType(type1, type2));
+    private static void check(Class<?> expectedResult, Class<?> type1, Class<?> type2) {
+	    assertEquals(expectedResult, TypeManager.combinedType(type1, type2));
     }
 	
 }
