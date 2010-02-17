@@ -26,7 +26,12 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.model.data.IdDescriptor;
+import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.junit.Test;
 
 /**
@@ -38,25 +43,29 @@ import org.junit.Test;
  */
 public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	
-//	private String contextUri = "./";
-	
 	/**
 	 * Test unique generation based on random sequence.
 	 * <attribute distribution="random" unique="true"/>
 	 */
 	@Test
 	public void testUniqueRandom() {
-		/* TODO v0.6 support unique random?
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "int").withMin("1").withMax("3").withDistribution("random");
 		InstanceDescriptor instance = new InstanceDescriptor("n", type).withUnique(true);
 		Generator<Integer> generator = createInstanceGenerator(instance);
 		expectGeneratedSet(generator, 1, 2, 3).withCeasedAvailability();
-	*/
 	}
-/*
-	private Generator<Integer> createInstanceGenerator(InstanceDescriptor instance) {
-		BeneratorContext context = new BeneratorContext(contextUri);
-		return (Generator<Integer>) InstanceGeneratorFactory.createInstanceGenerator(instance, context);
+	
+	@Test
+	public void testDefaultId() {
+		IdDescriptor descriptor = new IdDescriptor("id", "int");
+		Generator<Integer> generator = createInstanceGenerator(descriptor);
+		expectGeneratedSet(generator, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withContinuedAvailability();
 	}
-*/
+	
+	@SuppressWarnings("unchecked")
+    private Generator<Integer> createInstanceGenerator(InstanceDescriptor instance) {
+		BeneratorContext context = new BeneratorContext();
+		return (Generator<Integer>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, context);
+	}
+
 }

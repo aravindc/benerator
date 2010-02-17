@@ -45,6 +45,7 @@ import org.databene.benerator.primitive.regex.RegexStringGeneratorFactoryTest;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.model.data.Uniqueness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -89,7 +90,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
     
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
-        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, sequence, false, 0);
+        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, sequence, Uniqueness.NONE, 0);
         for (int i = 0; i < 5; i++) {
             T n = generator.generate();
             assertTrue("Generated value (" + n + ") is smaller than min (" + min + ") using " + sequence, 
@@ -99,7 +100,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, WeightFunction weightFunction) {
-        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, weightFunction, false, 0);
+        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, weightFunction, Uniqueness.NONE, 0);
         int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
         int[] count = new int[range];
         for (int i = 0; i < 1000; i++) {

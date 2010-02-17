@@ -33,6 +33,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -128,7 +129,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private Generator<Entity> createGenerator(ComplexTypeDescriptor type) {
-		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, false, context);
+		return ComplexTypeGeneratorFactory.createComplexTypeGenerator(type.getName(), type, Uniqueness.NONE, context);
 	}
 	
 }

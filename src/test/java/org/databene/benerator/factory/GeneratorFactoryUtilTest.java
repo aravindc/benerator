@@ -29,6 +29,7 @@ package org.databene.benerator.factory;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.Uniqueness;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -47,8 +48,9 @@ public class GeneratorFactoryUtilTest {
 	public void testGetDistributionDefault() {
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
 		BeneratorContext context = new BeneratorContext(null);
-		assertNull(GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context));
-		assertEquals(Sequence.EXPAND, GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), true, true, context));
+		assertNull(GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context));
+		assertEquals(Sequence.EXPAND, 
+				GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.SIMPLE, true, context));
 	}
 
 }
