@@ -63,7 +63,7 @@ public class GeneratorFactoryUtil {
     public static void mapDetailToBeanProperty(FeatureDescriptor descriptor, String detailName, Object bean, Context context) {
         Object detailValue = descriptor.getDetailValue(detailName);
         if (detailValue instanceof Expression)
-        	detailValue = ((Expression<?>) detailValue).evaluate(context); // TODO is it OK to always evaluate the expression?
+        	detailValue = ((Expression<?>) detailValue).evaluate(context);
 		setBeanProperty(bean, detailName, detailValue, context);
     }
 
