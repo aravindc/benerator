@@ -58,7 +58,7 @@ public class DefaultDescriptorProvider implements DescriptorProvider {
         this.redefinable = redefinable;
     }
 
-    protected void addDescriptor(TypeDescriptor descriptor) {
+    public void addDescriptor(TypeDescriptor descriptor) {
         if (!redefinable && typeMap.get(descriptor.getName()) != null)
             throw new ConfigurationError("Type has already been defined: " + descriptor.getName());
         typeMap.put(descriptor.getName(), descriptor);
