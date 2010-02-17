@@ -78,7 +78,7 @@ public class LocalCSVGenerator<E> extends WeightedCSVSampleGenerator<E> {
     }
 
     public void setLocale(Locale locale) {
-        super.setUrl(availableUri(baseName, locale, suffix));
+        this.uri = availableUri(baseName, locale, suffix);
         this.locale = locale;
     }
 
