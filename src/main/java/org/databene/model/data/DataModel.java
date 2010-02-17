@@ -62,6 +62,10 @@ public class DataModel {
             validate();
     }
     
+    public DescriptorProvider getDescriptorProvider(String id) {
+    	return providers.get(id);
+    }
+    
     public void removeDescriptorProvider(String id) {
 	    providers.remove(id);
     }
@@ -156,7 +160,7 @@ public class DataModel {
 
     public void clear() {
         providers.clear();
-        addDescriptorProvider(new BasicDescriptorProvider(), false);
+        addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE, false);
     }
 
 }
