@@ -47,9 +47,9 @@ public class TimedTask<E extends Task> extends TaskProxy<E> {
     }
 
     @Override
-    public boolean executeStep(Context context, ErrorHandler errorHandler) {
+    public TaskResult execute(Context context, ErrorHandler errorHandler) {
         long startTime = System.currentTimeMillis();
-        boolean result = super.executeStep(context, errorHandler);
+        TaskResult result = super.execute(context, errorHandler);
         logger.info(String.valueOf(System.currentTimeMillis() - startTime));
         return result;
     }

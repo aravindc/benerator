@@ -202,7 +202,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     @SuppressWarnings("unchecked")
     private long executePageSingleThreaded(Context context, ErrorHandler errorHandler, long currentPageSize) {
         Task task = new LoopedTask(target, currentPageSize);
-        task.executeStep(context, errorHandler);
+        task.execute(context, errorHandler);
         IOUtil.close(task);
         return currentPageSize;
     }

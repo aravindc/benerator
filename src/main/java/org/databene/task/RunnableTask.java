@@ -46,11 +46,11 @@ public class RunnableTask extends AbstractTask {
         this.runnable = runnable;
     }
 
-    public boolean executeStep(Context context, ErrorHandler errorHandler) {
+    public TaskResult execute(Context context, ErrorHandler errorHandler) {
     	if (runnable instanceof ContextAware)
     		((ContextAware) runnable).setContext(context);
         runnable.run();
-        return true;
+        return TaskResult.EXECUTING;
     }
     
 }

@@ -47,17 +47,18 @@ public class SequentialTask extends CompositeTask {
 	    super(taskName);
     }
 
-	public boolean executeStep(Context context, ErrorHandler errorHandler) {
-		boolean repeat = true;
+	public TaskResult execute(Context context, ErrorHandler errorHandler) {
+		TaskResult result = TaskResult.EXECUTING;
 	    for (Task subTask : subTasks) {
-	    	if (!runSubTask(subTask, context, errorHandler))
-	    		repeat = false;
+	    	TaskResult subResult = runSubTask(subTask, context, errorHandler);
+			if (subResult != TaskResult.EXECUTING)
+	    		result = subResult;
 	    }
-	    return repeat;
+	    return result;
     }
 
-	protected boolean runSubTask(Task subTask, Context context, ErrorHandler errorHandler) {
-	    return subTask.executeStep(context, errorHandler);
+	protected TaskResult runSubTask(Task subTask, Context context, ErrorHandler errorHandler) {
+	    return subTask.execute(context, errorHandler);
     }
 	
 }

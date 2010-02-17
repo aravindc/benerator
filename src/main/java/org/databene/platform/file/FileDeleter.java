@@ -32,6 +32,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.task.AbstractTask;
+import org.databene.task.TaskResult;
 
 /**
  * Deletes one or more files.<br/>
@@ -53,7 +54,7 @@ public class FileDeleter extends AbstractTask {
     	this.files = files;
     }
 
-	public boolean executeStep(Context ctx, ErrorHandler errorHandler) {
+	public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
 		BeneratorContext context = (BeneratorContext) ctx;
 		for (String filename : files) {
 			File file = new File(context.resolveRelativeUri(filename));
@@ -68,7 +69,7 @@ public class FileDeleter extends AbstractTask {
 			} else
 				errorHandler.handleError("File not found: " + file);
 		}
-		return false;
+		return TaskResult.FINISHED;
     }
 
 }

@@ -85,7 +85,7 @@ public class FileJoinerTest extends FileTest {
 			joiner.setDestination(destFile.getAbsolutePath());
 			joiner.setDeleteSources(deleteSources);
 			for (int i = 0; i < executionCount; i++)
-				joiner.executeStep(context, ErrorHandler.getDefault());
+				joiner.execute(context, ErrorHandler.getDefault());
 			assertEquals(deleteSources, !sourceFile1.exists());
 			assertEquals(deleteSources, !sourceFile2.exists());
 			assertEquals(result, IOUtil.getContentOfURI(destFile.getAbsolutePath()));

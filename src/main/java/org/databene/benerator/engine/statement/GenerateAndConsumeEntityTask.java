@@ -45,6 +45,7 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.task.AbstractTask;
+import org.databene.task.TaskResult;
 
 /**
  * Task that creates one entity instance per run() invocation and sends it to the specified consumer.<br/><br/>
@@ -86,14 +87,14 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
         return ThreadSupport.MULTI_THREADED;
     }
     
-    public boolean executeStep(Context ctx, ErrorHandler errorHandler) {
+    public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
     	BeneratorContext context = (BeneratorContext) ctx;
     	try {
     		// generate entity
 	        Entity entity = entityGenerator.generate();
 	        if (entity == null) {
 		        Thread.yield();
-	        	return false;
+	        	return TaskResult.UNAVAILABLE;
 	        }
 	        // consume entity
         	Consumer<Entity> consumer = getConsumer(context);
@@ -104,10 +105,10 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
         	if (consumer != null)
         		consumer.finishConsuming(entity);
 	        Thread.yield();
-	        return true;
+	        return TaskResult.EXECUTING;
     	} catch (Exception e) {
 			errorHandler.handleError("Error in execution of task " + getTaskName(), e);
-    		return true; // stay available if the ErrorHandler has not canceled execution
+    		return TaskResult.EXECUTING; // stay available if the ErrorHandler has not canceled execution
     	}
     }
     

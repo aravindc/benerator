@@ -58,7 +58,7 @@ public class TaskRunnable implements Runnable {
 
     public void run() {
         try {
-            target.executeStep(context, errorHandler);
+            target.execute(context, errorHandler);
             if (closeAfterwards)
                 IOUtil.close(target);
         } finally {

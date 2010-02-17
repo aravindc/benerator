@@ -46,12 +46,13 @@ public class LoopedTask<E extends Task> extends TaskProxy<E> {
     }
 
     @Override
-    public boolean executeStep(Context context, ErrorHandler errorHandler) {
+    public TaskResult execute(Context context, ErrorHandler errorHandler) {
         for (int i = 0; i < loopSize; i++) {
-            if (!super.executeStep(context, errorHandler))
-            	return false;
+            TaskResult stepResult = super.execute(context, errorHandler);
+			if (stepResult != TaskResult.EXECUTING)
+            	return stepResult;
         }
-        return true;
+        return TaskResult.EXECUTING;
     }
 
 	public void setLoopSize(long loopSize) {

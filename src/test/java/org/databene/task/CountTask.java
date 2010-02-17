@@ -60,9 +60,14 @@ public class CountTask implements Task {
 	    return ThreadSupport.MULTI_THREADED;
     }
 
-    public boolean executeStep(Context context, ErrorHandler errorHandler) {
+    public TaskResult execute(Context context, ErrorHandler errorHandler) {
         runCount++;
-        return (runLimit < 0 || runCount < runLimit);
+        if (runLimit < 0 || runCount < runLimit)
+        	return TaskResult.EXECUTING;
+        else if (runCount == runLimit)
+        	return TaskResult.FINISHED;
+        else
+        	return TaskResult.UNAVAILABLE;
     }
 
     public void close() {

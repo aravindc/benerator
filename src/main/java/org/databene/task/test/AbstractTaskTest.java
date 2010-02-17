@@ -25,6 +25,8 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Level;
 import org.databene.task.Task;
+import org.databene.task.TaskResult;
+
 import static org.junit.Assert.*;
 
 /**
@@ -36,11 +38,12 @@ import static org.junit.Assert.*;
 public class AbstractTaskTest {
 
 	protected static void executeStepAndAssertAvailability(Task task, Context context) {
-		assertTrue("Task is expected to be available", task.executeStep(context, errorHandler()));
+		assertEquals("Task is expected to be available", TaskResult.EXECUTING, task.execute(context, errorHandler()));
 	}
 	
 	protected static void executeStepAndAssertUnavailability(Task task, Context context) {
-		assertFalse("Task is expected to be unavailable", task.executeStep(context, errorHandler()));
+		assertTrue("Task is expected to be unavailable", 
+				task.execute(context, errorHandler()) != TaskResult.EXECUTING);
 	}
 
 	static ErrorHandler errorHandler() {

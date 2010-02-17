@@ -55,7 +55,7 @@ public class FileDeleterTest extends FileTest {
 			assertTrue(sourceFile2.exists());
 			FileDeleter deleter = new FileDeleter();
 			deleter.setFiles(new String[] { sourceFile1.getAbsolutePath(), sourceFile2.getAbsolutePath() });
-			deleter.executeStep(new BeneratorContext(), ErrorHandler.getDefault());
+			deleter.execute(new BeneratorContext(), ErrorHandler.getDefault());
 			assertFalse(sourceFile1.exists());
 			assertFalse(sourceFile2.exists());
 		} finally {

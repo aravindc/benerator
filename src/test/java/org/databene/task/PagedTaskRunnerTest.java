@@ -94,8 +94,8 @@ public class PagedTaskRunnerTest {
     		int expectedInstanceCount) {
         ParallelizableCounterTask.instanceCount.set(0);
         ParallelizableCounterTask task = new ParallelizableCounterTask() {
-			public boolean executeStep(Context context, ErrorHandler errorHandler) { 
-				return true;
+			public TaskResult execute(Context context, ErrorHandler errorHandler) { 
+				return TaskResult.EXECUTING;
 			}
         };
         PagedTaskRunner pagedTask = new PagedTaskRunner(task, 

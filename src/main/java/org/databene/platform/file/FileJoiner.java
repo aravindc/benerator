@@ -39,6 +39,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 import org.databene.task.AbstractTask;
+import org.databene.task.TaskResult;
 
 /**
  * Joins several source files into a destination file. 
@@ -95,7 +96,7 @@ public class FileJoiner extends AbstractTask {
 
 	// Task interface implementation -----------------------------------------------------------------------------------
 
-	public boolean executeStep(Context ctx, ErrorHandler errorHandler) {
+	public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
 		Assert.notNull(destination, "property 'destination'");
 		BeneratorContext context = (BeneratorContext) ctx;
 		byte[] buffer = new byte[BUFFER_SIZE];
@@ -117,7 +118,7 @@ public class FileJoiner extends AbstractTask {
         } finally {
 			IOUtil.close(out);
 		}
-        return false;
+        return TaskResult.FINISHED;
     }
 
     // private helpers -------------------------------------------------------------------------------------------------

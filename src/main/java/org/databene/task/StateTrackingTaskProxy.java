@@ -34,23 +34,23 @@ import org.databene.commons.ErrorHandler;
  */
 public class StateTrackingTaskProxy<E extends Task> extends TaskProxy<E> implements Cloneable {
 
-	protected boolean available;
+	protected TaskResult state;
 	
 	public StateTrackingTaskProxy(E realTask) {
 	    super(realTask);
-	    this.available = true;
+	    this.state = TaskResult.EXECUTING;
     }
 
 	public boolean isAvailable() {
-		return available;
+		return (state == TaskResult.EXECUTING);
 	}
 	
 	@Override
-	public synchronized boolean executeStep(Context context, ErrorHandler errorHandler) {
-		if (!available)
-			return false;
-	    available = super.executeStep(context, errorHandler);
-	    return available;
+	public synchronized TaskResult execute(Context context, ErrorHandler errorHandler) {
+		if (!isAvailable())
+			return TaskResult.UNAVAILABLE;
+	    state = super.execute(context, errorHandler);
+	    return state;
 	}
 	
     @Override

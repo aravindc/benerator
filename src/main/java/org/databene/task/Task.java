@@ -50,8 +50,7 @@ public interface Task extends ThreadAware, Closeable {
     
     /** 
      * Executes the task's work, possibly interacting with the context.
-     * @return true if it should be called again, else false
      */
-    boolean executeStep(Context context, ErrorHandler errorHandler);
+    TaskResult execute(Context context, ErrorHandler errorHandler);
 
 }

@@ -56,8 +56,8 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask {
         setTaskName(realTask != null ? realTask.getClass().getSimpleName() : "undefined");
     }
     
-    public boolean executeStep(Context context, ErrorHandler errorHandler) {
-        return realTask.executeStep(context, errorHandler);
+    public TaskResult execute(Context context, ErrorHandler errorHandler) {
+        return realTask.execute(context, errorHandler);
     }
 
     @Override
