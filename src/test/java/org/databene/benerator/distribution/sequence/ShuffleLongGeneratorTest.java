@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,18 +48,18 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     public void testInstantiation() throws Exception {
         new ShuffleLongGenerator();
         new ShuffleLongGenerator(0, 10);
-        new ShuffleLongGenerator(0, 10, 1);
+        new ShuffleLongGenerator(0, 10, 1, 1);
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testIncrement0() throws Exception {
-        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 0);
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 0);
         generator.validate();
     }
 
 	@Test
     public void testIncrement1() throws Exception {
-        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1);
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 1);
         assertEquals(0, (long) generator.generate());
         assertEquals(1, (long) generator.generate());
         assertEquals(2, (long) generator.generate());
@@ -69,7 +69,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testIncrement2() throws Exception {
-        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 2);
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 2);
         assertEquals(0, (long)generator.generate());
         assertEquals(2, (long)generator.generate());
         assertEquals(1, (long)generator.generate());
@@ -79,7 +79,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testIncrement3() throws Exception {
-        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 3);
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 3);
         assertEquals(0, (long)generator.generate());
         assertEquals(3, (long)generator.generate());
         assertEquals(1, (long)generator.generate());
@@ -89,7 +89,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testIncrement4() throws Exception {
-        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 4);
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 4);
         assertEquals(0, (long)generator.generate());
         assertEquals(1, (long)generator.generate());
         assertEquals(2, (long)generator.generate());
@@ -99,7 +99,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testReset() throws Exception {
-        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 2);
+        ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 2);
         expectGeneratedSequence(generator, 0L, 2L, 1L, 3L).withCeasedAvailability();
     }
 
