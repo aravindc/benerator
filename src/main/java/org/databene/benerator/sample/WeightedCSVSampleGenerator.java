@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,18 +27,13 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.commons.ConversionException;
+import org.databene.benerator.csv.CSVGeneratorUtil;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.document.csv.CSVLineIterator;
 
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Sample Generator for values that are read from a CSV file.
@@ -118,31 +113,11 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> { // TODO mer
         return source.generate();
     }
 
-    @SuppressWarnings({ "unchecked", "cast" })
     public void validate() {
         if (dirty) {
-            try {
-                CSVLineIterator iterator = new CSVLineIterator(url, ',', encoding);
-                List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
-                while (iterator.hasNext()) {
-                    String[] tokens = iterator.next();
-                    if (tokens.length == 0)
-                        continue;
-                    double weight = (tokens.length < 2 ? 1. : Double.parseDouble(tokens[1]));
-                    E value = converter.convert(tokens[0]);
-                    WeightedSample<E> sample = new WeightedSample<E>(value, weight);
-                    samples.add(sample);
-                }
-                WeightedSample<E>[] sampleArray = new WeightedSample[samples.size()];
-                source.setSamples((WeightedSample<E>[]) samples.toArray(sampleArray));
-                dirty = false;
-            } catch (FileNotFoundException e) {
-                throw new InvalidGeneratorSetupException("url", "not found: " + url);
-            } catch (IOException e) {
-                throw new IllegalGeneratorStateException(e); // file access was interrupted, no fail-over
-            } catch (ConversionException e) {
-                throw new InvalidGeneratorSetupException("URL content not valid", e);
-            }
+            List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(url, ',', encoding, converter);
+            source.setSamples(CollectionUtil.toArray(samples));
+            dirty = false;
         }
     }
 
