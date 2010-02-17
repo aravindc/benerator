@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,28 +33,28 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Long Generator that implements a 'shuffle' Long Sequence: 
  * It starts with min and produced numbers by continuously incrementing the cursor 
  * by a fix <code>increment</code> value; when <code>max</code> is reached, it 
- * repeats the procedure starting by min+1, later min+2 and so on.
+ * repeats the procedure starting by min+precision, later min+2*precision and so on.
  * The generated numbers are unique as long as the generator is not reset.<br/>
  * <br/>
  * Created: 18.06.2006 14:40:29
  * @since 0.1
  * @author Volker Bergmann
  */
-public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TODO support precision (see version for double)
+public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> {
 
-    private Long next;
     private long increment;
+    private Long next;
 
     public ShuffleLongGenerator() {
         this(Long.MIN_VALUE, Long.MAX_VALUE);
     }
 
     public ShuffleLongGenerator(long min, long max) {
-        this(min, max, 2);
+        this(min, max, 2, 1);
     }
 
-    public ShuffleLongGenerator(long min, long max, long increment) {
-        super(Long.class, min, max, increment);
+    public ShuffleLongGenerator(long min, long max, long precision, long increment) {
+        super(Long.class, min, max, precision);
         this.increment = increment;
         reset();
     }
@@ -75,10 +75,12 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TOD
     @Override
 	public void validate() {
         if (dirty) {
-        	if (increment == 0)
-        		throw new InvalidGeneratorSetupException("increment must be greater than 0, but was: " + increment);
-            next = min;
+            if (precision <= 0)
+                throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
+            if (min < max && increment <= 0)
+                throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
             super.validate();
+            next = min;
         }
     }
 
@@ -88,12 +90,11 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> { // TOD
         if (next == null)
         	return null;
         long result = next;
-        long increment = getIncrement();
         if (next + increment <= max)
         	next += increment;
         else {
-        	long newOffset = (next - min + 1) % increment;
-        	next = (newOffset != 0 ? min + newOffset : null);
+        	long newOffset = (next - min + precision) % increment;
+        	next = (newOffset > 0 ? min + newOffset : null);
         }
         return result;
     }

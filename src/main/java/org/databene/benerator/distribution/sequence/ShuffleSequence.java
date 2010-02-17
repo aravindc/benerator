@@ -65,7 +65,7 @@ public class ShuffleSequence extends Sequence {
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = new ShuffleLongGenerator(
-					toLong(min), toLong(max), toLong(increment));
+					toLong(min), toLong(max), toLong(precision), toLong(increment));
 		else
 			base = new ShuffleDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(precision), toDouble(increment));

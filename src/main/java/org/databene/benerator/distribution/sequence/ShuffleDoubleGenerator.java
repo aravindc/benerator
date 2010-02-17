@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,11 +34,12 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Double Generator that implements a 'shuffle' Double Sequence.<br/>
  * <br/>
  * Created: 18.06.2006 14:40:29
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     private double increment;
-
     private Double next;
 
     public ShuffleDoubleGenerator() {
@@ -77,11 +78,13 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
             if (min < max && increment <= 0)
                 throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
     		super.validate();
+            next = min;
     	}
     }
     
     public Double generate() throws IllegalGeneratorStateException {
-    	validate();
+    	if (dirty)
+    		validate();
     	if (next == null)
     		return null;
         double result = next;
