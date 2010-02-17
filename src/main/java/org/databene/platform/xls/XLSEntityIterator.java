@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,8 +39,12 @@ import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.xls.XLSLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
+import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
+import org.databene.model.data.PrimitiveDescriptorProvider;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.array.Array2EntityConverter;
 
 /**
@@ -123,28 +127,66 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	public String toString() {
 		return getClass().getSimpleName() + "[" + uri + "]";
 	}
+	
+	// private helpers -------------------------------------------------------------------------------------------------
 
     private void nextSheet() {
     	if (sheetNo < workbook.getNumberOfSheets() - 1) {
 			this.sheetNo++;
-			source = createSheetIterator(workbook.getSheetAt(sheetNo), workbook.getSheetName(sheetNo), preprocessor);
+			source = createSheetIterator(
+					workbook.getSheetAt(sheetNo), workbook.getSheetName(sheetNo), preprocessor, uri);
     	} else
     		source = null;
     }
 
 	private static HeavyweightIterator<Entity> createSheetIterator(
-			HSSFSheet sheet, String sheetName, Converter<String, ?> preprocessor) {
-	    XLSLineIterator sheetIterator = new XLSLineIterator(sheet, preprocessor);
-	    String featureNames[] = sheetIterator.getHeaders();
-	    DataModel dataModel = DataModel.getDefaultInstance();
-	    ComplexTypeDescriptor typeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(sheetName);
-	    if (typeDescriptor == null) {
-	    	typeDescriptor = new ComplexTypeDescriptor(sheetName);
-	    	// TODO set components
-	    	// TODO add typeDescriptor to dataModel
-	    }
-	    Array2EntityConverter converter = new Array2EntityConverter(typeDescriptor, featureNames);
-	    return new ConvertingIterator<Object[], Entity>(sheetIterator, converter);
+			HSSFSheet sheet, String sheetName, Converter<String, ?> preprocessor, String uri) {
+		return new SheetIterator(sheet, sheetName, preprocessor, uri);
     }
+	
+	static class SheetIterator extends ConvertingIterator<Object[], Entity> {
+		
+		String defaultProviderId;
+		String complexTypeName;
+		ComplexTypeDescriptor complexTypeDescriptor = null;
+		
+		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
+	        super(new XLSLineIterator(sheet, preprocessor), null);
+	        this.complexTypeName = complexTypeName;
+	        this.defaultProviderId = defaultProviderId;
+        }
+		
+		@Override
+		public synchronized Entity next() {
+			Object[] feed = source.next();
+			if (complexTypeDescriptor == null)
+				init(feed);
+		    return converter.convert(feed);
+		}
+
+		private void init(Object[] feed) {
+			String headers[] = ((XLSLineIterator) source).getHeaders();
+		    DataModel dataModel = DataModel.getDefaultInstance();
+		    complexTypeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(complexTypeName);
+		    if (complexTypeDescriptor == null) {
+		    	complexTypeDescriptor = new ComplexTypeDescriptor(complexTypeName);
+		    	for (int i = 0; i < headers.length; i++) {
+		    		String header = headers[i];
+		    		SimpleTypeDescriptor componentType = 
+		    			PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(feed[i].getClass());
+		    		ComponentDescriptor component = new ComponentDescriptor(header, componentType);
+		    		complexTypeDescriptor.addComponent(component);
+		    	}
+		    	DefaultDescriptorProvider provider = (DefaultDescriptorProvider) dataModel.getDescriptorProvider(defaultProviderId);
+		    	if (provider == null) {
+		    		provider = new DefaultDescriptorProvider(defaultProviderId);
+		    		dataModel.addDescriptorProvider(provider);
+		    	}
+		    	provider.addDescriptor(complexTypeDescriptor);
+		    }
+		    converter = new Array2EntityConverter(complexTypeDescriptor, headers);
+        }
+		
+	}
 	
 }
