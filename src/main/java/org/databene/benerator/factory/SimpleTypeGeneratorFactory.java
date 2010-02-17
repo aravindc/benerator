@@ -194,8 +194,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     @SuppressWarnings("unchecked")
     public static Generator<?> createSourceAttributeGenerator(
     		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-    	// TODO v0.6 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
-    	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();
         if (source == null)
             return null;
