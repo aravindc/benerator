@@ -6,18 +6,18 @@
 	<bean id="exporter" class="org.databene.model.consumer.ConsoleExporter" />
 
 	<echo message="american cities:" />
-	<create-entities type="city" consumer="exporter" count="10"> <!-- TODO v0.6 support uniqueness, remove count -->
+	<create-entities type="city" consumer="exporter">
 	    <attribute name="name" unique="true" 
 	    	source="demo/dataset/city_{0}.csv" dataset="america" nesting="demo/dataset/area" encoding="UTF-8"/>
 	</create-entities>
 
 	<echo message="north american cities:" />
-	<create-entities type="city" consumer="exporter" count="10"> <!-- TODO v0.6 support uniqueness, remove count -->
+	<create-entities type="city" consumer="exporter">
 	    <attribute name="name" unique="true" source="demo/dataset/city_{0}.csv" dataset="north_america" nesting="demo/dataset/area" encoding="UTF-8"/>
 	</create-entities>
 
 	<echo message="anglo american cities:" />
-	<create-entities type="city" consumer="exporter" count="10"> <!-- TODO v0.6 support uniqueness, remove count -->
+	<create-entities type="city" consumer="exporter">
 	    <attribute name="name" unique="true" source="demo/dataset/city_{0}.csv" dataset="anglo_america" nesting="demo/dataset/area" encoding="UTF-8"/>
 	</create-entities>
 
