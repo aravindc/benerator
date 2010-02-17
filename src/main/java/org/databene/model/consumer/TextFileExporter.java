@@ -176,8 +176,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     protected void initPrinter(E data) throws IOException {
         if (uri == null)
             throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
-        // TODO v0.6 create sub folders if necessary
-        printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator);
+        printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator, true);
         postInitPrinter(data);
     }
 
