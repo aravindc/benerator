@@ -54,7 +54,7 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 
 	public static final int DEFAULT_CACHE_SIZE = 100000;
 	public static final int MIN_BUCKET_SIZE = 10;
-	public static final float DEFAULT_DUPLICATION_QUOTA = 0.5f;
+	public static final float DEFAULT_DUPLICATION_QUOTA = 0;
 	
 	private float duplicationQuota;
 	private int cacheSize;
