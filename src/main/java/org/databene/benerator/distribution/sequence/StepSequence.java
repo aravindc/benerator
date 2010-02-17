@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,9 +50,14 @@ public class StepSequence extends Sequence {
 	private BigDecimal initial;
 	
 	public StepSequence() {
-	    this(null);
+	    this(null); // when using null, the precision parameter will be used to set the increment in createGenerator
     }
 	
+	/**
+	 * @param increment the increment to choose for created generators. 
+	 * 		When using null, the precision parameter will be used to set the increment 
+	 * 		in {@link #createGenerator(Class, Number, Number, Number, boolean)}
+	 */
 	public StepSequence(BigDecimal increment) {
 	    this(increment, null);
     }
@@ -73,16 +78,22 @@ public class StepSequence extends Sequence {
 
     public <T extends Number> Generator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
-    	if (unique && increment.compareTo(BigDecimal.ZERO) == 0)
+        Number incrementToUse = incrementToUse(precision);
+    	if (unique && incrementToUse.doubleValue() == 0)
     		throw new InvalidGeneratorSetupException("Can't generate unique numbers with an increment of 0.");
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
-			base = new StepLongGenerator(
-					toLong(min), toLong(max), toLong(increment != null ? increment : precision), toLong(initial));
-		else
-			base = new StepDoubleGenerator(toDouble(min), toDouble(max), toDouble(increment != null ? increment : precision), toDouble(initial));
+	        base = new StepLongGenerator(
+					toLong(min), toLong(max), toLong(incrementToUse), toLong(initial));
+        else
+			base = new StepDoubleGenerator(toDouble(min), toDouble(max), 
+					toDouble(incrementToUse), toDouble(initial));
 		return WrapperFactory.wrapNumberGenerator(numberType, base);
 	}
+
+	private <T extends Number> Number incrementToUse(T precision) {
+	    return (increment != null ? increment : precision);
+    }
 
 	@Override
 	public String toString() {
