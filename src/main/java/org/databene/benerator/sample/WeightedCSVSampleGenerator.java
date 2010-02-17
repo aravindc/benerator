@@ -26,8 +26,8 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.csv.CSVGeneratorUtil;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
@@ -47,30 +47,24 @@ import java.util.List;
  * </pre>
  * <br/>
  * Created: 11.06.2006 20:49:33
+ * @since 0.1
  * @author Volker Bergmann
  * @see AttachedWeightSampleGenerator
  */
-public class WeightedCSVSampleGenerator<E> implements Generator<E> { // TODO merge with AttachedWeight distribution
+public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
-    /** The URL to read the samples from */
-    private String url;
+    /** The URI to read the samples from */
+    protected String uri;
     
     private String encoding;
 
     /** The converter to create instances from the CSV cell strings */
     private Converter<String, E> converter;
 
-    /** the SampleGenerator utilized for selecting among the samples */
-    private AttachedWeightSampleGenerator<E> source;
-
-    /** flag that indicates if the generator needs to be initialized */
-    private boolean dirty;
-
     // constructors ----------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-    public WeightedCSVSampleGenerator() {
-        this((Converter) null);
+    public WeightedCSVSampleGenerator(String url) {
+        this(url, SystemInfo.getFileEncoding());
     }
 
     @SuppressWarnings("unchecked")
@@ -78,65 +72,30 @@ public class WeightedCSVSampleGenerator<E> implements Generator<E> { // TODO mer
         this(url, encoding, new NoOpConverter());
     }
 
-    public WeightedCSVSampleGenerator(Converter<String, E> converter) {
-        this(null, SystemInfo.getFileEncoding(), converter);
-    }
-
-    public WeightedCSVSampleGenerator(String url, String encoding, Converter<String, E> converter) {
+    public WeightedCSVSampleGenerator(String uri, String encoding, Converter<String, E> converter) {
         this.source = new AttachedWeightSampleGenerator<E>();
         this.converter = converter;
         this.encoding = encoding;
-        if (url != null && url.trim().length() > 0)
-            setUrl(url);
-    }
-
-    // configuration properties ----------------------------------------------------------------------------------------
-
-    public void setUrl(String url) {
-        this.url = url;
-        this.dirty = true;
-    }
-
-    public String getUrl() {
-        return url;
+        if (uri != null && uri.trim().length() > 0)
+            this.uri = uri;
     }
 
     // generator interface ---------------------------------------------------------------------------------------------
 
-    public Class<E> getGeneratedType() {
-        return source.getGeneratedType();
-    }
-
+    @Override
     public E generate() {
         if (dirty)
             validate();
         return source.generate();
     }
 
+    @Override
     public void validate() {
         if (dirty) {
-            List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(url, ',', encoding, converter);
-            source.setSamples(CollectionUtil.toArray(samples));
-            dirty = false;
+            List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, ',', encoding, converter);
+            ((AttachedWeightSampleGenerator<E>) source).setSamples(CollectionUtil.toArray(samples));
+        	super.validate();
         }
     }
 
-    public void reset() {
-        source.reset();
-    }
-
-    public void close() {
-        source.close();
-    }
-/*
-    public boolean available() {
-        return source.available();
-    }
-*/
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[source=" + source + ", converter=" + converter + ']';
-    }
 }
