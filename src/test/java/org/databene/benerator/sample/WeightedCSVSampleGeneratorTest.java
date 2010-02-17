@@ -8,7 +8,7 @@ import java.util.List;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Encodings;
 import org.databene.commons.converter.ParseFormatConverter;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -18,11 +18,7 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class WeightedCSVSampleGeneratorTest extends GeneratorClassTest {
-
-    public WeightedCSVSampleGeneratorTest() {
-        super(WeightedCSVSampleGenerator.class);
-    }
+public class WeightedCSVSampleGeneratorTest extends GeneratorTest {
 
     private static final String FILE_PATH = "org/databene/benerator/csv/dates.csv";
 

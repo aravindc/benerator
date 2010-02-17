@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.csv;
 
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Encodings;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 
 import java.util.Set;
 import java.util.Locale;
@@ -41,15 +41,9 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class LocalCSVGeneratorTest extends GeneratorClassTest {
+public class LocalCSVGeneratorTest extends GeneratorTest {
 
-    /**
-     */
     private static final String CSV_LOCAL_FILENAME = "org/databene/benerator/csv/local-names";
-
-	public LocalCSVGeneratorTest() {
-        super(LocalCSVGenerator.class);
-    }
 
     @Test
     public void testEnglish() {
