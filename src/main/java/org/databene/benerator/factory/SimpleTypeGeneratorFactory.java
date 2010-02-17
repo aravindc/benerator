@@ -251,7 +251,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		String encoding = descriptor.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
 
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
