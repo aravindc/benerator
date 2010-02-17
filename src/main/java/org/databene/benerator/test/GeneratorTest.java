@@ -261,8 +261,8 @@ public abstract class GeneratorTest {
         Set<T> expectedSet = CollectionUtil.toSet(products);
         for (int i = 0; i < products.length; i++) {
         	T generation = generator.generate();
-            assertNotNull("Generator has gone unavailable before creating a number of products " +
-                    "that matches the expected set.", generation);
+            assertNotNull("Generator has gone unavailable. " +
+            		"Generated only " + i + " of " + products.length + " expected values", generation);
             logger.debug("created " + format(generation));
             assertTrue("The generated value '" + format(generation) + "' was not in the expected set: " + expectedSet,
                     expectedSet.contains(generation));
