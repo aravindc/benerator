@@ -31,7 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.script.DateArithmetic;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
@@ -82,7 +82,7 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
         Date minDate = TimeUtil.date(minYear, 7, 6, hour, minute, second, millisecond);
         Date maxDate = TimeUtil.date(maxYear, 8, 8, hour, minute, second, millisecond);
         generator.setDatePrecision("0000-00-01");
-        generator.setDateDistribution(Sequence.STEP);
+        generator.setDateDistribution(SequenceManager.STEP_SEQUENCE);
         for (int i = 0; i < 34; i++) {
             Date date = generator.generate();
             assertNotNull("Generator unavailable after " + i  + " generations", date);

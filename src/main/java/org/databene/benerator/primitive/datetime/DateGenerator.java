@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.commons.Period;
 import org.databene.commons.converter.DateString2DurationConverter;
 
@@ -66,7 +66,7 @@ public class DateGenerator implements Generator<Date> {
 
     /** Initializes the generator to create dates with a uniform distribution */
     public DateGenerator(Date min, Date max, long precision) {
-        this(min, max, precision, Sequence.RANDOM);
+        this(min, max, precision, SequenceManager.RANDOM_SEQUENCE);
     }
 
     /** Initializes the generator to create dates of a Sequence or WeightFunction */

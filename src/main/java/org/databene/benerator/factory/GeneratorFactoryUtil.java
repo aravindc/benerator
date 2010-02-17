@@ -31,7 +31,7 @@ import java.beans.PropertyDescriptor;
 import org.databene.benerator.distribution.AttachedWeight;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.DistributedNumberExpression;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -127,10 +127,10 @@ public class GeneratorFactoryUtil {
         // handle absence of distribution spec
         if (StringUtil.isEmpty(spec)) {
         	switch (uniqueness) {
-	        	case ORDERED: 	return Sequence.STEP;
-	        	case SIMPLE: 	return Sequence.EXPAND;
+	        	case ORDERED: 	return SequenceManager.STEP_SEQUENCE;
+	        	case SIMPLE: 	return SequenceManager.EXPAND_SEQUENCE;
 	        	case NONE: 		if (required)
-	        						return Sequence.RANDOM;
+	        						return SequenceManager.RANDOM_SEQUENCE;
 	        					else
 	        						return null;
         	}
@@ -152,7 +152,7 @@ public class GeneratorFactoryUtil {
     		return new AttachedWeight();
         
         // check for default sequence reference
-        Distribution result = Sequence.getInstance(spec, false);
+        Distribution result = SequenceManager.getRegisteredSequence(spec, false);
         if (result != null)
         	return result;
 

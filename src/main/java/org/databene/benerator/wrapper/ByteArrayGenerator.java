@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 
 /**
  * Creates arrays of random length filled with random bytes.
@@ -44,7 +44,7 @@ public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
     }
 
     public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength) {
-        this(source, minLength, maxLength, Sequence.RANDOM);
+        this(source, minLength, maxLength, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public ByteArrayGenerator(Generator<Byte> source, int minLength, int maxLength, Distribution distribution) {
@@ -59,4 +59,5 @@ public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
             array[i] = source.generate();
         return array;
     }
+    
 }

@@ -36,6 +36,7 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.distribution.function.GaussianFunction;
@@ -83,7 +84,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision) {
-        for (Sequence sequence : Sequence.getInstances())
+        for (Sequence sequence : SequenceManager.registeredSequences())
             checkNumberGenerator(type, min, max, precision, sequence);
         for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
             checkNumberGenerator(type, min, max, precision, function);
@@ -135,7 +136,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetDateGeneratorByDistributionType() {
-        for (Sequence sequence : Sequence.getInstances())
+        for (Sequence sequence : SequenceManager.registeredSequences())
             GeneratorFactory.getDateGenerator(date(2006, 0, 1), date(2006, 11, 31), Period.DAY.getMillis(), sequence);
     }
 
@@ -290,7 +291,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @SuppressWarnings("unchecked")
     public void testGetCollectionGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
-        for (Sequence sequence : Sequence.getInstances()) {
+        for (Sequence sequence : SequenceManager.registeredSequences()) {
             Generator<List> generator = GeneratorFactory.getCollectionGenerator(
                     List.class, source, 0, 5, sequence);
             checkGenerator(generator);
@@ -315,7 +316,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetArrayGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
-        for (Sequence sequence : Sequence.getInstances()) {
+        for (Sequence sequence : SequenceManager.registeredSequences()) {
             Generator<Integer[]> generator = GeneratorFactory.getArrayGenerator(source, Integer.class, 0, 5, sequence);
             checkGenerator(generator);
         }

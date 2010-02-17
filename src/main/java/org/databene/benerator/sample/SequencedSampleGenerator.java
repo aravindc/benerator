@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.sample;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.util.RandomUtil;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     public SequencedSampleGenerator(Class<E> generatedType, E ... values) {
     	super(generatedType);
         setValues(values);
-        this.distribution = Sequence.RANDOM;
+        this.distribution = SequenceManager.RANDOM_SEQUENCE;
     }
 
     /** Initializes the generator to a sample list */
@@ -86,7 +86,7 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     public SequencedSampleGenerator(Class<E> generatedType, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
-        this.distribution = Sequence.RANDOM;
+        this.distribution = SequenceManager.RANDOM_SEQUENCE;
     }
 
     /** Initializes the generator to a sample list */

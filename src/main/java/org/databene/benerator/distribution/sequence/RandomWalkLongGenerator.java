@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -60,11 +60,11 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     }
 
     public RandomWalkLongGenerator(long min, long max, long minIncrement, long maxIncrement) {
-        this(min, max, 1, min, minIncrement, maxIncrement, Sequence.RANDOM);
+        this(min, max, 1, min, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public RandomWalkLongGenerator(long min, long max, long precision, long initial, long minIncrement, long maxIncrement) {
-        this(min, max, precision, initial, minIncrement, maxIncrement, Sequence.RANDOM);
+        this(min, max, precision, initial, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public RandomWalkLongGenerator(long min, long max, long precision, long initial, 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.domain.person;
 import java.util.Date;
 import java.util.Calendar;
 
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.benerator.primitive.datetime.LightweightDateGenerator;
 import org.databene.benerator.IllegalGeneratorStateException;
@@ -62,7 +62,7 @@ public class BirthDateGenerator extends LightweightDateGenerator {
         min.add(Calendar.YEAR, -maxAgeYears);
         Calendar max = TimeUtil.calendar(today);
         max.add(Calendar.YEAR, -minAgeYears);
-		dateGenerator = new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), Sequence.RANDOM);
+		dateGenerator = new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), SequenceManager.RANDOM_SEQUENCE);
     }
 
     public Date generate() throws IllegalGeneratorStateException {
@@ -73,4 +73,5 @@ public class BirthDateGenerator extends LightweightDateGenerator {
     public String toString() {
         return getClass().getSimpleName() + "[minAgeYears=" + minAgeYears + ", maxAgeYears=" + maxAgeYears + ']';
     }
+    
 }

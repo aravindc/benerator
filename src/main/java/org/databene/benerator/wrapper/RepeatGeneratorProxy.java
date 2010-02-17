@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 
 /**
  * A generator proxy that forwards the output of another generator with a random number of repetitions.<br/>
@@ -47,7 +47,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
     }
 
     public RepeatGeneratorProxy(Generator<E> source, long minRepetitions, long maxRepetitions) {
-        this(source, minRepetitions, maxRepetitions, 1, Sequence.RANDOM);
+        this(source, minRepetitions, maxRepetitions, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public RepeatGeneratorProxy(Generator<E> source, long minRepetitions, long maxRepetitions, 

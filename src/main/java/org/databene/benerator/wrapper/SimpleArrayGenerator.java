@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.commons.ArrayUtil;
 
 /**
@@ -47,7 +47,7 @@ public class SimpleArrayGenerator<E> extends AbstractArrayGenerator<E, E[]> {
     }
 
     public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength) {
-        this(source, componentType, minLength, maxLength, Sequence.RANDOM);
+        this(source, componentType, minLength, maxLength, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength, Distribution lengthDistribution) {

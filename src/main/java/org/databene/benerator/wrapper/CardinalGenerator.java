@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.commons.NullSafeComparator;
 
 /**
@@ -58,7 +58,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     }
 
     public CardinalGenerator(Generator<S> source, long minCount, long maxCount) {
-        this(source, minCount, maxCount, 1, Sequence.RANDOM);
+        this(source, minCount, maxCount, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public CardinalGenerator(Generator<S> source,

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.commons.BeanUtil;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.WeightFunction;
 
 import java.util.*;
@@ -62,7 +62,7 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
     }
 
     public CollectionGenerator(Class<C> collectionType, Generator<I> source, int minSize, int maxSize) {
-        this(collectionType, source, minSize, maxSize, Sequence.RANDOM);
+        this(collectionType, source, minSize, maxSize, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public CollectionGenerator(Class<C> collectionType, Generator<I> source, 

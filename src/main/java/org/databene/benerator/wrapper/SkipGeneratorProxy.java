@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 
 /**
  * This forwards a source generator's products.
@@ -66,7 +66,7 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> { // TODO merge con
 
     /** Initializes the generator to use a random increment of uniform distribution */
     public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement) {
-        this(source, minIncrement, maxIncrement, Sequence.RANDOM);
+        this(source, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
     }
 
     /** Initializes the generator to use a random increment of uniform distribution */

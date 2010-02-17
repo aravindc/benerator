@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,7 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 
 /**
  * {@link Sequence} implementation that makes use of Benerator's {@link ExpandGeneratorProxy} 
@@ -65,7 +66,7 @@ public class ExpandSequence extends Sequence {
 	// Distribution interface implementation ---------------------------------------------------------------------------
 
 	public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
-		Generator<T> source = Sequence.STEP.createGenerator(numberType, min, max, precision, unique);
+		Generator<T> source = SequenceManager.STEP_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
 		int cacheSize = cacheSize(min, max, precision);
 		return new ExpandGeneratorProxy<T>(source, duplicationQuota(unique), cacheSize, bucketSize(cacheSize));
 	}

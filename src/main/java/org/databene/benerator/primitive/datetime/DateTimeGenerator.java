@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ import java.util.Date;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
@@ -77,8 +77,8 @@ public class DateTimeGenerator extends LightweightDateGenerator {
         setMaxDate(maxDate);
         setMinTime(minTime);
         setMaxTime(maxTime);
-        setDateDistribution(Sequence.RANDOM);
-        setTimeDistribution(Sequence.RANDOM);
+        setDateDistribution(SequenceManager.RANDOM_SEQUENCE);
+        setTimeDistribution(SequenceManager.RANDOM_SEQUENCE);
         setDatePrecision("00-00-01");
         setTimePrecision(TimeUtil.time(0, 1));
         this.dirty = true;

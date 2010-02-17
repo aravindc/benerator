@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.RepeatGeneratorProxy;
 import org.databene.commons.ConfigurationError;
 
@@ -56,7 +57,7 @@ public class RepeatSequence extends Sequence {
 	}
     
 	public RepeatSequence(int minRepetitions, int maxRepetitions) {
-		this(minRepetitions, maxRepetitions, 1, Sequence.RANDOM);
+		this(minRepetitions, maxRepetitions, 1, SequenceManager.RANDOM_SEQUENCE);
 	}
 	
 	public RepeatSequence(int minRepetitions, int maxRepetitions, int repetitionPrecision,

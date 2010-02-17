@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.factory;
 
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -49,7 +49,7 @@ public class GeneratorFactoryUtilTest {
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
 		BeneratorContext context = new BeneratorContext(null);
 		assertNull(GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context));
-		assertEquals(Sequence.EXPAND, 
+		assertEquals(SequenceManager.EXPAND_SEQUENCE, 
 				GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.SIMPLE, true, context));
 	}
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,22 +26,9 @@
 
 package org.databene.benerator.distribution;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.databene.benerator.Generator;
-import org.databene.benerator.distribution.sequence.BitReverseSequence;
-import org.databene.benerator.distribution.sequence.CumulatedSequence;
-import org.databene.benerator.distribution.sequence.ExpandSequence;
-import org.databene.benerator.distribution.sequence.RandomSequence;
-import org.databene.benerator.distribution.sequence.RandomWalkSequence;
-import org.databene.benerator.distribution.sequence.ShuffleSequence;
-import org.databene.benerator.distribution.sequence.StepSequence;
-import org.databene.benerator.distribution.sequence.WedgeSequence;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.NumberConverter;
 
 /**
@@ -53,36 +40,10 @@ import org.databene.commons.converter.NumberConverter;
  */
 public abstract class Sequence implements Distribution {
 	
-    private static Map<String, Sequence> instances = new HashMap<String, Sequence>();
-
-    public static final Sequence RANDOM      = new RandomSequence(); // TODO move constants for child classes somewhere else?
-    public static final Sequence SHUFFLE     = new ShuffleSequence();
-    public static final Sequence CUMULATED   = new CumulatedSequence();
-    public static final Sequence RANDOM_WALK = new RandomWalkSequence();
-    public static final Sequence STEP        = new StepSequence();
-    public static final Sequence WEDGE       = new WedgeSequence();
-    public static final Sequence BIT_REVERSE = new BitReverseSequence();
-    public static final Sequence EXPAND      = new ExpandSequence();
-    
     private String name;
-    
-    // Construction & lookup -------------------------------------------------------------------------------------------
-    
-    public static Sequence getInstance(String name, boolean required) {
-        Sequence sequence = instances.get(name);
-        if (sequence == null && required)
-            throw new ConfigurationError("Sequence not defined: " + name);
-        return sequence;
-    }
-
-    public static Collection<Sequence> getInstances() {
-        return instances.values();
-    }
     
     protected Sequence(String name) {
         this.name = name;
-        if (!instances.containsKey(name))
-        	instances.put(name, this);
     }
     
     // interface -------------------------------------------------------------------------------------------------------

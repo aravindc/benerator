@@ -31,6 +31,7 @@ import java.math.BigInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import static org.databene.commons.MathUtil.*;
@@ -54,7 +55,7 @@ public class RandomSequence extends Sequence {
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
 		Generator<? extends Number> base;
     	if (unique) {
-    		return Sequence.EXPAND.createGenerator(numberType, min, max, precision, unique);
+    		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
     	} else {	
 			if (Integer.class.equals(numberType.getClass()))
 				base = new RandomIntegerGenerator(toInteger(min), toInteger(max), toInteger(precision));
