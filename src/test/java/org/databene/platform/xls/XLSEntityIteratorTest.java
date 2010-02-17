@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.DescriptorProvider;
@@ -113,9 +114,39 @@ public class XLSEntityIteratorTest extends XLSTest {
 		}
 	}
 
+	@Test
+	public void testTypeDef() throws Exception {
+		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
+		try {
+			while (iterator.hasNext())
+				iterator.next();
+		} finally {
+			iterator.close();
+		}
+		DataModel dataModel = DataModel.getDefaultInstance();
+		ComplexTypeDescriptor personDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor("Person");
+		assertNotNull(personDescriptor);
+		assertComponent(personDescriptor, "name", "string");
+		assertComponent(personDescriptor, "age",  "double");
+		ComplexTypeDescriptor productDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor("Product");
+		assertNotNull(productDescriptor);
+		assertComponent(productDescriptor, "ean",     "string");
+		assertComponent(productDescriptor, "price",   "double");
+		assertComponent(productDescriptor, "date",    "date");
+		assertComponent(productDescriptor, "avail",   "boolean");
+		assertComponent(productDescriptor, "updated", "date");
+	}
+	
+	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-    private void assertProduct(Entity expected, Entity actual) {
+    private void assertComponent(ComplexTypeDescriptor complexTypeDescriptor, String componentName, String componentType) {
+	    ComponentDescriptor component = complexTypeDescriptor.getComponent(componentName);
+	    assertNotNull(component);
+	    assertEquals("Type of component " + componentName + " is wrong, ", componentType, component.getTypeDescriptor().getName());
+    }
+
+	private void assertProduct(Entity expected, Entity actual) {
 		assertEquals("Product", actual.type());
 		assertEquals(expected.getComponent("ean"), actual.getComponent("ean"));
 		assertEquals(((Number) expected.getComponent("price")).doubleValue(), ((Number) actual.getComponent("price")).doubleValue(), 0.000001);
