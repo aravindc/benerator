@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,12 +32,20 @@ package org.databene.model.data;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class BasicDescriptorProvider extends DefaultDescriptorProvider {
+public class PrimitiveDescriptorProvider extends DefaultDescriptorProvider {
 
-    public BasicDescriptorProvider() {
+	public static final PrimitiveDescriptorProvider INSTANCE = new PrimitiveDescriptorProvider();
+	
+    private PrimitiveDescriptorProvider() {
         super("ben");
         for (PrimitiveType type : PrimitiveType.getInstances())
             addDescriptor(new SimpleTypeDescriptor(type.getName(), type.getName()));
         addDescriptor(new ComplexTypeDescriptor("entity"));
     }
+
+	public SimpleTypeDescriptor getPrimitiveTypeDescriptor(Class<? extends Object> javaType) {
+		PrimitiveType type = PrimitiveType.findByJavaType(javaType);
+		return (SimpleTypeDescriptor) getTypeDescriptor(type.getName());
+    }
+    
 }
