@@ -74,7 +74,7 @@ public class RandomSequence extends Sequence {
     @Override
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
     	if (unique)
-    		return super.applyTo(source, unique);
+    		return SequenceManager.EXPAND_SEQUENCE.applyTo(source, unique);
     	else
     		return super.applyTo(source, unique);
     }
