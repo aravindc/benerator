@@ -44,7 +44,8 @@ import java.util.Map;
  */
 public class PrimitiveType {
     
-    private static final Map<String, PrimitiveType> instances = new HashMap<String, PrimitiveType>();
+    private static final Map<String, PrimitiveType> instancesByName = new HashMap<String, PrimitiveType>();
+    private static final Map<Class<?>, PrimitiveType> instancesByJavaType = new HashMap<Class<?>, PrimitiveType>();
     
     public static final PrimitiveType BYTE        = new PrimitiveType("byte", Byte.class);
     public static final PrimitiveType SHORT       = new PrimitiveType("short", Short.class);
@@ -72,7 +73,8 @@ public class PrimitiveType {
             throw new IllegalArgumentException("javaType is null");
         this.name = name;
         this.javaType = javaType;
-        instances.put(name, this);
+        instancesByName.put(name, this);
+        instancesByJavaType.put(javaType, this);
     }
     
     public String getName() {
@@ -83,12 +85,16 @@ public class PrimitiveType {
         return javaType;
     }
 
-    public static PrimitiveType getInstance(String parentName) {
-        return instances.get(parentName);
+    public static PrimitiveType getInstance(String name) {
+        return instancesByName.get(name);
+    }
+
+    public static PrimitiveType findByJavaType(Class<?> javaType) {
+        return instancesByJavaType.get(javaType);
     }
 
     public static Collection<PrimitiveType> getInstances() {
-        return instances.values();
+        return instancesByName.values();
     }
 
 }
