@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,8 @@ package org.databene.platform.contiperf;
 
 import java.io.IOException;
 
+import org.databene.commons.ArrayBuilder;
+import org.databene.commons.ParseException;
 import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
 import org.databene.contiperf.PercentileRequirement;
@@ -31,6 +33,8 @@ import org.databene.contiperf.PerformanceRequirement;
 import org.databene.contiperf.log.FileExecutionLogger;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerProxy;
+
+import freemarker.template.utility.StringUtil;
 
 /**
  * {@link Consumer} implementation that calls a ContiPerf {@link PerfTestConsumer}.<br/><br/>
@@ -60,8 +64,8 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
 		requirement.setMax(max);
 	}
 
-	public void setPercentiles(PercentileRequirement[] percentiles) {
-		requirement.setPercentiles(percentiles);
+	public void setPercentiles(String percentilesSpec) {
+		requirement.setPercentiles(parsePercentilesSpec(percentilesSpec));
 	}
 	
 	@Override
@@ -87,5 +91,23 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
 		}
 		return controller;
 	}
+
+	private PercentileRequirement[] parsePercentilesSpec(String percentilesSpec) {
+		String[] assignments = StringUtil.split(percentilesSpec, ',');
+		ArrayBuilder<PercentileRequirement> builder = new ArrayBuilder<PercentileRequirement>(
+				PercentileRequirement.class, assignments.length);
+		for (String assignment : assignments)
+			builder.add(parsePercentileSpec(assignment));
+	    return builder.toArray();
+    }
+
+	private PercentileRequirement parsePercentileSpec(String assignment) {
+	    String[] parts = StringUtil.split(assignment, ':');
+	    if (parts.length != 2)
+	    	throw new ParseException("Ilegal percentile syntax: " + assignment);
+	    int base  = Integer.parseInt(parts[0]);
+	    int limit = Integer.parseInt(parts[1]);
+		return new PercentileRequirement(base, limit);
+    }
 
 }
