@@ -159,12 +159,13 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     @Override
 	public void close() {
         try {
-        	try {
-	        if (printer == null)
-		        initPrinter(null);
-        	} catch (IOException e) {
-        		LOG.error("Error initializing empty file", e);
-        	}
+	        if (printer == null) {
+	        	try {
+			        initPrinter(null);
+	        	} catch (IOException e) {
+	        		LOG.error("Error initializing empty file", e);
+	        	}
+	        }
 	        preClosePrinter();
         } finally {
 	        printer.close();
