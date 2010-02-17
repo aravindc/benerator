@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ package org.databene.model.data;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class SequentialGroupDescriptor extends ComplexTypeDescriptor { // TODO v0.6 support this class
+public class SequentialGroupDescriptor extends ComplexTypeDescriptor { // TODO v0.7 support this class
 
 	public SequentialGroupDescriptor(String name) {
 		super(name);
