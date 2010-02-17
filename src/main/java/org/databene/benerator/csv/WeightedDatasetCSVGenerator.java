@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,20 +26,15 @@
 
 package org.databene.benerator.csv;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.dataset.Dataset;
-import org.databene.dataset.DatasetFactory;
-import org.databene.document.csv.CSVLineIterator;
 
 /**
  * Generates data from a csv file set that is organized as {@link Dataset}.
@@ -72,9 +67,11 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
         this(filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding, Converter<String, E> converter) {
+    public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, 
+    		String encoding, Converter<String, E> converter) {
         super(new AttachedWeightSampleGenerator<E>());
-        List<WeightedSample<E>> samples = createSamples(datasetName, separator, nesting, filenamePattern, encoding, converter);
+        List<WeightedSample<E>> samples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, 
+        		filenamePattern, encoding, converter);
 		((AttachedWeightSampleGenerator<E>)source).setSamples(samples);
         this.nesting = nesting;
         this.filenamePattern = filenamePattern;
@@ -85,43 +82,11 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
 		return datasetName;
 	}
 
-    // private helpers -------------------------------------------------------------------------------------------------
-
-    private static <T> List<WeightedSample<T>> createSamples(
-            String datasetName, char separator, String nesting, String filenamePattern,
-            String encoding, Converter<String, T> converter) {
-        String[] dataFilenames;
-        if (nesting == null || datasetName == null)
-        	dataFilenames = new String[] { filenamePattern };
-        else
-        	dataFilenames = DatasetFactory.getDataFiles(filenamePattern, datasetName, nesting);
-        List<WeightedSample<T>> samples = new ArrayList<WeightedSample<T>>();
-        for (String dataFilename : dataFilenames)
-            parse(dataFilename, separator, encoding, converter, samples);
-        return samples;
-    }
-    
-    private static <T> void parse(String filename, char separator, String encoding, Converter<String, T> converter, List<WeightedSample<T>> samples) {
-        try {
-            CSVLineIterator iterator = new CSVLineIterator(filename, separator, encoding);
-            while (iterator.hasNext()) {
-                String[] tokens = iterator.next();
-                if (tokens.length == 0)
-                    continue;
-                double weight = (tokens.length < 2 ? 1. : Double.parseDouble(tokens[1]));
-                T value = converter.convert(tokens[0]);
-                WeightedSample<T> sample = new WeightedSample<T>(value, weight);
-                samples.add(sample);
-            }
-        } catch (IOException e) {
-            throw new ConfigurationError(e);
-        }
-    }
-
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + filenamePattern + ',' + nesting + ':' + datasetName + ']';
     }
+    
 }
