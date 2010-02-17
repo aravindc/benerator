@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -147,13 +147,17 @@ public class InstanceDescriptor extends FeatureDescriptor {
     }
     
     public Boolean isUnique() {
-        return (Boolean)getDetailValue(UNIQUE);
+        return (Boolean) getDetailValue(UNIQUE);
     }
 
     public void setUnique(Boolean unique) {
         setDetailValue(UNIQUE, unique);
     }
 
+    public Uniqueness getUniqueness() {
+    	return (isUnique() ? Uniqueness.SIMPLE : Uniqueness.NONE);
+    }
+    
     public Boolean isNullable() {
         return (Boolean)getDetailValue(NULLABLE);
     }
@@ -218,7 +222,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public Object getDetailValue(String name) {
         Object value = super.getDetailValue(name);
         if (value == null && parent != null && parent.supportsDetail(name)) {
-            FeatureDetail<?> detail = parent.getDetail(name);
+            FeatureDetail<?> detail = parent.getConfiguredDetail(name);
             if (detail.isRestriction())
                 value = detail.getValue();
         }
@@ -230,7 +234,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     @Override
     public void setDetailValue(String detailName, Object detailValue) {
     	if (COUNT.equals(detailName) || MIN_COUNT.equals(detailName) || MAX_COUNT.equals(detailName) || COUNT_PRECISION.equals(detailName)) {
-            FeatureDetail<Object> detail = getDetail(detailName);
+            FeatureDetail<Object> detail = getConfiguredDetail(detailName);
             if (detail == null)
                 throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);
             if (detailValue instanceof Expression)

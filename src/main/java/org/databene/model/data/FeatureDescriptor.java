@@ -56,22 +56,21 @@ public class FeatureDescriptor {
     }
 
     public Object getDeclaredDetailValue(String name) {
-        return getDetail(name).getValue();
+        return getConfiguredDetail(name).getValue();
     }
 
     public Object getDetailValue(String name) {
-        FeatureDetail<Object> detail = getDetail(name);
-        Object value = detail.getValue();
-        return value;
+        FeatureDetail<Object> detail = getConfiguredDetail(name);
+        return detail.getValue();
     }
 
     public void setDetailValue(String detailName, Object detailValue) {
-        FeatureDetail<Object> detail = getDetail(detailName);
+        FeatureDetail<Object> detail = getConfiguredDetail(detailName);
         detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
     }
 
     public <T> T getDetailDefault(String name) {
-        FeatureDetail<T> detail = getDetail(name);
+        FeatureDetail<T> detail = getConfiguredDetail(name);
         return detail.getDefault();
     }
 
@@ -148,10 +147,11 @@ public class FeatureDescriptor {
     // generic property access -----------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    protected <T> FeatureDetail<T> getDetail(String name) {
+    public <T> FeatureDetail<T> getConfiguredDetail(String name) {
     	if (!supportsDetail(name))
-            throw new UnsupportedOperationException("Feature detail '" + name + "' not supported in feature type: " 
-                    + getClass().getName());
+            throw new UnsupportedOperationException("Feature detail '" + name + 
+            		"' not supported in feature type: " + getClass().getName());
         return (FeatureDetail<T>) details.get(name);
     }
+    
 }

@@ -49,6 +49,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.platform.xml.XMLEntityExporter;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 
@@ -92,7 +93,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
         if (rootDescriptor == null)
             throw new ConfigurationError("Type '" + root + "' not found in schema: " + schemaUri);
-		contentGenerator = TypeGeneratorFactory.createTypeGenerator(root, rootDescriptor, false, context);
+		contentGenerator = TypeGeneratorFactory.createTypeGenerator(root, rootDescriptor, Uniqueness.NONE, context);
     }
 
     public Class<File> getGeneratedType() {

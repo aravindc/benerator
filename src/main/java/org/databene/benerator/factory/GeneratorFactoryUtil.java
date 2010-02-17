@@ -45,6 +45,7 @@ import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 
 /**
@@ -101,7 +102,7 @@ public class GeneratorFactoryUtil {
 					if (minVal.equals(maxVal))
 						return minVal;
 					String distSpec = descriptor.getCountDistribution();
-	                Distribution d = getDistribution(distSpec, false, true, (BeneratorContext) context);
+	                Distribution d = getDistribution(distSpec, Uniqueness.NONE, true, (BeneratorContext) context);
 	    			DistributedNumberExpression distributedNumberExpression 
 	    				= new DistributedNumberExpression(new ConstantExpression<Distribution>(d), min, max, prec, unique);
 					return distributedNumberExpression.evaluate(context);
@@ -115,22 +116,24 @@ public class GeneratorFactoryUtil {
     /**
      * Extracts distribution information from the descriptor.
      * @param spec the textual representation of the distribution
-     * @param unique tells if a unique distribution is requested
+     * @param uniqueness tells if a unique distribution is requested
      * @param required if set the method will never return null
      * @param context the {@link BeneratorContext}
      * @return a distribution that reflects the descriptor setup, null if distribution info is not found nor required.
      */
     @SuppressWarnings("unchecked")
-    public static Distribution getDistribution(String spec, boolean unique, boolean required, BeneratorContext context) {
+    public static Distribution getDistribution(String spec, Uniqueness uniqueness, boolean required, BeneratorContext context) {
         
         // handle absence of distribution spec
         if (StringUtil.isEmpty(spec)) {
-        	if (unique)
-        		return Sequence.EXPAND;
-        	else if (required)
-        		return Sequence.RANDOM;
-        	else
-        		return null;
+        	switch (uniqueness) {
+	        	case ORDERED: 	return Sequence.STEP;
+	        	case SIMPLE: 	return Sequence.EXPAND;
+	        	case NONE: 		if (required)
+	        						return Sequence.RANDOM;
+	        					else
+	        						return null;
+        	}
         }
         
         // check for context reference
@@ -164,11 +167,11 @@ public class GeneratorFactoryUtil {
 
     
     public static Expression<Distribution> getDistributionExpression(
-    		final String spec, final boolean unique, final boolean required, final BeneratorContext context) {
+    		final String spec, final Uniqueness uniqueness, final boolean required, final BeneratorContext context) {
     	return new Expression<Distribution>() {
 
 			public Distribution evaluate(Context context) {
-	            return getDistribution(spec, unique, required, (BeneratorContext) context);
+	            return getDistribution(spec, uniqueness, required, (BeneratorContext) context);
             }
     		
     	};

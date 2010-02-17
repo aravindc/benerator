@@ -14,4 +14,14 @@ public class IdDescriptor extends ComponentDescriptor {
         super(name, type);
     }
 
+    @Override
+    public Uniqueness getUniqueness() {
+        return Uniqueness.ORDERED;
+    }
+    
+    @Override
+    public Boolean isUnique() {
+        return true;
+    }
+    
 }

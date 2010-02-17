@@ -34,6 +34,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
 import org.databene.benerator.composite.ComponentBuilder;
@@ -79,7 +80,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 
     @SuppressWarnings("unchecked")
     public static Generator<Entity> createComplexTypeGenerator(String instanceName, 
-    		ComplexTypeDescriptor type, boolean unique, BeneratorContext context) {
+    		ComplexTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
     	Assert.notNull(instanceName, "instance name");
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
@@ -87,9 +88,9 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         Generator<Entity> generator = null;
         generator = (Generator<Entity>) DescriptorUtil.getGeneratorByName(type, context);
         if (generator == null)
-            generator = createSourceGenerator(type, unique, context);
+            generator = createSourceGenerator(type, uniqueness, context);
         if (generator == null)
-            generator = createSyntheticEntityGenerator(instanceName, type, unique, context);
+            generator = createSyntheticEntityGenerator(instanceName, type, uniqueness, context);
         else
             generator = createMutatingEntityGenerator(instanceName, type, context, generator);
         // create wrappers
@@ -127,7 +128,7 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
     
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
         if (sourceName == null)
@@ -162,9 +163,9 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
         }
         if (generator.getGeneratedType() != Entity.class)
         	generator = new SimpleTypeEntityGenerator(generator, descriptor);
-    	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
+    	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
-        	generator = distribution.applyTo(generator, unique);
+        	generator = distribution.applyTo(generator, uniqueness.isUnique());
     	return generator;
     }
 
@@ -261,12 +262,12 @@ public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
 	}
 
     private static Generator<Entity> createSyntheticEntityGenerator(String name, 
-            ComplexTypeDescriptor complexType, boolean unique, BeneratorContext context) {
+            ComplexTypeDescriptor complexType, Uniqueness uniqueness, BeneratorContext context) {
         List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
         if (DescriptorUtil.isWrappedSimpleType(complexType)) {
     		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getTypeDescriptor();
     		Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-    				(SimpleTypeDescriptor) contentType, false, unique, context);
+    				(SimpleTypeDescriptor) contentType, false, uniqueness, context);
         	return new SimpleTypeEntityGenerator(generator, complexType);
         }
         Collection<ComponentDescriptor> components = complexType.getComponents();

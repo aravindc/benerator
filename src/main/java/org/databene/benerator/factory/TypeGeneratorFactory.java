@@ -48,6 +48,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
@@ -66,13 +67,13 @@ public class TypeGeneratorFactory {
     private static final Logger logger = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
     public static Generator<?> createTypeGenerator(String name, 
-    		TypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    		TypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
     	if (logger.isDebugEnabled())
-    		logger.debug(descriptor + ", " + unique);
+    		logger.debug(descriptor + ", " + uniqueness);
         if (descriptor instanceof SimpleTypeDescriptor)
-            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, unique, context);
+            return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, uniqueness, context);
         else if (descriptor instanceof ComplexTypeDescriptor)
-            return ComplexTypeGeneratorFactory.createComplexTypeGenerator(name, (ComplexTypeDescriptor) descriptor, unique, context);
+            return ComplexTypeGeneratorFactory.createComplexTypeGenerator(name, (ComplexTypeDescriptor) descriptor, uniqueness, context);
         else
             throw new UnsupportedOperationException("Descriptor type not supported: " + descriptor.getClass());
     }

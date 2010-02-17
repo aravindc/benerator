@@ -40,6 +40,7 @@ import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVCellIterable;
 import org.databene.document.csv.CSVLineIterable;
+import org.databene.model.data.Uniqueness;
 import org.databene.regex.RegexParser;
 
 import java.text.DateFormat;
@@ -92,10 +93,10 @@ public class GeneratorFactory {
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, T precision,
-            Distribution distribution, boolean unique, double nullQuota) {
+            Distribution distribution, Uniqueness uniqueness, double nullQuota) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
-        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique, nullQuota);
+        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness, nullQuota);
     }
     
     /**
@@ -110,10 +111,10 @@ public class GeneratorFactory {
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
-            Distribution distribution, boolean unique, double nullQuota) {
+            Distribution distribution, Uniqueness uniqueness, double nullQuota) {
         if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
-        Generator<T> source = distribution.createGenerator(numberType, min, max, precision, unique); // TODO support WeightFunction, fractionDigits 
+        Generator<T> source = distribution.createGenerator(numberType, min, max, precision, uniqueness.isUnique()); // TODO support WeightFunction, fractionDigits 
         /*
         if (Integer.class.equals(type) || Long.class.equals(type) || Byte.class.equals(type) || Short.class.equals(type) || BigInteger.class.equals(type))
             source = new IntegralNumberGenerator<T>(type, min, max, precision, distribution);

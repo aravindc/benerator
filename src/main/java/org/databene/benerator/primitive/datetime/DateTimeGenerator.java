@@ -37,6 +37,7 @@ import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Creates DateTimes with separate date and time distribution characteristics.<br/><br/>
@@ -124,9 +125,9 @@ public class DateTimeGenerator extends LightweightDateGenerator {
         super.validate();
     	// TODO support uniqueness?
     	this.dateGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minDate, maxDate, datePrecision, dateDistribution, false, 0);
+    			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE, 0);
     	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minTime, maxTime, timePrecision, timeDistribution, false, 0);
+    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE, 0);
         dirty = false;
     }
 /*    

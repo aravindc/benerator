@@ -163,7 +163,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // check distribution
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(
-    			typeDescriptor.getDistribution(), descriptor.isUnique(), false, context);
+    			typeDescriptor.getDistribution(), descriptor.getUniqueness(), false, context);
         if (distribution != null)
             generator = distribution.applyTo(generator, descriptor.isUnique());
         

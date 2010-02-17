@@ -51,6 +51,7 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
+import org.databene.commons.NumberUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
@@ -66,6 +67,7 @@ import org.databene.document.csv.CSVLineIterable;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.script.ScriptConverter;
 import org.slf4j.Logger;
@@ -85,24 +87,24 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 	@SuppressWarnings("unchecked")
     public static Generator<?> createSimpleTypeGenerator(
-			SimpleTypeDescriptor descriptor, boolean nullable, boolean unique,
+			SimpleTypeDescriptor descriptor, boolean nullable, Uniqueness uniqueness,
 			BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
         // try constructive setup
-        Generator<?> generator = createConstructiveGenerator(descriptor, unique, context);
+        Generator<?> generator = createConstructiveGenerator(descriptor, uniqueness, context);
         // fall back to descriptive setup
         if (generator == null)
-        	generator = createConstantGenerator(descriptor, unique, context);
+        	generator = createConstantGenerator(descriptor, context);
         if (generator == null)
-        	generator = createSampleGenerator(descriptor, unique, context);
+        	generator = createSampleGenerator(descriptor, uniqueness, context);
 		if (generator == null && nullable) {
 	        Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
 			generator = new ConstantGenerator(null, javaType);
 		}
 		// fall back to default setup
         if (generator == null)
-        	generator = createDefaultGenerator(descriptor, unique, context);
+        	generator = createDefaultGenerator(descriptor, uniqueness, context);
         // by now, we must have created a generator
         if (generator == null)
             throw new ConfigurationError("Can't handle descriptor " + descriptor);
@@ -118,11 +120,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private static Generator<?> createConstructiveGenerator(
-			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+			SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator;
 		generator = DescriptorUtil.getGeneratorByName(descriptor, context);
         if (generator == null)
-            generator = createSourceAttributeGenerator(descriptor, unique, context);
+            generator = createSourceAttributeGenerator(descriptor, uniqueness, context);
         if (generator == null)
             generator = createScriptGenerator(descriptor, context);
 		return generator;
@@ -130,7 +132,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     @SuppressWarnings("unchecked")
     protected static Generator<?> createSampleGenerator(
-    		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
     	PrimitiveType primitiveType = descriptor.getPrimitiveType();
 		Class<?> targetType = (primitiveType != null ? primitiveType.getJavaType() : String.class);
 		String valueSpec = descriptor.getValues();
@@ -151,8 +153,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 				Object[] values = new Object[samples.length];
 				for (int i = 0; i < samples.length; i++)
 					values[i] = samples[i].getValue();
-				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, true, context);
-		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)), unique);
+				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, true, context);
+		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)), uniqueness.isUnique());
 			}
         } catch (org.databene.commons.ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
@@ -168,7 +170,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 	@SuppressWarnings("unchecked")
     protected static Generator<?> createConstantGenerator(
-    		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    		SimpleTypeDescriptor descriptor, BeneratorContext context) {
         Generator<?> generator = null;
         // check for constant
         String constant = descriptor.getConstant();
@@ -182,16 +184,16 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
 	private static Generator<?> createDefaultGenerator(
-			SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
-		Generator<?> generator = createTypeGenerator(descriptor, unique, context);
+			SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
+		Generator<?> generator = createTypeGenerator(descriptor, uniqueness, context);
         if (generator == null)
-            generator = createStringGenerator(descriptor, unique);
+            generator = createStringGenerator(descriptor, uniqueness);
 		return generator;
 	}
 
     @SuppressWarnings("unchecked")
     public static Generator<?> createSourceAttributeGenerator(
-    		SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
     	// TODO v0.6 compare with CTGenFact and extract common steps to TypeGenFact -> String[]
     	// this and CTGenFact only add wrappers
         String source = descriptor.getSource();
@@ -209,7 +211,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             else
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
-            return createSimpleTypeCSVSourceGenerator(descriptor, source, unique, context);
+            return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactory.getTextLineGenerator(source, false);
         } else {
@@ -221,9 +223,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         	}
         }
 
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), unique, false, context);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
-            generator = distribution.applyTo(generator, unique);
+            generator = distribution.applyTo(generator, uniqueness.isUnique());
         
     	return generator;
     }
@@ -245,13 +247,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 	@SuppressWarnings("unchecked")
     private static Generator<?> createSimpleTypeCSVSourceGenerator(
-			SimpleTypeDescriptor descriptor, String sourceName, boolean unique, BeneratorContext context) {
+			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator;
 		char separator = DescriptorUtil.getSeparator(descriptor, context);
 		String encoding = descriptor.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), false, false, context);
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context);
 
 		String dataset = descriptor.getDataset();
 		String nesting = descriptor.getNesting();
@@ -271,7 +273,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     		Iterable<Object> iterable = new ConvertingIterable<String[], Object>(src, converterChain);
     	    generator = new IteratingGenerator<Object>(new DefaultTypedIterable<Object>(Object.class, iterable));
             if (distribution != null)
-            	generator = distribution.applyTo(generator, unique);
+            	generator = distribution.applyTo(generator, uniqueness.isUnique());
         }
 		return generator;
 	}
@@ -279,7 +281,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     @SuppressWarnings("unchecked")
     private static Generator<?> createTypeGenerator(
-            SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+            SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         if (descriptor instanceof UnionSimpleTypeDescriptor)
             return createUnionTypeGenerator((UnionSimpleTypeDescriptor) descriptor, context);
         PrimitiveType primitiveType = descriptor.getPrimitiveType();
@@ -287,17 +289,17 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             return null;
         Class<?> targetType = primitiveType.getJavaType();
         if (Number.class.isAssignableFrom(targetType)) {
-            return createNumberGenerator(descriptor, (Class<? extends Number>) targetType, unique, context);
+            return createNumberGenerator(descriptor, (Class<? extends Number>) targetType, uniqueness, context);
         } else if (String.class.isAssignableFrom(targetType)) {
-            return createStringGenerator(descriptor, unique);
+            return createStringGenerator(descriptor, uniqueness);
         } else if (Boolean.class == targetType) {
             return createBooleanGenerator(descriptor);
         } else if (Character.class == targetType) {
-            return createCharacterGenerator(descriptor, unique);
+            return createCharacterGenerator(descriptor, uniqueness);
         } else if (Date.class == targetType) {
-            return createDateGenerator(descriptor, unique, context);
+            return createDateGenerator(descriptor, uniqueness, context);
         } else if (Timestamp.class == targetType) {
-            return createTimestampGenerator(descriptor, unique, context);
+            return createTimestampGenerator(descriptor, uniqueness, context);
         } else if (byte[].class == targetType) {
             return createByteArrayGenerator(descriptor);
         } else
@@ -311,7 +313,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Generator<?>[] sources = new Generator[n];
         for (int i = 0; i < n; i++) {
             SimpleTypeDescriptor alternative = descriptor.getAlternatives().get(i);
-            sources[i] = createSimpleTypeGenerator(alternative, false, false, context);
+            sources[i] = createSimpleTypeGenerator(alternative, false, Uniqueness.NONE, context);
         }
         Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);
@@ -324,28 +326,28 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static Generator<Timestamp> createTimestampGenerator(SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
-        Generator<Date> source = createDateGenerator(descriptor, unique, context);
+    private static Generator<Timestamp> createTimestampGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
+        Generator<Date> source = createDateGenerator(descriptor, uniqueness, context);
         Converter<Date, Timestamp> converter = (Converter) new AnyConverter<Timestamp>(Timestamp.class);
 		return new ConvertingGenerator<Date, Timestamp>(source, converter);
     }
 
-    private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, boolean unique, BeneratorContext context) {
+    private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Date min = parseDate(descriptor, MIN, TimeUtil.date(1970, 0, 1));
         Date max = parseDate(descriptor, MAX, TimeUtil.today().getTime());
         Date precisionDate = parseDate(descriptor, PRECISION, TimeUtil.date(1970, 0, 2));
         long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
-        		descriptor.getDistribution(), unique, true, context);
+        		descriptor.getDistribution(), uniqueness, true, context);
 	    return GeneratorFactory.getDateGenerator(min, max, precision, distribution);
     }
 
-    private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, boolean unique) {
+    private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness) {
         String pattern = descriptor.getPattern();
         if (pattern == null)
             pattern = ".";
         Locale locale = DescriptorUtil.getLocale(descriptor);
-        if (unique)
+        if (uniqueness.isUnique())
             return GeneratorFactory.getUniqueCharacterGenerator(pattern, locale);
         else
             return GeneratorFactory.getCharacterGenerator(pattern, locale);
@@ -373,9 +375,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     private static <T extends Number> Generator<T> createNumberGenerator(
-            SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique, BeneratorContext context) {
+            SimpleTypeDescriptor descriptor, Class<T> targetType, Uniqueness uniqueness, BeneratorContext context) {
         T min = getNumberDetail(descriptor, MIN, targetType);
-        T max = getNumberDetail(descriptor, MAX, targetType);
+        T max = getMax(descriptor, targetType, uniqueness.isUnique());
         if (min.equals(max)) {
             return new ConstantGenerator<T>(min);
         }
@@ -383,12 +385,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Integer fractionDigits = getNumberDetail(descriptor, "fractionDigits", Integer.class);
         T precision = getNumberDetail(descriptor, PRECISION, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
-        		descriptor.getDistribution(), unique, true, context);
+        		descriptor.getDistribution(), uniqueness, true, context);
         return GeneratorFactory.getNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, unique, 0);
+                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness, 0);
     }
 
-    private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, boolean unique) {
+    private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness) {
         // evaluate max length
         Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
         if (maxLength == null) {
@@ -426,7 +428,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (locale == null)
             locale = (Locale) descriptor.getDetailDefault(LOCALE);
         // evaluate uniqueness and create generator
-        if (unique)
+        if (uniqueness.isUnique())
             return GeneratorFactory.getUniqueRegexStringGenerator(pattern, minLength, maxLength);
         else
             return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength);
@@ -465,6 +467,20 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 maxLength = 10000;
         }
         return maxLength;
+    }
+
+    private static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
+        try {
+            String detailValue = (String) descriptor.getDetailValue(MAX);
+            if (detailValue == null)
+            	if (unique)
+            		return NumberUtil.maxValue(targetType);
+            	else
+            		detailValue = (String) descriptor.getDetailDefault(MAX);
+            return AnyConverter.convert(detailValue, targetType);
+        } catch (ConversionException e) {
+            throw new ConfigurationError(e);
+        }
     }
 
     private static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {

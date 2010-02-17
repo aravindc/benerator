@@ -31,6 +31,7 @@ import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.IncrementGenerator;
@@ -54,14 +55,14 @@ public class InstanceGeneratorFactory {
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
         if (generator == null) {
-            boolean unique = (descriptor instanceof IdDescriptor || DescriptorUtil.isUnique(descriptor));
+            Uniqueness uniqueness = uniqueness(descriptor);
             TypeDescriptor type = descriptor.getTypeDescriptor();
             if (type instanceof SimpleTypeDescriptor)
 				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-						(SimpleTypeDescriptor) type, false, unique, context);
+						(SimpleTypeDescriptor) type, false, uniqueness, context);
             else if (type instanceof ComplexTypeDescriptor)
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(),
-        				(ComplexTypeDescriptor) type, unique, context);
+        				(ComplexTypeDescriptor) type, uniqueness, context);
             else if (type == null) {
             	if (descriptor instanceof IdDescriptor)
     				generator = new IncrementGenerator(1);
@@ -73,7 +74,16 @@ public class InstanceGeneratorFactory {
         return generator;
     }
     
-    // private helpers -------------------------------------------------------------------------------------------------
+	// private helpers -------------------------------------------------------------------------------------------------
+
+    private static Uniqueness uniqueness(InstanceDescriptor descriptor) {
+    	if (descriptor instanceof IdDescriptor)
+    		return Uniqueness.ORDERED;
+    	else if (DescriptorUtil.isUnique(descriptor))
+    		return Uniqueness.SIMPLE;
+    	else
+    		return Uniqueness.NONE;
+    }
 
     public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
