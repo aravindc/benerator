@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,10 +31,8 @@ import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.databene.commons.BeanUtil;
+import org.databene.commons.comparator.TypeComparator;
 
 /**
  * Provides information how types can be combined in arithmetic operations.<br/>
@@ -44,13 +42,9 @@ import org.databene.commons.BeanUtil;
  * @author Volker Bergmann
  */
 
-public class TypeManager { // TODO make use of ObjectTypeComparator
+public class TypeManager {
 
-	private static Map<Class<?>, Integer> complexities;
-	
-	static {
-		complexities = new HashMap<Class<?>, Integer>();
-		addTypes(
+	private static TypeComparator comparator = new TypeComparator(
 			boolean.class, Boolean.class, 
 			char.class, Character.class,
 			byte.class, Byte.class,
@@ -66,26 +60,9 @@ public class TypeManager { // TODO make use of ObjectTypeComparator
 			Timestamp.class,
 			String.class
 		);
-	}
 	
 	public static Class<?> combinedType(Class<?> type1, Class<?> type2) {
-		int complexity1 = complexityOf(type1);
-		int complexity2 = complexityOf(type2);
-		Class<?> result = (complexity1 >= complexity2 ? type1 : type2);
-		String className = result.getClass().getName();
-		if (BeanUtil.isSimpleType(className))
-			result = BeanUtil.getWrapper(className);
-		return result;
+		return (comparator.compare(type1, type2) > 0 ? type1 : type2);
 	}
 
-    private static void addTypes(Class<?> ... types) {
-	    for (Class<?> type : types)
-	    	complexities.put(type, complexities.size());
-    }
-
-	private static int complexityOf(Class<?> type) {
-	    Integer result = complexities.get(type);
-	    return (result != null ? result.intValue() : null);
-    }
-	
 }
