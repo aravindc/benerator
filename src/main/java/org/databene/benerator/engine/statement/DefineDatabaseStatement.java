@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class DefineDatabaseStatement implements Statement { // TODO move to DB package?
+public class DefineDatabaseStatement implements Statement {
 	
 	private static Logger logger = LoggerFactory.getLogger(DefineDatabaseStatement.class);
 	
