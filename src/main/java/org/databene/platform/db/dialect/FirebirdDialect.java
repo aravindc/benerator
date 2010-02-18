@@ -43,8 +43,11 @@ import org.databene.platform.db.DatabaseDialect;
 
 public class FirebirdDialect extends DatabaseDialect {
 
+	private static final String DATE_PATTERN = "''yyyy-MM-dd''";
+	private static final String TIME_PATTERN = "''HH:mm:ss''";
+
     public FirebirdDialect() {
-	    super("Firebird", true, true);
+	    super("Firebird", true, true, DATE_PATTERN, TIME_PATTERN);
     }
 
     public String getJDBCDriverClass() {
@@ -86,5 +89,5 @@ public class FirebirdDialect extends DatabaseDialect {
     public String renderSetSequenceValue(String sequenceName, long value) {
         return "set generator " + sequenceName + " to " + (value - 1);
     }
-    
+
 }

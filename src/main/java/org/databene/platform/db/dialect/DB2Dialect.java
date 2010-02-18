@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,8 +36,11 @@ import org.databene.platform.db.DatabaseDialect;
  */
 public class DB2Dialect extends DatabaseDialect {
 
+	private static final String DATE_PATTERN = "''yyyy-MM-dd''";
+	private static final String TIME_PATTERN = "''HH:mm:ss''";
+
     public DB2Dialect() {
-	    super("DB2", false, true);
+	    super("DB2", false, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override

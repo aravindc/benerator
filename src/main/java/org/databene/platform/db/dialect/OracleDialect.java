@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,10 @@
 
 package org.databene.platform.db.dialect;
 
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+
+import org.databene.commons.converter.TimestampFormatter;
 import org.databene.platform.db.DatabaseDialect;
 
 /**
@@ -36,8 +40,13 @@ import org.databene.platform.db.DatabaseDialect;
  */
 public class OracleDialect extends DatabaseDialect {
     
-    public OracleDialect() {
-	    super("Oracle", true, true);
+	private static final String DATE_PATTERN = "'to_date('''yyyy-MM-dd HH:mm:ss''', ''yyyy-mm-dd HH24:mi:ss'')'";
+	private static final String TIME_PATTERN = "'to_date('''HH:mm:ss''', ''HH24:mi:ss'')'";
+    private static final String TIMESTAMP_MESSAGE = "to_timestamp(''{0}'', ''yyyy-mm-dd HH24:mi:ss.FF'')";
+    private static final String TIMESTAMP_PREFIX_PATTERN = "yyyy-MM-dd HH:mm:ss.";
+
+	public OracleDialect() {
+	    super("Oracle", true, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override
@@ -45,4 +54,10 @@ public class OracleDialect extends DatabaseDialect {
         return "select " + sequenceName + ".nextval from dual";
     }
 	
+	@Override
+    public String formatTimestamp(Timestamp value) {
+		String renderedTimestamp = new TimestampFormatter(TIMESTAMP_PREFIX_PATTERN).format(value);
+		return MessageFormat.format(TIMESTAMP_MESSAGE, renderedTimestamp);
+    }
+
 }

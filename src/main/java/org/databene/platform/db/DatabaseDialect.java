@@ -28,9 +28,15 @@ package org.databene.platform.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.converter.TimestampFormatter;
 import org.databene.commons.db.DBUtil;
 import org.databene.platform.db.model.DBCatalog;
 import org.databene.platform.db.model.DBTable;
@@ -43,16 +49,23 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class DatabaseDialect {
+public abstract class DatabaseDialect {
 	
+	private static final String DEFAULT_TIMESTAMP_PREFIX_PATTERN = "yyyy-MM-dd HH:mm:ss.";
+
     private String system;
     protected boolean quoteTableNames;
     protected boolean sequenceSupported;
+	private DateFormat dateFormat;
+	private DateFormat timeFormat;
     
-    public DatabaseDialect(String system, boolean quoteTableNames, boolean sequenceSupported) {
+    public DatabaseDialect(String system, boolean quoteTableNames, boolean sequenceSupported, 
+    		String datePattern, String timePattern) {
         this.system = system;
         this.quoteTableNames = quoteTableNames;
         this.sequenceSupported = sequenceSupported;
+        this.dateFormat = new SimpleDateFormat(datePattern);
+        this.timeFormat = new SimpleDateFormat(timePattern);
     }
 
     public boolean isSequenceSupported() {
@@ -141,6 +154,25 @@ public class DatabaseDialect {
         logger.debug("built SQL statement: " + sql);
         return sql;
     }
+
+	public String formatValue(Object value) {
+		if (value instanceof CharSequence || value instanceof Character)
+			return "'" + value.toString() + "'";
+		else if (value instanceof Timestamp)
+			return formatTimestamp((Timestamp) value);
+		else if (value instanceof Time)
+			return timeFormat.format(value);
+		else if (value instanceof Date)
+			return dateFormat.format(value);
+		else
+			return String.valueOf(value);
+    }
+
+	public String formatTimestamp(Timestamp timestamp) {
+		return "'" + new TimestampFormatter(DEFAULT_TIMESTAMP_PREFIX_PATTERN).format(timestamp) + "'";
+	}
+	
+	
 
 	// private helpers -------------------------------------------------------------------------------------------------
 	

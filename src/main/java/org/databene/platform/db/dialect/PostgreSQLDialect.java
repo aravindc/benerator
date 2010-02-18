@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.platform.db.dialect;
 
+import java.sql.Timestamp;
+
 import org.databene.platform.db.DatabaseDialect;
 
 /**
@@ -36,13 +38,21 @@ import org.databene.platform.db.DatabaseDialect;
  */
 public class PostgreSQLDialect extends DatabaseDialect {
     
+	private static final String DATE_PATTERN = "'date '''yyyy-MM-dd''";
+	private static final String TIME_PATTERN = "'time '''HH:mm:ss''";
+
     public PostgreSQLDialect() {
-	    super("PostreSQL", false, true);
+	    super("PostreSQL", false, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override
     public String renderFetchSequenceValue(String sequenceName) {
         return "select nextval('" + sequenceName + "')";
     }
+
+	@Override
+	public String formatTimestamp(Timestamp timestamp) {
+	    return "timestamp " + super.formatTimestamp(timestamp);
+	}
 	
 }
