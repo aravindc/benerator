@@ -223,7 +223,7 @@ public class ArchetypeBuilder implements Runnable {
 		if (!setup.isOverwrite() && file.exists())
 			throw new I18NError("FileAlreadyExists", null, file.getAbsolutePath());
 		DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
-				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), "dbunit", monitor);
+				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), "dbunit", null, monitor);
 		return file;
 	}
 
