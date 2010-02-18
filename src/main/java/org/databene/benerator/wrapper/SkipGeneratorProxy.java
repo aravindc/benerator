@@ -41,7 +41,7 @@ import org.databene.benerator.distribution.SequenceManager;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class SkipGeneratorProxy<E> extends GeneratorProxy<E> { // TODO merge concept with RandomWalkSequence
+public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
 	
 	public static final long DEFAULT_MIN_INCREMENT = 1L;
 	public static final long DEFAULT_MAX_INCREMENT = 1L;
