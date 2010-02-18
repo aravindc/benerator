@@ -187,12 +187,10 @@ public class ModelParser {
                     			} else if (source instanceof EntitySource) {
                     				partType = "entity";
                     			} 
-                    			// TODO v0.6 how to handle simple types and (DB)System sources?
                     		} else if (sourceSpec.endsWith(".ent.csv") || sourceSpec.endsWith(".flat.csv") 
                     				|| sourceSpec.endsWith(".dbunit.xml")) {
                     			partType = "entity";
                     		}
-                    		// TODO v0.6 how to handle properties of beans in context?
                     	}
                     }
                     if (partType != null) {
