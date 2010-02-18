@@ -157,7 +157,7 @@ public abstract class DatabaseDialect {
 
 	public String formatValue(Object value) {
 		if (value instanceof CharSequence || value instanceof Character)
-			return "'" + value.toString() + "'";
+			return "'" + DBUtil.escape(value.toString()) + "'";
 		else if (value instanceof Timestamp)
 			return formatTimestamp((Timestamp) value);
 		else if (value instanceof Time)
