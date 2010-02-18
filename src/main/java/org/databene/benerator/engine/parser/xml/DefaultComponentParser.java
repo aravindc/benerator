@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,9 +21,17 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import java.util.Collection;
+
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.statement.XMLDefaultComponentsStatement;
+import org.databene.benerator.engine.Statement;
+import org.databene.benerator.parser.ModelParser;
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.xml.XMLUtil;
+import org.databene.model.data.ComponentDescriptor;
 import org.w3c.dom.Element;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
@@ -35,12 +43,36 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  */
 public class DefaultComponentParser implements DescriptorParser {
 
+	static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet("attribute", "part", "id", "reference");
+
 	public boolean supports(String elementName, String parentName) {
 	    return EL_DEFAULT_COMPONENTS.equals(elementName);
     }
 
 	public XMLDefaultComponentsStatement parse(Element element, ResourceManager resourceManager) {
 		return new XMLDefaultComponentsStatement(element);
+	}
+
+	class XMLDefaultComponentsStatement implements Statement {
+		
+		private Element element;
+
+	    public XMLDefaultComponentsStatement(Element element) {
+	    	this.element = element;
+	    }
+
+		public void execute(BeneratorContext context) {
+			for (Element child : XMLUtil.getChildElements(element)) {
+				String childType = XMLUtil.localName(child);
+				if (COMPONENT_TYPES.contains(childType)) {
+					ModelParser parser = new ModelParser(context);
+					ComponentDescriptor component = parser.parseSimpleTypeComponent(child, null);
+					context.setDefaultComponentConfig(component);
+				} else
+					throw new ConfigurationError("Unexpected element: " + childType);
+			}
+		}
+
 	}
 
 }
