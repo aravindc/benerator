@@ -70,7 +70,7 @@ import java.util.*;
  * Created: 08.09.2007 07:45:40
  * @author Volker Bergmann
  */
-public class ComplexTypeGeneratorFactory { // TODO support & test JSR 303
+public class ComplexTypeGeneratorFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(ComplexTypeGeneratorFactory.class);
 
