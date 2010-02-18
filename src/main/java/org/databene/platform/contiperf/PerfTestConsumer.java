@@ -44,6 +44,7 @@ import freemarker.template.utility.StringUtil;
  */
 public class PerfTestConsumer extends ConsumerProxy<Object> {
 	
+	private String id;
 	private PerformanceRequirement requirement;
 	private PerfTestController controller;
 
@@ -52,6 +53,10 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
     }
 	
 	public PerfTestConsumer(Consumer<Object> target) {
+	    this(target, "Unnamed");
+    }
+	
+	public PerfTestConsumer(Consumer<Object> target, String id) {
 	    super(target);
 	    this.requirement = new PerformanceRequirement();
     }
@@ -85,7 +90,7 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
 	
 	protected PerfTestController getController() {
 		if (controller == null) {
-			Invoker invoker = new ConsumerInvoker("enrollCustomer", target); // TODO
+			Invoker invoker = new ConsumerInvoker(id, target);
 			ExecutionLogger logger = new FileExecutionLogger();
 			controller = new PerfTestController(invoker, requirement, logger);
 		}
