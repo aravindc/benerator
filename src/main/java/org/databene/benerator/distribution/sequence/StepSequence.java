@@ -33,6 +33,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import static org.databene.commons.NumberUtil.*;
 
 /**
  * Creates numbers by continuously incrementing a base value by a constant amount.<br/>

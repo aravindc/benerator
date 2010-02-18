@@ -37,6 +37,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.MathUtil;
 import org.databene.commons.converter.NumberConverter;
+import static org.databene.commons.NumberUtil.*;
 
 /**
  * Random Walk {@link Sequence} implementation that supports a variable step width.<br/>

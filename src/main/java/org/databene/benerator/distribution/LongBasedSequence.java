@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.WrapperFactory;
+import static org.databene.commons.NumberUtil.*;
 
 /**
  * Helper class that serves as parent for individual {@link Sequence} implementations 

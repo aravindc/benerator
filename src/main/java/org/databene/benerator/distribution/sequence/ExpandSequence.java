@@ -24,6 +24,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
+import static org.databene.commons.NumberUtil.*;
 
 /**
  * {@link Sequence} implementation that makes use of Benerator's {@link ExpandGeneratorProxy} 

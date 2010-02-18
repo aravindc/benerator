@@ -29,7 +29,6 @@ package org.databene.benerator.distribution;
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
-import org.databene.commons.converter.NumberConverter;
 
 /**
  * Provides access to specific Sequence number Generators.<br/>
@@ -56,14 +55,6 @@ public abstract class Sequence implements Distribution {
 	    return new SequencedSampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
     }
     
-	protected <T extends Number> Long toLong(T value) {
-	    return NumberConverter.convert(value, Long.class);
-    }
-	
-	protected <T extends Number> Double toDouble(T value) {
-	    return NumberConverter.convert(value, Double.class);
-    }
-	
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override

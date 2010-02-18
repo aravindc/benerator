@@ -29,6 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
+import static org.databene.commons.NumberUtil.*;
 
 /**
  * {@link Sequence} implementation that creates Number {@link Generator} with a wedge distribution.
