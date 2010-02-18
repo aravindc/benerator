@@ -111,6 +111,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     protected static ComponentBuilder createNullableScriptBuilder(ComponentDescriptor component, Context context) {
     	TypeDescriptor type = component.getTypeDescriptor();
+        if (type == null)
+        	return null;
         String scriptText = type.getScript();
         if (scriptText == null)
         	return null;
