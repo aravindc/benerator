@@ -34,6 +34,7 @@ import java.util.Date;
 
 import org.databene.commons.Patterns;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.converter.TimestampFormatter;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -63,7 +64,8 @@ public class ConsoleExporterTest {
 	@Test
 	public void testTimestamp() {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		check(timestamp, new SimpleDateFormat(Patterns.DEFAULT_TIMESTAMP_PATTERN).format(timestamp));
+		TimestampFormatter formatter = new TimestampFormatter(Patterns.DEFAULT_DATETIME_SECONDS_PATTERN + '.');
+		check(timestamp, formatter.format(timestamp));
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
