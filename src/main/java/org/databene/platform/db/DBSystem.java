@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.platform.db;
 
-import org.databene.platform.db.dialect.UnknownDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
 import org.databene.commons.*;
@@ -50,7 +49,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -445,7 +443,7 @@ public class DBSystem extends AbstractStorageSystem {
     	if (dialect == null) {
         	try {
         		DatabaseMetaData metaData = getThreadContext().connection.getMetaData();
-				mapStrategy(metaData.getDatabaseProductName());
+				dialect = DatabaseDialectManager.getDialectForProduct(metaData.getDatabaseProductName());
     		} catch (SQLException e) {
     	        throw new ConfigurationError("Database meta data access failed", e);
     		}
@@ -460,21 +458,6 @@ public class DBSystem extends AbstractStorageSystem {
     		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
         ThreadContext context = getThreadContext();
         return context.getStatement(descriptor, insert, columnInfos);
-    }
-
-    private void mapStrategy(String productName) { 
-        String filename = "org/databene/platform/db/databene.db_dialect.properties";
-        try {
-            Map<String, String> mappings = IOUtil.readProperties(filename);
-            for (Map.Entry<String, String> entry : mappings.entrySet())
-                if (productName.toLowerCase().contains(entry.getKey())) {
-                    dialect = (DatabaseDialect) BeanUtil.newInstance(entry.getValue());
-                    return;
-                }
-            dialect = new UnknownDialect(productName);
-        } catch (IOException e) {
-            throw new ConfigurationError("Database dialect mapping not found: " + filename, e);
-        }
     }
 
     private static List<DBTable> dependencyOrderedTables(Database database) {
