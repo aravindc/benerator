@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,11 @@ package org.databene.platform.db.dialect;
 
 import static org.junit.Assert.*;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import org.databene.commons.TimeUtil;
 import org.junit.Test;
 
 /**
@@ -45,6 +50,28 @@ public class OracleDialectTest extends DatabaseDialectTest {
 	@Test
 	public void testDropSequence() {
 		assertEquals("drop sequence SEQ", dialect.renderDropSequence("SEQ"));
+	}
+	
+	@Test
+	public void testFormatDate() {
+		Date date = TimeUtil.date(1971, 1, 3, 13, 14, 15, 0);
+		assertEquals("to_date('1971-02-03 13:14:15', 'yyyy-mm-dd HH24:mi:ss')", 
+				dialect.formatValue(date));
+	}
+	
+	@Test
+	public void testFormatTime() {
+		Time time = TimeUtil.time(13, 14, 15, 123);
+		System.out.println(dialect.formatValue(time));
+		assertEquals("to_date('13:14:15', 'HH24:mi:ss')", dialect.formatValue(time));
+	}
+	
+	@Test
+	public void testFormatTimestamp() {
+		Timestamp timestamp = TimeUtil.timestamp(1971, 1, 3, 13, 14, 15, 123456789);
+		System.out.println(dialect.formatValue(timestamp));
+		assertEquals("to_timestamp('1971-02-03 13:14:15.123456789', 'yyyy-mm-dd HH24:mi:ss.FF')", 
+				dialect.formatValue(timestamp));
 	}
 	
 }

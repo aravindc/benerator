@@ -21,6 +21,8 @@
 
 package org.databene.platform.db.dialect;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -38,6 +40,22 @@ public class FirebirdDialectTest extends DatabaseDialectTest {
 	@Test
 	public void testSequencesOnline() throws Exception {
 		testSequencesOnline("firebird");
+	}
+	
+	@Test
+	public void testFormatDate() {
+		assertEquals("'1971-02-03'", dialect.formatValue(DATETIME_19710203131415));
+	}
+	
+	@Test
+	public void testFormatTime() {
+		assertEquals("'13:14:15'", dialect.formatValue(TIME_131415));
+	}
+	
+	@Test
+	public void testFormatTimestamp() {
+		assertEquals("'1971-02-03 13:14:15.123456789'", 
+				dialect.formatValue(TIMESTAMP_19710203131415123456789));
 	}
 	
 }

@@ -25,10 +25,14 @@ import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import org.databene.commons.ConnectFailedException;
 import org.databene.commons.DatabeneTestUtil;
 import org.databene.commons.StringUtil;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.db.JDBCConnectData;
 import org.databene.platform.db.DatabaseDialect;
@@ -43,6 +47,10 @@ import org.junit.Test;
 public abstract class DatabaseDialectTest {
 	
 	protected DatabaseDialect dialect;
+	
+	protected final static Date DATETIME_19710203131415 = TimeUtil.date(1971, 1, 3, 13, 14, 15, 0);
+	protected final static Time TIME_131415 = TimeUtil.time(13, 14, 15, 0);
+	protected final static Timestamp TIMESTAMP_19710203131415123456789 = TimeUtil.timestamp(1971, 1, 3, 13, 14, 15, 123456789);
 	
 	public DatabaseDialectTest(DatabaseDialect dialect) {
 	    this.dialect = dialect;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,6 +45,22 @@ public class PostgreSQLDialectTest extends DatabaseDialectTest {
 	@Test
 	public void testDropSequence() {
 		assertEquals("drop sequence SEQ", dialect.renderDropSequence("SEQ"));
+	}
+	
+	@Test
+	public void testFormatDate() {
+		assertEquals("date '1971-02-03'", dialect.formatValue(DATETIME_19710203131415));
+	}
+	
+	@Test
+	public void testFormatTime() {
+		assertEquals("time '13:14:15'", dialect.formatValue(TIME_131415));
+	}
+	
+	@Test
+	public void testFormatTimestamp() {
+		assertEquals("timestamp '1971-02-03 13:14:15.123456789'", 
+				dialect.formatValue(TIMESTAMP_19710203131415123456789));
 	}
 	
 }
