@@ -23,11 +23,12 @@ package org.databene.benerator.wrapper;
 
 import static org.junit.Assert.*;
 
+import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.junit.Test;
 
 /**
- * Tests the {@link NullableGeneratorProxy}.<br/><br/>
+ * Tests the {@link NullInjectingGeneratorProxy}.<br/><br/>
  * Created: 26.01.2010 11:01:30
  * @since 0.6.0
  * @author Volker Bergmann
@@ -63,11 +64,11 @@ public class NullableGeneratorProxyTest {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
-	private NullableGeneratorProxy<Integer> createGenerator(double nullQuota) {
-	    return new NullableGeneratorProxy<Integer>(new ConstantGenerator<Integer>(1), nullQuota);
+	private NullInjectingGeneratorProxy<Integer> createGenerator(double nullQuota) {
+	    return new NullInjectingGeneratorProxy<Integer>(new ConstantGenerator<Integer>(1), nullQuota);
     }
 
-	private int countNulls(NullableGeneratorProxy<Integer> gen) {
+	private int countNulls(NullInjectingGeneratorProxy<Integer> gen) {
 	    int nullCount = 0;
 		ProductWrapper<Integer> wrapper = new ProductWrapper<Integer>();
 		for (int i = 0; i < N; i++) {
