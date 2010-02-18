@@ -29,7 +29,9 @@ import org.databene.benerator.sample.SampleGeneratorUtil;
 import org.databene.benerator.sample.SequencedSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.commons.Context;
 import org.databene.commons.Converter;
+import org.databene.script.ScriptConverter;
 
 /**
  * Generates values from a dataset based on a {@link Sequence}.<br/><br/>
@@ -39,6 +41,13 @@ import org.databene.commons.Converter;
  */
 public class SequencedDatasetCSVGenerator<E> extends GeneratorProxy<E> {
 	
+	@SuppressWarnings("unchecked")
+    public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
+            Distribution distribution, String encoding, Context context) {
+        this(filenamePattern, separator, datasetName, nesting, distribution, encoding, 
+        		(Converter<String, E>) new ScriptConverter(context));
+    }
+
 	@SuppressWarnings("unchecked")
     public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
             Distribution distribution, String encoding, Converter<String, E> converter) {
