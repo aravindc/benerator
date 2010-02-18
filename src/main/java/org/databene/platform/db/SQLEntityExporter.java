@@ -29,7 +29,6 @@ package org.databene.platform.db;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.databene.commons.db.DBUtil;
 import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
@@ -117,12 +116,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
 			else
 				builder.append(", ");
             Object value = entry.getValue();
-			String text = dialect.formatValue(value);
-			text = DBUtil.escape(text);
-            if (value instanceof CharSequence || value instanceof Character)
-    			builder.append("'").append(text).append("'");
-            else
-            	builder.append(text);
+			builder.append(dialect.formatValue(value));
         }
         builder.append(");");
         String sql = builder.toString();
