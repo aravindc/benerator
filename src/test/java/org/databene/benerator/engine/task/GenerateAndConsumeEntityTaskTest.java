@@ -75,25 +75,7 @@ public class GenerateAndConsumeEntityTaskTest extends AbstractTaskTest {
 		task.close();
 		assertEquals("tn", task.getTaskName());
 	}
-/* TODO
-    @Test
-    public void testRecursive() throws Exception {
-		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
-		final ListConsumer consumer = new ListConsumer();
-		Expression<Consumer<Entity>> consumerExpr = new ConstantExpression<Consumer<Entity>>(consumer);
-		List<? extends Task> subTasks = ;
-		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(
-				"tn", generator, consumerExpr, subTasks , false, null);
-		checkIteration(task, consumer);
-		consumer.list.clear();
-		task.reset();
-		checkIteration(task, consumer);
-		task.close();
-		assertFalse(task.available());
-		assertEquals("tn", task.getTaskName());
-		assertEquals("fatal", task.getErrorHandler(null).getLevel().name());
-	}
-*/
+
     // test helpers ----------------------------------------------------------------------------------------------------
 
 	private void checkIteration(GenerateAndConsumeEntityTask task, final ListConsumer consumer) {
