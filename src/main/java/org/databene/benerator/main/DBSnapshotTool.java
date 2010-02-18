@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -60,6 +60,7 @@ public class DBSnapshotTool {
 	public static final String DB_SCHEMA = "dbSchema";
 	public static final String DB_USER = "dbUser";
 	public static final String FORMAT = "format";
+	public static final String DIALECT = "dialect";
 	
 	// TODO v0.6.0 test with each database
     private static final Logger logger = LoggerFactory.getLogger(DBSnapshotTool.class);
@@ -80,6 +81,7 @@ public class DBSnapshotTool {
         String dbPassword = System.getProperty(DB_PASSWORD);
         String dbSchema = System.getProperty(DB_SCHEMA);
         String format = System.getProperty(FORMAT);
+        String dialect = System.getProperty(DIALECT);
         if (format == null)
         	format = DEFAULT_FORMAT;
         
@@ -87,16 +89,16 @@ public class DBSnapshotTool {
                 + "'" + (dbSchema != null ? " using schema '" + dbSchema + "'" : "") 
                 + " in " + format + " format to file " + filename);
 
-        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format);
+        export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format, dialect);
     }
 
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
-			String dbUser, String dbPassword, String filename, String format) {
-		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format, null);
+			String dbUser, String dbPassword, String filename, String format, String dialect) {
+		export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format, dialect, null);
 	}
 	
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
-			String dbUser, String dbPassword, String filename, String format, ProgressMonitor monitor) {
+			String dbUser, String dbPassword, String filename, String format, String dialect, ProgressMonitor monitor) {
         if (dbUser == null)
             logger.warn("No JDBC user specified");
         String fileEncoding = SystemInfo.getFileEncoding();
@@ -110,7 +112,7 @@ public class DBSnapshotTool {
         else if ("xls".equals(format))
         	exporter = new XLSEntityExporter();
         else if ("sql".equals(format))
-        	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator);
+        	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator, dialect);
         else
         	throw new IllegalArgumentException("Unknown format: " + format);
 
@@ -150,4 +152,5 @@ public class DBSnapshotTool {
                 db.close();
         }
 	}
+	
 }
