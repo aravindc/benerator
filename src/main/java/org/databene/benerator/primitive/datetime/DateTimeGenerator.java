@@ -123,21 +123,13 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     @Override
     public void validate() {
         super.validate();
-    	// TODO support uniqueness?
     	this.dateGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE, 0);
     	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE, 0);
         dirty = false;
     }
-/*    
-    @Override
-    public boolean available() {
-    	if (dirty)
-    		validate();
-    	return dateGenerator.isAvailable() && timeOffsetGenerator.isAvailable();
-    }
-*/    
+
     public Date generate() {
     	if (dirty)
     		validate();
