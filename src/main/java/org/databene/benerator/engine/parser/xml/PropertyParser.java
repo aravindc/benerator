@@ -56,7 +56,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 			valueExpression = new ScriptedLiteral(element.getAttribute(ATT_VALUE));
 		else if (element.hasAttribute(ATT_REF))
 			valueExpression = new FeatureAccessExpression(element.getAttribute(ATT_REF));
-		else if (element.hasAttribute(ATT_SOURCE)) // TODO test (like samba.ben.xml)
+		else if (element.hasAttribute(ATT_SOURCE))
 			valueExpression = parseSource(element.getAttribute(ATT_SOURCE));
 		else
 			throw new ConfigurationError("Syntax error in property definition");
