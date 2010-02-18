@@ -79,7 +79,7 @@ public class TypeGeneratorFactory {
     }
 
     protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
-        Generator<?> generator = null;
+    	Generator<?> generator = null;
         String scriptText = descriptor.getScript();
         if (scriptText != null) {
             Script script = ScriptUtil.parseScriptText(scriptText);
@@ -88,18 +88,6 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-/*
-    public static void checkUsedDetails(TypeDescriptor descriptor,
-            Set<String> usedDetails) {
-        for (FeatureDetail<?> detail : descriptor.getDetails()) {
-            String name = detail.getName();
-            if (!NAME.equals(name) && detail.getValue() != null
-                    && !usedDetails.contains(name))
-                logger.debug("Ignored detail: " + detail + " in descriptor "
-                        + descriptor); // TODO v1.0 improve tracking of unused features
-        }
-    }
-*/
     @SuppressWarnings("unchecked")
     protected static Generator<?> createValidatingGenerator(
             TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
@@ -148,10 +136,16 @@ public class TypeGeneratorFactory {
             SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
             return generator;
-        PrimitiveType primitiveType = descriptor.getPrimitiveType();
+        Converter<?, ?> converter = createConverter(descriptor, generator.getGeneratedType());
+    	return (converter != null ? new ConvertingGenerator(generator, converter) : generator);
+    }
+
+	@SuppressWarnings("unchecked")
+    public static Converter<?, ?> createConverter(SimpleTypeDescriptor descriptor, Class<?> sourceType) {
+	    PrimitiveType primitiveType = descriptor.getPrimitiveType();
         Class<?> targetType = primitiveType.getJavaType();
         Converter<?,?> converter = null;
-        if (Date.class.equals(targetType) && generator.getGeneratedType() == String.class) {
+        if (Date.class.equals(targetType) && sourceType == String.class) {
             // String needs to be converted to Date
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
@@ -161,7 +155,7 @@ public class TypeGeneratorFactory {
                 // we need to expect the standard date format
                 converter = new String2DateConverter<Date>();
             }
-        } else if (String.class.equals(targetType) && generator.getGeneratedType() == Date.class) {
+        } else if (String.class.equals(targetType) && sourceType == Date.class) {
             // String needs to be converted to Date
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
@@ -171,10 +165,10 @@ public class TypeGeneratorFactory {
                 // we need to expect the standard date format
                 converter = new FormatFormatConverter<Date>(Date.class, TimeUtil.createDefaultDateFormat());
             }
-        } else if (targetType != generator.getGeneratedType()) {
+        } else if (targetType != sourceType) {
         	converter = new AnyConverter(targetType, descriptor.getPattern());
         }
-    	return (converter != null ? new ConvertingGenerator(generator, converter) : generator);
+	    return converter;
     }
 
 }

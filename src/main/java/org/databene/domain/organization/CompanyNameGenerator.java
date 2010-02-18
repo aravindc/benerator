@@ -28,6 +28,7 @@ package org.databene.domain.organization;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -35,7 +36,6 @@ import org.databene.benerator.sample.SequencedCSVSampleGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
-import org.databene.benerator.wrapper.NullableGeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.Encodings;
@@ -66,9 +66,9 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
     private boolean legalForm;
     
     private AlternativeGenerator<String> core;
-    private NullableGeneratorProxy<String> sectorGenerator;
+    private NullInjectingGeneratorProxy<String> sectorGenerator;
     private Generator<String> legalFormGenerator;
-    private NullableGeneratorProxy<String> locationGenerator;
+    private NullInjectingGeneratorProxy<String> locationGenerator;
     
     private transient ThreadLocalProductWrapper<String> productWrapper;
     
@@ -174,7 +174,7 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
 	private void initSectorGenerator(String datasetName) {
 	    if (sector) {
         	try {
-        		sectorGenerator = new NullableGeneratorProxy<String>(new WeightedDatasetCSVGenerator<String>(
+        		sectorGenerator = new NullInjectingGeneratorProxy<String>(new WeightedDatasetCSVGenerator<String>(
         				ORG + "sector_{0}.csv", datasetName, REGION, Encodings.UTF_8), 0.7);
         	} catch (Exception e) {
         		logger.info("Cannot create sector generator: " + e.getMessage());
@@ -211,7 +211,7 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
         	}
         } else
         	locationBaseGen = new ConstantGenerator<String>(null);
-        locationGenerator = new NullableGeneratorProxy<String>(locationBaseGen, nullQuota);
+        locationGenerator = new NullInjectingGeneratorProxy<String>(locationBaseGen, nullQuota);
     }
 
 }

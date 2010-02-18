@@ -75,7 +75,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.weightedLiteralList_return r = parser.weightedLiteralList();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal weightedLiteralList: " + text, -1, -1);
+	        	throw new ParseException("Illegal weightedLiteralList", text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -85,14 +85,14 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause());
+        		throw mapToParseException((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in weightedLiteralList parsing", e);
         } catch (RecognitionException e) {
         	e.printStackTrace();
-        	throw mapToParseException(e);
+        	throw mapToParseException(e, text);
         }
     }
 	
@@ -103,7 +103,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.expression_return r = parser.expression();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1, -1);
+	        	throw new ParseException("Illegal regex", text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -113,13 +113,13 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause());
+        		throw mapToParseException((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
-        	throw mapToParseException(e);
+        	throw mapToParseException(e, text);
         }
     }
 	
@@ -130,7 +130,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.transitionList_return r = parser.transitionList();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1, -1);
+	        	throw new ParseException("Illegal regex", text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -140,14 +140,14 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause());
+        		throw mapToParseException((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
         	e.printStackTrace();
-        	throw mapToParseException(e);
+        	throw mapToParseException(e, text);
         }
     }
 	
@@ -158,7 +158,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpecList_return r = parser.beanSpecList();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1, -1);
+	        	throw new ParseException("Illegal regex", text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -168,13 +168,13 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause());
+        		throw mapToParseException((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
-        	throw mapToParseException(e);
+        	throw mapToParseException(e, text);
         }
     }
 	
@@ -185,7 +185,7 @@ public class BeneratorScriptParser {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpec_return r = parser.beanSpec();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex: " + text, -1, -1);
+	        	throw new ParseException("Illegal regex", text, -1, -1);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -195,13 +195,13 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause());
+        		throw mapToParseException((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
-        	throw mapToParseException(e);
+        	throw mapToParseException(e, text);
         }
     }
 	
@@ -214,8 +214,9 @@ public class BeneratorScriptParser {
 	    return parser;
     }
 	
-    private static ParseException mapToParseException(RecognitionException e) {
-    	return new ParseException("Error parsing Benerator expression: " + e.getMessage(), e.line, e.charPositionInLine);
+    private static ParseException mapToParseException(RecognitionException e, String text) {
+    	return new ParseException("Error parsing Benerator Script expression: " + e.getMessage(), 
+    			text, e.line, e.charPositionInLine);
     }
 
     private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws ParseException {
@@ -254,7 +255,8 @@ public class BeneratorScriptParser {
 		    	transitions[i] = convertTransition(childAt(i, node));
 		    return transitions;
     	} else
-    		throw new ParseException("Unexpected token in transition list: " + node.getToken(), node.getLine(), node.getCharPositionInLine());
+    		throw new ParseException("Unexpected token in transition list: ", node.getToken().getText(), 
+    				node.getLine(), node.getCharPositionInLine());
     }
 
 	private static WeightedTransition convertTransition(CommonTree node) throws ParseException {
@@ -279,7 +281,7 @@ public class BeneratorScriptParser {
 		    	specs[i] = convertBeanSpec(childAt(i, node));
 		    return specs;
     	} else
-    		throw new ParseException("Unexpected token: " + node.getToken(), node.getLine(), node.getCharPositionInLine());
+    		throw new ParseException("Unexpected token", node.getToken().getText(), node.getLine(), node.getCharPositionInLine());
     }
 
 	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
@@ -333,7 +335,8 @@ public class BeneratorScriptParser {
 			case BeneratorLexer.AMPAMP: return convertConditionalAnd(node);
 			case BeneratorLexer.BARBAR: return convertConditionalOr(node);
 			case BeneratorLexer.QUES: return convertConditionalExpression(node);
-			default: throw new ParseException("Unknown token type: " + node.getType(), node.getLine(), node.getCharPositionInLine());
+			default: throw new ParseException("Unknown token type", String.valueOf(node.getType()), 
+					node.getLine(), node.getCharPositionInLine());
     	}
     }
 

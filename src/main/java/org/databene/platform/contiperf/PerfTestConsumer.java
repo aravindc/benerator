@@ -104,7 +104,7 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
 	private PercentileRequirement parsePercentileSpec(String assignment) {
 	    String[] parts = StringUtil.split(assignment, ':');
 	    if (parts.length != 2)
-	    	throw new ParseException("Ilegal percentile syntax: " + assignment);
+	    	throw new ParseException("Ilegal percentile syntax", assignment);
 	    int base  = Integer.parseInt(parts[0]);
 	    int limit = Integer.parseInt(parts[1]);
 		return new PercentileRequirement(base, limit);

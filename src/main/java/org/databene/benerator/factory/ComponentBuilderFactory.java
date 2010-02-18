@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.benerator.factory;
 
+import static org.databene.model.data.TypeDescriptor.PATTERN;
+
 import java.util.Collection;
 
 import org.databene.model.data.AlternativeGroupDescriptor;
@@ -35,8 +37,11 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.storage.StorageSystem;
+import org.databene.script.Script;
+import org.databene.script.ScriptUtil;
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
@@ -45,10 +50,19 @@ import org.databene.benerator.composite.PlainComponentBuilder;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.CachedExpression;
+import org.databene.benerator.nullable.ConvertingNullableGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullableScriptGenerator;
+import org.databene.benerator.nullable.ValidatingNullableGeneratorProxy;
+import org.databene.benerator.primitive.ValueMapper;
 import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
+import org.databene.commons.Converter;
 import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
+import org.databene.commons.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +85,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     public static ComponentBuilder createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
-        ComponentBuilder builder = createNullQuotaOneBuilder(descriptor);
+        ComponentBuilder builder;
+        builder = createNullableScriptBuilder(descriptor, context);
+        if (builder != null)
+        	return builder;
+        builder = createNullQuotaOneBuilder(descriptor);
         if (builder != null)
         	return builder;
         builder = createNullableBuilder(descriptor, context);
@@ -91,7 +109,17 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             throw new ConfigurationError("Unsupported element: " + descriptor.getClass());
     }
 
-    private static ComponentBuilder createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
+    protected static ComponentBuilder createNullableScriptBuilder(ComponentDescriptor component, Context context) {
+    	TypeDescriptor type = component.getTypeDescriptor();
+        String scriptText = type.getScript();
+        if (scriptText == null)
+        	return null;
+        Script script = ScriptUtil.parseScriptText(scriptText);
+        NullableScriptGenerator source = new NullableScriptGenerator(script, context);
+		return new PlainComponentBuilder(type.getName(), source);
+    }
+
+	private static ComponentBuilder createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
     	Generator<?> generator = InstanceGeneratorFactory.createNullQuotaOneGenerator(descriptor);
     	return (generator != null ? new PlainComponentBuilder(descriptor.getName(), generator, 1) : null);
 	}
@@ -112,21 +140,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 		return new AlternativeComponentBuilder(builders);
 	}
 
-/*
-    private static Generator<?> createComponentGenerator(
-            ComponentDescriptor descriptor, Context context, GeneratioComponentnSetup setup) {
-        if (logger.isDebugEnabled())
-            logger.debug("createComponentGenerator(" + descriptor.getName() + ')');
-        if (descriptor instanceof PartDescriptor)
-            return createPartGenerator((PartDescriptor)descriptor, context, setup);
-        else if (descriptor instanceof ReferenceDescriptor)
-            return createReferenceGenerator((ReferenceDescriptor)descriptor, context, setup);
-        else if (descriptor instanceof IdDescriptor)
-            return createIdGenerator((IdDescriptor)descriptor, context);
-        else 
-            throw new ConfigurationError("Unsupported element: " + descriptor.getClass());
-    }
-*/
     public static ComponentBuilder createPartBuilder(
             PartDescriptor part, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(part, context);
@@ -190,6 +203,58 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	Expression countExpression = GeneratorFactoryUtil.getCountExpression(instance);
     	return new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
     			new CachedExpression(countExpression), context);
+    }
+
+	@SuppressWarnings("unchecked")
+    static <E> NullableGenerator<E> wrapWithPostprocessors(NullableGenerator<E> generator, TypeDescriptor descriptor, BeneratorContext context) {
+		generator = (NullableGenerator<E>) createConvertingGenerator(descriptor, generator, context);
+		if (descriptor instanceof SimpleTypeDescriptor) {
+			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
+			generator = (NullableGenerator<E>) createMappingGenerator(simpleType, generator);
+			generator = (NullableGenerator<E>) createTypeConvertingGenerator(simpleType, generator);
+		}
+        generator = (NullableGenerator<E>) createValidatingGenerator(descriptor, generator, context);
+		return generator;
+	}
+    
+    @SuppressWarnings("unchecked")
+    protected static NullableGenerator<?> createConvertingGenerator(TypeDescriptor descriptor, NullableGenerator generator, BeneratorContext context) {
+        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
+        if (converter != null) {
+            if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
+                BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
+            }
+            generator = new ConvertingNullableGeneratorProxy(generator, converter);
+        }
+        return generator;
+    }
+
+    @SuppressWarnings("unchecked")
+    static NullableGenerator<?> createMappingGenerator(
+            SimpleTypeDescriptor descriptor, NullableGenerator<?> generator) {
+        if (descriptor == null || descriptor.getMap() == null)
+            return generator;
+        String mappingSpec = descriptor.getMap();
+        ValueMapper mapper = new ValueMapper(mappingSpec);
+        return new ConvertingNullableGeneratorProxy(generator, mapper);
+    }
+
+    @SuppressWarnings("unchecked")
+    static NullableGenerator<?> createTypeConvertingGenerator(
+            SimpleTypeDescriptor descriptor, NullableGenerator<?> generator) {
+        if (descriptor == null || descriptor.getPrimitiveType() == null)
+            return generator;
+        Converter<?, ?> converter = TypeGeneratorFactory.createConverter(descriptor, generator.getGeneratedType());
+    	return (converter != null ? new ConvertingNullableGeneratorProxy(generator, converter) : generator);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected static NullableGenerator<?> createValidatingGenerator(
+            TypeDescriptor descriptor, NullableGenerator<?> generator, BeneratorContext context) {
+        Validator<?> validator = DescriptorUtil.getValidator(descriptor, context);
+        if (validator != null)
+            generator = new ValidatingNullableGeneratorProxy(generator, validator);
+        return generator;
     }
 
 }

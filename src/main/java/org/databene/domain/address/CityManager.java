@@ -126,7 +126,7 @@ public class CityManager {
                 String cityNameExtension = instance.get("nameExtension");
                 cityId = new CityId(cityName, cityNameExtension);
             } else 
-            	throw new ParseException("Unable to parse city: " + instance, iterator.lineCount(), 1);
+            	throw new ParseException("Unable to parse city", instance.toString(), iterator.lineCount(), 1);
 
             // create/setup city
             CityHelper city = (CityHelper) state.getCity(cityId);

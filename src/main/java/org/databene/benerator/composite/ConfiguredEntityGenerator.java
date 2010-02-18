@@ -29,7 +29,7 @@ package org.databene.benerator.composite;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.util.NullableGenerator;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.model.data.Entity;

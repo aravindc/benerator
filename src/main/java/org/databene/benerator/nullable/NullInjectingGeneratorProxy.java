@@ -19,14 +19,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.wrapper;
+package org.databene.benerator.nullable;
 
 import java.util.Random;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.NullableGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Proxy implementation of the {@link NullableGenerator} interface.<br/><br/>
@@ -34,7 +34,7 @@ import org.databene.benerator.util.NullableGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class NullableGeneratorProxy<E> implements NullableGenerator<E> {
+public class NullInjectingGeneratorProxy<E> implements NullableGenerator<E> {
 	
 	private Generator<E> source;
 	private float nullQuota;
@@ -42,7 +42,7 @@ public class NullableGeneratorProxy<E> implements NullableGenerator<E> {
 	private Random random;
 	boolean closed;
 
-    public NullableGeneratorProxy(Generator<E> source, double nullQuota) {
+    public NullInjectingGeneratorProxy(Generator<E> source, double nullQuota) {
     	if (nullQuota < 0 || nullQuota > 1)
     		throw new IllegalArgumentException("Illegal null quota: " + nullQuota);
 	    this.source = source;

@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates Strings based on a Script.<br/><br/>
+ * Creates {@link Object}s based on a Script.<br/><br/>
  * Created: 29.01.2008 17:19:24
  * @since 0.4.0
  * @author Volker Bergmann

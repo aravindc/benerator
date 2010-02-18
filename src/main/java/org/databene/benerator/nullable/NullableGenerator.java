@@ -19,23 +19,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.wrapper;
+package org.databene.benerator.nullable;
 
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * Helper class for the {@link NullInjectingGeneratorProxy}.<br/><br/>
- * Created: 26.01.2010 10:53:53
+ * Interface for classes that can generate <code>null</code> values.
+ * For differing between a generated <code>null</code> and unavailability,
+ * a {@link ProductWrapper} class is introduced. It may wrap a <code>null</code>
+ * value that has been generated or may be <code>null</code> itself for 
+ * declaring unavailability.<br/><br/>
+ * Created: 26.01.2010 17:11:16
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ProductWrapper<E> {
-	
-	public E product;
-	
-	public ProductWrapper<E> setProduct(E product) {
-		this.product = product;
-		return this;
-	}
-	
+public interface NullableGenerator<E> {
+    Class<E> getGeneratedType();
+	void validate() throws InvalidGeneratorSetupException;
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper);
+    public void reset() throws IllegalGeneratorStateException;
+    public void close();
 }

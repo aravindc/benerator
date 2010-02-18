@@ -27,7 +27,8 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.wrapper.NullableGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.model.data.Entity;
@@ -41,13 +42,17 @@ import org.databene.model.data.Entity;
 public class PlainComponentBuilder implements ComponentBuilder {
 	
 	private String name;
-	private NullableGeneratorProxy<Object> source;
+	private NullableGenerator<Object> source;
 	private ThreadLocalProductWrapper<Object> productWrapper = new ThreadLocalProductWrapper<Object>();
 	
     @SuppressWarnings("unchecked")
     public PlainComponentBuilder(String name, Generator<?> source, double nullQuota) {
+		this(name, new NullInjectingGeneratorProxy<Object>((Generator<Object>) source, nullQuota));
+	}
+
+    public PlainComponentBuilder(String name, NullableGenerator<Object> source) {
 		this.name = name;
-		this.source = new NullableGeneratorProxy<Object>((Generator<Object>) source, nullQuota);
+		this.source = source;
 	}
 
 	public String getName() {

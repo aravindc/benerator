@@ -32,8 +32,8 @@ import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-import org.databene.benerator.util.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
