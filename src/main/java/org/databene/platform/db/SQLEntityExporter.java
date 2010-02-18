@@ -65,15 +65,19 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     }
 
     public SQLEntityExporter(String uri, String encoding) {
-    	this(uri, encoding, null);
+    	this(uri, encoding, null, null);
     }
 
-    public SQLEntityExporter(String uri, String encoding, String lineSeparator) {
+    public SQLEntityExporter(String uri, String encoding, String lineSeparator, String dialect) {
     	super(uri, encoding, lineSeparator);
+    	setDialect(dialect);
     }
     
     public void setDialect(String dialectName) {
-    	this.dialect = DatabaseDialectManager.getDialectForProduct(dialectName);
+    	if (dialectName != null)
+    		this.dialect = DatabaseDialectManager.getDialectForProduct(dialectName);
+    	else
+    		this.dialect = null;
     }
 
     // Callback methods for parent class functionality -----------------------------------------------------------------
