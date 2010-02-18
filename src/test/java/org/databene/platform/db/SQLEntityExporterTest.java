@@ -50,16 +50,16 @@ public class SQLEntityExporterTest {
 			Entity alice = new Entity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
 			Entity bob = new Entity("Person", "name", "Bob", "birthDate", TimeUtil.date(1977, 11, 31), "score", 34);
 			SQLEntityExporter exporter = new SQLEntityExporter(FILENAME);
-			exporter.setDialect("oracle");
+			exporter.setDialect("hsql");
 			exporter.startConsuming(alice);
 			exporter.startConsuming(bob);
 			exporter.close();
 			BufferedReader reader = IOUtil.getReaderForURI(FILENAME);
 			ReaderLineIterator iterator = new ReaderLineIterator(reader);
 			assertTrue(iterator.hasNext());
-			assertEquals("insert into \"Person\" (name, age) values ('Alice', 23);", iterator.next());
+			assertEquals("insert into Person (name, birthDate, score) values ('Alice', '1987-12-31', 23);", iterator.next());
 			assertTrue(iterator.hasNext());
-			assertEquals("insert into \"Person\" (name, age) values ('Bob', 34);", iterator.next());
+			assertEquals("insert into Person (name, birthDate, score) values ('Bob', '1977-12-31', 34);", iterator.next());
 			assertFalse(iterator.hasNext());
 		} finally {
 			FileUtil.deleteIfExists(new File(FILENAME));
