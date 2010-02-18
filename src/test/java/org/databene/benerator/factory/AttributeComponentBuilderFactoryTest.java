@@ -69,6 +69,38 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
     
 */
 
+	// script ----------------------------------------------------------------------------------------------------------
+	
+    @SuppressWarnings("unchecked")
+    @Test
+	public void testScriptAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setScript("'OK'");
+		ComponentBuilder builder = createComponentBuilder(name);
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		ProductWrapper<String> wrapper = new ProductWrapper<String>();
+		for (int i = 0; i < 10; i++)
+			assertEquals("OK", helper.generate(wrapper).product);
+	}
+
+    @SuppressWarnings("unchecked")
+    @Test
+	public void testNullScriptAttribute() {
+		String componentName = "name";
+		PartDescriptor name = new PartDescriptor(componentName);
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setScript("null");
+		ComponentBuilder builder = createComponentBuilder(name);
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		ProductWrapper<String> wrapper = new ProductWrapper<String>();
+		for (int i = 0; i < 10; i++)
+			assertEquals(null, helper.generate(wrapper).product);
+	}
+
+	// constant --------------------------------------------------------------------------------------------------------
+	
 	@SuppressWarnings("unchecked")
     @Test
 	public void testEmptyConstantAttribute() {
@@ -83,6 +115,8 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			assertEquals("Invalid product: ", "", helper.generate(wrapper).product);
 	}
 
+	// values ----------------------------------------------------------------------------------------------------------
+	
 	@SuppressWarnings("unchecked")
     @Test
 	public void testMultiValuesAttribute() {
@@ -123,6 +157,8 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		for (int i = 0; i < 10; i++)
 			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
 	}
+	
+	// pattern ---------------------------------------------------------------------------------------------------------
 
 	@SuppressWarnings("unchecked")
     @Test
