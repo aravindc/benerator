@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,11 +32,15 @@ import org.databene.benerator.util.TypedLightweightGenerator;
  */
 public class PhoneNumberGenerator extends TypedLightweightGenerator<PhoneNumber> {
 	
-	private Country country; // TODO region/country property
+	private Country country;
 	
 	public PhoneNumberGenerator(Country country) {
 		super(PhoneNumber.class);
 	    this.country = country;
+    }
+	
+	public void setCountry(Country country) {
+    	this.country = country;
     }
 
 	public PhoneNumber generate() throws IllegalGeneratorStateException {
