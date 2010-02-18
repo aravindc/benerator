@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,13 +26,14 @@
 
 package org.databene.platform.db;
 
-import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
-import org.databene.commons.Assert;
 import org.databene.commons.db.DBUtil;
 import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
+import org.databene.platform.db.dialect.OracleDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,11 +49,11 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     
     // defaults --------------------------------------------------------------------------------------------------------
     
-    private static final String DEFAULT_URI       = "export.sql";
-
+    private static final String DEFAULT_URI = "export.sql";
+    
     // attributes ------------------------------------------------------------------------------------------------------
-
-    private DBSystem database;
+    
+    private DatabaseDialect dialect = new OracleDialect();
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -70,26 +71,19 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
 
     public SQLEntityExporter(String uri, String encoding, String lineSeparator) {
     	super(uri, encoding, lineSeparator);
-    	setNullString("null");
-    	setDatePattern("''dd-MMM-yyyy''");
-    	setTimestampPattern("'TIMESTAMP' ''yyyy-MM-dd HH:mm:ss.SSSSSS''");
     }
-
-    // properties ------------------------------------------------------------------------------------------------------
-
-	public void setDatabase(DBSystem database) { // TODO get rid of this!!!
-		this.database = database;
-	}
+    
+    public void setDialect(String dialectName) {
+    	this.dialect = DatabaseDialectManager.getDialectForProduct(dialectName);
+    }
 
     // Callback methods for parent class functionality -----------------------------------------------------------------
 
 	@Override
     protected void startConsumingImpl(Entity entity) {
-    	Assert.notNull(database, "database");
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
-        List<ColumnInfo> columnInfos = database.getWriteColumnInfos(entity, true);
-        String sql = createSQLInsert(entity, columnInfos);
+        String sql = createSQLInsert(entity);
         printer.println(sql);
     }
 
@@ -98,19 +92,32 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     	// nothing special to do
     }
 
-    String createSQLInsert(Entity entity, List<ColumnInfo> columnInfos) {
+    String createSQLInsert(Entity entity) {
     	String table = entity.type();
-        StringBuilder builder = new StringBuilder("insert into ").append(table).append(" (");
-        if (columnInfos.size() > 0)
-            builder.append(columnInfos.get(0).name);
-        for (int i = 1; i < columnInfos.size(); i++)
-            builder.append(',').append(columnInfos.get(i).name);
+        StringBuilder builder = new StringBuilder("insert into ");
+        if (dialect.quoteTableNames)
+        	builder.append('"').append(table).append('"');
+        else
+        	builder.append(table);
+        builder.append(" (");
+        Set<Entry<String, Object>> components = entity.getComponents().entrySet();
+        boolean first = true;
+        for (Entry<String, Object> entry : components) {
+        	if (first)
+        		first = false;
+        	else
+        		builder.append(", ");
+        	builder.append(entry.getKey());
+        }
         builder.append(") values (");
-        for (int i = 0; i < columnInfos.size(); i++) {
-			if (i > 0)
+        first = true;
+        for (Entry<String, Object> entry : components) {
+			if (first)
+				first = false;
+			else
 				builder.append(", ");
-            Object value = entity.get(columnInfos.get(i).name);
-			String text = format(value);
+            Object value = entry.getValue();
+			String text = dialect.formatValue(value);
 			text = DBUtil.escape(text);
             if (value instanceof CharSequence || value instanceof Character)
     			builder.append("'").append(text).append("'");
