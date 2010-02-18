@@ -31,8 +31,10 @@ import java.math.BigDecimal;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.wrapper.SkipGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.MathUtil;
 import org.databene.commons.converter.NumberConverter;
 
@@ -46,9 +48,12 @@ import org.databene.commons.converter.NumberConverter;
 
 public class RandomWalkSequence extends Sequence {
 	
+	private static final boolean DEFAULT_BUFFERED = false;
+	
 	private BigDecimal initial;
 	private BigDecimal minStep;
 	private BigDecimal maxStep;
+	private boolean buffered;
 	
 	// constructors ----------------------------------------------------------------------------------------------------
 
@@ -61,10 +66,15 @@ public class RandomWalkSequence extends Sequence {
     }
     
     public RandomWalkSequence(BigDecimal minStep, BigDecimal maxStep, BigDecimal initial) {
+	    this(minStep, maxStep, initial, DEFAULT_BUFFERED);
+    }
+    
+    public RandomWalkSequence(BigDecimal minStep, BigDecimal maxStep, BigDecimal initial, boolean buffered) {
 	    super("randomWalk");
 	    this.minStep = minStep;
 	    this.maxStep = maxStep;
 	    this.initial = initial;
+	    this.buffered = buffered;
     }
     
     // Distribution interface implementation ---------------------------------------------------------------------------
@@ -76,6 +86,21 @@ public class RandomWalkSequence extends Sequence {
 		else
 			base = createDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision), unique);
 		return WrapperFactory.wrapNumberGenerator(numberType, base);
+    }
+    
+    @Override
+    public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+        if (buffered || MathUtil.between(0L, toLong(minStep), toLong(maxStep)))
+        	return super.applyTo(source, unique);
+        else
+	        return applySkipGenerator(source, unique);
+    }
+
+	private <T> Generator<T> applySkipGenerator(Generator<T> source, boolean unique) {
+		long minStepL = toLong(minStep);
+		if (unique && minStepL <= 0)
+			throw new ConfigurationError("Cannot generate unique values when minStep=" + minStep);
+	    return new SkipGeneratorProxy<T>(source, minStepL, toLong(maxStep));
     }
     
     // helper methods --------------------------------------------------------------------------------------------------
