@@ -45,7 +45,7 @@ public class ScriptableLiteral implements Expression<Object> {
 	private Expression<?> source;
 	
     public ScriptableLiteral(String textOrScript) {
-	    this.source = new TextOrScriptExpression(textOrScript, null);
+	    this.source = new ScriptableExpression(textOrScript, null);
     }
 
     public Object evaluate(Context context) {

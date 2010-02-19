@@ -33,23 +33,23 @@ import org.databene.script.ScriptUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class TextOrScriptExpression implements Expression<Object> {
+public class ScriptableExpression implements Expression<Object> {
 
 	private String scriptOrText;
 	private Expression<?> defaultValueExpression;
 
-    public TextOrScriptExpression(String scriptOrText, Object defaultValue) {
+    public ScriptableExpression(String scriptOrText, Object defaultValue) {
     	this(scriptOrText, (defaultValue != null ? new ConstantExpression<Object>(defaultValue) : null));
     }
 
-    private TextOrScriptExpression(String scriptOrText, Expression<?> defaultValueExpression) {
+    private ScriptableExpression(String scriptOrText, Expression<?> defaultValueExpression) {
     	this.scriptOrText = scriptOrText;
     	this.defaultValueExpression = defaultValueExpression;
     }
     
     public static Expression<?> createWithDefaultExpression(
     		String scriptOrText, Expression<?> defaultValueExpression) {
-    	return new TextOrScriptExpression(scriptOrText, defaultValueExpression);
+    	return new ScriptableExpression(scriptOrText, defaultValueExpression);
     }
 
     public Object evaluate(Context context) {
