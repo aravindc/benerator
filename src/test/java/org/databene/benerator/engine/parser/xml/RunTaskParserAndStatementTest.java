@@ -30,7 +30,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.task.PageListenerMock;
 import org.databene.task.TaskMock;
 import org.junit.Test;
-import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Parses an XML &lt;run-task&gt; element in a Benerator descriptor file.<br/><br/>
@@ -38,18 +38,17 @@ import org.w3c.dom.Document;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ParseRunTaskTest {
+public class RunTaskParserAndStatementTest {
 
     @Test
 	public void test() throws Exception {
-        String uri = "string://" +
+        String xml =
         		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pageSize='2' " +
         		"      pager='new org.databene.task.PageListenerMock(1)'>" +
         		"  <property name='intProp' value='42' />" +
         		"</run-task>";
-        Document doc = XMLUtil.parse(uri);
-        RunTaskParser parser = new RunTaskParser();
-		RunTaskStatement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
+        Element element = XMLUtil.parseStringAsElement(xml);
+        RunTaskStatement statement = new RunTaskParser().parse(element, new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
