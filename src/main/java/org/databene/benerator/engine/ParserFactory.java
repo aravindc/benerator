@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,10 +31,12 @@ import org.databene.benerator.engine.parser.xml.DatabaseParser;
 import org.databene.benerator.engine.parser.xml.DefaultComponentParser;
 import org.databene.benerator.engine.parser.xml.EchoParser;
 import org.databene.benerator.engine.parser.xml.EvaluateParser;
+import org.databene.benerator.engine.parser.xml.IfParser;
 import org.databene.benerator.engine.parser.xml.ImportParser;
 import org.databene.benerator.engine.parser.xml.IncludeParser;
 import org.databene.benerator.engine.parser.xml.PropertyParser;
 import org.databene.benerator.engine.parser.xml.RunTaskParser;
+import org.databene.benerator.engine.parser.xml.WhileParser;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -59,6 +61,8 @@ public class ParserFactory {
 		parsers.add(new IncludeParser());
 		parsers.add(new PropertyParser());
 		parsers.add(new RunTaskParser());
+		parsers.add(new IfParser());
+		parsers.add(new WhileParser());
 	}
 
 	public static DescriptorParser getParser(String elementName, String parentName) {
