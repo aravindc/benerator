@@ -28,6 +28,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.SystemInfo;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -42,10 +43,11 @@ public class BeneratorRootStatementTest extends GeneratorTest {
 	@Test
 	public void testGetGenerator() throws Exception {
 		BeneratorRootStatement task = null;
-		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
-				"<create-entities type='Person' count='1'>" +
-				"<attribute name='name' constant='Alice'/>" +
-				"</create-entities>" +
+		String lf = SystemInfo.getLineSeparator();
+		DescriptorRunner runner = new DescriptorRunner("string://<setup>" + lf +
+				"	<create-entities type='Person' count='1'>" + lf +
+				"		<attribute name='name' constant='Alice'/>" + lf +
+				"	</create-entities>" + lf +
 				"</setup>");
 		task = runner.parseDescriptorFile();
 		Generator<Entity> generator = task.getGenerator("Person", runner.getContext());
