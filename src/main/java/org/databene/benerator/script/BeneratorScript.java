@@ -52,6 +52,8 @@ public class BeneratorScript extends AbstractScript {
 
 	@Override
     public Object evaluate(Context context) throws ScriptException {
+		if (expression == null)
+			return null;
 		try {
 			return expression.evaluate(context);
 		} catch (Exception e) {
