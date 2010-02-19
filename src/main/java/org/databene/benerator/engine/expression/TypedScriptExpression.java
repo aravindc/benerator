@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,10 @@
 
 package org.databene.benerator.engine.expression;
 
-import org.databene.commons.Context;
-import org.databene.commons.Converter;
 import org.databene.commons.Expression;
-import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.expression.TypeConvertingExpression;
+import org.databene.script.Script;
+import org.databene.script.ScriptUtil;
 
 /**
  * {@link Expression} implementation that evaluates a script.<br/>
@@ -39,37 +39,31 @@ import org.databene.commons.converter.AnyConverter;
  * @author Volker Bergmann
  */
 
-public class TypedScriptExpression<E> implements Expression<E> {
+public class TypedScriptExpression<E> extends TypeConvertingExpression<E> {
 	
-	private ScriptExpression<?> source;
-	private Converter<Object, E> converter;
+    public TypedScriptExpression(String script) {
+    	this(script, null);
+    }
 
     @SuppressWarnings("unchecked")
-    public TypedScriptExpression(String script) {
+    public TypedScriptExpression(Script script) {
     	this(script, (Class<E>) Object.class);
     }
 
     public TypedScriptExpression(String script, Class<E> resultType) {
+    	this(ScriptUtil.parseScriptText(script), resultType);
+    }
+
+    public TypedScriptExpression(Script script, Class<E> resultType) {
     	this(script, resultType, (E) null);
     }
 
-    public TypedScriptExpression(String script, Class<E> resultType, E defaultValue) {
-    	this.source = new ScriptExpression<Object>(script, defaultValue);
-    	this.converter = new AnyConverter<E>(resultType);
+    public TypedScriptExpression(Script script, Class<E> resultType, E defaultValue) {
+    	super(new ScriptExpression<Object>(script, defaultValue), resultType);
     }
 
-    public TypedScriptExpression(String script, Class<E> resultType, Expression<?> defaultValue) {
-    	this.source = ScriptExpression.createWithDefaultExpression(script, defaultValue);
-    	this.converter = new AnyConverter<E>(resultType);
+    public TypedScriptExpression(Script script, Class<E> resultType, Expression<?> defaultValue) {
+    	super(ScriptExpression.createWithDefaultExpression(script, defaultValue), resultType);
     }
 
-    public E evaluate(Context context) {
-		return converter.convert(source.evaluate(context));
-    }
-
-	@Override
-    public String toString() {
-		return "(" + converter.getTargetType().getSimpleName() + ") " + super.toString();
-	}
-	
 }
