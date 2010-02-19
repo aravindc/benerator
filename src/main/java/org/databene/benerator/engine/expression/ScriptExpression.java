@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,8 @@ package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -35,38 +35,42 @@ import org.databene.script.ScriptUtil;
  */
 public class ScriptExpression<E> implements Expression<E> {
 
-	private String script;
+	private Script script;
 	private Expression<E> defaultValueExpression;
 
     public ScriptExpression(String script) {
+    	this(ScriptUtil.parseScriptText(script), (E) null);
+    }
+
+    public ScriptExpression(Script script) {
     	this(script, (E) null);
     }
 
-    public ScriptExpression(String script, E defaultValue) {
+    public ScriptExpression(Script script, E defaultValue) {
     	this(script, (defaultValue != null ? new ConstantExpression<E>(defaultValue) : null));
     }
 
-    private ScriptExpression(String script, Expression<E> defaultValueExpression) {
+    private ScriptExpression(Script script, Expression<E> defaultValueExpression) {
     	this.script = script;
     	this.defaultValueExpression = defaultValueExpression;
     }
     
-    public static <T> ScriptExpression<T> createWithDefaultExpression(
-    		String script, Expression<T> defaultValueExpression) {
+    public static <T> Expression<T> createWithDefaultExpression(
+    		Script script, Expression<T> defaultValueExpression) {
     	return new ScriptExpression<T>(script, defaultValueExpression);
     }
 
 	@SuppressWarnings("unchecked")
     public E evaluate(Context context) {
-		if (StringUtil.isEmpty(script))
+		if (script == null)
 			return (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
 		else
-			return (E) ScriptUtil.render(script, context);
+			return (E) script.evaluate(context);
     }
 
 	@Override
 	public String toString() {
-		return script;
+		return script.toString();
 	}
 	
 }
