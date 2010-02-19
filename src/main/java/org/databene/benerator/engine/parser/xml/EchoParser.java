@@ -22,6 +22,7 @@
 package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
+import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.statement.EchoStatement;
@@ -42,9 +43,9 @@ public class EchoParser extends AbstractDescriptorParser {
 
 	public EchoStatement parse(Element element, ResourceManager resourceManager) {
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
-			return new EchoStatement(parseStringAttr(ATT_MESSAGE, element));
+			return new EchoStatement(parseScriptableTextAttribute(ATT_MESSAGE, element));
 		else
-			return new EchoStatement(parseTextElem(element));
+			return new EchoStatement(parseScriptableElementText(element));
     }
 
 }

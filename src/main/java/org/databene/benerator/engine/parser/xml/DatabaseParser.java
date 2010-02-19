@@ -22,9 +22,9 @@
 package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
+import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.statement.DefineDatabaseStatement;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
@@ -47,16 +47,16 @@ public class DatabaseParser extends AbstractDescriptorParser {
 
 	public DefineDatabaseStatement parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression<String>  id       = parseStringAttr(ATT_ID,       element);
-			Expression<String>  url      = parseStringAttr(ATT_URL,      element);
-			Expression<String>  driver   = parseStringAttr(ATT_DRIVER,   element);
-			Expression<String>  user     = parseStringAttr(ATT_USER,     element);
-			Expression<String>  password = parseStringAttr(ATT_PASSWORD, element);
-			Expression<String>  schema   = parseStringAttr(ATT_SCHEMA,   element);
-			Expression<String>  tableFilter = parseStringAttr(ATT_TABLE_FILTER, element);
-			Expression<Boolean> batch     = new TypedScriptExpression<Boolean>(element.getAttribute(ATT_BATCH), Boolean.class, false);
-			Expression<Integer> fetchSize = new TypedScriptExpression<Integer>(element.getAttribute(ATT_FETCH_SIZE), Integer.class, 100);
-			Expression<Boolean> readOnly  = new TypedScriptExpression<Boolean>(element.getAttribute(ATT_READ_ONLY), Boolean.class, false);
+			Expression<String>  id          = parseScriptableStringAttribute(ATT_ID,       element);
+			Expression<String>  url         = parseScriptableStringAttribute(ATT_URL,      element);
+			Expression<String>  driver      = parseScriptableStringAttribute(ATT_DRIVER,   element);
+			Expression<String>  user        = parseScriptableStringAttribute(ATT_USER,     element);
+			Expression<String>  password    = parseScriptableStringAttribute(ATT_PASSWORD, element);
+			Expression<String>  schema      = parseScriptableStringAttribute(ATT_SCHEMA,   element);
+			Expression<String>  tableFilter = parseScriptableStringAttribute(ATT_TABLE_FILTER, element);
+			Expression<Boolean> batch       = parseBooleanExpressionAttribute(ATT_BATCH, element, false);
+			Expression<Integer> fetchSize   = parseIntAttribute(ATT_FETCH_SIZE, element, 100);
+			Expression<Boolean> readOnly    = parseBooleanExpressionAttribute(ATT_READ_ONLY, element, false);
 			return new DefineDatabaseStatement(id, url, driver, user, password, schema, tableFilter, batch, fetchSize, readOnly, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);

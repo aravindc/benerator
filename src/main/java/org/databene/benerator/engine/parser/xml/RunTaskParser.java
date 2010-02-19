@@ -22,6 +22,7 @@
 package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
+import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
@@ -54,9 +55,9 @@ public class RunTaskParser extends AbstractDescriptorParser {
     public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
 			Expression<Task> taskProvider = (Expression<Task>) BeanParser.parseBeanExpression(element);
-			Expression<Long> count    = parseLongAttr(ATT_COUNT, element, 1);
-			Expression<Long> pageSize = parseLongAttr(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
-			Expression<Integer> threads  = parseIntAttr(ATT_THREADS, element, 1);
+			Expression<Long> count    = parseLongAttribute(ATT_COUNT, element, 1);
+			Expression<Long> pageSize = parseLongAttribute(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
+			Expression<Integer> threads  = parseIntAttribute(ATT_THREADS, element, 1);
 			Expression<PageListener> pager    = parsePager(element);
 			Expression<ErrorHandler> errorHandler = parseErrorHandler(element);
 			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, errorHandler);
@@ -67,7 +68,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
 
     private Expression<ErrorHandler> parseErrorHandler(Element element) {
     	String id = element.getAttribute(ATT_ID);
-		Expression<String> level = parseStringAttr(ATT_ON_ERROR, element);
+		Expression<String> level = parseScriptableStringAttribute(ATT_ON_ERROR, element);
 		return new ErrorHandlerExpression(id, level);
     }
 

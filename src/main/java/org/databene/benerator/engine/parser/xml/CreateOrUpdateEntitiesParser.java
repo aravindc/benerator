@@ -34,9 +34,7 @@ import org.databene.benerator.engine.ParserFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
-import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.expression.StringScriptExpression;
-import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
 import org.databene.benerator.engine.statement.CreateOrUpdateEntitiesStatement;
@@ -46,6 +44,7 @@ import org.databene.benerator.engine.statement.TimedEntityStatement;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -105,16 +104,16 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		return result;
 	}
 	
+    @SuppressWarnings("unchecked")
     public CreateOrUpdateEntitiesStatement parseCreateEntities(Element element, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
 		
 		Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
-		Expression<Long> pageSize = new TypedScriptExpression<Long>(element.getAttribute(ATT_PAGESIZE), 
-				Long.class, new DefaultPageSizeExpression());
-		Expression<Integer> threads = new TypedScriptExpression<Integer>(element.getAttribute(ATT_THREADS), Integer.class, 1);
-		Expression<PageListener> pager = new ScriptExpression<PageListener>(element.getAttribute(ATT_PAGER), (PageListener) null);
+		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
+		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
+		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));
 		
 		String name = element.getAttribute(ATT_NAME);
 		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));

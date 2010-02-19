@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,13 +22,12 @@
 package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
-import static org.databene.benerator.engine.parser.xml.AbstractDescriptorParser.*;
+import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
@@ -48,16 +47,15 @@ public class EvaluateParser implements DescriptorParser {
     }
 
 	public EvaluateStatement parse(Element element, ResourceManager resourceManager) {
-		Expression<String> id           = parseStringAttr(ATT_ID, element);
-		Expression<String> text         = parseTextElem(element);
-		Expression<String> uri          = parseStringAttr(ATT_URI,  element);
-		Expression<String> type         = parseStringAttr(ATT_TYPE, element);
-		Expression<?> targetObject       = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));
-		Expression<String> onError      = parseStringAttr(ATT_ON_ERROR, element);
-		Expression<String> encoding     = parseStringAttr(ATT_ENCODING, element);
-		Expression<Boolean> optimize           = new TypedScriptExpression<Boolean>(
-											element.getAttribute(ATT_OPTIMIZE), Boolean.class, false);
-		Expression<?> assertion    = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT));
+		Expression<String> id           = parseAttribute(ATT_ID, element);
+		Expression<String> text         = parseTextElement(element);
+		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);
+		Expression<String> type         = parseAttribute(ATT_TYPE, element);
+		Expression<?> targetObject      = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));
+		Expression<String> onError      = parseScriptableStringAttribute(ATT_ON_ERROR, element);
+		Expression<String> encoding     = parseScriptableStringAttribute(ATT_ENCODING, element);
+		Expression<Boolean> optimize    = parseBooleanExpressionAttribute(ATT_OPTIMIZE, element, false);
+		Expression<?> assertion         = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT));
 		return new EvaluateStatement(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
 	}
 
