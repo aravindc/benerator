@@ -100,6 +100,10 @@ public class BeneratorContext extends ContextStack implements ClassProvider {
 		properties.set(name, value);
 	}
 	
+	public Object getProperty(String name) {
+		return properties.get(name);
+	}
+	
 	public void close() {
 		executorService.shutdownNow();
 	}
