@@ -281,7 +281,7 @@ public class ArithmeticEngine {
 	    Object s1 = AnyConverter.convert(part1, resultType);
 	    Object s2 = AnyConverter.convert(part2, resultType);
 	    if (Comparable.class.isAssignableFrom(resultType))
-	    	return (((Comparable) s1).compareTo(s2) <= 0);
+	    	return (((Comparable) s1).compareTo(s2) == 0);
 	    else
 	    	throw new UnsupportedOperationException("Cannot compare type " + 
 	    			BeanUtil.simpleClassName(part1) + " with " + BeanUtil.simpleClassName(part2));
