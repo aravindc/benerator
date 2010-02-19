@@ -137,7 +137,7 @@ public class EvaluateStatement implements Statement {
 				typeValue = "sql";
 			
             String textValue = ExpressionUtil.evaluate(textEx, context);
-            String encoding = encodingEx.evaluate(context);
+            String encoding = ExpressionUtil.evaluate(encodingEx, context);
 
 			// run
 			Object result = null;
@@ -166,7 +166,7 @@ public class EvaluateStatement implements Statement {
 						getErrorHandler(onErrorValue).handleError("Assertion failed. Expected: '" + assertionValue + "', found: '" + result + "'");
 				}
 			}
-			String idValue = idEx.evaluate(context);
+			String idValue = ExpressionUtil.evaluate(idEx, context);
 			if (idValue != null)
 				context.set(idValue, result);
 		} catch (ConversionException e) {
