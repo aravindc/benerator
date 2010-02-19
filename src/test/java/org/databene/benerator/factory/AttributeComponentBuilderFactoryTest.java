@@ -74,8 +74,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
     @SuppressWarnings("unchecked")
     @Test
 	public void testScriptAttribute() {
-		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = new PartDescriptor("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("'OK'");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -88,8 +87,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
     @SuppressWarnings("unchecked")
     @Test
 	public void testNullScriptAttribute() {
-		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = new PartDescriptor("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("null");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -99,13 +97,27 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			assertEquals(null, helper.generate(wrapper).product);
 	}
 
+    @SuppressWarnings("unchecked")
+    @Test
+	public void testEnumNameScriptAttribute() {
+		PartDescriptor part = new PartDescriptor("name");
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) part.getLocalType(false);
+		type.setScript("myEnum.name()");
+		BeneratorContext context = new BeneratorContext();
+		context.set("myEnum", TestEnum.firstInstance);
+		ComponentBuilder builder = createComponentBuilder(part, context);
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, part.getName());
+		ProductWrapper<String> wrapper = new ProductWrapper<String>();
+		for (int i = 0; i < 10; i++)
+			assertEquals("firstInstance", helper.generate(wrapper).product);
+	}
+
 	// constant --------------------------------------------------------------------------------------------------------
 	
 	@SuppressWarnings("unchecked")
     @Test
 	public void testEmptyConstantAttribute() {
-		String componentName = "name";
-		PartDescriptor name = new PartDescriptor(componentName);
+		PartDescriptor name = new PartDescriptor("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setConstant("");
 		ComponentBuilder builder = createComponentBuilder(name);
@@ -723,5 +735,9 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	    	assertNull(wrapper.product);
 	    }
     }
+	
+	enum TestEnum {
+		firstInstance
+	}
 
 }
