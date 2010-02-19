@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
-import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Tests the {@link EvaluateParser} with respect to the features used 
@@ -41,13 +41,10 @@ public class ExecuteParserTest {
 
 	@Test
 	public void testBeanInvocation() throws Exception {
-        String uri = "string://<execute>bean.invoke(2)</execute>";
-		Document doc = XMLUtil.parse(uri);
-		EvaluateParser parser = new EvaluateParser();
-		EvaluateStatement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
+        Element element = XMLUtil.parseStringAsElement("<execute>bean.invoke(2)</execute>");
+		EvaluateStatement statement = new EvaluateParser().parse(element, new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		BeanMock bean = new BeanMock();
-		bean.invocationCount = 0;
 		context.set("bean", bean);
 		statement.execute(context);
 		assertEquals(1, bean.invocationCount);
