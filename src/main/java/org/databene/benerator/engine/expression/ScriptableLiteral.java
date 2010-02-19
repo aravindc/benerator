@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,8 @@ import org.databene.commons.Expression;
 import org.databene.commons.converter.LiteralParser;
 
 /**
- * Expression that evaluates a scripts and parses its result as a literal.<br/>
+ * Expression that evaluates a text as a literal; if it encounters a script expression 
+ * (like {settings.base}) it evaluates the script and parses its result.<br/>
  * <br/>
  * Created at 23.07.2009 14:34:42
  * @see LiteralParser
@@ -39,17 +40,20 @@ import org.databene.commons.converter.LiteralParser;
  * @author Volker Bergmann
  */
 
-public class ScriptedLiteral<E> implements Expression<E> {
+public class ScriptableLiteral implements Expression<Object> {
 
-	Expression<String> scriptExpression;
+	private Expression<?> source;
 	
-    public ScriptedLiteral(String script) {
-	    this.scriptExpression = new ScriptExpression<String>(script);
+    public ScriptableLiteral(String textOrScript) {
+	    this.source = new TextOrScriptExpression(textOrScript, null);
     }
 
-	@SuppressWarnings("unchecked")
-    public E evaluate(Context context) {
-		return (E) LiteralParser.parse(scriptExpression.evaluate(context));
+    public Object evaluate(Context context) {
+		Object feed = source.evaluate(context);
+		if (feed instanceof String)
+			return LiteralParser.parse((String) feed);
+		else
+			return feed;
     }
 
 }
