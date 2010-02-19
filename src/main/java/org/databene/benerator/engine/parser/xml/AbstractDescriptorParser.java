@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,17 +22,9 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.expression.TypedScriptExpression;
-import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.commons.Assert;
-import org.databene.commons.Expression;
-import org.databene.commons.StringUtil;
-import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.StringExpression;
-import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 /**
  * Abstract parent class for Descriptor parsers.<br/><br/>
@@ -62,44 +54,4 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
 			&& (this.parentName == null || this.parentName.equals(parentName));
 	}
 	
-	protected static StringExpression parseTextElem(Element element) {
-	    return new StringScriptExpression(XMLUtil.getText(element));
-    }
-
-	protected static Expression<String> parseStringAttr(String name, Element element) {
-	    return new StringScriptExpression(getAttribute(name, element));
-    }
-
-	protected static Expression<Integer> parseIntAttr(String name, Element element) {
-	    return new TypedScriptExpression<Integer>(getAttribute(name, element), Integer.class);
-    }
-
-	protected static Expression<Integer> parseIntAttr(String name, Element element, int defaultValue) {
-	    return parseIntAttr(name, element, new ConstantExpression<Integer>(defaultValue));
-    }
-
-	protected static Expression<Integer> parseIntAttr(String name, Element element, Expression<Integer> defaultValue) {
-	    String attribute = getAttribute(name, element);
-	    if (StringUtil.isEmpty(attribute))
-	    	return defaultValue;
-	    else
-	    	return new TypedScriptExpression<Integer>(attribute, Integer.class);
-    }
-
-	protected static Expression<Long> parseLongAttr(String name, Element element, long defaultValue) {
-	    return parseLongAttr(name, element, new ConstantExpression<Long>(defaultValue));
-    }
-
-	protected static Expression<Long> parseLongAttr(String name, Element element, Expression<Long> defaultValue) {
-	    String attribute = getAttribute(name, element);
-	    if (StringUtil.isEmpty(attribute))
-	    	return defaultValue;
-	    else
-	    	return new TypedScriptExpression<Long>(attribute, Long.class);
-    }
-
-	private static String getAttribute(String name, Element element) {
-	    return StringUtil.emptyToNull(element.getAttribute(name));
-    }
-
 }
