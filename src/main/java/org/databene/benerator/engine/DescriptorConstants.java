@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,8 @@ import org.databene.commons.CollectionUtil;
 public interface DescriptorConstants {
 	
     static final String EL_SETUP = "setup";
+    static final String EL_IF = "if";
+    static final String EL_WHILE = "while";
     static final String EL_BEAN = "bean";
 	static final String EL_UPDATE_ENTITIES = "update-entities";
 	static final String EL_CREATE_ENTITIES = "create-entities";
@@ -90,6 +92,7 @@ public interface DescriptorConstants {
     static final String ATT_BATCH = "batch";
     static final String ATT_SCHEMA = "schema";
     static final String ATT_TABLE_FILTER = "tableFilter";
+    static final String ATT_TEST = "test";
 	
     static final String ATT_CLASS = "class";
     static final String ATT_SPEC = "spec";
