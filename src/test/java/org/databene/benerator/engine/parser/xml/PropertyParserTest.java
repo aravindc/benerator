@@ -39,12 +39,10 @@ import org.w3c.dom.Element;
  */
 public class PropertyParserTest {
 	
-	private PropertyParser parser = new PropertyParser();
-
 	@Test
 	public void testValue() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' value='XYZ' />");
-		SetGlobalPropertyStatement statement = parser.parse(element, null);
+		SetGlobalPropertyStatement statement = new PropertyParser().parse(element, null);
 		BeneratorContext context = new BeneratorContext();
 		statement.execute(context);
 		assertEquals("XYZ", context.get("globalProp"));
@@ -53,7 +51,7 @@ public class PropertyParserTest {
 	@Test
 	public void testRef() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' ref='setting' />");
-		SetGlobalPropertyStatement statement = parser.parse(element, null);
+		SetGlobalPropertyStatement statement = new PropertyParser().parse(element, null);
 		BeneratorContext context = new BeneratorContext();
 		context.set("setting", "cfg");
 		statement.execute(context);
@@ -63,7 +61,7 @@ public class PropertyParserTest {
 	@Test
 	public void testSource() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' source='myGen' />");
-		SetGlobalPropertyStatement statement = parser.parse(element, null);
+		SetGlobalPropertyStatement statement = new PropertyParser().parse(element, null);
 		BeneratorContext context = new BeneratorContext();
 		context.set("myGen", new ConstantGenerator<String>("myProd"));
 		statement.execute(context);
@@ -73,7 +71,7 @@ public class PropertyParserTest {
 	@Test(expected = ConfigurationError.class)
 	public void testInvalid() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' xyz='XYZ' />");
-		parser.parse(element, null);
+		new PropertyParser().parse(element, null);
 	}
 	
 }
