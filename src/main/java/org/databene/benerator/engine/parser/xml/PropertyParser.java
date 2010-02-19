@@ -26,7 +26,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.ScriptedLiteral;
+import org.databene.benerator.engine.expression.ScriptableLiteral;
 import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
@@ -53,7 +53,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 		String propertyName = element.getAttribute(ATT_NAME);
 		Expression<?> valueExpression;
 		if (element.hasAttribute(ATT_VALUE))
-			valueExpression = new ScriptedLiteral(element.getAttribute(ATT_VALUE));
+			valueExpression = new ScriptableLiteral(element.getAttribute(ATT_VALUE));
 		else if (element.hasAttribute(ATT_REF))
 			valueExpression = new FeatureAccessExpression(element.getAttribute(ATT_REF));
 		else if (element.hasAttribute(ATT_SOURCE))
