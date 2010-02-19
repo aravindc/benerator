@@ -24,7 +24,7 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.TypedScriptExpression;
+import org.databene.benerator.engine.expression.ScriptableLiteral;
 import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.CreateBeanStatement;
 import org.databene.benerator.script.Assignment;
@@ -89,7 +89,7 @@ public class BeanParser extends AbstractDescriptorParser {
         return new BeanConstruction(instantiation, propertyDefinitions);
     }
 
-	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements) {
+	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements) { // TODO merge with PropertyParser?
 		Assignment[] assignments = new Assignment[propertyElements.length];
         for (int i = 0; i < propertyElements.length; i++) {
         	Element propertyElement = propertyElements[i];
@@ -97,11 +97,12 @@ public class BeanParser extends AbstractDescriptorParser {
             Expression<?> propertyValueExpression;
             if (propertyElement.hasAttribute("value")) {
             	// parse simple or script values
-                propertyValueExpression = new TypedScriptExpression<Object>(propertyElement.getAttribute("value"));
+                propertyValueExpression = new ScriptableLiteral(propertyElement.getAttribute("value"));
             } else if (propertyElement.hasAttribute("ref")) {
             	// parse references
                 String ref = propertyElement.getAttribute("ref");
                 propertyValueExpression = new ContextReference(ref);
+            // TODO support source
             } else { // map child elements to a collection or array
                 Element[] childElements = XMLUtil.getChildElements(propertyElement);
                 final Expression<?>[] subExpressions = new Expression[childElements.length];
