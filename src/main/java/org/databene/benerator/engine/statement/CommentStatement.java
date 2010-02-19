@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,6 +48,10 @@ public class CommentStatement implements Statement {
 	
     public CommentStatement(String comment) {
 	    this.comment = comment;
+    }
+    
+	public String getComment() {
+    	return comment;
     }
 
 	public void execute(BeneratorContext context) {
