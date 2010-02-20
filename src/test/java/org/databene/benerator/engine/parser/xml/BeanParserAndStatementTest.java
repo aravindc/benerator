@@ -28,7 +28,7 @@ import java.io.IOException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.parser.xml.BeanParser;
-import org.databene.benerator.engine.statement.CreateBeanStatement;
+import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeanParserTest {
+public class BeanParserAndStatementTest {
 
 	@Test
     public void testParseBeanClass() throws Exception {
@@ -68,7 +68,7 @@ public class BeanParserTest {
 	private BeneratorContext parseAndExecute(String xml) throws IOException {
 	    Element element = XMLUtil.parseStringAsElement(xml);
         BeanParser parser = new BeanParser();
-		CreateBeanStatement statement = parser.parse(element, new ResourceManagerSupport());
+		BeanStatement statement = parser.parse(element, new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		statement.execute(context);
 	    return context;
