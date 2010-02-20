@@ -42,6 +42,8 @@ public interface DescriptorConstants {
 	
     static final String EL_SETUP = "setup";
     static final String EL_IF = "if";
+    static final String EL_THEN = "then";
+    static final String EL_ELSE = "else";
     static final String EL_WHILE = "while";
     static final String EL_BEAN = "bean";
 	static final String EL_UPDATE_ENTITIES = "update-entities";
