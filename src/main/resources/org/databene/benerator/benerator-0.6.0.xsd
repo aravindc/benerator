@@ -38,6 +38,26 @@
 	<!-- The document root, it can list beans, create-entities and run-tasks in arbitrary order. -->
 	<xs:element name="setup">
 		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="block-statement">
+					<xs:attribute name="defaultScript"        type="xs:string"/>
+					<xs:attribute name="defaultNull"          type="xs:string"/>
+		            <xs:attribute name="defaultEncoding"      type="xs:string"/>
+		            <xs:attribute name="defaultLineSeparator" type="xs:string"/>
+		            <xs:attribute name="defaultTimeZone"      type="xs:string"/>
+		            <xs:attribute name="defaultLocale"        type="xs:string"/>
+		            <xs:attribute name="defaultDataset"       type="xs:string"/>
+					<xs:attribute name="defaultPageSize"      type="xs:string"/>
+					<xs:attribute name="defaultSeparator"     type="xs:string"/>
+					<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
+					<xs:attribute name="maxCount"             type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="block-statement">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"           minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="import"            minOccurs="0" maxOccurs="unbounded"/>
@@ -52,20 +72,12 @@
 				<xs:element ref="execute"           minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="evaluate"          minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="echo"              minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="if"                minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="while"             minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="defaultScript"        type="xs:string"/>
-			<xs:attribute name="defaultNull"          type="xs:string"/>
-            <xs:attribute name="defaultEncoding"      type="xs:string"/>
-            <xs:attribute name="defaultLineSeparator" type="xs:string"/>
-            <xs:attribute name="defaultTimeZone"      type="xs:string"/>
-            <xs:attribute name="defaultLocale"        type="xs:string"/>
-            <xs:attribute name="defaultDataset"       type="xs:string"/>
-			<xs:attribute name="defaultPageSize"      type="xs:string"/>
-			<xs:attribute name="defaultSeparator"     type="xs:string"/>
-			<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
-			<xs:attribute name="maxCount"             type="xs:string"/>
-		</xs:complexType>
-	</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
 
 	<xs:element name="comment" type="xs:string" />
 
@@ -88,6 +100,36 @@
 			<xs:attribute name="uri" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
+	
+	<xs:element name="while">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="block-statement">
+					<xs:attribute name="test" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="if"> <!-- TODO test descriptor execution -->
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="block-statement">
+					<xs:sequence>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element ref="then"  minOccurs="0" maxOccurs="1"/>
+							<xs:element ref="else"  minOccurs="0" maxOccurs="1"/>
+						</xs:sequence>
+					</xs:sequence>
+					<xs:attribute name="test" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="then" type="block-statement" />
+	
+	<xs:element name="else" type="block-statement" />
 	
 	<!-- Outputs a message to the console. -->
 	<xs:element name="echo">
@@ -164,13 +206,11 @@
     	 or by instantiating a JavaBean like with the &lt;bean&gt; tag. -->
 	<xs:element name="consumer">
 		<xs:complexType>
-			<xs:sequence minOccurs="1" maxOccurs="unbounded">
-				<xs:element ref="comment"  minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
-			</xs:sequence>
-			<xs:attribute name="id"    type="xs:string"/>
-			<xs:attribute name="class" type="xs:string"/>
-			<xs:attribute name="ref"   type="xs:string"/>
+			<xs:complexContent>
+				<xs:extension base="bean-type">
+					<xs:attribute name="ref"   type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
 
