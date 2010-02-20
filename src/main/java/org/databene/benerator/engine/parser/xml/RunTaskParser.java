@@ -54,7 +54,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	@SuppressWarnings("unchecked")
     public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression<Task> taskProvider = (Expression<Task>) BeanParser.parseBeanExpression(element);
+			Expression<Task> taskProvider = (Expression<Task>) BeanParser.parseBeanExpression(element, resourceManager);
 			Expression<Long> count    = parseLongAttribute(ATT_COUNT, element, 1);
 			Expression<Long> pageSize = parseLongAttribute(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
 			Expression<Integer> threads  = parseIntAttribute(ATT_THREADS, element, 1);

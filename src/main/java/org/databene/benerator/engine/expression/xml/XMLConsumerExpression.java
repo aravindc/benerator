@@ -96,7 +96,7 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 				String ref = parseStringAttribute(consumerElement, ATT_REF, context);
 				bean = beneratorContext.get(ref);
 			} else if (consumerElement.hasAttribute(ATT_CLASS) || consumerElement.hasAttribute(ATT_SPEC)) {
-				Expression beanExpr = BeanParser.parseBeanExpression(consumerElement);
+				Expression beanExpr = BeanParser.parseBeanExpression(consumerElement, resourceManager);
 				bean = beanExpr.evaluate(context);
 			} else
 				throw new UnsupportedOperationException(
