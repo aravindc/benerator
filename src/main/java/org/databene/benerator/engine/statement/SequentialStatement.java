@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,43 +21,30 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Element;
-import org.databene.commons.Visitor;
 
 /**
- * Combines other statements to a composite statement.<br/><br/>
- * Created: 27.10.2009 15:59:21
+ * Executes all sub statements sequentially.<br/><br/>
+ * Created: 20.02.2010 08:00:24
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class CompositeStatement implements Statement, Element<Statement> {
-	
-	protected List<Statement> subStatements = new ArrayList<Statement>();
+public class SequentialStatement extends CompositeStatement {
 
-	public CompositeStatement(List<Statement> subStatements) {
-		this.subStatements = (subStatements != null ? subStatements : new ArrayList<Statement>());
+	public SequentialStatement() {
+	    this(null);
     }
 
-	public void addSubStatement(Statement subStatement) {
-		subStatements.add(subStatement);
-	}
-	
-	public void setSubStatements(List<Statement> subStatements) {
-		this.subStatements = subStatements;
-	}
-	
-	@SuppressWarnings("unchecked")
-    public void accept(Visitor<Statement> visitor) {
-		visitor.visit(this);
+	public SequentialStatement(List<Statement> subStatements) {
+	    super(subStatements);
+    }
+
+	public void execute(BeneratorContext context) {
 	    for (Statement subStatement : subStatements)
-	    	if (subStatement instanceof Element)
-	    		((Element) subStatement).accept(visitor);
-	    	else
-	    		visitor.visit(subStatement);
+	    	subStatement.execute(context);
     }
 
 }

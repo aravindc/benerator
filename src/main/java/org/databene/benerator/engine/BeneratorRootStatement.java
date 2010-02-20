@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,10 +22,10 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.statement.CompositeStatement;
 import org.databene.benerator.engine.statement.CreateOrUpdateEntitiesStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.LazyStatement;
+import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.commons.Expression;
 import org.databene.commons.Visitor;
@@ -38,7 +38,7 @@ import org.databene.model.data.Entity;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeneratorRootStatement extends CompositeStatement {
+public class BeneratorRootStatement extends SequentialStatement {
 
     public Generator<Entity> getGenerator(String name, BeneratorContext context) {
     	GenVisitor visitor = new GenVisitor(name, context);
