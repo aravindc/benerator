@@ -21,7 +21,10 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.util.List;
+
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
 
 /**
@@ -32,15 +35,22 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 public class IfStatement extends ConditionStatement {
+	
+	private CompositeStatement thenBranch;
+	private CompositeStatement elseBranch;
 
-	public IfStatement(Expression<Boolean> condition) {
+	public IfStatement(Expression<Boolean> condition, 
+			List<Statement> thenBranch, List<Statement> elseBranch) {
 	    super(condition);
+	    this.thenBranch = new SequentialStatement(thenBranch);
+	    this.elseBranch = new SequentialStatement(elseBranch);
     }
 
-	@Override
     public void execute(BeneratorContext context) {
 	    if (condition.evaluate(context))
-	    	super.execute(context);
+	    	thenBranch.execute(context);
+	    else
+	    	elseBranch.execute(context);
     }
 
 }
