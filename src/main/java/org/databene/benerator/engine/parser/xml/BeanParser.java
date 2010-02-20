@@ -24,20 +24,16 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.ScriptableLiteral;
-import org.databene.benerator.engine.expression.context.ContextReference;
-import org.databene.benerator.engine.statement.CreateBeanStatement;
+import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.script.Assignment;
 import org.databene.benerator.script.BeanConstruction;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.DefaultConstruction;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,18 +53,18 @@ public class BeanParser extends AbstractDescriptorParser {
 	    super(EL_BEAN);
     }
 
-	public CreateBeanStatement parse(Element element, ResourceManager resourceManager) {
+	public BeanStatement parse(Element element, ResourceManager resourceManager) {
 		try {
 			String id = element.getAttribute(ATT_ID);
-			Expression<?> bean = parseBeanExpression(element);
-			return new CreateBeanStatement(id, bean, resourceManager);
+			Expression<?> bean = parseBeanExpression(element, resourceManager);
+			return new BeanStatement(id, bean, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-    public static Expression<?> parseBeanExpression(Element element) {
+    public static Expression<?> parseBeanExpression(Element element, ResourceManager resourceManager) {
 		String id = element.getAttribute(ATT_ID);
         Expression<?> instantiation;
         String beanSpec = element.getAttribute(ATT_SPEC);
@@ -85,40 +81,21 @@ public class BeanParser extends AbstractDescriptorParser {
         } else
         	throw new ConfigurationError("Syntax error in definition of bean " + id);
         Element[] propertyElements = XMLUtil.getChildElements(element, false, EL_PROPERTY);
-		Assignment[] propertyDefinitions = mapPropertyDefinitions(propertyElements);
-        return new BeanConstruction(instantiation, propertyDefinitions);
+		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements, resourceManager);
+        return new BeanConstruction(instantiation, propertyInitializers);
     }
 
-	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements) { // TODO merge with PropertyParser?
+	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements, ResourceManager resourceManager) {
 		Assignment[] assignments = new Assignment[propertyElements.length];
-        for (int i = 0; i < propertyElements.length; i++) {
-        	Element propertyElement = propertyElements[i];
-            String propertyName = propertyElement.getAttribute("name");
-            Expression<?> propertyValueExpression;
-            if (propertyElement.hasAttribute("value")) {
-            	// parse simple or script values
-                propertyValueExpression = new ScriptableLiteral(propertyElement.getAttribute("value"));
-            } else if (propertyElement.hasAttribute("ref")) {
-            	// parse references
-                String ref = propertyElement.getAttribute("ref");
-                propertyValueExpression = new ContextReference(ref);
-            // TODO support source
-            } else { // map child elements to a collection or array
-                Element[] childElements = XMLUtil.getChildElements(propertyElement);
-                final Expression<?>[] subExpressions = new Expression[childElements.length];
-                for (int j = 0; j < childElements.length; j++)
-                	subExpressions[j] = parseBeanExpression(childElements[j]);
-                if (subExpressions.length == 0)
-                    throw new ConfigurationError("No valid property spec: " + XMLUtil.format(propertyElement));
-                propertyValueExpression = new Expression<Object[]>() {
-					public Object[] evaluate(Context context) {
-	                    return ExpressionUtil.evaluateAll(subExpressions, context);
-                    }
-                };
-            }
-            assignments[i] = new Assignment(propertyName, propertyValueExpression);
-        }
+        for (int i = 0; i < propertyElements.length; i++)
+        	assignments[i] = parseProperty(propertyElements[i], resourceManager);
         return assignments;
+    }
+
+	private static Assignment parseProperty(Element propertyElement, ResourceManager resourceManager) {
+	    String propertyName = propertyElement.getAttribute("name");
+	    Expression<?> value = PropertyParser.parseValue(propertyElement, resourceManager);
+	    return new Assignment(propertyName, value);
     }
 
 }

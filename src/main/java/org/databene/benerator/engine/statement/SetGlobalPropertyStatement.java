@@ -39,7 +39,7 @@ import org.databene.commons.mutator.AnyMutator;
  * @author Volker Bergmann
  */
 
-public class SetGlobalPropertyStatement implements Statement {
+public class SetGlobalPropertyStatement implements Statement { // TODO delete this class?
 	
 	private String propertyName;
 	private Expression<?> valueExpression;

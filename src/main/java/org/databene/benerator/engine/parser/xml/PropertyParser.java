@@ -26,14 +26,17 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableLiteral;
+import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
-import org.databene.commons.expression.FeatureAccessExpression;
+import org.databene.commons.expression.ExpressionUtil;
+import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -48,23 +51,36 @@ public class PropertyParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_PROPERTY);
     }
 
-	@SuppressWarnings("unchecked")
-    public SetGlobalPropertyStatement parse(Element element, ResourceManager resourceManager) {
+    public Statement parse(Element element, ResourceManager resourceManager) {
 		String propertyName = element.getAttribute(ATT_NAME);
-		Expression<?> valueExpression;
+		Expression<?> valueEx = parseValue(element, resourceManager);
+		return new SetGlobalPropertyStatement(propertyName, valueEx);
+	}
+
+    public static Expression<?> parseValue(Element element, ResourceManager resourceManager) {
 		if (element.hasAttribute(ATT_VALUE))
-			valueExpression = new ScriptableLiteral(element.getAttribute(ATT_VALUE));
+			return new ScriptableLiteral(element.getAttribute(ATT_VALUE));
 		else if (element.hasAttribute(ATT_REF))
-			valueExpression = new FeatureAccessExpression(element.getAttribute(ATT_REF));
+			return new ContextReference(element.getAttribute(ATT_REF));
 		else if (element.hasAttribute(ATT_SOURCE))
-			valueExpression = parseSource(element.getAttribute(ATT_SOURCE));
-		else
-			throw new ConfigurationError("Syntax error in property definition");
-		return new SetGlobalPropertyStatement(propertyName, valueExpression);
+			return parseSource(element.getAttribute(ATT_SOURCE));
+		else { // map child elements to a collection or array
+	        Element[] childElements = XMLUtil.getChildElements(element);
+	        final Expression<?>[] subExpressions = new Expression[childElements.length];
+	        for (int j = 0; j < childElements.length; j++)
+	        	subExpressions[j] = BeanParser.parseBeanExpression(childElements[j], resourceManager);
+	        if (subExpressions.length == 0)
+	            throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
+	        return new Expression<Object[]>() {
+	    		public Object[] evaluate(Context context) {
+	                return ExpressionUtil.evaluateAll(subExpressions, context);
+	            }
+	        };
+	    }
 	}
 
     @SuppressWarnings("unchecked")
-    private Expression<?> parseSource(String source) {
+    private static Expression<?> parseSource(String source) {
 		try {
 			return new SourceExpression(BeneratorScriptParser.parseBeanSpec(source));
         } catch (ParseException e) {
@@ -78,7 +94,7 @@ public class PropertyParser extends AbstractDescriptorParser {
      * @since 0.6.0
      * @author Volker Bergmann
      */
-    public class SourceExpression<E> implements Expression<E> {
+    public static class SourceExpression<E> implements Expression<E> {
     	
     	Expression<Generator<E>> source;
     	
