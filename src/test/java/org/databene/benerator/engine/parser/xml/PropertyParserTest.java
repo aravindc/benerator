@@ -24,7 +24,7 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.xml.XMLUtil;
@@ -42,7 +42,7 @@ public class PropertyParserTest {
 	@Test
 	public void testValue() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' value='XYZ' />");
-		SetGlobalPropertyStatement statement = new PropertyParser().parse(element, null);
+		Statement statement = new PropertyParser().parse(element, null);
 		BeneratorContext context = new BeneratorContext();
 		statement.execute(context);
 		assertEquals("XYZ", context.get("globalProp"));
@@ -51,7 +51,7 @@ public class PropertyParserTest {
 	@Test
 	public void testRef() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' ref='setting' />");
-		SetGlobalPropertyStatement statement = new PropertyParser().parse(element, null);
+		Statement statement = new PropertyParser().parse(element, null);
 		BeneratorContext context = new BeneratorContext();
 		context.set("setting", "cfg");
 		statement.execute(context);
@@ -61,11 +61,36 @@ public class PropertyParserTest {
 	@Test
 	public void testSource() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' source='myGen' />");
-		SetGlobalPropertyStatement statement = new PropertyParser().parse(element, null);
+		Statement statement = new PropertyParser().parse(element, null);
 		BeneratorContext context = new BeneratorContext();
 		context.set("myGen", new ConstantGenerator<String>("myProd"));
 		statement.execute(context);
 		assertEquals("myProd", context.get("globalProp"));
+	}
+	
+	@Test
+	public void testNestedBean() throws Exception {
+		Element element = XMLUtil.parseStringAsElement("<property name='globalProp'><bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(123)'/></property>");
+		Statement statement = new PropertyParser().parse(element, null);
+		BeneratorContext context = new BeneratorContext();
+		statement.execute(context);
+		assertEquals(123, ((BeanMock) context.get("globalProp")).lastValue);
+	}
+	
+	@Test
+	public void testNestedBeanArray() throws Exception {
+		Element element = XMLUtil.parseStringAsElement(
+				"<property name='globalProp'>" +
+				"	<bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(1)'/>" +
+				"	<bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(2)'/>" +
+				"</property>");
+		Statement statement = new PropertyParser().parse(element, null);
+		BeneratorContext context = new BeneratorContext();
+		statement.execute(context);
+		Object[] beans = (Object[]) context.get("globalProp");
+		assertEquals(2, beans.length);
+		assertEquals(1, ((BeanMock) beans[0]).lastValue);
+		assertEquals(2, ((BeanMock) beans[1]).lastValue);
 	}
 	
 	@Test(expected = ConfigurationError.class)
