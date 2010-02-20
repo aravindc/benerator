@@ -21,7 +21,10 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.util.List;
+
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
 
 /**
@@ -31,15 +34,17 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 public class WhileStatement extends ConditionStatement {
+	
+	private SequentialStatement statements;
 
-	public WhileStatement(Expression<Boolean> condition) {
+	public WhileStatement(Expression<Boolean> condition, List<Statement> statements) {
 	    super(condition);
+	    this.statements = new SequentialStatement(statements);
     }
 
-	@Override
 	public void execute(BeneratorContext context) {
 	    while (condition.evaluate(context))
-	    	super.execute(context);
+	    	statements.execute(context);
 	}
 	
 }

@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
 
 /**
@@ -29,7 +30,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class ConditionStatement extends CompositeStatement {
+public abstract class ConditionStatement implements Statement {
 	
 	protected final Expression<Boolean> condition;
 

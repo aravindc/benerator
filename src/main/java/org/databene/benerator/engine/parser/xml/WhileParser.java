@@ -27,6 +27,7 @@ import static org.databene.benerator.engine.DescriptorConstants.EL_SETUP;
 import static org.databene.benerator.engine.DescriptorConstants.EL_WHILE;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
+import java.util.List;
 import java.util.Set;
 
 import org.databene.benerator.engine.DescriptorParser;
@@ -56,8 +57,8 @@ public class WhileParser implements DescriptorParser {
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 
 					XMLUtil.format(element));
-		WhileStatement statement = new WhileStatement(condition);
-		statement.setSubStatements(DescriptorParserUtil.parseChildren(element, resourceManager));
+		List<Statement> subStatements = DescriptorParserUtil.parseChildren(element, resourceManager);
+		WhileStatement statement = new WhileStatement(condition, subStatements);
 	    return statement;
     }
 
