@@ -39,7 +39,7 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.engine.parser.xml.IncludeParser;
-import org.databene.benerator.engine.statement.CreateBeanStatement;
+import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.Assert;
@@ -265,9 +265,9 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 String filename = task.getUri().evaluate(context);
                 propertiesFiles.add(filename);
             } else if ("bean".equals(childName)) {
-                Expression<?> beanExpression = BeanParser.parseBeanExpression(child);
+                Expression<?> beanExpression = BeanParser.parseBeanExpression(child, resourceManager);
                 String id = child.getAttribute("id");
-				new CreateBeanStatement(id, beanExpression, this).execute(context);
+				new BeanStatement(id, beanExpression, this).execute(context);
                 System.out.println(beanExpression.evaluate(context));
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " 
@@ -538,7 +538,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element info : infos) {
             String childName = XMLUtil.localName(info);
             if ("bean".equals(childName))
-                BeanParser.parseBeanExpression(info);
+                BeanParser.parseBeanExpression(info, resourceManager);
             else if ("variable".equals(childName))
                 parser.parseVariable(info, (ComplexTypeDescriptor) descriptor);
             else if (ATTRIBUTE.equals(childName))
