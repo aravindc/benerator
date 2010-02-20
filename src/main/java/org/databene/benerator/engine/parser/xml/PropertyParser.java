@@ -69,13 +69,15 @@ public class PropertyParser extends AbstractDescriptorParser {
 	        final Expression<?>[] subExpressions = new Expression[childElements.length];
 	        for (int j = 0; j < childElements.length; j++)
 	        	subExpressions[j] = BeanParser.parseBeanExpression(childElements[j], resourceManager);
-	        if (subExpressions.length == 0)
-	            throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
-	        return new Expression<Object[]>() {
-	    		public Object[] evaluate(Context context) {
-	                return ExpressionUtil.evaluateAll(subExpressions, context);
-	            }
-	        };
+	        switch (subExpressions.length) {
+		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
+		        case 1: return subExpressions[0];
+		        default: return new Expression<Object[]>() {
+		    		public Object[] evaluate(Context context) {
+		                return ExpressionUtil.evaluateAll(subExpressions, context);
+		            }
+		        };
+	        }
 	    }
 	}
 
