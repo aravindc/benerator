@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import java.io.Closeable;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.Statement;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -47,20 +46,24 @@ import org.databene.task.Task;
  * @author Volker Bergmann
  */
 
-public class CreateBeanStatement implements Statement {
+public class BeanStatement extends SequentialStatement {
 	
 	private String id;
-    private Expression<?> beanExpression;
+    private Expression<?> constructionExpression;
     private ResourceManager resourceManager;
 
-    public CreateBeanStatement(String id, Expression<?> beanExpression, ResourceManager resourceManager) {
+    public BeanStatement(String id, Expression<?> constructionExpression, ResourceManager resourceManager) {
     	this.id = id;
-        this.beanExpression = beanExpression;
+        this.constructionExpression = constructionExpression;
         this.resourceManager = resourceManager;
     }
 
-	public void execute(BeneratorContext context) {
-        Object bean = beanExpression.evaluate(context);
+	@Override
+    public void execute(BeneratorContext context) {
+		// invoke constructor
+        Object bean = constructionExpression.evaluate(context);
+        // post construction steps
+        super.execute(context);
         if (!StringUtil.isEmpty(id))
             BeanUtil.setPropertyValue(bean, "id", id, false);
 		context.set(id, bean);
