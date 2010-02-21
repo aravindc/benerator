@@ -36,6 +36,7 @@ import org.databene.benerator.engine.parser.xml.ImportParser;
 import org.databene.benerator.engine.parser.xml.IncludeParser;
 import org.databene.benerator.engine.parser.xml.PropertyParser;
 import org.databene.benerator.engine.parser.xml.RunTaskParser;
+import org.databene.benerator.engine.parser.xml.WaitParser;
 import org.databene.benerator.engine.parser.xml.WhileParser;
 import org.databene.commons.ConfigurationError;
 
@@ -63,6 +64,7 @@ public class ParserFactory {
 		parsers.add(new RunTaskParser());
 		parsers.add(new IfParser());
 		parsers.add(new WhileParser());
+		parsers.add(new WaitParser());
 	}
 
 	public static DescriptorParser getParser(String elementName, String parentName) {

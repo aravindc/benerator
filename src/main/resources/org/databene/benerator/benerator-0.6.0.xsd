@@ -74,6 +74,7 @@
                 <xs:element ref="echo"              minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="if"                minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="while"             minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="wait"              minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:sequence>
 	</xs:complexType>
@@ -135,6 +136,17 @@
 	<xs:element name="echo">
 		<xs:complexType>
 			<xs:attribute name="message" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Waits for a configurable number of milliseconds. -->
+	<xs:element name="wait">
+		<xs:complexType>
+			<xs:attribute name="duration"     type="xs:string"/>
+			<xs:attribute name="min"          type="xs:string"/>
+			<xs:attribute name="max"          type="xs:string"/>
+			<xs:attribute name="precision"    type="xs:string"/>
+			<xs:attribute name="distribution" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	

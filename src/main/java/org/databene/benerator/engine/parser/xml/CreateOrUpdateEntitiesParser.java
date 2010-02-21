@@ -74,7 +74,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CreateOrUpdateEntitiesParser.class);
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
-			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
+			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER, EL_WAIT);
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	

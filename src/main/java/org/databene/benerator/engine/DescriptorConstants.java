@@ -65,6 +65,7 @@ public interface DescriptorConstants {
     static final String EL_COMPOSITE_ID = "composite-id";
     static final String EL_PART = "part";
     static final String EL_ATTRIBUTE = "attribute";
+    static final String EL_WAIT = "wait";
 	
 	static final String ATT_PASSWORD = "password";
 	static final String ATT_USER = "user";
@@ -95,6 +96,11 @@ public interface DescriptorConstants {
     static final String ATT_SCHEMA = "schema";
     static final String ATT_TABLE_FILTER = "tableFilter";
     static final String ATT_TEST = "test";
+    static final String ATT_DURATION = "duration";
+    static final String ATT_MIN = "min";
+    static final String ATT_MAX = "max";
+    static final String ATT_PRECISION = "precision";
+    static final String ATT_DISTRIBUTION = "distribution";
 	
     static final String ATT_CLASS = "class";
     static final String ATT_SPEC = "spec";
