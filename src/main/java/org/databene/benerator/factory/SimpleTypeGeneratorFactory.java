@@ -389,7 +389,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
         return GeneratorFactory.getNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness, 0);
+                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness) {

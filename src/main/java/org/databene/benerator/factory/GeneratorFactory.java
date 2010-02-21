@@ -96,7 +96,7 @@ public class GeneratorFactory {
             Distribution distribution, Uniqueness uniqueness, double nullQuota) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
-        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness, nullQuota);
+        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
     
     /**
@@ -106,12 +106,11 @@ public class GeneratorFactory {
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
      * @param precision    the resolution to use in number generation.
-     * @param nullQuota    the quota of null values to generate [0..1].
      * @return a Number generator of the desired characteristics
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
-            Distribution distribution, Uniqueness uniqueness, double nullQuota) {
+            Distribution distribution, Uniqueness uniqueness) {
         if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
         Generator<T> source = distribution.createGenerator(numberType, min, max, precision, uniqueness.isUnique()); // TODO support WeightFunction, fractionDigits 
