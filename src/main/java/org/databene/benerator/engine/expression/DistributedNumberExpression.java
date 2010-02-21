@@ -33,18 +33,20 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DistributedNumberExpression implements Expression<Long> {
+public class DistributedNumberExpression<E extends Number> implements Expression<E> {
 
-	Expression<Long> min;
-	Expression<Long> max;
-	Expression<Long> precision;
-	Expression<Distribution> distribution;
-	Expression<Boolean> unique;
+	protected Class<E> numberType;
+	protected Expression<E> min;
+	protected Expression<E> max;
+	protected Expression<E> precision;
+	protected Expression<Distribution> distribution;
+	protected Expression<Boolean> unique;
 	
-	private Generator<Long> generator;
+	private Generator<E> generator;
 
-	public DistributedNumberExpression(Expression<Distribution> distribution, 
-			Expression<Long> min, Expression<Long> max, Expression<Long> precision, Expression<Boolean> unique) {
+	public DistributedNumberExpression(Class<E> numberType, Expression<Distribution> distribution, 
+			Expression<E> min, Expression<E> max, Expression<E> precision, Expression<Boolean> unique) {
+		this.numberType = numberType;
 	    this.min = min;
 	    this.max = max;
 	    this.precision = precision;
@@ -52,19 +54,19 @@ public class DistributedNumberExpression implements Expression<Long> {
 	    this.unique = unique;
     }
 
-	public Long evaluate(Context context) {
+	public E evaluate(Context context) {
 		if (generator == null)
 	        initGenerator(context);
 		return generator.generate();
     }
 
 	private void initGenerator(Context context) {
-	    Long minValue = min.evaluate(context);
-		Long maxValue = max.evaluate(context);
+	    E minValue = min.evaluate(context);
+		E maxValue = max.evaluate(context);
 		if (minValue == maxValue)
-			generator = new ConstantGenerator<Long>(minValue);
+			generator = new ConstantGenerator<E>(minValue);
 		Distribution distr = distribution.evaluate(context);
-		generator = distr.createGenerator(Long.class, 
+		generator = distr.createGenerator(numberType, 
 	    	minValue, maxValue, precision.evaluate(context), unique.evaluate(context));
     }
 

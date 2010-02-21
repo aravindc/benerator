@@ -103,8 +103,8 @@ public class GeneratorFactoryUtil {
 						return minVal;
 					String distSpec = descriptor.getCountDistribution();
 	                Distribution d = getDistribution(distSpec, Uniqueness.NONE, true, (BeneratorContext) context);
-	    			DistributedNumberExpression distributedNumberExpression 
-	    				= new DistributedNumberExpression(new ConstantExpression<Distribution>(d), min, max, prec, unique);
+	    			DistributedNumberExpression<Long> distributedNumberExpression 
+	    				= new DistributedNumberExpression<Long>(Long.class, new ConstantExpression<Distribution>(d), min, max, prec, unique);
 					return distributedNumberExpression.evaluate(context);
                 }
 				
@@ -167,7 +167,7 @@ public class GeneratorFactoryUtil {
 
     
     public static Expression<Distribution> getDistributionExpression(
-    		final String spec, final Uniqueness uniqueness, final boolean required, final BeneratorContext context) {
+    		final String spec, final Uniqueness uniqueness, final boolean required) {
     	return new Expression<Distribution>() {
 
 			public Distribution evaluate(Context context) {
