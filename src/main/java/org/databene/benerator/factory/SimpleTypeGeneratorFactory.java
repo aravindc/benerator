@@ -373,7 +373,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Double trueQuota = descriptor.getTrueQuota();
         if (trueQuota == null)
             trueQuota = (Double) descriptor.getDetailDefault(TRUE_QUOTA);
-        return GeneratorFactory.getBooleanGenerator(trueQuota, 0);
+        return GeneratorFactory.getBooleanGenerator(trueQuota);
     }
 
     private static <T extends Number> Generator<T> createNumberGenerator(

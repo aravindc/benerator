@@ -124,9 +124,9 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     public void validate() {
         super.validate();
     	this.dateGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE, 0);
+    			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE);
     	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE, 0);
+    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE);
         dirty = false;
     }
 

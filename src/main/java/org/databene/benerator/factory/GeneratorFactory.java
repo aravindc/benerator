@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -68,13 +68,12 @@ public class GeneratorFactory {
     // boolean generator -----------------------------------------------------------------------------------------------
 
     /**
-     * Creates a generator for boolean values of a trueQuota [0-1] and a nullQuota [0-1]
+     * Creates a generator for boolean values with a trueQuota [0-1]
      *
      * @param trueQuota a value from 0 to 1, indicating the quota of true values to generate among the non-null values
-     * @param nullQuota a value from 0 to 1, indicating the quota of true values to generate
      * @return a Boolean generator of the desired characteristics
      */
-    public static Generator<Boolean> getBooleanGenerator(double trueQuota, double nullQuota) {
+    public static Generator<Boolean> getBooleanGenerator(double trueQuota) {
         return new BooleanGenerator(trueQuota);
     }
 
@@ -88,12 +87,11 @@ public class GeneratorFactory {
      * @param max          the maximum number to generate
      * @param precision    the resolution to use in number generation.
      * @param distribution The Sequence of WeightFunction to use for generation
-     * @param nullQuota    the quota of null values to generate [0..1].
      * @return a Number generator of the desired characteristics
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, T precision,
-            Distribution distribution, Uniqueness uniqueness, double nullQuota) {
+            Distribution distribution, Uniqueness uniqueness) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
         return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
