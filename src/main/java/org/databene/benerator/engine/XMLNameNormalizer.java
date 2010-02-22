@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,8 @@ package org.databene.benerator.engine;
 
 import org.databene.commons.Assert;
 import org.databene.commons.ConversionException;
-import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
+import org.databene.commons.converter.AbstractConverter;
 
 /**
  * Normalizes XML-valid names to Java-valid camel-case names, 
@@ -33,17 +33,17 @@ import org.databene.commons.StringUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class XMLNameNormalizer implements Converter<String, String> {
+public class XMLNameNormalizer extends AbstractConverter<String, String> {
 
-	public boolean canConvert(Object sourceValue) {
-		return true;
-	}
-
-	public Class<String> getTargetType() {
-		return String.class;
-	}
-
+	public XMLNameNormalizer() {
+	    super(String.class, String.class);
+    }
+	
 	public String convert(String name) throws ConversionException {
+		return normalize(name);
+	}
+
+	public String normalize (String name) {
 		Assert.notNull(name, "name");
 		String[] tokens = StringUtil.tokenize(name, '-');
 		if (tokens.length == 1)

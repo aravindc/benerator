@@ -28,7 +28,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.domain.lang.Language;
 
 /**
@@ -37,7 +37,7 @@ import org.databene.domain.lang.Language;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class PersonFormatter extends FixedSourceTypeConverter<Person, String> {
+public abstract class PersonFormatter extends AbstractConverter<Person, String> {
 	
 	private static final Set<Locale> EASTERN_LOCALES = CollectionUtil.toSet(
 		Language.CHINESE, Language.JAPANESE, Language.KOREAN, Language.THAI, Language.VIETNAMESE

@@ -26,7 +26,7 @@
 
 package org.databene.platform.map;
 
-import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -40,7 +40,7 @@ import java.util.Set;
  * @author Volker Bergmann
  */
 @SuppressWarnings("unchecked")
-public class Map2EntityConverter extends FixedSourceTypeConverter<Map, Entity> {
+public class Map2EntityConverter extends AbstractConverter<Map, Entity> {
 
     private ComplexTypeDescriptor descriptor;
 

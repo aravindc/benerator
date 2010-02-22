@@ -27,7 +27,7 @@
 package org.databene.domain.person;
 
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.databene.commons.converter.AbstractConverter;
 
 /**
  * Converts a {@link Gender} enumeration value to a configurable String.<br/>
@@ -37,7 +37,7 @@ import org.databene.commons.converter.FixedSourceTypeConverter;
  * @author Volker Bergmann
  */
 
-public class GenderConverter extends FixedSourceTypeConverter<Gender, String> {
+public class GenderConverter extends AbstractConverter<Gender, String> {
 	
 	private String male;
 	private String female;

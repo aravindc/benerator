@@ -76,14 +76,14 @@ public class ValueMapper implements Converter {
 		}
 	}
 	
+	public Class getSourceType() {
+	    return sourceType;
+	}
+	
 	public Class<?> getTargetType() {
 	    return targetType;
     }
 	
-	public boolean canConvert(Object sourceValue) {
-	    return (lenient || mappings.containsKey(AnyConverter.convert(sourceValue, sourceType)));
-    }
-
 	public Object convert(Object sourceValue) throws ConversionException {
 		sourceValue = AnyConverter.convert(sourceValue, sourceType);
 		if (!mappings.containsKey(sourceValue))

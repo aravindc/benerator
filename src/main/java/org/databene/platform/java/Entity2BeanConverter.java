@@ -28,7 +28,7 @@ package org.databene.platform.java;
 
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.databene.commons.converter.AbstractConverter;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ import java.util.Map;
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */
-public class Entity2BeanConverter<T> extends FixedSourceTypeConverter<Entity, T> {
+public class Entity2BeanConverter<T> extends AbstractConverter<Entity, T> {
 
     public Entity2BeanConverter(Class<T> targetType) {
         super(Entity.class, targetType);

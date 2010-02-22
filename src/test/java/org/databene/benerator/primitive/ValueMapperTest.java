@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,18 +36,16 @@ public class ValueMapperTest {
 	@Test
 	public void testNormalMapping() throws Exception {
 		ValueMapper mapper = new ValueMapper("1->2,4->3");
-		assertTrue(mapper.canConvert(1));
+		assertEquals(Integer.class, mapper.getSourceType());
 		assertEquals(2, mapper.convert(1));
-		assertTrue(mapper.canConvert(4));
 		assertEquals(3, mapper.convert(4));
 	}
 	
 	@Test
 	public void testCanConvert_Strict() throws Exception {
 		ValueMapper mapper = new ValueMapper("1->2,4->3");
-		assertTrue(mapper.canConvert(1));
+		assertEquals(Integer.class, mapper.getSourceType());
 		assertEquals(2, mapper.convert(1));
-		assertFalse(mapper.canConvert(2));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -59,18 +57,16 @@ public class ValueMapperTest {
 	@Test
 	public void testLenientMapping() throws Exception {
 		ValueMapper mapper = new ValueMapper("1->2,4->3", true);
-		assertTrue(mapper.canConvert(1));
+		assertEquals(Integer.class, mapper.getSourceType());
 		assertEquals(2, mapper.convert(1));
-		assertTrue(mapper.canConvert(2));
 		assertEquals(2, mapper.convert(2));
 	}
 
 	@Test
 	public void testLenientWOMapping() throws Exception {
 		ValueMapper mapper = new ValueMapper(null, true);
-		assertTrue(mapper.canConvert(1));
+		assertEquals(Object.class, mapper.getSourceType());
 		assertEquals(1, mapper.convert(1));
-		assertTrue(mapper.canConvert(2));
 		assertEquals(2, mapper.convert(2));
 	}
 

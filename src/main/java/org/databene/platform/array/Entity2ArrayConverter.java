@@ -26,7 +26,7 @@
 
 package org.databene.platform.array;
 
-import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.Entity;
 
 /**
@@ -35,7 +35,7 @@ import org.databene.model.data.Entity;
  * Created: 26.08.2007 12:27:45
  * @author Volker Bergmann
  */
-public class Entity2ArrayConverter extends FixedSourceTypeConverter<Entity, Object[]> {
+public class Entity2ArrayConverter extends AbstractConverter<Entity, Object[]> {
 
     private String[] featureNames;
 

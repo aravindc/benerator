@@ -31,7 +31,7 @@ import java.util.Map;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConversionException;
 import org.databene.commons.IOUtil;
-import org.databene.commons.converter.FixedSourceTypeConverter;
+import org.databene.commons.converter.AbstractConverter;
 import org.databene.dataset.DatasetFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class FemaleFamilyNameConverter extends FixedSourceTypeConverter<String, String> {
+public class FemaleFamilyNameConverter extends AbstractConverter<String, String> {
 	
 	private String[][] mappings;
 
