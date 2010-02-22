@@ -32,7 +32,6 @@ import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
-import org.databene.domain.net.EMailAddressGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +60,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     private SalutationProvider salutationProvider;
 
     private BirthDateGenerator birthDateGenerator;
-    private EMailAddressGenerator emailGenerator;
+    private EMailAddressBuilder emailGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -94,7 +93,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
 	        familyNameGen = new FamilyNameGenerator(datasetName);
 	        femaleFamilyNameConverter = new FemaleFamilyNameConverter(datasetName); 
-	        emailGenerator = new EMailAddressGenerator(datasetName);
+	        emailGenerator = new EMailAddressBuilder(datasetName);
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
@@ -157,7 +156,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 		person.setGivenName(givenName);
         if (secondNameTest.generate()) {
         	do {
-        		person.setSecondGivenName(givenName);
+        		person.setSecondGivenName(givenNameGenerator.generate());
         	} while (person.getGivenName().equals(person.getSecondGivenName()));
         }
         String familyName = familyNameGen.generate();
