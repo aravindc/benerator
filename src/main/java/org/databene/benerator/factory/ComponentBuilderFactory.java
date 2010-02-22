@@ -153,7 +153,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
     	
-    	// TODO support 'attribute' like syntax, fall back to targetType+source+selector
+    	// TODO v0.6 support 'attribute'-like syntax, only fall back to targetType+source+selector
         TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
         
         // check target type
