@@ -26,6 +26,7 @@
 
 package org.databene.task;
 
+import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.slf4j.Logger;
@@ -52,6 +53,11 @@ public class TimedTask<E extends Task> extends TaskProxy<E> {
         TaskResult result = super.execute(context, errorHandler);
         logger.info(String.valueOf(System.currentTimeMillis() - startTime));
         return result;
+    }
+
+	@Override
+    public Object clone() {
+	    return new TimedTask<E>(BeanUtil.clone(realTask));
     }
     
 }

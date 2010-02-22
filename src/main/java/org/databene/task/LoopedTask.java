@@ -26,6 +26,7 @@
 
 package org.databene.task;
 
+import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 
@@ -59,4 +60,9 @@ public class LoopedTask<E extends Task> extends TaskProxy<E> {
 		this.loopSize = loopSize;
 	}
 	
+	@Override
+    public Object clone() {
+	    return new LoopedTask<E>(BeanUtil.clone(realTask), loopSize);
+    }
+    
 }

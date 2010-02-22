@@ -28,8 +28,6 @@ package org.databene.task;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.databene.commons.ThreadSupport;
-
 /**
  * Abstract parent class for tasks that do not support multithreaded execution, 
  * but can be cloned and executed in several parallel instances.<br/><br/>
@@ -47,8 +45,13 @@ public abstract class ParallelizableCounterTask extends AbstractTask implements 
     }
 
     @Override
-    public ThreadSupport getThreading() {
-        return ThreadSupport.PARALLELIZABLE;
+    public boolean isThreadSafe() {
+        return false;
+    }
+
+    @Override
+    public boolean isParallelizable() {
+        return true;
     }
     
     @Override

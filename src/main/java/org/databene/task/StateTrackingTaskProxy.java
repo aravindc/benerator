@@ -32,7 +32,7 @@ import org.databene.commons.ErrorHandler;
  * @since 0.6
  * @author Volker Bergmann
  */
-public class StateTrackingTaskProxy<E extends Task> extends TaskProxy<E> implements Cloneable {
+public class StateTrackingTaskProxy<E extends Task> extends TaskProxy<E> {
 
 	protected TaskResult state;
 	

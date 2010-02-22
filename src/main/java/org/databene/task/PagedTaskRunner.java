@@ -32,7 +32,6 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
-import org.databene.commons.ThreadSupport;
 import org.databene.commons.expression.ConstantExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,7 +211,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         long localInvocationCount = 0;
         int maxLoopsPerPage = (int)((currentPageSize + threadCount - 1) / threadCount);
         int shorterLoops = (int)(threadCount * maxLoopsPerPage - currentPageSize);
-        ThreadSupport threadSupport = target.getThreading();
+        boolean threadSafe = target.isThreadSafe();
+        boolean parallelizable = target.isParallelizable();
         // create threads for a page
         CountDownLatch latch = new CountDownLatch(threadCount);
         for (int threadNo = 0; threadNo < threadCount; threadNo++) {
@@ -221,16 +221,15 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
                 loopSize--;
             if (loopSize > 0) {
                 Task task = target;
-                boolean multiThreadsSupported = (threadSupport == ThreadSupport.MULTI_THREADED);
-				if (threadCount > 1 && !multiThreadsSupported) {
-                    if (threadSupport == ThreadSupport.PARALLELIZABLE)
+				if (threadCount > 1 && !threadSafe) {
+                    if (parallelizable)
                         task = BeanUtil.clone(task);
                     else
                         throw new ConfigurationError("Since the task is not marked as thread-safe," +
                                 "it must either be used in a single thread or be parallelizable.");
                 }
                 task = new LoopedTask(task, loopSize); 
-                TaskRunnable thread = new TaskRunnable(task, context, latch, !multiThreadsSupported, errorHandler);
+                TaskRunnable thread = new TaskRunnable(task, context, latch, !threadSafe, errorHandler);
                 ExecutorService executorService = executor.evaluate(context);
 				executorService.execute(thread);
                 localInvocationCount += loopSize;
@@ -245,7 +244,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (threadSupport == ThreadSupport.MULTI_THREADED)
+        if (threadSafe) // TODO close only if it was actually run in shared mode
             IOUtil.close(target);
         return localInvocationCount;
     }

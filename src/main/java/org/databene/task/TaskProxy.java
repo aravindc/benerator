@@ -30,7 +30,6 @@ import java.io.IOException;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.ThreadSupport;
 
 /**
  * Wraps a Task and forwards invocations.<br/>
@@ -39,7 +38,7 @@ import org.databene.commons.ThreadSupport;
  * @since 0.2
  * @author Volker Bergmann
  */
-public abstract class TaskProxy<E extends Task> extends AbstractTask {
+public abstract class TaskProxy<E extends Task> extends AbstractTask implements Cloneable {
 
     protected E realTask;
 
@@ -59,6 +58,16 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask {
     public TaskResult execute(Context context, ErrorHandler errorHandler) {
         return realTask.execute(context, errorHandler);
     }
+    
+    @Override
+    public boolean isThreadSafe() {
+        return realTask.isThreadSafe();
+    }
+    
+    @Override
+    public boolean isParallelizable() {
+        return realTask.isParallelizable();
+    }
 
     @Override
     public void close() throws IOException {
@@ -66,13 +75,11 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask {
     }
     
     @Override
-    public ThreadSupport getThreading() {
-        return realTask.getThreading();
-    }
+    public abstract Object clone();
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + '(' + realTask.toString() + ')';
+        return getClass().getSimpleName() + '[' + realTask.toString() + ']';
     }
-
+    
 }

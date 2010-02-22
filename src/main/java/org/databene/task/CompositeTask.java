@@ -26,7 +26,6 @@
 
 package org.databene.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.commons.Assert;
@@ -45,11 +44,6 @@ public abstract class CompositeTask extends AbstractTask {
 	
 	protected List<Task> subTasks;
 	
-	public CompositeTask(String taskName) {
-	    super(taskName);
-	    this.subTasks = new ArrayList<Task>();
-    }
-
 	public CompositeTask(Task... subTasks) {
 		super(); // parent class default constructor chooses name
 	    this.subTasks = CollectionUtil.toList(subTasks);

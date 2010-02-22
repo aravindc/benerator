@@ -43,10 +43,6 @@ public class SequentialTask extends CompositeTask {
 		super(subTasks);
 	}
 	
-	public SequentialTask(String taskName) {
-	    super(taskName);
-    }
-
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
 		TaskResult result = TaskResult.EXECUTING;
 	    for (Task subTask : subTasks) {

@@ -28,8 +28,6 @@ package org.databene.task;
 
 import java.io.IOException;
 
-import org.databene.commons.ThreadSupport;
-
 /**
  * Simple abstract implementation of the Task interface.<br/>
  * <br/>
@@ -40,17 +38,25 @@ import org.databene.commons.ThreadSupport;
 public abstract class AbstractTask implements Task {
 
     protected String taskName;
+	private boolean threadSafe;
+	private boolean parallelizable;
     
     // constructor -----------------------------------------------------------------------------------------------------
 
     protected AbstractTask() {
         this(null);
     }
-
+    
     protected AbstractTask(String taskName) {
+        this(taskName, false, false);
+    }
+
+    protected AbstractTask(String taskName, boolean threadSafe, boolean parallelizable) {
     	if (taskName == null)
     		taskName = getClass().getSimpleName();
         setTaskName(taskName);
+        this.threadSafe = threadSafe;
+        this.parallelizable = parallelizable;
     }
     
     // Task interface --------------------------------------------------------------------------------------------------
@@ -63,8 +69,12 @@ public abstract class AbstractTask implements Task {
         this.taskName = taskName;
     }
 
-    public ThreadSupport getThreading() {
-        return ThreadSupport.UNSAFE;
+    public boolean isThreadSafe() {
+        return threadSafe;
+    }
+    
+    public boolean isParallelizable() {
+        return parallelizable;
     }
     
     @SuppressWarnings("unused")

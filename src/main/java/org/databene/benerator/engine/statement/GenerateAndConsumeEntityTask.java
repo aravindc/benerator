@@ -40,11 +40,10 @@ import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
-import org.databene.commons.ThreadSupport;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
-import org.databene.task.AbstractTask;
+import org.databene.task.Task;
 import org.databene.task.TaskResult;
 
 /**
@@ -52,8 +51,9 @@ import org.databene.task.TaskResult;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public  class GenerateAndConsumeEntityTask extends AbstractTask implements ResourceManager {
+public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
 
+	private String taskName;
     private Generator<Entity> entityGenerator;
     private boolean isSubTask;
     private Expression<Consumer<Entity>> consumerExpr;
@@ -64,7 +64,7 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
     
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
     		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask) {
-    	super(taskName);
+    	this.taskName = taskName;
     	Assert.notNull(entityGenerator, "entityGenerator");
         this.entityGenerator = entityGenerator;
         this.consumerExpr = consumerExpr;
@@ -82,9 +82,23 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
     	return entityGenerator;
     }
     
-    @Override
-    public ThreadSupport getThreading() {
-        return ThreadSupport.MULTI_THREADED;
+	public void flushConsumer() {
+		if (consumer != null)
+			consumer.flush();
+    }
+
+    // Task interface implementation -----------------------------------------------------------------------------------
+    
+	public String getTaskName() {
+	    return taskName;
+    }
+
+    public boolean isThreadSafe() {
+        return true; // TODO derive from components
+    }
+    
+    public boolean isParallelizable() {
+        return true; // TODO derive from components
     }
     
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
@@ -116,6 +130,24 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
 	    for (Statement subStatement : subStatements)
 	    	runSubTask(subStatement, context);
     }
+    
+    public void reset() {
+	    entityGenerator.reset();
+    }
+
+    public void close() throws IOException {
+		resourceManager.close();
+        if (!isSubTask && consumer != null)
+            consumer.flush();
+    }
+
+    // ResourceManager interface ---------------------------------------------------------------------------------------
+    
+	public boolean addResource(Closeable resource) {
+	    return resourceManager.addResource(resource);
+    }
+
+    // private helpers -------------------------------------------------------------------------------------------------
 
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
         if (subStatement instanceof CreateOrUpdateEntitiesStatement) {
@@ -131,28 +163,6 @@ public  class GenerateAndConsumeEntityTask extends AbstractTask implements Resou
         	subStatement.execute(context);
     }
     
-    public void reset() {
-	    entityGenerator.reset();
-    }
-
-	@Override
-    public void close() throws IOException {
-		resourceManager.close();
-        if (!isSubTask && consumer != null)
-            consumer.flush();
-    }
-
-	public void flushConsumer() {
-		if (consumer != null)
-			consumer.flush();
-    }
-
-	public boolean addResource(Closeable resource) {
-	    return resourceManager.addResource(resource);
-    }
-
-	// non-public helpers ----------------------------------------------------------------------------------------------
-	
     Consumer<Entity> getConsumer(Context context) {
     	if (consumer == null)
     		consumer = ExpressionUtil.evaluate(consumerExpr, context);

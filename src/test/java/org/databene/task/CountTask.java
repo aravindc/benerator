@@ -28,7 +28,6 @@ package org.databene.task;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.ThreadSupport;
 
 /**
  * Helper class for testing Task handling.<br/><br/>
@@ -36,7 +35,7 @@ import org.databene.commons.ThreadSupport;
  * @since 0.2
  * @author Volker Bergmann
  */
-public class CountTask implements Task {
+public class CountTask extends AbstractTask {
 
     public int runCount = 0;
     public int closeCount = 0;
@@ -47,19 +46,12 @@ public class CountTask implements Task {
     }
 
     public CountTask(int runLimit) {
+    	super("Count", true, false);
 	    this.runLimit = runLimit;
     }
 
     // Task interface --------------------------------------------------------------------------------------------------
     
-    public String getTaskName() {
-        return getClass().getSimpleName();
-    }
-
-	public ThreadSupport getThreading() {
-	    return ThreadSupport.MULTI_THREADED;
-    }
-
     public TaskResult execute(Context context, ErrorHandler errorHandler) {
         runCount++;
         if (runLimit < 0 || runCount < runLimit)
@@ -70,6 +62,7 @@ public class CountTask implements Task {
         	return TaskResult.UNAVAILABLE;
     }
 
+    @Override
     public void close() {
         closeCount++;
     }
