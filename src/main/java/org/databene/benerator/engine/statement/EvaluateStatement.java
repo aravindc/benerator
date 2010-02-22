@@ -28,6 +28,7 @@ package org.databene.benerator.engine.statement;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
@@ -201,17 +202,16 @@ public class EvaluateStatement implements Statement {
 		}
 	}
 
-	private int runShell(String uri, String text, String onError) {
-		ErrorHandler errorHandler = new ErrorHandler(getClass().getName(),
-				Level.valueOf(onError));
+	private Object runShell(String uri, String text, String onError) {
+		ErrorHandler errorHandler = new ErrorHandler(getClass().getName(), Level.valueOf(onError));
+		StringWriter writer = new StringWriter();
 		if (text != null)
-			return ShellUtil.runShellCommands(new ReaderLineIterator(
-					new StringReader(text)), errorHandler);
+			ShellUtil.runShellCommands(new ReaderLineIterator(new StringReader(text)), writer, errorHandler);
 		else if (uri != null)
-			return ShellUtil.runShellCommand(uri, errorHandler);
+			ShellUtil.runShellCommand(uri, writer, errorHandler);
 		else
-			throw new ConfigurationError(
-					"At least uri or text must be provided in <execute>");
+			throw new ConfigurationError("At least uri or text must be provided in <execute>");
+		return LiteralParser.parse(writer.toString());
 	}
 
 	private Object runSql(String uri, Object targetObject, String onError,
