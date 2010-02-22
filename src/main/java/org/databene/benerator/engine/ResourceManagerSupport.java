@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.databene.commons.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a standard implementation of the {@link ResourceManager} interface.<br/>
@@ -43,6 +45,8 @@ import org.databene.commons.IOUtil;
 
 public class ResourceManagerSupport implements ResourceManager{
 
+	private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
+	
 	private Set<Closeable> resources = new HashSet<Closeable>();
 
 	public boolean addResource(Closeable resource) {
@@ -56,7 +60,13 @@ public class ResourceManagerSupport implements ResourceManager{
 	}
 
     public void close() {
+		logger.debug("Closing resources: " + this);
     	IOUtil.closeAll(resources);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + resources;
+    }
+    
 }

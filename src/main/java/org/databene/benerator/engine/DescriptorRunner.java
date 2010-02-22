@@ -84,9 +84,9 @@ public class DescriptorRunner implements ResourceManager {
 	}
 
     public void run() throws IOException {
-		// parse benerator descriptor into an AST
-		BeneratorRootStatement beneratorTask = parseDescriptorFile();			
-		execute(beneratorTask);
+    	Runtime.getRuntime().addShutdownHook(new BeneratorShutdownHook(this));
+		BeneratorRootStatement rootStatement = parseDescriptorFile();			
+		execute(rootStatement);
 	}
 
 	public BeneratorRootStatement parseDescriptorFile() throws IOException {
