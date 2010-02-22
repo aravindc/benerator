@@ -229,9 +229,9 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
                                 "it must either be used in a single thread or be parallelizable.");
                 }
                 task = new LoopedTask(task, loopSize); 
-                TaskRunnable thread = new TaskRunnable(task, context, latch, !threadSafe, errorHandler);
+                TaskRunnable runner = new TaskRunnable(task, context, latch, !threadSafe, errorHandler);
                 ExecutorService executorService = executor.evaluate(context);
-				executorService.execute(thread);
+				executorService.execute(runner);
                 localInvocationCount += loopSize;
             } else
                 latch.countDown();
