@@ -29,8 +29,10 @@ package org.databene.benerator.test;
 import org.junit.Before;
 import static junit.framework.Assert.*;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
@@ -65,6 +67,17 @@ public abstract class GeneratorTest {
 
     // helper methods for this and child classes -----------------------------------------------------------------------
 
+    public static <T> Map<T, AtomicInteger> countProducts(Generator<T> generator, int n) {
+    	ObjectCounter<T> counter = new ObjectCounter<T>(Math.min(n, 1000));
+    	for (int i = 0; i < n; i++) {
+    		T product = generator.generate();
+    		if (product == null)
+    			fail("Generator unavailable after " + i + " of " + n + " invocations");
+    		counter.count(product);
+    	}
+    	return counter.getCounts();
+    }
+    
     protected static <T> Helper expectGeneratedSequence(Generator<T> generator, T ... products) {
         expectGeneratedSequenceOnce(generator, products);
         generator.reset();
