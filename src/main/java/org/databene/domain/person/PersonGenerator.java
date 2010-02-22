@@ -148,7 +148,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	    return Person.class;
     }
     public Person generate() throws IllegalGeneratorStateException {
-        Person person = new Person();
+        Person person = new Person(acadTitleGen.getLocale());
         person.setGender(genderGen.generate());
         Generator<String> givenNameGenerator 
         	= (Gender.MALE.equals(person.getGender()) ? maleGivenNameGen : femaleGivenNameGen);

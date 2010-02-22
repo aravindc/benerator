@@ -26,10 +26,8 @@
 
 package org.databene.domain.person;
 
-import org.databene.commons.StringUtil;
-
 import java.util.Date;
-import java.text.DateFormat;
+import java.util.Locale;
 
 /**
  * Represents a natural person.<br/><br/>
@@ -38,8 +36,6 @@ import java.text.DateFormat;
  * @author Volker Bergmann
  */
 public class Person {
-
-    private static final DateFormat df = DateFormat.getDateInstance();
 
     private String givenName;
     private String secondGivenName;
@@ -50,6 +46,11 @@ public class Person {
     private String nobilityTitle;
     private Date birthDate;
     private String email;
+    private Locale locale;
+    
+    public Person(Locale locale) {
+    	this.locale = locale;
+    }
 
     public String getSalutation() {
         return salutation;
@@ -133,8 +134,7 @@ public class Person {
 
 	@Override
     public synchronized String toString() {
-        return salutation + ' ' + (!StringUtil.isEmpty(academicTitle) ? academicTitle + " " : "") + givenName + ' ' + 
-        	(secondGivenName != null ? secondGivenName + ' ' : "") + familyName + ", *" + df.format(birthDate);
+		return PersonFormatter.getInstance(locale).format(this);
     }
     
 }
