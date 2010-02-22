@@ -75,6 +75,10 @@ public class ObjectCounter<E> {
     public double totalCount() {
 	    return totalCount();
     }
+    
+    public Map<E, AtomicInteger> getCounts() {
+    	return instances;
+    }
 
     public boolean equalDistribution(double tolerance) {
         double average = averageCount();
