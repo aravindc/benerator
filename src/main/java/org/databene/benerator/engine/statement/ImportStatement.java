@@ -41,15 +41,13 @@ public class ImportStatement implements Statement {
 	
 	private boolean defaultImports;
 	private String[] classImports;
-	private String[] packageImports;
 	private String[] domainImports;
 	private String[] platformImports;
 
-    public ImportStatement(boolean defaultImports, String[] classImports, String[] packageImports, String[] domainImports,
+    public ImportStatement(boolean defaultImports, String[] classImports, String[] domainImports,
             String[] platformImports) {
 	    this.defaultImports = defaultImports;
 	    this.classImports = classImports;
-	    this.packageImports = packageImports;
 	    this.domainImports = domainImports;
 	    this.platformImports = platformImports;
     }
@@ -61,10 +59,6 @@ public class ImportStatement implements Statement {
     	if (classImports != null)
     		for (String classImport : classImports)
     			context.importClass(classImport);
-		
-    	if (packageImports != null)
-    		for (String packageImport : packageImports)
-    			context.importPackage(packageImport);
 		
     	if (domainImports != null)
     		for (String domainImport : domainImports)

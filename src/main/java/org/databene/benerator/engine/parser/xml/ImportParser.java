@@ -42,7 +42,6 @@ public class ImportParser extends AbstractDescriptorParser {
 
 	public ImportStatement parse(Element element, ResourceManager resourceManager) {
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
-		ArrayBuilder<String> packageImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 
 		
@@ -64,11 +63,6 @@ public class ImportParser extends AbstractDescriptorParser {
 		if (!StringUtil.isEmpty(attribute))
 			domainImports.addAll(StringUtil.tokenize(attribute, ','));
 		
-		// package import
-		attribute = element.getAttribute("package");
-		if (!StringUtil.isEmpty(attribute))
-			packageImports.add(attribute);
-		
 		// platform import
 		attribute = element.getAttribute("platform");
 		if (!StringUtil.isEmpty(attribute))
@@ -79,7 +73,7 @@ public class ImportParser extends AbstractDescriptorParser {
 		if (!StringUtil.isEmpty(attribute))
 			platformImports.addAll(StringUtil.tokenize(attribute, ','));
 		
-		return new ImportStatement(defaults, classImports.toArray(), packageImports.toArray(), 
+		return new ImportStatement(defaults, classImports.toArray(), 
 				domainImports.toArray(), platformImports.toArray());
 	}
 
