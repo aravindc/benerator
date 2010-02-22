@@ -32,6 +32,7 @@ import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
+import org.databene.domain.net.EMailAddressGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     private SalutationProvider salutationProvider;
 
     private BirthDateGenerator birthDateGenerator;
+    private EMailAddressGenerator emailGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -92,6 +94,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 	        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
 	        familyNameGen = new FamilyNameGenerator(datasetName);
 	        femaleFamilyNameConverter = new FemaleFamilyNameConverter(datasetName); 
+	        emailGenerator = new EMailAddressGenerator(datasetName);
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
@@ -150,10 +153,11 @@ public class PersonGenerator extends LightweightGenerator<Person> {
         person.setGender(genderGen.generate());
         Generator<String> givenNameGenerator 
         	= (Gender.MALE.equals(person.getGender()) ? maleGivenNameGen : femaleGivenNameGen);
-        person.setGivenName(givenNameGenerator.generate());
+        String givenName = givenNameGenerator.generate();
+		person.setGivenName(givenName);
         if (secondNameTest.generate()) {
         	do {
-        		person.setSecondGivenName(givenNameGenerator.generate());
+        		person.setSecondGivenName(givenName);
         	} while (person.getGivenName().equals(person.getSecondGivenName()));
         }
         String familyName = familyNameGen.generate();
@@ -166,6 +170,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     		= (Gender.MALE.equals(person.getGender()) ? maleNobilityTitleGen : femaleNobilityTitleGen);
         person.setNobilityTitle(nobTitleGenerator.generate());
         person.setBirthDate(birthDateGenerator.generate());
+        person.setEmail(emailGenerator.generate(givenName, familyName));
         return person;
     }
 

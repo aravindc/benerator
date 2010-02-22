@@ -92,8 +92,12 @@ public class EMailAddressGenerator extends LightweightStringGenerator {
 	
 	public String generate() {
 		Person person = personGenerator.generate();
-		String given = nameConverter.convert(person.getGivenName());
-		String family = nameConverter.convert(person.getFamilyName());
+		return generate(person.getGivenName(), person.getFamilyName());
+	}
+
+	public String generate(String givenName, String familyName) {
+		String given = nameConverter.convert(givenName);
+		String family = nameConverter.convert(familyName);
 		String domain = domainGenerator.generate();
 		Character join = joinGenerator.generate();
 		switch (join) {
@@ -103,6 +107,6 @@ public class EMailAddressGenerator extends LightweightStringGenerator {
 			case '1' : return given.charAt(0) + family + '@' + domain;
 			default  : throw new ConfigurationError("Invalid join strategy: " + join);
 		}
-	} 
+    } 
 	
 }
