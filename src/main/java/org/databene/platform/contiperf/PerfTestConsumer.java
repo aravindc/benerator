@@ -61,10 +61,6 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
 	    this.requirement = new PerformanceRequirement();
     }
 	
-	public void setTarget(Consumer<Object> target) {
-		this.target = target;
-	}
-	
 	public void setMax(int max) {
 		requirement.setMax(max);
 	}
@@ -73,7 +69,6 @@ public class PerfTestConsumer extends ConsumerProxy<Object> {
 		requirement.setPercentiles(parsePercentilesSpec(percentilesSpec));
 	}
 	
-	@Override
     public void startConsuming(Object object) {
 	    try {
 	        getController().invoke(new Object[] { object });
