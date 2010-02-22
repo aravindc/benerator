@@ -40,11 +40,11 @@ public class PageListenerMock implements PageListener {
 	    this.id = id;
     }
 
-	public void pageStarting(int currentPageNo, long totalPages) {
+	public void pageStarting() {
 	    startCount.incrementAndGet();
     }
 
-	public void pageFinished(int currentPageNo, long totalPages) {
+	public void pageFinished() {
 	    finishCount.incrementAndGet();
     }
 

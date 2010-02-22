@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,6 @@ package org.databene.task;
  * @author Volker Bergmann
  */
 public interface PageListener {
-    void pageStarting(int currentPageNo, long totalPages);
-    void pageFinished(int currentPageNo, long totalPages);
+    void pageStarting();
+    void pageFinished();
 }

@@ -262,7 +262,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
             logger.debug("Starting page " + (currentPageNo + 1) + " of " + getTaskName() + " with pageSize=" + pageSize);
         if (pageListeners != null)
         	for (PageListener listener : pageListeners)
-        		listener.pageStarting(currentPageNo, -1);
+        		listener.pageStarting();
     }
 
     protected void pageFinished(int currentPageNo, Context context) {
@@ -270,7 +270,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
             logger.debug("Page " + (currentPageNo + 1) + " of " + getTaskName() + " finished");
         if (pageListeners != null)
         	for (PageListener listener : pageListeners)
-        		listener.pageFinished(currentPageNo, -1);
+        		listener.pageFinished();
     }
 
     public void uncaughtException(Thread t, Throwable e) {

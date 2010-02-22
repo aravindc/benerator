@@ -96,10 +96,10 @@ public class CreateOrUpdateEntitiesStatement extends AbstractStatement implement
 	    return (GenerateAndConsumeEntityTask) task;
     }
 
-	public void pageStarting(int currentPageNo, long totalPages) {
+	public void pageStarting() {
 	}
 
-	public void pageFinished(int currentPageNo, long totalPages) {
+	public void pageFinished() {
 		getTarget().flushConsumer();
 	}
 	
