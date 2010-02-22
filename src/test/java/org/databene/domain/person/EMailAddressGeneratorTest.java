@@ -24,9 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.domain.net;
+package org.databene.domain.person;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.domain.person.EMailAddressGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
