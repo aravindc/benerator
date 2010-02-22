@@ -26,6 +26,9 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.script.BeneratorScriptFactory;
@@ -135,6 +138,9 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		context.set("some_user", "the_user");
 		Generator<String> generator = createGenerator(type, Uniqueness.NONE, context);
 		expectGeneratedSet(generator, "Alice", "the_user", "Otto").withContinuedAvailability();
+		Map<String, AtomicInteger> counts = countProducts(generator, 300);
+		assertEquals(1, counts.size());
+		assertEquals(300, counts.get("the_user").intValue());
 	}
 
 	@Test
