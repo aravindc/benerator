@@ -482,7 +482,7 @@ public class DBSystem extends AbstractStorageSystem {
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         DBColumn[] columns = pkConstraint.getColumns();
         String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
-        if (pkColumnNames.length == 1) { // TODO v0.6 support composite primary keys
+        if (pkColumnNames.length == 1) { // TODO v0.7 support composite primary keys
         	String columnName = pkColumnNames[0];
         	DBColumn column = table.getColumn(columnName);
 			table.getColumn(columnName);
