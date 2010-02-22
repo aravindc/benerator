@@ -37,8 +37,8 @@ public abstract class ConsumerProxy<E> implements Consumer<E> {
 	    this.target = target;
     }
 
-	public void setRealConsumer(Consumer<E> realConsumer) {
-    	this.target = realConsumer;
+	public void setTarget(Consumer<E> target) {
+    	this.target = target;
     }
 
 	public void finishConsuming(E object) {
