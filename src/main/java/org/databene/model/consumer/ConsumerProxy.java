@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ import java.io.IOException;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ConsumerProxy<E> implements Consumer<E> {
+public abstract class ConsumerProxy<E> implements Consumer<E> {
 
 	protected Consumer<E> target;
 
@@ -41,10 +41,6 @@ public class ConsumerProxy<E> implements Consumer<E> {
     	this.target = realConsumer;
     }
 
-	public void close() throws IOException {
-	    target.close();
-    }
-
 	public void finishConsuming(E object) {
 	    target.finishConsuming(object);
     }
@@ -53,8 +49,8 @@ public class ConsumerProxy<E> implements Consumer<E> {
 	    target.flush();
     }
 
-	public void startConsuming(E object) {
-	    target.startConsuming(object);
+	public void close() throws IOException {
+	    target.close();
     }
-	
+
 }
