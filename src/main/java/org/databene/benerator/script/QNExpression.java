@@ -63,24 +63,30 @@ public class QNExpression implements Expression<Object> {
         	return readField(qnParts, qnParts.length - 1, ArrayUtil.lastElement(qnParts), context);
     }
 
-    private Object readField(String[] qnParts, int qnLength, String fieldName, Context context) {
+    private static Object readField(String[] qnParts, int qnLength, String fieldName, Context context) {
+    	return FeatureAccessor.getValue(lookup(qnParts, qnLength, context), fieldName);
+    }
+    
+    public static Object lookup(String[] qnParts, int qnLength, Context context) {
     	String objectOrClassName = ArrayFormat.formatPart(".", 0, qnLength, qnParts);
     	if (context.contains(objectOrClassName)) {
-    		Object target = context.get(objectOrClassName);
-    		return FeatureAccessor.getValue(target, fieldName);
+    		return context.get(objectOrClassName);
     	} else {
     		try {
-    			Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
-    			return FeatureAccessor.getValue(type, fieldName);
+    			return DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
     		} catch (ConfigurationError e) {
     			LOGGER.debug("Class not found: " + objectOrClassName);
     			if (qnLength > 1) {
-	    			Object base = readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
-	    			return FeatureAccessor.getValue(base, fieldName);
+	    			return readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
     			} else
     				throw new UnsupportedOperationException(objectOrClassName + " is not defined");
     		}
     	}
+    }
+    
+    @Override
+    public String toString() {
+        return ArrayFormat.format(".", qnParts);
     }
     
 }

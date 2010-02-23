@@ -291,6 +291,8 @@ public class BeneratorScriptParser {
 			return new QNBeanSpecExpression(convertQualifiedNameToStringArray(node));
 		else if (node.getType() == BeneratorLexer.IDENTIFIER)
 			return new QNBeanSpecExpression(new String[] { node.getText() });
+		else if (node.getType() == BeneratorLexer.BEAN)
+			return convertBean(node);
 		else
 			return convertNode(node);
 	}
@@ -335,6 +337,7 @@ public class BeneratorScriptParser {
 			case BeneratorLexer.AMPAMP: return convertConditionalAnd(node);
 			case BeneratorLexer.BARBAR: return convertConditionalOr(node);
 			case BeneratorLexer.QUES: return convertConditionalExpression(node);
+			case BeneratorLexer.EQ: return convertAssignment(node);
 			default: throw new ParseException("Unknown token type", String.valueOf(node.getType()), 
 					node.getLine(), node.getCharPositionInLine());
     	}
@@ -420,7 +423,7 @@ public class BeneratorScriptParser {
     	for (int i = firstIndex; i < nodes.size(); i++) {
     		CommonTree assignmentNode = nodes.get(i);
     		CommonTree nameNode = childAt(0, assignmentNode);
-    		String name = nameNode.getText();
+    		String name = (nameNode.getType() == BeneratorLexer.QUALIFIEDNAME ? childAt(0, nameNode).getText() : nameNode.getText());
     		CommonTree exNode = childAt(1, assignmentNode);
     		Expression<?> ex = convertNode(exNode);
 			assignments[i - firstIndex] = new Assignment(name, ex);
@@ -693,6 +696,12 @@ public class BeneratorScriptParser {
 				convertNode(childAt(2, node))); // false alternative
     }
     
+	private static Expression<?> convertAssignment(CommonTree node) throws ParseException {
+		return new AssignmentExpression(
+				convertQualifiedNameToStringArray(childAt(0, node)),
+				convertNode(childAt(1, node)));
+    }
+
     // CommonTree helpers ----------------------------------------------------------------------------------------------
 
     private static CommonTree childAt(int index, CommonTree node) {

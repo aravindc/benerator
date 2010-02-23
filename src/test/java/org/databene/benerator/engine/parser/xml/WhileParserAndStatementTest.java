@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 /**
  * Tests the {@link WhileParser} and the {@link WhileStatement}.<br/><br/>
  * Created: 19.02.2010 10:06:29
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class WhileParserAndStatementTest {
@@ -55,10 +55,10 @@ public class WhileParserAndStatementTest {
 	public void testThreeLoops() throws Exception {
 		Element element = XMLUtil.parseStringAsElement(
 				"<while test='count &lt; 3'>" +
-				"	<evaluate id='count'>count + 1</evaluate>" + // TODO support syntax: count = count + 1
+				"	<execute>count = count + 1</execute>" +
 				"</while>");
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
-		context.set("count", 0); // TODO how to define a global variable in descriptor file syntax?
+		context.set("count", 0);
 		Statement statement = new WhileParser().parse(element, null);
 		statement.execute(context);
 		assertEquals(3, context.get("count"));

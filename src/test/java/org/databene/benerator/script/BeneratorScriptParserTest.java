@@ -26,6 +26,9 @@
 
 package org.databene.benerator.script;
 
+import java.util.Map;
+
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.Person;
 import org.databene.commons.BeanUtil;
@@ -459,6 +462,41 @@ public class BeneratorScriptParserTest {
 				"registered=true, rank='A']");
 	}
 
+	@Test
+	public void testVariableDefinition() throws Exception {
+	    Expression<?> expression = BeneratorScriptParser.parseExpression("x = 3");
+	    BeneratorContext context = new BeneratorContext();
+	    assertEquals(3, expression.evaluate(context));
+	    assertEquals(3, context.get("x"));
+	}
+	
+	@Test
+	public void testVariableAssignment() throws Exception {
+	    BeneratorContext context = new BeneratorContext();
+	    context.set("x", 3);
+		Expression<?> expression = BeneratorScriptParser.parseExpression("x = x + 2");
+	    assertEquals(5, expression.evaluate(context));
+	    assertEquals(5, context.get("x"));
+	}
+	
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testMemberAssignment() throws Exception {
+	    BeneratorContext context = new BeneratorContext();
+	    context.set("x", CollectionUtil.buildMap("y", 3));
+		Expression<?> expression = BeneratorScriptParser.parseExpression("x.y = x.y + 2");
+	    assertEquals(5, expression.evaluate(context));
+	    assertEquals(5, (int) ((Map<String, Integer>) context.get("x")).get("y"));
+	}
+	
+	@Test(expected = UnsupportedOperationException.class)
+	public void testUndefinedVariableReference() throws Exception {
+		Expression<?> expression = BeneratorScriptParser.parseExpression("x = x + 3");
+	    BeneratorContext context = new BeneratorContext();
+	    expression.evaluate(context);
+	}
+	
+
 	// test members to be read or called from the tested script expressions --------------------------------------------
 	
 	public static String exclamate(String arg) {
@@ -510,5 +548,5 @@ public class BeneratorScriptParserTest {
 		assertEquals("B", t10.getTo());
 		assertEquals(1., t10.getWeight());
     }
-	
+
 }
