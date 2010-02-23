@@ -70,4 +70,21 @@ public class EvaluateStatementTest {
 		assertEquals("Hello World", context.get("message"));
 	}
 	
+	@Test
+	public void testShell() {
+		EvaluateStatement stmt = new EvaluateStatement(
+				stringEx("result"),
+				stringEx("echo 42"),
+				null,
+				stringEx("shell"),
+				null,
+				stringEx("fatal"),
+				stringEx(Encodings.UTF_8),
+				booleanEx(false),
+				null);
+			BeneratorContext context = new BeneratorContext();
+			stmt.execute(context);
+			assertEquals(42, context.get("result"));
+	}
+	
 }
