@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Collection;
 
 /**
- * Generates values from a weighted or unweighted set of samples.<br/>
+ * Generates values from a weighted or non-weighted set of samples.<br/>
  * <br/>
  * Created: 07.06.2006 19:04:08
  * @since 0.1
@@ -125,13 +125,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         this.dirty = true;
     }
 
-//    /** Adds weighted values to the sample list */
-//    public void addSamples(Sample<E> ... samples) {
-//        if (samples != null)
-//            for (Sample<E> sample : samples)
-//                this.addSample(sample);
-//    }
-//
     /** Adds weighted values to the sample list */
     public void setSamples(Collection<WeightedSample<E>> samples) {
         this.samples.clear();
@@ -257,4 +250,5 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     public String toString() {
         return getClass().getSimpleName();
     }
+    
 }

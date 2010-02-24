@@ -78,7 +78,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     }
 
     public SequencedCSVSampleGenerator(String uri, Converter<String, E> converter) {
-        super(new SequencedSampleGenerator<E>(converter.getTargetType()));
+        super(new SampleGenerator<E>(converter.getTargetType()));
         this.converter = converter;
         if (uri != null && uri.trim().length() > 0)
             setUri(uri);
@@ -97,7 +97,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     /** test support method */
     void addValue(E value) {
-        ((SequencedSampleGenerator<E>) source).addValue(value);
+        ((SampleGenerator<E>) source).addValue(value);
         // do not set dirty flag, otherwise this value would be c�eared
     }
 
@@ -117,7 +117,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
                     if (tokens.length > 0)
                         samples.add(converter.convert(tokens[0]));
                 }
-                ((SequencedSampleGenerator<E>) source).setValues(samples);
+                ((SampleGenerator<E>) source).setValues(samples);
             	super.validate();
                 dirty = false;
             } catch (FileNotFoundException e) {

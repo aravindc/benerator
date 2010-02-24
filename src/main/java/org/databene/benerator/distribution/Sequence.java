@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
@@ -52,7 +52,7 @@ public abstract class Sequence implements Distribution {
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-	    return new SequencedSampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+	    return new SampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------

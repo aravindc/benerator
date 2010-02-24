@@ -36,12 +36,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Generates values from an unweighted list of samples.<br/>
+ * Generates values from a non-weighted list of samples, applying an explicitly defined distribution.<br/>
  * <br/>
  * Created: 07.06.2006 19:04:08
+ * @since 0.1
  * @author Volker Bergmann
  */
-public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
+public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Keeps the Sample information */
     private List<E> samples = new ArrayList<E>();
@@ -53,44 +54,44 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     private Generator<Integer> indexGenerator = null;
 
     /** Flag that indicates if the generator needs to be initialized */
-    private boolean dirty = true;
+    protected boolean dirty = true;
     
     private boolean unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public SequencedSampleGenerator() {
+    public SampleGenerator() {
         this(null);
     }
 
     /** Initializes the generator to an empty sample list */
-    public SequencedSampleGenerator(Class<E> generatedType) {
+    public SampleGenerator(Class<E> generatedType) {
         this(generatedType, new ArrayList<E>());
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, E ... values) {
+    public SampleGenerator(Class<E> generatedType, E ... values) {
     	super(generatedType);
         setValues(values);
         this.distribution = SequenceManager.RANDOM_SEQUENCE;
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, Distribution distribution, E ... values) {
+    public SampleGenerator(Class<E> generatedType, Distribution distribution, E ... values) {
     	super(generatedType);
         this.distribution = distribution;
         setValues(values);
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, Iterable<E> values) {
+    public SampleGenerator(Class<E> generatedType, Iterable<E> values) {
     	super(generatedType);
         setValues(values);
         this.distribution = SequenceManager.RANDOM_SEQUENCE;
     }
 
     /** Initializes the generator to a sample list */
-    public SequencedSampleGenerator(Class<E> generatedType, Distribution distribution, Iterable<E> values) {
+    public SampleGenerator(Class<E> generatedType, Distribution distribution, Iterable<E> values) {
     	super(generatedType);
         this.distribution = distribution;
         setValues(values);
@@ -120,15 +121,8 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     }
     
     // Generator implementation ----------------------------------------------------------------------------------------
-/*
-    @Override
-    public boolean available() {
-    	if (dirty)
-    		validate();
-    	return samples.size() > 0 && indexGenerator.isAvailable();
-    }
-*/    
-    /** Initializes all attributes */
+
+	/** Initializes all attributes */
     @Override
     public void validate() {
         if (dirty) {
@@ -180,4 +174,5 @@ public class SequencedSampleGenerator<E> extends AbstractSampleGenerator<E> {
     public String toString() {
         return getClass().getSimpleName();
     }
+    
 }

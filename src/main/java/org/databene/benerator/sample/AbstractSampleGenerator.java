@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,9 +31,9 @@ import org.databene.benerator.util.TypedLightweightGenerator;
 import java.util.Collection;
 
 /**
- * Generates values from an unweighted list of samples.<br/><br/>
+ * Generates values from a list of samples.<br/><br/>
  * Created: 29.04.2008 07:30:08
- * @since v0.5.2
+ * @since 0.5.2
  * @author Volker Bergmann
  */
 public abstract class AbstractSampleGenerator<E> extends TypedLightweightGenerator<E> {
