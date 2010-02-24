@@ -197,7 +197,7 @@ public class ComplexTypeGeneratorFactory {
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
 		Converter<String, String> scriptConverter = createScriptConverter(context);
-		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, ffcd);
+		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 		generator = new IteratingGenerator<Entity>(iterable);
 		return generator;
 	}

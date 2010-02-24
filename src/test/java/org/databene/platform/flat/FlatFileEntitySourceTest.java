@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,30 +46,49 @@ public class FlatFileEntitySourceTest {
 
     private static final String URI = "org/databene/platform/flat/person-bean.flat";
 
+    private static final FlatFileColumnDescriptor[] descriptors = new FlatFileColumnDescriptor[] {
+            new FlatFileColumnDescriptor("name", 6, Alignment.LEFT, ' '),
+            new FlatFileColumnDescriptor("age", 3, Alignment.RIGHT, '0')
+    };
+    private static final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("person");
+
+	private static final Entity CHARLY = new Entity(descriptor, "name", "Charly", "age", "45");
+
+	private static final Entity BOB = new Entity(descriptor, "name", "Bob", "age", "34");
+    private static final Entity ALICE = new Entity(descriptor, "name", "Alice", "age", "23");
+    
     @Test
-    public void test() {
-        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("person");
-        FlatFileColumnDescriptor[] descriptors = new FlatFileColumnDescriptor[] {
-                new FlatFileColumnDescriptor("name", 6, Alignment.LEFT, ' '),
-                new FlatFileColumnDescriptor("age", 3, Alignment.RIGHT, '0')
-        };
-        FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), descriptors);
-        Iterator<Entity> generator = source.iterator();
-        assertTrue(generator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), generator.next());
-        assertTrue(generator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Bob", "age", "34"), generator.next());
-        assertTrue(generator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), generator.next());
-        assertFalse(generator.hasNext());
-        generator = source.iterator();
-        assertTrue(generator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), generator.next());
-        assertTrue(generator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Bob", "age", "34"), generator.next());
-        assertTrue(generator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), generator.next());
-        assertFalse(generator.hasNext());
+    public void testUnfiltered() {
+        FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), null, descriptors);
+        Iterator<Entity> iterator = source.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(ALICE, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(BOB, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(CHARLY, iterator.next());
+        assertFalse(iterator.hasNext());
+        iterator = source.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(ALICE, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(BOB, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(CHARLY, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+    
+    @Test
+    public void testFiltered() {
+        FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), "Bob.*", descriptors);
+        Iterator<Entity> iterator = source.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(BOB, iterator.next());
+        assertFalse(iterator.hasNext());
+        iterator = source.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(BOB, iterator.next());
+        assertFalse(iterator.hasNext());
     }
     
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -60,21 +60,23 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     private String encoding;
     private ComplexTypeDescriptor entityDescriptor;
     private FlatFileColumnDescriptor[] descriptors;
+    private String lineFilter;
     private boolean initialized;
     
     private Converter<String, String> preprocessor;
 
     public FlatFileEntitySource() {
-        this(null, null, SystemInfo.getFileEncoding());
+        this(null, null, SystemInfo.getFileEncoding(), null);
     }
 
     public FlatFileEntitySource(String uri, ComplexTypeDescriptor entityDescriptor, 
-    		String encoding, FlatFileColumnDescriptor ... descriptors) {
-        this(uri, entityDescriptor, new NoOpConverter<String>(), encoding, descriptors);
+    		String encoding, String lineFilter, FlatFileColumnDescriptor ... descriptors) {
+        this(uri, entityDescriptor, new NoOpConverter<String>(), encoding, lineFilter, descriptors);
     }
 
     public FlatFileEntitySource(String uri, ComplexTypeDescriptor entityDescriptor, 
-    		Converter<String, String> preprocessor, String encoding, FlatFileColumnDescriptor ... descriptors) {
+    		Converter<String, String> preprocessor, String encoding, String lineFilter, 
+    		FlatFileColumnDescriptor ... descriptors) {
         super(null, null);
         this.uri = uri;
         this.encoding = encoding;
@@ -82,6 +84,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         this.descriptors = descriptors;
         this.preprocessor = preprocessor;
         this.initialized = false;
+        this.lineFilter = lineFilter;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -111,10 +114,14 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     public void setColumns(String columns) {
         this.descriptors = FlatFileUtil.parseProperties(columns);
     }
-
+    
     // Iterable interface ----------------------------------------------------------------------------------------------
 
-    @Override
+    public void setLineFilter(String lineFilter) {
+    	this.lineFilter = lineFilter;
+    }
+
+	@Override
     public Class<Entity> getType() {
     	if (!initialized)
     		init();
@@ -131,7 +138,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     // private helpers -------------------------------------------------------------------------------------------------
     
     private void init() {
-        this.iterable = createIterable(uri, descriptors, encoding);
+        this.iterable = createIterable(uri, descriptors, encoding, lineFilter);
         this.converter = createConverter(entityDescriptor, descriptors);
     }
     
@@ -144,9 +151,10 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         return converter;
     }
 
-    private static Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, String encoding) {
+    private static Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, 
+    		String encoding, String lineFilter) {
         PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
-        return new FlatFileLineIterable(uri, formats, true, encoding);
+        return new FlatFileLineIterable(uri, formats, true, encoding, lineFilter);
     }
 
 }
