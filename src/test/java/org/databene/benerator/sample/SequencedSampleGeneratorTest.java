@@ -33,7 +33,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link SequencedSampleGenerator}.<br/>
+ * Tests the {@link SampleGenerator}.<br/>
  * Created: 07.06.2006 21:59:02
  * @author Volker Bergmann
  */
@@ -42,13 +42,13 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
     private static Logger logger = LoggerFactory.getLogger(SequencedSampleGeneratorTest.class);
 
     public SequencedSampleGeneratorTest() {
-        super(SequencedSampleGenerator.class);
+        super(SampleGenerator.class);
     }
 
     @Test
     public void testDistribution() throws Exception {
         Integer[] samples = new Integer[] { 0, 1, 2 };
-        SequencedSampleGenerator<Integer> g = new SequencedSampleGenerator<Integer>(Integer.class);
+        SampleGenerator<Integer> g = new SampleGenerator<Integer>(Integer.class);
         g.setValues(samples);
         int n = 10000;
         int[] sampleCount = new int[3];
@@ -67,7 +67,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testBigSet() {
-        SequencedSampleGenerator<Integer> generator = new SequencedSampleGenerator<Integer>(Integer.class);
+        SampleGenerator<Integer> generator = new SampleGenerator<Integer>(Integer.class);
         for (int i = 0; i < 200000; i++)
         	generator.addValue(i % 100);
         generator.validate();

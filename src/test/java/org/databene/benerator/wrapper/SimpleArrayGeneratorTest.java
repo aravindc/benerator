@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -46,7 +46,7 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void test() {
-        Generator<String> source = new SequencedSampleGenerator<String>(String.class, "Alice", "Bob");
+        Generator<String> source = new SampleGenerator<String>(String.class, "Alice", "Bob");
         check(source, 0, 0);
         check(source, 3, 3);
         check(source, 0, 1);
