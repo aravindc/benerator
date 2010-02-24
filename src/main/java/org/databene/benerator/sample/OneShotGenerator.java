@@ -29,6 +29,7 @@ package org.databene.benerator.sample;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Returns a value only once and then becomes unavailable immediately.<br/>
@@ -65,13 +66,13 @@ public class OneShotGenerator<E> implements Generator<E> {
 	    return (Class<E>) value.getClass();
     }
 
-    public void reset() throws IllegalGeneratorStateException {
-	    used = false;
-    }
-
-    public void validate() throws InvalidGeneratorSetupException {
+    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
 	    if (value == null)
 	    	throw new InvalidGeneratorSetupException("value is null");
+    }
+
+    public void reset() throws IllegalGeneratorStateException {
+	    used = false;
     }
 
 }

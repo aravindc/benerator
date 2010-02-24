@@ -29,6 +29,8 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.Period;
 import org.databene.commons.converter.DateString2DurationConverter;
 
@@ -42,7 +44,7 @@ import java.util.GregorianCalendar;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class DateGenerator implements Generator<Date> {
+public class DateGenerator extends AbstractGenerator<Date> {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
@@ -55,8 +57,6 @@ public class DateGenerator implements Generator<Date> {
     private Distribution distribution;
     private boolean unique;
     
-    private boolean initialized = false;
-
     // constructors ----------------------------------------------------------------------------------------------------
 
     /** Initializes the generator to create days within about the last 80 years with a one-day resolution */
@@ -112,24 +112,17 @@ public class DateGenerator implements Generator<Date> {
         return Date.class;
     }
 
-    public void validate() {
-    	if (!initialized) {
-    		init();
-    		source.validate();
-    		this.initialized = true;
-    	}
+    @Override
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
+    	this.source = distribution.createGenerator(Long.class, min, max, precision, unique);
+		source.init(context);
+		super.init(context);
     }
-/*
-    public boolean available() {
-    	if (!initialized)
-    		validate();
-        return source.isAvailable();
-    }
-*/
+
     /** Generates a Date by creating a millisecond value from the source generator and wrapping it into a Date */
     public Date generate() {
-    	if (!initialized)
-    		validate();
+    	assertInitialized();
         Long millis = source.generate();
         if (millis != null)
         	return new Date(millis);
@@ -147,10 +140,6 @@ public class DateGenerator implements Generator<Date> {
 
     // implementation --------------------------------------------------------------------------------------------------
 
-    private void init() {
-    	this.source = distribution.createGenerator(Long.class, min, max, precision, unique);
-    }
-    
     /** Returns the default start date as 80 years ago */
     private static Date defaultStartDate() {
         return new Date(currentDay().getTime() - 80L * 365 * Period.DAY.getMillis());

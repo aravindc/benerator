@@ -28,7 +28,9 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.LocaleUtil;
 
 import java.util.*;
@@ -38,9 +40,10 @@ import java.text.ParseException;
  * Generates Character values from a character set or a regular expression.<br/>
  * <br/>
  * Created: 09.06.2006 20:34:55
+ * @since 0.1
  * @author Volker Bergmann
  */
-public class CharacterGenerator implements Generator<Character> {
+public class CharacterGenerator extends AbstractGenerator<Character> {
 
     /** The regular exception */
     private String pattern;
@@ -50,9 +53,6 @@ public class CharacterGenerator implements Generator<Character> {
 
     /** The set of characters to generate from */
     private Set<Character> values;
-
-    /** dirty flag for consistency control */
-    private boolean dirty;
 
     /** The SampleGenerator to choose from the character set */
     private Generator<Character> source;
@@ -83,7 +83,6 @@ public class CharacterGenerator implements Generator<Character> {
         this.pattern = pattern;
         this.locale = locale;
         this.values = new HashSet<Character>();
-        this.dirty = true;
     }
 
     /**
@@ -94,7 +93,6 @@ public class CharacterGenerator implements Generator<Character> {
         this.pattern = null;
         this.locale = LocaleUtil.getFallbackLocale();
         this.values = new HashSet<Character>(values);
-        this.dirty = true;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -107,7 +105,6 @@ public class CharacterGenerator implements Generator<Character> {
     /** Sets the regular expression to match */
     public void setPattern(String pattern) {
         this.pattern = pattern;
-        this.dirty = true;
     }
 
     /** Returns the locale of which letters are taken */
@@ -118,7 +115,6 @@ public class CharacterGenerator implements Generator<Character> {
     /** Sets the locale of which letters are taken */
     public void setLocale(Locale locale) {
         this.locale = locale;
-        this.dirty = true;
     }
 
     /** Returns the available values */
@@ -135,47 +131,36 @@ public class CharacterGenerator implements Generator<Character> {
     /**
      * Initializes the generator's state.
      */
-    public void validate() {
-        if (dirty) {
-            try {
-                if (pattern != null) {
-                    Object regex = new RegexParser(locale).parseSingleChar(pattern);
-                    values = RegexParser.toSet(regex);
-                }
-                this.source = new SampleGenerator<Character>(Character.class, values);
-                source.validate();
-                this.dirty = false;
-            } catch (ParseException e) {
-                throw new IllegalGeneratorStateException(e);
+    @Override
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        try {
+            if (pattern != null) {
+                Object regex = new RegexParser(locale).parseSingleChar(pattern);
+                values = RegexParser.toSet(regex);
             }
+            this.source = new SampleGenerator<Character>(Character.class, values);
+            source.init(context);
+            super.init(context);
+        } catch (ParseException e) {
+            throw new IllegalGeneratorStateException(e);
         }
     }
 
     /** @see org.databene.benerator.Generator#generate() */
     public Character generate() {
-        if (dirty)
-            validate();
+    	assertInitialized();
         return source.generate();
     }
 
     public void reset() {
-        if (dirty)
-            validate();
         source.reset();
     }
 
     public void close() {
-        if (dirty)
-            validate();
         source.close();
     }
-/*
-    public boolean available() {
-        if (dirty)
-            validate();
-        return source.isAvailable();
-    }
-*/
+
     @Override
 	public String toString() {
         return getClass().getSimpleName() + values;

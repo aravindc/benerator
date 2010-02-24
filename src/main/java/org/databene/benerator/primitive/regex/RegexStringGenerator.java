@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,8 @@
 package org.databene.benerator.primitive.regex;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.NullSafeComparator;
 
 import java.util.Locale;
 
@@ -77,11 +77,10 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
 
     /** Initializes the generator with the String representation of a regular expression */
     public RegexStringGenerator(String pattern, Integer quantityLimit, boolean unique) {
-        super(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
+        super();
         this.pattern = pattern;
         this.quantityLimit = quantityLimit;
         this.unique = unique;
-        this.dirty = true;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -93,10 +92,7 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
 
     /** Returns the String representation of the regular expression */
     public void setPattern(String pattern) {
-    	if (!NullSafeComparator.equals(this.pattern, pattern)) {
-	        this.dirty = true;
-	        this.pattern = pattern;
-    	}
+        this.pattern = pattern;
     }
 
     public Locale getLocale() {
@@ -104,7 +100,6 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     }
 
     public void setLocale(Locale locale) {
-        this.dirty = true;
         this.locale = locale;
     }
 
@@ -113,7 +108,6 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     }
 
     public void setMaxQuantity(int quantityLimit) {
-        this.dirty = true;
         this.quantityLimit = quantityLimit;
     }
 
@@ -121,14 +115,12 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
 
     /** ensures consistency of the generators state */
     @Override
-    public void validate() {
-        if (dirty) {
-            try {
-                setSource(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
-                super.validate();
-            } catch (Exception e) {
-                throw new InvalidGeneratorSetupException(e);
-            }
+    public void init(BeneratorContext context) {
+        try {
+        	setSource(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
+            super.init(context);
+        } catch (Exception e) {
+            throw new InvalidGeneratorSetupException(e);
         }
     }
 

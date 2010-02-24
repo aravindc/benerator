@@ -59,6 +59,7 @@ public class EMailAddressGeneratorTest extends GeneratorClassTest {
 
 	private void check(String datasetName) {
 		EMailAddressGenerator generator = new EMailAddressGenerator(datasetName);
+		generator.init(context);
 		for (int i = 0; i < 10; i++) {
 			String email = generator.generate();
 			assertNotNull(email);

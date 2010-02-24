@@ -45,6 +45,7 @@ public class TopLevelDomainGeneratorTest extends GeneratorClassTest {
 	@Test
 	public void testGeneration() {
 		TopLevelDomainGenerator generator = new TopLevelDomainGenerator();
+		generator.init(context);
 		for (int i = 0; i < 10; i++) {
 			String tld = generator.generate();
 			assertNotNull(tld);

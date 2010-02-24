@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.commons.NullSafeComparator;
+import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Combines a a random number a source generator's products into a collection.<br/>
@@ -54,14 +54,10 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     }
 
     public CardinalGenerator(Generator<S> source) {
-        this(source, 0, 30);
+        this(source, 0, 30, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
-    public CardinalGenerator(Generator<S> source, long minCount, long maxCount) {
-        this(source, minCount, maxCount, 1, SequenceManager.RANDOM_SEQUENCE);
-    }
-
-    public CardinalGenerator(Generator<S> source,
+    public CardinalGenerator(Generator<S> source, 
             long minCount, long maxCount, long countPrecision, Distribution countDistribution) {
         super(source);
         this.minCount = minCount;
@@ -74,43 +70,36 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
 	/** ensures consistency of the state */
     @Override
-    public void validate() {
-    	if (dirty) {
-	        this.countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision, false);
-	        super.validate();
-    	}
+    public void init(BeneratorContext context) {
+        countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision, false);
+        countGenerator.init(context);
+        super.init(context);
     }
 
     public void setMinCount(long minCount) {
-    	if (!NullSafeComparator.equals(minCount, this.minCount)) {
-	    	this.minCount = minCount;
-		    dirty = true;
-    	}
+    	assertNotInitialized();
+	    this.minCount = minCount;
     }
 
     public void setMaxCount(long maxCount) {
-    	if (!NullSafeComparator.equals(maxCount, this.maxCount)) {
-	    	this.maxCount = maxCount;
-		    dirty = true;
-    	}
+    	assertNotInitialized();
+	    this.maxCount = maxCount;
     }
     
     public void setCountPrecision(long countPrecision) {
-    	if (!NullSafeComparator.equals(countPrecision, this.countPrecision)) {
-	    	this.countPrecision = countPrecision;
-		    dirty = true;
-    	}
+    	assertNotInitialized();
+	    this.countPrecision = countPrecision;
     }
     
     public void setCountDistribution(Distribution distribution) {
-    	if (!NullSafeComparator.equals(distribution, this.countDistribution)) {
-	    	this.countDistribution = distribution;
-	    	dirty = true;
-    	}
+    	assertNotInitialized();
+	    this.countDistribution = distribution;
     }
 
     @Override
     public void reset() {
-        super.reset(); // no reset on the countGenerator!
+    	assertInitialized();
+        super.reset(); // don't reset the countGenerator!
     }
+    
 }

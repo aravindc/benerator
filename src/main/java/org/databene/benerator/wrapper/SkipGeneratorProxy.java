@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * This forwards a source generator's products.
@@ -84,9 +85,9 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-    public void validate() {
-        incrementGenerator.validate();
-        super.validate();
+    public void init(BeneratorContext context) {
+        incrementGenerator.init(context);
+        super.init(context);
     }
 
     /** @see org.databene.benerator.Generator#reset() */

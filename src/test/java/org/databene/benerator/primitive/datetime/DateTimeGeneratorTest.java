@@ -83,6 +83,7 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
         Date maxDate = TimeUtil.date(maxYear, 8, 8, hour, minute, second, millisecond);
         generator.setDatePrecision("0000-00-01");
         generator.setDateDistribution(SequenceManager.STEP_SEQUENCE);
+        generator.init(context);
         for (int i = 0; i < 34; i++) {
             Date date = generator.generate();
             assertNotNull("Generator unavailable after " + i  + " generations", date);
@@ -102,6 +103,7 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
     
     private void check(Date minDate, Date maxDate, Time minTime, Time maxTime) {
         DateTimeGenerator generator = createGenerator(minDate, maxDate, minTime, maxTime);
+        generator.init(context);
         Date maxResult = arithmetic.add(maxDate, maxTime);
         for (int i = 0; i < N; i++) {
             Date date = generator.generate();

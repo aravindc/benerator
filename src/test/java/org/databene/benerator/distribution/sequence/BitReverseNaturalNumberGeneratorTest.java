@@ -43,15 +43,15 @@ public class BitReverseNaturalNumberGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testSequences() throws Exception {
-        expectGeneratedSequence(new BitReverseNaturalNumberGenerator(3),  0L,  2L,  1L, 3L).withCeasedAvailability();
-        expectGeneratedSequence(new BitReverseNaturalNumberGenerator(4),  0L,  4L,  2L, 1L, 3L).withCeasedAvailability();
-        expectGeneratedSequence(new BitReverseNaturalNumberGenerator(7),  0L,  4L,  2L, 6L, 1L, 5L, 3L, 7L).withCeasedAvailability();
+        expectGeneratedSequence(initialize(new BitReverseNaturalNumberGenerator(3)),  0L,  2L,  1L, 3L).withCeasedAvailability();
+        expectGeneratedSequence(initialize(new BitReverseNaturalNumberGenerator(4)),  0L,  4L,  2L, 1L, 3L).withCeasedAvailability();
+        expectGeneratedSequence(initialize(new BitReverseNaturalNumberGenerator(7)),  0L,  4L,  2L, 6L, 1L, 5L, 3L, 7L).withCeasedAvailability();
     }
 
     @Test
     public void testCoverage() throws Exception {
-        expectGeneratedSet(new BitReverseNaturalNumberGenerator(2), 0L, 1L, 2L).withCeasedAvailability();
-        expectGeneratedSet(new BitReverseNaturalNumberGenerator(9), 0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L)
+        expectGeneratedSet(initialize(new BitReverseNaturalNumberGenerator(2)), 0L, 1L, 2L).withCeasedAvailability();
+        expectGeneratedSet(initialize(new BitReverseNaturalNumberGenerator(9)), 0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L)
                 .withCeasedAvailability();
     }
 

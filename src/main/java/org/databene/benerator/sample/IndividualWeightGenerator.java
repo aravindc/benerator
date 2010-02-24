@@ -33,6 +33,7 @@ import java.util.List;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 
 /**
@@ -52,9 +53,6 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Generator for choosing a List index of the sample list */
     private WeightedLongGenerator indexGenerator;
-
-    /** Flag that indicates if the generator needs to be initialized */
-    protected boolean dirty = true;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -90,7 +88,6 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
         this.samples.clear();
         for (E sample : samples)
             this.samples.add(sample);
-        this.dirty = true;
     }
 
     /** Adds weighted values to the sample list */
@@ -98,7 +95,6 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
         this.samples.clear();
         if (samples != null)
             this.samples.addAll(samples);
-        this.dirty = true;
     }
 
     // values property -------------------------------------------------------------------------------------------------
@@ -107,7 +103,6 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
     @Override
     public void addValue(E value) {
         samples.add(value);
-        this.dirty = true;
     }
 
     @Override
@@ -125,20 +120,16 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Initializes all attributes */
     @Override
-    public void validate() {
-        if (dirty) {
-            if (samples.size() > 0) {
-                indexGenerator = new WeightedLongGenerator(0, samples.size() - 1, 1, new SampleWeightFunction());
-                indexGenerator.validate();
-            }
-            this.dirty = false;
-        }
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        indexGenerator = new WeightedLongGenerator(0, samples.size() - 1, 1, new SampleWeightFunction());
+        indexGenerator.init(context);
+        super.init(context);
     }
 
     /** @see org.databene.benerator.Generator#generate() */
     public E generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         if (samples.size() == 0)
             return null;
         int index = indexGenerator.generate().intValue();

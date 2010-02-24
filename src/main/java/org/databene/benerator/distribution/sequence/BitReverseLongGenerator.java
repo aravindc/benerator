@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -53,17 +54,15 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            super.validate();
-            indexGenerator = new BitReverseNaturalNumberGenerator((max - min + precision - 1) / precision);
-            this.dirty = false;
-        }
+	public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        indexGenerator = new BitReverseNaturalNumberGenerator((max - min + precision - 1) / precision);
+        indexGenerator.init(context);
+        super.init(context);
     }
 
     public Long generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+        assertInitialized();
         Long index = indexGenerator.generate();
         if (index == null)
         	return null;
@@ -72,12 +71,14 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
 
     @Override
 	public void reset() {
+    	assertInitialized();
         super.reset();
         indexGenerator.reset();
     }
 
     @Override
 	public void close() {
+    	assertInitialized();
         super.close();
         indexGenerator.close();
     }

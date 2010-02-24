@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.number;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.comparator.NumberComparator;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -36,6 +37,7 @@ import org.databene.commons.converter.NumberToNumberConverter;
  * It hosts a distribution and defines abstract properties to be implemented by child classes.<br/>
  * <br/>
  * Created: 10.09.2006 19:47:32
+ * @since 0.1
  * @author Volker Bergmann
  */
 public abstract class AbstractNumberGenerator<E extends Number> extends LightweightGenerator<E> {
@@ -46,8 +48,6 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
     protected E max;
     protected E precision;
 
-    protected boolean dirty;
-
     // constructors ----------------------------------------------------------------------------------------------------
 
     public AbstractNumberGenerator(Class<E> generatedType, E min, E max, E precision) {
@@ -55,7 +55,6 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
         setMin(min);
         setMax(max);
         setPrecision(precision);
-        this.dirty = true;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -66,7 +65,6 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
 
     public void setMin(E min) {
         this.min = min;
-        this.dirty = true;
     }
 
     public E getMax() {
@@ -75,7 +73,6 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
 
     public void setMax(E max) {
         this.max = max;
-        this.dirty = true;
     }
 
     public E getPrecision() {
@@ -84,7 +81,6 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
 
     public void setPrecision(E precision) {
         this.precision = precision;
-        this.dirty = true;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -94,12 +90,10 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
     }
     
     @Override
-    public void validate() {
-    	if (dirty) {
-	    	if (min != null && max != null && NumberComparator.compareNumbers(min, max) > 0)
-	    		throw new InvalidGeneratorSetupException("min (" + min + ") is greater than max (" + max + ")");
-	        super.validate();
-	        dirty = false;
-    	}
+    public void init(BeneratorContext context) {
+    	if (min != null && max != null && NumberComparator.compareNumbers(min, max) > 0)
+    		throw new InvalidGeneratorSetupException("min (" + min + ") is greater than max (" + max + ")");
+        super.init(context);
     }
+    
 }

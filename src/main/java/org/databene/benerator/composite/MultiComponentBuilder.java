@@ -28,6 +28,7 @@ package org.databene.benerator.composite;
 
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
@@ -55,9 +56,9 @@ public abstract class MultiComponentBuilder implements ComponentBuilder {
 	    return (builders != null && builders.length > 0 ? builders[0].getGeneratedType() : Object.class);
 	}
 	
-	public void validate() {
+	public void init(BeneratorContext context) {
 		for (ComponentBuilder builder : builders)
-			builder.validate();
+			builder.init(context);
 	}
 
 	public void reset() {

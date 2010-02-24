@@ -28,6 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -71,20 +72,17 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
     // source interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void validate() throws InvalidGeneratorSetupException {
-    	if (dirty) {
-            if (precision <= 0)
-                throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
-            if (min < max && increment <= 0)
-                throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
-    		super.validate();
-            next = min;
-    	}
+    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+        if (precision <= 0)
+            throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
+        if (min < max && increment <= 0)
+            throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
+        next = min;
+		super.init(context);
     }
     
     public Double generate() throws IllegalGeneratorStateException {
-    	if (dirty)
-    		validate();
+    	assertInitialized();
     	if (next == null)
     		return null;
         double result = next;

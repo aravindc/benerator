@@ -23,6 +23,7 @@ public class GivenNameGeneratorTest extends GeneratorClassTest {
     public void test() throws IllegalGeneratorStateException {
         ObjectCounter<String> counter = new ObjectCounter<String>(10);
         Generator<String> generator = new GivenNameGenerator();
+        generator.init(context);
         for (int i = 0; i < 10; i++)
             counter.count(generator.generate());
         assertTrue(counter.objectSet().size() >= 3);

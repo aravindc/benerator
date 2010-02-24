@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Creates a stochastic number of instances in subsequent calls before it becomes unavailable.
@@ -46,7 +47,6 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
     public InstanceSequenceGenerator(Generator<E> source) {
         super(source);
         limited = false;
-        dirty = true;
         sequenceLength = -1;
     }
 
@@ -57,8 +57,7 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
     }
     
     public long getSequenceLength() {
-    	if (dirty)
-    		validate();
+    	assertInitialized();
     	return sequenceLength;
     }
 
@@ -67,17 +66,14 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
     }
     
     @Override
-    public void validate() {
-        if (dirty) {
-            super.validate();
-            if (sequenceLength == -1)
-            	sequenceLength = countGenerator.generate();
-            dirty = false;
-        }
+    public void init(BeneratorContext context) {
+        if (sequenceLength == -1)
+        	sequenceLength = countGenerator.generate();
+        super.init(context);
     }
     
     public E generate() {
-        validate();
+        assertInitialized();
         if (limited && lengthSoFar >= sequenceLength)
         	return null;
         E product = source.generate();
@@ -90,7 +86,7 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
 
     @Override
     public void reset() {
-        validate();
+        assertInitialized();
         super.reset();
     	sequenceLength = countGenerator.generate();
         lengthSoFar = 0;
@@ -98,7 +94,7 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
 
     @Override
     public void close() {
-        validate();
+        assertInitialized();
         super.close();
         lengthSoFar = sequenceLength;
     }

@@ -30,9 +30,9 @@ import java.util.Date;
 import java.util.Calendar;
 
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.datetime.DateGenerator;
-import org.databene.benerator.primitive.datetime.LightweightDateGenerator;
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Period;
 
@@ -43,12 +43,10 @@ import org.databene.commons.Period;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class BirthDateGenerator extends LightweightDateGenerator {
+public class BirthDateGenerator extends GeneratorProxy<Date> {
 
     private int minAgeYears;
     private int maxAgeYears;
-
-    private DateGenerator dateGenerator;
 
     public BirthDateGenerator() {
         this(18, 80);
@@ -57,18 +55,19 @@ public class BirthDateGenerator extends LightweightDateGenerator {
     public BirthDateGenerator(int minAgeYears, int maxAgeYears) {
         this.minAgeYears = minAgeYears;
         this.maxAgeYears = maxAgeYears;
+    }
+
+    @Override
+    public synchronized void init(BeneratorContext context) {
         Date today = TimeUtil.today().getTime();
         Calendar min = TimeUtil.calendar(today);
         min.add(Calendar.YEAR, -maxAgeYears);
         Calendar max = TimeUtil.calendar(today);
         max.add(Calendar.YEAR, -minAgeYears);
-		dateGenerator = new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), SequenceManager.RANDOM_SEQUENCE);
+		setSource(new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), SequenceManager.RANDOM_SEQUENCE));
+        super.init(context);
     }
-
-    public Date generate() throws IllegalGeneratorStateException {
-       return dateGenerator.generate();
-    }
-
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[minAgeYears=" + minAgeYears + ", maxAgeYears=" + maxAgeYears + ']';

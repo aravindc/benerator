@@ -26,6 +26,7 @@
 
 package org.databene.benerator.primitive;
 
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -37,11 +38,12 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class SeedSentenceGeneratorTest {
+public class SeedSentenceGeneratorTest extends GeneratorTest {
 
 	@Test
 	public void test() throws Exception {
 		SeedSentenceGenerator generator = new SeedSentenceGenerator("gg.txt");
+		generator.init(context);
 		for (int i = 0; i < 10; i++) {
 	        String sentence = generator.generate();
 	        assertNotNull(sentence);

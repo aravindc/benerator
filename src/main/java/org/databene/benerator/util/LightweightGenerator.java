@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.Generator;
-import org.databene.commons.BeanUtil;
 
 /**
  * Helper class for generators that do not have a life cycle.
@@ -40,15 +39,9 @@ import org.databene.commons.BeanUtil;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class LightweightGenerator<E> implements Generator<E> {
-
-    protected LightweightGenerator() {
-    }
-
+public abstract class LightweightGenerator<E> extends AbstractGenerator<E> {
+	
     // Generator interface implementation ------------------------------------------------------------------------------
-
-	public void validate() {
-    }
 
     /** Empty implementation */
     public void reset() {
@@ -58,11 +51,4 @@ public abstract class LightweightGenerator<E> implements Generator<E> {
     public void close() {
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return BeanUtil.toString(this);
-    }
-    
 }

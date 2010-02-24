@@ -28,6 +28,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.util.LightweightGenerator;
@@ -58,11 +59,24 @@ public class GenderGenerator extends LightweightGenerator<Gender> {
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public synchronized void init(BeneratorContext context) {
+    	assertNotInitialized();
+	    gen = GeneratorFactory.getWeightedSampleGenerator(
+	    		new WeightedSample(Gender.FEMALE, femaleQuota),
+	    		new WeightedSample(Gender.MALE, 1 - femaleQuota)
+	    );
+	    gen.init(context);
+        super.init(context);
+    }
+    
     public Class<Gender> getGeneratedType() {
         return Gender.class;
     }
 
     public Gender generate() throws IllegalGeneratorStateException {
+    	assertInitialized();
         return gen.generate();
     }
     
@@ -72,13 +86,8 @@ public class GenderGenerator extends LightweightGenerator<Gender> {
 	    return femaleQuota;
     }
 
-    @SuppressWarnings("unchecked")
     public void setFemaleQuota(double femaleQuota) {
     	this.femaleQuota = femaleQuota;
-	    gen = GeneratorFactory.getWeightedSampleGenerator(
-	    		new WeightedSample(Gender.FEMALE, femaleQuota),
-	    		new WeightedSample(Gender.MALE, 1 - femaleQuota)
-	    );
     }
 
 }

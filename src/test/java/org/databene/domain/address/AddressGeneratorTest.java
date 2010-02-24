@@ -101,6 +101,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
 
     private void check(Country country, boolean supported) {
         AddressGenerator generator = new AddressGenerator(country);
+        generator.init(context);
         for (int i = 0; i < 100; i++) {
             Address address = generator.generate();
             if (logger.isDebugEnabled())
@@ -134,6 +135,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     	ComplexTypeDescriptor parent = new ComplexTypeDescriptor("y");
 		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
 		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, context);
+		generator.init(context);
         Country generatedCountry = generator.generate().getCountry();
 		if (country == null) {
 	        assertEquals(Country.getDefault(), generatedCountry);

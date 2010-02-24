@@ -28,6 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.ValidatingGenerator;
 import org.databene.commons.validator.StringLengthValidator;
 
@@ -55,8 +56,6 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     /** provides the objects to format */
     private CompositeArrayGenerator<?> helper;
 
-    private boolean dirty;
-
     // constructors ----------------------------------------------------------------------------------------------------
 
     /** Sets minLength to 0, maxLength to 30 and all other values empty. */
@@ -76,7 +75,6 @@ public class MessageGenerator extends ValidatingGenerator<String> {
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.helper = new CompositeArrayGenerator<Object>(Object.class, sources);
-        this.dirty = true;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -120,16 +118,15 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     // generator interface ---------------------------------------------------------------------------------------------
 
     /** ensures consistency of the generator's state */
-    public void validate() {
-        if (dirty) {
-            if (pattern == null)
-                throw new InvalidGeneratorSetupException("pattern", "is null");
-            StringLengthValidator v = (StringLengthValidator) validator;
-            v.setMinLength(minLength);
-            v.setMaxLength(maxLength);
-            helper.validate();
-            dirty = false;
-        }
+    @Override
+    public void init(BeneratorContext context) {
+        if (pattern == null)
+            throw new InvalidGeneratorSetupException("pattern", "is null");
+        StringLengthValidator v = (StringLengthValidator) validator;
+        v.setMinLength(minLength);
+        v.setMaxLength(maxLength);
+        helper.init(context);
+        super.init(context);
     }
 
     public Class<String> getGeneratedType() {

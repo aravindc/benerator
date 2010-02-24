@@ -46,13 +46,14 @@ public class ExpandGeneratorProxyTest extends GeneratorTest {
 	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testNullSource() {
 		Generator<Long> generator = new ExpandGeneratorProxy<Long>(null, CACHE_SIZE, BUCKET_SIZE);
-		generator.validate();
+		generator.init(context);
 	}
 	
 	@Test
 	public void testEmptySource() {
 		SequenceTestGenerator<Long> emptyFeed = new SequenceTestGenerator<Long>();
 		Generator<Long> generator = new ExpandGeneratorProxy<Long>(emptyFeed, CACHE_SIZE, BUCKET_SIZE);
+		generator.init(context);
 		assertUnavailable(generator);
 	}
 	
@@ -61,6 +62,7 @@ public class ExpandGeneratorProxyTest extends GeneratorTest {
 		Generator<Long> feed = new IncrementGenerator(1, 1, N);
 		ExpandGeneratorProxy<Long> generator 
 			= ExpandGeneratorProxy.uniqueProxy(feed, CACHE_SIZE, BUCKET_SIZE);
+		generator.init(context);
 		UniqueLongValidator validator = new UniqueLongValidator(N);
 		for (int i = 0; i < N; i++) {
 			Long product = generator.generate();

@@ -68,8 +68,10 @@ public class SequencedDatasetCSVGeneratorTest extends GeneratorTest {
 	}
 
 	private Generator<String> createDatasetGenerator(String datasetName) {
-	    return new SequencedDatasetCSVGenerator<String>(
+	    SequencedDatasetCSVGenerator<String> generator = new SequencedDatasetCSVGenerator<String>(
 				FILENAME_PATTERN, SEPARATOR, datasetName, NESTING, DISTRIBUTION, ENCODING, new BeneratorContext());
+	    generator.init(context);
+		return generator;
     }
 
 }

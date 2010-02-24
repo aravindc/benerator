@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,10 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.TypedIterable;
 
@@ -40,7 +41,7 @@ import java.util.Iterator;
  * <br/>
  * Created: 16.08.2007 07:09:57
  */
-public class IteratingGenerator<E> implements Generator<E> {
+public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
 	private static final int NEW       = -1;
 	private static final int AVAILABLE =  0;
@@ -77,9 +78,11 @@ public class IteratingGenerator<E> implements Generator<E> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public void validate() {
+    @Override
+    public void init(BeneratorContext context) {
     	if (iterable == null)
     		throw new InvalidGeneratorSetupException("iterable", "is null");
+    	super.init(context);
     }
 
     public Class<E> getGeneratedType() {

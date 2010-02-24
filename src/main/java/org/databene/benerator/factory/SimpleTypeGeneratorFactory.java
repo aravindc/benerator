@@ -189,7 +189,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator = createTypeGenerator(descriptor, uniqueness, context);
         if (generator == null)
-            generator = createStringGenerator(descriptor, uniqueness);
+            generator = createStringGenerator(descriptor, uniqueness, context);
 		return generator;
 	}
 
@@ -293,7 +293,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (Number.class.isAssignableFrom(targetType)) {
             return createNumberGenerator(descriptor, (Class<? extends Number>) targetType, uniqueness, context);
         } else if (String.class.isAssignableFrom(targetType)) {
-            return createStringGenerator(descriptor, uniqueness);
+            return createStringGenerator(descriptor, uniqueness, context);
         } else if (Boolean.class == targetType) {
             return createBooleanGenerator(descriptor);
         } else if (Character.class == targetType) {
@@ -392,7 +392,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
 
-    private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness) {
+    private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         // evaluate max length
         Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
         if (maxLength == null) {

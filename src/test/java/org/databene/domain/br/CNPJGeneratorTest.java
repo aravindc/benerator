@@ -41,12 +41,13 @@ public class CNPJGeneratorTest extends GeneratorClassTest {
 
 	@Test
 	public void testByValidator() {
-		expectGenerations(new CNPJGenerator(), 100, new CNPJValidator());
+		expectGenerations(initialize(new CNPJGenerator()), 100, new CNPJValidator());
 	}
 	
 	@Test
 	public void testFormattedNumberGeneration() {
 		CNPJGenerator generator = new CNPJGenerator(true);
+		generator.init(context);
 		CNPJValidator validator = new CNPJValidator(true);
 		for (int i = 0; i < 100; i++) {
 			String cnpj = generator.generate();

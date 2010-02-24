@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class NullableGeneratorTest {
+public abstract class NullableGeneratorTest {
 
     public final Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -251,7 +251,6 @@ public class NullableGeneratorTest {
     // private helpers -------------------------------------------------------------------------------------------------
 
     protected static <T> void expectGeneratedSequenceOnce(NullableGenerator<T> generator, T... products) {
-        generator.validate();
         for (T expectedProduct : products) {
             T generatedProduct = generateBy(generator);
             assertNotNull("Generator is unexpectedly unavailable: " + generator, generatedProduct);
@@ -260,7 +259,6 @@ public class NullableGeneratorTest {
     }
 
     private <T>void expectGeneratedSetOnce(NullableGenerator<T> generator, T... products) {
-        generator.validate();
         Set<T> expectedSet = CollectionUtil.toSet(products);
         for (int i = 0; i < products.length; i++) {
         	T generation = generateBy(generator);
@@ -273,7 +271,6 @@ public class NullableGeneratorTest {
     }
 
     private <T>void expectUniqueFromSetOnce(NullableGenerator<T> generator, T... products) {
-        generator.validate();
         Set<T> expectedSet = CollectionUtil.toSet(products);
         UniqueValidator<Object> validator = new UniqueValidator<Object>();
         for (int i = 0; i < products.length; i++) {
@@ -289,7 +286,6 @@ public class NullableGeneratorTest {
 
     @SuppressWarnings("unchecked")
     private <T>void expectUniqueProductsOnce(NullableGenerator<T> generator, int n) {
-        generator.validate();
         UniqueValidator validator = new UniqueValidator();
         for (int i = 0; i < n; i++) {
         	T product = generateBy(generator);
@@ -301,7 +297,6 @@ public class NullableGeneratorTest {
 
     @SuppressWarnings("unchecked")
     private <T> void expectGenerationsOnce(NullableGenerator<T> generator, int n, Validator ... validators) {
-        generator.validate();
         for (int i = 0; i < n; i++) {
         	T product = generateBy(generator);
             assertNotNull("Generator has gone unavailable before creating the required number of products ",
@@ -317,7 +312,6 @@ public class NullableGeneratorTest {
     @SuppressWarnings("unchecked")
     private <T> void expectUniqueGenerationsOnce(NullableGenerator<T> generator, int n, Validator ... validators) {
         UniqueValidator validator = new UniqueValidator();
-        generator.validate();
         for (int i = 0; i < n; i++) {
         	T product = generateBy(generator);
             assertNotNull("Generator has gone unavailable before creating the required number of products ",

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.BeanUtil;
 
 /**
@@ -78,13 +79,17 @@ public class SeedManager<E> {
 			getSuccessor(sequence[startIndex]).addSequence(startIndex + 1, sequence);
 	}
 	
-    private void init() {
+    public void init() {
+    	if (initialized)
+    		throw new IllegalGeneratorStateException("Already initialized: " + this);
+	    if (getWeight() == 0)
+	    	throw new InvalidGeneratorSetupException(getClass().getSimpleName() + " is empty");
     	helper = new AttachedWeightSampleGenerator<E>(generatedType);
     	for (Map.Entry<E, SeedManager<E>> entry : successors.entrySet())
     		helper.addSample(entry.getKey(), entry.getValue().getWeight());
-	    initialized = true;
+	    helper.init(null);
     }
-
+    
 	public E randomAtom() {
 		if (!initialized)
 			init();
@@ -119,9 +124,4 @@ public class SeedManager<E> {
         return BeanUtil.toString(this, true);
     }
 
-    public void validate() {
-	    if (getWeight() == 0)
-	    	throw new IllegalGeneratorStateException(getClass().getSimpleName() + " is empty");
-    }
-    
 }

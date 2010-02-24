@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
@@ -45,7 +46,6 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     private int minLength;
     private int maxLength;
     private char[] charSet;
-    private boolean dirty;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,6 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.charSet = charSet;
-        dirty = true;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -73,7 +72,6 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
 
     public void setMinLength(int minLength) {
         this.minLength = minLength;
-        dirty = true;
     }
 
     public int getMaxLength() {
@@ -82,7 +80,6 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
 
     public void setMaxLength(int maxLength) {
         this.maxLength = maxLength;
-        dirty = true;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -93,18 +90,18 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
 
     @Override
     @SuppressWarnings("unchecked")
-    public void validate() {
-        if (dirty) {
-        	// create sub generators
-            Generator<String>[] subGens = new Generator[maxLength - minLength + 1];
-            for (int i = minLength; i <= maxLength; i++)
-                subGens[i - minLength] = new UniqueFixedLengthStringGenerator(i, charSet);
-            setSources(subGens);
-            dirty = false;
-        }
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
+    	// create sub generators
+        Generator<String>[] subGens = new Generator[maxLength - minLength + 1];
+        for (int i = minLength; i <= maxLength; i++)
+            subGens[i - minLength] = new UniqueFixedLengthStringGenerator(i, charSet);
+        setSources(subGens);
+        super.init(context);
     }
 
     public String generate() {
+    	assertInitialized();
     	return generateFromRandomSource();
     }
 

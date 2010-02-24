@@ -30,7 +30,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.distribution.WeightFunction;
+import org.databene.benerator.engine.BeneratorContext;
 
 import java.util.*;
 
@@ -50,31 +50,12 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
     // constructors ----------------------------------------------------------------------------------------------------
 
     public CollectionGenerator() {
-        this((Class<C>)List.class, null);
-    }
-
-    public CollectionGenerator(Class<C> collectionType) {
-        this(collectionType, null);
-    }
-
-    public CollectionGenerator(Class<C> collectionType, Generator<I> source) {
-        this(collectionType, source, 0, 30);
-    }
-
-    public CollectionGenerator(Class<C> collectionType, Generator<I> source, int minSize, int maxSize) {
-        this(collectionType, source, minSize, maxSize, SequenceManager.RANDOM_SEQUENCE);
+        this(((Class<C>)List.class), null, 0, 30, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public CollectionGenerator(Class<C> collectionType, Generator<I> source, 
     		int minSize, int maxSize, Distribution sizeDistribution) {
         super(source, minSize, maxSize, 1, sizeDistribution);
-        this.collectionType = mapCollectionType(collectionType);
-    }
-
-    public CollectionGenerator(
-            Class<C> collectionType, Generator<I> source,
-            int minLength, int maxLength, WeightFunction weightFunction) {
-        super(source, minLength, maxLength, 1, weightFunction);
         this.collectionType = mapCollectionType(collectionType);
     }
 
@@ -92,10 +73,10 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
 
     /** ensures consistency of the state */
     @Override
-    public void validate() {
+    public void init(BeneratorContext context) {
         if (collectionType == null)
             throw new InvalidGeneratorSetupException("collectionType", "undefined");
-        super.validate();
+        super.init(context);
     }
 
     public Class<C> getGeneratedType() {
@@ -104,8 +85,7 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
 
     /** @see org.databene.benerator.Generator#generate() */
     public C generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         int size = countGenerator.generate().intValue();
         C collection = BeanUtil.newInstance(collectionType);
         for (int i = 0; i < size; i++)

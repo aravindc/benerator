@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.distribution.IndividualWeight;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.math.MutableDouble;
 
 /**
@@ -82,13 +83,10 @@ public class MappedSampleGenerator<E> extends IndividualWeightGenerator<E> { // 
 	}
 	
 	@Override
-	public void validate() {
-		if (dirty) {
-			clear();
-			for (E value : weights.keySet())
-				addValue(value);
-			super.validate();
-		}
+	public void init(BeneratorContext context) {
+		for (E value : weights.keySet())
+			addValue(value);
+		super.init(context);
 	}
 
 	class MappedWeight extends IndividualWeight<E> {

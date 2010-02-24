@@ -26,6 +26,7 @@
 
 package org.databene.domain.finance;
 
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -37,11 +38,12 @@ import static junit.framework.Assert.*;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class BankAccountGeneratorTest {
+public class BankAccountGeneratorTest extends GeneratorTest {
 	
 	@Test
 	public void test() {
 		BankAccountGenerator generator = new BankAccountGenerator();
+		generator.init(context);
 		BankAccountValidator validator = new BankAccountValidator();
 		for (int i = 0; i < 100; i++) {
 			BankAccount bankAccount = generator.generate();

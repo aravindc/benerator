@@ -28,6 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.ArrayFormat;
@@ -50,14 +51,12 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     private Class<S> componentType;
     private Object[] next;
-    private boolean dirty;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
     public UniqueCompositeArrayGenerator() {
         super();
-        dirty = true;
     }
 
     /**
@@ -66,7 +65,6 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<S> ... sources) {
         super(sources);
         this.componentType = componentType;
-        dirty = true;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
@@ -77,18 +75,19 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     }
 
     @Override
-    public void validate() {
-        if (dirty) {
-            super.validate();
-            if (sources.length == 0)
-                throw new InvalidGeneratorSetupException("source", "is null");
-            next = new Object[sources.length];
-            for (int i = 0; i < next.length; i++) {
-                next[i] = sources[i].generate();
-                if (next[i] == null)
-                    throw new InvalidGeneratorSetupException("Sub generator not available: " + sources[i]);
-            }
-            dirty = false;
+    public void init(BeneratorContext context) {
+        super.init(context);
+        init();
+    }
+
+	private void init() {
+	    if (sources.length == 0)
+            throw new InvalidGeneratorSetupException("source", "is null");
+        next = new Object[sources.length];
+        for (int i = 0; i < next.length; i++) {
+            next[i] = sources[i].generate();
+            if (next[i] == null)
+                throw new InvalidGeneratorSetupException("Sub generator not available: " + sources[i]);
         }
     }
 
@@ -97,8 +96,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
      */
     @SuppressWarnings("cast")
     public S[] generate() {
-    	if (dirty)
-    		validate();
+    	assertInitialized();
     	if (next == null)
     		return null;
         S[] result = (S[]) ArrayUtil.copyOfRange(next, 0, next.length, componentType);
@@ -110,8 +108,9 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     @Override
     public void reset() {
+    	assertInitialized();
         super.reset();
-        dirty = true;
+        init();
     }
 
     private void fetchNextArrayItem(int index) {

@@ -62,6 +62,7 @@ public class WeightedLongGeneratorTest extends GeneratorClassTest {
         for (int i : expectedValuesAsInt)
             expectedValues.add((long)i);
         WeightedLongGenerator generator = new WeightedLongGenerator(min, max, precision);
+        generator.init(context);
         checkEqualDistribution(generator, iterations, tolerance, expectedValues);
     }
 

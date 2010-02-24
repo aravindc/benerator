@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.SeedGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
@@ -72,7 +73,14 @@ public class SeedWordGenerator extends LightweightStringGenerator {
 		source.addSample(objectSample);
 	}
 	
+	@Override
+	public synchronized void init(BeneratorContext context) {
+	    source.init(context);
+	    super.init(context);
+	}
+	
 	public String generate() throws IllegalGeneratorStateException {
+		assertInitialized();
 	    return toString(source.generate());
     }
 	

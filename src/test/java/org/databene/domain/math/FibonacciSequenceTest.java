@@ -44,20 +44,23 @@ public class FibonacciSequenceTest extends GeneratorTest {
 
 	@Test
 	public void testUnlimitedRange() {
-		Generator<Integer> intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, null, 1, false);
-		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withContinuedAvailability();
+		Generator<Integer> generator = new FibonacciSequence().createGenerator(Integer.class, 0, null, 1, false);
+		generator.init(context);
+		expectGeneratedSequence(generator, 0, 1, 1, 2, 3, 5, 8).withContinuedAvailability();
 	}
 	
 	@Test
 	public void testLimitedRange() {
-		Generator<Integer> intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1, false);
-		expectGeneratedSequence(intGenerator, 0, 1, 1, 2, 3, 5, 8).withCeasedAvailability();
+		Generator<Integer> generator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1, false);
+		generator.init(context);
+		expectGeneratedSequence(generator, 0, 1, 1, 2, 3, 5, 8).withCeasedAvailability();
 	}
 	
 	@Test
 	public void testUnique() {
-		Generator<Integer> intGenerator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1, true);
-		expectGeneratedSequence(intGenerator, 1, 2, 3, 5, 8).withCeasedAvailability();
+		Generator<Integer> generator = new FibonacciSequence().createGenerator(Integer.class, 0, 10, 1, true);
+		generator.init(context);
+		expectGeneratedSequence(generator, 1, 2, 3, 5, 8).withCeasedAvailability();
 	}
 	
 }

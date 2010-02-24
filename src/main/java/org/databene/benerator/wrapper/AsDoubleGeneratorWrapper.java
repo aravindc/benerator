@@ -45,6 +45,7 @@ public class AsDoubleGeneratorWrapper<E extends Number> extends GeneratorWrapper
     }
 
     public Double generate() {
+    	assertInitialized();
         E number = source.generate();
 		return (number != null ? number.doubleValue() : null);
     }

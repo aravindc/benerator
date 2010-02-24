@@ -29,6 +29,7 @@ package org.databene.benerator.primitive;
 import java.util.Date;
 
 import org.databene.benerator.primitive.datetime.DateGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
 
@@ -41,7 +42,7 @@ import static junit.framework.Assert.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DateGeneratorTest {
+public class DateGeneratorTest extends GeneratorTest {
 
 	@Test
     public void test() {
@@ -55,6 +56,7 @@ public class DateGeneratorTest {
 
     private void check(Date min, Date max, long precision) {
         DateGenerator generator = new DateGenerator(min, max, precision);
+        generator.init(context);
         for (int i = 0; i < 10000; i++) {
             Date date = generator.generate();
             assertNotNull(date);

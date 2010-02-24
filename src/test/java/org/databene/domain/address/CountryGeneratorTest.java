@@ -45,6 +45,7 @@ public class CountryGeneratorTest extends GeneratorClassTest {
     @Test
     public void test() {
         CountryGenerator generator = new CountryGenerator();
+        generator.init(context);
         for (int i = 0; i < 1; i++)
             assertNotNull(generator.generate());
     }

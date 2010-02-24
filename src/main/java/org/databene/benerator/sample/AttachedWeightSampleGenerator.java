@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,12 @@
 
 package org.databene.benerator.sample;
 
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 
 import java.util.ArrayList;
@@ -52,9 +54,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
 
     /** Generator for choosing a List index of the sample list */
     private WeightedLongGenerator indexGenerator = new WeightedLongGenerator(0, 0, 1, new SampleWeightFunction());
-
-    /** Flag that indicates if the generator needs to be initialized */
-    private boolean dirty = true;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -107,7 +106,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     		this.individualWeight = (IndividualWeight<E>) distribution;
     	else
     		indexGenerator.setDistribution(distribution);
-    	this.dirty = true;
     }
 
     // samples property ------------------------------------------------------------------------------------------------
@@ -122,7 +120,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         this.samples.clear();
         for (WeightedSample<E> sample : samples)
             this.samples.add(sample);
-        this.dirty = true;
     }
 
     /** Adds weighted values to the sample list */
@@ -130,7 +127,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         this.samples.clear();
         if (samples != null)
             this.samples.addAll(samples);
-        this.dirty = true;
     }
 
     /** Adds weighted values to the sample list */
@@ -141,7 +137,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     /** Adds a weighted value to the sample list */
     public void addSample(WeightedSample<E> sample) {
         samples.add(sample);
-        this.dirty = true;
     }
 
     // values property -------------------------------------------------------------------------------------------------
@@ -150,7 +145,6 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     @Override
     public void addValue(E value) {
         samples.add(new WeightedSample<E>(value, 1));
-        this.dirty = true;
     }
 
     @Override
@@ -168,21 +162,18 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
 
     /** Initializes all attributes */
     @Override
-    public void validate() {
-        if (dirty) {
-            if (samples.size() > 0) {
-                normalize();
-                indexGenerator.setMax((long) (samples.size() - 1));
-                indexGenerator.validate();
-            }
-            this.dirty = false;
-        }
+    public void init(BeneratorContext context) {
+        if (samples.size() == 0)
+        	throw new InvalidGeneratorSetupException("No samples");
+        normalize();
+        indexGenerator.setMax((long) (samples.size() - 1));
+        indexGenerator.init(context);
+        super.init(context);
     }
 
     /** @see org.databene.benerator.Generator#generate() */
     public E generate() {
-        if (dirty)
-            validate();
+    	assertInitialized();
         if (samples.size() == 0)
             return null;
         int index = indexGenerator.generate().intValue();

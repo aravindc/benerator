@@ -66,7 +66,7 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         Generator<?> generator = generatorClass.newInstance();
         boolean valid = true;
         try {
-            generator.validate();
+            generator.init(context);
         } catch (InvalidGeneratorSetupException e) {
             // that's OK, not every Generator is available from default constructor
             valid = false;

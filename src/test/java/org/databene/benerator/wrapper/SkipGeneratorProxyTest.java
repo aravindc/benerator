@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -71,7 +71,7 @@ public class SkipGeneratorProxyTest extends GeneratorClassTest {
     private void checkInvalidSetup(Generator<Integer> source, long minIncrement, long maxIncrement) {
         try {
             Generator<Integer> generator = new SkipGeneratorProxy<Integer>(source, minIncrement, maxIncrement);
-            generator.validate();
+            generator.init(context);
             fail("InvalidGeneratorSetupException expected");
         } catch (InvalidGeneratorSetupException e) {
             // this is the expected behavior

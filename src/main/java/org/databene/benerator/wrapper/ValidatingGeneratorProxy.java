@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.ValidatingGenerator;
 import org.databene.commons.Validator;
 
@@ -62,8 +63,10 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
         return source.generate();
     }
 
-    public void validate() {
-        source.validate();
+    @Override
+    public void init(BeneratorContext context) {
+        source.init(context);
+        super.init(context);
     }
 
     /** Calls the reset() method on the source generator */
@@ -75,13 +78,10 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
     public void close() {
         source.close();
     }
-/*
-    public boolean available() {
-        return source.isAvailable();
-    }
-*/
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + source + ']';
     }
+    
 }

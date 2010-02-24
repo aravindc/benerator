@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -71,12 +72,9 @@ public class StepLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            reset();
-    		super.validate();
-    		dirty = false;
-        }
+	public void init(BeneratorContext context) {
+        reset();
+		super.init(context);
     }
 
     public synchronized Long generate() throws IllegalGeneratorStateException {

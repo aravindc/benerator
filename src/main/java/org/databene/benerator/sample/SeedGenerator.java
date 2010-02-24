@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,8 @@ package org.databene.benerator.sample;
 import java.util.List;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
@@ -49,7 +51,7 @@ public class SeedGenerator<E> extends LightweightGenerator<E[]>{
 	
 	public SeedGenerator(Class<E> atomType, int depth) {
 		if (depth <= 0)
-			throw new IllegalArgumentException("depth: " + depth);
+			throw new InvalidGeneratorSetupException("depth: " + depth);
 		this.atomType = atomType;
 	    this.targetType = ArrayUtil.arrayType(atomType);
 	    this.atomProvider = new SeedManager<E>(atomType, depth);
@@ -92,13 +94,15 @@ public class SeedGenerator<E> extends LightweightGenerator<E[]>{
     }
 	
 	@Override
-	public void validate() {
-		atomProvider.validate();
+	public void init(BeneratorContext context) {
+		assertNotInitialized();
+		atomProvider.init();
+		super.init(context);
 	}
 	
 	@SuppressWarnings("unchecked")
     public E[] generate() throws IllegalGeneratorStateException {
-		validate();
+		assertInitialized();
 	    List<E> tmp = CollectionUtil.toList((E) null);
 	    do {
 	    	tmp.add(generate(tmp));

@@ -45,6 +45,7 @@ public class StreetNameGeneratorTest extends GeneratorClassTest {
     @Test
     public void test() {
         StreetNameGenerator generator = new StreetNameGenerator("DE");
+        generator.init(context);
         for (int i = 0; i < 10; i++)
             assertNotNull(generator.generate());
     }

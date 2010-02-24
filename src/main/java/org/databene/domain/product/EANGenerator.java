@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.domain.product;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -39,8 +40,6 @@ public class EANGenerator extends GeneratorProxy<String> {
 
     private boolean unique;
 
-    private boolean dirty;
-
     public EANGenerator() {
         this(false);
     }
@@ -48,7 +47,6 @@ public class EANGenerator extends GeneratorProxy<String> {
     public EANGenerator(boolean unique) {
         super(null);
         this.unique = unique;
-        this.dirty = true;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -59,7 +57,6 @@ public class EANGenerator extends GeneratorProxy<String> {
 
     public void setUnique(boolean unique) {
         this.unique = unique;
-        this.dirty = true;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -71,25 +68,22 @@ public class EANGenerator extends GeneratorProxy<String> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void validate() {
-        if (dirty) {
-            if (unique)
-                super.setSource(new UniqueAlternativeGenerator<String>(String.class,
-                        new EAN8Generator(true),
-                        new EAN13Generator(true)));
-            else
-                super.setSource(new AlternativeGenerator<String>(String.class,
-                        new EAN8Generator(false),
-                        new EAN13Generator(false)));
-            super.validate();
-            dirty = false;
-        }
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        if (unique)
+            setSource(new UniqueAlternativeGenerator<String>(String.class,
+                    new EAN8Generator(true),
+                    new EAN13Generator(true)));
+        else
+            setSource(new AlternativeGenerator<String>(String.class,
+                    new EAN8Generator(false),
+                    new EAN13Generator(false)));
+        super.init(context);
     }
 
     @Override
     public String generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         return super.generate();
     }
 

@@ -53,7 +53,7 @@ import org.databene.script.ScriptUtil;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class BeneratorContext extends ContextStack implements ClassProvider {
+public class BeneratorContext extends ContextStack implements ClassProvider { // TODO move up one package
 	
     private DefaultContext properties;
 	private ClassCache classCache;

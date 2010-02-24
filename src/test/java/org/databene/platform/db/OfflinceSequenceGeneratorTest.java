@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -52,7 +52,7 @@ public class OfflinceSequenceGeneratorTest extends GeneratorClassTest {
 			long n = db.nextSequenceValue(seq);
 			// assure that the generated values are like if they stem from the DB sequence
 			Generator<Long> generator = new OfflineSequenceGenerator(db, seq);
-			generator.validate();
+			generator.init(context);
 			for (int i = 0; i < 10; i++) {
 				Long product = generator.generate();
 				assertNotNull(product);

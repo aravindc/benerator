@@ -66,7 +66,6 @@ public abstract class AbstractBigDecimalGenerator extends AbstractNumberGenerato
                 MathUtil.fractionDigits(min.doubleValue()),
                 MathUtil.fractionDigits(precision.doubleValue())
             );
-        dirty = true;
     }
 
     public Integer getFractionDigits() {

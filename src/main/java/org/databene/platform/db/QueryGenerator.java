@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,9 @@
 
 package org.databene.platform.db;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TypedIterable;
@@ -42,7 +42,7 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 
-public class QueryGenerator<E> implements Generator<E> {
+public class QueryGenerator<E> extends AbstractGenerator<E> {
 	
 	private StorageSystem source;
 	private String selector;
@@ -63,11 +63,14 @@ public class QueryGenerator<E> implements Generator<E> {
 		this.sourceGen = new IteratingGenerator<E>((TypedIterable<E>) source.query(selector, context));
 	}
 
-    public void validate() throws InvalidGeneratorSetupException {
+    @Override
+    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+    	assertNotInitialized();
 	    if (source == null)
 	    	throw new InvalidGeneratorSetupException("source is null");
 	    if (StringUtil.isEmpty(selector))
 	    	throw new InvalidGeneratorSetupException("no query defined");
+	    super.init(context);
     }
 
     public Class<E> getGeneratedType() {
@@ -79,6 +82,7 @@ public class QueryGenerator<E> implements Generator<E> {
     }
 
     public E generate() {
+    	assertInitialized();
 	    return sourceGen.generate();
     }
 

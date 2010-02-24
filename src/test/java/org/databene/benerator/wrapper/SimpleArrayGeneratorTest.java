@@ -46,19 +46,20 @@ public class SimpleArrayGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void test() {
-        Generator<String> source = new SampleGenerator<String>(String.class, "Alice", "Bob");
-        check(source, 0, 0);
-        check(source, 3, 3);
-        check(source, 0, 1);
-        check(source, 1, 2);
-        check(source, 3, 6);
+        check(0, 0);
+        check(3, 3);
+        check(0, 1);
+        check(1, 2);
+        check(3, 6);
     }
 
     // helpers ---------------------------------------------------------------------------------------------------------
 
-    private void check(Generator<String> source, int minLength, int maxLength) {
+    private void check(int minLength, int maxLength) {
+        Generator<String> source = new SampleGenerator<String>(String.class, "Alice", "Bob");
         SimpleArrayGenerator<String> generator = new SimpleArrayGenerator<String>(
                 source, String.class, minLength, maxLength);
+        generator.init(context);
         for (int i = 0; i < 100; i++) {
             String[] product = generator.generate();
             assertTrue(minLength <= product.length);

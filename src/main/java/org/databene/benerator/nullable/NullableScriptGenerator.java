@@ -22,7 +22,6 @@
 package org.databene.benerator.nullable;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class NullableScriptGenerator implements NullableGenerator<Object>{
+public class NullableScriptGenerator extends AbstractNullableGenerator<Object>{
     
     private Script script;
     private Context context;
@@ -45,9 +44,6 @@ public class NullableScriptGenerator implements NullableGenerator<Object>{
     public NullableScriptGenerator(Script script, Context context) {
         this.script = script;
         this.context = context;
-    }
-
-	public void validate() throws InvalidGeneratorSetupException {
     }
 
     public Class<Object> getGeneratedType() {

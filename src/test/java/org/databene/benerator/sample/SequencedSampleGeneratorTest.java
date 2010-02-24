@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,6 +50,7 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
         Integer[] samples = new Integer[] { 0, 1, 2 };
         SampleGenerator<Integer> g = new SampleGenerator<Integer>(Integer.class);
         g.setValues(samples);
+        g.init(context);
         int n = 10000;
         int[] sampleCount = new int[3];
         for (int i = 0; i < n; i++) {
@@ -67,10 +68,12 @@ public class SequencedSampleGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testBigSet() {
+    	// init generator
         SampleGenerator<Integer> generator = new SampleGenerator<Integer>(Integer.class);
         for (int i = 0; i < 200000; i++)
         	generator.addValue(i % 100);
-        generator.validate();
+        generator.init(context);
+        // test
         for (int i = 0; i < 100; i++) {
             int product = generator.generate();
             assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.primitive;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 import org.junit.Test;
@@ -49,14 +50,14 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testDigit() throws Exception {
-        checkProductSet(new CharacterGenerator("\\d"), 1000,
+        checkProductSet(create("\\d"), 1000,
                 CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7','8', '9'));
     }
 
     @Test
     public void testRange() throws Exception {
-        checkProductSet(new CharacterGenerator("[1-2]"), 1000, CollectionUtil.toSet('1', '2'));
-        checkProductSet(new CharacterGenerator("[12]"), 1000, CollectionUtil.toSet('1', '2'));
+        checkProductSet(create("[1-2]"), 1000, CollectionUtil.toSet('1', '2'));
+        checkProductSet(create("[12]"), 1000, CollectionUtil.toSet('1', '2'));
     }
 
     @Test
@@ -77,13 +78,33 @@ public class CharacterGeneratorTest extends GeneratorClassTest {
         expectedSet.add('Ü');
         expectedSet.add('ß');
 
-        checkProductSet(new CharacterGenerator("\\w", Locale.GERMAN), 10000, expectedSet);
+        checkProductSet(create("\\w", Locale.GERMAN), 10000, expectedSet);
     }
 
-    @Test
+	@Test
     public void testSet() {
         Set<Character> values = CollectionUtil.toSet('A', 'B');
-        checkProductSet(new CharacterGenerator(values), 1000, values);
+        checkProductSet(create(values), 1000, values);
     }
+	
+	// private helpers -------------------------------------------------------------------------------------------------
     
+	private CharacterGenerator create(String pattern) {
+	    CharacterGenerator generator = new CharacterGenerator(pattern);
+	    generator.init(context);
+		return generator;
+    }
+
+    private Generator<Character> create(String pattern, Locale locale) {
+	    CharacterGenerator generator = new CharacterGenerator(pattern, locale);
+	    generator.init(context);
+		return generator;
+    }
+
+	private Generator<Character> create(Set<Character> values) {
+	    CharacterGenerator generator = new CharacterGenerator(values);
+	    generator.init(context);
+		return generator;
+    }
+
 }

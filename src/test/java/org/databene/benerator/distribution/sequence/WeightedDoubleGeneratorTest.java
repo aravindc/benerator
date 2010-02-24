@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.WeightedDoubleGenerator;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.test.GeneratorClassTest;
@@ -49,34 +50,40 @@ public class WeightedDoubleGeneratorTest extends GeneratorClassTest {
     @Test
     public void testSingleValueGeneration() throws IllegalGeneratorStateException {
         checkProductSet(
-                new WeightedDoubleGenerator( 0,  0, 1, new ConstantFunction(1)), 300, CollectionUtil.toSet(0.));
+                create(0, 0, 1, new ConstantFunction(1)), 300, CollectionUtil.toSet(0.));
         checkProductSet(
-                new WeightedDoubleGenerator( 1,  1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(1.));
+        		create( 1,  1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(1.));
         checkProductSet(
-                new WeightedDoubleGenerator(-1, -1, 1, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1.));
+        		create(-1, -1, 1, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1.));
     }
 
     @Test
     public void testDiscreteRangeGeneration() throws IllegalGeneratorStateException {
         checkProductSet(
-                new WeightedDoubleGenerator( -1,  0, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0.));
+        		create( -1,  0, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0.));
         checkProductSet(
-                new WeightedDoubleGenerator(-1, 1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0., 0.5, 1.));
+        		create(-1, 1, 0.5, new ConstantFunction(1)), 300, CollectionUtil.toSet(-1., -0.5, 0., 0.5, 1.));
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testNegativePrecision() throws IllegalGeneratorStateException {
-        new WeightedDoubleGenerator( 0,  1, -1, new ConstantFunction(1)).validate(); // negative precision
+    	create( 0,  1, -1, new ConstantFunction(1)); // negative precision
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testZeroPrecision() throws IllegalGeneratorStateException {
-        new WeightedDoubleGenerator( 0,  1,  0, new ConstantFunction(1)).validate(); // precision == 0
+    	create( 0,  1,  0, new ConstantFunction(1)); // precision == 0
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testInvalidRange() throws IllegalGeneratorStateException {
-    	new WeightedDoubleGenerator( 2,  1,  1, new ConstantFunction(1)).validate(); // min > max
+    	create( 2,  1,  1, new ConstantFunction(1)); // min > max
     }
     
+	private WeightedDoubleGenerator create(double min, double max, double precision, WeightFunction distribution) {
+	    WeightedDoubleGenerator generator = new WeightedDoubleGenerator(min, max, precision, distribution);
+	    generator.init(context);
+		return generator;
+    }
+
 }

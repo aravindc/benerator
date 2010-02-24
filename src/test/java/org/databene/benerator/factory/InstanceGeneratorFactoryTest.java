@@ -52,6 +52,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "int").withMin("1").withMax("3").withDistribution("random");
 		InstanceDescriptor instance = new InstanceDescriptor("n", type).withUnique(true);
 		Generator<Integer> generator = createInstanceGenerator(instance);
+		generator.init(context);
 		expectGeneratedSet(generator, 1, 2, 3).withCeasedAvailability();
 	}
 	
@@ -59,6 +60,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	public void testDefaultId() {
 		IdDescriptor descriptor = new IdDescriptor("id", "int");
 		Generator<Integer> generator = createInstanceGenerator(descriptor);
+		generator.init(context);
 		expectGeneratedSet(generator, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withContinuedAvailability();
 	}
 	

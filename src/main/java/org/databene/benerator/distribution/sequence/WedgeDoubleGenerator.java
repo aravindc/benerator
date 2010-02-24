@@ -22,9 +22,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Generates 'Double' values for the 'wedge' sequence.<br/><br/>
@@ -33,8 +32,6 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 public class WedgeDoubleGenerator extends AbstractNumberGenerator<Double> {
-
-    private static final Logger logger = LoggerFactory.getLogger(WedgeDoubleGenerator.class);
 
     private Double cursor;
     private double end;
@@ -55,22 +52,17 @@ public class WedgeDoubleGenerator extends AbstractNumberGenerator<Double> {
     // generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            cursor = min;
-            max = min + (max - min) / precision * precision;
-            super.validate();
-            double steps = (max - min) / precision + 1;
-            end = min + Math.floor(steps / 2) * precision;
-            this.dirty = false;
-            if (logger.isDebugEnabled())
-                logger.debug("validated state: " + this);
-        }
+	public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        cursor = min;
+        max = min + (max - min) / precision * precision;
+        double steps = (max - min) / precision + 1;
+        end = min + Math.floor(steps / 2) * precision;
+        super.init(context);
     }
 
     public Double generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+        assertInitialized();
         if (cursor == null)
             return null;
         double result = cursor;

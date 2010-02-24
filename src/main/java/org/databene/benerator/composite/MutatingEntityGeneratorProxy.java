@@ -29,6 +29,8 @@ package org.databene.benerator.composite;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ import java.util.List;
  * Created: 27.06.2007 23:51:42
  * @author Volker Bergmann
  */
-public class MutatingEntityGeneratorProxy implements Generator<Entity> {
+public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
 
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
@@ -81,10 +83,12 @@ public class MutatingEntityGeneratorProxy implements Generator<Entity> {
         return Entity.class;
     }
 
-    public void validate() {
-        source.validate();
+    @Override
+    public void init(BeneratorContext context) {
+        source.init(context);
         for (ComponentBuilder compGen : componentBuilders)
-            compGen.validate();
+            compGen.init(context);
+        super.init(context);
     }
     
     public synchronized Entity generate() {

@@ -26,6 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -76,17 +77,14 @@ public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
     // Generator interface implementation ------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            reset();
-            super.validate();
-            dirty = false;
-        }
+	public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        resetMembers();
+        super.init(context);
     }
 
     public Double generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         double value = next;
         next += incrementGenerator.generate();
         if (next > max)
@@ -98,7 +96,11 @@ public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
     
 	@Override
 	public void reset() {
-		double minIncrement = incrementGenerator.getMin();
+		resetMembers();
+	}
+
+	private void resetMembers() {
+	    double minIncrement = incrementGenerator.getMin();
 		double maxIncrement = incrementGenerator.getMax();
 		if (minIncrement < 0 && maxIncrement <= 0)
 		    next = max;
@@ -106,6 +108,6 @@ public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
 		    next = min;
 		else
 		    next = (min + max) / 2;
-	}
+    }
 
 }

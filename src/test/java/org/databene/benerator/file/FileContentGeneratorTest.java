@@ -24,6 +24,7 @@ package org.databene.benerator.file;
 import java.io.File;
 import java.io.IOException;
 
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
@@ -33,7 +34,7 @@ import org.databene.commons.IOUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class FileContentGeneratorTest {
+public abstract class FileContentGeneratorTest extends GeneratorTest {
 
 	protected static final File ROOT_DIR = new File("target" + File.separator + "filetest");
 	protected static final File SUB_DIR = new File(ROOT_DIR, "sub");

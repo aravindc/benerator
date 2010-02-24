@@ -77,7 +77,9 @@ public class Country {
         this.countryLocale = new Locale(LocaleUtil.getLocale(defaultLanguage).getLanguage(), isoCode);
         this.mobilePhoneCityRelated = "BR".equals(isoCode.toUpperCase()); // TODO v1.0 make configuration generic
         this.mobilePrefixGenerator = new RegexStringGenerator(mobilCodePattern);
+        this.mobilePrefixGenerator.init(null);
         this.localNumberGenerator = new DigitsGenerator(7);
+        this.localNumberGenerator.init(null);
         this.name = (name != null ? name : countryLocale.getDisplayCountry(Locale.US));
         importStates();
         instances.put(isoCode, this);
@@ -187,8 +189,10 @@ public class Country {
     }
 
     private Generator<City> getCityGenerator() {
-    	if (cityGenerator == null)
+    	if (cityGenerator == null) {
     		cityGenerator = new CityGenerator(this);
+    		cityGenerator.init(null);
+    	}
 	    return cityGenerator;
     }
 

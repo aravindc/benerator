@@ -54,12 +54,13 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testIncrement0() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 0);
-        generator.validate();
+        generator.init(context);
     }
 
 	@Test
     public void testIncrement1() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 1);
+        generator.init(context);
         assertEquals(0, (long) generator.generate());
         assertEquals(1, (long) generator.generate());
         assertEquals(2, (long) generator.generate());
@@ -70,6 +71,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testIncrement2() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 2);
+        generator.init(context);
         assertEquals(0, (long)generator.generate());
         assertEquals(2, (long)generator.generate());
         assertEquals(1, (long)generator.generate());
@@ -80,6 +82,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testIncrement3() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 3);
+        generator.init(context);
         assertEquals(0, (long)generator.generate());
         assertEquals(3, (long)generator.generate());
         assertEquals(1, (long)generator.generate());
@@ -90,6 +93,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testIncrement4() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 4);
+        generator.init(context);
         assertEquals(0, (long)generator.generate());
         assertEquals(1, (long)generator.generate());
         assertEquals(2, (long)generator.generate());
@@ -100,6 +104,7 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testReset() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 2);
+        generator.init(context);
         expectGeneratedSequence(generator, 0L, 2L, 1L, 3L).withCeasedAvailability();
     }
 

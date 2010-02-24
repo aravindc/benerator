@@ -40,6 +40,7 @@ public class RepeatSequenceTest extends GeneratorTest {
 	public void testCreateSequence() {
 		RepeatSequence sequence = createSequence122333();
 		Generator<Integer> generator = sequence.createGenerator(Integer.class, 1, 3, 1, false);
+		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2, 2, 3, 3, 3).withCeasedAvailability();
 	}
 
@@ -52,6 +53,7 @@ public class RepeatSequenceTest extends GeneratorTest {
         Generator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
 		RepeatSequence sequence = createSequence122333();
 		Generator<Integer> generator = sequence.applyTo(source, false);
+		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2, 2, 3, 3, 3).withCeasedAvailability();
 	}
 	

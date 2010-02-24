@@ -23,7 +23,6 @@ package org.databene.benerator.file;
 
 import java.io.File;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.CollectionUtil;
 import org.junit.Test;
@@ -54,10 +53,10 @@ public class TextFileContentGeneratorTest extends FileContentGeneratorTest {
 
 	private void check(String regex, boolean recursive, String... values) {
 	    TextFileContentGenerator generator = new TextFileContentGenerator();
-	    generator.setContext(new BeneratorContext());
 	    generator.setUri(ROOT_DIR.getParent() + File.separator + ROOT_DIR.getName());
 	    generator.setFilter(regex);
 	    generator.setRecursive(recursive);
+	    generator.init(context);
 	    GeneratorTest.checkProductSet(generator, 20, CollectionUtil.toSet(values));
     }
 	

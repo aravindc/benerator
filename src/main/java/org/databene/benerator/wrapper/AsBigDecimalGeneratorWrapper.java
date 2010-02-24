@@ -49,6 +49,7 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
     }
 
     public BigDecimal generate() {
+    	assertInitialized();
 	    E feed = source.generate();
 		return (feed != null ? BigDecimal.valueOf(feed.doubleValue()) : null);
     }

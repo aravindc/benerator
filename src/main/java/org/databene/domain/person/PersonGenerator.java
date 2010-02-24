@@ -28,6 +28,7 @@ package org.databene.domain.person;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Converter;
@@ -47,6 +48,9 @@ import java.util.Locale;
 public class PersonGenerator extends LightweightGenerator<Person> {
 
 	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
+	
+	private String datasetName;
+	private Locale locale;
 	
     private GenderGenerator genderGen;
     private GivenNameGenerator maleGivenNameGen;
@@ -73,36 +77,9 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     }
 
     public PersonGenerator(String datasetName, Locale locale) {
-        init(datasetName, locale);
+        this.datasetName = datasetName;
+        this.locale = locale;
     }
-
-	private void init(String datasetName, Locale locale) {
-		secondNameTest = new BooleanGenerator(0.2);
-		genderGen = new GenderGenerator();
-        birthDateGenerator = new BirthDateGenerator(15, 105);
-        acadTitleGen = new AcademicTitleGenerator(locale);
-        maleNobilityTitleGen = new NobilityTitleGenerator(Gender.MALE, locale);
-        femaleNobilityTitleGen = new NobilityTitleGenerator(Gender.FEMALE, locale);
-        salutationProvider = new SalutationProvider(locale);
-		init(datasetName);
-	}
-
-	private void init(String datasetName) {
-		try {
-	        maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
-	        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
-	        familyNameGen = new FamilyNameGenerator(datasetName);
-	        femaleFamilyNameConverter = new FemaleFamilyNameConverter(datasetName); 
-	        emailGenerator = new EMailAddressBuilder(datasetName);
-		} catch (RuntimeException e) {
-			Country fallBackCountry = Country.getFallback();
-			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
-				logger.error("Cannot generate addresses for " + datasetName + ", falling back to " + fallBackCountry);
-				init(fallBackCountry.getIsoCode());
-			} else
-				throw e;
-		}
-	}
 
     // properties ------------------------------------------------------------------------------------------------------
 
@@ -144,10 +121,41 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+    @Override
+    public synchronized void init(BeneratorContext context) {
+		secondNameTest = new BooleanGenerator(0.2);
+		genderGen = new GenderGenerator();
+		genderGen.init(context);
+        birthDateGenerator = new BirthDateGenerator(15, 105);
+        birthDateGenerator.init(context);
+        acadTitleGen = new AcademicTitleGenerator(locale);
+        acadTitleGen.init(context);
+        maleNobilityTitleGen = new NobilityTitleGenerator(Gender.MALE, locale);
+        maleNobilityTitleGen.init(context);
+        femaleNobilityTitleGen = new NobilityTitleGenerator(Gender.FEMALE, locale);
+        femaleNobilityTitleGen.init(context);
+        salutationProvider = new SalutationProvider(locale);
+
+		try {
+	        initMembers(context);
+		} catch (RuntimeException e) {
+			Country fallBackCountry = Country.getFallback();
+			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
+				logger.error("Cannot generate addresses for " + datasetName + ", falling back to " + fallBackCountry);
+				this.datasetName = fallBackCountry.getIsoCode();
+				initMembers(context);
+			} else
+				throw e;
+		}
+        super.init(context);
+    }
+
     public Class<Person> getGeneratedType() {
 	    return Person.class;
     }
+    
     public Person generate() throws IllegalGeneratorStateException {
+    	assertInitialized();
         Person person = new Person(acadTitleGen.getLocale());
         person.setGender(genderGen.generate());
         Generator<String> givenNameGenerator 
@@ -173,6 +181,18 @@ public class PersonGenerator extends LightweightGenerator<Person> {
         return person;
     }
 
+	private void initMembers(BeneratorContext context) {
+	    maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
+	    maleGivenNameGen.init(context);
+	    femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
+	    femaleGivenNameGen.init(context);
+	    familyNameGen = new FamilyNameGenerator(datasetName);
+	    familyNameGen.init(context);
+	    femaleFamilyNameConverter = new FemaleFamilyNameConverter(datasetName); 
+	    emailGenerator = new EMailAddressBuilder(datasetName);
+	    emailGenerator.init(context);
+    }
+    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
 	@Override

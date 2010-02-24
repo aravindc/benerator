@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.*;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.NumberUtil;
 
@@ -42,7 +43,6 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
     private Long next;
     private int bitsUsed;
     private long maxCursor;
-    private boolean dirty;
 
     public BitReverseNaturalNumberGenerator() {
         this(Long.MAX_VALUE);
@@ -50,7 +50,6 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
 
     public BitReverseNaturalNumberGenerator(long max) {
         this.max = max;
-        this.dirty = true;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -63,26 +62,19 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
         if (max < 0)
             throw new IllegalArgumentException("No negative min supported, was: " + max);
         this.max = max;
-        this.dirty = true;
     }
 
     // generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            super.validate();
-            cursor = 0;
-            bitsUsed = NumberUtil.bitsUsed(max);
-            next = 0L;
-            this.maxCursor = 1 << bitsUsed;
-            this.dirty = false;
-        }
+	public void init(BeneratorContext context) {
+    	assertNotInitialized();
+    	reset();
+        super.init(context);
     }
 
     public Long generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+        assertInitialized();
         if (next == null)
             return null;
         long result = next;
@@ -97,9 +89,11 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
 
     @Override
 	public void reset() {
+        cursor = 0;
+        bitsUsed = NumberUtil.bitsUsed(max);
+        next = 0L;
+        this.maxCursor = 1 << bitsUsed;
         super.reset();
-        dirty = true;
-        validate();
     }
 
     @Override

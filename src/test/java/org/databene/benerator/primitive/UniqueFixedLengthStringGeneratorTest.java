@@ -43,42 +43,46 @@ public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testZeroLength() {
-        expectGeneratedSequence(new UniqueFixedLengthStringGenerator(0), "").withCeasedAvailability();
+        expectGeneratedSequence(create(0), "").withCeasedAvailability();
     }
 
     @Test
     public void testConstantDigit() {
-        expectGeneratedSequence(new UniqueFixedLengthStringGenerator(1, '0'), "0").withCeasedAvailability();
+        expectGeneratedSequence(create(1, '0'), "0").withCeasedAvailability();
     }
 
     @Test
     public void testOneBinaryDigit() {
-        expectGeneratedSet(new UniqueFixedLengthStringGenerator(1, '0', '1'), "0", "1").withCeasedAvailability();
-        expectUniqueProducts(new UniqueFixedLengthStringGenerator(1, '0', '1'), 2).withCeasedAvailability();
+        expectGeneratedSet(create(1, '0', '1'), "0", "1").withCeasedAvailability();
+        expectUniqueProducts(create(1, '0', '1'), 2).withCeasedAvailability();
     }
 
     @Test
     public void testTwoBinaryDigits() {
-        expectGeneratedSet(new UniqueFixedLengthStringGenerator(2, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
-        expectUniqueProducts(new UniqueFixedLengthStringGenerator(2, '0', '1'), 4).withCeasedAvailability();
+        expectGeneratedSet(create(2, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
+        expectUniqueProducts(create(2, '0', '1'), 4).withCeasedAvailability();
     }
 
     @Test
     public void testTwoAlphaDigits() {
-        expectGeneratedSet(new UniqueFixedLengthStringGenerator(2, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
-        expectUniqueProducts(new UniqueFixedLengthStringGenerator(2, 'A', 'O'), 4).withCeasedAvailability();
-        expectUniqueProducts(new UniqueFixedLengthStringGenerator(2, 'A', 'B', 'C'), 9).withCeasedAvailability();
+        expectGeneratedSet(create(2, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
+        expectUniqueProducts(create(2, 'A', 'O'), 4).withCeasedAvailability();
+        expectUniqueProducts(create(2, 'A', 'B', 'C'), 9).withCeasedAvailability();
     }
 
     @Test
     public void testLongString() {
-        expectUniqueProducts(new UniqueFixedLengthStringGenerator(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
+        expectUniqueProducts(create(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
     }
 
     @Test
     public void testMany() {
-        UniqueFixedLengthStringGenerator generator = new UniqueFixedLengthStringGenerator(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
+        UniqueFixedLengthStringGenerator generator = create(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
         expectUniqueProducts(generator, 1000).withContinuedAvailability();
     }
 
+    private UniqueFixedLengthStringGenerator create(int length, char... chars) {
+    	return initialize(new UniqueFixedLengthStringGenerator(length, chars));
+    }
+    
 }

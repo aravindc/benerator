@@ -57,7 +57,7 @@ public abstract class GeneratorTest {
 
     public final Logger logger = LoggerFactory.getLogger(getClass());
     
-    protected BeneratorContext context;
+    public BeneratorContext context;
 
     @Before
     public void setUp() throws Exception {
@@ -67,6 +67,11 @@ public abstract class GeneratorTest {
 
     // helper methods for this and child classes -----------------------------------------------------------------------
 
+    public <T extends Generator<U>, U> T initialize(T generator) {
+    	generator.init(context);
+    	return generator;
+    }
+    
     public static <T> Map<T, AtomicInteger> countProducts(Generator<T> generator, int n) {
     	ObjectCounter<T> counter = new ObjectCounter<T>(Math.min(n, 1000));
     	for (int i = 0; i < n; i++) {
@@ -261,16 +266,16 @@ public abstract class GeneratorTest {
     // private helpers -------------------------------------------------------------------------------------------------
 
     protected static <T>void expectGeneratedSequenceOnce(Generator<T> generator, T... products) {
-        generator.validate();
+    	int count = 0;
         for (T expectedProduct : products) {
             T generatedProduct = generator.generate();
-            assertNotNull("Generator is unexpectedly unavailable: " + generator, generatedProduct);
+            assertNotNull("Generator is unavailable after generating " + count + " of " + products.length + " products: " + generator, generatedProduct);
 			assertEquals(expectedProduct, generatedProduct);
+			count++;
         }
     }
 
     private <T>void expectGeneratedSetOnce(Generator<T> generator, T... products) {
-        generator.validate();
         Set<T> expectedSet = CollectionUtil.toSet(products);
         for (int i = 0; i < products.length; i++) {
         	T generation = generator.generate();
@@ -283,7 +288,6 @@ public abstract class GeneratorTest {
     }
 
     private <T>void expectUniqueFromSetOnce(Generator<T> generator, T... products) {
-        generator.validate();
         Set<T> expectedSet = CollectionUtil.toSet(products);
         UniqueValidator<Object> validator = new UniqueValidator<Object>();
         for (int i = 0; i < products.length; i++) {
@@ -299,7 +303,6 @@ public abstract class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private <T>void expectUniqueProductsOnce(Generator<T> generator, int n) {
-        generator.validate();
         UniqueValidator validator = new UniqueValidator();
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
@@ -311,7 +314,6 @@ public abstract class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
-        generator.validate();
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
             assertNotNull("Generator has gone unavailable before creating the required number of products ",
@@ -327,7 +329,6 @@ public abstract class GeneratorTest {
     @SuppressWarnings("unchecked")
     private <T> void expectUniqueGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
         UniqueValidator validator = new UniqueValidator();
-        generator.validate();
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
             assertNotNull("Generator has gone unavailable before creating the required number of products ",

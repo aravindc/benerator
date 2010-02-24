@@ -46,8 +46,8 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testOneShotAlternatives() {
-        expectUniqueFromSet(generator(0), 0).withCeasedAvailability();
-        expectUniqueFromSet(generator(0, 1, 2), 0, 1, 2).withCeasedAvailability();
+        expectUniqueFromSet(initialize(generator(0)), 0).withCeasedAvailability();
+        expectUniqueFromSet(initialize(generator(0, 1, 2)), 0, 1, 2).withCeasedAvailability();
     }
 
     @Test
@@ -57,6 +57,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         gens[0] = new NShotGeneratorProxy<Integer>(new ConstantGenerator<Integer>(2), 1);
         gens[1] = generator(0, 1);
         Generator<Integer> generator = new UniqueAlternativeGenerator<Integer>(Integer.class, gens);
+        generator.init(context);
         expectUniqueFromSet(generator, 0, 1, 2).withCeasedAvailability();
     }
 
@@ -67,6 +68,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         gens[0] = new SequenceGenerator<Integer>(Integer.class, 0, 2, 4, 6, 8);
         gens[1] = new SequenceGenerator<Integer>(Integer.class, 1, 3, 5, 7, 9);
         Generator<Integer> generator = new UniqueAlternativeGenerator<Integer>(Integer.class, gens);
+        generator.init(context);
         expectUniqueGenerations(generator, 10).withCeasedAvailability();
     }
     
@@ -91,15 +93,7 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
             this.shots = shots;
             this.remainingShots = shots;
         }
-/*
-        @Override
-        public boolean available() {
-            if (remainingShots <= 0) {
-                return false;
-            }
-            return super.isAvailable();
-        }
-*/
+
         @Override
         public E generate() {
         	E product;

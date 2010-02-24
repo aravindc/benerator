@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.platform.db;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.db.hsql.HSQLUtil;
 
 import org.junit.After;
@@ -44,15 +45,17 @@ import static org.databene.commons.db.hsql.HSQLUtil.*;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class DBSeqHiLoGeneratorTest {
+public class DBSeqHiLoGeneratorTest extends GeneratorTest {
 
     private static final String SEQUENCE_NAME = "seq_id_gen";
     private static Logger logger = LoggerFactory.getLogger(DBSeqHiLoGeneratorTest.class);
 
     private DBSystem db;
     
+    @Override
     @Before
     public void setUp() throws Exception {
+    	super.setUp();
     	String url = HSQLUtil.getInMemoryURL("beneratortest");
     	db = new DBSystem("db", url, DRIVER, DEFAULT_USER, DEFAULT_PASSWORD);
     	dropSequence();
@@ -68,16 +71,18 @@ public class DBSeqHiLoGeneratorTest {
     
     @Test
     public void testMaxLo2() throws Exception {
-    	DBSeqHiLoGenerator iterator = new DBSeqHiLoGenerator(SEQUENCE_NAME, 2, db);
-        expectSequence(iterator, 3, 4, 5, 6);
-        iterator.close();
+    	DBSeqHiLoGenerator generator = new DBSeqHiLoGenerator(SEQUENCE_NAME, 2, db);
+    	generator.init(context);
+        expectSequence(generator, 3, 4, 5, 6);
+        generator.close();
     }
     
     @Test
     public void testMaxLo100() throws Exception {
-    	DBSeqHiLoGenerator iterator = new DBSeqHiLoGenerator(SEQUENCE_NAME, 100, db);
-        expectSequence(iterator, 101, 102, 103, 104);
-        iterator.close();
+    	DBSeqHiLoGenerator generator = new DBSeqHiLoGenerator(SEQUENCE_NAME, 100, db);
+    	generator.init(context);
+        expectSequence(generator, 101, 102, 103, 104);
+        generator.close();
     }
     
     // private helpers -------------------------------------------------------------------------------------------------

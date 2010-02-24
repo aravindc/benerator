@@ -31,6 +31,8 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
@@ -43,11 +45,10 @@ import org.databene.commons.CollectionUtil;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
+public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     protected Generator<S>[] sources;
     protected List<Generator<S>> availableSources;
-    protected boolean dirty;
     
     public MultiGeneratorWrapper(Generator<S> ... sources) {
         setSources(sources);
@@ -56,24 +57,20 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
     // properties ------------------------------------------------------------------------------------------------------
 
     public Generator<S>[] getSources() {
-        validate();
         return sources;
     }
     
     public synchronized void setSources(Generator<S> ... sources) {
-        this.dirty = true;
         this.sources = sources;
         this.availableSources = CollectionUtil.toList(sources);
     }
 
     public Generator<S> getSource(int index) {
-        validate();
         return sources[index];
     }
     
     @SuppressWarnings("unchecked")
     public synchronized void addSource(Generator<S> source) {
-        dirty = true;
     	Generator<S>[] newSources = new Generator[sources.length + 1];
     	System.arraycopy(sources, 0, newSources, 0, sources.length);
     	newSources[sources.length] = source;
@@ -82,25 +79,25 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
-    public synchronized void validate() {
-        if (dirty) {
-            if (sources.length == 0)
-                throw new InvalidGeneratorSetupException("sources", "is empty");
-            for (Generator<S> source : sources)
-                source.validate();
-            dirty = false;
-        }
+    @Override
+    public synchronized void init(BeneratorContext context) {
+    	assertNotInitialized();
+        if (sources.length == 0)
+            throw new InvalidGeneratorSetupException("sources", "is empty");
+        for (Generator<S> source : sources)
+            source.init(context);
+        super.init(context);
     }
 
     public synchronized void reset() {
-        validate();
+    	assertInitialized();
         for (Generator<S> source : sources)
             source.reset();
         this.availableSources = CollectionUtil.toList(sources);
     }
 
     public synchronized void close() {
-        validate();
+    	assertInitialized();
         for (Generator<S> source : sources)
             source.close();
         this.availableSources.clear();
@@ -109,7 +106,7 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
     // helpers ---------------------------------------------------------------------------------------------------------
     
     protected synchronized S generateFromRandomSource() {
-    	validate();
+    	assertInitialized();
     	if (availableSources.size() == 0)
     		return null;
     	S product;
@@ -124,7 +121,7 @@ public abstract class MultiGeneratorWrapper<S, P> implements Generator<P> {
 
     @SuppressWarnings("unchecked")
     protected synchronized S[] generateFromAllSources(Class<S> componentType) {
-    	validate();
+    	assertInitialized();
     	if (availableSources.size() < sources.length)
     		return null;
     	S[] result = (S[]) Array.newInstance(componentType, sources.length);

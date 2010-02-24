@@ -23,6 +23,7 @@ package org.databene.benerator.engine.expression;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
@@ -68,6 +69,7 @@ public class DistributedNumberExpression<E extends Number> implements Expression
 		Distribution distr = distribution.evaluate(context);
 		generator = distr.createGenerator(numberType, 
 	    	minValue, maxValue, precision.evaluate(context), unique.evaluate(context));
+		generator.init((BeneratorContext) context);
     }
 
 }

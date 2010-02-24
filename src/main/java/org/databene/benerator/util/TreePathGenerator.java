@@ -27,6 +27,7 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.TreeModel;
 
 import java.util.Collections;
@@ -68,9 +69,10 @@ public class TreePathGenerator<E> extends TypedLightweightGenerator<List<E>> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void validate() {
+    public void init(BeneratorContext context) {
         if (model == null)
             throw new InvalidGeneratorSetupException("model", "is null");
+        super.init(context);
     }
 
     public List<E> generate() {

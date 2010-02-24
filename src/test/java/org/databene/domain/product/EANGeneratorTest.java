@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,12 +44,18 @@ public class EANGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testNonUnique() {
-        expectGenerations(new EANGenerator(false), 100, (Validator<?>) new EANValidator());
+        expectGenerations(createGenerator(false), 100, (Validator<?>) new EANValidator());
     }
 
     @Test
     public void testUnique() {
-        expectUniqueGenerations(new EANGenerator(true), 10000);
+        expectUniqueGenerations(createGenerator(true), 10000);
     }
     
+	private EANGenerator createGenerator(boolean unique) {
+	    EANGenerator generator = new EANGenerator(unique);
+	    generator.init(context);
+		return generator;
+    }
+
 }

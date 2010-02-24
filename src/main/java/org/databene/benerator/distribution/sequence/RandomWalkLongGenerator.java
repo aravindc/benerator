@@ -29,6 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -89,26 +90,22 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-    public void validate() {
-        if (dirty) {
-            incrementGenerator = incrementDistribution.createGenerator(
-            		Long.class, minIncrement, maxIncrement, precision, false);
-            if (minIncrement < 0 && maxIncrement <= 0)
-                initial = max;
-            else if (minIncrement >= 0 && maxIncrement > 0)
-                initial = min;
-            else
-                initial = (min + max) / 2;
-            next = initial;
-            incrementGenerator.validate();
-            super.validate();
-            dirty = false;
-        }
+    public void init(BeneratorContext context) {
+        incrementGenerator = incrementDistribution.createGenerator(
+        		Long.class, minIncrement, maxIncrement, precision, false);
+        if (minIncrement < 0 && maxIncrement <= 0)
+            initial = max;
+        else if (minIncrement >= 0 && maxIncrement > 0)
+            initial = min;
+        else
+            initial = (min + max) / 2;
+        next = initial;
+        incrementGenerator.init(context);
+        super.init(context);
     }
 
     public Long generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         long value = next;
         next += incrementGenerator.generate();
         if (next > max)
@@ -129,4 +126,5 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     	super.close();
     	next = initial;
     }
+    
 }

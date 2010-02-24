@@ -101,9 +101,9 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     }
 
     @Override
-    public void validate() {
-        super.validate();
-        contentGenerator.validate();
+    public void init(BeneratorContext context) {
+        contentGenerator.init(context);
+        super.init(context);
     }
     
     public File generate() {

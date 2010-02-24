@@ -51,6 +51,7 @@ public class AlternativeGeneratorTest extends GeneratorClassTest {
         Generator<Integer> source1 = new RandomIntegerGenerator(-2, -1);
         Generator<Integer> source2 = new RandomIntegerGenerator(1, 2);
         AlternativeGenerator<Integer> generator = new AlternativeGenerator<Integer>(Integer.class, source1, source2);
+        generator.init(context);
         for (int i = 0; i < 100; i++) {
             int product = generator.generate();
             assertTrue((-2 <= product && product <= -1) || (1 <= product && product <= 2));

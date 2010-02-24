@@ -25,6 +25,7 @@ public class BirthDateGeneratorTest extends GeneratorClassTest {
     public void test() throws IllegalGeneratorStateException {
         Date now = new Date();
         BirthDateGenerator generator = new BirthDateGenerator(3, 80);
+        generator.init(context);
         for (int i = 0; i < 100; i++) {
             Date birtDate = generator.generate();
             int age = TimeUtil.yearsBetween(birtDate, now);

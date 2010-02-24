@@ -47,6 +47,7 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
     public void testNonRepeating() {
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 0L, 0L);
+        generator.init(context);
         expectGeneratedSequence(generator, 1, 2).withCeasedAvailability();
     }
 
@@ -54,6 +55,7 @@ public class RepeatGeneratorProxyTest extends GeneratorClassTest {
     public void testOneRepetition() {
         Generator<Integer> generator = new SequenceTestGenerator<Integer>(1, 2);
         generator = new RepeatGeneratorProxy<Integer>(generator, 2L, 2L);
+        generator.init(context);
         expectGeneratedSequence(generator, 1, 1, 1, 2, 2, 2).withCeasedAvailability();
     }
     

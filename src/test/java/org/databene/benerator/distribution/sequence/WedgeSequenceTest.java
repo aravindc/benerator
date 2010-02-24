@@ -88,11 +88,11 @@ public class WedgeSequenceTest extends GeneratorTest {
     }
 
     private Generator<Long> longGenerator(long min, long max, long precision) {
-        return new WedgeLongGenerator(min,  max, precision);
+        return initialize(new WedgeLongGenerator(min,  max, precision));
     }
 
     private Generator<Double> doubleGenerator(double min, double max, double precision) {
-        return new WedgeDoubleGenerator(min, max, precision);
+        return initialize(new WedgeDoubleGenerator(min, max, precision));
     }
 
 }

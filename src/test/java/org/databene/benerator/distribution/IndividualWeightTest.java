@@ -49,7 +49,9 @@ public class IndividualWeightTest extends GeneratorTest {
 	@Test
 	public void testApplyTo() {
 		SequenceGenerator<Integer> source = new SequenceGenerator<Integer>(Integer.class, 1, 2, 3);
+		source.init(context);
 		Generator<Integer> generator = createWeight().applyTo(source, false);
+		generator.init(context);
 		expectRelativeWeights(generator, 2000, 1, 1, 2, 2, 3, 3);
 	}
 	

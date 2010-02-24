@@ -19,27 +19,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.nullable;
-
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.wrapper.ProductWrapper;
+package org.databene.benerator;
 
 /**
- * Interface for classes that can generate <code>null</code> values.
- * For differing between a generated <code>null</code> and unavailability,
- * a {@link ProductWrapper} class is introduced. It may wrap a <code>null</code>
- * value that has been generated or may be <code>null</code> itself for 
- * declaring unavailability.<br/><br/>
- * Created: 26.01.2010 17:11:16
+ * The state of a generator.<br/><br/>
+ * Created: 24.02.2010 12:13:24
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public interface NullableGenerator<E> {
-    Class<E> getGeneratedType();
-	void init(BeneratorContext context) throws InvalidGeneratorSetupException;
-    public ProductWrapper<E> generate(ProductWrapper<E> wrapper);
-    public void reset() throws IllegalGeneratorStateException;
-    public void close();
+public enum GeneratorState {
+
+	created, initialized, closed
 }

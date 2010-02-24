@@ -30,10 +30,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
 
@@ -45,16 +48,11 @@ import org.databene.commons.ParseException;
  * @author Volker Bergmann
  */
 
-public class StateGenerator<E> implements Generator<E> {
-	
-	private static final int UNINITIALIZED = 0;
-	private static final int INITIALIZED = 1;
-	private static final int CLOSED = 2;
+public class StateGenerator<E> extends AbstractGenerator<E> {
 	
 	private Class<E> generatedType;
 	private E nextState;
 	private Map<E, MappedSampleGenerator<E>> transitions;
-	private int phase = UNINITIALIZED;
 	
 	// initialization --------------------------------------------------------------------------------------------------
 
@@ -96,49 +94,45 @@ public class StateGenerator<E> implements Generator<E> {
 	    return generatedType;
     }
     
-    public void validate() throws InvalidGeneratorSetupException {
-    	if (phase == UNINITIALIZED) {
-	        MappedSampleGenerator<E> gen = this.transitions.get(null);
-	        if (gen == null)
-	        	throw new InvalidGeneratorSetupException("No initial state defined for " + this);
-	        boolean hasEndTransition = false;
-	        for (MappedSampleGenerator<E> tmp : transitions.values())
-	        	if (tmp.containsSample(null)) {
-	        		hasEndTransition = true;
-	        		break;
-	        	}
-	        if (!hasEndTransition)
-	        	throw new InvalidGeneratorSetupException("No final state defined for " + this);
-	        nextState = gen.generate();
-	        phase = INITIALIZED;
-        }
+    @Override
+    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+    	assertNotInitialized();
+        MappedSampleGenerator<E> gen = this.transitions.get(null);
+        if (gen == null)
+        	throw new InvalidGeneratorSetupException("No initial state defined for " + this);
+        boolean hasEndTransition = false;
+        for (MappedSampleGenerator<E> tmp : transitions.values())
+        	if (tmp.containsSample(null)) {
+        		hasEndTransition = true;
+        		break;
+        	}
+        if (!hasEndTransition)
+        	throw new InvalidGeneratorSetupException("No final state defined for " + this);
+    	for (Generator<E> tmp : transitions.values())
+    		tmp.init(context);
+        nextState = gen.generate();
+        super.init(context);
     }
 	
-    public boolean available() {
-    	if (phase == UNINITIALIZED)
-    		validate();
-    	return (phase == INITIALIZED && nextState != null);
-    }
-    
     public E generate() throws IllegalGeneratorStateException {
-    	if (phase == CLOSED)
+    	if (state == GeneratorState.closed)
     		return null;
-    	if (phase == UNINITIALIZED)
-    		validate();
     	E result = nextState;
 	    MappedSampleGenerator<E> subGenerator = transitions.get(nextState);
 		nextState = subGenerator.generate();
 		if (nextState == null)
-			phase = CLOSED;
+			state = GeneratorState.closed;
 		return result;
     }
 
     public void reset() throws IllegalGeneratorStateException {
-	    phase = UNINITIALIZED;
+        MappedSampleGenerator<E> gen = this.transitions.get(null);
+        nextState = gen.generate();
+        state = GeneratorState.initialized;
     }
     
     public void close() {
-    	phase = CLOSED;
+    	state = GeneratorState.closed;
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------

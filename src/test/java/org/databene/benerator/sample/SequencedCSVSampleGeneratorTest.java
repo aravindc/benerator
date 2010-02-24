@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.FileUtil;
 import org.databene.commons.converter.ParseFormatConverter;
 import org.databene.commons.converter.StringConverter;
 import org.databene.benerator.test.GeneratorClassTest;
@@ -60,9 +61,12 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testSmallSet() throws ParseException {
+    	// prepare
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
         SequencedCSVSampleGenerator<Date> generator = new SequencedCSVSampleGenerator<Date>(DATE_FILE_PATH, converter);
+        generator.init(context);
+        // test
         List<Date> expectedDates = CollectionUtil.toList(sdf.parse("01.02.2003"), sdf.parse("02.02.2003"), sdf.parse("03.02.2003"));
         for (int i = 0; i < 100; i++) {
             Date generatedDate = generator.generate();
@@ -75,6 +79,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
     public void testBigSet() throws Exception {
     	File csvFile = new File(BIG_FILE_NAME);
     	try {
+    		// prepare
 	    	PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(csvFile)));
 	    	// create large CSV file
 	        for (int i = 0; i < 200000; i++)
@@ -84,15 +89,14 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 	    	// test generator
 	        SequencedCSVSampleGenerator<Integer> generator 
 	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, new StringConverter<Integer>(Integer.class));
-	        generator.validate();
+	        generator.init(context);
 	        for (int i = 0; i < 1000; i++) {
 	            int product = generator.generate();
 	            assertTrue("generated value not in expected value range: " + product, 0 <= product && product <= 99);
 	        }
     	} finally {
-	        // delete large CSV file
-	        if (csvFile.exists())
-	        	csvFile.delete();
+	        // delete CSV file
+	        FileUtil.deleteIfExists(csvFile);
     	}
     }
     

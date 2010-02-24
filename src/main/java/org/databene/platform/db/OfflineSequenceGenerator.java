@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,7 @@ package org.databene.platform.db;
 import java.sql.SQLException;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.StringUtil;
 
@@ -71,8 +72,8 @@ public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
     }
 	
 	@Override
-	public void validate() {
-	    super.validate();
+	public void init(BeneratorContext context) {
+	    super.init(context);
 	    if (target == null)
 	    	throw new InvalidGeneratorSetupException("No 'target' database defined");
 	    if (StringUtil.isEmpty(sequenceName))

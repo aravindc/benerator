@@ -27,6 +27,7 @@
 package org.databene.domain.net;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 
@@ -41,6 +42,13 @@ public class RandomDomainGenerator extends LightweightStringGenerator {
 	private Generator<String> nameGenerator = new RegexStringGenerator("[a-z]{4,12}");
 	private Generator<String> tldGenerator = new TopLevelDomainGenerator();
 
+	@Override
+	public synchronized void init(BeneratorContext context) {
+	    nameGenerator.init(context);
+	    tldGenerator.init(context);
+	    super.init(context);
+	}
+	
 	public String generate() {
 		return nameGenerator.generate() + '.' + tldGenerator.generate();
 	}

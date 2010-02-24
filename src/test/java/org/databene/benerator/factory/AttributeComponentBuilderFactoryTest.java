@@ -30,6 +30,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
+import org.databene.benerator.nullable.AbstractNullableGenerator;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.primitive.HibUUIDGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
@@ -79,6 +80,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setScript("'OK'");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
 			assertEquals("OK", helper.generate(wrapper).product);
@@ -92,6 +94,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setScript("null");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
 			assertEquals(null, helper.generate(wrapper).product);
@@ -107,6 +110,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		context.set("myEnum", TestEnum.firstInstance);
 		ComponentBuilder builder = createComponentBuilder(part, context);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, part.getName());
+		helper.init(context);
 		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
 			assertEquals("firstInstance", helper.generate(wrapper).product);
@@ -122,6 +126,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setConstant("");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
 			assertEquals("Invalid product: ", "", helper.generate(wrapper).product);
@@ -138,6 +143,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setValues("'A','B'");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		for (int i = 0; i < 10; i++) {
 			String s = helper.generate(new ProductWrapper<String>()).product;
 			assertTrue("A".equals(s) || "B".equals(s));
@@ -152,6 +158,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A'");
 		ComponentBuilder builder = createComponentBuilder(name);
+		builder.init(context);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++)
 			assertEquals("A", helper.generate(new ProductWrapper<String>()).product);
@@ -166,6 +173,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setValues("");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		for (int i = 0; i < 10; i++)
 			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
 	}
@@ -181,6 +189,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setPattern("\\d{2,4}");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		Validator<Character> charValidator = new Validator<Character>() {
 			public boolean valid(Character c) {
 	            return ('0' <= c && c <= '9');
@@ -198,6 +207,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setPattern("");
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		for (int i = 0; i < 10; i++)
 			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
 	}
@@ -257,6 +267,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(reference);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
 		expectNullGenerations(helper, 10);
 	}
 
@@ -267,6 +278,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		PartDescriptor attribute = (PartDescriptor) new PartDescriptor(componentName).withNullQuota(1);
 		ComponentBuilder builder = createComponentBuilder(attribute);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
 		expectNullGenerations(helper, 10);
 	}
 
@@ -285,6 +297,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
 		expectUniqueGenerations(helper, 10);
 	}
 	
@@ -301,6 +314,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
 		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
 	}
 	
@@ -315,6 +329,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		IdDescriptor id = new IdDescriptor(componentName);
 		ComponentBuilder builder = createComponentBuilder(id);
 		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
 		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
 		assertNotNull(helper.generate(new ProductWrapper<Long>()));
 	}
@@ -331,8 +346,9 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		type.setGenerator(IncrementGenerator.class.getName());
 		IdDescriptor id = new IdDescriptor(componentName, type);
 		ComponentBuilder builder = createComponentBuilder(id);
-		ComponentBuilderGenerator<Byte> helper2 = new ComponentBuilderGenerator(builder, componentName);
-		expectGeneratedSequenceOnce(helper2, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
+		ComponentBuilderGenerator<Byte> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
+		expectGeneratedSequenceOnce(helper, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
 	}
 	
 	@Test
@@ -346,6 +362,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		BeneratorContext context = new BeneratorContext(null);
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context);
+		builder.init(context);
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
     }
@@ -360,6 +377,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
 		BeneratorContext context = new BeneratorContext(null);
 		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context);
+		builder.init(context);
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
 		assertEquals("A", entity.get("flag"));
@@ -667,7 +685,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		return ComponentBuilderFactory.createComponentBuilder(component, context);
 	}
 	
-	public static final class ComponentBuilderGenerator<E> implements NullableGenerator<E> {
+	public static final class ComponentBuilderGenerator<E> extends AbstractNullableGenerator<E> {
 		
 		private ComponentBuilder builder;
 		private String componentName;
@@ -677,8 +695,10 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			this.componentName = componentName;
 		}
 
-		public void validate() throws InvalidGeneratorSetupException {
-	        builder.validate();
+		@Override
+        public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+	        builder.init(context);
+	        super.init(context);
         }
 
 		@SuppressWarnings("unchecked")
@@ -709,6 +729,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
     private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		expectGeneratedSequence(helper, products).withCeasedAvailability();
 	}
 
@@ -716,6 +737,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
     private <T> void expectUniqueSet(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
 		expectGeneratedSet(helper, products).withCeasedAvailability();
 	}
 	

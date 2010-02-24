@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,8 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 
 /**
  * Abstract generator class that wraps another generator object (in a <i>source</i> property)
@@ -37,14 +39,12 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class GeneratorWrapper<S, P> implements Generator<P> {
+public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     protected Generator<S> source;
-	protected boolean dirty;
 
     public GeneratorWrapper(Generator<S> source) {
         this.source = source;
-        this.dirty = true;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -57,29 +57,24 @@ public abstract class GeneratorWrapper<S, P> implements Generator<P> {
     /** Sets the source generator */
     public void setSource(Generator<S> source) {
         this.source = source;
-        dirty = true;
     }
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
-    public void validate() {
-        if (dirty) {
-            if (source == null)
-                throw new InvalidGeneratorSetupException("source", "is null");
-            source.validate();
-            dirty = false;
-        }
+    @Override
+    public synchronized void init(BeneratorContext context) {
+    	assertNotInitialized();
+        if (source == null)
+            throw new InvalidGeneratorSetupException("source", "is null");
+    	source.init(context);
+        super.init(context);
     }
 
     public void reset() {
-        if (dirty)
-            validate();
         source.reset();
     }
 
     public void close() {
-        if (dirty)
-            validate();
         source.close();
     }
     

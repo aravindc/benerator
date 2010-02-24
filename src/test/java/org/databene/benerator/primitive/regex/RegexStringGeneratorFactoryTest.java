@@ -49,22 +49,22 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testConstant() throws Exception {
-        assertEquals("a", gen("a").generate());
-        assertEquals("ab", gen("ab").generate());
-        assertEquals("abc@xyz.com", gen("abc@xyz\\.com", 16, false).generate());
+        assertEquals("a", create("a").generate());
+        assertEquals("ab", create("ab").generate());
+        assertEquals("abc@xyz.com", create("abc@xyz\\.com", 16, false).generate());
     }
 
     @Test
     public void testEscapeCharacters() throws Exception {
-        assertEquals("-+*.?,&^$\\|", gen("\\-\\+\\*\\.\\?\\,\\&\\^\\$\\\\\\|").generate());
-        assertEquals("()", gen("\\(\\)").generate());
-        assertEquals("[]", gen("\\[\\]").generate());
-        assertEquals("{}", gen("\\{\\}").generate());
+        assertEquals("-+*.?,&^$\\|", create("\\-\\+\\*\\.\\?\\,\\&\\^\\$\\\\\\|").generate());
+        assertEquals("()", create("\\(\\)").generate());
+        assertEquals("[]", create("\\[\\]").generate());
+        assertEquals("{}", create("\\{\\}").generate());
     }
     
     @Test
     public void testStartEndCharacters() throws Exception {
-        assertEquals("ABC", gen("^ABC$").generate());
+        assertEquals("ABC", create("^ABC$").generate());
     }
 
     @Test
@@ -123,21 +123,21 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testUniqueCharSets() throws Exception {
-        expectUniqueFromSet(gen("[a]{1,2}", 30, true),
+        expectUniqueFromSet(create("[a]{1,2}", 30, true),
                 "a", "aa").withCeasedAvailability();
-        expectUniqueFromSet(gen("x[ab]{3}x", 30, true),
+        expectUniqueFromSet(create("x[ab]{3}x", 30, true),
                 "xaaax", "xaabx", "xabax", "xabbx", "xbaax", "xbabx", "xbbax", "xbbbx").withCeasedAvailability();
-        expectUniqueProducts(gen("[01]{2}/[01]{2}", 30, true), 16).withCeasedAvailability();
-        expectUniqueFromSet(gen("[01]{2,3}", 30, true),
+        expectUniqueProducts(create("[01]{2}/[01]{2}", 30, true), 16).withCeasedAvailability();
+        expectUniqueFromSet(create("[01]{2,3}", 30, true),
                 "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111").withCeasedAvailability();
-        expectUniqueProducts(gen("0[0-9]{2,4}/[1-9][0-9]5", 30, true), 5).withContinuedAvailability();
-        expectUniqueProducts(gen("[0-9]{5}", 0, true), 1000).withContinuedAvailability();
+        expectUniqueProducts(create("0[0-9]{2,4}/[1-9][0-9]5", 30, true), 5).withContinuedAvailability();
+        expectUniqueProducts(create("[0-9]{5}", 0, true), 1000).withContinuedAvailability();
     }
 
     @Test
     public void testUniqueGroups() throws Exception {
-        expectUniqueFromSet(gen("x(ab){1,2}x", 30, true), "xabx", "xababx").withCeasedAvailability();
-        expectUniqueFromSet(gen("x(a[01]{2}){1,2}x", 30, true),
+        expectUniqueFromSet(create("x(ab){1,2}x", 30, true), "xabx", "xababx").withCeasedAvailability();
+        expectUniqueFromSet(create("x(a[01]{2}){1,2}x", 30, true),
                 "xa00x", "xa01x", "xa10x", "xa11x",
                 "xa00a00x", "xa01a00x", "xa10a00x", "xa11a00x",
                 "xa00a01x", "xa01a01x", "xa10a01x", "xa11a01x",
@@ -148,11 +148,11 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
     
     @Test
     public void testUniqueAlternatives() throws Exception {
-        expectUniqueFromSet(gen("x(a|b)x", 30, true), "xax", "xbx").withCeasedAvailability();
-        expectUniqueFromSet(gen("x(a|b){2}x", 30, true), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
-        expectUniqueFromSet(gen("x(a|b){1,2}x", 30, true), "xax", "xbx", "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
-        expectUniqueFromSet(gen("([a]{1,2}|b)", 30, true), "a", "aa", "b").withCeasedAvailability();
-        expectUniqueFromSet(gen("x([01]{1,2}|b)x", 30, true),
+        expectUniqueFromSet(create("x(a|b)x", 30, true), "xax", "xbx").withCeasedAvailability();
+        expectUniqueFromSet(create("x(a|b){2}x", 30, true), "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
+        expectUniqueFromSet(create("x(a|b){1,2}x", 30, true), "xax", "xbx", "xaax", "xabx", "xbax", "xbbx").withCeasedAvailability();
+        expectUniqueFromSet(create("([a]{1,2}|b)", 30, true), "a", "aa", "b").withCeasedAvailability();
+        expectUniqueFromSet(create("x([01]{1,2}|b)x", 30, true),
                 "x0x", "x1x", "x00x", "x01x", "x10x", "x11x", "xbx").withCeasedAvailability();
     }
     
@@ -160,7 +160,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
     public void testAlternativesBugOfAdgadg() throws Exception {
     	// Tests a bug posted by adgadg at 2009-07-18, see http://databene.org/phpBB3/viewtopic.php?f=3&t=110
     	String pattern = "(0[1239] [1-9]([0-9]{2}) ([0-9]{2} ){2})|(0[1-9][0-9] ([0-9]{2} ){3})";
-		Generator<String> gen = gen(pattern);
+		Generator<String> gen = create(pattern);
     	boolean alt1 = false;
     	boolean alt2 = false;
     	for (int i = 0; i < 20; i++) {
@@ -180,7 +180,7 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
 
     private void checkRegexGeneration(String regex) throws Exception {
         logger.debug("checking generation for regex '" + regex + "'");
-        Generator<String> generator = gen(regex);
+        Generator<String> generator = create(regex);
         checkRegexGeneration(generator, regex, 0, 255, true);
     }
 
@@ -204,12 +204,16 @@ public class RegexStringGeneratorFactoryTest extends GeneratorTest {
         }
     }
     
-    private static Generator<String> gen(String pattern) {
-    	return RegexGeneratorFactory.create(pattern);
+    private Generator<String> create(String pattern) {
+    	Generator<String> generator = RegexGeneratorFactory.create(pattern);
+    	generator.init(context);
+		return generator;
     }
     
-    private static Generator<String> gen(String pattern, int maxLimit, boolean unique) {
-    	return RegexGeneratorFactory.create(pattern, maxLimit, unique);
+    private Generator<String> create(String pattern, int maxLimit, boolean unique) {
+    	Generator<String> generator = RegexGeneratorFactory.create(pattern, maxLimit, unique);
+    	generator.init(context);
+		return generator;
     }
     
 }

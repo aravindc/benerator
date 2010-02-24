@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGenerator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
@@ -70,23 +71,23 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
         this.length = length;
         this.displayColumn = new int[length];
         this.seed = new int[length];
-        Generator<Long> gen = new BitReverseNaturalNumberGenerator(length - 1);
-        for (int i = 0; i < length; i++) {
-            this.displayColumn[i] = gen.generate().intValue();
-            this.seed[i] = RandomUtil.randomInt(0, length - 1);
-        }
-        reset();
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void reset() {
-        super.reset();
-        this.counter = new CustomCounter(radix, length);
-        this.cycleCounter = 0;
+    public synchronized void init(BeneratorContext context) {
+    	assertNotInitialized();
+        Generator<Long> gen = new BitReverseNaturalNumberGenerator(length - 1);
+        gen.init(context);
+        for (int i = 0; i < length; i++) {
+            this.displayColumn[i] = gen.generate().intValue();
+            this.seed[i] = RandomUtil.randomInt(0, length - 1);
+        }
+        reset();
+        super.init(context);
     }
-
+    
     public String generate() {
         if (counter == null)
             return null;
@@ -106,6 +107,13 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
             }
         }
         return result;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        this.counter = new CustomCounter(radix, length);
+        this.cycleCounter = 0;
     }
 
     @Override

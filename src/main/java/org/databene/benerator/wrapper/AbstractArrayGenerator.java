@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayUtil;
 
 /**
@@ -62,18 +63,15 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
 
     @SuppressWarnings("unchecked")
     @Override
-    public void validate() {
-        if (dirty) {
-            super.validate();
-            sizeGenerator.validate();
-            if (source == null)
-                throw new InvalidGeneratorSetupException("source", " is null");
-            if (generatedType == null) {
-	            Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
-	            this.generatedType = (Class<A>) ArrayUtil.arrayType(cType);
-            }
-            dirty = false;
+    public void init(BeneratorContext context) {
+        sizeGenerator.init(context);
+        if (source == null)
+            throw new InvalidGeneratorSetupException("source", " is null");
+        if (generatedType == null) {
+            Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
+            this.generatedType = (Class<A>) ArrayUtil.arrayType(cType);
         }
+        super.init(context);
     }
 /*
     @Override

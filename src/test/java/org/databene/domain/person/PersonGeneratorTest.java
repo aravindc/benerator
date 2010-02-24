@@ -53,6 +53,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     @Test
     public void testGermany() {
         PersonGenerator generator = new PersonGenerator(Country.GERMANY, Locale.GERMANY);
+        generator.init(context);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
             logger.debug(person.toString());
@@ -62,6 +63,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     @Test
     public void testRussia() {
         PersonGenerator generator = new PersonGenerator(Country.RUSSIA, new Locale("ru"));
+        generator.init(context);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
             assertNotNull(person);
@@ -72,6 +74,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     @Test
     public void testPoland() {
         PersonGenerator generator = new PersonGenerator(Country.POLAND, new Locale("pl"));
+        generator.init(context);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
             assertNotNull(person);
@@ -82,6 +85,7 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     @Test
     public void testChina() {
         PersonGenerator generator = new PersonGenerator(Country.CHINA, Locale.CHINESE);
+        generator.init(context);
         for (int i = 0; i < 10; i++) {
             Person person = generator.generate();
             assertNotNull(person);

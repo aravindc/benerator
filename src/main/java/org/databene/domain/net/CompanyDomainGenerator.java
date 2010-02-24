@@ -28,6 +28,7 @@ package org.databene.domain.net;
 
 import java.io.IOException;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -63,6 +64,13 @@ public class CompanyDomainGenerator extends LightweightStringGenerator {
 		companyNameGenerator.setDataset(datasetName);
 	}
 
+	@Override
+	public synchronized void init(BeneratorContext context) {
+		companyNameGenerator.init(context);
+		tldGenerator.init(context);
+	    super.init(context);
+	}
+	
 	public String generate() {
 		return normalizer.convert(companyNameGenerator.generate()) + '.' + tldGenerator.generate();
 	}

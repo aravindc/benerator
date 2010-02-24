@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,8 @@ package org.databene.benerator.sample;
 
 import java.util.Arrays;
 
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 
@@ -43,31 +44,21 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class SeedGeneratorTest {
+public class SeedGeneratorTest extends GeneratorTest {
 	
 	private static final Character[] SAMPLE1 = { '0', '1', '2' };
 	private static final Character[] SAMPLE2 = { '0', '1', '1' };
 	private static final Character[] SAMPLE3 = { '0', '0', '1' };
 
-	@Test
+	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testEmpty() {
 		SeedGenerator<Character> generator = new SeedGenerator<Character>(Character.class, 1);
-		try {
-			generator.generate();
-			fail(IllegalGeneratorStateException.class.getSimpleName() + " expected");
-		} catch (IllegalGeneratorStateException e) {
-			// that's expected
-		}
+		generator.init(context);
 	}
 
-	@Test
+	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testDepth0() {
-		try {
-			new SeedGenerator<Character>(Character.class, 0);
-			fail("IllegalArgumentException expected");
-		} catch (IllegalArgumentException e) {
-			// that's expected
-		}
+		new SeedGenerator<Character>(Character.class, 0).init(context);
 	}
 
 	@Test
@@ -93,15 +84,13 @@ public class SeedGeneratorTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	private void checkGenerator(int depth) {
-	    SeedGenerator<Character> gen1 = new SeedGenerator<Character>(Character.class, depth);
-        gen1.addSample(SAMPLE1);
-        gen1.addSample(SAMPLE2);
-        gen1.addSample(SAMPLE3);
-		SeedGenerator<Character> gen = gen1;
-		//gen.printState();
+	    SeedGenerator<Character> 		generator = new SeedGenerator<Character>(Character.class, depth);
+		generator.addSample(SAMPLE1);
+		generator.addSample(SAMPLE2);
+		generator.addSample(SAMPLE3);
+		generator.init(context);
 		for (int i = 0; i < 100; i++) {
-	        Character[] sequence = gen.generate();
-		    //System.out.println(ArrayFormat.format(sequence));
+	        Character[] sequence = generator.generate();
 	        checkSequence(sequence, depth);
         }
     }

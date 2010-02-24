@@ -49,6 +49,7 @@ public class DepartmentNameGeneratorTest extends GeneratorClassTest {
 			public void run() {
 				logger.debug("Checking Locale " + Locale.getDefault());
 				Generator<String> generator = new DepartmentNameGenerator();
+				generator.init(context);
 				for (int i = 0; i < 100; i++) {
 					String product = generator.generate();
 					logger.debug(product);

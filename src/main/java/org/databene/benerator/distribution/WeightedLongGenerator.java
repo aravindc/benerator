@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.distribution;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.function.ConstantFunction;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 import java.util.Random;
@@ -69,7 +70,6 @@ public class WeightedLongGenerator extends AbstractNumberGenerator<Long> {
         super(Long.class, min, max, precision);
         this.function = function;
         this.randomizer = new Random();
-        this.dirty = true;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -87,17 +87,13 @@ public class WeightedLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            normalize();
-            super.validate();
-            dirty = false;
-        }
+	public void init(BeneratorContext context) {
+        normalize();
+        super.init(context);
     }
 
     public Long generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+    	assertInitialized();
         float random = randomizer.nextFloat();
         long n = intervallNoOfRandom(random);
         return min + n * precision;

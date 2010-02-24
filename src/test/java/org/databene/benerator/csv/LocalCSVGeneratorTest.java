@@ -50,6 +50,7 @@ public class LocalCSVGeneratorTest extends GeneratorTest {
         Set<String> enNames = CollectionUtil.toSet("Alice", "Bob", "Charly");
         LocalCSVGenerator<String> enGen = new LocalCSVGenerator<String>(
         		CSV_LOCAL_FILENAME, Locale.ENGLISH, ".csv", Encodings.UTF_8);
+        enGen.init(context);
         for (int i = 0; i < 10; i++) {
             String name = enGen.generate();
             assertTrue(enNames.contains(name));
@@ -61,6 +62,7 @@ public class LocalCSVGeneratorTest extends GeneratorTest {
         Set<String> deNames = CollectionUtil.toSet("Elise", "Robert", "Karl");
         LocalCSVGenerator<String> deGen = new LocalCSVGenerator<String>(
         		CSV_LOCAL_FILENAME, Locale.GERMAN, ".csv", Encodings.UTF_8);
+        deGen.init(context);
         for (int i = 0; i < 10; i++) {
             String name = deGen.generate();
             assertTrue(deNames.contains(name));

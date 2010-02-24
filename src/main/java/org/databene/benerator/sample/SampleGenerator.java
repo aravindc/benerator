@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 
 import java.util.List;
@@ -124,21 +125,19 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 
 	/** Initializes all attributes */
     @Override
-    public void validate() {
-        if (dirty) {
-            if (samples.size() == 0) 
-            	throw new InvalidGeneratorSetupException("No samples defined in " + this);
-            else {
-            	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1, unique);
-            	indexGenerator.validate();
-            }
-            this.dirty = false;
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        if (samples.size() == 0) 
+        	throw new InvalidGeneratorSetupException("No samples defined in " + this);
+        else {
+        	indexGenerator = distribution.createGenerator(Integer.class, 0, samples.size() - 1, 1, unique);
+        	indexGenerator.init(context);
         }
+        super.init(context);
     }
 
     public E generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         Integer index;
         if (samples.size() > 0 && (index = indexGenerator.generate()) != null)
         	return samples.get(index);

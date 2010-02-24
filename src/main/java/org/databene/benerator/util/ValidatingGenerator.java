@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.util;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.commons.Validator;
 import org.slf4j.Logger;
@@ -36,8 +35,10 @@ import org.slf4j.LoggerFactory;
  * Provides an abstract implementation of a generator that validates its generated values.<br/>
  * <br/>
  * Created: 23.09.2006 00:03:04
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public abstract class ValidatingGenerator<P> implements Generator<P> {
+public abstract class ValidatingGenerator<P> extends AbstractGenerator<P> {
 
     /** The Logger */
     private static Logger logger = LoggerFactory.getLogger(ValidatingGenerator.class);

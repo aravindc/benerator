@@ -29,6 +29,7 @@ package org.databene.benerator.composite;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
@@ -62,10 +63,10 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 		return Entity.class;
 	}
 
-	public void validate() {
+	public void init(BeneratorContext context) {
         for (NullableGenerator<?> varGen : variables.values())
-        	varGen.validate();
-        entityGenerator.validate();
+        	varGen.init(context);
+        entityGenerator.init(context);
 	}
 
 	@SuppressWarnings("unchecked")

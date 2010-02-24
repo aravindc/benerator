@@ -29,7 +29,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
-import org.databene.commons.context.ContextAware;
 
 /**
  * Generates files and/or directories out of a directory.<br/><br/>
@@ -37,15 +36,13 @@ import org.databene.commons.context.ContextAware;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FileGenerator extends SampleGenerator<File> implements ContextAware {
+public class FileGenerator extends SampleGenerator<File> {
 	
 	private String rootUri;
 	private String filter;
 	private boolean recursive;
 	private boolean folders;
 	private boolean files;
-	
-	private BeneratorContext context;
 	
 	public FileGenerator() {
 	    this(".", null, false, false, true);
@@ -88,13 +85,13 @@ public class FileGenerator extends SampleGenerator<File> implements ContextAware
 	// implementation --------------------------------------------------------------------------------------------------
 	
 	@Override
-	public void validate() {
+	public void init(BeneratorContext context) {
 	    if (dirty) {
 	    	try {
 	            String baseUri = IOUtil.resolveRelativeUri(rootUri, context.getContextUri());
 	            File baseFile = new File(baseUri);
 				setValues(FileUtil.listFiles(baseFile, filter, recursive, files, folders));
-	            super.validate();
+	            super.init(context);
             } catch (Exception e) {
 	            throw new ConfigurationError(e);
             }

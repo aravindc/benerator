@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.LocaleUtil;
 import org.databene.domain.address.Country;
 
@@ -72,7 +73,10 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements Genera
 
 	// Generator interface ---------------------------------------------------------------------------------------------
 	
-	public void validate() throws InvalidGeneratorSetupException {
+	@Override
+    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+		personGenerator.init(context);
+		super.init(context);
     }
 
 	public void reset() {

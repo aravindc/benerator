@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -65,32 +65,33 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testMinGreaterMax() {
-        new ShuffleDoubleGenerator(1, 0,  1, 1).validate();
+        new ShuffleDoubleGenerator(1, 0,  1, 1).init(context);
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testZeroIncrement() {
-        new ShuffleDoubleGenerator(0, 1,  1, 0).validate();
+        new ShuffleDoubleGenerator(0, 1,  1, 0).init(context);
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testNegativeIncrement() {
-        new ShuffleDoubleGenerator(0, 1, 1, -1).validate();
+        new ShuffleDoubleGenerator(0, 1, 1, -1).init(context);
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testZeroPrecision() {
-        new ShuffleDoubleGenerator(0, 1, 0, 1).validate();
+        new ShuffleDoubleGenerator(0, 1, 0, 1).init(context);
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testNegativePrecision() {
-        new ShuffleDoubleGenerator(0, 1, -1, 1).validate();
+        new ShuffleDoubleGenerator(0, 1, -1, 1).init(context);
     }
 
     @Test
     public void testReset() throws Exception {
     	ShuffleDoubleGenerator generator = new ShuffleDoubleGenerator(0., 3., 1., 2.);
+    	generator.init(context);
         expectGeneratedSequence(generator, 0., 2., 1., 3.).withCeasedAvailability();
     }
     
@@ -98,6 +99,7 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
 
     private void check(double min, double max, double precision, double increment, double ... expectedProducts) {
         Generator<Double> generator = new ShuffleDoubleGenerator(min, max, precision, increment);
+        generator.init(context);
         for (double product : expectedProducts)
             assertEquals(product, generator.generate());
         assertUnavailable(generator);

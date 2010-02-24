@@ -21,10 +21,9 @@
 
 package org.databene.benerator.file;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.Context;
-import org.databene.commons.context.ContextAware;
 
 /**
  * Generates file and/or directory names out of a directory.<br/><br/>
@@ -32,7 +31,7 @@ import org.databene.commons.context.ContextAware;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FileNameGenerator implements Generator<String>, ContextAware {
+public class FileNameGenerator extends AbstractGenerator<String> {
 
 	FileGenerator fileGenerator;
 	
@@ -50,10 +49,6 @@ public class FileNameGenerator implements Generator<String>, ContextAware {
     }
 
 	// properties ------------------------------------------------------------------------------------------------------
-
-	public void setContext(Context context) {
-	    fileGenerator.setContext(context);
-    }
 
 	public void setRootUri(String rootUri) {
 	    fileGenerator.setRootUri(rootUri);
@@ -86,8 +81,10 @@ public class FileNameGenerator implements Generator<String>, ContextAware {
 	    return String.class;
     }
 
-	public void validate() {
-	    fileGenerator.validate();
+	@Override
+    public void init(BeneratorContext context) {
+	    fileGenerator.init(context);
+	    super.init(context);
     }
 	
 	public String generate() {

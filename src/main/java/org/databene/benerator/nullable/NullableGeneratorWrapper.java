@@ -22,6 +22,7 @@
 package org.databene.benerator.nullable;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Proxy for a {@link NullableGenerator}.<br/><br/>
@@ -29,7 +30,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class NullableGeneratorWrapper<S, P> implements NullableGenerator<P> {
+public abstract class NullableGeneratorWrapper<S, P> extends AbstractNullableGenerator<P> {
 	
 	protected NullableGenerator<S> realGenerator;
 
@@ -45,8 +46,10 @@ public abstract class NullableGeneratorWrapper<S, P> implements NullableGenerato
 	    realGenerator.reset();
     }
 
-	public void validate() throws InvalidGeneratorSetupException {
-	    realGenerator.validate();
+	@Override
+    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+	    realGenerator.init(context);
+	    super.init(context);
     }
 
 }

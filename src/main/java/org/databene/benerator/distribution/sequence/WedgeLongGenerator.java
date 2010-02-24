@@ -27,9 +27,8 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Long Generator that implements a 'wedge' Long Sequence.<br/>
@@ -38,8 +37,6 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
-
-    private static final Logger logger = LoggerFactory.getLogger(WedgeLongGenerator.class);
 
     private Long cursor;
     private long end;
@@ -60,22 +57,17 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
     // generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            cursor = min;
-            max = min + (max - min) / precision * precision;
-            super.validate();
-            long steps = (max - min) / precision + 1;
-            end = min + steps / 2 * precision;
-            this.dirty = false;
-            if (logger.isDebugEnabled())
-                logger.debug("validated state: " + this);
-        }
+	public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        cursor = min;
+        max = min + (max - min) / precision * precision;
+        long steps = (max - min) / precision + 1;
+        end = min + steps / 2 * precision;
+        super.init(context);
     }
 
     public Long generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+        assertInitialized();
         if (cursor == null)
             return null;
         long result = cursor;

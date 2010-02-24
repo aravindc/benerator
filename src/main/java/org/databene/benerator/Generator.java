@@ -28,6 +28,7 @@ package org.databene.benerator;
 
 import java.io.Closeable;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Resettable;
 
 /**
@@ -65,17 +66,8 @@ public interface Generator<E> extends Resettable, Closeable {
      */
     Class<E> getGeneratedType();
 
-    /**
-     * This is a convenience method for checking the validity of a Generator's setup.
-     * If setup is not alright, the validate() method is expected to throw an InvalidGeneratorSetupException.
-     * <br/>
-     * <b>Developer Notes:</b><br/>
-     * If the method finishes without exception, the generator has to be <i>available</i>. The next invocation of generate()
-     * is expected to return a valid product and available() is expected to return true.
-     * Be aware that this method does not need to be called by the user.
-     */
-    void validate() throws InvalidGeneratorSetupException;
-
+    void init(BeneratorContext context);
+    
     /**
      * Returns an instance of the generic type E.
      */

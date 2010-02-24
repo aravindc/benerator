@@ -23,8 +23,6 @@ package org.databene.benerator.file;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
-import org.databene.commons.Context;
-import org.databene.commons.context.ContextAware;
 
 /**
  * Abstract parent class for generators that generate products based on concrete files.<br/><br/>
@@ -32,20 +30,13 @@ import org.databene.commons.context.ContextAware;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class FileContentGenerator<E> extends LightweightGenerator<E> implements ContextAware {
+public abstract class FileContentGenerator<E> extends LightweightGenerator<E> {
 
 	protected String uri;
 	protected String filter;
 	protected boolean recursive;
-	protected FileNameGenerator filenameGenerator;
+	protected FileGenerator fileGenerator;
 	
-	BeneratorContext context;
-	protected boolean dirty;
-
-	public FileContentGenerator() {
-	    this.dirty = true;
-	}
-
 	public void setUri(String uri) {
     	this.uri = uri;
     }
@@ -58,19 +49,12 @@ public abstract class FileContentGenerator<E> extends LightweightGenerator<E> im
     	this.recursive = recursive;
     }
 
-	public void setContext(Context context) {
-        this.context = (BeneratorContext) context;
-    }
-
 	@Override
-    public void validate() {
-    	if (dirty) {
-    	    super.validate();
-    	    filenameGenerator = new FileNameGenerator(uri, filter, recursive, true, false);
-    	    filenameGenerator.setContext(context);
-    	    filenameGenerator.validate();
-    	    dirty = false;
-    	}
+    public void init(BeneratorContext context) {
+		assertNotInitialized();
+	    fileGenerator = new FileGenerator(uri, filter, recursive, true, false);
+	    fileGenerator.init(context);
+	    super.init(context);
     }
 
 }

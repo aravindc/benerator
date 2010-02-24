@@ -26,7 +26,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.Arrays;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 import org.junit.Test;
 
@@ -56,10 +55,10 @@ public class BinaryFileContentGeneratorTest extends FileContentGeneratorTest {
 
 	private void check(String regex, boolean recursive, boolean rootFileExpected, boolean subFileExpected) {
 	    BinaryFileContentGenerator generator = new BinaryFileContentGenerator();
-	    generator.setContext(new BeneratorContext());
 	    generator.setUri(ROOT_DIR.getParent() + File.separator + ROOT_DIR.getName());
 	    generator.setFilter(regex);
 	    generator.setRecursive(recursive);
+	    generator.init(context);
 	    boolean rootFileUsed = false;
 	    boolean subFileUsed = false;
 	    for (int i = 0; i < 20; i++) {

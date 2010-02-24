@@ -26,7 +26,7 @@ import java.util.List;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.sample.SampleGeneratorUtil;
-import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Context;
@@ -52,7 +52,7 @@ public class SequencedDatasetCSVGenerator<E> extends GeneratorProxy<E> {
     public SequencedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting,
             Distribution distribution, String encoding, Converter<String, E> converter) {
         List<E> samples = parseFiles(datasetName, separator, nesting, filenamePattern, encoding, converter);
-		setSource(new SequencedSampleGenerator<E>((Class<E>) samples.get(0).getClass(), distribution, samples));
+		setSource(new SampleGenerator<E>((Class<E>) samples.get(0).getClass(), distribution, samples));
     }
 
 	private List<E> parseFiles(String datasetName, char separator, String nesting, String filenamePattern,

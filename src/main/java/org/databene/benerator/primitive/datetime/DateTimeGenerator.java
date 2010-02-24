@@ -33,6 +33,7 @@ import java.util.Date;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
@@ -62,8 +63,6 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     private long timePrecision;
     private Distribution timeDistribution;
     
-    boolean dirty;
-    
     public DateTimeGenerator() {
         this(
             TimeUtil.add(TimeUtil.today().getTime(), Calendar.YEAR, -1), 
@@ -81,7 +80,6 @@ public class DateTimeGenerator extends LightweightDateGenerator {
         setTimeDistribution(SequenceManager.RANDOM_SEQUENCE);
         setDatePrecision("00-00-01");
         setTimePrecision(TimeUtil.time(0, 1));
-        this.dirty = true;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -121,18 +119,17 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     // Generator interface ---------------------------------------------------------------------------------------------
     
     @Override
-    public void validate() {
-        super.validate();
+    public void init(BeneratorContext context) {
+    	assertNotInitialized();
     	this.dateGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE);
     	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE);
-        dirty = false;
+        super.init(context);
     }
 
     public Date generate() {
-    	if (dirty)
-    		validate();
+    	assertInitialized();
     	Long dateGeneration = dateGenerator.generate();
     	Long timeOffsetGeneration = timeOffsetGenerator.generate();
     	if (dateGeneration!= null && timeOffsetGeneration != null)

@@ -47,12 +47,14 @@ public class GenderGeneratorTest extends GeneratorClassTest {
     @Test
     public void testDefault() throws IllegalGeneratorStateException {
         Generator<Gender> generator = new GenderGenerator();
+        generator.init(context);
         expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.5, Gender.MALE, 0.5);
     }
     
     @Test
     public void testFemaleQuota() throws IllegalGeneratorStateException {
         Generator<Gender> generator = new GenderGenerator(0.3);
+        generator.init(context);
         expectRelativeWeights(generator, 1000, Gender.FEMALE, 0.3, Gender.MALE, 0.7);
     }
     

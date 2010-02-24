@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -67,26 +68,23 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> {
 
     public void setIncrement(long increment) {
         this.increment = increment;
-        this.dirty = true;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            if (precision <= 0)
-                throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
-            if (min < max && increment <= 0)
-                throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
-            super.validate();
-            next = min;
-        }
+	public void init(BeneratorContext context) {
+        assertNotInitialized();
+        if (precision <= 0)
+            throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
+        if (min < max && increment <= 0)
+            throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
+        next = min;
+        super.init(context);
     }
 
     public Long generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         if (next == null)
         	return null;
         long result = next;

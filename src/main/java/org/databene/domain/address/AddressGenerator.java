@@ -27,6 +27,7 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.slf4j.Logger;
@@ -55,36 +56,51 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     }
 
     public AddressGenerator(Country country) {
-        init(country);
+        setCountry(country);
     }
 
-	private void init(Country country) {
+    public void setCountry(Country country) {
+    	this.country = country;
+    }
+    
+	public void setDataset(String dataset) {
 		try {
-			this.country = country;
-	        this.cityGenerator = new CityGenerator(country);
-	        this.streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
-	        this.localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
+			setCountry(Country.getInstance(dataset));
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.equals(country)) {
 				logger.error("Cannot generate addresses for " + country + ", falling back to " + fallBackCountry);
-				init(fallBackCountry);
+				setCountry(fallBackCountry);
 			} else
 				throw e;
 		}
 	}
-	
-	public void setDataset(String dataset) {
-		init(Country.getInstance(dataset));
-	}
 
     // Generator interface ---------------------------------------------------------------------------------------------
+
+	@Override
+    public void init(BeneratorContext context) {
+		assertNotInitialized();
+		try {
+	        initMembers(context);
+		} catch (RuntimeException e) {
+			Country fallBackCountry = Country.getFallback();
+			if (!fallBackCountry.equals(country)) {
+				logger.error("Cannot generate addresses for " + country + ", falling back to " + fallBackCountry);
+				setCountry(fallBackCountry);
+				initMembers(context);
+			} else
+				throw e;
+		}
+        super.init(context);
+	}
 
     public Class<Address> getGeneratedType() {
 	    return Address.class;
     }
 
     public Address generate() throws IllegalGeneratorStateException {
+    	assertInitialized();
         City city = cityGenerator.generate();
         Street street = new Street(city, streetNameGenerator.generate());
         String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.6 make street name generator fit the locale
@@ -106,6 +122,15 @@ public class AddressGenerator extends LightweightGenerator<Address> {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
+	private void initMembers(BeneratorContext context) {
+	    cityGenerator = new CityGenerator(country);
+        cityGenerator.init(context);
+        streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
+        streetNameGenerator.init(context);
+        localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
+        localPhoneNumberGenerator.init(context);
+    }
+	
     private PhoneNumber generatePhoneNumber(City city) {
         int localPhoneNumberLength = 10 - city.getAreaCode().length();
         localPhoneNumberGenerator.setPattern("[2-9]\\d{" + (localPhoneNumberLength - 1) + '}');

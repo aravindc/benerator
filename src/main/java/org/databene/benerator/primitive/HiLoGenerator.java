@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,8 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class HiLoGenerator implements Generator<Long> {
+public class HiLoGenerator extends AbstractGenerator<Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(HiLoGenerator.class);
 
@@ -49,7 +51,6 @@ public class HiLoGenerator implements Generator<Long> {
     private Long hi;
 
     protected Generator<Long> hiGenerator;
-    protected boolean dirty;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -64,11 +65,9 @@ public class HiLoGenerator implements Generator<Long> {
     public HiLoGenerator(Generator<Long> hiGenerator, int maxLo) {
         this.hiGenerator = hiGenerator;
         setMaxLo(maxLo);
-        this.lo = -1;
-        this.hi = -1L;
-        this.dirty = true;
+        resetMembers();
     }
-    
+
     // properties ------------------------------------------------------------------------------------
 
     public void setHiGenerator(Generator<Long> hiGenerator) {
@@ -89,7 +88,6 @@ public class HiLoGenerator implements Generator<Long> {
         if (maxLo <= 0)
             throw new IllegalArgumentException("maxLo must be greater than 0, was: " + maxLo);
         this.maxLo = maxLo;
-        this.dirty = true;
     }
 
     // Generator interface -------------------------------------------------------------------
@@ -98,18 +96,18 @@ public class HiLoGenerator implements Generator<Long> {
         return Long.class;
     }
 
-    public void validate() {
-        if (dirty) {
-            if (hiGenerator == null)
-                throw new InvalidGeneratorSetupException("hiGenerator", "is null");
-            hiGenerator.validate();
-            dirty = false;
-        }
+    @Override
+    public synchronized void init(BeneratorContext context) {
+    	assertNotInitialized();
+        if (hiGenerator == null)
+            throw new InvalidGeneratorSetupException("hiGenerator", "is null");
+        hiGenerator.init(context);
+        resetMembers();
+        super.init(context);
     }
 
     public synchronized Long generate() {
-        if (dirty)
-            validate();
+        assertInitialized();
         if (hi == -1 || lo >= maxLo) {
             hi = hiGenerator.generate();
             if (hi == null)
@@ -123,16 +121,13 @@ public class HiLoGenerator implements Generator<Long> {
     }
     
     public void reset() {
-        if (dirty)
-            validate();
+        assertInitialized();
         hiGenerator.reset();
-        hi = -1L;
-        dirty = true;
+        resetMembers();
     }
 
     public void close() {
-        if (dirty)
-            validate();
+        assertInitialized();
         hiGenerator.close();
     }
 
@@ -140,4 +135,10 @@ public class HiLoGenerator implements Generator<Long> {
     public String toString() {
         return getClass().getSimpleName() + '[' + maxLo + ',' + hiGenerator + ']';
     }
+
+	private void resetMembers() {
+	    this.lo = -1;
+        this.hi = -1L;
+    }
+    
 }

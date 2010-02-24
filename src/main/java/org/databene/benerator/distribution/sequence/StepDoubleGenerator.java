@@ -26,6 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -65,16 +66,14 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
     // properties ------------------------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-            reset();
-            super.validate();
-            this.dirty = false;
-        }
+	public void init(BeneratorContext context) {
+    	assertNotInitialized();
+        resetMembers();
+        super.init(context);
     }
 
     public synchronized Double generate() {
-    	validate();
+    	assertInitialized();
     	if (increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min)) {
 	        double value = next;
 	        next += increment;
@@ -85,7 +84,11 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
 
 	@Override
 	public void reset() {
-		next = initial;
+		resetMembers();
 	}
+
+	private void resetMembers() {
+	    next = initial;
+    }
 
 }

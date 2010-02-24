@@ -50,18 +50,21 @@ public class StateGeneratorTest extends GeneratorTest {
 		generator.addTransition(null, 1, 1.);
 		generator.addTransition(1, 2, 1.);
 		generator.addTransition(2, null, 1.);
+		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2).withCeasedAvailability();
 	}
 	
 	@Test
 	public void testDeterministicIntSequenceByStringSpec() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>("null->1,1->2,2->null");
+		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2).withCeasedAvailability();
 	}
 	
 	@Test
 	public void testDeterministicStringSequenceByStringSpec() {
 		StateGenerator<String> generator = new StateGenerator<String>("null->'1', '1'->'2', '2'->null");
+		generator.init(context);
 		expectGeneratedSequence(generator, "1", "2").withCeasedAvailability();
 	}
 	
@@ -73,6 +76,7 @@ public class StateGeneratorTest extends GeneratorTest {
 		generator.addTransition(1, 2, 1.);
 		generator.addTransition(2, 1, 0.5);
 		generator.addTransition(2, null, 0.5);
+		generator.init(context);
 		for (int n = 0; n < 10; n++) {
 			List<Integer> products = GeneratorUtil.allProducts(generator);
 			assertTrue(products.size() % 2 == 0);
@@ -86,6 +90,7 @@ public class StateGeneratorTest extends GeneratorTest {
 	@Test
 	public void testRandomSequenceByStringSpec() {
 		StateGenerator<String> generator = new StateGenerator<String>("null->1,1->2,2->1^0.5,2->null^0.5");
+		generator.init(context);
 		for (int n = 0; n < 10; n++) {
 			List<String> products = GeneratorUtil.allProducts(generator);
 			assertTrue(products.size() % 2 == 0);
@@ -102,6 +107,7 @@ public class StateGeneratorTest extends GeneratorTest {
 		generator.addTransition(null, 1, 1.);
 		generator.addTransition(1, 1, 0.5);
 		generator.addTransition(1, null, 0.5);
+		generator.init(context);
 		for (int n = 0; n < 10; n++) {
 			List<Integer> products = GeneratorUtil.allProducts(generator);
 			for (int i = 0; i < products.size(); i++)
@@ -110,28 +116,18 @@ public class StateGeneratorTest extends GeneratorTest {
 		}
 	}
 	
-	@Test
+	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testNoInitialState() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(1, 2, 0.6);
-		try {
-			generator.validate();
-			fail(InvalidGeneratorSetupException.class.getSimpleName() + " expected");
-		} catch (InvalidGeneratorSetupException e) {
-			// we expect that
-		}
+		generator.init(context);
 	}
 	
-	@Test
+	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testNoFinalState() {
 		StateGenerator<Integer> generator = new StateGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 0.6);
-		try {
-			generator.validate();
-			fail(InvalidGeneratorSetupException.class.getSimpleName() + " expected");
-		} catch (InvalidGeneratorSetupException e) {
-			// we expect that
-		}
+		generator.init(context);
 	}
 	
 }

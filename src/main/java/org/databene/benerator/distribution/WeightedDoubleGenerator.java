@@ -28,6 +28,7 @@ package org.databene.benerator.distribution;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.function.ConstantFunction;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 import java.util.Arrays;
@@ -67,43 +68,39 @@ public class WeightedDoubleGenerator extends AbstractNumberGenerator<Double> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-	public void validate() {
-        if (dirty) {
-        	if (min > max)
-                throw new InvalidGeneratorSetupException("min ("+ min + ") > max(" + max + ")");
-            if (precision <= 0)
-                throw new InvalidGeneratorSetupException("precision value not supported: "+ precision);
-            int sampleCount = (int) ((max - min) / precision) + 1;
-            if (sampleCount > 100000)
-                throw new InvalidGeneratorSetupException("precision", "too small, resulting in a set of " + sampleCount + " samples");
-            probSum = new double[sampleCount];
-            value = new double[sampleCount];
-            if (sampleCount == 1) {
-                value[0] = min;
-                probSum[0] = 1;
-            } else {
-                double sum = 0;
-                double dx = (max - min) / (sampleCount - 1);
-                for (int i = 0; i < sampleCount; i++) {
-                    value[i] = min + i * dx;
-                    sum += function.value(value[i]);
-                    probSum[i] = sum;
-                }
-                if (sum <= 0)
-                    throw new IllegalGeneratorStateException(
-                            "Invalid WeightFunction: Sum is not positive for " + function);
-                for (int i = 0; i < sampleCount; i++) {
-                    probSum[i] /= sum;
-                }
+	public void init(BeneratorContext context) {
+    	if (min > max)
+            throw new InvalidGeneratorSetupException("min ("+ min + ") > max(" + max + ")");
+        if (precision <= 0)
+            throw new InvalidGeneratorSetupException("precision value not supported: "+ precision);
+        int sampleCount = (int) ((max - min) / precision) + 1;
+        if (sampleCount > 100000)
+            throw new InvalidGeneratorSetupException("precision", "too small, resulting in a set of " + sampleCount + " samples");
+        probSum = new double[sampleCount];
+        value = new double[sampleCount];
+        if (sampleCount == 1) {
+            value[0] = min;
+            probSum[0] = 1;
+        } else {
+            double sum = 0;
+            double dx = (max - min) / (sampleCount - 1);
+            for (int i = 0; i < sampleCount; i++) {
+                value[i] = min + i * dx;
+                sum += function.value(value[i]);
+                probSum[i] = sum;
             }
-            this.dirty = false;
-            super.validate();
+            if (sum <= 0)
+                throw new IllegalGeneratorStateException(
+                        "Invalid WeightFunction: Sum is not positive for " + function);
+            for (int i = 0; i < sampleCount; i++) {
+                probSum[i] /= sum;
+            }
         }
+        super.init(context);
     }
 
     public Double generate() throws IllegalGeneratorStateException {
-        if (dirty)
-            validate();
+        assertInitialized();
         double randomValue = random.nextDouble();
         int n = intervallNoOfRandom(randomValue);
         return value[n];

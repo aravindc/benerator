@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.ConstantTestGenerator;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.CollectionUtil;
 import org.databene.measure.count.ObjectCounter;
@@ -51,7 +52,10 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
     @SuppressWarnings("unchecked")
     public void testElements() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
-        CollectionGenerator<List, Integer> generator = new CollectionGenerator<List, Integer>(List.class, source, 1, 5);
+        source.init(context);
+        CollectionGenerator<List, Integer> generator 
+        	= new CollectionGenerator<List, Integer>(List.class, source, 1, 5, SequenceManager.RANDOM_SEQUENCE);
+        generator.init(context);
         List<Integer> list = generator.generate();
         checkEqualDistribution(list, 0., CollectionUtil.toSet(1));
     }
@@ -60,7 +64,10 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
     @SuppressWarnings("unchecked")
     public void testSize() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
-        CollectionGenerator<List, Integer> generator = new CollectionGenerator<List, Integer>(List.class, source, 0, 3);
+        source.init(context);
+        CollectionGenerator<List, Integer> generator 
+        	= new CollectionGenerator<List, Integer>(List.class, source, 0, 3, SequenceManager.RANDOM_SEQUENCE);
+        generator.init(context);
         ObjectCounter<Integer> counter = new ObjectCounter<Integer>(4);
         for (int i = 0; i < 5000; i++)
             counter.count(generator.generate().size());

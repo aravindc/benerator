@@ -58,7 +58,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setDetailValue("generator", MyGenerator.class.getName());
 		type.setDetailValue("locale", "de");
 		Generator<Entity> generator = createGenerator(type);
-		generator.validate();
+		generator.init(context);
 		Entity product = generator.generate();
 		assertNotNull(product);
 		assertEquals(Locale.GERMAN, product.get("locale"));
@@ -70,6 +70,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_TAB_CSV);
 		type.setSeparator("\t");
 		Generator<Entity> generator = createGenerator(type);
+		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
 
@@ -78,6 +79,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
 		type.setSource(PERSON_CSV);
 		Generator<Entity> generator = createGenerator(type);
+		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
 
@@ -87,6 +89,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_CSV);
 		type.setCyclic(true);
 		Generator<Entity> generator = createGenerator(type);
+		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto, alice).withContinuedAvailability();
 	}
 
@@ -96,6 +99,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_CSV);
 		type.setDetailValue("distribution", "weighted[age]");
 		Generator<Entity> generator = createGenerator(type);
+		generator.init(context);
 		expectGeneratedSet(generator, alice, otto).withContinuedAvailability();
 		ObjectCounter<Entity> counter = new ObjectCounter<Entity>(2);
 		int n = 1000;
@@ -110,6 +114,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(PERSON_CSV);
 		type.setDistribution("new StepSequence(-1)");
 		Generator<Entity> generator = createGenerator(type);
+		generator.init(context);
 		expectGeneratedSequence(generator, otto, alice).withCeasedAvailability();
 	}
 	
@@ -120,6 +125,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		InstanceDescriptor instance = new InstanceDescriptor("person", type);
 		instance.setUnique(true);
 		Generator<Entity> generator = createGenerator(instance);
+		generator.init(context);
 		Entity person1 = generator.generate();
 		Entity person2 = generator.generate();
 		assertTrue(alice.equals(person1) && otto.equals(person2) || otto.equals(person1) && alice.equals(person2));

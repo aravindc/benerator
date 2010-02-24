@@ -38,11 +38,9 @@ public class TextFileContentGenerator extends FileContentGenerator<String> {
     }
 
 	public String generate() {
+		assertInitialized();
 		try {
-			if (dirty)
-				validate();
-	        String filename = filenameGenerator.generate();
-	        return IOUtil.getContentOfURI(filename);
+	        return IOUtil.getContentOfURI(fileGenerator.generate().getAbsolutePath());
         } catch (IOException e) {
         	throw new IllegalGeneratorStateException(e);
         }

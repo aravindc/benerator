@@ -26,7 +26,7 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.util.AbstractGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * <br/>
  * Created: 19.11.2007 15:21:24
  */
-public class SequenceGenerator<E> implements Generator<E> {
+public class SequenceGenerator<E> extends AbstractGenerator<E> {
     
     private static Logger logger = LoggerFactory.getLogger(SequenceGenerator.class);
 
@@ -52,9 +52,6 @@ public class SequenceGenerator<E> implements Generator<E> {
 
     public Class<E> getGeneratedType() {
         return productType;
-    }
-
-    public void validate() {
     }
 
     public E generate() {
@@ -78,4 +75,5 @@ public class SequenceGenerator<E> implements Generator<E> {
         values = null;
         cursor = -1;
     }
+    
 }

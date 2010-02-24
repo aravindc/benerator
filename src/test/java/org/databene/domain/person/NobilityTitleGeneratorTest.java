@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.util.Locale;
 import java.util.Set;
 
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.CollectionUtil;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class NobilityTitleGeneratorTest {
+public class NobilityTitleGeneratorTest extends GeneratorTest {
 	
 	private static final int N = 10000;
 	private static final Set<String> GERMAN_TITLES = CollectionUtil.toSet("Baron", "Graf", "Prinz", "König");
@@ -61,6 +62,7 @@ public class NobilityTitleGeneratorTest {
 	    int nobCount = 0;
 		NobilityTitleGenerator gen = new NobilityTitleGenerator(Gender.MALE, locale);
 		gen.setNobleQuota(nobilityQuota);
+		gen.init(context);
 		for (int i = 0; i < N; i++) {
 			String title = gen.generate();
 			if (title.length() > 0) {

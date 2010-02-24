@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,7 @@ package org.databene.domain.lang;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.util.LightweightGenerator;
 
 /**
  * Generates {@link Noun}s of a given {@link Locale}.<br/>
@@ -41,24 +39,15 @@ import org.databene.benerator.util.LightweightGenerator;
  * @author Volker Bergmann
  */
 
-public class NounGenerator extends LightweightGenerator<Noun> {
-	
-	private SampleGenerator<Noun> nouns;
+public class NounGenerator extends SampleGenerator<Noun> {
 	
 	public NounGenerator() throws IOException {
 		this(Locale.getDefault());
 	}
 	
 	public NounGenerator(Locale locale) throws IOException {
-		nouns = new SampleGenerator<Noun>(Noun.class, Noun.getInstances(locale));
+		super(Noun.class);
+		addValues(Noun.getInstances(locale));
 	}
 
-    public Class<Noun> getGeneratedType() {
-	    return Noun.class;
-    }
-	
-    public Noun generate() throws IllegalGeneratorStateException {
-	    return nouns.generate();
-    }
-	
 }

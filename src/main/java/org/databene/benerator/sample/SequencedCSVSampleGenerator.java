@@ -28,6 +28,7 @@ package org.databene.benerator.sample;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
@@ -92,7 +93,6 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     public void setUri(String uri) {
         this.uri = uri;
-        this.dirty = true;
     }
 
     /** test support method */
@@ -104,29 +104,26 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void validate() {
-        if (dirty) {
-            try {
-            	if (uri == null)
-            		throw new InvalidGeneratorSetupException("uri is not set");
-                CSVLineIterator parser = new CSVLineIterator(uri);
-                String[] tokens;
-                List<E> samples = new ArrayList<E>();
-                while (parser.hasNext()) {
-                    tokens = parser.next();
-                    if (tokens.length > 0)
-                        samples.add(converter.convert(tokens[0]));
-                }
-                ((SampleGenerator<E>) source).setValues(samples);
-            	super.validate();
-                dirty = false;
-            } catch (FileNotFoundException e) {
-                throw new InvalidGeneratorSetupException("uri", "not found: " + uri);
-            } catch (IOException e) {
-                throw new IllegalGeneratorStateException(e); // file access was interrupted, no fail-over
-            } catch (ConversionException e) {
-                throw new InvalidGeneratorSetupException("URI content not valid", e);
+    public void init(BeneratorContext context) {
+        try {
+        	if (uri == null)
+        		throw new InvalidGeneratorSetupException("uri is not set");
+            CSVLineIterator parser = new CSVLineIterator(uri);
+            String[] tokens;
+            List<E> samples = new ArrayList<E>();
+            while (parser.hasNext()) {
+                tokens = parser.next();
+                if (tokens.length > 0)
+                    samples.add(converter.convert(tokens[0]));
             }
+            ((SampleGenerator<E>) source).setValues(samples);
+        	super.init(context);
+        } catch (FileNotFoundException e) {
+            throw new InvalidGeneratorSetupException("uri", "not found: " + uri);
+        } catch (IOException e) {
+            throw new IllegalGeneratorStateException(e); // file access was interrupted, no fail-over
+        } catch (ConversionException e) {
+            throw new InvalidGeneratorSetupException("URI content not valid", e);
         }
     }
 

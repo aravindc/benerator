@@ -48,6 +48,7 @@ public class AsByteGeneratorWrapper<E extends Number> extends GeneratorWrapper<E
     }
 
     public Byte generate() throws IllegalGeneratorStateException {
+    	assertInitialized();
 	    E feed = source.generate();
 		return (feed != null ? feed.byteValue() : null);
     }

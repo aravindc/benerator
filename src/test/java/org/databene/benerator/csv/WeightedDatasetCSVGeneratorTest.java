@@ -26,6 +26,7 @@
 
 package org.databene.benerator.csv;
 
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.Encodings;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -36,7 +37,7 @@ import static junit.framework.Assert.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class WeightedDatasetCSVGeneratorTest {
+public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
 
     private static final String FAMILY_NAME = "org/databene/domain/person/familyName";
     private static final String REGION = "org/databene/dataset/region";
@@ -44,6 +45,7 @@ public class WeightedDatasetCSVGeneratorTest {
     @Test
     public void testDE() {
         WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, Encodings.UTF_8);
+        generator.init(context);
         boolean mueller = false;
         for (int i = 0; i < 1000; i++) {
             if ("Müller".equals(generator.generate()))
@@ -55,6 +57,7 @@ public class WeightedDatasetCSVGeneratorTest {
     @Test
     public void testEurope() {
         WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, Encodings.UTF_8);
+        generator.init(context);
         boolean mueller = false; // German name
         boolean garcia = false;  // Spanish name
         for (int i = 0; i < 100000 && (!mueller || !garcia); i++) {

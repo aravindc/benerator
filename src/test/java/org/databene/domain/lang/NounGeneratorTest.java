@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,6 +48,7 @@ public class NounGeneratorTest extends GeneratorClassTest {
     @Test
     public void test() throws Exception {
     	NounGenerator generator = new NounGenerator();
+    	generator.init(context);
     	for (int i = 0; i < 10; i++)
     		assertNotNull(generator.generate());
     }

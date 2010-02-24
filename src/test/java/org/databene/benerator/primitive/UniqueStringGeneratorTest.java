@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,9 +43,15 @@ public class UniqueStringGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testUniqueVolume() {
-        expectUniqueProducts(new UniqueStringGenerator(0, 1, '0', '1'),  3).withCeasedAvailability();
-        expectUniqueProducts(new UniqueStringGenerator(0, 2, '0', '1'),  7).withCeasedAvailability();
-        expectUniqueProducts(new UniqueStringGenerator(3, 4, '0', '1', '3'), 27 + 81).withCeasedAvailability();
+        expectUniqueProducts(create(0, 1, '0', '1'),  3).withCeasedAvailability();
+        expectUniqueProducts(create(0, 2, '0', '1'),  7).withCeasedAvailability();
+        expectUniqueProducts(create(3, 4, '0', '1', '3'), 27 + 81).withCeasedAvailability();
+    }
+
+	private UniqueStringGenerator create(int minLength, int maxLength, char... chars) {
+	    UniqueStringGenerator generator = new UniqueStringGenerator(minLength, maxLength, chars);
+	    generator.init(context);
+		return generator;
     }
     
 }

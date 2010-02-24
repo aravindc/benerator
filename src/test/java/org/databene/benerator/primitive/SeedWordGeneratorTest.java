@@ -47,6 +47,7 @@ public class SeedWordGeneratorTest extends GeneratorClassTest {
     @Test
     public void test() {
     	SeedWordGenerator generator = new SeedWordGenerator();
+    	generator.init(context);
     	//generator.printState();
     	for (int i = 0; i < 10; i++) {
     		String word = generator.generate();

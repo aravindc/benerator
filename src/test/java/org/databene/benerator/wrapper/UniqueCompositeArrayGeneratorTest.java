@@ -52,7 +52,9 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorClassTest {
                 new SequenceTestGenerator<Integer>(0, 1),
                 new SequenceTestGenerator<Integer>(0, 1)
         };
-        expectUniqueProducts(new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources),  8).withCeasedAvailability();
+        UniqueCompositeArrayGenerator<Integer> generator = new UniqueCompositeArrayGenerator<Integer>(Integer.class, sources);
+        generator.init(context);
+		expectUniqueProducts(generator,  8).withCeasedAvailability();
     }
 
     @Test
@@ -64,6 +66,7 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorClassTest {
                 new ConstantGenerator<String>("x")
         };
         UniqueCompositeArrayGenerator<String> generator = new UniqueCompositeArrayGenerator<String>(String.class, sources);
+        generator.init(context);
 		expectUniqueProducts(generator,  2).withCeasedAvailability();
     }
 

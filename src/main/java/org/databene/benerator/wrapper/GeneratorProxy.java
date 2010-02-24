@@ -49,14 +49,10 @@ public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
     // Generator interface implementation ------------------------------------------------------------------------------
 
     public Class<E> getGeneratedType() {
-    	if (dirty)
-    		validate();
         return source.getGeneratedType();
     }
 
     public E generate() {
-    	if (dirty)
-    		validate();
         return source.generate();
     }
 

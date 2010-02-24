@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
@@ -115,17 +116,14 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	// Generator interface implementation ------------------------------------------------------------------------------
 
 	@Override
-	public void validate() {
-	    if (dirty) {
-	    	super.validate();
-	    	createBuckets();
-	    }
+	public void init(BeneratorContext context) {
+    	super.init(context);
+    	createBuckets();
 	}
 	
 	@Override
     public synchronized E generate() {
-		if (dirty)
-			validate();
+		assertInitialized();
 		if (buckets.isEmpty())
 			return null;
 		int bucketIndex = RandomUtil.randomIndex(buckets);

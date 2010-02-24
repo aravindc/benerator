@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -57,6 +57,7 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDistribution() throws Exception {
+    	// prepare
         WeightedSample<Integer>[] samples = new WeightedSample[] {
             new WeightedSample<Integer>(0, 0.1),
             new WeightedSample<Integer>(1, 0.3),
@@ -64,6 +65,8 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
         };
         AttachedWeightSampleGenerator<Integer> g = new AttachedWeightSampleGenerator<Integer>();
         g.setSamples(samples);
+        g.init(context);
+        // execute
         int n = 10000;
         int[] sampleCount = new int[3];
         for (int i = 0; i < n; i++) {

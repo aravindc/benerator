@@ -43,12 +43,14 @@ public class HiLoGeneratorTest extends GeneratorClassTest {
     @Test
     public void test2() {
         HiLoGenerator generator = new HiLoGenerator(new IncrementGenerator(), 2);
+        generator.init(context);
         expectGeneratedSequence(generator, 3L, 4L, 5L, 6L, 7L, 8L);
     }
 
     @Test
     public void test100() {
         HiLoGenerator generator = new HiLoGenerator(new IncrementGenerator(), 100);
+        generator.init(context);
         expectGeneratedSequence(generator, 101L, 102L, 103L);
     }
 

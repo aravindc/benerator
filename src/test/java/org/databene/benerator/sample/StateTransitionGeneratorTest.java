@@ -52,6 +52,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(null, 1, 1.);
 		generator.addTransition(1, 2, 1.);
 		generator.addTransition(2, null, 1.);
+		generator.init(context);
 		expectGeneratedSequence(generator, 
 				new Transition(null,    1), 
 				new Transition(   1,    2),
@@ -67,6 +68,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(1, 2, 1.);
 		generator.addTransition(2, 1, 0.5);
 		generator.addTransition(2, null, 0.5);
+		generator.init(context);
 		for (int n = 0; n < 10; n++) {
 			List<Transition> products = GeneratorUtil.allProducts(generator);
 			assertTrue("Expected an odd number of products, but found: " + products.size(), products.size() % 2 == 1);
@@ -88,6 +90,7 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(null, 1, 1.);
 		generator.addTransition(1, 1, 0.5);
 		generator.addTransition(1, null, 0.5);
+		generator.init(context);
 		checkRecursion(generator);
 	}
 
@@ -99,31 +102,22 @@ public class StateTransitionGeneratorTest extends GeneratorTest {
 		generator.addTransition(null, 1, 1.);
 		generator.addTransition(1, 1, 0.5);
 		generator.addTransition(1, null, 0.5);
+		generator.init(context);
 		checkRecursion(generator);
 	}
 	
-	@Test
+	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testNoInitialState() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(1, 2, 0.6);
-		try {
-			generator.validate();
-			fail(InvalidGeneratorSetupException.class.getSimpleName() + " expected");
-		} catch (InvalidGeneratorSetupException e) {
-			// we expect that
-		}
+		generator.init(context);
 	}
 	
-	@Test
+	@Test(expected = InvalidGeneratorSetupException.class)
 	public void testNoFinalState() {
 		StateTransitionGenerator<Integer> generator = new StateTransitionGenerator<Integer>(Integer.class);
 		generator.addTransition(null, 1, 0.6);
-		try {
-			generator.validate();
-			fail(InvalidGeneratorSetupException.class.getSimpleName() + " expected");
-		} catch (InvalidGeneratorSetupException e) {
-			// we expect that
-		}
+		generator.init(context);
 	}
 	
 	// private helpers -------------------------------------------------------------------------------------------------
