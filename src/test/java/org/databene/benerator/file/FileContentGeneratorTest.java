@@ -28,7 +28,7 @@ import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parent class for tests that relate to file and folder hierarchies.<br/><br/>
  * Created: 24.02.2010 10:24:38
  * @since 0.6.0
  * @author Volker Bergmann
