@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -57,7 +57,7 @@ public class EMailAddressBuilder {
 		} catch (IOException e) {
 			throw new ConfigurationError("Error in Converter setup", e);
 		}
-		this.joinGenerator = new SequencedSampleGenerator<Character>(Character.class, '_', '.', '0', '1');
+		this.joinGenerator = new SampleGenerator<Character>(Character.class, '_', '.', '0', '1');
     }
 
 	public String generate(String givenName, String familyName) {

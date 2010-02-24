@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
@@ -43,14 +43,14 @@ import org.databene.benerator.util.LightweightGenerator;
 
 public class NounGenerator extends LightweightGenerator<Noun> {
 	
-	private SequencedSampleGenerator<Noun> nouns;
+	private SampleGenerator<Noun> nouns;
 	
 	public NounGenerator() throws IOException {
 		this(Locale.getDefault());
 	}
 	
 	public NounGenerator(Locale locale) throws IOException {
-		nouns = new SequencedSampleGenerator<Noun>(Noun.class, Noun.getInstances(locale));
+		nouns = new SampleGenerator<Noun>(Noun.class, Noun.getInstances(locale));
 	}
 
     public Class<Noun> getGeneratedType() {
