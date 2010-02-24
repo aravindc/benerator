@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * Tests the {@link DescriptorBasedGenerator}.<br/><br/>
  * Created: 23.02.2010 12:17:27
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class DescriptorBasedGeneratorTest extends GeneratorTest {
