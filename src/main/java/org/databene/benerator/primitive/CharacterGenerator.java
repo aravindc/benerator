@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
-import org.databene.benerator.sample.SequencedSampleGenerator;
+import org.databene.benerator.sample.SampleGenerator;
 import org.databene.commons.LocaleUtil;
 
 import java.util.*;
@@ -142,7 +142,7 @@ public class CharacterGenerator implements Generator<Character> {
                     Object regex = new RegexParser(locale).parseSingleChar(pattern);
                     values = RegexParser.toSet(regex);
                 }
-                this.source = new SequencedSampleGenerator<Character>(Character.class, values);
+                this.source = new SampleGenerator<Character>(Character.class, values);
                 source.validate();
                 this.dirty = false;
             } catch (ParseException e) {
