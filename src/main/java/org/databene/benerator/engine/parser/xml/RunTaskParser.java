@@ -51,16 +51,18 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	    super(EL_RUN_TASK);
     }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
 		try {
-			Expression<Task> taskProvider = (Expression<Task>) BeanParser.parseBeanExpression(element, resourceManager);
-			Expression<Long> count    = parseLongAttribute(ATT_COUNT, element, 1);
-			Expression<Long> pageSize = parseLongAttribute(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
-			Expression<Integer> threads  = parseIntAttribute(ATT_THREADS, element, 1);
-			Expression<PageListener> pager    = parsePager(element);
+		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(
+		    		element, resourceManager);
+			Expression<Long> count          = parseLongAttribute(ATT_COUNT, element, 1);
+			Expression<Long> pageSize       = parseLongAttribute(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
+			Expression<Integer> threads     = parseIntAttribute(ATT_THREADS, element, 1);
+			Expression<PageListener> pager  = parsePager(element);
+		    Expression<Boolean> stats       = parseBooleanExpressionAttribute(ATT_STATS, element, false);
 			Expression<ErrorHandler> errorHandler = parseErrorHandler(element);
-			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, errorHandler);
+			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, stats, errorHandler);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
         }

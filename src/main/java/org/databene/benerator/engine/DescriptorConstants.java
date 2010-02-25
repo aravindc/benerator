@@ -101,6 +101,7 @@ public interface DescriptorConstants {
     static final String ATT_MAX = "max";
     static final String ATT_PRECISION = "precision";
     static final String ATT_DISTRIBUTION = "distribution";
+    static final String ATT_STATS = "stats";
 	
     static final String ATT_CLASS = "class";
     static final String ATT_SPEC = "spec";

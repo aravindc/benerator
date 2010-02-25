@@ -46,16 +46,20 @@ public class RunTaskStatement extends AbstractStatement {
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
+	protected Expression<Boolean> stats;
 	protected Expression<ErrorHandler> errorHandler;
 
-	public RunTaskStatement(Expression<? extends Task> taskProvider, Expression<Long> count, Expression<Long> pageSize, 
-			Expression<PageListener> pageListener, Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
+	public RunTaskStatement(Expression<? extends Task> taskProvider, 
+			Expression<Long> count, Expression<Long> pageSize, 
+			Expression<PageListener> pageListener, Expression<Integer> threads, 
+			Expression<Boolean> stats, Expression<ErrorHandler> errorHandler) {
 		super(errorHandler);
 	    this.taskProvider = taskProvider;
 	    this.count = count;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
+	    this.stats = stats;
 	    this.errorHandler = errorHandler;
     }
 
@@ -76,11 +80,13 @@ public class RunTaskStatement extends AbstractStatement {
     }
 
 	public void execute(BeneratorContext context) {
-	    PagedTaskRunner.execute(getTask(context), context, 
+	    PagedTaskRunner.execute(
+	    		getTask(context), context, 
 	    		count.evaluate(context), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context), 
 	    		threads.evaluate(context),
+	    		stats.evaluate(context),
 	    		context.getExecutorService(),
 	    		getErrorHandler(context));
 	}

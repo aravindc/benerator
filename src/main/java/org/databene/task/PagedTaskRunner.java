@@ -32,10 +32,13 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
-import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.ExpressionUtil;
+import org.databene.platform.contiperf.PerfTrackingTaskProxy;
+import org.databene.stat.LatencyCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -49,6 +52,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Volker Bergmann
  */
 public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
+
+	// TODO split into singlethreaded and multithreaded task runner classes
 
     private static final Logger logger = LoggerFactory.getLogger(PagedTaskRunner.class);
 
@@ -65,6 +70,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     private volatile AtomicLong actualCount;
     
     private Expression<ExecutorService> executor;
+    private LatencyCounter counter;
 
     private Throwable exception;
 
@@ -83,17 +89,22 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     }
 
     public PagedTaskRunner(Task realTask, long totalInvocations, List<PageListener> listeners, long pageSize) {
-        this(realTask, totalInvocations, listeners, pageSize, 1, Executors.newSingleThreadExecutor());
+        this(realTask, totalInvocations, listeners, pageSize, 1, false, Executors.newSingleThreadExecutor());
     }
 
     public PagedTaskRunner(Task realTask, Long maxCount, List<PageListener> listeners, long pageSize, int threads, 
-    		ExecutorService executor) {
-    	this(realTask, maxCount, listeners, pageSize, threads, 
-    			new ConstantExpression<ExecutorService>(executor));
+    		boolean stats, ExecutorService executor) {
+    	this(realTask, maxCount, listeners, pageSize, threads, stats, 
+    			ExpressionUtil.constant(executor));
     }
 
     public PagedTaskRunner(Task target, Long maxCount, List<PageListener> pageListeners, long pageSize, int threads, 
-    		Expression<ExecutorService> executor) {
+    		boolean stats, Expression<ExecutorService> executor) {
+    	if (stats) {
+        	this.counter = new LatencyCounter();
+        	if (threads == 1)
+        		target = new PerfTrackingTaskProxy<Task>(target, counter);
+    	}
     	this.target = new StateTrackingTaskProxy<Task>(target);
         this.pageListeners = pageListeners;
         this.maxCount = maxCount;
@@ -174,6 +185,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         long countValue = actualCount.get();
 		if (countValue < minCount)
         	throw new TaskUnavailableException(target, minCount, countValue);
+		if (counter != null)
+			counter.printSummary(new PrintWriter(System.out), 90, 95);
     }
     
 	public String getTaskName() {
@@ -181,7 +194,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     }
     
     public static void execute(Task task, Context context, Long invocations,
-            List<PageListener> pageListeners, long pageSize, int threadCount, 
+            List<PageListener> pageListeners, long pageSize, int threadCount, boolean stats,
             ExecutorService executorService, ErrorHandler errorHandler) {
 		if (logger.isInfoEnabled()) {
 			String invocationInfo = (invocations == null ? "as long as available" :
@@ -192,7 +205,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 			logger.info("Running task " + task + " " + invocationInfo);
 		}
 		PagedTaskRunner pagedTask = new PagedTaskRunner(task, invocations, pageListeners, 
-				pageSize, threadCount, executorService);
+				pageSize, threadCount, stats, executorService);
 		pagedTask.execute(context, errorHandler);
 	}
 	
@@ -200,7 +213,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 
     @SuppressWarnings("unchecked")
     private long executePageSingleThreaded(Context context, ErrorHandler errorHandler, long currentPageSize) {
-        Task task = new LoopedTask(target, currentPageSize);
+    	Task task = target;
+        task = new LoopedTask(task, currentPageSize);
         task.execute(context, errorHandler);
         IOUtil.close(task);
         return currentPageSize;
@@ -222,12 +236,14 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
             if (loopSize > 0) {
                 Task task = target;
 				if (threadCount > 1 && !threadSafe) {
-                    if (parallelizable)
-                        task = BeanUtil.clone(task);
-                    else
+                    if (parallelizable) {
+                   		task = BeanUtil.clone(task);
+                    } else
                         throw new ConfigurationError("Since the task is not marked as thread-safe," +
                                 "it must either be used in a single thread or be parallelizable.");
                 }
+				if (counter != null)
+					task = new PerfTrackingTaskProxy<Task>(task, counter);
                 task = new LoopedTask(task, loopSize); 
                 TaskRunnable runner = new TaskRunnable(task, context, latch, !threadSafe, errorHandler);
                 ExecutorService executorService = executor.evaluate(context);

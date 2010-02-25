@@ -99,7 +99,7 @@ public class PagedTaskRunnerTest {
 			}
         };
         PagedTaskRunner pagedTask = new PagedTaskRunner(task, 
-        		totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
+        		totalInvocations, null, pageSize, threads, false, Executors.newCachedThreadPool());
         pagedTask.execute(new BeneratorContext(), ErrorHandler.getDefault());
         assertEquals("Unexpected instanceCount,", expectedInstanceCount, ParallelizableCounterTask.instanceCount.get());
     }
@@ -108,7 +108,7 @@ public class PagedTaskRunnerTest {
                           int expectedInitCount, int expectedRunCount, int expectedCloseCount) {
         CountTask countTask = new CountTask();
         PagedTaskRunner pagedTask = new PagedTaskRunner(
-        		countTask, totalInvocations, null, pageSize, threads, Executors.newCachedThreadPool());
+        		countTask, totalInvocations, null, pageSize, threads, false, Executors.newCachedThreadPool());
         pagedTask.execute(new BeneratorContext(), ErrorHandler.getDefault());
         assertEquals("Unexpected runCount,", expectedRunCount, countTask.runCount);
         assertEquals("Unexpected closeCount,", expectedCloseCount, countTask.closeCount);

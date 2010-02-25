@@ -24,6 +24,7 @@ package org.databene.task;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.context.ContextAware;
@@ -40,6 +41,15 @@ public class TaskMock extends AbstractTask implements ContextAware {
 	public int intProp;
 	public Context context;
 	
+	public TaskMock() {
+	    this(0, null);
+    }
+
+	public TaskMock(int intProp, Context context) {
+	    this.intProp = intProp;
+	    this.context = context;
+    }
+
 	public void setContext(Context context) {
 		this.context = context;
     }
@@ -47,9 +57,26 @@ public class TaskMock extends AbstractTask implements ContextAware {
 	public void setIntProp(int intProp) {
     	this.intProp = intProp;
     }
+	
+	@Override
+	public boolean isParallelizable() {
+	    return true;
+	}
+	
+	@Override
+    public Object clone() {
+		return new TaskMock(intProp, context);
+	}
 
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
+		if (this.context == null)
+			throw new IllegalStateException("Context has not been injected");
 	    count.incrementAndGet();
+	    try {
+	        Thread.sleep(RandomUtil.randomLong(1, 10));
+        } catch (InterruptedException e) {
+	        throw new RuntimeException(e);
+        }
 	    return TaskResult.EXECUTING;
     }
 	

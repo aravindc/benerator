@@ -73,6 +73,7 @@ public class CreateOrUpdateEntitiesStatement extends AbstractStatement implement
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
 	    		threads.evaluate(context),
+	    		false, // TODO stats
 	    		context.getExecutorService(),
 	    		getErrorHandler(context));
         // TODO count all generations // context.countGenerations(getActualCount());
