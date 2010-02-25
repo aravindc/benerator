@@ -29,6 +29,7 @@ import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.task.PageListenerMock;
 import org.databene.task.TaskMock;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
@@ -40,22 +41,43 @@ import org.w3c.dom.Element;
  */
 public class RunTaskParserAndStatementTest {
 
+	@Before
+	public void setUp() {
+		TaskMock.count.set(0);
+	}
+	
     @Test
-	public void test() throws Exception {
+	public void testSingleThreaded() throws Exception {
         String xml =
-        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pageSize='2' " +
+        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pageSize='2' stats='true' " +
         		"      pager='new org.databene.task.PageListenerMock(1)'>" +
         		"  <property name='intProp' value='42' />" +
         		"</run-task>";
         Element element = XMLUtil.parseStringAsElement(xml);
-        RunTaskStatement statement = new RunTaskParser().parse(element, new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
+        RunTaskStatement statement = new RunTaskParser().parse(element, new ResourceManagerSupport());
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
 		statement.execute(new BeneratorContext());
 		assertEquals(5, TaskMock.count.get());
-		assertNotNull("Context not injected", ((TaskMock) statement.getTask(context)).context);
+	}
+	
+    @Test
+	public void testMultiThreaded() throws Exception {
+        String xml =
+        		"<run-task id='myId' class='org.databene.task.TaskMock' count='5' pageSize='2' threads='2' stats='true' " +
+        		"      pager='new org.databene.task.PageListenerMock(1)'>" +
+        		"  <property name='intProp' value='42' />" +
+        		"</run-task>";
+        Element element = XMLUtil.parseStringAsElement(xml);
+		BeneratorContext context = new BeneratorContext();
+        RunTaskStatement statement = new RunTaskParser().parse(element, new ResourceManagerSupport());
+		assertEquals(5L, statement.getCount().evaluate(context).longValue());
+		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
+		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
+		statement.execute(new BeneratorContext());
+		assertEquals(5, TaskMock.count.get());
 	}
 	
 }
