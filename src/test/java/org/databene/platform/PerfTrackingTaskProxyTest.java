@@ -38,7 +38,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PerfTestTaskProxyTest {
+public class PerfTrackingTaskProxyTest {
 
 	@Test
 	public void test() throws Exception {
