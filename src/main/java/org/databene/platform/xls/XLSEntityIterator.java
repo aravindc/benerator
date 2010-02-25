@@ -146,27 +146,33 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	
 	static class SheetIterator extends ConvertingIterator<Object[], Entity> {
 		
-		String defaultProviderId;
-		String complexTypeName;
-		ComplexTypeDescriptor complexTypeDescriptor = null;
+	    private DataModel dataModel = DataModel.getDefaultInstance();
+
+	    private String defaultProviderId;
+	    private ComplexTypeDescriptor complexTypeDescriptor = null;
+	    private Entity next;
 		
 		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
 	        super(new XLSLineIterator(sheet, preprocessor), null);
-	        this.complexTypeName = complexTypeName;
 	        this.defaultProviderId = defaultProviderId;
+	        init(complexTypeName);
         }
 		
 		@Override
+		public boolean hasNext() {
+		    return (next != null);
+		}
+		
+		@Override
 		public synchronized Entity next() {
-			Object[] feed = source.next();
-			if (complexTypeDescriptor == null)
-				init(feed);
-		    return converter.convert(feed);
+			Entity result = next;
+	        next = (super.hasNext() ? super.next() : null);
+			return result;
 		}
 
-		private void init(Object[] feed) {
+		private void init(String complexTypeName) {
+			Object[] feed = source.next();
 			String headers[] = ((XLSLineIterator) source).getHeaders();
-		    DataModel dataModel = DataModel.getDefaultInstance();
 		    complexTypeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(complexTypeName);
 		    if (complexTypeDescriptor == null) {
 		    	complexTypeDescriptor = new ComplexTypeDescriptor(complexTypeName);
@@ -185,6 +191,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		    	provider.addDescriptor(complexTypeDescriptor);
 		    }
 		    converter = new Array2EntityConverter(complexTypeDescriptor, headers);
+		    next = converter.convert(feed);
         }
 		
 	}
