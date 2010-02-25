@@ -54,9 +54,6 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     /** Sequence for choosing a List index of the sample list */
     private Generator<Integer> indexGenerator = null;
 
-    /** Flag that indicates if the generator needs to be initialized */
-    protected boolean dirty = true;
-    
     private boolean unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -104,7 +101,6 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     @Override
     public void addValue(E value) {
         samples.add(value);
-        this.dirty = true;
     }
 
     public boolean isUnique() {
@@ -118,7 +114,6 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 	@Override
     public void clear() {
     	this.samples.clear();
-    	this.dirty = true;
     }
     
     // Generator implementation ----------------------------------------------------------------------------------------

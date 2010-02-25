@@ -28,9 +28,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.BeanUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract {@link Generator} implementation which holds a state and state management methods.<br/><br/>
  * Created: 24.02.2010 12:28:05
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public abstract class AbstractGenerator<E> implements Generator<E> {

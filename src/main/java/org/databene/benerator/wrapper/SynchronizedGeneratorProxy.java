@@ -19,37 +19,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.nullable;
+package org.databene.benerator.wrapper;
 
-import org.databene.benerator.GeneratorState;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 
 /**
- * Abstract {@link NullableGenerator} implementation which holds a state and state management methods.<br/><br/>
- * Created: 24.02.2010 15:22:42
+ * Synchronized wrapper class for non-thread-safe {@link Generator} implementations.<br/><br/>
+ * Created: 24.02.2010 23:08:39
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class AbstractNullableGenerator<E> implements NullableGenerator<E> {
+public class SynchronizedGeneratorProxy<E> implements Generator<E> {
 	
-	protected GeneratorState state = GeneratorState.created;
+	// TODO Use this for wrapping non-thread-safe generators which are to be shared
+	
+	private final Generator<E> source;
 
-	public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
-	    state = GeneratorState.initialized;
+	private SynchronizedGeneratorProxy(Generator<E> source) {
+	    this.source = source;
     }
 
-	// internal helpers ------------------------------------------------------------------------------------------------
-    
-    protected final void assertNotInitialized() {
-	    if (state != GeneratorState.created)
-    		throw new IllegalGeneratorStateException("Trying to initialize generator in state " + state);
+	public synchronized void init(BeneratorContext context) {
+	    source.init(context);
     }
 
-    protected final void assertInitialized() {
-    	if (state != GeneratorState.initialized)
-    		throw new IllegalGeneratorStateException("Generator was not initialized: " + this);
+	public synchronized Class<E> getGeneratedType() {
+	    return source.getGeneratedType();
     }
-    
+
+	public synchronized E generate() {
+	    return source.generate();
+    }
+
+	public synchronized void reset() {
+	    source.reset();
+    }
+
+	public synchronized void close() {
+	    source.close();
+    }
+
 }

@@ -86,16 +86,15 @@ public class FileGenerator extends SampleGenerator<File> {
 	
 	@Override
 	public void init(BeneratorContext context) {
-	    if (dirty) {
-	    	try {
-	            String baseUri = IOUtil.resolveRelativeUri(rootUri, context.getContextUri());
-	            File baseFile = new File(baseUri);
-				setValues(FileUtil.listFiles(baseFile, filter, recursive, files, folders));
-	            super.init(context);
-            } catch (Exception e) {
-	            throw new ConfigurationError(e);
-            }
-	    }
+		assertNotInitialized();
+    	try {
+            String baseUri = IOUtil.resolveRelativeUri(rootUri, context.getContextUri());
+            File baseFile = new File(baseUri);
+			setValues(FileUtil.listFiles(baseFile, filter, recursive, files, folders));
+            super.init(context);
+        } catch (Exception e) {
+            throw new ConfigurationError(e);
+        }
 	}
 
 }

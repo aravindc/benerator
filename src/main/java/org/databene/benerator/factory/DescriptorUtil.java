@@ -89,8 +89,6 @@ public class DescriptorUtil {
 	        String generatorSpec = descriptor.getGenerator();
 	        if (generatorSpec != null) {
 	        	generator = (Generator) BeneratorScriptParser.parseBeanSpec(generatorSpec).evaluate(context);
-	        	if (generator instanceof ContextAware)
-	        		((ContextAware) generator).setContext(context);
 	            mapDetailsToBeanProperties(descriptor, generator, context);
 	        }
 	        return generator;

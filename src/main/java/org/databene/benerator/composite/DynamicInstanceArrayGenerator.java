@@ -26,8 +26,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.ArrayUtil;
-import org.databene.commons.Context;
-import org.databene.commons.context.ContextAware;
 
 /**
  * Array generator that allows for dynamic change of the array length algorithm.<br/><br/>
@@ -35,10 +33,9 @@ import org.databene.commons.context.ContextAware;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Object> implements ContextAware {
+public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Object> {
 	
 	private CachedExpression<Long> countExpression;
-	private Context context;
 
     public DynamicInstanceArrayGenerator(Generator<Object> source, CachedExpression<Long> countExpression, BeneratorContext context) {
         super(source);
@@ -46,10 +43,6 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
         this.context = context;
     }
     
-	public void setContext(Context context) {
-	    this.context = context;
-    }
-
 	public Class<Object> getGeneratedType() {
 	    return Object.class;
     }
