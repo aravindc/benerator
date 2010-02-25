@@ -39,14 +39,14 @@ public class EvaluateStatementTest {
 	@Test
 	public void testInlineJavaScript() {
 		EvaluateStatement stmt = new EvaluateStatement(
-			stringEx("message"),
-			stringEx("'Hello World'"),
+			constant("message"),
+			constant("'Hello World'"),
 			null,
 			null,
 			null,
-			stringEx("fatal"),
-			stringEx(Encodings.UTF_8),
-			booleanEx(false),
+			constant("fatal"),
+			constant(Encodings.UTF_8),
+			constant(false),
 			null);
 		BeneratorContext context = new BeneratorContext();
 		stmt.execute(context);
@@ -56,14 +56,14 @@ public class EvaluateStatementTest {
 	@Test
 	public void testUriMapping() {
 		EvaluateStatement stmt = new EvaluateStatement(
-			stringEx("message"),
+			constant("message"),
 			null,
-			stringEx("/org/databene/benerator/engine/statement/HelloWorld.js"),
+			constant("/org/databene/benerator/engine/statement/HelloWorld.js"),
 			null,
 			null,
-			stringEx("fatal"),
-			stringEx(Encodings.UTF_8),
-			booleanEx(false),
+			constant("fatal"),
+			constant(Encodings.UTF_8),
+			constant(false),
 			null);
 		BeneratorContext context = new BeneratorContext();
 		stmt.execute(context);
@@ -73,14 +73,14 @@ public class EvaluateStatementTest {
 	@Test
 	public void testShell() {
 		EvaluateStatement stmt = new EvaluateStatement(
-				stringEx("result"),
-				stringEx("echo 42"),
+				constant("result"),
+				constant("echo 42"),
 				null,
-				stringEx("shell"),
+				constant("shell"),
 				null,
-				stringEx("fatal"),
-				stringEx(Encodings.UTF_8),
-				booleanEx(false),
+				constant("fatal"),
+				constant(Encodings.UTF_8),
+				constant(false),
 				null);
 			BeneratorContext context = new BeneratorContext();
 			stmt.execute(context);

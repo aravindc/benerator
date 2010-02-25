@@ -61,7 +61,7 @@ public class WaitParser extends AbstractDescriptorParser {
 		Expression<Distribution> distribution 
 			= GeneratorFactoryUtil.getDistributionExpression(distSpec, Uniqueness.NONE, false);
 		duration = new DistributedNumberExpression<Integer>(Integer.class, 
-				distribution, min, max, precision, ExpressionUtil.booleanEx(false));
+				distribution, min, max, precision, ExpressionUtil.constant(false));
 	    return new WaitStatement(duration);
     }
 
