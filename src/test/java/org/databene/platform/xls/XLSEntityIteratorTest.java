@@ -39,6 +39,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 
+import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -55,6 +56,11 @@ public class XLSEntityIteratorTest extends XLSTest {
 	private static final String PRODUCT_XLS = "org/databene/platform/xls/product-singlesheet.ent.xls";
 	private static final String IMPORT_XLS = "org/databene/platform/xls/import-multisheet.ent.xls";
 
+    @Before
+	public void setUp() {
+		DataModel.getDefaultInstance().clear();
+	}
+	
 	@Test
 	public void testImport() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
