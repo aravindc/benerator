@@ -27,9 +27,9 @@
 package org.databene.model.data;
 
 import org.databene.commons.operation.FirstArgSelector;
-import org.databene.commons.operation.MaxNumberLiteral;
+import org.databene.commons.operation.MaxNumberStringOperation;
 import org.databene.commons.operation.MaxOperation;
-import org.databene.commons.operation.MinNumberLiteral;
+import org.databene.commons.operation.MinNumberStringOperation;
 import org.databene.commons.operation.MinOperation;
 
 /**
@@ -73,10 +73,10 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public SimpleTypeDescriptor(String name, String parentName) {
         super(name, parentName);
         // number setup
-        addRestriction(MIN,             String.class,   "1", new MaxNumberLiteral());
-        addRestriction(MAX,             String.class,   "9", new MinNumberLiteral());
-        addRestriction(MIN_EXCLUSIVE,   String.class,   "0", new MaxNumberLiteral());
-        addRestriction(MAX_EXCLUSIVE,   String.class,  "10", new MinNumberLiteral());
+        addRestriction(MIN,             String.class,   "1", new MaxNumberStringOperation());
+        addRestriction(MAX,             String.class,   "9", new MinNumberStringOperation());
+        addRestriction(MIN_EXCLUSIVE,   String.class,   "0", new MaxNumberStringOperation());
+        addRestriction(MAX_EXCLUSIVE,   String.class,  "10", new MinNumberStringOperation());
         addRestriction(TOTAL_DIGITS,    String.class,  "10", new FirstArgSelector<String>());
         addRestriction(FRACTION_DIGITS, String.class,   "0", new FirstArgSelector<String>());
         addConfig(PRECISION,            String.class,   "1");
