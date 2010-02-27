@@ -234,7 +234,7 @@ public class BeneratorScriptParserTest {
 		checkExpression("Test123", "'Test' + 123");
 		checkExpression("123Test", "123 + 'Test'");
 		checkExpression("Test123true", "'Test' + 123 + true");
-		checkExpression("implemented at 2009-10-08", "'implemented at ' + (date) '2009-10-08'");
+		checkExpression("implemented at 2009-10-08T00:00:00", "'implemented at ' + (date) '2009-10-08'");
 	}
 	
 	@Test

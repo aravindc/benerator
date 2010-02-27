@@ -24,7 +24,7 @@ package org.databene.benerator.engine;
 import org.databene.commons.Assert;
 import org.databene.commons.ConversionException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Normalizes XML-valid names to Java-valid camel-case names, 
@@ -33,7 +33,7 @@ import org.databene.commons.converter.AbstractConverter;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class XMLNameNormalizer extends AbstractConverter<String, String> {
+public class XMLNameNormalizer extends ThreadSafeConverter<String, String> {
 
 	public XMLNameNormalizer() {
 	    super(String.class, String.class);

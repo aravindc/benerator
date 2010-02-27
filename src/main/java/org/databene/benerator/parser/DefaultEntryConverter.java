@@ -78,4 +78,14 @@ public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entr
         return new MapEntry<String, Object>(key, result);
     }
 
+	public boolean isParallelizable() {
+	    // TODO Auto-generated method stub
+	    return false;
+    }
+
+	public boolean isThreadSafe() {
+	    // TODO Auto-generated method stub
+	    return false;
+    }
+
 }

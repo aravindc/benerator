@@ -22,7 +22,7 @@ public class FeatureDescriptor {
     public static final String NAME = "name";
 
     static {
-        ConverterManager.getInstance().register(new String2ConverterConverter());
+        ConverterManager.getInstance().registerConverterClass(String2ConverterConverter.class);
     }
 
     protected OrderedNameMap<FeatureDetail<?>> details;

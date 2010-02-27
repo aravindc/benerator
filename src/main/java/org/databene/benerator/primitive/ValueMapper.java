@@ -99,5 +99,22 @@ public class ValueMapper implements Converter {
 	public String toString() {
 	    return getClass().getSimpleName() + mappings;
 	}
+
+	public boolean isParallelizable() {
+	    return true;
+    }
+
+	public boolean isThreadSafe() {
+	    return true;
+    }
+	
+	@Override
+    public Object clone() {
+		try {
+	        return super.clone();
+        } catch (CloneNotSupportedException e) {
+        	throw new RuntimeException(e);
+        }
+	}
 	
 }

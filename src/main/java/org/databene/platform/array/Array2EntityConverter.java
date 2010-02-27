@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,8 @@ package org.databene.platform.array;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.converter.AbstractConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -43,7 +43,7 @@ import org.databene.model.data.TypeDescriptor;
  * Created: 26.08.2007 12:27:45
  * @author Volker Bergmann
  */
-public class Array2EntityConverter extends AbstractConverter<Object[], Entity> {
+public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity> {
 	
     private ComplexTypeDescriptor descriptor;
     private String[] attributeNames;
@@ -82,4 +82,5 @@ public class Array2EntityConverter extends AbstractConverter<Object[], Entity> {
     public String toString() {
     	return getClass().getSimpleName() + '[' + ArrayFormat.format(", ", attributeNames) + ']';
     }
+    
 }

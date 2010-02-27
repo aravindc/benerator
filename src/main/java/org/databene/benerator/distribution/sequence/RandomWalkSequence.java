@@ -36,7 +36,8 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.MathUtil;
-import org.databene.commons.converter.NumberConverter;
+import org.databene.commons.converter.NumberToNumberConverter;
+
 import static org.databene.commons.NumberUtil.*;
 
 /**
@@ -122,11 +123,11 @@ public class RandomWalkSequence extends Sequence {
 
     private <T extends Number> T initial(T min, T max, Class<T> numberType) {
     	if (initial != null)
-    		return NumberConverter.convert(initial, numberType);
+    		return NumberToNumberConverter.convert(initial, numberType);
     	if (minStep.doubleValue() > 0)
     		return min;
 		if (maxStep.doubleValue() > 0)
-			return NumberConverter.convert((min.doubleValue() + max.doubleValue()) / 2, numberType);
+			return NumberToNumberConverter.convert((min.doubleValue() + max.doubleValue()) / 2, numberType);
 		else
 			return max;
     }

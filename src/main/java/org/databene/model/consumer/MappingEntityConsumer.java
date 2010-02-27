@@ -23,7 +23,7 @@ package org.databene.model.consumer;
 
 import java.util.Stack;
 
-import org.databene.model.data.ComponentMapper;
+import org.databene.model.data.ComponentNameMapper;
 import org.databene.model.data.Entity;
 
 /**
@@ -34,7 +34,7 @@ import org.databene.model.data.Entity;
  */
 public class MappingEntityConsumer extends ConsumerProxy<Entity> {
 	
-	private ComponentMapper mapper;
+	private ComponentNameMapper mapper;
 	private Stack<Entity> stack;
 
 	public MappingEntityConsumer() {
@@ -43,7 +43,7 @@ public class MappingEntityConsumer extends ConsumerProxy<Entity> {
 
 	public MappingEntityConsumer(Consumer<Entity> target, String mappingSpec) {
 		super(target);
-	    this.mapper = new ComponentMapper(mappingSpec);
+	    this.mapper = new ComponentNameMapper(mappingSpec);
 	    stack = new Stack<Entity>();
     }
 

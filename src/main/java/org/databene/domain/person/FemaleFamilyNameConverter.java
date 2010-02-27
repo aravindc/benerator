@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,7 @@ import java.util.Map;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConversionException;
 import org.databene.commons.IOUtil;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.dataset.DatasetFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class FemaleFamilyNameConverter extends AbstractConverter<String, String> {
+public class FemaleFamilyNameConverter extends ThreadSafeConverter<String, String> {
 	
 	private String[][] mappings;
 

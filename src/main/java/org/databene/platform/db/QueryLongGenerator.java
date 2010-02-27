@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,8 @@
 package org.databene.platform.db;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.converter.NumberConverter;
+import org.databene.commons.Converter;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.model.storage.StorageSystem;
 
 /**
@@ -38,7 +39,10 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 
+@SuppressWarnings("unchecked")
 public class QueryLongGenerator extends QueryGenerator<Long> {
+	
+    private Converter converter;
 
 	public QueryLongGenerator(String selector, StorageSystem source, BeneratorContext context) {
 	    super(selector, source, Long.class, context);
@@ -46,7 +50,10 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
 	
 	@Override
 	public Long generate() {
-		return NumberConverter.convert(super.generate(), Long.class);
+		Object input = super.generate();
+		if (converter == null)
+			converter = ConverterManager.getInstance().createConverter(input.getClass(), Long.class);
+		return (Long) converter.convert(input);
 	}
 
 }

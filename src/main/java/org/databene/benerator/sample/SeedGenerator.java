@@ -49,7 +49,8 @@ public class SeedGenerator<E> extends LightweightGenerator<E[]>{
 	private Class<E[]> targetType;
 	private SeedManager<E> atomProvider;
 	
-	public SeedGenerator(Class<E> atomType, int depth) {
+	@SuppressWarnings("unchecked")
+    public SeedGenerator(Class<E> atomType, int depth) {
 		if (depth <= 0)
 			throw new InvalidGeneratorSetupException("depth: " + depth);
 		this.atomType = atomType;

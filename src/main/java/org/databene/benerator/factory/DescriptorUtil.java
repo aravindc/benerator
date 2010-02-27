@@ -144,7 +144,7 @@ public class DescriptorUtil {
 	        for (Object bean : beans) {
 	        	Converter converter;
 	            if (bean instanceof java.text.Format)
-	            	converter = new FormatFormatConverter(Object.class, (java.text.Format) bean);
+	            	converter = new FormatFormatConverter(Object.class, (java.text.Format) bean, false);
 	            if (bean instanceof Converter)
 	            	converter = (Converter) bean;
 	            else

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -61,7 +61,7 @@ public class ConvertingGeneratorTest extends GeneratorClassTest {
         assertEquals("close", source.getLastMethodCall());
     }
 
-    private static class TestConverter extends AbstractConverter<Integer, String> {
+    private static class TestConverter extends ThreadSafeConverter<Integer, String> {
 
 		public TestConverter() {
 			super(Integer.class, String.class);

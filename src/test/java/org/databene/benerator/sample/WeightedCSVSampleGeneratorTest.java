@@ -28,7 +28,7 @@ public class WeightedCSVSampleGeneratorTest extends GeneratorTest {
     public void test() throws ParseException {
     	// prepare
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
+        ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format, false);
         WeightedCSVSampleGenerator<Date> generator = new WeightedCSVSampleGenerator<Date>(FILE_PATH, Encodings.UTF_8, converter);
         generator.init(context);
         // run test

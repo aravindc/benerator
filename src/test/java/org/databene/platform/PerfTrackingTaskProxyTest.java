@@ -43,7 +43,7 @@ public class PerfTrackingTaskProxyTest {
 	@Test
 	public void test() throws Exception {
 		DefaultContext context = new DefaultContext();
-		Task task = new TaskMock();
+		Task task = new TaskMock(0, context);
 		PerfTrackingTaskProxy<Task> proxy = new PerfTrackingTaskProxy<Task>(task);
 		for (int i = 0; i < 100; i++) {
 			assertEquals(TaskResult.EXECUTING, proxy.execute(context, ErrorHandler.getDefault()));

@@ -150,7 +150,7 @@ public class TypeGeneratorFactory {
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
                 String pattern = descriptor.getPattern();
-                converter = new ParseFormatConverter<Date>(Date.class, new SimpleDateFormat(pattern));
+                converter = new ParseFormatConverter<Date>(Date.class, new SimpleDateFormat(pattern), false);
             } else {
                 // we need to expect the standard date format
                 converter = new String2DateConverter<Date>();
@@ -160,10 +160,10 @@ public class TypeGeneratorFactory {
             if (descriptor.getPattern() != null) {
                 // We can use the SimpleDateFormat with a pattern
                 String pattern = descriptor.getPattern();
-                converter = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat(pattern));
+                converter = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat(pattern), false);
             } else {
                 // we need to expect the standard date format
-                converter = new FormatFormatConverter<Date>(Date.class, TimeUtil.createDefaultDateFormat());
+                converter = new FormatFormatConverter<Date>(Date.class, TimeUtil.createDefaultDateFormat(), false);
             }
         } else if (targetType != sourceType) {
         	converter = new AnyConverter(targetType, descriptor.getPattern());

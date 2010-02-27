@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.platform.array;
 
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.model.data.Entity;
 
 /**
@@ -35,7 +35,7 @@ import org.databene.model.data.Entity;
  * Created: 26.08.2007 12:27:45
  * @author Volker Bergmann
  */
-public class Entity2ArrayConverter extends AbstractConverter<Entity, Object[]> {
+public class Entity2ArrayConverter extends ThreadSafeConverter<Entity, Object[]> {
 
     private String[] featureNames;
 

@@ -69,7 +69,7 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
             throw new InvalidGeneratorSetupException("source", " is null");
         if (generatedType == null) {
             Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
-            this.generatedType = (Class<A>) ArrayUtil.arrayType(cType);
+            this.generatedType = ArrayUtil.arrayType(cType);
         }
         super.init(context);
     }

@@ -259,7 +259,7 @@ public class GeneratorFactory {
      */
     public static Generator<Date> getDateGenerator(String uri, String encoding, String pattern) {
         DateFormat format = new SimpleDateFormat(pattern);
-        Converter<String, Date> converter = new ParseFormatConverter<Date>(Date.class, format);
+        Converter<String, Date> converter = new ParseFormatConverter<Date>(Date.class, format, false);
         return new WeightedCSVSampleGenerator<Date>(uri, encoding, converter);
     }
 

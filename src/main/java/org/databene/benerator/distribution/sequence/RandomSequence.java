@@ -34,7 +34,7 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
-import static org.databene.commons.MathUtil.*;
+import static org.databene.commons.NumberUtil.*;
 
 /**
  * {@link Sequence} implementation that creates generators with a random uniform distribution.<br/>

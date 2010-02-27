@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.test;
 
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.UnsafeConverter;
 
 /**
  * Mock implementation of the {@link Converter} interface.<br/>
@@ -38,7 +38,7 @@ import org.databene.commons.converter.AbstractConverter;
  * @author Volker Bergmann
  */
 
-public class ConverterMock extends AbstractConverter<Integer, Integer> {
+public class ConverterMock extends UnsafeConverter<Integer, Integer> {
 
 	public int increment;
 	

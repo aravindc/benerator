@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.databene.benerator.primitive.ValueMapper;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Converts the names of Entity components.<br/><br/>
@@ -33,28 +33,28 @@ import org.databene.commons.converter.AbstractConverter;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ComponentMapper extends AbstractConverter<Entity, Entity> {
+public class ComponentNameMapper extends ThreadSafeConverter<Entity, Entity> {
 	
-	private ValueMapper attributeNameMapper;
+	private ValueMapper nameMapper;
 
-	public ComponentMapper() {
+	public ComponentNameMapper() {
 		this(null);
     }
 	
-	public ComponentMapper(String mappingSpec) {
+	public ComponentNameMapper(String mappingSpec) {
 		super(Entity.class, Entity.class);
-	    this.attributeNameMapper = new ValueMapper(mappingSpec, true);
+	    this.nameMapper = new ValueMapper(mappingSpec, true);
     }
 	
 	public void setMappings(String mappingSpec) {
-		attributeNameMapper.setMappings(mappingSpec);
+		nameMapper.setMappings(mappingSpec);
 	}
 
 	public Entity convert(Entity input) throws ConversionException {
 		Entity output = new Entity(input.type());
 		for (Map.Entry<String, Object> component : input.getComponents().entrySet()) {
 			String inCptName = component.getKey();
-			String outCptName = (String) attributeNameMapper.convert(inCptName);
+			String outCptName = (String) nameMapper.convert(inCptName);
 			output.setComponent(outCptName, input.get(inCptName));
 		}
 	    return output;

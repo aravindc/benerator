@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * Tests the {@link ComponentMapper}.<br/><br/>
+ * Tests the {@link ComponentNameMapper}.<br/><br/>
  * Created: 22.02.2010 20:00:34
  * @since 0.6.0
  * @author Volker Bergmann
@@ -36,7 +36,7 @@ public class ComponentMapperTest {
 	@Test
 	public void test() {
 		Entity in = new Entity("Person", "name", "Alice", "age", 23);
-		ComponentMapper mapper = new ComponentMapper("'name'->'givenName','none'->'some'");
+		ComponentNameMapper mapper = new ComponentNameMapper("'name'->'givenName','none'->'some'");
 		Entity out = mapper.convert(in);
 		assertEquals(in.type(), out.type());
 		assertNull(out.get("name"));

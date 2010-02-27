@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,7 @@ import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.domain.address.Country;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.databene.text.DelocalizingConverter;
@@ -75,7 +75,7 @@ public class CompanyDomainGenerator extends LightweightStringGenerator {
 		return normalizer.convert(companyNameGenerator.generate()) + '.' + tldGenerator.generate();
 	}
 	
-	private static final class Normalizer extends AbstractConverter<String, String> {
+	private static final class Normalizer extends ThreadSafeConverter<String, String> {
 		
 		private DelocalizingConverter delocalizer;
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.platform.java;
 
 import org.databene.model.data.Entity;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ import java.util.Map;
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */
-public class Entity2BeanConverter<T> extends AbstractConverter<Entity, T> {
+public class Entity2BeanConverter<T> extends ThreadSafeConverter<Entity, T> {
 
     public Entity2BeanConverter(Class<T> targetType) {
         super(Entity.class, targetType);

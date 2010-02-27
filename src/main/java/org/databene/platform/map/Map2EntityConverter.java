@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.platform.map;
 
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -40,7 +40,7 @@ import java.util.Set;
  * @author Volker Bergmann
  */
 @SuppressWarnings("unchecked")
-public class Map2EntityConverter extends AbstractConverter<Map, Entity> {
+public class Map2EntityConverter extends ThreadSafeConverter<Map, Entity> {
 
     private ComplexTypeDescriptor descriptor;
 

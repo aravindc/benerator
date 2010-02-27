@@ -36,9 +36,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.Converter;
 import org.databene.commons.FileUtil;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ParseFormatConverter;
-import org.databene.commons.converter.StringConverter;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -63,7 +64,7 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
     public void testSmallSet() throws ParseException {
     	// prepare
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format);
+        ParseFormatConverter<Date> converter = new ParseFormatConverter<Date>(Date.class, format, false);
         SequencedCSVSampleGenerator<Date> generator = new SequencedCSVSampleGenerator<Date>(DATE_FILE_PATH, converter);
         generator.init(context);
         // test
@@ -87,8 +88,10 @@ public class SequencedCSVSampleGeneratorTest extends GeneratorClassTest {
 	    	writer.close();
 	    	
 	    	// test generator
+	    	Converter<String, Integer> converter = ConverterManager.getInstance().createConverter(
+	    			String.class, Integer.class);
 	        SequencedCSVSampleGenerator<Integer> generator 
-	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, new StringConverter<Integer>(Integer.class));
+	        	= new SequencedCSVSampleGenerator<Integer>(BIG_FILE_NAME, converter);
 	        generator.init(context);
 	        for (int i = 0; i < 1000; i++) {
 	            int product = generator.generate();

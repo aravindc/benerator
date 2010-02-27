@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,7 @@
 package org.databene.domain.person;
 
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Converts a {@link Gender} enumeration value to a configurable String.<br/>
@@ -37,7 +37,7 @@ import org.databene.commons.converter.AbstractConverter;
  * @author Volker Bergmann
  */
 
-public class GenderConverter extends AbstractConverter<Gender, String> {
+public class GenderConverter extends ThreadSafeConverter<Gender, String> {
 	
 	private String male;
 	private String female;

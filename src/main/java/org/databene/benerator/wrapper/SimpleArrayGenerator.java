@@ -50,6 +50,7 @@ public class SimpleArrayGenerator<E> extends AbstractArrayGenerator<E, E[]> {
         this(source, componentType, minLength, maxLength, SequenceManager.RANDOM_SEQUENCE);
     }
 
+    @SuppressWarnings("unchecked")
     public SimpleArrayGenerator(Generator<E> source, Class<E> componentType, int minLength, int maxLength, Distribution lengthDistribution) {
         super(source, componentType, ArrayUtil.arrayType(componentType), minLength, maxLength, lengthDistribution);
     }

@@ -124,7 +124,8 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
                     new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())),
                     plainConverter,
                     new FormatFormatConverter(String.class, 
-                        new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar)
+                        new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar),
+                        true
                     )
                 );
             }

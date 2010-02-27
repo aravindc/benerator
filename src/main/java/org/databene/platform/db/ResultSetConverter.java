@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.platform.db;
 
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.AbstractConverter;
+import org.databene.commons.converter.UnsafeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import java.sql.SQLException;
  * Created: 15.08.2007 18:19:25
  * @author Volker Bergmann
  */
-public class ResultSetConverter<E> extends AbstractConverter<ResultSet, E> {
+public class ResultSetConverter<E> extends UnsafeConverter<ResultSet, E> {
 
 	private Class<E> targetType;
     private boolean simplifying;
