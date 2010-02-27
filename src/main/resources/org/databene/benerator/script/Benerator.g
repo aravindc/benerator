@@ -109,9 +109,6 @@ transitionList
 transition
     :   literal '->'^ literal ('^'! expression)?;
 
-assignment
-    :   IDENTIFIER '='^ expression;
-
 beanSpecList
     :   beanSpec (','! beanSpec)*;
 
@@ -120,7 +117,11 @@ beanSpec
 
 expression 
     :   conditionalExpression
+    |   assignment
     ;
+
+assignment
+    :   qualifiedName '='^ expression;
 
 conditionalExpression 
     :   conditionalOrExpression ('?'^ expression ':'! conditionalExpression)?
