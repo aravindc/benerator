@@ -51,7 +51,8 @@ public class TimedTask<E extends Task> extends TaskProxy<E> {
     public TaskResult execute(Context context, ErrorHandler errorHandler) {
         long startTime = System.currentTimeMillis();
         TaskResult result = super.execute(context, errorHandler);
-        logger.info(String.valueOf(System.currentTimeMillis() - startTime));
+        logger.info("Executing " + realTask + " took " + 
+        		String.valueOf(System.currentTimeMillis() - startTime) + " ms");
         return result;
     }
 
