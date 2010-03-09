@@ -118,10 +118,14 @@ public class DescriptorRunner implements ResourceManager {
 			// calculate and print statistics
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
 			resourceManager.close();
-			if (startTime != 0)
-				logger.info("Created a total of " + context.getTotalGenerationCount() + " entities "
-					+ "in " + elapsedTime + " ms " + "(~" 
-					+ RoundedNumberFormat.format(context.getTotalGenerationCount() * 3600000L / elapsedTime, 0) + " p.h.)");
+			StringBuilder message = new StringBuilder("Created a total of ")
+				.append(context.getTotalGenerationCount()).append(" entities ");
+			if (elapsedTime != 0) {
+	            long throughput = context.getTotalGenerationCount() * 3600000L / elapsedTime;
+	            message.append("in ").append(elapsedTime).append(" ms (~")
+					.append(RoundedNumberFormat.format(throughput, 0)).append(" p.h.)");
+            }
+			logger.info(message.toString());
 			List<String> generations = getGeneratedFiles();
 			if (generations.size() > 0)
 				logger.info("Generated file(s): " + generations);
