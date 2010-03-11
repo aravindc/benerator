@@ -10,6 +10,10 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
 -----------------------------------------------------------------------------------------------------------
 - Descriptor file syntax
   - Introduced Benerator Expression Language
+  - elements:
+    - <if> <then> <else>
+    - <while>
+    - <wait>
   - added support for package import, e.g. <import package="com.my"/>
   - new constant attribute definition, e.g. <attribute ... constant="0" />
   - new benerator property: defaultTimeZone
@@ -41,6 +45,28 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - removed descriptor attributes and merged them with the distribution concept: 
     proxy, proxy-param1, proxy-param2, variation1, variation2
   - 'run-task' element supports 'spec' and 'id' attributes like the bean element
+  - Supporting <echo>Message text</echo>
+  - introduced shutdown hook that closes resources on regular and forced shutdowns
+  - Introduced FlatLineParser for easier composition of multi-type flat file parsers
+  - Evaluating shell output in <evaluate/>
+  - new ComponentMapper and MappingEntityConsumer for converting component names after generation
+  - Introduced variable definition and assignment syntax in Benerator Script, e.g.
+    - variable definition: <execute>x = 3</execute>
+    - assignment: <execute>x = x + 1</execute>
+  - DescriptorBasedGenerator for easy programmatic access to generators defined in an XML descriptor file
+  - Introduced FlatFileEntitySource.lineFilter
+  - Defined generators that check through directories and provide random
+    - java.io.File objects: FileGenerator
+    - file names: FileNameGenerator
+    - text file contents (as String): TextFileGenerator
+    - binary file contents (as byte[]): BinaryFileGenerator
+  - <run-task stats="true" />
+  - removed <create-entities> and <update-entities>, introducing <generate> and <iterate> with different semantics
+
+- Benerator Script
+  - new default script language
+  - Date arithmetics, e.g. new Date() + 24*60*60*1000
+  - Bean instantiation based on properties, e.g. new Person{name='Alice', age=23}  
   
 - Domains
   - new 'math' domain:
@@ -55,6 +81,7 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
     - Added property 'femaleQuota' to 'GenderGenerator' and 'PersonGenerator'
     - Added Person property : secondGivenName
     - extended set of German names to more than 6,000,000 million possible unique and weighted combinations
+    - added consistent 'email' property generation
   - address (thanks to Eric Chaves for his contributions!):
     - Generation of Brazilian postal addresses
     - 'Brazilian style' mobile phone numbers, depending on city area codes
@@ -75,6 +102,8 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
     - new OfflineSequenceGenerator that mimics a real db sequence and saves db round trips
     - logging database, driver and JDBC version info on first connect
     - supporting access to arbitrary schema
+    - Added support for sequences on the Firebird database
+    - DBSystem.inserter() and DBSystem.updater()
   - xls
     - Supporting Import and export of multiple entity types from and to one Excel(TM) document
   - java (renamed from 'bean'):
@@ -97,7 +126,9 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - URLEncodeConverter
   - URLDecodeConverter
   - PrintfConverter
-  - new ToHexConverter
+  - ToHexConverter
+  - RegexReplacer
+  - SubstringExtractor
   
 - new Validators:
   - Supporting JSR 303 Bean Validation
