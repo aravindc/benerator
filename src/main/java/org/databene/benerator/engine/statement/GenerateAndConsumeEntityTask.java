@@ -150,8 +150,8 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
     // private helpers -------------------------------------------------------------------------------------------------
 
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
-        if (subStatement instanceof CreateOrUpdateEntitiesStatement) {
-            GenerateAndConsumeEntityTask target = ((CreateOrUpdateEntitiesStatement) subStatement).getTarget();
+        if (subStatement instanceof GenerateOrIterateStatement) {
+            GenerateAndConsumeEntityTask target = ((GenerateOrIterateStatement) subStatement).getTarget();
 			target.reset();
 	        subStatement.execute(context);
 	        try {

@@ -108,11 +108,11 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 			escalator.escalate("No consumers defined for " + entityName, this, null);
 		for (Consumer<Entity> consumer : consumerChain.getComponents())
 			resourceManager.addResource(consumer);
-		if (EL_UPDATE_ENTITIES.equals(entityElement.getNodeName())) {
+		if (EL_UPDATE.equals(entityElement.getNodeName())) {
 			String sourceName = parseStringAttribute(entityElement, ATT_SOURCE, context);
 			Object source = context.get(sourceName);
 			if (!(source instanceof StorageSystem))
-				throw new ConfigurationError("The source of an <" + EL_UPDATE_ENTITIES + "> " +
+				throw new ConfigurationError("The source of an <" + EL_UPDATE + "> " +
 						"element must be a StorageSystem. '" + sourceName + "' is not");
 			consumerChain.addComponent(new StorageSystemConsumer((StorageSystem) source, false));
 		}

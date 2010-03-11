@@ -37,7 +37,7 @@ import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
-import org.databene.benerator.engine.statement.CreateOrUpdateEntitiesStatement;
+import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedEntityStatement;
@@ -65,22 +65,24 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 /**
- * Parses a &lt;create-entities&gt; or &lt;update-entities&gt; element in a Benerator descriptor file.<br/><br/>
+ * Parses a &lt;generate&gt; or &lt;update&gt; element in a Benerator descriptor file.<br/><br/>
  * Created: 25.10.2009 01:05:18
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CreateOrUpdateEntitiesParser implements DescriptorParser {
+public class GenerateOrIterateParser implements DescriptorParser {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CreateOrUpdateEntitiesParser.class);
+	private static final Logger logger = LoggerFactory.getLogger(GenerateOrIterateParser.class);
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
 			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER, EL_WAIT);
+	private Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
 	public boolean supports(String elementName, String parentName) {
-	    return EL_CREATE_ENTITIES.equals(elementName)
-	    		|| EL_UPDATE_ENTITIES.equals(elementName);
+	    return EL_GENERATE.equals(elementName)
+			|| EL_ITERATE.equals(elementName)
+			|| EL_UPDATE.equals(elementName);
     }
 	
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
@@ -105,7 +107,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 	}
 	
     @SuppressWarnings("unchecked")
-    public CreateOrUpdateEntitiesStatement parseCreateEntities(Element element, boolean isSubTask, 
+    public GenerateOrIterateStatement parseCreateEntities(Element element, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
@@ -118,7 +120,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		String name = element.getAttribute(ATT_NAME);
 		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
 		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
-		CreateOrUpdateEntitiesStatement creator = new CreateOrUpdateEntitiesStatement(
+		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
 				task, countExpression, pageSize, pager, threads, errorHandler);
 		return creator;
 	}
@@ -137,7 +139,8 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 				.createSingleInstanceGenerator(descriptor, context);
 		
 		// parse consumers
-		Expression consumer = parseConsumers(element, EL_CREATE_ENTITIES.equals(element.getNodeName()), resourceManager);
+		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
+		Expression consumer = parseConsumers(element, consumerExpected, resourceManager);
 		
 		String taskName = descriptor.getName();
 		if (taskName == null)
@@ -145,7 +148,7 @@ public class CreateOrUpdateEntitiesParser implements DescriptorParser {
 		
 		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubTask);
 
-		// handle sub-create-entities
+		// handle sub-<generate/>
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {

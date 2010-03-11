@@ -300,7 +300,7 @@ public class ArchetypeBuilder implements Runnable {
 	
 	class SaxHandler extends DefaultHandler {
 		
-		private static final String CREATE_ENTITIES = "${create-entities}";
+		private static final String CREATE_ENTITIES = "${generate}";
 		private static final String IMPORT_FILES = "${import-files}";
 		private TransformerHandler handler;
 		private boolean comment;
@@ -405,7 +405,7 @@ public class ArchetypeBuilder implements Runnable {
 		if (filename.toLowerCase().endsWith(".properties"))
 			writeElement("include", "uri", filename);
 		else if (filename.toLowerCase().endsWith(".dbunit.xml"))
-			writeElement("create-entities", "source", filename, "consumer", "db");
+			writeElement("generate", "source", filename, "consumer", "db");
 		else if (filename.toLowerCase().endsWith(".sql"))
 			writeElement("execute", "uri", filename, "target", "db");
 		else
@@ -450,13 +450,13 @@ public class ArchetypeBuilder implements Runnable {
         }
         attributes.addAttribute("", "", "consumer", "CDATA", "db");
 		writeLfTab();
-		handler.startElement("", "", "create-entities", attributes);
+		handler.startElement("", "", "generate", attributes);
         ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getTypeDescriptor();
 		if (type.getComponents().size() > 0)
             for (ComponentDescriptor cd : type.getComponents())
                 attribute(cd);
 			writeLfTab();
-		handler.endElement("", "", "create-entities");
+		handler.endElement("", "", "generate");
 		writeLfTab();
     }
 

@@ -44,7 +44,7 @@ import org.databene.task.Task;
  * Created: 01.02.2008 14:43:15
  * @author Volker Bergmann
  */
-public class CreateOrUpdateEntitiesStatement extends AbstractStatement implements PageListener {
+public class GenerateOrIterateStatement extends AbstractStatement implements PageListener {
 
 	protected Task task;
 	protected Expression<Long> count;
@@ -52,7 +52,7 @@ public class CreateOrUpdateEntitiesStatement extends AbstractStatement implement
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
 
-	public CreateOrUpdateEntitiesStatement(GenerateAndConsumeEntityTask task,
+	public GenerateOrIterateStatement(GenerateAndConsumeEntityTask task,
 			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, 
 			Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
 	    this.task = task;
