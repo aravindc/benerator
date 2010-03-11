@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,10 +48,12 @@ import static junit.framework.Assert.*;
  */
 public class XMLSchemaDescriptorProviderTest {
     
-    private static final String SIMPLE_ELEMENT_TEST_FILE = "org/databene/platform/xml/simple-element-test.xsd";
-    private static final String NESTING_TEST_FILE = "org/databene/platform/xml/nesting-test.xsd";
-    private static final String ANNOTATION_TEST_FILE = "org/databene/platform/xml/annotation-test.xsd";
-    private static final String CHOICE_TEST_FILE = "org/databene/platform/xml/choice-test.xsd";
+	private static final String BASE = "org/databene/platform/xml/";
+	
+    private static final String SIMPLE_ELEMENT_TEST_FILE = BASE + "simple-element-test.xsd";
+    private static final String NESTING_TEST_FILE = BASE + "nesting-test.xsd";
+    private static final String ANNOTATION_TEST_FILE = BASE + "annotation-test.xsd";
+    private static final String CHOICE_TEST_FILE = BASE + "choice-test.xsd";
 
     @Test
     public void testSimpleTypeElement() {
