@@ -35,10 +35,12 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
 import org.databene.model.depend.DependencyModel;
 import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
+import org.databene.model.storage.StorageSystemConsumer;
 import org.databene.model.version.VersionNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -360,6 +362,16 @@ public class DBSystem extends AbstractStorageSystem {
         ResultSetConverter converter = new ResultSetConverter(Object.class, true);
 		return (HeavyweightTypedIterable<T>) new ConvertingIterable<ResultSet, Object>(resultSetIterable, converter);
     }
+    
+    public Consumer<Entity> inserter() {
+    	return new StorageSystemConsumer(this, true);
+    }
+    
+    public Consumer<Entity> updater() {
+    	return new StorageSystemConsumer(this, false);
+    }
+    
+    // database-specific interface -------------------------------------------------------------------------------------
 
     public void createSequence(String name) throws SQLException {
     	checkDialect();
