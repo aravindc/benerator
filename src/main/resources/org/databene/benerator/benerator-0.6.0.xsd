@@ -35,7 +35,7 @@
 	</xs:simpleType>
 
 	
-	<!-- The document root, it can list beans, create-entities and run-tasks in arbitrary order. -->
+	<!-- The document root. -->
 	<xs:element name="setup">
 		<xs:complexType>
 			<xs:complexContent>
@@ -57,16 +57,16 @@
 	</xs:element>
 
 	<xs:complexType name="block-statement">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+		<xs:sequence minOccurs="0" maxOccurs="1">
+			<xs:element ref="import" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"           minOccurs="0" maxOccurs="unbounded"/>
-				<xs:element ref="import"            minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="include"           minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="property"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="database"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="bean"              minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="defaultComponents" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="create-entities"   minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="generate"          minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="update-entities"   minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="run-task"          minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="execute"           minOccurs="0" maxOccurs="unbounded"/>
@@ -321,7 +321,7 @@
 
     <!-- Creates entities. If a 'count' is provided the corresponding number of entities is created.
          If no count is provided, entities are created as long as each involved generator is available. -->
-    <xs:element name="create-entities">
+    <xs:element name="generate">
         <xs:complexType>
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="comment"         minOccurs="0" maxOccurs="unbounded"/>
@@ -331,7 +331,7 @@
                 <xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="generate"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="execute"         minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
@@ -364,7 +364,7 @@
                 <xs:element ref="reference"       minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="variable"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="consumer"        minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="create-entities" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="generate"        minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="update-entities" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="execute"         minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
@@ -385,72 +385,6 @@
 	<!-- Defines a variable that is recreated by a generator on each entity creation -->
 	<xs:element name="variable" type="component-generator-setup"/>
 
-	<xs:complexType name="generator-setup">
-		<xs:attribute name="name"         type="xs:string" use="required"/>
-		<xs:attribute name="type"         type="data-type"/>
-		<xs:attribute name="generator"    type="xs:string"/>
-		<xs:attribute name="validator"    type="xs:string"/>
-		<xs:attribute name="source"       type="xs:string"/>
-        <xs:attribute name="separator"    type="xs:string"/>
-		<xs:attribute name="encoding"     type="xs:string"/>
-		<xs:attribute name="selector"     type="xs:string"/>
-		<xs:attribute name="pattern"      type="xs:string"/>
-		<xs:attribute name="nullQuota"    type="xs:string"/>
-		<xs:attribute name="converter"    type="xs:string"/>
-		<xs:attribute name="dataset"      type="xs:string"/>
-		<xs:attribute name="nesting"      type="xs:string"/>
-		<xs:attribute name="locale"       type="xs:string"/>
-		<xs:attribute name="unique"       type="xs:string"/>
-		<xs:attribute name="distribution" type="xs:string"/>
-		<xs:attribute name="cyclic"       type="xs:string"/>
-		<xs:attribute name="proxy">
-			<xs:simpleType>
-				<xs:union>
-					<xs:simpleType> <!-- (skip | repeat) -->
-						<xs:restriction base="xs:string">
-							<xs:enumeration value="skip"/>
-							<xs:enumeration value="repeat"/>
-						</xs:restriction>
-					</xs:simpleType>
-					<xs:simpleType>
-						<xs:restriction base="xs:string"/>
-					</xs:simpleType>
-				</xs:union>
-			</xs:simpleType>
-		</xs:attribute>
-	</xs:complexType>
-	
-	<xs:complexType name="component-generator-setup">
-		<xs:complexContent>
-			<xs:extension base="generator-setup">
-			
-				<xs:attribute name="uniqueKey"   type="xs:string"/>
-
-				<xs:attribute name="nullable"     type="xs:string"/>
-				<xs:attribute name="mode"         type="xs:string"/>
-
-				<!-- boolean generator setup -->
-				<xs:attribute name="trueQuota"    type="xs:string"/>
-				
-				<!-- number generator setup -->
-				<xs:attribute name="min"          type="xs:string"/>
-				<xs:attribute name="minExclusive" type="xs:string"/>
-				<xs:attribute name="max"          type="xs:string"/>
-				<xs:attribute name="maxExclusive" type="xs:string"/>
-				<xs:attribute name="precision"    type="xs:string"/>
-				
-				<!-- String generator setup -->
-				<xs:attribute name="script"       type="xs:string"/>
-				<xs:attribute name="minLength"    type="xs:string"/>
-				<xs:attribute name="maxLength"    type="xs:string"/>
-				
-				<!-- Sample-based generator setup -->
-				<xs:attribute name="constant"     type="xs:string"/>
-				<xs:attribute name="values"       type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
 	<xs:element name="attribute" type="attribute-generator-setup" />
 	
 	<xs:complexType name="attribute-generator-setup">
@@ -493,6 +427,79 @@
 				<xs:attribute name="map" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="component-generator-setup">
+		<xs:complexContent>
+			<xs:extension base="generator-setup">
+			
+				<xs:attribute name="uniqueKey"   type="xs:string"/>
+
+				<xs:attribute name="nullable"     type="xs:string"/>
+				<xs:attribute name="mode"         type="xs:string"/>
+
+				<!-- boolean generator setup -->
+				<xs:attribute name="trueQuota"    type="xs:string"/>
+				
+				<!-- number generator setup -->
+				<xs:attribute name="min"          type="xs:string"/>
+				<xs:attribute name="minExclusive" type="xs:string"/>
+				<xs:attribute name="max"          type="xs:string"/>
+				<xs:attribute name="maxExclusive" type="xs:string"/>
+				<xs:attribute name="precision"    type="xs:string"/>
+				
+				<!-- String generator setup -->
+				<xs:attribute name="pattern"      type="xs:string"/>
+				<xs:attribute name="script"       type="xs:string"/>
+				<xs:attribute name="minLength"    type="xs:string"/>
+				<xs:attribute name="maxLength"    type="xs:string"/>
+				
+				<!-- Sample-based generator setup -->
+				<xs:attribute name="constant"     type="xs:string"/>
+				<xs:attribute name="values"       type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="generator-setup">
+		<!-- elementary definitions -->
+		<xs:attribute name="name"         type="xs:string"/>
+		<xs:attribute name="type"         type="data-type"/>
+
+		<!-- generation -->
+		<xs:attribute name="generator"    type="xs:string"/>
+
+		<!-- iteration -->	
+		<xs:attribute name="source"       type="xs:string"/>
+        <xs:attribute name="separator"    type="xs:string"/>
+		<xs:attribute name="encoding"     type="xs:string"/>
+		<xs:attribute name="selector"     type="xs:string"/>
+		<xs:attribute name="dataset"      type="xs:string"/>
+		<xs:attribute name="nesting"      type="xs:string"/>
+		<xs:attribute name="locale"       type="xs:string"/>
+
+		<!-- wrappers -->
+		<xs:attribute name="validator"    type="xs:string"/>
+		<xs:attribute name="converter"    type="xs:string"/>
+		<xs:attribute name="nullQuota"    type="xs:string"/>
+		<xs:attribute name="unique"       type="xs:string"/>
+		<xs:attribute name="distribution" type="xs:string"/>
+		<xs:attribute name="cyclic"       type="xs:string"/>
+		<xs:attribute name="proxy">
+			<xs:simpleType>
+				<xs:union>
+					<xs:simpleType> <!-- (skip | repeat) -->
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="skip"/>
+							<xs:enumeration value="repeat"/>
+						</xs:restriction>
+					</xs:simpleType>
+					<xs:simpleType>
+						<xs:restriction base="xs:string"/>
+					</xs:simpleType>
+				</xs:union>
+			</xs:simpleType>
+		</xs:attribute>
 	</xs:complexType>
 	
 </xs:schema>
