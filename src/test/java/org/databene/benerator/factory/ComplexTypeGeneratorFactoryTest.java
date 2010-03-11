@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.test.PersonIterable;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -63,6 +64,8 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		assertNotNull(product);
 		assertEquals(Locale.GERMAN, product.get("locale"));
 	}
+	
+	// testing CSV file import -----------------------------------------------------------------------------------------
 	
 	@Test
 	public void testTabbedCSVImport() {
@@ -132,6 +135,22 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		assertUnavailable(generator);
 	}
 
+	// other tests -----------------------------------------------------------------------------------------------------
+
+	@Test
+	public void testFilteredImport() {
+		ComplexTypeDescriptor twenType = new ComplexTypeDescriptor("Twen");
+		twenType.setSource("personSource");
+		twenType.setFilter("_candidate.age < 30 && _candidate.age >= 20");
+		InstanceDescriptor twen = new InstanceDescriptor("twen", twenType);
+		context.set("personSource", new PersonIterable());
+		Generator<Entity> generator = createGenerator(twen);
+		generator.init(context);
+		Entity person1 = generator.generate();
+		assertEquals(PersonIterable.ALICE, person1);
+		assertUnavailable(generator);
+	}
+	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private Generator<Entity> createGenerator(InstanceDescriptor instance) {
