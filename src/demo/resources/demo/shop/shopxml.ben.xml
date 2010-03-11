@@ -10,7 +10,7 @@
 		<property name="schemaUri" value="demo/shop/shop-plain.xsd" />
 	</bean>
 	
-	<create-entities type="shop" count="1" consumer="XMLEntityConsumer">
+	<generate type="shop" count="1" consumer="XMLEntityConsumer">
 		<!-- make it work! -->
-	</create-entities>
+	</generate>
 </setup>

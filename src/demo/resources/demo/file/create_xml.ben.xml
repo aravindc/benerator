@@ -7,8 +7,8 @@
 		<property name="uri" value="customers.xml" />
 	</bean>
 
-	<create-entities type="customers" count="1" consumer="xml">
-	    <create-entities type="customer" count="10" consumer="xml">
+	<generate type="customers" count="1" consumer="xml">
+	    <generate type="customer" count="10" consumer="xml">
 	        <variable  name="person" generator="org.databene.domain.person.PersonGenerator"/>
 	        <attribute name="id" generator="org.databene.benerator.primitive.IncrementGenerator"/>
 			<attribute name="email" pattern="[a-z]{5,8}[0-9]{0,2}@[a-z]{8,12}\.(de|at|ch|com|org)" />
@@ -19,14 +19,15 @@
 			<attribute name="first_name" script="{${person.givenName}}" />
 			<attribute name="last_name" script="{${person.familyName}}" />
 			<attribute name="birth_date" type="date" nullable="false" />
-		    <create-entities type="addresses" count="1" consumer="xml">
-			    <create-entities type="address" count="2" consumer="xml">
+		    <generate type="addresses" count="1" consumer="xml">
+			    <generate type="address" count="2" consumer="xml">
 			        <variable  name="addr" generator="org.databene.domain.address.AddressGenerator"/>
 					<attribute name="line1" script="{${addr.street} ${addr.houseNumber}}" />
 					<attribute name="line2" script="{${addr.zipCode} ${addr.city}}" />
 					<attribute name="line3" script="{${addr.country}}" />
-			    </create-entities>
-		    </create-entities>
-	    </create-entities>
-    </create-entities>
+			    </generate>
+		    </generate>
+	    </generate>
+    </generate>
+    
 </setup>

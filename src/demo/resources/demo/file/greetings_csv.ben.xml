@@ -3,12 +3,13 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
 
-    <create-entities type="greeting" count="10">
+    <generate type="greeting" count="10">
         <attribute name="salutation" values="Hello,Hi,Howdy"/>
         <attribute name="name" values="'Alice','Bob','Charly'"/>
         <consumer id="csv" class="org.databene.platform.csv.CSVEntityExporter">
             <property name="uri"     value="greetings.csv"/>
             <property name="columns" value="salutation,name"/>
         </consumer>
-    </create-entities>
+    </generate>
+    
 </setup>

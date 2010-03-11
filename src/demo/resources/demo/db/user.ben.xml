@@ -43,16 +43,16 @@
 		insert into db_role (id, name, mx) values (3, 'c', 7);
 	</execute> 
 	
-	<create-entities type="db_dummy" count="1" consumer="db" >
+	<generate type="db_dummy" count="1" consumer="db" >
 		<id name="id" generator="IncrementGenerator" />
-	</create-entities>
+	</generate>
 	
-	<create-entities type="db_role" source="db" consumer="ConsoleExporter" >
-		<create-entities type="db_user" consumer="db" count="10">
+	<generate type="db_role" source="db" consumer="ConsoleExporter" >
+		<generate type="db_user" consumer="db" count="10">
 			<id name="id" generator="LocalSequenceGenerator"/>
 	  		<attribute name="index" generator="IncrementGenerator"/>
 	  		<attribute name="role_fk" script="db_role.id"/>
-		</create-entities>
-	</create-entities>
+		</generate>
+	</generate>
 
 </setup>

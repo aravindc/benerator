@@ -3,7 +3,7 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
 		
-    <create-entities type="transaction" count="100">
+    <generate type="transaction" count="100">
         <variable name="product" type="entity" source="demo/file/products.import.csv" distribution="random"/>
         
         <attribute name="comment" pattern="[A-Z][a-z]{5,12}"/>
@@ -16,5 +16,6 @@
             <property name="uri" value="transactions.xls"/>
             <property name="columns" value="id,ean_code,comment,price,items"/>
         </consumer>
-    </create-entities>
+    </generate>
+    
 </setup>

@@ -14,8 +14,9 @@
     	<property name="timeDistribution" value="cumulated"/>
 	</bean>
 	
-    <create-entities type="test" count="10">
+    <generate type="test" count="10">
         <attribute name="date" type="date" source="datetime_gen"/>
         <consumer class="org.databene.model.consumer.ConsoleExporter"/>
-    </create-entities>
+    </generate>
+    
 </setup>
