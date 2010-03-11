@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,9 +44,11 @@ import org.databene.benerator.composite.MutatingEntityGeneratorProxy;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.ConverterChain;
@@ -59,6 +61,7 @@ import org.databene.platform.flat.FlatFileEntitySource;
 import org.databene.platform.xls.XLSEntitySource;
 import org.databene.platform.csv.CSVEntitySource;
 import org.databene.script.ScriptConverter;
+import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,6 +167,11 @@ public class ComplexTypeGeneratorFactory {
         }
         if (generator.getGeneratedType() != Entity.class)
         	generator = new SimpleTypeEntityGenerator(generator, descriptor);
+        if (descriptor.getFilter() != null) {
+        	Expression<Boolean> filter 
+        		= new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(descriptor.getFilter()));
+        	generator = new FilteringGenerator<Entity>(generator, filter);
+        }
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
         	generator = distribution.applyTo(generator, uniqueness.isUnique());
