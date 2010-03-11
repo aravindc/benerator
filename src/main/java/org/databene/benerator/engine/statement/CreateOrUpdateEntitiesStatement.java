@@ -68,6 +68,7 @@ public class CreateOrUpdateEntitiesStatement extends AbstractStatement implement
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
     public void execute(BeneratorContext context) {
+    	generator.init(context);
 	    PagedTaskRunner.execute(task, context, 
 	    		count.evaluate(context), 
 	    		getPageListeners(context), 
