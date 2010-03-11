@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -96,8 +96,6 @@ public class DescriptorRunner implements ResourceManager {
 	    BeneratorRootStatement mainTask = new BeneratorRootStatement();
 	    // process sub elements
 	    for (Element element : XMLUtil.getChildElements(root)) {
-	    	if (startTime == 0 && EL_CREATE_ENTITIES.equals(element.getNodeName()))
-	    		startTime = System.currentTimeMillis();
 			String elementName = element.getNodeName();
             DescriptorParser elementParser = ParserFactory.getParser(elementName, EL_SETUP);
 	    	Statement statement = elementParser.parse(element, this);
@@ -111,7 +109,8 @@ public class DescriptorRunner implements ResourceManager {
 	
 	public void execute(BeneratorRootStatement rootStatement) {
 	    try {
-			
+	    	startTime = System.currentTimeMillis();
+
 			// run AST
 			rootStatement.execute(context);
 			
