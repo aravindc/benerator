@@ -25,6 +25,6 @@
     ${import-files}
 	
 	<comment>generate mass data</comment>
-	${create-entities}
+	${generate}
 	
 </setup>
