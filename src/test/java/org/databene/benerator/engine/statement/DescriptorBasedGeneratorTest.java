@@ -44,9 +44,9 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 	public void testGetGenerator() throws Exception {
 		String lf = SystemInfo.getLineSeparator();
 		String uri = "string://<setup>" + lf +
-				"	<create-entities name='perGen' type='Person' count='1'>" + lf +
+				"	<generate name='perGen' type='Person' count='1'>" + lf +
 				"		<attribute name='name' constant='Alice'/>" + lf +
-				"	</create-entities>" + lf +
+				"	</generate>" + lf +
 				"</setup>";
 		Generator<?> generator = new DescriptorBasedGenerator(uri, "perGen", new BeneratorContext());
 		assertEquals(Entity.class, generator.getGeneratedType());

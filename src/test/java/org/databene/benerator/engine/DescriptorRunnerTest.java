@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,10 +51,11 @@ public class DescriptorRunnerTest {
 
     @Test
 	public void testProgrammaticInvocation() throws IOException {
-		DescriptorRunner runner = new DescriptorRunner("string://<setup>" +
-				"<create-entities type='Person' count='1' consumer='myConsumer'>" +
-				"<attribute name='name' constant='Alice'/>" +
-				"</create-entities>" +
+		DescriptorRunner runner = new DescriptorRunner(
+				"string://<setup>" +
+				"	<generate type='Person' count='1' consumer='myConsumer'>" +
+				"		<attribute name='name' constant='Alice'/>" +
+				"	</generate>" +
 				"</setup>");
 		BeneratorContext context = runner.getContext();
 		context.importDefaults();

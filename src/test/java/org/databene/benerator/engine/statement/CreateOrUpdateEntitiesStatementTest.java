@@ -36,7 +36,7 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the {@link CreateOrUpdateEntitiesStatement}.<br/><br/>
+ * Tests the {@link GenerateOrIterateStatement}.<br/><br/>
  * Created: 05.11.2009 08:18:17
  * @since 0.6.0
  * @author Volker Bergmann
@@ -56,7 +56,7 @@ public class CreateOrUpdateEntitiesStatementTest {
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
 		Expression<Integer> threads = new ConstantExpression<Integer>(THREAD_COUNT);
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
-		CreateOrUpdateEntitiesStatement statement = new CreateOrUpdateEntitiesStatement(task, count, pageSize, null, threads, errorHandler);
+		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(task, count, pageSize, null, threads, errorHandler);
 		statement.execute(new BeneratorContext());
 		
 		assertEquals(INVOCATION_COUNT, entityGenerator.invocationCount);

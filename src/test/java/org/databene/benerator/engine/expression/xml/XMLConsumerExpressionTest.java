@@ -42,7 +42,7 @@ public class XMLConsumerExpressionTest {
 	@SuppressWarnings("unchecked")
     @Test
 	public void testInlineConsumerClass() throws Exception {
-		Document doc = XMLUtil.parseString("<create-entities " +
+		Document doc = XMLUtil.parseString("<generate " +
 				"consumer='org.databene.benerator.factory.ConsumerMock'/>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
@@ -54,7 +54,7 @@ public class XMLConsumerExpressionTest {
 	@SuppressWarnings("unchecked")
     @Test
 	public void testInlineConsumerSpec() throws Exception {
-		Document doc = XMLUtil.parseString("<create-entities " +
+		Document doc = XMLUtil.parseString("<generate " +
 				"consumer='new org.databene.benerator.factory.ConsumerMock(2)'/>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
@@ -67,9 +67,9 @@ public class XMLConsumerExpressionTest {
 	@SuppressWarnings("unchecked")
     @Test
 	public void testConsumerBean() throws Exception {
-		Document doc = XMLUtil.parseString("<create-entities>" +
+		Document doc = XMLUtil.parseString("<generate>" +
 				"    <consumer spec='new org.databene.benerator.factory.ConsumerMock()'/>" +
-				"</create-entities>");
+				"</generate>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
 		ConsumerChain consumerChain = (ConsumerChain) expression.evaluate(new BeneratorContext());
@@ -79,9 +79,9 @@ public class XMLConsumerExpressionTest {
 	
     @Test
 	public void testConsumerBeanRef() throws Exception {
-		Document doc = XMLUtil.parseString("<create-entities>" +
+		Document doc = XMLUtil.parseString("<generate>" +
 				"    <consumer ref='myc'/>" +
-				"</create-entities>");
+				"</generate>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
@@ -93,7 +93,7 @@ public class XMLConsumerExpressionTest {
 	
 	@Test
 	public void testInlineConsumerList() throws Exception {
-		Document doc = XMLUtil.parseString("<create-entities " +
+		Document doc = XMLUtil.parseString("<generate " +
 			"consumer='myc,new org.databene.benerator.factory.ConsumerMock(5)'/>");
 		XMLConsumerExpression expression = new XMLConsumerExpression(doc.getDocumentElement(), true, 
 				new ResourceManagerSupport());

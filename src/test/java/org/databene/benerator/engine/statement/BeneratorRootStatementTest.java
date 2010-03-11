@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,9 +45,9 @@ public class BeneratorRootStatementTest extends GeneratorTest {
 		BeneratorRootStatement task = null;
 		String lf = SystemInfo.getLineSeparator();
 		DescriptorRunner runner = new DescriptorRunner("string://<setup>" + lf +
-				"	<create-entities type='Person' count='1'>" + lf +
+				"	<generate type='Person' count='1'>" + lf +
 				"		<attribute name='name' constant='Alice'/>" + lf +
-				"	</create-entities>" + lf +
+				"	</generate>" + lf +
 				"</setup>");
 		task = runner.parseDescriptorFile();
 		Generator<Entity> generator = task.getGenerator("Person", runner.getContext());

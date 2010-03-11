@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,9 +51,9 @@ public class InitialContextTest {
 	                    		"  <property name='user' value='resu' />" +
 	                    		"  <property name='password' value='drowssap' />" +
 	                    		"</bean>" +
-	                    		"<create-entities name='Person' count='1' consumer=\"ctx.lookup('cons')\">" +
+	                    		"<generate name='Person' count='1' consumer=\"ctx.lookup('cons')\">" +
 	                    		"  <attribute name='name' constant='Alice'/>" +
-	                    		"</create-entities>" +
+	                    		"</generate>" +
 	                    		"</setup>");
 	                    
 	                    BeneratorContext context = runner.getContext();

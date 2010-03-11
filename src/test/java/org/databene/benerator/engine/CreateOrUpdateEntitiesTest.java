@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,14 +23,14 @@ package org.databene.benerator.engine;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.parser.xml.CreateOrUpdateEntitiesParser;
+import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
- * Integration test for {@link CreateOrUpdateEntitiesParser} 
+ * Integration test for {@link GenerateOrIterateParser} 
  * and {@link CreateOrUpdateEntitiesTest}.<br/><br/>
  * Created: 12.11.2009 16:05:53
  * @since 0.6.0
@@ -40,10 +40,10 @@ public class CreateOrUpdateEntitiesTest {
 
 	@Test
 	public void testAttributes() throws Exception {
-		String uri = "string://<create-entities type='dummy' count='{c}' threads='{tc}' pageSize='{ps}'" +
+		String uri = "string://<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}'" +
 				" consumer='cons'/>";
 		Document doc = XMLUtil.parse(uri);
-		CreateOrUpdateEntitiesParser parser = new CreateOrUpdateEntitiesParser();
+		GenerateOrIterateParser parser = new GenerateOrIterateParser();
 		Statement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		ConsumerMock consumer = new ConsumerMock();
@@ -59,11 +59,11 @@ public class CreateOrUpdateEntitiesTest {
 	public void testSubCreate() throws Exception {
         String consumerClassName = ConsumerMock.class.getName();
 		String uri = "string://" +
-        		"<create-entities type='top' count='3' consumer='cons1'>" +
-        		"    <create-entities type='sub' count='2' consumer='new " + consumerClassName + "(2)'/>" +
-        		"</create-entities>";
+        		"<generate type='top' count='3' consumer='cons1'>" +
+        		"    <generate type='sub' count='2' consumer='new " + consumerClassName + "(2)'/>" +
+        		"</generate>";
 		Document doc = XMLUtil.parse(uri);
-		CreateOrUpdateEntitiesParser parser = new CreateOrUpdateEntitiesParser();
+		GenerateOrIterateParser parser = new GenerateOrIterateParser();
 		Statement statement = parser.parse(doc.getDocumentElement(), new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		ConsumerMock outerConsumer = new ConsumerMock(1);
