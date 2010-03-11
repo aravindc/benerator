@@ -34,6 +34,7 @@ import org.databene.benerator.test.PersonIterable;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.db.hsql.HSQLUtil;
+import org.databene.commons.iterator.IteratorTestCase;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
@@ -124,11 +125,7 @@ public class GenerateOrIterateParserAndStatementTest {
 			statement.execute(context);
 			HeavyweightTypedIterable<Object> check = db.query("select N from GOIPAST", context);
 			HeavyweightIterator<Object> iterator = check.iterator();
-			assertTrue(iterator.hasNext());
-			assertEquals(2, iterator.next());
-			assertTrue(iterator.hasNext());
-			assertEquals(2, iterator.next());
-			assertFalse(iterator.hasNext());
+			IteratorTestCase.expectNextElements(iterator, 2, 2).withNoNext();
 			iterator.close();
         } catch (Exception e) {
         	e.printStackTrace();
