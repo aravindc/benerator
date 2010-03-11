@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2010-02-23 10:48:07
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2010-03-11 15:44:36
 
 	package org.databene.benerator.script;
 
@@ -2304,7 +2304,7 @@ public class BeneratorParser extends Parser {
                     if ( (LA20_3==IDENTIFIER) ) {
                         int LA20_4 = input.LA(3);
 
-                        if ( (LA20_4==EOF||LA20_4==RPAREN||(LA20_4>=LBRACKET && LA20_4<=RBRACKET)||(LA20_4>=COMMA && LA20_4<=DOT)||(LA20_4>=QUES && LA20_4<=PERCENT)||(LA20_4>=BANGEQ && LA20_4<=LE)) ) {
+                        if ( (LA20_4==EOF||LA20_4==RPAREN||(LA20_4>=RBRACE && LA20_4<=RBRACKET)||(LA20_4>=COMMA && LA20_4<=DOT)||(LA20_4>=QUES && LA20_4<=PERCENT)||(LA20_4>=BANGEQ && LA20_4<=LE)) ) {
                             alt20=3;
                         }
                         else if ( (LA20_4==LPAREN) ) {
@@ -2384,7 +2384,7 @@ public class BeneratorParser extends Parser {
 
 
             	    // AST REWRITE
-            	    // elements: arguments, postfixExpression, IDENTIFIER
+            	    // elements: IDENTIFIER, arguments, postfixExpression
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -2426,7 +2426,7 @@ public class BeneratorParser extends Parser {
 
 
             	    // AST REWRITE
-            	    // elements: IDENTIFIER, postfixExpression
+            	    // elements: postfixExpression, IDENTIFIER
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -2629,7 +2629,7 @@ public class BeneratorParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: qualifiedName, arguments
+                    // elements: arguments, qualifiedName
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2699,7 +2699,7 @@ public class BeneratorParser extends Parser {
     };
 
     // $ANTLR start "creator"
-    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:206:1: creator : ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) );
+    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:206:1: creator : ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '{' assignment ( ',' assignment )* '}' -> ^( BEAN qualifiedName ( assignment )* ) );
     public final BeneratorParser.creator_return creator() throws RecognitionException {
         BeneratorParser.creator_return retval = new BeneratorParser.creator_return();
         retval.start = input.LT(1);
@@ -2727,16 +2727,16 @@ public class BeneratorParser extends Parser {
         Object char_literal94_tree=null;
         Object char_literal96_tree=null;
         Object char_literal98_tree=null;
-        RewriteRuleTokenStream stream_LBRACKET=new RewriteRuleTokenStream(adaptor,"token LBRACKET");
         RewriteRuleTokenStream stream_66=new RewriteRuleTokenStream(adaptor,"token 66");
-        RewriteRuleTokenStream stream_RBRACKET=new RewriteRuleTokenStream(adaptor,"token RBRACKET");
+        RewriteRuleTokenStream stream_RBRACE=new RewriteRuleTokenStream(adaptor,"token RBRACE");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
+        RewriteRuleTokenStream stream_LBRACE=new RewriteRuleTokenStream(adaptor,"token LBRACE");
         RewriteRuleSubtreeStream stream_assignment=new RewriteRuleSubtreeStream(adaptor,"rule assignment");
         RewriteRuleSubtreeStream stream_arguments=new RewriteRuleSubtreeStream(adaptor,"rule arguments");
         RewriteRuleSubtreeStream stream_qualifiedName=new RewriteRuleSubtreeStream(adaptor,"rule qualifiedName");
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 25) ) { return retval; }
-            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:207:5: ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) )
+            // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:207:5: ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '{' assignment ( ',' assignment )* '}' -> ^( BEAN qualifiedName ( assignment )* ) )
             int alt23=2;
             alt23 = dfa23.predict(input);
             switch (alt23) {
@@ -2791,7 +2791,7 @@ public class BeneratorParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:9: 'new' qualifiedName '[' assignment ( ',' assignment )* ']'
+                    // /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g:208:9: 'new' qualifiedName '{' assignment ( ',' assignment )* '}'
                     {
                     string_literal92=(Token)match(input,66,FOLLOW_66_in_creator1009); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_66.add(string_literal92);
@@ -2802,8 +2802,8 @@ public class BeneratorParser extends Parser {
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_qualifiedName.add(qualifiedName93.getTree());
-                    char_literal94=(Token)match(input,LBRACKET,FOLLOW_LBRACKET_in_creator1013); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_LBRACKET.add(char_literal94);
+                    char_literal94=(Token)match(input,LBRACE,FOLLOW_LBRACE_in_creator1013); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_LBRACE.add(char_literal94);
 
                     pushFollow(FOLLOW_assignment_in_creator1015);
                     assignment95=assignment();
@@ -2844,13 +2844,13 @@ public class BeneratorParser extends Parser {
                         }
                     } while (true);
 
-                    char_literal98=(Token)match(input,RBRACKET,FOLLOW_RBRACKET_in_creator1024); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_RBRACKET.add(char_literal98);
+                    char_literal98=(Token)match(input,RBRACE,FOLLOW_RBRACE_in_creator1024); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_RBRACE.add(char_literal98);
 
 
 
                     // AST REWRITE
-                    // elements: assignment, qualifiedName
+                    // elements: qualifiedName, assignment
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3323,11 +3323,11 @@ public class BeneratorParser extends Parser {
     static final String[] DFA6_transitionS = {
             "\1\2\5\1\23\uffff\1\1\11\uffff\2\1\6\uffff\1\1\22\uffff\1\1",
             "",
-            "\2\1\2\uffff\2\1\1\uffff\1\1\1\3\1\4\2\uffff\15\1\1\uffff\10"+
+            "\2\1\1\uffff\3\1\1\uffff\1\1\1\3\1\4\2\uffff\15\1\1\uffff\10"+
             "\1",
             "\1\5",
             "",
-            "\2\1\2\uffff\2\1\1\uffff\1\1\1\3\1\4\2\uffff\15\1\1\uffff\10"+
+            "\2\1\1\uffff\3\1\1\uffff\1\1\1\3\1\4\2\uffff\15\1\1\uffff\10"+
             "\1"
     };
 
@@ -3383,7 +3383,7 @@ public class BeneratorParser extends Parser {
             "\1\2\1\5\2\uffff\1\2\3\uffff\1\4\1\2\2\uffff\1\2\1\uffff\13"+
             "\2\1\uffff\10\2",
             "\1\6",
-            "\6\7\23\uffff\1\7\1\2\2\uffff\2\2\1\uffff\2\2\3\uffff\15\2"+
+            "\6\7\23\uffff\1\7\1\2\1\uffff\3\2\1\uffff\2\2\3\uffff\15\2"+
             "\1\uffff\10\2\3\uffff\1\7",
             "\1\2\1\5\2\uffff\1\2\3\uffff\1\4\1\2\2\uffff\1\2\1\uffff\13"+
             "\2\1\uffff\10\2",
@@ -3438,11 +3438,11 @@ public class BeneratorParser extends Parser {
     static final String[] DFA23_transitionS = {
             "\1\1",
             "\1\2",
-            "\1\4\3\uffff\1\5\3\uffff\1\3",
+            "\1\4\1\uffff\1\5\5\uffff\1\3",
             "\1\6",
             "",
             "",
-            "\1\4\3\uffff\1\5\3\uffff\1\3"
+            "\1\4\1\uffff\1\5\5\uffff\1\3"
     };
 
     static final short[] DFA23_eot = DFA.unpackEncodedString(DFA23_eotS);
@@ -3475,7 +3475,7 @@ public class BeneratorParser extends Parser {
             this.transition = DFA23_transition;
         }
         public String getDescription() {
-            return "206:1: creator : ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '[' assignment ( ',' assignment )* ']' -> ^( BEAN qualifiedName ( assignment )* ) );";
+            return "206:1: creator : ( 'new' qualifiedName arguments -> ^( CONSTRUCTOR qualifiedName arguments ) | 'new' qualifiedName '{' assignment ( ',' assignment )* '}' -> ^( BEAN qualifiedName ( assignment )* ) );";
         }
     }
  
@@ -3572,12 +3572,12 @@ public class BeneratorParser extends Parser {
     public static final BitSet FOLLOW_qualifiedName_in_creator987 = new BitSet(new long[]{0x0000000020000000L});
     public static final BitSet FOLLOW_arguments_in_creator989 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_66_in_creator1009 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_qualifiedName_in_creator1011 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_LBRACKET_in_creator1013 = new BitSet(new long[]{0x00008180200003F0L,0x0000000000000004L});
-    public static final BitSet FOLLOW_assignment_in_creator1015 = new BitSet(new long[]{0x0000001400000000L});
+    public static final BitSet FOLLOW_qualifiedName_in_creator1011 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_LBRACE_in_creator1013 = new BitSet(new long[]{0x00008180200003F0L,0x0000000000000004L});
+    public static final BitSet FOLLOW_assignment_in_creator1015 = new BitSet(new long[]{0x0000001100000000L});
     public static final BitSet FOLLOW_COMMA_in_creator1018 = new BitSet(new long[]{0x00008180200003F0L,0x0000000000000004L});
-    public static final BitSet FOLLOW_assignment_in_creator1020 = new BitSet(new long[]{0x0000001400000000L});
-    public static final BitSet FOLLOW_RBRACKET_in_creator1024 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_assignment_in_creator1020 = new BitSet(new long[]{0x0000001100000000L});
+    public static final BitSet FOLLOW_RBRACE_in_creator1024 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LPAREN_in_arguments1054 = new BitSet(new long[]{0x00008180600003F0L,0x0000000000000004L});
     public static final BitSet FOLLOW_expression_in_arguments1057 = new BitSet(new long[]{0x0000001040000000L});
     public static final BitSet FOLLOW_COMMA_in_arguments1060 = new BitSet(new long[]{0x00008180200003F0L,0x0000000000000004L});

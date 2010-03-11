@@ -458,8 +458,8 @@ public class BeneratorScriptParserTest {
 	@Test
 	public void testParsePropertyConstruction() throws Exception {
 		checkBeanSpec(new Person("Alice", TimeUtil.date(1972, 1, 3), 102, true, 'A'),
-				"new org.databene.benerator.test.Person[name='Alice', birthDate=(date) '1972-02-03', score=102, " +
-				"registered=true, rank='A']");
+				"new org.databene.benerator.test.Person{name='Alice', birthDate=(date) '1972-02-03', score=102, " +
+				"registered=true, rank='A'}");
 	}
 
 	@Test

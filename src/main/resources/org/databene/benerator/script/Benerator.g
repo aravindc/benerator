@@ -205,7 +205,7 @@ primary
 
 creator
     :   'new' qualifiedName arguments -> ^(CONSTRUCTOR qualifiedName arguments)
-    |   'new' qualifiedName '[' assignment (',' assignment)* ']' -> ^(BEAN qualifiedName assignment*)
+    |   'new' qualifiedName '{' assignment (',' assignment)* '}' -> ^(BEAN qualifiedName assignment*)
     ;
 
 arguments

@@ -1,10 +1,9 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2010-02-23 10:48:07
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 /Users/volker/Documents/databene/benerator/src/main/resources/org/databene/benerator/script/Benerator.g 2010-03-11 15:44:36
  
 	package org.databene.benerator.script;
 
 
 import org.antlr.runtime.*;
-
 import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
