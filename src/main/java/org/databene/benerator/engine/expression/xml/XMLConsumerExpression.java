@@ -34,7 +34,6 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.BeanUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Escalator;
 import org.databene.commons.Expression;
@@ -108,14 +107,6 @@ public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
 			escalator.escalate("No consumers defined for " + entityName, this, null);
 		for (Consumer<Entity> consumer : consumerChain.getComponents())
 			resourceManager.addResource(consumer);
-		if (EL_UPDATE.equals(entityElement.getNodeName())) {
-			String sourceName = parseStringAttribute(entityElement, ATT_SOURCE, context);
-			Object source = context.get(sourceName);
-			if (!(source instanceof StorageSystem))
-				throw new ConfigurationError("The source of an <" + EL_UPDATE + "> " +
-						"element must be a StorageSystem. '" + sourceName + "' is not");
-			consumerChain.addComponent(new StorageSystemConsumer((StorageSystem) source, false));
-		}
 		return consumerChain;
 	}
 

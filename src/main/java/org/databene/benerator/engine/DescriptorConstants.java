@@ -48,7 +48,6 @@ public interface DescriptorConstants {
     static final String EL_BEAN = "bean";
 	static final String EL_GENERATE = "generate";
 	static final String EL_ITERATE = "iterate";
-	static final String EL_UPDATE = "update"; // TODO remove
 	static final String EL_CONSUMER = "consumer";
 	static final String EL_COMMENT = "comment";
     static final String EL_DEFAULT_COMPONENTS = "defaultComponents";

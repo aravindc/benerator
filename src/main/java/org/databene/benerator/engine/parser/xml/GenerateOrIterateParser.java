@@ -81,8 +81,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	
 	public boolean supports(String elementName, String parentName) {
 	    return EL_GENERATE.equals(elementName)
-			|| EL_ITERATE.equals(elementName)
-			|| EL_UPDATE.equals(elementName);
+			|| EL_ITERATE.equals(elementName);
     }
 	
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
