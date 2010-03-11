@@ -23,15 +23,21 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
+import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
+import org.databene.platform.db.DBSystem;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -58,11 +64,10 @@ public class GenerateOrIterateParserAndStatementTest {
 	/** Tests the nesting of an &lt;execute&gt; element within a &lt;generate&gt; element */
 	@Test
 	public void testSubExecute() throws Exception {
-        String xml = "<generate type='dummy' count='3'>" +
-        		"<execute>bean.invoke(2)</execute>" +
-        		"</generate>";
-		Element element = XMLUtil.parseStringAsElement(xml);
-		Statement statement = parser.parse(element, resourceManager);
+		Statement statement = parse(
+				"<generate type='dummy' count='3'>" +
+        		"	<execute>bean.invoke(2)</execute>" +
+        		"</generate>");
 		BeanMock bean = new BeanMock();
 		bean.invocationCount = 0;
 		context.set("bean", bean);
@@ -74,9 +79,7 @@ public class GenerateOrIterateParserAndStatementTest {
 	/** Tests iterating an {@link EntitySource} */
 	@Test
 	public void testIterate() throws Exception {
-        String xml = "<iterate type='Person' source='personSource' consumer='cons' />";
-		Element element = XMLUtil.parseStringAsElement(xml);
-		Statement statement = parser.parse(element, resourceManager);
+		Statement statement = parse("<iterate type='Person' source='personSource' consumer='cons' />");
 		context.set("personSource", new PersonIterable());
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
@@ -88,14 +91,60 @@ public class GenerateOrIterateParserAndStatementTest {
 	/** Tests pure {@link Entity} generation */
 	@Test
 	public void testGenerate() throws Exception {
-        String xml = "<generate type='Person' count='2' consumer='cons' />";
-		Element element = XMLUtil.parseStringAsElement(xml);
-		Statement statement = parser.parse(element, resourceManager);
+		Statement statement = parse("<generate type='Person' count='2' consumer='cons' />");
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(false);
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.startConsumingCount.get());
 		assertEquals(2, consumer.finishConsumingCount.get());
 	}
+	
+	/** Tests DB update */
+	@Test
+	public void testDBUpdate() throws Exception {
+		// create DB
+        DBSystem db = new DBSystem("db", HSQLUtil.getInMemoryURL("benetest"), HSQLUtil.DRIVER, HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
+        try {
+    		// prepare DB
+        	db.execute(
+        		"create table GOIPAST (" +
+        		"	ID int," +
+        		"	N  int," +
+        		"	primary key (ID)" +
+        		")");
+        	db.execute("insert into GOIPAST (id, n) values (1, 3)");
+        	db.execute("insert into GOIPAST (id, n) values (2, 4)");
+	        // parse and run statement
+	        Statement statement = parse(
+	        	"<iterate type='GOIPAST' source='db' consumer='db.updater()'>" +
+	        	"	<attribute name='n' constant='2' />" +
+	        	"</iterate>"
+	        );
+	        context.set("db", db);
+			statement.execute(context);
+			HeavyweightTypedIterable<Object> check = db.query("select N from GOIPAST", context);
+			HeavyweightIterator<Object> iterator = check.iterator();
+			assertTrue(iterator.hasNext());
+			assertEquals(2, iterator.next());
+			assertTrue(iterator.hasNext());
+			assertEquals(2, iterator.next());
+			assertFalse(iterator.hasNext());
+			iterator.close();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	throw e;
+        } finally {
+        	// clean up
+        	db.execute("drop table GOIPAST");
+        	db.close();
+        }
+	}
+	
+	// helper methods --------------------------------------------------------------------------------------------------
+
+	private Statement parse(String xml) throws IOException {
+		Element element = XMLUtil.parseStringAsElement(xml);
+		return parser.parse(element, resourceManager);
+    }
 	
 }
