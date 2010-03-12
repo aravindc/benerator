@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,8 @@ import java.io.IOException;
 
 import org.databene.commons.Context;
 import org.databene.commons.HeavyweightIterator;
-import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.Entity;
+import org.databene.model.data.FileBasedEntitySource;
 
 /**
  * Imports entities from a DbUnit XML file.<br/>
@@ -40,23 +40,18 @@ import org.databene.model.data.Entity;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class DbUnitEntitySource extends AbstractEntitySource {
+public class DbUnitEntitySource extends FileBasedEntitySource {
 	
-    private String uri;
     private Context context;
 
     public DbUnitEntitySource(String uri, Context context) {
-        this.uri = uri;
+        super(uri);
         this.context = context;
     }
     
-    public void setUri(String uri) {
-		this.uri = uri;
-	}
-
     public HeavyweightIterator<Entity> iterator() {
         try {
-            return new DbUnitEntityIterator(uri, context);
+            return new DbUnitEntityIterator(getAbsoluteUri(), context);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -66,4 +61,5 @@ public class DbUnitEntitySource extends AbstractEntitySource {
     public String toString() {
         return getClass().getSimpleName() + '[' + uri + ']';
     }
+    
 }

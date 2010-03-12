@@ -1,3 +1,24 @@
+/*
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License (GPL).
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.databene.platform.csv;
 
 import java.io.FileNotFoundException;
@@ -7,13 +28,16 @@ import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.FileBasedEntitySource;
 
-public class CSVEntitySource extends AbstractEntitySource {
+/**
+ * Imports {@link Entity} data from CSV files.<br/><br/>
+ * @author Volker Bergmann
+ */
+public class CSVEntitySource extends FileBasedEntitySource {
 	
-    private String uri;
     private char   separator;
     private String encoding;
     private Converter<String, String> preprocessor;
@@ -45,7 +69,7 @@ public class CSVEntitySource extends AbstractEntitySource {
 
     public CSVEntitySource(String uri, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, 
     		char separator, String encoding) {
-        this.uri = uri;
+        super(uri);
         this.separator = separator;
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
@@ -53,14 +77,6 @@ public class CSVEntitySource extends AbstractEntitySource {
     }
 
     // properties ------------------------------------------------------------------------------------------------------
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 
     public char getSeparator() {
         return separator;
@@ -90,7 +106,7 @@ public class CSVEntitySource extends AbstractEntitySource {
 
     public HeavyweightIterator<Entity> iterator() {
         try {
-			return new CSVEntityIterator(uri, entityDescriptor, preprocessor, separator, encoding);
+			return new CSVEntityIterator(getAbsoluteUri(), entityDescriptor, preprocessor, separator, encoding);
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}

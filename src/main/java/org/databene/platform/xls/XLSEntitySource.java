@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,9 +32,9 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
+import org.databene.model.data.FileBasedEntitySource;
 
 /**
  * Implements an {@link EntitySource} that reads Entities from an Excel sheet.<br/>
@@ -44,9 +44,8 @@ import org.databene.model.data.EntitySource;
  * @author Volker Bergmann
  */
 
-public class XLSEntitySource extends AbstractEntitySource {
+public class XLSEntitySource extends FileBasedEntitySource {
 	
-    private String uri;
     private Converter<String, ?> preprocessor;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -60,35 +59,18 @@ public class XLSEntitySource extends AbstractEntitySource {
     }
 
     public XLSEntitySource(String uri, Converter<String, ?> preprocessor) {
-        this.uri = uri;
+        super(uri);
         this.preprocessor = preprocessor;
-    }
-
-    // properties ------------------------------------------------------------------------------------------------------
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
     }
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
 
     public HeavyweightIterator<Entity> iterator() {
         try {
-			return new XLSEntityIterator(uri, preprocessor);
+			return new XLSEntityIterator(getAbsoluteUri(), preprocessor);
 		} catch (IOException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}
-    }
-
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-
-    @Override
-	public String toString() {
-        return getClass().getSimpleName() + "[" + uri + "]";
     }
 
 }
