@@ -28,6 +28,7 @@ package org.databene.platform.dbunit;
 
 import java.io.IOException;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.model.data.Entity;
@@ -42,11 +43,8 @@ import org.databene.model.data.FileBasedEntitySource;
  */
 public class DbUnitEntitySource extends FileBasedEntitySource {
 	
-    private Context context;
-
-    public DbUnitEntitySource(String uri, Context context) {
-        super(uri);
-        this.context = context;
+    public DbUnitEntitySource(String uri, BeneratorContext context) {
+        super(uri, context);
     }
     
     public HeavyweightIterator<Entity> iterator() {

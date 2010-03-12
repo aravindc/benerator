@@ -134,7 +134,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
     }
 
     private Document readDocument(String uri) throws IOException {
-        return XMLUtil.parse(uri, false);
+        return XMLUtil.parse(uri, null);
     }
 
     private void parseDataset(Document document) {
