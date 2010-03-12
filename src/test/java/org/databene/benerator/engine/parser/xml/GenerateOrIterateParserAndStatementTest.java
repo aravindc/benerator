@@ -23,11 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
@@ -35,13 +30,11 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.commons.iterator.IteratorTestCase;
-import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.platform.db.DBSystem;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the {@link GenerateOrIterateParser}.<br/><br/>
@@ -49,16 +42,12 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class GenerateOrIterateParserAndStatementTest {
+public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 	
-	BeneratorContext context;
-	ResourceManager resourceManager;
-	GenerateOrIterateParser parser;
-
+	@Override
 	@Before
 	public void setUp() {
-		context = new BeneratorContext();
-		resourceManager = new ResourceManagerSupport();
+	    super.setUp();
 		parser = new GenerateOrIterateParser();
 	}
 	
@@ -136,12 +125,5 @@ public class GenerateOrIterateParserAndStatementTest {
         	db.close();
         }
 	}
-	
-	// helper methods --------------------------------------------------------------------------------------------------
 
-	private Statement parse(String xml) throws IOException {
-		Element element = XMLUtil.parseStringAsElement(xml);
-		return parser.parse(element, resourceManager);
-    }
-	
 }
