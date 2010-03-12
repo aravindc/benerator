@@ -48,14 +48,14 @@ public class CSVEntitySourceTest {
 
     @Test
     public void testSingleRun() {
-    	CSVEntitySource source = new CSVEntitySource(URI, "Person", ',');
+    	CSVEntitySource source = new CSVEntitySource(URI, "Person");
     	source.setContext(new BeneratorContext());
         checkIteration(source.iterator());
     }
 
     @Test
     public void testReset() {
-    	CSVEntitySource source = new CSVEntitySource(URI, "Person", ',');
+    	CSVEntitySource source = new CSVEntitySource(URI, "Person");
     	source.setContext(new BeneratorContext());
         checkIteration(source.iterator());
         checkIteration(source.iterator());
