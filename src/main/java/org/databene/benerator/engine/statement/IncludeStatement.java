@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.engine.statement;
 import java.io.IOException;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.parser.DefaultEntryConverter;
 import org.databene.commons.ConfigurationError;
@@ -50,34 +51,44 @@ public class IncludeStatement implements Statement {
 	
 	private static Logger logger = LoggerFactory.getLogger(IncludeStatement.class);
 
-	private Expression<String> uri;
+	private Expression<String> uriEx;
 	
     public IncludeStatement(Expression<String> uri) {
-    	this.uri = uri;
+    	this.uriEx = uri;
     }
     
 	public Expression<String> getUri() {
-    	return uri;
+    	return uriEx;
     }
 
 	public void setUri(Expression<String> uri) {
-    	this.uri = uri;
+    	this.uriEx = uri;
     }
 
 	public void execute(BeneratorContext context) {
-		String uriValue = context.resolveRelativeUri(uri.evaluate(context));
+		String uri = context.resolveRelativeUri(uriEx.evaluate(context));
+		String lcUri = uri.toLowerCase();
         try {
-            importProperties(uriValue, context);
+			if (lcUri.endsWith(".properties"))
+	            importProperties(uri, context);
+			else if (lcUri.endsWith(".ben.xml") || lcUri.endsWith("benerator.xml"))
+				importDescriptor(uri, context);
+			else
+				throw new ConfigurationError("Not a supported import file type: " + uri);
         } catch (IOException e) {
-            throw new ConfigurationError("Properties file not found for uri: " + uri);
+            throw new ConfigurationError("Error processing " + uri, e);
         }
 	}
 
-    public static void importProperties(String uri, BeneratorContext context) throws IOException {
+	public static void importProperties(String uri, BeneratorContext context) throws IOException {
         logger.debug("reading properties from uri: " + uri);
         ScriptConverter preprocessor = new ScriptConverter(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
         IOUtil.readProperties(uri, converter);
+    }
+
+    private static void importDescriptor(String uri, BeneratorContext context) throws IOException {
+		new DescriptorRunner(uri, context).run();
     }
 
 }
