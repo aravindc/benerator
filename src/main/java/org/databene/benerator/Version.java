@@ -42,6 +42,9 @@ import org.databene.commons.IOUtil;
 public class Version {
 
 	public static final String VERSION = readVersion();
+	public static final String XML_PUBLIC_ID = "http://databene.org/benerator/" + VERSION;
+	public static final String XML_HTTP_SYSTEM_ID = "http://databene.org/benerator-" + VERSION + ".xsd";
+	public static final String XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + VERSION + ".xsd";
 
 	public static void main(String[] args) {
 		System.out.println(VERSION);
