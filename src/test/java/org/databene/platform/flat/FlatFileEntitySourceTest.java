@@ -31,6 +31,7 @@ import static junit.framework.Assert.*;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.format.Alignment;
 
@@ -60,6 +61,7 @@ public class FlatFileEntitySourceTest {
     @Test
     public void testUnfiltered() {
         FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), null, descriptors);
+        source.setContext(new BeneratorContext());
         Iterator<Entity> iterator = source.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(ALICE, iterator.next());
@@ -81,6 +83,7 @@ public class FlatFileEntitySourceTest {
     @Test
     public void testFiltered() {
         FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), "Bob.*", descriptors);
+        source.setContext(new BeneratorContext());
         Iterator<Entity> iterator = source.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(BOB, iterator.next());
