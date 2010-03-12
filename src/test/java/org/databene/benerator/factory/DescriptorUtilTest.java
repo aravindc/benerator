@@ -84,7 +84,7 @@ public class DescriptorUtilTest {
 		checkGetConverter(null, null, "new " + ConverterMock.class.getName() + "(2)", 3);
 		
 		// test property spec
-		checkGetConverter(null, null, "new " + ConverterMock.class.getName() + "[increment=3]", 4);
+		checkGetConverter(null, null, "new " + ConverterMock.class.getName() + "{increment=3}", 4);
 		
 		// test converter chaining
 		checkGetConverter("c", new ConverterMock(3), "c, new " + ConverterMock.class.getName() + "(5)", 9);
@@ -103,7 +103,7 @@ public class DescriptorUtilTest {
 		checkGetValidator(null, null, "new " + ValidatorMock.class.getName() + "(2)", 2);
 		
 		// test property spec
-		checkGetValidator(null, null, "new " + ValidatorMock.class.getName() + "[value=3]", 3);
+		checkGetValidator(null, null, "new " + ValidatorMock.class.getName() + "{value=3}", 3);
 		
 		// test converter chaining
 		checkGetValidator("c", new ValidatorMock(3), "c, new " + ValidatorMock.class.getName() + "(5)", null);
@@ -125,7 +125,7 @@ public class DescriptorUtilTest {
 		checkGetGeneratorByName(null, null, "new " + GeneratorMock.class.getName() + "(2)", 2);
 		
 		// test property spec
-		checkGetGeneratorByName(null, null, "new " + GeneratorMock.class.getName() + "[value=3]", 3);
+		checkGetGeneratorByName(null, null, "new " + GeneratorMock.class.getName() + "{value=3}", 3);
 	}
 
 	// distribution tests ----------------------------------------------------------------------------------------------
@@ -142,7 +142,7 @@ public class DescriptorUtilTest {
 		checkGetWeightFunction(null, null, "new " + WeightFunctionMock.class.getName() + "(2)", 2);
 		
 		// test property spec
-		checkGetWeightFunction(null, null, "new " + WeightFunctionMock.class.getName() + "[value=3]", 3);
+		checkGetWeightFunction(null, null, "new " + WeightFunctionMock.class.getName() + "{value=3}", 3);
 	}
 
 	@Test
