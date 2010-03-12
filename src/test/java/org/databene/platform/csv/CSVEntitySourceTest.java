@@ -28,6 +28,8 @@ package org.databene.platform.csv;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
+
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 
@@ -46,15 +48,17 @@ public class CSVEntitySourceTest {
 
     @Test
     public void testSingleRun() {
-    	CSVEntitySource iterable = new CSVEntitySource(URI, "Person", ',');
-        checkIteration(iterable.iterator());
+    	CSVEntitySource source = new CSVEntitySource(URI, "Person", ',');
+    	source.setContext(new BeneratorContext());
+        checkIteration(source.iterator());
     }
 
     @Test
     public void testReset() {
-    	CSVEntitySource iterable = new CSVEntitySource(URI, "Person", ',');
-        checkIteration(iterable.iterator());
-        checkIteration(iterable.iterator());
+    	CSVEntitySource source = new CSVEntitySource(URI, "Person", ',');
+    	source.setContext(new BeneratorContext());
+        checkIteration(source.iterator());
+        checkIteration(source.iterator());
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
