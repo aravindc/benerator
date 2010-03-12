@@ -26,6 +26,7 @@ import java.util.Random;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Converter;
@@ -48,6 +49,8 @@ public abstract class InverseProbabilityIntegral implements Distribution {
 		if (unique)
 			throw new IllegalArgumentException(this + " cannot generate unique values");
 	    List<T> allProducts = GeneratorUtil.allProducts(source);
+	    if (allProducts.size() == 1)
+	    	return new ConstantGenerator<T>(allProducts.get(0));
 	    return new SampleGenerator<T>(source.getGeneratedType(), this, allProducts);
     }
 
@@ -73,26 +76,26 @@ public abstract class InverseProbabilityIntegral implements Distribution {
     	
     	private InverseProbabilityIntegral fcn;
     	private Random random = new Random();
-    	private double minF;
-    	private double scale;
 		private Converter<Double, E> converter;
-		private double precisionD;
 		private double minD;
+		private double maxD;
+		private double precisionD;
     	
 		public IPINumberGenerator(InverseProbabilityIntegral fcn, Class<E> targetType, E min, E max, E precision) {
 			super(targetType, min, max, precision);
-			this.minD = min.doubleValue();
-			this.precisionD = precision.doubleValue();
 			this.fcn = fcn;
-			this.minF = fcn.value(0);
-			double maxF = fcn.value(1);
-			this.scale = (max.doubleValue() - min.doubleValue() + precision.doubleValue()) / (maxF - minF);
+			this.minD = min.doubleValue();
+			this.maxD = max.doubleValue();
+			this.precisionD = precision.doubleValue();
 			this.converter = ConverterManager.getInstance().createConverter(Double.class, targetType);
         }
 
 		public E generate() {
-			double tmp = fcn.value(random.nextDouble());
-			tmp = Math.floor((tmp - minF) * scale / precisionD) * precisionD + minD;
+			double tmp;
+			do {
+				tmp = fcn.value(random.nextDouble());
+			} while (!(tmp >= minD && tmp < maxD + precisionD));
+			tmp = Math.floor((tmp - minD) / precisionD) * precisionD + minD;
 			return converter.convert(tmp);
         }
 
