@@ -144,19 +144,15 @@ public class ComplexTypeGeneratorFactory {
             generator = createSourceGeneratorFromObject(descriptor, context, generator, contextSourceObject);
         else {
         	String lcSourceName = sourceName.toLowerCase();
-        	if (lcSourceName.endsWith(".xml")) {
-        		String uri = context.resolveRelativeUri(sourceName);
-	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(uri, context));
-	        } else if (lcSourceName.endsWith(".csv")) {
-	        	String uri = context.resolveRelativeUri(sourceName);
-	            generator = createCSVSourceGenerator(descriptor, context, uri);
-	        } else if (lcSourceName.endsWith(".flat")) {
-	        	String uri = context.resolveRelativeUri(sourceName);
-	            generator = createFlatSourceGenerator(descriptor, context, uri);
-	        } else if (lcSourceName.endsWith(".xls")) {
-	        	String uri = context.resolveRelativeUri(sourceName);
-	            generator = createXLSSourceGenerator(descriptor, context, uri);
-	        } else {
+        	if (lcSourceName.endsWith(".xml"))
+	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(sourceName, context));
+	        else if (lcSourceName.endsWith(".csv"))
+	            generator = createCSVSourceGenerator(descriptor, context, sourceName);
+	        else if (lcSourceName.endsWith(".flat"))
+	            generator = createFlatSourceGenerator(descriptor, context, sourceName);
+	        else if (lcSourceName.endsWith(".xls"))
+	            generator = createXLSSourceGenerator(descriptor, context, sourceName);
+	        else {
 	        	try {
 		        	Object sourceObject = BeneratorScriptParser.parseBeanSpec(sourceName).evaluate(context);
 		        	return createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
@@ -206,6 +202,7 @@ public class ComplexTypeGeneratorFactory {
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
 		Converter<String, String> scriptConverter = createScriptConverter(context);
 		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
+		iterable.setContext(context);
 		generator = new IteratingGenerator<Entity>(iterable);
 		return generator;
 	}
@@ -233,12 +230,16 @@ public class ComplexTypeGeneratorFactory {
 		if (dataset != null && nesting != null) {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
-		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator<Entity>(new CSVEntitySource(dataFiles[i], complexType.getName(), separator, encoding));
+		    for (int i = 0; i < dataFiles.length; i++) {
+	            CSVEntitySource source = new CSVEntitySource(dataFiles[i], complexType.getName(), separator, encoding);
+	            source.setContext(context);
+	            sources[i] = new IteratingGenerator<Entity>(source);
+            }
 		    generator = new AlternativeGenerator<Entity>(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
 			CSVEntitySource iterable = new CSVEntitySource(sourceName, complexType.getName(), scriptConverter, separator, encoding);
+			iterable.setContext(context);
 		    generator = new IteratingGenerator<Entity>(iterable);
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
@@ -258,13 +259,17 @@ public class ComplexTypeGeneratorFactory {
 		if (dataset != null && nesting != null) {
 		    String[] dataFiles = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
 		    Generator<Entity>[] sources = new Generator[dataFiles.length];
-		    for (int i = 0; i < dataFiles.length; i++)
-		        sources[i] = new IteratingGenerator<Entity>(new XLSEntitySource(dataFiles[i]));
+		    for (int i = 0; i < dataFiles.length; i++) {
+	            XLSEntitySource source = new XLSEntitySource(dataFiles[i]);
+	            source.setContext(context);
+	            sources[i] = new IteratingGenerator<Entity>(source);
+            }
 		    generator = new AlternativeGenerator<Entity>(Entity.class, sources); 
 		} else {
 		    // iterate over (possibly large) data file
-			XLSEntitySource iterable = new XLSEntitySource(sourceName, scriptConverter);
-		    generator = new IteratingGenerator<Entity>(iterable);
+			XLSEntitySource source = new XLSEntitySource(sourceName, scriptConverter);
+			source.setContext(context);
+		    generator = new IteratingGenerator<Entity>(source);
 		}
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
 		return generator;
