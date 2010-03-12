@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,11 +22,11 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorConstants;
-import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.expression.StringScriptExpression;
+import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -35,14 +35,15 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class IncludeParser implements DescriptorParser {
+public class IncludeParser extends AbstractDescriptorParser {
 
-	public boolean supports(String elementName, String parentName) {
-	    return DescriptorConstants.EL_INCLUDE.equals(elementName);
+	public IncludeParser() {
+	    super(DescriptorConstants.EL_INCLUDE);
     }
 
 	public IncludeStatement parse(Element element, ResourceManager resourceManager) {
-        Expression<String> uriEx = new StringScriptExpression(element.getAttribute(DescriptorConstants.ATT_URI));
+        String uriAttr = element.getAttribute(DescriptorConstants.ATT_URI);
+		Expression<String> uriEx = new StringExpression(new ScriptableExpression(uriAttr, null));
         return new IncludeStatement(uriEx);
     }
 
