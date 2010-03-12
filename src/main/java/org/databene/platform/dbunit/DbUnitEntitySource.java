@@ -29,7 +29,6 @@ package org.databene.platform.dbunit;
 import java.io.IOException;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.Context;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
