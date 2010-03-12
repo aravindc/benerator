@@ -34,10 +34,15 @@ import org.databene.commons.context.ContextAware;
 public abstract class FileBasedEntitySource extends AbstractEntitySource implements ContextAware {
 	
 	protected String uri;
-	private BeneratorContext context;
+	protected BeneratorContext context;
 	
 	public FileBasedEntitySource(String uri) {
+	    this(uri, null);
+    }
+
+	public FileBasedEntitySource(String uri, BeneratorContext context) {
 	    this.uri = uri;
+	    this.context = context;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
