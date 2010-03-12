@@ -41,9 +41,11 @@ import org.databene.commons.converter.ConverterManager;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class InverseProbabilityIntegral implements Distribution {
+public abstract class CumulativeDistributionFunction implements Distribution {
 	
-	public abstract double value(double probability);
+	public abstract double cumulativeProbability(double value);
+	
+	public abstract double inverse(double probability);
 
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
 		if (unique)
@@ -67,34 +69,37 @@ public abstract class InverseProbabilityIntegral implements Distribution {
 	}
 	
     /**
-     * Generates numbers according to an {@link InverseProbabilityIntegral}.<br/><br/>
+     * Generates numbers according to an {@link CumulativeDistributionFunction}.<br/><br/>
      * Created: 12.03.2010 14:37:33
      * @since 0.6.0
      * @author Volker Bergmann
      */
     public static class IPINumberGenerator<E extends Number> extends AbstractNumberGenerator<E> {
     	
-    	private InverseProbabilityIntegral fcn;
+    	private CumulativeDistributionFunction fcn;
     	private Random random = new Random();
 		private Converter<Double, E> converter;
+		private double minProb;
+		private double probScale;
 		private double minD;
 		private double maxD;
 		private double precisionD;
     	
-		public IPINumberGenerator(InverseProbabilityIntegral fcn, Class<E> targetType, E min, E max, E precision) {
+		public IPINumberGenerator(CumulativeDistributionFunction fcn, Class<E> targetType, E min, E max, E precision) {
 			super(targetType, min, max, precision);
 			this.fcn = fcn;
 			this.minD = min.doubleValue();
 			this.maxD = max.doubleValue();
 			this.precisionD = precision.doubleValue();
+			this.minProb = fcn.cumulativeProbability(minD);
+			this.probScale = fcn.cumulativeProbability(maxD + precisionD) - this.minProb;
 			this.converter = ConverterManager.getInstance().createConverter(Double.class, targetType);
         }
 
 		public E generate() {
 			double tmp;
-			do {
-				tmp = fcn.value(random.nextDouble());
-			} while (!(tmp >= minD && tmp < maxD + precisionD));
+			double prob = minProb + random.nextDouble() * probScale;
+			tmp = fcn.inverse(prob);
 			tmp = Math.floor((tmp - minD) / precisionD) * precisionD + minD;
 			return converter.convert(tmp);
         }

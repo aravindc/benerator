@@ -21,7 +21,7 @@
 
 package org.databene.benerator.distribution.integral;
 
-import org.databene.benerator.distribution.InverseProbabilityIntegral;
+import org.databene.benerator.distribution.CumulativeDistributionFunction;
 
 /**
  * Inverse of the integral of the probability density f(x) = a e^{-ax} (x > 0), 
@@ -32,18 +32,23 @@ import org.databene.benerator.distribution.InverseProbabilityIntegral;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ExponentialDensityS_1 extends InverseProbabilityIntegral {
+public class ExponentialDensityIntegral extends CumulativeDistributionFunction {
 
 	private double a;
 	
-	public ExponentialDensityS_1(double a) {
+	public ExponentialDensityIntegral(double a) {
 		if (a <= 0)
 			throw new IllegalArgumentException("a must be greater than zero, but is " + a);
 	    this.a = a;
     }
 
 	@Override
-	public double value(double probability) {
+    public double cumulativeProbability(double value) {
+	    return 1 - Math.exp(-a * value);
+    }
+
+	@Override
+	public double inverse(double probability) {
 		return - Math.log(1 - probability) / a;
 	}
 

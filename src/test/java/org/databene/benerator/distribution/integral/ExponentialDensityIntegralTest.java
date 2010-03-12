@@ -19,7 +19,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.distribution;
+package org.databene.benerator.distribution.integral;
 
 import static org.junit.Assert.*;
 
@@ -33,14 +33,14 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * Tests the {@link CumulativeDistributionFunction}.<br/><br/>
- * Created: 12.03.2010 15:06:33
+ * Tests the {@link ExponentialDensityIntegral}.<br/><br/>
+ * Created: 12.03.2010 15:50:44
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class InverseProbabilityIntegralTest extends GeneratorTest {
+public class ExponentialDensityIntegralTest extends GeneratorTest {
 
-	private Fcn fcn = new Fcn();
+	private ExponentialDensityIntegral fcn = new ExponentialDensityIntegral(0.1);
 	private BeneratorContext context = new BeneratorContext();
 
 	@Test(expected = IllegalArgumentException.class)
@@ -50,13 +50,17 @@ public class InverseProbabilityIntegralTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateDoubleGenerator_notUnique() {
-		Generator<Double> generator = fcn.createGenerator(Double.class, 1., 4., 0.5, false);
+		Generator<Double> generator = fcn.createGenerator(Double.class, 1., 2., 0.5, false);
 		generator.init(context);
 		int n = 1000;
-		Map<Double, AtomicInteger> counts = countProducts(generator, n);
-		assertEquals(7, counts.size());
-		for (double d = 1; d <= 4; d += 0.5)
-			assertEquals(1./7, counts.get(d).doubleValue() / n, 0.05);
+		Map<Double, AtomicInteger> counts = super.countProducts(generator, n);
+		assertEquals(3, counts.size());
+		int lastCount = n + 1;
+		for (double d = 1; d <= 2; d += 0.5) {
+			int count = counts.get(d).intValue();
+			assertTrue(count < lastCount);
+			lastCount = count;
+		}
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -73,24 +77,10 @@ public class InverseProbabilityIntegralTest extends GeneratorTest {
 		Generator<String> generator = fcn.applyTo(source, false);
 		generator.init(context);
 		int n = 1000;
-		Map<String, AtomicInteger> counts = countProducts(generator, n);
+		Map<String, AtomicInteger> counts = super.countProducts(generator, n);
 		assertEquals(2, counts.size());
 		assertEquals(0.5, counts.get("A").doubleValue() / n, 0.05);
 		assertEquals(0.5, counts.get("B").doubleValue() / n, 0.05);
 	}
 	
-	static class Fcn extends CumulativeDistributionFunction {
-		
-		@Override
-        public double inverse(double probability) {
-	        return probability * 8;
-        }
-
-		@Override
-        public double cumulativeProbability(double value) {
-	        return value / 8;
-        }
-
-	}
-
 }
