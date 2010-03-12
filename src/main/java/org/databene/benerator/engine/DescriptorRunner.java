@@ -72,8 +72,12 @@ public class DescriptorRunner implements ResourceManager {
 	// constructor -----------------------------------------------------------------------------------------------------
 	
 	public DescriptorRunner(String uri) {
+		this(uri, new BeneratorContext(uri));
+	}
+	
+	public DescriptorRunner(String uri, BeneratorContext context) {
 		this.uri = uri;
-		this.context = new BeneratorContext(".");
+		this.context = context;
 		this.generatedFiles = new ArrayList<String>();
 	}
 	
