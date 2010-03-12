@@ -34,15 +34,15 @@ import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
-import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.format.PadFormat;
+import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileLineIterable;
 import org.databene.document.flat.FlatFileUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.EntitySource;
+import org.databene.model.data.FileBasedEntitySource;
 import org.databene.platform.array.Array2EntityConverter;
 
 /**
@@ -52,11 +52,10 @@ import org.databene.platform.array.Array2EntityConverter;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> implements EntitySource {
+public class FlatFileEntitySource extends FileBasedEntitySource {
 
 	private static final Escalator escalator = new LoggerEscalator();
 	
-    private String uri;
     private String encoding;
     private ComplexTypeDescriptor entityDescriptor;
     private FlatFileColumnDescriptor[] descriptors;
@@ -64,6 +63,8 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     private boolean initialized;
     
     private Converter<String, String> preprocessor;
+    protected Iterable<String[]> iterable;
+    protected Converter<String[], Entity> converter;
 
     public FlatFileEntitySource() {
         this(null, null, SystemInfo.getFileEncoding(), null);
@@ -77,8 +78,7 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     public FlatFileEntitySource(String uri, ComplexTypeDescriptor entityDescriptor, 
     		Converter<String, String> preprocessor, String encoding, String lineFilter, 
     		FlatFileColumnDescriptor ... descriptors) {
-        super(null, null);
-        this.uri = uri;
+        super(uri);
         this.encoding = encoding;
         this.entityDescriptor = entityDescriptor;
         this.descriptors = descriptors;
@@ -89,10 +89,6 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-    
     public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
@@ -128,11 +124,10 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
     	return Entity.class;
     }
     
-    @Override
     public HeavyweightIterator<Entity> iterator() {
         if (!initialized)
             init();
-        return super.iterator();
+        return new ConvertingIterator<String[], Entity>(this.iterable.iterator(), converter);
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
@@ -142,6 +137,12 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         this.converter = createConverter(entityDescriptor, descriptors);
     }
     
+    private Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, 
+    		String encoding, String lineFilter) {
+        PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
+        return new FlatFileLineIterable(getAbsoluteUri(), formats, true, encoding, lineFilter);
+    }
+
     @SuppressWarnings("unchecked")
     private Converter<String[], Entity> createConverter(ComplexTypeDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
         String[] featureNames = ArrayPropertyExtractor.convert(descriptors, "name", String.class);
@@ -149,12 +150,6 @@ public class FlatFileEntitySource extends ConvertingIterable<String[], Entity> i
         Converter<String[], String[]> aConv = new ArrayConverter<String, String>(String.class, String.class, preprocessor);
         Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(aConv, a2eConverter);
         return converter;
-    }
-
-    private static Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, 
-    		String encoding, String lineFilter) {
-        PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
-        return new FlatFileLineIterable(uri, formats, true, encoding, lineFilter);
     }
 
 }
