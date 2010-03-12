@@ -1,0 +1,89 @@
+/*
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, is permitted under the terms of the
+ * GNU General Public License (GPL).
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
+ * REPRESENTATIONS AND WARRANTIES, INCLUDING ANY IMPLIED WARRANTY OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT, ARE
+ * HEREBY EXCLUDED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.databene.benerator.distribution;
+
+import static org.junit.Assert.*;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.databene.benerator.Generator;
+import org.databene.benerator.SequenceTestGenerator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.test.GeneratorTest;
+import org.junit.Test;
+
+/**
+ * Tests the {@link InverseProbabilityIntegral}.<br/><br/>
+ * Created: 12.03.2010 15:06:33
+ * @since 0.6.0
+ * @author Volker Bergmann
+ */
+public class InverseProbabilityIntegralTest extends GeneratorTest {
+
+	private Fcn fcn = new Fcn();
+	private BeneratorContext context = new BeneratorContext();
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testCreateDoubleGenerator_unique() {
+		fcn.createGenerator(Double.class, 1., 4., 0.5, true);
+	}
+	
+	@Test
+	public void testCreateDoubleGenerator_notUnique() {
+		Generator<Double> generator = fcn.createGenerator(Double.class, 1., 4., 0.5, false);
+		generator.init(context);
+		int n = 1000;
+		Map<Double, AtomicInteger> counts = super.countProducts(generator, n);
+		assertEquals(7, counts.size());
+		for (double d = 1; d <= 4; d += 0.5)
+			assertEquals(1./7, counts.get(d).doubleValue() / n, 0.05);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testApply_unique() {
+		Generator<String> source = new SequenceTestGenerator<String>("A", "B");
+		source.init(new BeneratorContext());
+		fcn.applyTo(source, true);
+	}
+	
+	@Test
+	public void testApply_notUnique() {
+		Generator<String> source = new SequenceTestGenerator<String>("A", "B");
+		source.init(new BeneratorContext());
+		Generator<String> generator = fcn.applyTo(source, false);
+		generator.init(context);
+		int n = 1000;
+		Map<String, AtomicInteger> counts = super.countProducts(generator, n);
+		assertEquals(2, counts.size());
+		assertEquals(0.5, counts.get("A").doubleValue() / n, 0.05);
+		assertEquals(0.5, counts.get("B").doubleValue() / n, 0.05);
+	}
+	
+	static class Fcn extends InverseProbabilityIntegral {
+		@Override
+        public double value(double probability) {
+	        return 3 + probability * 5; // creates values from 3 to 7.9999
+        }
+	}
+
+}
