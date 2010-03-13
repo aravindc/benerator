@@ -23,6 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
@@ -51,6 +52,45 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		parser = new GenerateOrIterateParser();
 	}
 	
+	@Test
+	public void testAttributes() throws Exception {
+		Statement statement = parse(
+				"<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}' consumer='cons'/>");
+		BeneratorContext context = new BeneratorContext();
+		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(false);
+		context.set("cons", consumer);
+		context.set("c", 100);
+		context.set("tc", 10);
+		context.set("ps", 20);
+		statement.execute(context);
+		assertEquals(100, consumer.startConsumingCount.get());
+		assertEquals(100, consumer.finishConsumingCount.get());
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testSubCreate() throws Exception {
+		Statement statement = parse(
+				"<generate type='top' count='3' consumer='cons1'>" +
+        		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(false, 2)'/>" +
+        		"</generate>"
+        );
+		BeneratorContext context = new BeneratorContext();
+		ConsumerMock<Entity> outerConsumer = new ConsumerMock<Entity>(false, 1);
+		context.set("cons1", outerConsumer);
+		statement.execute(context);
+		assertEquals(3, outerConsumer.startConsumingCount.get());
+		assertTrue(outerConsumer.closeCount.get() == 0);
+		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(2);
+		assertEquals(6, innerConsumer.startConsumingCount.get());
+		assertTrue(innerConsumer.closeCount.get() > 0);
+	}
+
+	@Test
+	public void testSubCreateLoop() throws Exception {
+        // TODO test if sub loop that retrieves its loop length from the availability of a source, is properly reset between top loops
+	}
+
 	/** Tests the nesting of an &lt;execute&gt; element within a &lt;generate&gt; element */
 	@Test
 	public void testSubExecute() throws Exception {

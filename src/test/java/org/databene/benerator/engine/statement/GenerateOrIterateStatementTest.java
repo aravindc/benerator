@@ -41,7 +41,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CreateOrUpdateEntitiesStatementTest {
+public class GenerateOrIterateStatementTest {
 
 	private static final int THREAD_COUNT = 30;
 	private static final long INVOCATION_COUNT = 6000L;
