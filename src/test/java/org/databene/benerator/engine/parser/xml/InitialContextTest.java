@@ -19,12 +19,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.commons.SysUtil;
 import org.junit.Test;
