@@ -49,7 +49,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	public void testNesting() throws Exception {
 		TimedEntityStatement statement = (TimedEntityStatement) parse(
 				"<generate type='bla' count='10'>" +
 				"	<consumer class='org.databene.platform.contiperf.PerfTrackingConsumer'>" +
@@ -61,7 +61,23 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 		statement.execute(context);
 		ConsumerMock<?> consumerMock = ConsumerMock.instances.get(0);
 		assertEquals(10, consumerMock.startConsumingCount.get());
-		GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) ((LazyStatement) statement.getRealStatement()).getTarget(null);
+		checkStats(statement);
+	}
+
+	@Test
+	public void testScript() throws Exception {
+		TimedEntityStatement statement = (TimedEntityStatement) parse(
+				"<generate type='bla' count='10'>" +
+				"	<consumer spec='new org.databene.platform.contiperf.PerfTrackingConsumer(new org.databene.benerator.test.ConsumerMock(false, 0, 20, 40))'/>" +
+				"</generate>");
+		statement.execute(context);
+		ConsumerMock<?> consumerMock = ConsumerMock.instances.get(0);
+		assertEquals(10, consumerMock.startConsumingCount.get());
+		checkStats(statement);
+	}
+
+	private void checkStats(TimedEntityStatement statement) {
+	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) ((LazyStatement) statement.getRealStatement()).getTarget(null);
 		ConsumerChain<?> chain = (ConsumerChain<?>) realStatement.getTarget().getConsumer(null);
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
@@ -69,6 +85,6 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 		assertTrue(counter.minLatency() >= 20);
 		assertTrue(counter.averageLatency() > 20);
 		assertTrue(counter.minLatency() < counter.maxLatency());
-	}
+    }
 	
 }
