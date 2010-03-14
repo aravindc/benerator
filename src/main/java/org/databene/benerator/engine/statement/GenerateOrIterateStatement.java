@@ -76,7 +76,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Pag
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
 	    		threads.evaluate(context),
-	    		false, // TODO stats
+	    		false, 
 	    		context.getExecutorService(),
 	    		getErrorHandler(context));
         // TODO count all generations // context.countGenerations(getActualCount());
