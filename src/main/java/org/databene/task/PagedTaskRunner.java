@@ -33,8 +33,8 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
 import org.databene.commons.expression.ExpressionUtil;
+import org.databene.contiperf.PerformanceTracker;
 import org.databene.platform.contiperf.PerfTrackingTaskProxy;
-import org.databene.stat.LatencyCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     private volatile AtomicLong actualCount;
     
     private Expression<ExecutorService> executor;
-    private LatencyCounter counter;
+    private PerformanceTracker tracker;
 
     private Throwable exception;
 
@@ -101,9 +101,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
     public PagedTaskRunner(Task target, Long maxCount, List<PageListener> pageListeners, long pageSize, int threads, 
     		boolean stats, Expression<ExecutorService> executor) {
     	if (stats) {
-        	this.counter = new LatencyCounter();
-        	if (threads == 1)
-        		target = new PerfTrackingTaskProxy<Task>(target, counter);
+       		target = new PerfTrackingTaskProxy(target);
+        	this.tracker = ((PerfTrackingTaskProxy) target).getTracker();
     	}
     	this.target = new StateTrackingTaskProxy<Task>(target);
         this.pageListeners = pageListeners;
@@ -185,15 +184,15 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
         long countValue = actualCount.get();
 		if (countValue < minCount)
         	throw new TaskUnavailableException(target, minCount, countValue);
-		if (counter != null)
-			counter.printSummary(new PrintWriter(System.out), 90, 95);
+		if (tracker != null)
+			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
     }
     
 	public String getTaskName() {
     	return target.getTaskName();
     }
     
-    public static void execute(Task task, Context context, Long invocations,
+    public static PerformanceTracker execute(Task task, Context context, Long invocations,
             List<PageListener> pageListeners, long pageSize, int threadCount, boolean stats,
             ExecutorService executorService, ErrorHandler errorHandler) {
 		if (logger.isInfoEnabled()) {
@@ -207,6 +206,7 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
 		PagedTaskRunner pagedTask = new PagedTaskRunner(task, invocations, pageListeners, 
 				pageSize, threadCount, stats, executorService);
 		pagedTask.execute(context, errorHandler);
+		return pagedTask.tracker;
 	}
 	
     // non-public helpers ----------------------------------------------------------------------------------------------
@@ -242,8 +242,8 @@ public class PagedTaskRunner implements Thread.UncaughtExceptionHandler {
                         throw new ConfigurationError("Since the task is not marked as thread-safe," +
                                 "it must either be used in a single thread or be parallelizable.");
                 }
-				if (counter != null)
-					task = new PerfTrackingTaskProxy<Task>(task, counter);
+				if (tracker != null)
+					task = (Task) ((StateTrackingTaskProxy) task).clone();
                 task = new LoopedTask(task, loopSize); 
                 TaskRunnable runner = new TaskRunnable(task, context, latch, !threadSafe, errorHandler);
                 ExecutorService executorService = executor.evaluate(context);
