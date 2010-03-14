@@ -27,9 +27,9 @@ import java.util.concurrent.ExecutorService;
 import org.databene.commons.Context;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides configuration and variable space for {@link Generator}s.<br/><br/>
  * Created: 14.03.2010 13:14:00
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public interface GeneratorContext extends Context {
