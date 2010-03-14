@@ -35,14 +35,14 @@ import org.w3c.dom.Element;
 /**
  * Parent class for {@link DescriptorParser} unit and integration tests.<br/><br/>
  * Created: 12.03.2010 10:41:31
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class ParserTest {
 
-	BeneratorContext context;
-	ResourceManager resourceManager;
-	DescriptorParser parser;
+	protected BeneratorContext context;
+	protected ResourceManager resourceManager;
+	protected DescriptorParser parser;
 
 	@Before
 	public void setUp() {
