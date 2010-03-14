@@ -21,12 +21,13 @@
 
 package org.databene.platform.contiperf;
 
+import java.io.IOException;
+
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.stat.LatencyCounter;
+import org.databene.contiperf.PerformanceTracker;
 import org.databene.task.Task;
-import org.databene.task.TaskProxy;
 import org.databene.task.TaskResult;
 
 /**
@@ -35,34 +36,53 @@ import org.databene.task.TaskResult;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PerfTrackingTaskProxy<E extends Task> extends TaskProxy<E> {
+public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
 	
-	private LatencyCounter counter;
+	private Task realTask;
 
-	public PerfTrackingTaskProxy(E realTask) {
-	    this(realTask, new LatencyCounter());
+	public PerfTrackingTaskProxy(Task realTask) {
+	    this(realTask, null);
     }
 
-	public PerfTrackingTaskProxy(E realTask, LatencyCounter counter) {
-	    super(realTask);
-	    this.counter = counter;
+	public PerfTrackingTaskProxy(Task realTask, PerformanceTracker tracker) {
+	    super(tracker);
+	    this.realTask = realTask;
     }
 
-	@Override
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
-		long startTime = System.currentTimeMillis();
-	    TaskResult result = super.execute(context, errorHandler);
-	    counter.addSample((int) (System.currentTimeMillis() - startTime));
-		return result;
+	    try {
+	        return (TaskResult) getTracker().invoke(new Object[] { context, errorHandler });
+        } catch (Exception e) {
+	        throw new RuntimeException(e);
+        }
 	}
 	
 	@Override
+    public void close() throws IOException {
+	    super.close();
+	    realTask.close();
+	}
+	
+    @Override
     public Object clone() {
-	    return new PerfTrackingTaskProxy<E>(BeanUtil.clone(realTask), counter);
+	    return new PerfTrackingTaskProxy(BeanUtil.clone(realTask), getTracker());
     }
 
-	public LatencyCounter getCounter() {
-	    return counter;
+	public String getTaskName() {
+	    return realTask.getTaskName();
+    }
+
+	public boolean isParallelizable() {
+	    return realTask.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+	    return realTask.isThreadSafe();
+    }
+
+	@Override
+    protected TaskInvoker getInvoker() {
+	    return new TaskInvoker(realTask);
     }
 
 }
