@@ -34,6 +34,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.contiperf.PerformanceTracker;
 import org.databene.model.data.Entity;
 import org.databene.task.PageListener;
 import org.databene.task.PagedTaskRunner;
@@ -51,6 +52,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Pag
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
+	protected PerformanceTracker tracker;
 
 	public GenerateOrIterateStatement(GenerateAndConsumeEntityTask task,
 			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, 
@@ -69,7 +71,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Pag
 	
     public void execute(BeneratorContext context) {
     	generator.init(context);
-	    PagedTaskRunner.execute(task, context, 
+	    this.tracker = PagedTaskRunner.execute(task, context, 
 	    		count.evaluate(context), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
@@ -98,6 +100,10 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Pag
 	    return (GenerateAndConsumeEntityTask) task;
     }
 
+    public PerformanceTracker getTracker() {
+	    return tracker;
+    }
+    
 	public void pageStarting() {
 	}
 
