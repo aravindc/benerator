@@ -103,7 +103,7 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     	assertInitialized();
         City city = cityGenerator.generate();
         Street street = new Street(city, streetNameGenerator.generate());
-        String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.6 make street name generator fit the locale
+        String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.7 make street name generator fit the locale
         String houseNumber = data[0];
         String zipCode = data[1];
         PhoneNumber privatePhone = generatePhoneNumber(city);
