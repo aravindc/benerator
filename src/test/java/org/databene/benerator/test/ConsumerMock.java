@@ -22,7 +22,10 @@
 package org.databene.benerator.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.model.consumer.Consumer;
@@ -35,6 +38,11 @@ import org.databene.model.consumer.Consumer;
  */
 public class ConsumerMock<E> implements Consumer<E> {
 	
+	public static Map<Integer, ConsumerMock<?>> instances = new HashMap<Integer, ConsumerMock<?>>();
+	
+	private final int minDelay;
+	private final int delayDelta;
+	
 	private final boolean storeProducts;
 	public List<E> products;
 
@@ -42,11 +50,28 @@ public class ConsumerMock<E> implements Consumer<E> {
 	public volatile AtomicInteger finishConsumingCount = new AtomicInteger();
 	public volatile AtomicInteger flushCount = new AtomicInteger();
 	public volatile AtomicInteger closeCount = new AtomicInteger();
+
+	private Random random;
 	
 	public ConsumerMock(boolean storeProducts) {
+	    this(storeProducts, 0, 0, 0);
+    }
+
+	public ConsumerMock(boolean storeProducts, int id) {
+	    this(storeProducts, id, 0, 0);
+    }
+
+	public ConsumerMock(boolean storeProducts, int id, int minDelay, int maxDelay) {
 	    this.storeProducts = storeProducts;
+	    this.minDelay = minDelay;
+	    if (maxDelay > 0) {
+	    	this.delayDelta = maxDelay - minDelay;
+	    	random = new Random();
+	    } else
+	    	this.delayDelta = 0;
 	    if (storeProducts)
 	    	products = new ArrayList<E>();
+	    instances.put(id, this);
     }
 
 	public void startConsuming(E product) {
@@ -55,6 +80,13 @@ public class ConsumerMock<E> implements Consumer<E> {
 	    	synchronized (products) {
 	            products.add(product);
             }
+	    }
+	    if (random != null) {
+	    	try {
+	    		Thread.sleep(minDelay + random.nextInt(delayDelta));
+	    	} catch (InterruptedException e) {
+	    		// nothing to do
+	    	}
 	    }
     }
 
