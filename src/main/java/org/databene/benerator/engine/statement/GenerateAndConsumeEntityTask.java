@@ -81,7 +81,7 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
     public Generator<Entity> getEntityGenerator() {
     	return entityGenerator;
     }
-    
+
 	public void flushConsumer() {
 		if (consumer != null)
 			consumer.flush();
@@ -163,7 +163,7 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
         	subStatement.execute(context);
     }
     
-    Consumer<Entity> getConsumer(Context context) {
+    public Consumer<Entity> getConsumer(Context context) {
     	if (consumer == null)
     		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;
