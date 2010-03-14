@@ -45,8 +45,9 @@ public class ConsumerInvoker implements Invoker {
 		return id;
 	}
 
-	public void invoke(Object[] args) throws Exception {
+	public Object invoke(Object[] args) throws Exception {
 		consumer.startConsuming(args[0]);
+		return null;
 	}
 
 }
