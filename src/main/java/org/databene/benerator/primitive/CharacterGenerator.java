@@ -28,7 +28,6 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.LocaleUtil;
@@ -132,7 +131,7 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
      * Initializes the generator's state.
      */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
         try {
             if (pattern != null) {

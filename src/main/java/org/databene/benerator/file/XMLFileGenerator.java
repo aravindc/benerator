@@ -34,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.factory.TypeGeneratorFactory;
@@ -101,7 +102,7 @@ public class XMLFileGenerator extends LightweightGenerator<File> {
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         contentGenerator.init(context);
         super.init(context);
     }

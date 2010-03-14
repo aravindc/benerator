@@ -27,8 +27,8 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +97,7 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
     }
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
         if (hiGenerator == null)
             throw new InvalidGeneratorSetupException("hiGenerator", "is null");

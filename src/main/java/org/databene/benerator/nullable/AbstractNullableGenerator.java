@@ -21,10 +21,10 @@
 
 package org.databene.benerator.nullable;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Abstract {@link NullableGenerator} implementation which holds a state and state management methods.<br/><br/>
@@ -36,7 +36,7 @@ public abstract class AbstractNullableGenerator<E> implements NullableGenerator<
 	
 	protected GeneratorState state = GeneratorState.created;
 
-	public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+	public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
 	    state = GeneratorState.initialized;
     }
 

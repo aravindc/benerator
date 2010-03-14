@@ -30,8 +30,8 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
@@ -80,7 +80,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     // Generator interface implementation ------------------------------------------------------------------------------
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
         if (sources.length == 0)
             throw new InvalidGeneratorSetupException("sources", "is empty");

@@ -26,7 +26,7 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.model.data.Entity;
 
 /**
@@ -36,7 +36,7 @@ import org.databene.model.data.Entity;
  * @author Volker Bergmann
  */
 public interface ComponentBuilder {
-	void init(BeneratorContext context);
+	void init(GeneratorContext context);
 	Class<?> getGeneratedType();
 	boolean buildComponentFor(Entity entity);
 	void close();

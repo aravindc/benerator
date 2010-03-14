@@ -27,7 +27,7 @@
 package org.databene.domain.finance;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.LocaleUtil;
@@ -56,7 +56,7 @@ public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
     }
 	
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
     	bankGenerator.init(context);
     	accountNumberGenerator.init(context);
         super.init(context);

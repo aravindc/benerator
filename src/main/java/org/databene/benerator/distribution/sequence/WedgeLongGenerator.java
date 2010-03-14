@@ -26,8 +26,8 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -57,7 +57,7 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
     // generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
     	assertNotInitialized();
         cursor = min;
         max = min + (max - min) / precision * precision;

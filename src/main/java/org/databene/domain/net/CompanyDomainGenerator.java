@@ -28,7 +28,7 @@ package org.databene.domain.net;
 
 import java.io.IOException;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -65,7 +65,7 @@ public class CompanyDomainGenerator extends LightweightStringGenerator {
 	}
 
 	@Override
-	public synchronized void init(BeneratorContext context) {
+	public synchronized void init(GeneratorContext context) {
 		companyNameGenerator.init(context);
 		tldGenerator.init(context);
 	    super.init(context);

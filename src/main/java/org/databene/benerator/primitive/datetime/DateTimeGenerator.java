@@ -31,9 +31,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
@@ -119,7 +119,7 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     // Generator interface ---------------------------------------------------------------------------------------------
     
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
     	this.dateGenerator = GeneratorFactory.getNumberGenerator(
     			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE);

@@ -26,6 +26,7 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
@@ -64,7 +65,7 @@ public class QueryGenerator<E> extends AbstractGenerator<E> {
 	}
 
     @Override
-    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+    public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	assertNotInitialized();
 	    if (source == null)
 	    	throw new InvalidGeneratorSetupException("source is null");

@@ -26,9 +26,9 @@
 
 package org.databene.benerator.wrapper;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.TypedIterable;
@@ -79,7 +79,7 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	if (iterable == null)
     		throw new InvalidGeneratorSetupException("iterable", "is null");
     	super.init(context);

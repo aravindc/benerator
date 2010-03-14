@@ -22,9 +22,9 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.BeanUtil;
 
 /**
@@ -37,9 +37,9 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 
 	protected GeneratorState state = GeneratorState.created;
 
-	protected BeneratorContext context;
+	protected GeneratorContext context;
 
-	public synchronized void init(BeneratorContext context) {
+	public synchronized void init(GeneratorContext context) {
 		this.context = context;
 		this.state = GeneratorState.initialized;
     }

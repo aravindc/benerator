@@ -26,7 +26,7 @@
 
 package org.databene.domain.product;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -68,7 +68,7 @@ public class EANGenerator extends GeneratorProxy<String> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
         if (unique)
             setSource(new UniqueAlternativeGenerator<String>(String.class,

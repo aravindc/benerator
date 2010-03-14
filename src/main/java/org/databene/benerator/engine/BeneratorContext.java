@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
@@ -53,7 +54,7 @@ import org.databene.script.ScriptUtil;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class BeneratorContext extends ContextStack implements ClassProvider { // TODO move up one package
+public class BeneratorContext extends ContextStack implements GeneratorContext, ClassProvider {
 	
     private DefaultContext properties;
 	private ClassCache classCache;

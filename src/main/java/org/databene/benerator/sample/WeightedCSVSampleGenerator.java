@@ -26,8 +26,8 @@
 
 package org.databene.benerator.sample;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.CSVGeneratorUtil;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
@@ -90,7 +90,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, ',', encoding, converter);
         ((AttachedWeightSampleGenerator<E>) source).setSamples(CollectionUtil.toArray(samples));
     	super.init(context);

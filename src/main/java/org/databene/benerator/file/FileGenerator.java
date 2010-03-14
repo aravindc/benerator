@@ -23,6 +23,7 @@ package org.databene.benerator.file;
 
 import java.io.File;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.commons.ConfigurationError;
@@ -85,7 +86,7 @@ public class FileGenerator extends SampleGenerator<File> {
 	// implementation --------------------------------------------------------------------------------------------------
 	
 	@Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 		assertNotInitialized();
     	try {
             String baseUri = IOUtil.resolveRelativeUri(rootUri, context.getContextUri());

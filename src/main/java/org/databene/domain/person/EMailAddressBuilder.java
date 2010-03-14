@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -83,7 +83,7 @@ public class EMailAddressBuilder {
 		caseConverter.setLocale(locale);
 	}
 	
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 		domainGenerator.init(context);
 		joinGenerator.init(context);
 	}

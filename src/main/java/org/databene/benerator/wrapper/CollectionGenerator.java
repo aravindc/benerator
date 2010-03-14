@@ -30,7 +30,6 @@ import org.databene.commons.BeanUtil;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 
 import java.util.*;
 
@@ -73,7 +72,7 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
 
     /** ensures consistency of the state */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         if (collectionType == null)
             throw new InvalidGeneratorSetupException("collectionType", "undefined");
         super.init(context);

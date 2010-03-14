@@ -26,7 +26,7 @@
 
 package org.databene.domain.product;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 
@@ -59,7 +59,7 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
     }
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
         if (unique)
             setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{12}", 12, 12));

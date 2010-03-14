@@ -22,7 +22,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 
 /**
  * Synchronized wrapper class for non-thread-safe {@link Generator} implementations.<br/><br/>
@@ -40,7 +40,7 @@ public class SynchronizedGeneratorProxy<E> implements Generator<E> {
 	    this.source = source;
     }
 
-	public synchronized void init(BeneratorContext context) {
+	public synchronized void init(GeneratorContext context) {
 	    source.init(context);
     }
 

@@ -28,7 +28,6 @@ package org.databene.benerator.distribution;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.function.ConstantFunction;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 import java.util.Random;
@@ -87,7 +86,7 @@ public class WeightedLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
         normalize();
         super.init(context);
     }

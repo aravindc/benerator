@@ -26,8 +26,8 @@
 
 package org.databene.benerator.primitive.number;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.comparator.NumberComparator;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -90,7 +90,7 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
     }
     
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	if (min != null && max != null && NumberComparator.compareNumbers(min, max) > 0)
     		throw new InvalidGeneratorSetupException("min (" + min + ") is greater than max (" + max + ")");
         super.init(context);

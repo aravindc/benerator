@@ -23,8 +23,8 @@ package org.databene.platform.db;
 
 import java.sql.SQLException;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.StringUtil;
 
@@ -72,7 +72,7 @@ public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
     }
 	
 	@Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 	    super.init(context);
 	    if (target == null)
 	    	throw new InvalidGeneratorSetupException("No 'target' database defined");

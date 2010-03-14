@@ -27,8 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.ArrayFormat;
@@ -75,7 +75,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         super.init(context);
         init();
     }

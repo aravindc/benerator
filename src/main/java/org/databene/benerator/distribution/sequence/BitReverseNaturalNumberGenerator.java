@@ -27,7 +27,6 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.*;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.NumberUtil;
 
@@ -67,7 +66,7 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
     // generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
     	assertNotInitialized();
     	reset();
         super.init(context);

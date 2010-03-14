@@ -27,8 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
@@ -69,7 +69,7 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
         indexGenerator = new RandomIntegerGenerator(0, sources.length - 1);
         indexGenerator.init(context);

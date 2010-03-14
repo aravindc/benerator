@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 
 /**
  * Creates a stochastic number of instances in subsequent calls before it becomes unavailable.
@@ -66,7 +66,7 @@ public class InstanceSequenceGenerator<E> extends CardinalGenerator<E, E> {
     }
     
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         if (sequenceLength == -1)
         	sequenceLength = countGenerator.generate();
         super.init(context);

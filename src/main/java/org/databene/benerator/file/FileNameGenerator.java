@@ -21,7 +21,7 @@
 
 package org.databene.benerator.file;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.BeanUtil;
 
@@ -82,7 +82,7 @@ public class FileNameGenerator extends AbstractGenerator<String> {
     }
 
 	@Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
 	    fileGenerator.init(context);
 	    super.init(context);
     }

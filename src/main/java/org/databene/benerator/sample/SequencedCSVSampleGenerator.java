@@ -26,9 +26,9 @@
 
 package org.databene.benerator.sample;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
@@ -104,7 +104,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         try {
         	if (uri == null)
         		throw new InvalidGeneratorSetupException("uri is not set");

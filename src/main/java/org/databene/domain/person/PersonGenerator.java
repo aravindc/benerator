@@ -27,8 +27,8 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.Converter;
@@ -122,7 +122,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
 		secondNameTest = new BooleanGenerator(0.2);
 		genderGen = new GenderGenerator();
 		genderGen.init(context);
@@ -181,7 +181,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
         return person;
     }
 
-	private void initMembers(BeneratorContext context) {
+	private void initMembers(GeneratorContext context) {
 	    maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
 	    maleGivenNameGen.init(context);
 	    femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);

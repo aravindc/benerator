@@ -26,7 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -66,7 +66,7 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
     // properties ------------------------------------------------------------------------------------------------------
 
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
     	assertNotInitialized();
         resetMembers();
         super.init(context);

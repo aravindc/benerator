@@ -27,9 +27,9 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -90,7 +90,7 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         incrementGenerator = incrementDistribution.createGenerator(
         		Long.class, minIncrement, maxIncrement, precision, false);
         if (minIncrement < 0 && maxIncrement <= 0)

@@ -28,7 +28,7 @@ package org.databene.benerator;
 
 import java.io.Closeable;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.commons.Resettable;
 
 /**
@@ -66,7 +66,7 @@ public interface Generator<E> extends Resettable, Closeable {
      */
     Class<E> getGeneratedType();
 
-    void init(BeneratorContext context);
+    void init(GeneratorContext context);
     
     /**
      * Returns an instance of the generic type E.

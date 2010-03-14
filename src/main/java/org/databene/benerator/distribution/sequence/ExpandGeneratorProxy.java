@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
@@ -116,7 +116,7 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	// Generator interface implementation ------------------------------------------------------------------------------
 
 	@Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
     	super.init(context);
     	createBuckets();
 	}

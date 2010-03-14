@@ -24,9 +24,9 @@ package org.databene.benerator.nullable;
 import java.util.Random;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
@@ -57,7 +57,7 @@ public class NullInjectingGeneratorProxy<E> extends AbstractNullableGenerator<E>
     }
 
 	@Override
-    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+    public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	source.init(context);
     	super.init(context);
     }

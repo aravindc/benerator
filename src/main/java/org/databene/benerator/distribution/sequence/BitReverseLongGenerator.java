@@ -26,8 +26,8 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -54,7 +54,7 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
     	assertNotInitialized();
         indexGenerator = new BitReverseNaturalNumberGenerator((max - min + precision - 1) / precision);
         indexGenerator.init(context);

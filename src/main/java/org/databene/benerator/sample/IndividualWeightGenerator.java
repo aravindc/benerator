@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 
 /**
@@ -120,7 +120,7 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Initializes all attributes */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
         indexGenerator = new WeightedLongGenerator(0, samples.size() - 1, 1, new SampleWeightFunction());
         indexGenerator.init(context);

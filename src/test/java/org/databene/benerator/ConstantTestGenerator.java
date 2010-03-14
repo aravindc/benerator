@@ -26,7 +26,6 @@
 
 package org.databene.benerator;
 
-import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Helper class for testing.<br/><br/>
@@ -44,7 +43,7 @@ public class ConstantTestGenerator<E> implements Generator<E> {
         this.lastMethodCall = "constructor";
     }
 
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     }
 
     @SuppressWarnings("unchecked")

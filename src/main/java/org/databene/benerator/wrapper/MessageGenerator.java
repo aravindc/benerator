@@ -27,8 +27,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.ValidatingGenerator;
 import org.databene.commons.validator.StringLengthValidator;
 
@@ -119,7 +119,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
 
     /** ensures consistency of the generator's state */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         if (pattern == null)
             throw new InvalidGeneratorSetupException("pattern", "is null");
         StringLengthValidator v = (StringLengthValidator) validator;

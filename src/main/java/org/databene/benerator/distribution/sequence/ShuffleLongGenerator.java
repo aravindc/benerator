@@ -26,8 +26,8 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -73,7 +73,7 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
         assertNotInitialized();
         if (precision <= 0)
             throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);

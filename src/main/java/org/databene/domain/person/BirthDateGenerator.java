@@ -29,8 +29,8 @@ package org.databene.domain.person;
 import java.util.Date;
 import java.util.Calendar;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.TimeUtil;
@@ -58,7 +58,7 @@ public class BirthDateGenerator extends GeneratorProxy<Date> {
     }
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
         Date today = TimeUtil.today().getTime();
         Calendar min = TimeUtil.calendar(today);
         min.add(Calendar.YEAR, -maxAgeYears);

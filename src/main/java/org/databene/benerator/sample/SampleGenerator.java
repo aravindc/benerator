@@ -27,10 +27,10 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 
 import java.util.List;
@@ -120,7 +120,7 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 
 	/** Initializes all attributes */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
         if (samples.size() == 0) 
         	throw new InvalidGeneratorSetupException("No samples defined in " + this);

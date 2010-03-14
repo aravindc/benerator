@@ -28,8 +28,8 @@ package org.databene.benerator.primitive;
 
 import java.io.IOException;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.SeedGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.IOUtil;
@@ -65,7 +65,7 @@ public class SeedSentenceGenerator extends LightweightGenerator<String> {
     }
 
 	@Override
-	public synchronized void init(BeneratorContext context) {
+	public synchronized void init(GeneratorContext context) {
 	    source.init(context);
 	    super.init(context);
 	}

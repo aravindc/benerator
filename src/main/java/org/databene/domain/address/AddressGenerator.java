@@ -26,8 +26,8 @@
 
 package org.databene.domain.address;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.util.LightweightGenerator;
 import org.slf4j.Logger;
@@ -79,7 +79,7 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
 	@Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
 		assertNotInitialized();
 		try {
 	        initMembers(context);
@@ -122,7 +122,7 @@ public class AddressGenerator extends LightweightGenerator<Address> {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-	private void initMembers(BeneratorContext context) {
+	private void initMembers(GeneratorContext context) {
 	    cityGenerator = new CityGenerator(country);
         cityGenerator.init(context);
         streetNameGenerator = new StreetNameGenerator(country.getIsoCode());

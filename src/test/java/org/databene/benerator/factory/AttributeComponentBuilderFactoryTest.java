@@ -26,6 +26,7 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
@@ -696,7 +697,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		}
 
 		@Override
-        public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+        public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
 	        builder.init(context);
 	        super.init(context);
         }

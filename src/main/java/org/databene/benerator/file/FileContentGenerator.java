@@ -21,7 +21,7 @@
 
 package org.databene.benerator.file;
 
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 
 /**
@@ -50,7 +50,7 @@ public abstract class FileContentGenerator<E> extends LightweightGenerator<E> {
     }
 
 	@Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
 		assertNotInitialized();
 	    fileGenerator = new FileGenerator(uri, filter, recursive, true, false);
 	    fileGenerator.init(context);

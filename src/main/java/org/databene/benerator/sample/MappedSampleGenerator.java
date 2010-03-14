@@ -29,8 +29,8 @@ package org.databene.benerator.sample;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.IndividualWeight;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.math.MutableDouble;
 
 /**
@@ -83,7 +83,7 @@ public class MappedSampleGenerator<E> extends IndividualWeightGenerator<E> { // 
 	}
 	
 	@Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 		for (E value : weights.keySet())
 			addValue(value);
 		super.init(context);

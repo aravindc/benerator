@@ -29,7 +29,6 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * Combines a a random number a source generator's products into a collection.<br/>
@@ -70,7 +69,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
 	/** ensures consistency of the state */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision, false);
         countGenerator.init(context);
         super.init(context);

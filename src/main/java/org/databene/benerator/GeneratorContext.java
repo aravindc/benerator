@@ -19,27 +19,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.nullable;
+package org.databene.benerator;
 
-import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.wrapper.ProductWrapper;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+
+import org.databene.commons.Context;
 
 /**
- * Interface for classes that can generate <code>null</code> values.
- * For differing between a generated <code>null</code> and unavailability,
- * a {@link ProductWrapper} class is introduced. It may wrap a <code>null</code>
- * value that has been generated or may be <code>null</code> itself for 
- * declaring unavailability.<br/><br/>
- * Created: 26.01.2010 17:11:16
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 14.03.2010 13:14:00
+ * @since TODO version
  * @author Volker Bergmann
  */
-public interface NullableGenerator<E> {
-    Class<E> getGeneratedType();
-	void init(GeneratorContext context) throws InvalidGeneratorSetupException;
-    public ProductWrapper<E> generate(ProductWrapper<E> wrapper);
-    public void reset() throws IllegalGeneratorStateException;
-    public void close();
+public interface GeneratorContext extends Context {
+
+	// global properties -----------------------------------------------------------------------------------------------
+	
+    String getDefaultEncoding();
+    String getDefaultLineSeparator();
+	Locale getDefaultLocale();
+	String getDefaultDataset();
+	long getDefaultPageSize();
+    String getDefaultScript();
+    boolean isDefaultNull();
+	char getDefaultSeparator();
+	String getDefaultErrorHandler();
+	String getContextUri();
+	boolean isValidate();
+	Long getMaxCount();
+
+	// other features --------------------------------------------------------------------------------------------------
+	
+	Object getProperty(String name);
+    Class<?> forName(String className);
+	ExecutorService getExecutorService();
+	String resolveRelativeUri(String relativeUri);
+
 }

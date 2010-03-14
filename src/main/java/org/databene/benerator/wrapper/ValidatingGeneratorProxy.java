@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.ValidatingGenerator;
 import org.databene.commons.Validator;
 
@@ -64,7 +64,7 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         source.init(context);
         super.init(context);
     }

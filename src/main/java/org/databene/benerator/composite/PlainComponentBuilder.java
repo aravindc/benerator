@@ -27,7 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.wrapper.ProductWrapper;
@@ -76,7 +76,7 @@ public class PlainComponentBuilder implements ComponentBuilder {
     	source.close();
 	}
 
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 		source.init(context);
 	}
 

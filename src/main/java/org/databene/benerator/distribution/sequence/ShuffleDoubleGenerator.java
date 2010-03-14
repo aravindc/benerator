@@ -26,9 +26,9 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -72,7 +72,7 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
     // source interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+    public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
         if (precision <= 0)
             throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
         if (min < max && increment <= 0)

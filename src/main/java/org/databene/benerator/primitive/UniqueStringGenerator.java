@@ -27,7 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.MultiGeneratorWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
@@ -90,7 +90,7 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
 
     @Override
     @SuppressWarnings("unchecked")
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
     	// create sub generators
         Generator<String>[] subGens = new Generator[maxLength - minLength + 1];

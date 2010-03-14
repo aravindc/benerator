@@ -28,9 +28,9 @@ package org.databene.benerator.sample;
 
 import java.util.List;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.LightweightGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
@@ -95,7 +95,7 @@ public class SeedGenerator<E> extends LightweightGenerator<E[]>{
     }
 	
 	@Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
 		assertNotInitialized();
 		atomProvider.init();
 		super.init(context);

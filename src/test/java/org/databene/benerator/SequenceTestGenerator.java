@@ -26,7 +26,6 @@
 
 package org.databene.benerator;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 
 /**
@@ -45,7 +44,7 @@ public class SequenceTestGenerator<E> implements Generator<E> {
         this.cursor = 0;
     }
 
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         if (sequence == null)
             throw new IllegalArgumentException("sequence is null");
     }

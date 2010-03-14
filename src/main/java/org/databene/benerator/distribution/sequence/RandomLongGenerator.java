@@ -26,9 +26,9 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.benerator.util.RandomUtil;
 
@@ -61,7 +61,7 @@ public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         if (min > max)
             throw new InvalidGeneratorSetupException(
                     new PropertyMessage("min", "greater than max"),

@@ -27,9 +27,9 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayUtil;
 
 /**
@@ -63,7 +63,7 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
 
     @SuppressWarnings("unchecked")
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         sizeGenerator.init(context);
         if (source == null)
             throw new InvalidGeneratorSetupException("source", " is null");

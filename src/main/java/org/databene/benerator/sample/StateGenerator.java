@@ -30,10 +30,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
 import org.databene.benerator.util.AbstractGenerator;
@@ -95,7 +95,7 @@ public class StateGenerator<E> extends AbstractGenerator<E> {
     }
     
     @Override
-    public void init(BeneratorContext context) throws InvalidGeneratorSetupException {
+    public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	assertNotInitialized();
         MappedSampleGenerator<E> gen = this.transitions.get(null);
         if (gen == null)

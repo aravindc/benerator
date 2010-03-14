@@ -28,7 +28,6 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGenerator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
@@ -76,7 +75,7 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
         Generator<Long> gen = new BitReverseNaturalNumberGenerator(length - 1);
         gen.init(context);

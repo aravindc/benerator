@@ -27,9 +27,9 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 
@@ -67,7 +67,7 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         if (source == null)
             throw new InvalidGeneratorSetupException("source", "is null");
         if (converter == null)

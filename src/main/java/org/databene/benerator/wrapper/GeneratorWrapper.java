@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 
 /**
@@ -62,7 +62,7 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     // Generator interface implementation ------------------------------------------------------------------------------
 
     @Override
-    public synchronized void init(BeneratorContext context) {
+    public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
         if (source == null)
             throw new InvalidGeneratorSetupException("source", "is null");

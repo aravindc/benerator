@@ -27,9 +27,9 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 
 /**
  * A generator proxy that forwards the output of another generator with a random number of repetitions.<br/>
@@ -61,7 +61,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
     }
     
     @Override
-	public void init(BeneratorContext context) {
+	public void init(GeneratorContext context) {
         super.init(context);
         resetMembers();
     }

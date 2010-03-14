@@ -27,9 +27,9 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.Period;
 import org.databene.commons.converter.DateString2DurationConverter;
@@ -113,7 +113,7 @@ public class DateGenerator extends AbstractGenerator<Date> {
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
     	assertNotInitialized();
     	this.source = distribution.createGenerator(Long.class, min, max, precision, unique);
 		source.init(context);

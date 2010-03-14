@@ -29,7 +29,7 @@ package org.databene.benerator.composite;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.Context;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
     }
 
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         source.init(context);
         for (ComponentBuilder compGen : componentBuilders)
             compGen.init(context);

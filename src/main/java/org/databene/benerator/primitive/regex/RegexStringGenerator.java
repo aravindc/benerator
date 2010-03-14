@@ -26,8 +26,8 @@
 
 package org.databene.benerator.primitive.regex;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 import java.util.Locale;
@@ -115,7 +115,7 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
 
     /** ensures consistency of the generators state */
     @Override
-    public void init(BeneratorContext context) {
+    public void init(GeneratorContext context) {
         try {
         	setSource(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
             super.init(context);
