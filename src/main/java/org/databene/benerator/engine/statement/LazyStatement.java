@@ -48,9 +48,12 @@ public class LazyStatement implements Statement {
     }
 
 	public void execute(BeneratorContext context) {
-	    if (target == null)
-	    	target = targetExpression.evaluate(context);
-	    target.execute(context);
+	    getTarget(context).execute(context);
     }
 
+	public Statement getTarget(BeneratorContext context) {
+	    if (target == null)
+	    	target = targetExpression.evaluate(context);
+	    return target;
+	}
 }
