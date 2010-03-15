@@ -51,9 +51,7 @@ import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
-import org.databene.commons.NumberUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
@@ -324,7 +322,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             SimpleTypeDescriptor descriptor) {
         Generator<Byte> byteGenerator = new AsByteGeneratorWrapper<Integer>(new RandomIntegerGenerator(-128, 127, 1));
         return new ByteArrayGenerator(byteGenerator, 
-                getMinLength(descriptor), getMaxLength(descriptor));
+        		DescriptorUtil.getMinLength(descriptor), DescriptorUtil.getMaxLength(descriptor));
     }
 
     @SuppressWarnings("unchecked")
@@ -378,13 +376,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static <T extends Number> Generator<T> createNumberGenerator(
             SimpleTypeDescriptor descriptor, Class<T> targetType, Uniqueness uniqueness, BeneratorContext context) {
-        T min = getNumberDetail(descriptor, MIN, targetType);
-        T max = getMax(descriptor, targetType, uniqueness.isUnique());
+        T min = DescriptorUtil.getNumberDetail(descriptor, MIN, targetType);
+        T max = DescriptorUtil.getMax(descriptor, targetType, uniqueness.isUnique());
         if (min.equals(max))
             return new ConstantGenerator<T>(min);
-        Integer totalDigits = getNumberDetail(descriptor, "totalDigits", Integer.class);
-        Integer fractionDigits = getNumberDetail(descriptor, "fractionDigits", Integer.class);
-        T precision = getNumberDetail(descriptor, PRECISION, targetType);
+        Integer totalDigits = DescriptorUtil.getNumberDetail(descriptor, "totalDigits", Integer.class);
+        Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
+        T precision = DescriptorUtil.getNumberDetail(descriptor, PRECISION, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
         return GeneratorFactory.getNumberGenerator(
@@ -439,60 +437,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     protected static <A extends Annotation, T> Validator<T> createRestrictionValidator(
             SimpleTypeDescriptor descriptor, boolean nullable) {
         if ((descriptor.getMinLength() != null || descriptor.getMaxLength() != null) && "string".equals(descriptor.getName())) {
-            Integer minLength = getMinLength(descriptor);
-            Integer maxLength = getMaxLength(descriptor);
+            Integer minLength = DescriptorUtil.getMinLength(descriptor);
+            Integer maxLength = DescriptorUtil.getMaxLength(descriptor);
             return (Validator<T>) new StringLengthValidator(minLength, maxLength, nullable);
         }
         return null;
-    }
-
-    // descriptor access -----------------------------------------------------------------------------------------------
-
-    protected static Integer getMinLength(SimpleTypeDescriptor descriptor) {
-        Integer minLength = descriptor.getMinLength();
-        if (minLength == null)
-            minLength = 0;
-        return minLength;
-    }
-
-    protected static Integer getMaxLength(SimpleTypeDescriptor descriptor) {
-        // evaluate max length
-        Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
-        if (maxLength == null) {
-            // maxLength was not set in this descriptor. So check the parent setting's value 
-            // (it is interpreted as constraint which may be to high to be useful by default)
-            maxLength = descriptor.getMaxLength();
-            if (maxLength == null)
-                maxLength = (Integer) descriptor.getDetailDefault(MAX_LENGTH);
-            if (maxLength > 10000)
-                maxLength = 10000;
-        }
-        return maxLength;
-    }
-
-    private static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
-        try {
-            String detailValue = (String) descriptor.getDetailValue(MAX);
-            if (detailValue == null)
-            	if (unique)
-            		return NumberUtil.maxValue(targetType);
-            	else
-            		detailValue = (String) descriptor.getDetailDefault(MAX);
-            return AnyConverter.convert(detailValue, targetType);
-        } catch (ConversionException e) {
-            throw new ConfigurationError(e);
-        }
-    }
-
-    private static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
-        try {
-            String detailValue = (String) descriptor.getDetailValue(detailName);
-            if (detailValue == null)
-                detailValue = (String) descriptor.getDetailDefault(detailName);
-            return AnyConverter.convert(detailValue, targetType);
-        } catch (ConversionException e) {
-            throw new ConfigurationError(e);
-        }
     }
 
     private SimpleTypeGeneratorFactory() {}

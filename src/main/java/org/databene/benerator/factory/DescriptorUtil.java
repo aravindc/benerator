@@ -26,6 +26,7 @@
 
 package org.databene.benerator.factory;
 
+import static org.databene.model.data.SimpleTypeDescriptor.*;
 import static org.databene.model.data.TypeDescriptor.LOCALE;
 
 import java.text.DateFormat;
@@ -44,14 +45,17 @@ import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.NumberUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.context.ContextAware;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.expression.ConstantExpression;
@@ -63,6 +67,7 @@ import org.databene.commons.validator.bean.BeanConstraintValidator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 
 /**
@@ -290,5 +295,52 @@ public class DescriptorUtil {
 		return (descriptor.getCountDistribution() != null ? descriptor.getCountDistribution() : null);
 	}
 */
+
+    protected static Integer getMinLength(SimpleTypeDescriptor descriptor) {
+        Integer minLength = descriptor.getMinLength();
+        if (minLength == null)
+            minLength = 0;
+        return minLength;
+    }
+
+    protected static Integer getMaxLength(SimpleTypeDescriptor descriptor) {
+        // evaluate max length
+        Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
+        if (maxLength == null) {
+            // maxLength was not set in this descriptor. So check the parent setting's value 
+            // (it is interpreted as constraint which may be to high to be useful by default)
+            maxLength = descriptor.getMaxLength();
+            if (maxLength == null)
+                maxLength = (Integer) descriptor.getDetailDefault(MAX_LENGTH);
+            if (maxLength > 10000)
+                maxLength = 10000;
+        }
+        return maxLength;
+    }
+
+    public static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
+        try {
+            String detailValue = (String) descriptor.getDetailValue(MAX);
+            if (detailValue == null)
+            	if (unique)
+            		return NumberUtil.maxValue(targetType);
+            	else
+            		detailValue = (String) descriptor.getDetailDefault(MAX);
+            return AnyConverter.convert(detailValue, targetType);
+        } catch (ConversionException e) {
+            throw new ConfigurationError(e);
+        }
+    }
+
+    public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
+        try {
+            String detailValue = (String) descriptor.getDetailValue(detailName);
+            if (detailValue == null)
+                detailValue = (String) descriptor.getDetailDefault(detailName);
+            return AnyConverter.convert(detailValue, targetType);
+        } catch (ConversionException e) {
+            throw new ConfigurationError(e);
+        }
+    }
 
 }
