@@ -380,9 +380,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             SimpleTypeDescriptor descriptor, Class<T> targetType, Uniqueness uniqueness, BeneratorContext context) {
         T min = getNumberDetail(descriptor, MIN, targetType);
         T max = getMax(descriptor, targetType, uniqueness.isUnique());
-        if (min.equals(max)) {
+        if (min.equals(max))
             return new ConstantGenerator<T>(min);
-        }
         Integer totalDigits = getNumberDetail(descriptor, "totalDigits", Integer.class);
         Integer fractionDigits = getNumberDetail(descriptor, "fractionDigits", Integer.class);
         T precision = getNumberDetail(descriptor, PRECISION, targetType);
