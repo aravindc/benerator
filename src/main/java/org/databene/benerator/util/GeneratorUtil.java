@@ -34,9 +34,9 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 
 /**
- * Provides general utility methods for generation.<br/>
- * <br/>
+ * Provides utility methods for data generation.<br/><br/>
  * Created: 19.11.2007 15:27:50
+ * @author Volker Bergmann
  */
 public class GeneratorUtil {
 	
