@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.engine.expression;
 import org.databene.benerator.Generator;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * {@link Expression} implementation that evaluates to a {@link Generator}.<br/>
@@ -38,7 +39,7 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class GeneratorExpression<E> implements Expression<E> {
+public class GeneratorExpression<E> extends DynamicExpression<E> {
 
 	private Generator<E> generator;
 	

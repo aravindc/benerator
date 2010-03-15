@@ -24,6 +24,7 @@ package org.databene.benerator.engine.expression;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 
@@ -33,7 +34,7 @@ import org.databene.script.ScriptUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ScriptExpression<E> implements Expression<E> {
+public class ScriptExpression<E> extends DynamicExpression<E> {
 
 	private Script script;
 	private Expression<E> defaultValueExpression;

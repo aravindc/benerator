@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.accessor.FeatureAccessor;
 import org.databene.commons.bean.DefaultClassProvider;
+import org.databene.commons.expression.DynamicExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class QNExpression implements Expression<Object> {
+public class QNExpression extends DynamicExpression<Object> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeneratorScriptParser.class);
 

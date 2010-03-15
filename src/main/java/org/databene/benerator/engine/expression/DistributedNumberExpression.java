@@ -27,6 +27,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * {@link Expression} that resolves to a number with statistical properties.<br/><br/>
@@ -34,7 +35,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DistributedNumberExpression<E extends Number> implements Expression<E> {
+public class DistributedNumberExpression<E extends Number> extends DynamicExpression<E> {
 
 	protected Class<E> numberType;
 	protected Expression<E> min;

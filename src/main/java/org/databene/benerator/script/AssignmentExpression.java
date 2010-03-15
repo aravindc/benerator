@@ -23,15 +23,16 @@ package org.databene.benerator.script;
 
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.mutator.AnyMutator;
 
 /**
- * Evaluates an assignment expresion like <code>x.y = f.d + 3</code>.<br/><br/>
+ * Evaluates an assignment expression like <code>x.y = f.d + 3</code>.<br/><br/>
  * Created: 23.02.2010 10:55:56
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class AssignmentExpression implements Expression<Object> {
+public class AssignmentExpression extends DynamicExpression<Object> {
 	
 	private String[] lhs;
 	private Expression<?> rhs;

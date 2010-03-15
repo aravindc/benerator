@@ -30,6 +30,7 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.context.ContextAware;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * {@link Expression} implementation that instantiates a JavaBean by default constructor and 
@@ -40,7 +41,7 @@ import org.databene.commons.context.ContextAware;
  * @author Volker Bergmann
  */
 
-public class BeanConstruction<E> implements Expression<E> {
+public class BeanConstruction<E> extends DynamicExpression<E> {
 	
 	private Expression<E> instantiation;
 	private Assignment[] assignments;

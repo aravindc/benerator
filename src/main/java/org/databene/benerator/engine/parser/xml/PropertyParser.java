@@ -35,6 +35,8 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
+import org.databene.commons.expression.CompositeExpression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
@@ -57,6 +59,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 		return new SetGlobalPropertyStatement(propertyName, valueEx);
 	}
 
+    @SuppressWarnings("unchecked")
     public static Expression<?> parseValue(Element element, ResourceManager resourceManager) {
 		if (element.hasAttribute(ATT_VALUE))
 			return new ScriptableLiteral(element.getAttribute(ATT_VALUE));
@@ -66,15 +69,15 @@ public class PropertyParser extends AbstractDescriptorParser {
 			return parseSource(element.getAttribute(ATT_SOURCE));
 		else { // map child elements to a collection or array
 	        Element[] childElements = XMLUtil.getChildElements(element);
-	        final Expression<?>[] subExpressions = new Expression[childElements.length];
+	        Expression[] subExpressions = new Expression[childElements.length];
 	        for (int j = 0; j < childElements.length; j++)
 	        	subExpressions[j] = BeanParser.parseBeanExpression(childElements[j], resourceManager);
 	        switch (subExpressions.length) {
 		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
 		        case 1: return subExpressions[0];
-		        default: return new Expression<Object[]>() {
+		        default: return new CompositeExpression<Object>(subExpressions) {
 		    		public Object[] evaluate(Context context) {
-		                return ExpressionUtil.evaluateAll(subExpressions, context);
+		                return ExpressionUtil.evaluateAll(terms, context);
 		            }
 		        };
 	        }
@@ -96,7 +99,7 @@ public class PropertyParser extends AbstractDescriptorParser {
      * @since 0.6.0
      * @author Volker Bergmann
      */
-    public static class SourceExpression<E> implements Expression<E> {
+    public static class SourceExpression<E> extends DynamicExpression<E> {
     	
     	Expression<Generator<E>> source;
     	

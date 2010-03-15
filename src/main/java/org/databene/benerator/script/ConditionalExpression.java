@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.converter.AnyConverter;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * {@link Expression} implementation that evaluates a boolean (condition) expression 
@@ -40,7 +41,7 @@ import org.databene.commons.converter.AnyConverter;
  * @author Volker Bergmann
  */
 
-public class ConditionalExpression<E> implements Expression<E> {
+public class ConditionalExpression<E> extends DynamicExpression<E> {
 	
 	private Expression<Boolean> condition;
 	private Expression<? extends E> alt1;

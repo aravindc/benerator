@@ -55,6 +55,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
@@ -190,7 +191,7 @@ public class DescriptorUtil {
     }
 	
 	public static Expression<Boolean> getUniqueness(final InstanceDescriptor descriptor) {
-		return new Expression<Boolean>() {
+		return new DynamicExpression<Boolean>() {
 			public Boolean evaluate(Context context) {
 				return isUnique(descriptor);
             }
@@ -272,7 +273,7 @@ public class DescriptorUtil {
 	}
 
 	private static Expression<Long> getGlobalMaxCount() {
-		return new Expression<Long>() {
+		return new DynamicExpression<Long>() {
 			public Long evaluate(Context context) {
 	            return ((BeneratorContext) context).getMaxCount();
             }

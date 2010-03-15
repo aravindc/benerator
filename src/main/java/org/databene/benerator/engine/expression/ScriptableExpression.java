@@ -25,6 +25,7 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -33,7 +34,7 @@ import org.databene.script.ScriptUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ScriptableExpression implements Expression<Object> {
+public class ScriptableExpression extends DynamicExpression<Object> {
 
 	private String scriptOrText;
 	private Expression<?> defaultValueExpression;

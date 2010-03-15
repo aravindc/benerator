@@ -33,6 +33,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class QNInvocationExpression implements Expression<Object> {
+public class QNInvocationExpression extends DynamicExpression<Object> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(QNInvocationExpression.class);
 

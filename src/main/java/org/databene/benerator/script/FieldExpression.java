@@ -29,6 +29,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.accessor.FeatureAccessor;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * Evaluates an attribute of an object or class.<br/>
@@ -38,7 +39,7 @@ import org.databene.commons.accessor.FeatureAccessor;
  * @author Volker Bergmann
  */
 
-public class FieldExpression implements Expression<Object> {
+public class FieldExpression extends DynamicExpression<Object> {
 	
 	private Expression<?> targetEx;
 	private String featureName;

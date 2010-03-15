@@ -27,8 +27,8 @@
 package org.databene.benerator.engine.expression;
 
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.commons.converter.LiteralParser;
+import org.databene.commons.expression.UnaryExpression;
 
 /**
  * Expression that evaluates a text as a literal; if it encounters a script expression 
@@ -40,16 +40,14 @@ import org.databene.commons.converter.LiteralParser;
  * @author Volker Bergmann
  */
 
-public class ScriptableLiteral implements Expression<Object> {
+public class ScriptableLiteral extends UnaryExpression<Object> {
 
-	private Expression<?> source;
-	
     public ScriptableLiteral(String textOrScript) {
-	    this.source = new ScriptableExpression(textOrScript, null);
+	    super(new ScriptableExpression(textOrScript, null));
     }
 
     public Object evaluate(Context context) {
-		Object feed = source.evaluate(context);
+		Object feed = term.evaluate(context);
 		if (feed instanceof String)
 			return LiteralParser.parse((String) feed);
 		else

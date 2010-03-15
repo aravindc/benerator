@@ -39,6 +39,7 @@ import org.databene.commons.Escalator;
 import org.databene.commons.Expression;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.context.ContextAware;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
@@ -55,7 +56,7 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 
-public class XMLConsumerExpression implements Expression<Consumer<Entity>> {
+public class XMLConsumerExpression extends DynamicExpression<Consumer<Entity>> {
 	
 	private Escalator escalator;
 

@@ -42,6 +42,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
@@ -91,7 +92,7 @@ public class GeneratorFactoryUtil {
 			final Expression<Long> max = DescriptorUtil.getMaxCount(descriptor);
 			final Expression<Long> prec = DescriptorUtil.getCountPrecision(descriptor);
 			final Expression<Boolean> unique = DescriptorUtil.getUniqueness(descriptor);
-			final Expression<Long> distSpecExpr = new Expression<Long>() {
+			final Expression<Long> distSpecExpr = new DynamicExpression<Long>() {
 
 				public Long evaluate(Context context) {
 					// TODO this sucks!!!
@@ -168,7 +169,7 @@ public class GeneratorFactoryUtil {
     
     public static Expression<Distribution> getDistributionExpression(
     		final String spec, final Uniqueness uniqueness, final boolean required) {
-    	return new Expression<Distribution>() {
+    	return new DynamicExpression<Distribution>() {
 
 			public Distribution evaluate(Context context) {
 	            return getDistribution(spec, uniqueness, required, (BeneratorContext) context);

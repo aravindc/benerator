@@ -49,6 +49,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -85,7 +86,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
     }
 	
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
-		Expression<Statement> expression = new Expression<Statement>() {
+		Expression<Statement> expression = new DynamicExpression<Statement>() {
 			public Statement evaluate(Context context) {
 				return parseCreateEntities(
 						element, false, resourceManager, (BeneratorContext) context);

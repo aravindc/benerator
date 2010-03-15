@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * {@link Expression} that returns the {@link ExecutorService} 
@@ -34,7 +35,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ExecutorServiceExpression implements Expression<ExecutorService> {
+public class ExecutorServiceExpression extends DynamicExpression<ExecutorService> {
 
 	public ExecutorService evaluate(Context context) {
         return ((BeneratorContext) context).getExecutorService();

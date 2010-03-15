@@ -47,6 +47,7 @@ import org.databene.commons.bean.DefaultClassProvider;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.expression.BinaryExpression;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.expression.UnaryExpression;
 import org.databene.model.data.PrimitiveType;
@@ -376,7 +377,7 @@ public class BeneratorScriptParser {
 		if (primitiveType != null)
 			return new ConstantExpression<Class<?>>(primitiveType.getJavaType());
 		else {
-	    	return new Expression<Class<?>>() {
+	    	return new DynamicExpression<Class<?>>() {
 				public Class<?> evaluate(Context context) {
 					return DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
 	            }

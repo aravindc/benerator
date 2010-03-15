@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ExceptionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * {@link Expression} instance that evaluates the Benerator script notation for Java object specification
@@ -49,7 +50,7 @@ import org.databene.commons.bean.DefaultClassProvider;
  * @author Volker Bergmann
  */
 
-public class QNBeanSpecExpression implements Expression<Object> {
+public class QNBeanSpecExpression extends DynamicExpression<Object> {
 	
 	String[] qn;
 

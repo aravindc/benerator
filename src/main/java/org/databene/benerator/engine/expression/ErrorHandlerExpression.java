@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.Level;
+import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 
 /**
@@ -41,7 +42,7 @@ import org.databene.commons.expression.ExpressionUtil;
  * @author Volker Bergmann
  */
 
-public class ErrorHandlerExpression implements Expression<ErrorHandler> {
+public class ErrorHandlerExpression extends DynamicExpression<ErrorHandler> {
 	
 	private String category;
 	private Expression<String> levelExpr;

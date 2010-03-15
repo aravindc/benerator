@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,8 +22,8 @@
 package org.databene.benerator.script;
 
 import org.databene.commons.Context;
-import org.databene.commons.Expression;
 import org.databene.commons.bean.DefaultClassProvider;
+import org.databene.commons.expression.DynamicExpression;
 
 /**
  * Common parent class for Expressions that instantiate a Java object.<br/><br/>
@@ -31,7 +31,7 @@ import org.databene.commons.bean.DefaultClassProvider;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class Construction<E> implements Expression<E> {
+public abstract class Construction<E> extends DynamicExpression<E> {
 
 	protected String className;
 
