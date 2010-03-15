@@ -40,7 +40,7 @@ import org.databene.commons.operation.FirstNonNullSelector;
  */
 public abstract class TypeDescriptor extends FeatureDescriptor {
 
-    // restriction names
+    // constraint names
     public static final String VALIDATOR    = "validator";
     public static final String FILTER       = "filter";
 
@@ -86,10 +86,10 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     }
 
 	protected void init() {
-		// restrictions
-        addRestriction(VALIDATOR, String.class, null, new FirstNonNullSelector<String>()); 
+		// constraints
+        addConstraint(VALIDATOR, String.class, null, new FirstNonNullSelector<String>()); 
         // For the sake of performance, retain only the first non-null validator
-        addRestriction(FILTER, String.class, null, new FirstNonNullSelector<String>()); 
+        addConstraint(FILTER, String.class, null, new FirstNonNullSelector<String>()); 
         
         // config
         addConfig(GENERATOR,      String.class,   null);

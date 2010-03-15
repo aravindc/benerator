@@ -44,7 +44,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     public static final String TYPE               = "type";
     
-    // restrictions
+    // constraints
     public static final String UNIQUE             = "unique";
     public static final String NULLABLE           = "nullable";
     public static final String MIN_COUNT          = "minCount";
@@ -77,14 +77,14 @@ public class InstanceDescriptor extends FeatureDescriptor {
         super(name);
         this.localType = localType;
 
-        addRestriction(TYPE,        String.class, null, null);
+        addConstraint(TYPE,        String.class, null, null);
         setType(typeName);
 
-        // restrictions
-        addRestriction(UNIQUE,        Boolean.class, false, new OrOperation());
-        addRestriction(NULLABLE,      Boolean.class, false, new AndOperation());
-        addRestriction(MIN_COUNT,     Expression.class, null, null);
-        addRestriction(MAX_COUNT,     Expression.class, null, null);
+        // constraints
+        addConstraint(UNIQUE,        Boolean.class, false, new OrOperation());
+        addConstraint(NULLABLE,      Boolean.class, false, new AndOperation());
+        addConstraint(MIN_COUNT,     Expression.class, null, null);
+        addConstraint(MAX_COUNT,     Expression.class, null, null);
         
         // configs
         addConfig(COUNT,              Expression.class, null);

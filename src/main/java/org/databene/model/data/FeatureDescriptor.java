@@ -31,7 +31,7 @@ public class FeatureDescriptor {
 
     public FeatureDescriptor(String name) {
         this.details = new OrderedNameMap<FeatureDetail<?>>();
-        addRestriction(NAME, String.class, null, null);
+        addConstraint(NAME, String.class, null, null);
         setName(name);
     }
     
@@ -135,7 +135,7 @@ public class FeatureDescriptor {
         addDetail(name, type, false, defaultValue, deprecated, null);
     }
 
-    protected <T> void addRestriction(String name, Class<T> type, T defaultValue, Operation<T, T> combinator) {
+    protected <T> void addConstraint(String name, Class<T> type, T defaultValue, Operation<T, T> combinator) {
         addDetail(name, type, true, defaultValue, false, combinator);
     }
 

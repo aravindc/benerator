@@ -51,7 +51,7 @@ public class ReferenceDescriptor extends ComponentDescriptor {
 
     public ReferenceDescriptor(String name, String typeName, String targetType) {
         super(name, typeName);
-        addRestriction(TARGET_TYPE, String.class, null, new FirstArgSelector<String>());
+        addConstraint(TARGET_TYPE, String.class, null, new FirstArgSelector<String>());
         setTargetTye(targetType);
     }
     

@@ -73,18 +73,18 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public SimpleTypeDescriptor(String name, String parentName) {
         super(name, parentName);
         // number setup
-        addRestriction(MIN,             String.class,   "1", new MaxNumberStringOperation());
-        addRestriction(MAX,             String.class,   "9", new MinNumberStringOperation());
-        addRestriction(MIN_EXCLUSIVE,   String.class,   "0", new MaxNumberStringOperation());
-        addRestriction(MAX_EXCLUSIVE,   String.class,  "10", new MinNumberStringOperation());
-        addRestriction(TOTAL_DIGITS,    String.class,  "10", new FirstArgSelector<String>());
-        addRestriction(FRACTION_DIGITS, String.class,   "0", new FirstArgSelector<String>());
+        addConstraint(MIN,             String.class,   "1", new MaxNumberStringOperation());
+        addConstraint(MAX,             String.class,   "9", new MinNumberStringOperation());
+        addConstraint(MIN_EXCLUSIVE,   String.class,   "0", new MaxNumberStringOperation());
+        addConstraint(MAX_EXCLUSIVE,   String.class,  "10", new MinNumberStringOperation());
+        addConstraint(TOTAL_DIGITS,    String.class,  "10", new FirstArgSelector<String>());
+        addConstraint(FRACTION_DIGITS, String.class,   "0", new FirstArgSelector<String>());
         addConfig(PRECISION,            String.class,   "1");
         // boolean setup
         addConfig(TRUE_QUOTA,           Double.class,   0.5);
         // string setup
-        addRestriction(MIN_LENGTH,      Integer.class,     1, new MaxOperation<Integer>());
-        addRestriction(MAX_LENGTH,      Integer.class,    30, new MinOperation<Integer>());
+        addConstraint(MIN_LENGTH,      Integer.class,     1, new MaxOperation<Integer>());
+        addConstraint(MAX_LENGTH,      Integer.class,    30, new MinOperation<Integer>());
         addConfig(LENGTH_DISTRIBUTION,  String.class, "random");
         // other config
         addConfig(VALUES,               String.class, null);
