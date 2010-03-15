@@ -49,7 +49,7 @@ public class FeatureDetail<E> {
     private E value;
     private E defaultValue;
     private Operation<E, E> combinator;
-    private boolean restriction;
+    private boolean constraint;
     private boolean deprecated;
     
     // constructors ----------------------------------------------------------------------------------------------------
@@ -63,13 +63,13 @@ public class FeatureDetail<E> {
     	this(name, type, restriction, defaultValue, combinator, false);
     }
     
-    public FeatureDetail(String name, Class<E> type, boolean restriction, 
+    public FeatureDetail(String name, Class<E> type, boolean constraint, 
     		E defaultValue, Operation<E, E> combinator, boolean deprecated) {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
         this.value = null;
-        this.restriction = restriction;
+        this.constraint = constraint;
         this.combinator = combinator;
         this.deprecated = deprecated;
     }
@@ -106,8 +106,8 @@ public class FeatureDetail<E> {
         return combinator.perform(this.value, otherValue);
     }
 
-    public boolean isRestriction() {
-        return restriction;
+    public boolean isConstraint() {
+        return constraint;
     }
 
     public String getDescription() {
