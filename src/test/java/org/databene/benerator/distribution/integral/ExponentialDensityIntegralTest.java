@@ -40,7 +40,7 @@ import org.junit.Test;
  */
 public class ExponentialDensityIntegralTest extends GeneratorTest {
 
-	private ExponentialDensityIntegral fcn = new ExponentialDensityIntegral(0.1);
+	private ExponentialDensityIntegral fcn = new ExponentialDensityIntegral(0.5);
 	private BeneratorContext context = new BeneratorContext();
 
 	@Test(expected = IllegalArgumentException.class)
@@ -79,8 +79,7 @@ public class ExponentialDensityIntegralTest extends GeneratorTest {
 		int n = 1000;
 		Map<String, AtomicInteger> counts = super.countProducts(generator, n);
 		assertEquals(2, counts.size());
-		assertEquals(0.5, counts.get("A").doubleValue() / n, 0.05);
-		assertEquals(0.5, counts.get("B").doubleValue() / n, 0.05);
+		assertTrue(counts.get("A").doubleValue() > counts.get("B").doubleValue());
 	}
 	
 }
