@@ -27,15 +27,17 @@
 package org.databene.platform.array;
 
 import org.databene.commons.ArrayFormat;
+import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.converter.ConverterManager;
+import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.model.data.TypeDescriptor;
 
 /**
  * Converts an array of feature values to an entity.<br/>
@@ -46,41 +48,51 @@ import org.databene.model.data.TypeDescriptor;
 public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity> {
 	
     private ComplexTypeDescriptor descriptor;
-    private String[] attributeNames;
+    
+    private String[] featureNames;
+    
+    @SuppressWarnings("unchecked")
+    private Converter[] converters;
     
     Escalator escalator = new LoggerEscalator();
 
-    public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames) {
+    @SuppressWarnings("unchecked")
+    public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames, boolean stringSource) {
     	super(Object[].class, Entity.class);
         this.descriptor = descriptor;
-        this.attributeNames = featureNames;
+        this.featureNames = featureNames;
+        this.converters = new Converter[featureNames.length];
+        for (int i = 0; i < featureNames.length; i++) {
+        	ComponentDescriptor component = descriptor.getComponent(featureNames[i]);
+        	if (component != null) {
+        		Class<?> javaType = ((SimpleTypeDescriptor) component.getTypeDescriptor()).getPrimitiveType().getJavaType();
+        		if (stringSource)
+        			this.converters[i] = ConverterManager.getInstance().createConverter(String.class, javaType);
+        		else
+        			this.converters[i] = new AnyConverter(javaType);
+        	} else
+        		this.converters[i] = new NoOpConverter();
+        	
+        }
     }
 
+    @SuppressWarnings("unchecked")
     public Entity convert(Object[] sourceValue) {
         Entity entity = new Entity(descriptor);
         int length;
-        if (sourceValue.length > attributeNames.length) {
+        if (sourceValue.length > featureNames.length) {
         	escalator.escalate("Row has more columns than specified in the file header", this, sourceValue);
-        	length = attributeNames.length;
+        	length = featureNames.length;
         } else
         	length = sourceValue.length;
-        for (int i = 0; i < length; i++) {
-        	Object value = sourceValue[i];
-            String featureName = attributeNames[i];
-            ComponentDescriptor component = descriptor.getComponent(featureName);
-            if (component != null) {
-	            TypeDescriptor componentType = component.getTypeDescriptor();
-	            if (componentType instanceof SimpleTypeDescriptor)
-	            	value = AnyConverter.convert(value, ((SimpleTypeDescriptor) componentType).getPrimitiveType().getJavaType());
-            }
-			entity.setComponent(featureName, value);
-        }
+        for (int i = 0; i < length; i++)
+            entity.setComponent(featureNames[i], converters[i].convert(sourceValue[i]));
         return entity;
     }
     
     @Override
     public String toString() {
-    	return getClass().getSimpleName() + '[' + ArrayFormat.format(", ", attributeNames) + ']';
+    	return getClass().getSimpleName() + '[' + ArrayFormat.format(", ", featureNames) + ']';
     }
     
 }

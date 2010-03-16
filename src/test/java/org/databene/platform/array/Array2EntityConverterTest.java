@@ -52,7 +52,7 @@ public class Array2EntityConverterTest {
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         String[] featureNames = { "name", "age" };
         Object[] array = new Object[] { "Alice", 23 };
-        assertEquals(entity, new Array2EntityConverter(descriptor, featureNames).convert(array));
+        assertEquals(entity, new Array2EntityConverter(descriptor, featureNames, false).convert(array));
     }
 	
 	@Test
@@ -61,7 +61,7 @@ public class Array2EntityConverterTest {
         Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
         String[] featureNames = { "name", "age" };
         Object[] array = new Object[] { "Alice", 23, "superfluous" };
-        Array2EntityConverter converter = new Array2EntityConverter(descriptor, featureNames);
+        Array2EntityConverter converter = new Array2EntityConverter(descriptor, featureNames, false);
         EscalatorMock escalator = new EscalatorMock();
         converter.escalator = escalator;
 		assertEquals(entity, converter.convert(array));

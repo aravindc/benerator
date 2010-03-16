@@ -38,7 +38,7 @@ import org.databene.model.data.FileBasedEntitySource;
  */
 public class CSVEntitySource extends FileBasedEntitySource {
 	
-    private char   separator;
+    private char separator;
     private String encoding;
     private Converter<String, String> preprocessor;
 
@@ -74,39 +74,29 @@ public class CSVEntitySource extends FileBasedEntitySource {
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
         this.preprocessor = preprocessor;
+        
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public char getSeparator() {
-        return separator;
-    }
-
     public void setSeparator(char separator) {
         this.separator = separator;
-    }
-
-    public String getEncoding() {
-        return encoding;
     }
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
-    public String getEntityName() {
-        return entityDescriptor.getName();
-    }
-
     public void setEntityName(String entityName) {
         this.entityDescriptor = new ComplexTypeDescriptor(entityName);
     }
 
-    // EntityIterable interface ----------------------------------------------------------------------------------------
+    // EntitySource interface ------------------------------------------------------------------------------------------
 
-    public HeavyweightIterator<Entity> iterator() {
+	public HeavyweightIterator<Entity> iterator() {
         try {
-			return new CSVEntityIterator(getAbsoluteUri(), entityDescriptor, preprocessor, separator, encoding);
+			CSVEntityIterator iterator = new CSVEntityIterator(getAbsoluteUri(), entityDescriptor, preprocessor, separator, encoding);
+			return iterator;
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}

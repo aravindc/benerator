@@ -146,7 +146,7 @@ public class FlatFileEntitySource extends FileBasedEntitySource {
     @SuppressWarnings("unchecked")
     private Converter<String[], Entity> createConverter(ComplexTypeDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
         String[] featureNames = ArrayPropertyExtractor.convert(descriptors, "name", String.class);
-        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames);
+        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames, true);
         Converter<String[], String[]> aConv = new ArrayConverter<String, String>(String.class, String.class, preprocessor);
         Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(aConv, a2eConverter);
         return converter;

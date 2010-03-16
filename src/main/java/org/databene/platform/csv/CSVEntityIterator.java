@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,7 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
+import org.databene.commons.Patterns;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
@@ -109,30 +110,12 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 		 IOUtil.close(source);
 	}
 
-    public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor) throws FileNotFoundException {
+    public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, Patterns patterns) throws FileNotFoundException {
     	List<Entity> list = new ArrayList<Entity>();
     	CSVEntityIterator iterator = new CSVEntityIterator(uri, descriptor, preprocessor, separator, encoding);
     	while (iterator.hasNext())
     		list.add(iterator.next());
     	return list;
-    }
-
-    // properties ------------------------------------------------------------------------------------------------------
-
-    public String getUri() {
-        return uri;
-    }
-
-    public char getSeparator() {
-        return separator;
-    }
-
-    public String getEncoding() {
-        return encoding;
-    }
-
-    public String getEntityName() {
-        return entityDescriptor.getName();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -156,7 +139,7 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 			else
 				throw new ConfigurationError("empty CSV file");
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, String.class, preprocessor); 
-	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames);
+	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
 	        this.source = new ConvertingIterator<String[], Entity>(cellIterator, converter);
 		} catch (FileNotFoundException e) {

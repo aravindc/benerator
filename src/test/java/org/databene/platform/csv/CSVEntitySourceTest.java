@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,20 +42,20 @@ import java.util.Iterator;
  */
 public class CSVEntitySourceTest {
 
-    private static final String URI = "org/databene/platform/csv/person-bean.csv";
+    private static final String PERSON_URI = "org/databene/platform/csv/person-bean.csv";
 
     // test methods ----------------------------------------------------------------------------------------------------
 
     @Test
     public void testSingleRun() {
-    	CSVEntitySource source = new CSVEntitySource(URI, "Person");
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
     	source.setContext(new BeneratorContext());
         checkIteration(source.iterator());
     }
 
     @Test
     public void testReset() {
-    	CSVEntitySource source = new CSVEntitySource(URI, "Person");
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
     	source.setContext(new BeneratorContext());
         checkIteration(source.iterator());
         checkIteration(source.iterator());

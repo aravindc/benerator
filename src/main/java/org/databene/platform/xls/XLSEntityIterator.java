@@ -190,7 +190,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		    	}
 		    	provider.addDescriptor(complexTypeDescriptor);
 		    }
-		    converter = new Array2EntityConverter(complexTypeDescriptor, headers);
+		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
 		    next = converter.convert(feed);
         }
 		
