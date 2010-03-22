@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,20 +26,25 @@
 
 package org.databene.benerator.primitive.datetime;
 
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.TimeUtil;
 
 import java.util.Date;
 
 /**
- * Generates java.util.Date objects that represent the current time.<br/>
+ * Generates {@link java.util.Date} objects that represent the current time.<br/>
  * <br/>
  * Created: 17.11.2007 13:07:18
  * @author Volker Bergmann
  */
-public class CurrentTimeGenerator extends LightweightDateGenerator { 
+public class CurrentTimeGenerator extends ThreadSafeGenerator<Date> { 
 
 	public Date generate() {
         return new Date(TimeUtil.currentTime().getTime());
+    }
+
+	public Class<Date> getGeneratedType() {
+	    return Date.class;
     }
 
 }

@@ -83,7 +83,7 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
     }
 
 	@Override
-	public void reset() {
+	public synchronized void reset() {
 		resetMembers();
 	}
 

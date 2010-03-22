@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,10 +41,10 @@ import static junit.framework.Assert.*;
 public class SimpleArrayGeneratorTest extends GeneratorClassTest {
 
     public SimpleArrayGeneratorTest() {
-        super(SimpleArrayGenerator.class);
+	    super(SimpleArrayGenerator.class);
     }
 
-    @Test
+	@Test
     public void test() {
         check(0, 0);
         check(3, 3);

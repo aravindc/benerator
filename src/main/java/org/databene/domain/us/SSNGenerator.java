@@ -29,8 +29,8 @@ package org.databene.domain.us;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
-import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.StringUtil;
 
 /**
@@ -45,7 +45,7 @@ import org.databene.commons.StringUtil;
  * @see "http://www.socialsecurity.gov/employer/ssnvhighgroup.htm"
  */
 
-public class SSNGenerator extends LightweightStringGenerator {
+public class SSNGenerator extends CompositeGenerator<String> {
 
 	private AbstractNumberGenerator<Integer> areaNumberGenerator;
 	private Generator<Integer> groupNumberGenerator;
@@ -56,9 +56,10 @@ public class SSNGenerator extends LightweightStringGenerator {
 	}
 
 	public SSNGenerator(int maxAreaCode) {
-		areaNumberGenerator = new RandomIntegerGenerator(1, maxAreaCode);
-		groupNumberGenerator = new RandomIntegerGenerator(1, 99);
-		serialNumberGenerator = new RandomIntegerGenerator(1, 9999);
+		super(String.class);
+		areaNumberGenerator = registerComponent(new RandomIntegerGenerator(1, maxAreaCode));
+		groupNumberGenerator = registerComponent(new RandomIntegerGenerator(1, 99));
+		serialNumberGenerator = registerComponent(new RandomIntegerGenerator(1, 9999));
 	}
 
 	public String generate() throws IllegalGeneratorStateException {
@@ -79,4 +80,5 @@ public class SSNGenerator extends LightweightStringGenerator {
 	public String toString() {
 		return getClass().getSimpleName();
 	}
+	
 }

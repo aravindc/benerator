@@ -48,6 +48,7 @@ public class RecursiveNumberGeneratorTest extends GeneratorTest {
             }
 			
 		};
+		generator.init(context);
 		expectGeneratedSequence(generator, 0, 1, 2, 3, 4, 5).withCeasedAvailability();
 	}
 
@@ -69,6 +70,7 @@ public class RecursiveNumberGeneratorTest extends GeneratorTest {
             }
 			
 		};
+		generator.init(context);
 		expectGeneratedSequence(generator, 0, 1, 1, 3, 5).withCeasedAvailability();
 	}
 	

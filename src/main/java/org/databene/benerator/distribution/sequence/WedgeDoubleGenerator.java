@@ -61,7 +61,7 @@ public class WedgeDoubleGenerator extends AbstractNumberGenerator<Double> {
         super.init(context);
     }
 
-    public Double generate() throws IllegalGeneratorStateException {
+    public synchronized Double generate() throws IllegalGeneratorStateException {
         assertInitialized();
         if (cursor == null)
             return null;
@@ -77,13 +77,13 @@ public class WedgeDoubleGenerator extends AbstractNumberGenerator<Double> {
     }
 
     @Override
-	public void reset() {
+	public synchronized void reset() {
         super.reset();
         this.cursor = min;
     }
 
     @Override
-	public void close() {
+	public synchronized void close() {
         super.close();
         this.cursor = null;
     }

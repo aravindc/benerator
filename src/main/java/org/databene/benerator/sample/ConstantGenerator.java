@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,17 +27,21 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generator implementation that always returns the same value.<br/>
  * <br/>
  * Created: 08.06.2006 20:26:22
+ * @since 0.1
+ * @author Volker Bergmann
  */
-public class ConstantGenerator<E> extends TypedLightweightGenerator<E> {
+public class ConstantGenerator<E> extends ThreadSafeGenerator<E> {
 
     /** The value to return */
     private E value;
+    
+    private Class<E> generatedType;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -53,8 +57,8 @@ public class ConstantGenerator<E> extends TypedLightweightGenerator<E> {
     }
 
     public ConstantGenerator(E value, Class<E> generatedType) {
-        super(generatedType);
         this.value = value;
+        this.generatedType = generatedType;
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -78,6 +82,14 @@ public class ConstantGenerator<E> extends TypedLightweightGenerator<E> {
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
+
+	@SuppressWarnings("unchecked")
+    public Class<E> getGeneratedType() {
+	    return (generatedType != null ? 
+	    		generatedType : 
+	    		(value != null ? (Class<E>) value.getClass() : (Class<E>) Object.class)
+	    	);
+    }
 
     /** Returns the value of property 'value' */
     public E generate() {

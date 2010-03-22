@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.primitive;
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.LocaleUtil;
 
 import java.util.*;
@@ -42,7 +42,7 @@ import java.text.ParseException;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class CharacterGenerator extends AbstractGenerator<Character> {
+public class CharacterGenerator extends GeneratorProxy<Character> {
 
     /** The regular exception */
     private String pattern;
@@ -52,9 +52,6 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
 
     /** The set of characters to generate from */
     private Set<Character> values;
-
-    /** The SampleGenerator to choose from the character set */
-    private Generator<Character> source;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -106,12 +103,12 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
         this.pattern = pattern;
     }
 
-    /** Returns the locale of which letters are taken */
+    /** Returns the {@link Locale} of which letters are taken */
     public Locale getLocale() {
         return locale;
     }
 
-    /** Sets the locale of which letters are taken */
+    /** Sets the {@link Locale} of which letters are taken */
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
@@ -123,6 +120,7 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
 
     // source interface ------------------------------------------------------------------------------------------------
 
+    @Override
     public Class<Character> getGeneratedType() {
         return Character.class;
     }
@@ -139,7 +137,6 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
                 values = RegexParser.toSet(regex);
             }
             this.source = new SampleGenerator<Character>(Character.class, values);
-            source.init(context);
             super.init(context);
         } catch (ParseException e) {
             throw new IllegalGeneratorStateException(e);
@@ -147,17 +144,10 @@ public class CharacterGenerator extends AbstractGenerator<Character> {
     }
 
     /** @see org.databene.benerator.Generator#generate() */
+    @Override
     public Character generate() {
     	assertInitialized();
         return source.generate();
-    }
-
-    public void reset() {
-        source.reset();
-    }
-
-    public void close() {
-        source.close();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,7 +39,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.factory.TypeGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
@@ -59,7 +59,7 @@ import org.databene.platform.xml.XMLSchemaDescriptorProvider;
  * <br/>
  * @author Volker Bergmann
  */
-public class XMLFileGenerator extends LightweightGenerator<File> {
+public class XMLFileGenerator extends UnsafeGenerator<File> {
 	
     private String encoding;
     private String root;

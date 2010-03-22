@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.commons.Accessor;
 
 /**
@@ -35,13 +35,14 @@ import org.databene.commons.Accessor;
  * Created: 22.08.2007 19:05:40
  * @author Volker Bergmann
  */
-public class AccessingGenerator<S, P> extends TypedLightweightGenerator<P> {
+public class AccessingGenerator<S, P> extends UnsafeGenerator<P> {
 
+	private Class<P> targetType;
     private Accessor<S, P> accessor;
     private S provider;
 
     public AccessingGenerator(Class<P> targetType, Accessor<S, P> accessor, S provider) {
-        super(targetType);
+        this.targetType = targetType;
         this.accessor = accessor;
         this.provider = provider;
     }
@@ -49,10 +50,14 @@ public class AccessingGenerator<S, P> extends TypedLightweightGenerator<P> {
     public P generate() {
         return accessor.getValue(provider);
     }
-
+    
+	public Class<P> getGeneratedType() {
+		return targetType;
+    }
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[accessor=" + accessor + ']';
     }
-    
+
 }

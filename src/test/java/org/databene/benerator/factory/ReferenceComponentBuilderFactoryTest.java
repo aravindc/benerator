@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,7 +58,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	public void testMissingType() {
 		try {
 			ReferenceDescriptor ref = createDescriptor("ref", null, "Storage");
-			createBuilder(ref);
+			createAndInitBuilder(ref);
 			fail(ConfigurationError.class.getSimpleName() + " expected");
 		} catch (ConfigurationError e) {
 			// this is expected
@@ -69,7 +69,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	public void testMissingSource() {
 		try {
 			ReferenceDescriptor ref = createDescriptor("ref", "Referee", null);
-			createBuilder(ref);
+			createAndInitBuilder(ref);
 			fail(ConfigurationError.class.getSimpleName() + " expected");
 		} catch (ConfigurationError e) {
 			// this is expected
@@ -81,7 +81,7 @@ public class ReferenceComponentBuilderFactoryTest {
     public void testSingleRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(1L));
-		ComponentBuilder generator = createBuilder(ref);
+		ComponentBuilder generator = createAndInitBuilder(ref);
 		assertTrue(generator != null);
 		Entity entity = new Entity("Person");
 		generator.buildComponentFor(entity);
@@ -93,7 +93,7 @@ public class ReferenceComponentBuilderFactoryTest {
     public void testMultiRef() {
 		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(2L));
-		ComponentBuilder builder = createBuilder(ref);
+		ComponentBuilder builder = createAndInitBuilder(ref);
 		assertTrue(builder != null);
 		Entity entity = new Entity("Person");
 		builder.buildComponentFor(entity);
@@ -113,12 +113,14 @@ public class ReferenceComponentBuilderFactoryTest {
 		return descriptor;
 	}
 
-	private ComponentBuilder createBuilder(ReferenceDescriptor ref) {
+	private ComponentBuilder createAndInitBuilder(ReferenceDescriptor ref) {
 		BeneratorContext context = new BeneratorContext(null);
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
-		return ComponentBuilderFactory.createReferenceBuilder(ref, context);
+		ComponentBuilder builder = ComponentBuilderFactory.createReferenceBuilder(ref, context);
+		builder.init(context);
+		return builder;
 	}
 	
 	public static class StorageSystemMock extends DefaultDescriptorProvider implements StorageSystem {

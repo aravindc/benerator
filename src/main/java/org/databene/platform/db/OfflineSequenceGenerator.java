@@ -25,7 +25,7 @@ import java.sql.SQLException;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.StringUtil;
 
 /**
@@ -38,7 +38,7 @@ import org.databene.commons.StringUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class OfflineSequenceGenerator extends LightweightGenerator<Long> {
+public class OfflineSequenceGenerator extends ThreadSafeGenerator<Long> {
 
 	private DBSystem target;
 	private String sequenceName;

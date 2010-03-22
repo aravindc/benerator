@@ -27,8 +27,6 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * Provides access to specific Sequence number Generators.<br/>
@@ -52,7 +50,7 @@ public abstract class Sequence implements Distribution {
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-	    return new SampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+	    return new DistributingGenerator<T>(source, this);
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------

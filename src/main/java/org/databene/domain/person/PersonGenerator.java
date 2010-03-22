@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.BooleanGenerator;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class PersonGenerator extends LightweightGenerator<Person> {
+public class PersonGenerator extends CompositeGenerator<Person> {
 
 	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
 	
@@ -77,6 +77,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     }
 
     public PersonGenerator(String datasetName, Locale locale) {
+    	super(Person.class);
         this.datasetName = datasetName;
         this.locale = locale;
     }
@@ -110,7 +111,7 @@ public class PersonGenerator extends LightweightGenerator<Person> {
     }
 
 	public String getDataset() {
-		return familyNameGen.getDataset();
+		return datasetName;
 	}
 
     public void setDataset(String datasetName) {
@@ -123,16 +124,17 @@ public class PersonGenerator extends LightweightGenerator<Person> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-		secondNameTest = new BooleanGenerator(0.2);
-		genderGen = new GenderGenerator();
+		secondNameTest = registerComponent(new BooleanGenerator(0.2));
+		secondNameTest.init(context);
+		genderGen = registerComponent(new GenderGenerator());
 		genderGen.init(context);
-        birthDateGenerator = new BirthDateGenerator(15, 105);
+        birthDateGenerator = registerComponent(new BirthDateGenerator(15, 105));
         birthDateGenerator.init(context);
-        acadTitleGen = new AcademicTitleGenerator(locale);
+        acadTitleGen = registerComponent(new AcademicTitleGenerator(locale));
         acadTitleGen.init(context);
-        maleNobilityTitleGen = new NobilityTitleGenerator(Gender.MALE, locale);
+        maleNobilityTitleGen = registerComponent(new NobilityTitleGenerator(Gender.MALE, locale));
         maleNobilityTitleGen.init(context);
-        femaleNobilityTitleGen = new NobilityTitleGenerator(Gender.FEMALE, locale);
+        femaleNobilityTitleGen = registerComponent(new NobilityTitleGenerator(Gender.FEMALE, locale));
         femaleNobilityTitleGen.init(context);
         salutationProvider = new SalutationProvider(locale);
 
@@ -150,10 +152,6 @@ public class PersonGenerator extends LightweightGenerator<Person> {
         super.init(context);
     }
 
-    public Class<Person> getGeneratedType() {
-	    return Person.class;
-    }
-    
     public Person generate() throws IllegalGeneratorStateException {
     	assertInitialized();
         Person person = new Person(acadTitleGen.getLocale());

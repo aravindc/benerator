@@ -30,10 +30,10 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
-import org.databene.benerator.primitive.LightweightStringGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class CompanyNameGenerator extends LightweightStringGenerator {
+public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
@@ -223,6 +223,10 @@ public class CompanyNameGenerator extends LightweightStringGenerator {
         	locationBaseGen = new ConstantGenerator<String>(null);
         locationGenerator = new NullInjectingGeneratorProxy<String>(locationBaseGen, nullQuota);
         locationGenerator.init(context);
+    }
+
+	public Class<String> getGeneratedType() {
+	    return String.class;
     }
 
 }

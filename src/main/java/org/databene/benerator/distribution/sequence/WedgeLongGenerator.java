@@ -26,6 +26,8 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
@@ -38,7 +40,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  */
 public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
 
-    private Long cursor;
+    private AtomicLong next;
     private long end;
 
     public WedgeLongGenerator() {
@@ -51,7 +53,7 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
 
     public WedgeLongGenerator(long min, long max, long precision) {
         super(Long.class, min, max, precision);
-        this.cursor = min;
+        this.next = new AtomicLong(min);
     }
 
     // generator interface ---------------------------------------------------------------------------------------------
@@ -59,38 +61,38 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
     @Override
 	public void init(GeneratorContext context) {
     	assertNotInitialized();
-        cursor = min;
         max = min + (max - min) / precision * precision;
         long steps = (max - min) / precision + 1;
         end = min + steps / 2 * precision;
         super.init(context);
     }
 
-    public Long generate() throws IllegalGeneratorStateException {
+    public synchronized Long generate() throws IllegalGeneratorStateException {
         assertInitialized();
-        if (cursor == null)
+        if (next == null)
             return null;
-        long result = cursor;
-        if (cursor == end)
-            cursor = null;
+        long result = next.get();
+        if (result == end)
+            next = null;
         else {
-            cursor = max - cursor + min;
-            if (cursor < end)
-                cursor += precision;
+            long nextValue = max - result + min;
+            if (nextValue < end)
+            	nextValue += precision;
+            next.set(nextValue);
         }
         return result;
     }
 
     @Override
-	public void reset() {
+	public synchronized void reset() {
         super.reset();
-        this.cursor = min;
+        this.next = new AtomicLong(min);
     }
 
     @Override
-	public void close() {
+	public synchronized void close() {
         super.close();
-        this.cursor = null;
+        this.next = null;
     }
-    
+
 }

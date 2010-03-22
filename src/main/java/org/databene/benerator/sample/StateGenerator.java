@@ -36,7 +36,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
 
@@ -48,7 +48,7 @@ import org.databene.commons.ParseException;
  * @author Volker Bergmann
  */
 
-public class StateGenerator<E> extends AbstractGenerator<E> {
+public class StateGenerator<E> extends UnsafeGenerator<E> {
 	
 	private Class<E> generatedType;
 	private E nextState;
@@ -125,14 +125,16 @@ public class StateGenerator<E> extends AbstractGenerator<E> {
 		return result;
     }
 
+    @Override
     public void reset() throws IllegalGeneratorStateException {
         MappedSampleGenerator<E> gen = this.transitions.get(null);
         nextState = gen.generate();
-        state = GeneratorState.initialized;
+        super.reset();
     }
     
+    @Override
     public void close() {
-    	state = GeneratorState.closed;
+    	super.close();
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------

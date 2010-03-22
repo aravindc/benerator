@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,7 +49,6 @@ public class PadovanLongGenerator extends RecurrenceRelationNumberGenerator<Long
     public PadovanLongGenerator(Long min, Long max, boolean unique) {
     	super(Long.class, 3, min, max);
     	this.unique = unique;
-    	reset();
     }
     
     // RecurrenceRelationNumberGenerator interface implementation ------------------------------------------------------
@@ -67,6 +66,11 @@ public class PadovanLongGenerator extends RecurrenceRelationNumberGenerator<Long
 	@Override
 	public void reset() {
 	    super.reset();
+	}
+
+	@Override
+	protected void resetMembers() {
+	    super.resetMembers();
     	if (unique) {
     		// take out the first two '1' elements
     		generate();

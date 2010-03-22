@@ -30,6 +30,7 @@ import java.io.Closeable;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.commons.Resettable;
+import org.databene.commons.ThreadAware;
 
 /**
  * This is the basic Generator interface, the mother of all generators.<br/>
@@ -59,7 +60,7 @@ import org.databene.commons.Resettable;
  * @since 0.1
  * @author Volker Bergmann
  */
-public interface Generator<E> extends Resettable, Closeable {
+public interface Generator<E> extends ThreadAware, Resettable, Closeable {
 
     /**
      * Declares the type of the objects returned by the generate() method.

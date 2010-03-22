@@ -52,4 +52,12 @@ public abstract class NullableGeneratorWrapper<S, P> extends AbstractNullableGen
 	    super.init(context);
     }
 
+	public boolean isThreadSafe() {
+	    return realGenerator.isThreadSafe();
+	}
+	
+	public boolean isParallelizable() {
+	    return realGenerator.isParallelizable();
+	}
+	
 }

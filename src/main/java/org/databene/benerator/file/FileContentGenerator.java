@@ -21,8 +21,10 @@
 
 package org.databene.benerator.file;
 
+import java.io.File;
+
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
  * Abstract parent class for generators that generate products based on concrete files.<br/><br/>
@@ -30,13 +32,16 @@ import org.databene.benerator.util.LightweightGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class FileContentGenerator<E> extends LightweightGenerator<E> {
+public abstract class FileContentGenerator<E> extends GeneratorWrapper<File, E> {
 
 	protected String uri;
 	protected String filter;
 	protected boolean recursive;
-	protected FileGenerator fileGenerator;
 	
+	public FileContentGenerator() {
+	    super(null);
+    }
+
 	public void setUri(String uri) {
     	this.uri = uri;
     }
@@ -52,8 +57,7 @@ public abstract class FileContentGenerator<E> extends LightweightGenerator<E> {
 	@Override
     public void init(GeneratorContext context) {
 		assertNotInitialized();
-	    fileGenerator = new FileGenerator(uri, filter, recursive, true, false);
-	    fileGenerator.init(context);
+	    setSource(new FileGenerator(uri, filter, recursive, true, false));
 	    super.init(context);
     }
 

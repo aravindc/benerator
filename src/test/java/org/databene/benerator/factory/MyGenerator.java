@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,10 +29,10 @@ package org.databene.benerator.factory;
 
 import java.util.Locale;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.model.data.Entity;
 
-public class MyGenerator extends LightweightGenerator<Entity> {
+public class MyGenerator extends UnsafeGenerator<Entity> {
 	
 	private Locale locale;
 	

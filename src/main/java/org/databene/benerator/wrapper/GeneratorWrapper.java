@@ -27,9 +27,12 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
+import org.databene.commons.BeanUtil;
+import org.databene.commons.NullSafeComparator;
 
 /**
  * Abstract generator class that wraps another generator object (in a <i>source</i> property)
@@ -61,6 +64,14 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
+
+    public boolean isParallelizable() {
+	    return source.isParallelizable();
+    }
+
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
@@ -70,19 +81,39 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
         super.init(context);
     }
 
+	@Override
     public void reset() {
+		super.reset();
         source.reset();
     }
 
+    @Override
     public void close() {
+    	super.close();
         source.close();
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
+	@SuppressWarnings("unchecked")
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + source + ']';
+    public boolean equals(Object other) {
+	    if (this == other)
+		    return true;
+	    if (other == null || getClass() != other.getClass())
+		    return false;
+	    GeneratorWrapper that = (GeneratorWrapper) other;
+	    return NullSafeComparator.equals(this.source, that.source);
     }
     
+	@Override
+    public int hashCode() {
+	    return source.hashCode();
+    }
+
+	@Override
+	public String toString() {
+	    return (state == GeneratorState.initialized ? BeanUtil.toString(this) : getClass().getSimpleName());
+	}
+
 }

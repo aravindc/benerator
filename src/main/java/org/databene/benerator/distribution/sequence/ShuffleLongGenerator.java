@@ -83,7 +83,7 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
 
-    public Long generate() {
+    public synchronized Long generate() {
         assertInitialized();
         if (next == null)
         	return null;
@@ -98,7 +98,7 @@ public class ShuffleLongGenerator extends AbstractNumberGenerator<Long> {
     }
     
     @Override
-    public void reset() {
+    public synchronized void reset() {
     	this.next = min;
     }
 

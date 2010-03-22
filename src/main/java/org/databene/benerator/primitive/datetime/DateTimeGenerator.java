@@ -35,6 +35,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
@@ -46,9 +47,9 @@ import org.databene.model.data.Uniqueness;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DateTimeGenerator extends LightweightDateGenerator {
+public class DateTimeGenerator extends CompositeGenerator<Date> {
     
-    private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
+    private DateString2DurationConverter dateConverter;
 
     private Generator<Long> dateGenerator;
     private Generator<Long> timeOffsetGenerator;
@@ -72,6 +73,8 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     }
 
     public DateTimeGenerator(Date minDate, Date maxDate, Time minTime, Time maxTime) {
+    	super(Date.class);
+        this.dateConverter = registerComponent(new DateString2DurationConverter());
         setMinDate(minDate);
         setMaxDate(maxDate);
         setMinTime(minTime);
@@ -121,10 +124,10 @@ public class DateTimeGenerator extends LightweightDateGenerator {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-    	this.dateGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE);
-    	this.timeOffsetGenerator = GeneratorFactory.getNumberGenerator(
-    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE);
+    	this.dateGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
+    			Long.class, minDate, maxDate, datePrecision, dateDistribution, Uniqueness.NONE));
+    	this.timeOffsetGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
+    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE));
         super.init(context);
     }
 

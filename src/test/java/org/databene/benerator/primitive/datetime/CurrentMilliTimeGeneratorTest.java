@@ -48,7 +48,9 @@ public class CurrentMilliTimeGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testProducts() {
-        expectGenerations(new CurrentMilliTimeGenerator(), 10, new AbstractConstraintValidator<Annotation, Long>() {
+        CurrentMilliTimeGenerator generator = new CurrentMilliTimeGenerator();
+        generator.init(context);
+		expectGenerations(generator, 10, new AbstractConstraintValidator<Annotation, Long>() {
             public boolean isValid(Long millis, ConstraintValidatorContext context) {
                 return Math.abs(System.currentTimeMillis() - millis) < 1000L;
             }

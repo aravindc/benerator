@@ -29,6 +29,7 @@ package org.databene.benerator.primitive;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGenerator;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CustomCounter;
@@ -40,7 +41,7 @@ import java.util.Set;
  * <br/>
  * Created: 15.11.2007 14:07:49
  */
-public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator {
+public class UniqueFixedLengthStringGenerator extends ThreadSafeGenerator<String> {
 
     public static final Set<Character> DEFAULT_CHAR_SET
             = CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -83,7 +84,7 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
             this.displayColumn[i] = gen.generate().intValue();
             this.seed[i] = RandomUtil.randomInt(0, length - 1);
         }
-        reset();
+        resetMembers();
         super.init(context);
     }
     
@@ -111,7 +112,15 @@ public class UniqueFixedLengthStringGenerator extends LightweightStringGenerator
     @Override
     public void reset() {
         super.reset();
-        this.counter = new CustomCounter(radix, length);
+        resetMembers();
+    }
+
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+
+	private void resetMembers() {
+	    this.counter = new CustomCounter(radix, length);
         this.cycleCounter = 0;
     }
 

@@ -22,9 +22,12 @@
 package org.databene.benerator.nullable;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.Resettable;
+import org.databene.commons.ThreadAware;
+
+import com.sun.xml.internal.ws.Closeable;
 
 /**
  * Interface for classes that can generate <code>null</code> values.
@@ -36,10 +39,9 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public interface NullableGenerator<E> {
+public interface NullableGenerator<E> extends Resettable, Closeable, ThreadAware {
     Class<E> getGeneratedType();
 	void init(GeneratorContext context) throws InvalidGeneratorSetupException;
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper);
-    public void reset() throws IllegalGeneratorStateException;
     public void close();
 }

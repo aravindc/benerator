@@ -28,6 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.junit.Test;
@@ -39,11 +40,7 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class ConvertingGeneratorTest extends GeneratorClassTest {
-
-    public ConvertingGeneratorTest() {
-        super(ConvertingGenerator.class);
-    }
+public class ConvertingGeneratorTest extends GeneratorTest {
 
     @Test
     public void test() {

@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -24,25 +19,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive.datetime;
-
-import java.util.Date;
-
-import org.databene.benerator.Generator;
-import org.databene.benerator.util.LightweightGenerator;
+package org.databene.benerator.util;
 
 /**
- * Parent class for lighteight {@link Date} {@link Generator}s.<br/>
- * <br/>
- * Created at 26.05.2009 16:11:47
+ * TODO Document class.<br/><br/>
+ * Created: 20.03.2010 10:29:03
  * @since 0.6.0
  * @author Volker Bergmann
  */
+public abstract class ThreadSafeGenerator<E> extends AbstractGenerator<E> {
 
-public abstract class LightweightDateGenerator extends LightweightGenerator<Date> {
+	public final boolean isThreadSafe() {
+	    return true;
+    }
 
-    public Class<Date> getGeneratedType() {
-    	return Date.class;
+	public final boolean isParallelizable() {
+	    return true;
     }
 
 }

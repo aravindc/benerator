@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.primitive.regex;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
@@ -38,11 +38,7 @@ import org.junit.Test;
  * Created: 17.11.2007 17:45:41
  * @author Volker Bergmann
  */
-public class UniqueCompositeStringGeneratorTest extends GeneratorClassTest {
-
-    public UniqueCompositeStringGeneratorTest() {
-        super(UniqueCompositeStringGenerator.class);
-    }
+public class UniqueCompositeStringGeneratorTest extends GeneratorTest {
 
     @Test
     @SuppressWarnings("unchecked")

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,14 +26,14 @@
 
 package org.databene.benerator.xml;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates JavaBeans with 'name' property of value "Bob" for testing.<br/><br/>
  * Created: 29.03.2008 08:26:22
  * @author Volker Bergmann
  */
-public class BobGenerator extends LightweightGenerator<Bob> {
+public class BobGenerator extends ThreadSafeGenerator<Bob> {
 
     public Class<Bob> getGeneratedType() {
 	    return Bob.class;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,7 +51,7 @@ public class SequenceTestGenerator<E> implements Generator<E> {
 
     @SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
-        return (Class<E>) sequence[0].getClass();
+        return (Class<E>) (sequence.length > 0 ? sequence[0].getClass() : Object.class);
     }
 
     public E generate() {
@@ -75,6 +75,14 @@ public class SequenceTestGenerator<E> implements Generator<E> {
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + ArrayFormat.format(sequence) + ']';
+    }
+
+	public boolean isParallelizable() {
+	    return false;
+    }
+
+	public boolean isThreadSafe() {
+	    return false;
     }
     
 }

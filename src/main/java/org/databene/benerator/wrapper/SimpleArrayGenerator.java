@@ -35,6 +35,7 @@ import org.databene.commons.ArrayUtil;
  * Assembles the output of a source generator into an array of random length.<br/>
  * <br/>
  * Created: 26.08.2006 09:37:55
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class SimpleArrayGenerator<E> extends AbstractArrayGenerator<E, E[]> {

@@ -40,7 +40,7 @@ public class TextFileContentGenerator extends FileContentGenerator<String> {
 	public String generate() {
 		assertInitialized();
 		try {
-	        return IOUtil.getContentOfURI(fileGenerator.generate().getAbsolutePath());
+	        return IOUtil.getContentOfURI(source.generate().getAbsolutePath());
         } catch (IOException e) {
         	throw new IllegalGeneratorStateException(e);
         }

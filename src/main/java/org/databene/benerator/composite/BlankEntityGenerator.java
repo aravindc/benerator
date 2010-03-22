@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.Assert;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -37,7 +37,7 @@ import org.databene.model.data.Entity;
  * Created: 01.09.2007 07:39:52
  * @author Volker Bergmann
  */
-public class BlankEntityGenerator extends LightweightGenerator<Entity> {
+public class BlankEntityGenerator extends ThreadSafeGenerator<Entity> {
 
     private ComplexTypeDescriptor descriptor;
 

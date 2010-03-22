@@ -49,7 +49,6 @@ public class FibonacciLongGenerator extends RecurrenceRelationNumberGenerator<Lo
     public FibonacciLongGenerator(Long min, Long max, boolean unique) {
     	super(Long.class, 2, min, max);
     	this.unique = unique;
-    	reset();
     }
     
     // RecurrenceRelationNumberGenerator interface implementation ------------------------------------------------------
@@ -65,12 +64,12 @@ public class FibonacciLongGenerator extends RecurrenceRelationNumberGenerator<Lo
     }
 
 	@Override
-	public void reset() {
-	    super.reset();
+    protected void resetMembers() {
+		super.resetMembers();
 	    if (unique) {
 	    	generate();
 	    	generate();
 	    }
-	}
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,10 +28,9 @@ package org.databene.benerator.primitive;
 
 import java.io.IOException;
 
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.SeedGenerator;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
@@ -44,40 +43,35 @@ import org.databene.commons.StringUtil;
  * @author Volker Bergmann
  */
 
-public class SeedSentenceGenerator extends LightweightGenerator<String> {
+public class SeedSentenceGenerator extends GeneratorWrapper<String[], String> {
 
     private static final int DEFAULT_DEPTH = 4;
-	private SeedGenerator<String> source;
 
 	public SeedSentenceGenerator(String seedUri) throws IOException {
 		this(seedUri, DEFAULT_DEPTH);
 	}
 
-	public SeedSentenceGenerator(String seedUri, int depth) throws IOException {
-		source = new SeedGenerator<String>(String.class, depth);
+    public SeedSentenceGenerator(String seedUri, int depth) throws IOException {
+		super(new SeedGenerator<String>(String.class, depth));
 		ReaderLineIterator iterator = new ReaderLineIterator(IOUtil.getReaderForURI(seedUri));
 		while (iterator.hasNext()) {
 			String line = iterator.next();
 			if (StringUtil.isEmpty(line))
 				continue;
-	    	source.addSample(line.split("\\s"));
+	    	((SeedGenerator<String>) source).addSample(line.split("\\s"));
 		}
-    }
-
-	@Override
-	public synchronized void init(GeneratorContext context) {
-	    source.init(context);
-	    super.init(context);
-	}
-	
-    public Class<String> getGeneratedType() {
-	    return String.class;
     }
 
 	public String generate() throws IllegalGeneratorStateException {
 	    return toString(source.generate());
     }
 	
+    public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+
+	// helpers ---------------------------------------------------------------------------------------------------------
+
     private static String toString(String[] tokens) {
 	    StringBuilder builder = new StringBuilder();
 	    for (String token : tokens)
@@ -85,11 +79,9 @@ public class SeedSentenceGenerator extends LightweightGenerator<String> {
 	    return builder.toString();
     }
 
-	// helpers ---------------------------------------------------------------------------------------------------------
-
     public void printState() {
 	    System.out.println(getClass().getSimpleName());
-	    source.printState("  ");
+	    ((SeedGenerator<String>) source).printState("  ");
     }
 
 }

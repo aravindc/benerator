@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.platform.db;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates {@link Long} values from a database sequence.<br/>
@@ -36,7 +36,7 @@ import org.databene.benerator.util.LightweightGenerator;
  * @author Volker Bergmann
  */
 
-public class DBSequenceGenerator extends LightweightGenerator<Long> {
+public class DBSequenceGenerator extends ThreadSafeGenerator<Long> {
 	
 	private String name;
 	private DBSystem source;

@@ -31,7 +31,7 @@ import static junit.framework.Assert.*;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 
 /**
  * Tests the {@link CyclicGeneratorProxy}.<br/>
@@ -77,12 +77,8 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
 		assertEquals(2, (int) wrapper.generate());
     }
 
-	static class Source12 extends TypedLightweightGenerator<Integer> {
+	public static class Source12 extends UnsafeGenerator<Integer> {
 		
-		public Source12() {
-	        super(Integer.class);
-        }
-
 		private int n = 0;
 		
         public Integer generate() throws IllegalGeneratorStateException {
@@ -97,6 +93,10 @@ public class CyclicGeneratorProxyTest extends GeneratorTest {
         @Override
         public void reset() throws IllegalGeneratorStateException {
 	        n = 0;
+        }
+
+		public Class<Integer> getGeneratedType() {
+	        return Integer.class;
         }
 
 	}

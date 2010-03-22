@@ -29,7 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -46,7 +46,7 @@ public class GeneratorWrapperTest extends GeneratorTest {
 	
 	@Test
 	public void testReset() {
-		MyWrapper wrapper = new MyWrapper(new Source12());
+		MyWrapper wrapper = initialize(new MyWrapper(new Source12()));
 		expect12(wrapper);
 		wrapper.reset();
 		expect12(wrapper);
@@ -61,7 +61,7 @@ public class GeneratorWrapperTest extends GeneratorTest {
 		assertUnavailable(wrapper);
     }
 	
-	static class MyWrapper extends GeneratorWrapper<Integer, Integer> {
+	public static class MyWrapper extends GeneratorWrapper<Integer, Integer> {
 
         public MyWrapper(Generator<Integer> source) {
 	        super(source);
@@ -77,14 +77,10 @@ public class GeneratorWrapperTest extends GeneratorTest {
 
 	}
 	
-	static class Source12 extends TypedLightweightGenerator<Integer> {
+	public static class Source12 extends UnsafeGenerator<Integer> {
 		
 		private int n = 0;
 		
-		public Source12() {
-	        super(Integer.class);
-        }
-
         public Integer generate() throws IllegalGeneratorStateException {
         	return (n < 2 ? ++n : null);
         }
@@ -97,6 +93,10 @@ public class GeneratorWrapperTest extends GeneratorTest {
         @Override
         public void reset() throws IllegalGeneratorStateException {
 	        n = 0;
+        }
+
+		public Class<Integer> getGeneratedType() {
+	        return Integer.class;
         }
 
 	}

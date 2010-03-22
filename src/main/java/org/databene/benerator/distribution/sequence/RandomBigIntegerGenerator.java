@@ -30,7 +30,7 @@ import java.math.BigInteger;
 
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates random {@link BigInteger} with a uniform distribution.<br/>
@@ -40,7 +40,7 @@ import org.databene.benerator.util.LightweightGenerator;
  * @author Volker Bergmann
  */
 
-public class RandomBigIntegerGenerator extends LightweightGenerator<BigInteger> {
+public class RandomBigIntegerGenerator extends ThreadSafeGenerator<BigInteger> {
 
     private static final BigInteger DEFAULT_MIN = BigInteger.valueOf(Long.MIN_VALUE);
 	private static final BigInteger DEFAULT_MAX = BigInteger.valueOf(Long.MAX_VALUE);

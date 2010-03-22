@@ -21,51 +21,56 @@
 
 package org.databene.benerator.wrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.util.AbstractGenerator;
+import org.databene.commons.Converter;
+import org.databene.commons.ThreadAware;
 
 /**
- * Synchronized wrapper class for non-thread-safe {@link Generator} implementations.<br/><br/>
- * Created: 24.02.2010 23:08:39
+ * TODO Document class.<br/><br/>
+ * Created: 20.03.2010 11:19:11
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class SynchronizedGeneratorProxy<E> implements Generator<E> {
+public abstract class CompositeGenerator<E> extends AbstractGenerator<E> {
 	
-	// TODO Use this for wrapping non-thread-safe generators which are to be shared
+	protected Class<E> generatedType;
+	protected List<ThreadAware> components;
 	
-	private final Generator<E> source;
+	protected CompositeGenerator(Class<E> generatedType) {
+		this.generatedType = generatedType;
+		this.components = new ArrayList<ThreadAware>();
+	}
+	
+	protected <T extends Generator<U>, U> T registerComponent(T component) {
+		components.add(component);
+		return component;
+	}
 
-	private SynchronizedGeneratorProxy(Generator<E> source) {
-	    this.source = source;
-    }
+	protected <T extends Converter<U,V>, U, V> T registerComponent(T component) {
+		components.add(component);
+		return component;
+	}
 
-	public synchronized void init(GeneratorContext context) {
-	    source.init(context);
-    }
-
-	public synchronized Class<E> getGeneratedType() {
-	    return source.getGeneratedType();
-    }
-
-	public synchronized E generate() {
-	    return source.generate();
-    }
-
-	public synchronized void reset() {
-	    source.reset();
-    }
-
-	public synchronized void close() {
-	    source.close();
+	public Class<E> getGeneratedType() {
+	    return generatedType;
     }
 
 	public boolean isThreadSafe() {
-	    return true;
+		for (ThreadAware component : components)
+			if (!component.isThreadSafe())
+				return false;
+		return true;
     }
 
 	public boolean isParallelizable() {
-	    return false;
+		for (ThreadAware component : components)
+			if (!component.isParallelizable())
+				return false;
+		return true;
     }
 
 }

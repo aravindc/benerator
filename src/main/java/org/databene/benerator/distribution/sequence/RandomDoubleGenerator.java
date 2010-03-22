@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.benerator.util.RandomUtil;
  * Double Generator that implements a 'random' Double Sequence.<br/>
  * <br/>
  * Created: 11.06.2006 07:55:54
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class RandomDoubleGenerator extends AbstractNumberGenerator<Double> {

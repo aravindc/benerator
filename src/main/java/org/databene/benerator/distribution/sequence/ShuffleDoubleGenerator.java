@@ -81,7 +81,7 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
 		super.init(context);
     }
     
-    public Double generate() throws IllegalGeneratorStateException {
+    public synchronized Double generate() throws IllegalGeneratorStateException {
     	assertInitialized();
     	if (next == null)
     		return null;
@@ -96,7 +96,7 @@ public class ShuffleDoubleGenerator extends AbstractNumberGenerator<Double> {
     }
 
     @Override
-    public void reset() {
+    public synchronized void reset() {
         this.next = min;
     }
     

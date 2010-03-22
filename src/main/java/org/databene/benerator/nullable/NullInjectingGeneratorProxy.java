@@ -91,5 +91,13 @@ public class NullInjectingGeneratorProxy<E> extends AbstractNullableGenerator<E>
     	source.close();
     	closed = true;
     }
+
+	public boolean isParallelizable() {
+	    return source.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
     
 }

@@ -48,24 +48,28 @@ public class RandomLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testZeroRange() {
         RandomLongGenerator generator = new RandomLongGenerator(42L, 42L);
+        generator.init(context);
         expectGenerations(generator, 3000, new ConstantValidator(42L));
     }
 
     @Test
     public void testSimple() {
         RandomLongGenerator generator = new RandomLongGenerator(0, 1L);
+        generator.init(context);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(0L, 1L));
     }
 
     @Test
     public void testPrecision() {
         RandomLongGenerator generator = new RandomLongGenerator(-2, 2L, 2);
+        generator.init(context);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-2L, 0L, 2L));
     }
 
     @Test
     public void testPrecisionOffset() {
         RandomLongGenerator generator = new RandomLongGenerator(-1, 3L, 2);
+        generator.init(context);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-1L, 1L, 3L));
     }
 

@@ -87,7 +87,7 @@ public class StepLongGenerator extends AbstractNumberGenerator<Long> {
     }
 
     @Override
-	public void reset() {
+	public synchronized void reset() {
 		next = initial;
 	}
 

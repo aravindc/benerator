@@ -30,6 +30,7 @@ import org.databene.benerator.sample.SampleGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
+import org.databene.commons.ThreadAware;
 import org.databene.commons.converter.CaseConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.domain.net.DomainGenerator;
@@ -41,7 +42,7 @@ import org.databene.text.DelocalizingConverter;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class EMailAddressBuilder {
+public class EMailAddressBuilder implements ThreadAware {
 
 	private DomainGenerator domainGenerator;
 	private CaseConverter caseConverter;  
@@ -92,5 +93,15 @@ public class EMailAddressBuilder {
 	public String toString() {
 	    return BeanUtil.toString(this);
 	}
+
+	public boolean isParallelizable() {
+		return domainGenerator.isParallelizable() && caseConverter.isParallelizable() && 
+			nameConverter.isParallelizable() && joinGenerator.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+		return domainGenerator.isThreadSafe() && caseConverter.isThreadSafe() && 
+			nameConverter.isThreadSafe() && joinGenerator.isThreadSafe();
+    }
 	
 }

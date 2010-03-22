@@ -41,7 +41,7 @@ public class BinaryFileContentGenerator extends FileContentGenerator<byte[]> {
 	public byte[] generate() {
 		assertInitialized();
 	    try {
-	        return IOUtil.getBinaryContentOfUri(fileGenerator.generate().getAbsolutePath());
+	        return IOUtil.getBinaryContentOfUri(source.generate().getAbsolutePath());
         } catch (IOException e) {
 	        throw new IllegalGeneratorStateException(e);
         }

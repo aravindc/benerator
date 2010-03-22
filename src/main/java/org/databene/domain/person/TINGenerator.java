@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.domain.person;
 
 import java.util.Random;
 
-import org.databene.benerator.primitive.LightweightStringGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates European Tax Identification Numbers (like the German 'Steueridentifikationsnummer').<br/>
@@ -37,7 +37,7 @@ import org.databene.benerator.primitive.LightweightStringGenerator;
  * @since 0.5.5
  * @author Volker Bergmann
  */
-public class TINGenerator extends LightweightStringGenerator {
+public class TINGenerator extends ThreadSafeGenerator<String> {
 	
 	private Random random = new Random();
 	
@@ -76,5 +76,9 @@ public class TINGenerator extends LightweightStringGenerator {
 		int checksum = TINValidator.calculateChecksum(s);
 		return s + (char) (checksum + '0');
 	}
+
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
 
 }

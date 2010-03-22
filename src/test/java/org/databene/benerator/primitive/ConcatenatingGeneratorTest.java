@@ -39,12 +39,14 @@ public class ConcatenatingGeneratorTest extends GeneratorTest {
     @Test
 	public void testDefault() {
 		Generator<String> generator = new ConcatenatingGenerator(source);
+		generator.init(context);
 		expectGeneratedSequence(generator, "ExpressisVerbis", "ExpressisVerbis").withContinuedAvailability();
 	}
 
     @Test
 	public void testSeparator() {
 		Generator<String> generator = new ConcatenatingGenerator(source, " ");
+		generator.init(context);
 		expectGeneratedSequence(generator, "Expressis Verbis", "Expressis Verbis").withContinuedAvailability();
 	}
 

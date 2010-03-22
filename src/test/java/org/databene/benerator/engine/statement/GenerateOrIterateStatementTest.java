@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConstantExpression;
@@ -66,7 +66,7 @@ public class GenerateOrIterateStatementTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	class EntityGeneratorMock extends LightweightGenerator<Entity> {
+	class EntityGeneratorMock extends UnsafeGenerator<Entity> {
 		
 		public int invocationCount;
 		public Set<Thread> threads = new HashSet<Thread>();

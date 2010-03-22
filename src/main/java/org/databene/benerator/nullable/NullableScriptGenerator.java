@@ -70,4 +70,12 @@ public class NullableScriptGenerator extends AbstractNullableGenerator<Object>{
 
     private static final Logger logger = LoggerFactory.getLogger(ScriptGenerator.class);
 
+	public boolean isParallelizable() {
+	    return true;
+    }
+
+	public boolean isThreadSafe() {
+	    return true;
+    }
+
 }

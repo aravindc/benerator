@@ -83,7 +83,7 @@ public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
         super.init(context);
     }
 
-    public Double generate() {
+    public synchronized Double generate() {
         assertInitialized();
         double value = next;
         next += incrementGenerator.generate();
@@ -95,7 +95,7 @@ public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
     }
     
 	@Override
-	public void reset() {
+	public synchronized void reset() {
 		resetMembers();
 	}
 

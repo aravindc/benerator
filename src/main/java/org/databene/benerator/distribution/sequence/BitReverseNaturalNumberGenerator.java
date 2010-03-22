@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,15 +27,16 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.*;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.NumberUtil;
 
 /**
  * Long Generator that implements a 'bitreverse' Long Sequence.<br/>
  * <br/>
  * Created: 13.11.2007 14:39:29
+ * @author Volker Bergmann
  */
-public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long> {
+public class BitReverseNaturalNumberGenerator extends ThreadSafeGenerator<Long> {
 
     private long max;
     private long cursor;
@@ -68,11 +69,11 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
     @Override
 	public void init(GeneratorContext context) {
     	assertNotInitialized();
-    	reset();
+    	initMembers();
         super.init(context);
     }
 
-    public Long generate() throws IllegalGeneratorStateException {
+    public synchronized Long generate() throws IllegalGeneratorStateException {
         assertInitialized();
         if (next == null)
             return null;
@@ -87,16 +88,13 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
     }
 
     @Override
-	public void reset() {
-        cursor = 0;
-        bitsUsed = NumberUtil.bitsUsed(max);
-        next = 0L;
-        this.maxCursor = 1 << bitsUsed;
+	public synchronized void reset() {
+        initMembers();
         super.reset();
     }
 
     @Override
-	public void close() {
+	public synchronized void close() {
         super.close();
         next = null;
     }
@@ -110,6 +108,13 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
 
     // private helpers -------------------------------------------------------------------------------------------------
 
+	private void initMembers() {
+	    cursor = 0;
+        bitsUsed = NumberUtil.bitsUsed(max);
+        next = 0L;
+        this.maxCursor = 1 << bitsUsed;
+    }
+
     private long cursorReversed() {
         long result = 0;
         for (int i = 0; i <= bitsUsed; i++)
@@ -120,4 +125,5 @@ public class BitReverseNaturalNumberGenerator extends LightweightGenerator<Long>
     private String renderState() {
         return "max=" + max + ", cursor=" + cursor;
     }
+    
 }

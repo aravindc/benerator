@@ -40,6 +40,7 @@ import javax.validation.ConstraintValidatorContext;
  * Tests the CurrentTimeGenerator.<br/>
  * <br/>
  * Created: 19.11.2007 20:43:45
+ * @author Volker Bergmann
  */
 public class CurrentTimeGeneratorTest extends GeneratorClassTest {
 
@@ -49,7 +50,9 @@ public class CurrentTimeGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testProducts() {
-        expectGenerations(new CurrentTimeGenerator(), 10, new CurrentTimeValidator());
+        CurrentTimeGenerator generator = new CurrentTimeGenerator();
+        generator.init(context);
+		expectGenerations(generator, 10, new CurrentTimeValidator());
     }
     
     static class CurrentTimeValidator extends AbstractConstraintValidator<Annotation, Date> {

@@ -59,6 +59,15 @@ public abstract class GeneratorClassTest extends GeneratorTest {
     public void testToString() throws Throwable {
         Generator<?> generator = generatorClass.newInstance();
         assertCustomToStringMethod(generator);
+        try {
+	        initialize(generator);
+        } catch (Exception e) {
+        	// if the default instance is invalid, further tests make no sense
+	        return;
+        }
+        generator.toString();
+        generator.close();
+        generator.toString();
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,41 +19,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive;
+package org.databene.benerator.distribution;
 
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.util.LuhnUtil;
-import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.StringUtil;
+import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * Generates numbers that pass a Luhn test.<br/><br/>
- * Created: 18.10.2009 10:08:09
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 22.03.2010 10:45:48
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class LuhnGenerator extends GeneratorProxy<String> {
+public class DistributingGenerator<E> extends SampleGenerator<E> {
 	
-	public LuhnGenerator() {
-	    this("", 1, 10);
+	private Generator<E> source;
+
+	public DistributingGenerator(Generator<E> source, Distribution distribution) {
+		super(source.getGeneratedType(), distribution);
+		this.source = source;
     }
 	
-	public LuhnGenerator(String prefix, int length) {
-	    this(prefix, length, length);
-    }
-
-	public LuhnGenerator(String prefix, int minLength, int maxLength) {
-	    super(new DigitsGenerator(minLength, maxLength, prefix));
-    }
-
 	@Override
-    public String generate() throws IllegalGeneratorStateException {
-		String number = super.generate();
-		char checkDigit = LuhnUtil.requiredCheckDigit(number);
-		if (StringUtil.lastChar(number) == checkDigit)
-			return number;
-		else
-			return number.substring(0, number.length() - 1) + checkDigit;
-    }
-
+	public void init(GeneratorContext context) {
+		source.init(context);
+		setValues(GeneratorUtil.allProducts(source));
+	    super.init(context);
+	}
+	
 }

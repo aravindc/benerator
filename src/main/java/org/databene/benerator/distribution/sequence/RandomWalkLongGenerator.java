@@ -104,7 +104,7 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
 
-    public Long generate() {
+    public synchronized Long generate() {
         assertInitialized();
         long value = next;
         next += incrementGenerator.generate();
@@ -116,13 +116,13 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     }
 
     @Override
-    public void reset() {
+    public synchronized void reset() {
     	super.reset();
     	next = initial;
     }
     
     @Override
-    public void close() {
+    public synchronized void close() {
     	super.close();
     	next = initial;
     }

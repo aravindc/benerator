@@ -29,7 +29,7 @@ package org.databene.domain.finance;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.domain.address.Country;
@@ -40,20 +40,19 @@ import org.databene.domain.address.Country;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class BankAccountGenerator extends LightweightGenerator<BankAccount> {
+public class BankAccountGenerator extends CompositeGenerator<BankAccount> {
 	
-	private Generator<Bank> bankGenerator = new BankGenerator();
-	private Generator<String> accountNumberGenerator = new RegexStringGenerator("[0-9]{8}");
 	private String countryCode;
+	private Generator<Bank> bankGenerator;
+	private Generator<String> accountNumberGenerator;
 
 	public BankAccountGenerator() {
+		super(BankAccount.class);
 		LocaleUtil.getFallbackLocale();
 		this.countryCode = Country.getDefault().getIsoCode();
+		this.bankGenerator = registerComponent(new BankGenerator());
+		this.accountNumberGenerator = registerComponent(new RegexStringGenerator("[0-9]{8}"));
 	}
-	
-    public Class<BankAccount> getGeneratedType() {
-	    return BankAccount.class;
-    }
 	
     @Override
     public synchronized void init(GeneratorContext context) {

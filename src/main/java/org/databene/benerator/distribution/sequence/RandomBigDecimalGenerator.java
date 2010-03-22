@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,8 @@ package org.databene.benerator.distribution.sequence;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.databene.benerator.util.LightweightGenerator;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates random {@link BigDecimal}s with a uniform distribution.
@@ -40,7 +40,7 @@ import org.databene.benerator.util.RandomUtil;
  * @author Volker Bergmann
  */
 
-public class RandomBigDecimalGenerator extends LightweightGenerator<BigDecimal> {
+public class RandomBigDecimalGenerator extends ThreadSafeGenerator<BigDecimal> {
 
 	private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(Double.MIN_VALUE);
 	private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);

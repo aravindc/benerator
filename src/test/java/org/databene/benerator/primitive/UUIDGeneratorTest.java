@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
 
@@ -47,6 +48,7 @@ public class UUIDGeneratorTest extends GeneratorClassTest {
     @Test
     public void testUniqueness() {
         Generator<String> generator = new UUIDGenerator();
+        generator.init(new BeneratorContext());
         expectUniqueGenerations(generator, 100);
     }
     

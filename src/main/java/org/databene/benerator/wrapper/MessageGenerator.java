@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,6 +38,8 @@ import java.text.MessageFormat;
  * Assembles the output of several source generators by a java.text.MessageFormat.<br/>
  * <br/>
  * Created: 08.06.2006 21:48:08
+ * @since 0.1
+ * @author Volker Bergmann
  */
 public class MessageGenerator extends ValidatingGenerator<String> {
 
@@ -144,13 +146,25 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     }
 
     /** @see org.databene.benerator.Generator#reset() */
+    @Override
     public void reset() {
         helper.reset();
+        super.reset();
     }
 
-    /** @see org.databene.benerator.Generator#close() */
+	public boolean isParallelizable() {
+	    return helper.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+	    return helper.isThreadSafe();
+    }
+
+	/** @see org.databene.benerator.Generator#close() */
+    @Override
     public void close() {
         helper.close();
+        super.close();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -160,4 +174,5 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     public String toString() {
         return getClass().getSimpleName() + "[pattern='" + pattern + "', " + minLength + "<=length<=" + maxLength + "]";
     }
+
 }

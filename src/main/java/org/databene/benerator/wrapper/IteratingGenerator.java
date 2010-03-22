@@ -37,20 +37,15 @@ import java.io.Closeable;
 import java.util.Iterator;
 
 /**
- * Iterates over Iterators that are provided by an Iterable.<br/>
+ * Iterates over Iterators that are provided by an {@link Iterable}.<br/>
  * <br/>
  * Created: 16.08.2007 07:09:57
+ * @author Volker Bergmann
  */
 public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
-	private static final int NEW       = -1;
-	private static final int AVAILABLE =  0;
-	private static final int UTILIZED  =  1;
-	private static final int CLOSED    =  2;
-	
     private TypedIterable<E> iterable;
     private Iterator<E> iterator;
-    private int state;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -60,7 +55,6 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
     public IteratingGenerator(TypedIterable<E> iterable) {
         this.iterable = iterable;
-        this.state = NEW;
         this.iterator = null;
     }
     
@@ -78,57 +72,59 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+	public boolean isParallelizable() {
+	    return true;
+    }
+
+	public boolean isThreadSafe() {
+	    return true;
+    }
+    
     @Override
     public void init(GeneratorContext context) {
     	if (iterable == null)
     		throw new InvalidGeneratorSetupException("iterable", "is null");
     	super.init(context);
+		createIterator();
     }
 
     public Class<E> getGeneratedType() {
         return iterable.getType();
     }
-/*
-    public boolean available() {
-    }
-*/
+
     public E generate() {
         try {
-        	if (state == NEW) {
-        		iterator = iterable.iterator();
-        		if (iterator.hasNext())
-        			state = AVAILABLE;
-        		else 
-        			utilized();
-        	}
-            if (state != AVAILABLE)
-        		return null;
+            assertInitialized();
+            if (iterator == null || !iterator.hasNext())
+            	return null;
         	E result = iterator.next();
         	if (!iterator.hasNext())
-	            utilized();
+	            closeIterator();
 			return result;
         } catch (Exception e) {
         	throw new IllegalGeneratorStateException("Generation failed: ", e);
         }
     }
 
-	public void reset() {
+	@Override
+    public void reset() {
         closeIterator();
-        state = NEW;
+        super.reset();
+        createIterator();
     }
 
+    @Override
     public void close() {
         closeIterator();
-        state = CLOSED;
+        super.close();
         if (iterable instanceof Closeable)
         	IOUtil.close((Closeable) iterable);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------    
     
-	private void utilized() {
-    	closeIterator();
-    	state = UTILIZED;
+	private void createIterator() {
+	    iterator = iterable.iterator();
     }
 
     private void closeIterator() {
@@ -145,5 +141,5 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     public String toString() {
         return getClass().getSimpleName() + "[" + iterable + ']';
     }
-    
+
 }

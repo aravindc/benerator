@@ -120,16 +120,20 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
         return result;
     }
 
+    @Override
     public void close() {
         source.close();
         for (ComponentBuilder compGen : componentBuilders)
             compGen.close();
+        super.close();
     }
     
+    @Override
     public void reset() {
         source.reset();
         for (ComponentBuilder compGen : componentBuilders)
             compGen.reset();
+        super.reset();
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -137,6 +141,14 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
     @Override
 	public String toString() {
         return getClass().getSimpleName() + '[' + entityName + ']' + componentBuilders;
+    }
+
+	public boolean isParallelizable() {
+	    return false; // TODO derive from components
+    }
+
+	public boolean isThreadSafe() {
+	    return false; // TODO derive from components
     }
 
 }

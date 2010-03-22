@@ -724,6 +724,14 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			builder.close();
 		}
 
+		public boolean isParallelizable() {
+	        return false;
+        }
+
+		public boolean isThreadSafe() {
+	        return false;
+        }
+
 	}
 
 	@SuppressWarnings("unchecked")

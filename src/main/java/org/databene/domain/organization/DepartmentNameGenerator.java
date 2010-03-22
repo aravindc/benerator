@@ -54,4 +54,9 @@ public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> 
         super(LocaleUtil.availableLocaleUrl(FILENAME_PREFIX, locale, ".csv"), Encodings.UTF_8);
     }
 
+    @Override
+    public Class<String> getGeneratedType() {
+        return String.class;
+    }
+    
 }

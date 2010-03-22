@@ -73,12 +73,14 @@ public class CumulatedLongGeneratorTest extends GeneratorClassTest {
 
     private void checkAverage(int min, int max, double average) {
         CumulatedLongGenerator g = new CumulatedLongGenerator(min, max);
+        g.init(context);
         assertEquals(average, g.average(), 0.1);
     }
 
     private void checkDistribution(int min, int max, int n) {
         logger.debug("checkDistribution(" + min + ", " + max + ", " + n + ")");
         CumulatedLongGenerator g = new CumulatedLongGenerator(min, max);
+        g.init(context);
         int[] sampleCount = new int[max - min + 1];
         for (int i = 0; i < n; i++) {
             int sample = g.generate().intValue();

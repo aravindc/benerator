@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.primitive;
 import java.io.File;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.commons.FileUtil;
 import org.junit.Test;
 
 /**
@@ -48,16 +49,20 @@ public class LocalSequenceGeneratorTest extends GeneratorClassTest {
     @Test
 	public void testPersistence() {
 		File propertiesFile = new File(LocalSequenceGenerator.FILENAME);
-		if (propertiesFile.exists())
-			propertiesFile.delete();
+		FileUtil.deleteIfExists(propertiesFile);
     	String sequenceName = getClass().getSimpleName();
-		LocalSequenceGenerator generator = new LocalSequenceGenerator(sequenceName);
-    	expectGeneratedSequenceOnce(generator, 1L, 2L, 3L);
-    	generator.close();
-    	LocalSequenceGenerator generator2 = new LocalSequenceGenerator(sequenceName);
-    	expectGeneratedSequenceOnce(generator2, 4L, 5L, 6L);
-    	generator.close();
-		propertiesFile.delete();
+		LocalSequenceGenerator.invalidateInstances();
+    	try {
+			LocalSequenceGenerator generator = new LocalSequenceGenerator(sequenceName);
+	    	expectGeneratedSequenceOnce(generator, 1L, 2L, 3L);
+	    	generator.close();
+	    	
+	    	LocalSequenceGenerator generator2 = new LocalSequenceGenerator(sequenceName);
+	    	expectGeneratedSequenceOnce(generator2, 4L, 5L, 6L);
+	    	generator.close();
+    	} finally {
+    		FileUtil.deleteIfExists(propertiesFile);
+    	}
     }
     
 }

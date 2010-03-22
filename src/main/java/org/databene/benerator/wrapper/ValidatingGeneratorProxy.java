@@ -70,18 +70,30 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
     }
 
     /** Calls the reset() method on the source generator */
+    @Override
     public void reset() {
         source.reset();
+        super.reset();
     }
 
     /** Calls the close() method on the source generator */
+    @Override
     public void close() {
         source.close();
+        super.close();
+    }
+
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
+    
+	public boolean isParallelizable() {
+	    return source.isParallelizable();
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + source + ']';
     }
-    
+
 }

@@ -28,7 +28,7 @@ package org.databene.benerator.sample;
 
 import java.util.List;
 
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -40,13 +40,9 @@ import static junit.framework.Assert.*;
  * Created: 07.06.2006 21:59:02
  * @author Volker Bergmann
  */
-public class AttachedWeightSampleGeneratorTest extends GeneratorClassTest {
+public class AttachedWeightSampleGeneratorTest extends GeneratorTest {
 
     private static Logger logger = LoggerFactory.getLogger(AttachedWeightSampleGeneratorTest.class);
-
-    public AttachedWeightSampleGeneratorTest() {
-        super(AttachedWeightSampleGenerator.class);
-    }
 
     @Test
     public void testInstantiation() throws Exception {

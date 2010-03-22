@@ -26,7 +26,7 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 import java.util.Collection;
 
@@ -36,12 +36,18 @@ import java.util.Collection;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public abstract class AbstractSampleGenerator<E> extends TypedLightweightGenerator<E> {
+public abstract class AbstractSampleGenerator<E> extends ThreadSafeGenerator<E> {
+	
+	private Class<E> generatedType;
 
     public AbstractSampleGenerator(Class<E> generatedType) {
-		super(generatedType);
+		this.generatedType = generatedType;
 	}
 
+    public Class<E> getGeneratedType() {
+        return generatedType;
+    }
+    
     /** Adds values to the sample list */
     public void setValues(Iterable<E> values) {
         clear();

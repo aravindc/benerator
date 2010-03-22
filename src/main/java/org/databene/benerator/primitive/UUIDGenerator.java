@@ -28,6 +28,8 @@ package org.databene.benerator.primitive;
 
 import java.util.UUID;
 
+import org.databene.benerator.util.ThreadSafeGenerator;
+
 /**
  * Creates UUIDs using {@link java.util.UUID#randomUUID()}.<br/>
  * <br/>
@@ -38,9 +40,13 @@ import java.util.UUID;
  * @author Volker Bergmann
  */
 
-public class UUIDGenerator extends LightweightStringGenerator {
+public class UUIDGenerator extends ThreadSafeGenerator<String> {
 	
     // Generator interface implementation ------------------------------------------------------------------------------
+
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
 
     public String generate() {
     	return UUID.randomUUID().toString();

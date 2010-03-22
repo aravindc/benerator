@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.CompositeGenerator;
 
 /**
  * Generates {@link BankAccount}s with low validity requirements.<br/><br/>
@@ -38,7 +38,7 @@ import org.databene.benerator.util.LightweightGenerator;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class BankGenerator extends LightweightGenerator<Bank> {
+public class BankGenerator extends CompositeGenerator<Bank> {
 	
 	private Generator<String> bankCodeGenerator;
 	private Generator<String> nameGenerator;
@@ -46,16 +46,13 @@ public class BankGenerator extends LightweightGenerator<Bank> {
 	private Generator<String> binGenerator;
 
 	public BankGenerator() {
-		this.bankCodeGenerator = new DigitsGenerator(8);
-		this.nameGenerator = new RegexStringGenerator("(Deutsche Bank|Dresdner Bank|Commerzbank|Spardabank|HVB)");
-		this.bicGenerator = new RegexStringGenerator("[A-Z]{4}DE[A-Z0-9]{2}");
-		this.binGenerator = new DigitsGenerator(4);
+		super(Bank.class);
+		this.bankCodeGenerator = registerComponent(new DigitsGenerator(8));
+		this.nameGenerator = registerComponent(new RegexStringGenerator("(Deutsche Bank|Dresdner Bank|Commerzbank|Spardabank|HVB)"));
+		this.bicGenerator = registerComponent(new RegexStringGenerator("[A-Z]{4}DE[A-Z0-9]{2}"));
+		this.binGenerator = registerComponent(new DigitsGenerator(4));
 	}
 	
-    public Class<Bank> getGeneratedType() {
-	    return Bank.class;
-    }
-
     @Override
     public synchronized void init(GeneratorContext context) {
     	bankCodeGenerator.init(context);

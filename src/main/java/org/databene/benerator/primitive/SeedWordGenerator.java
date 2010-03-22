@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,7 @@ import java.util.Set;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.SeedGenerator;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.domain.lang.Noun;
@@ -48,7 +49,7 @@ import org.databene.domain.lang.Noun;
  * @author Volker Bergmann
  */
 
-public class SeedWordGenerator extends LightweightStringGenerator {
+public class SeedWordGenerator extends AbstractGenerator<String> {
 	
     private static final int DEFAULT_DEPTH = 4;
 	private SeedGenerator<Character> source;
@@ -73,6 +74,20 @@ public class SeedWordGenerator extends LightweightStringGenerator {
 		source.addSample(objectSample);
 	}
 	
+	// Generator interface implementation ------------------------------------------------------------------------------
+	
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
+
+	public boolean isParallelizable() {
+	    return source.isParallelizable();
+    }
+
 	@Override
 	public synchronized void init(GeneratorContext context) {
 	    source.init(context);

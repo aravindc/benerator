@@ -34,6 +34,7 @@ import java.math.BigInteger;
  * Wrapper for a LongGenerator that maps the generated Longs to BigIntegers.<br/>
  * <br/>
  * Created: 07.06.2006 19:04:08
+ * @author Volker Bergmann
  */
 public abstract class AbstractBigIntegerGenerator extends AbstractNumberGenerator<BigInteger> {
 

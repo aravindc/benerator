@@ -38,7 +38,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ParserTest {
+public abstract class ParserTest {
 
 	protected BeneratorContext context;
 	protected ResourceManager resourceManager;

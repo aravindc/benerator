@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.domain.address;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.wrapper.CompositeGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class AddressGenerator extends LightweightGenerator<Address> {
+public class AddressGenerator extends CompositeGenerator<Address> {
 	
 	private static Logger logger = LoggerFactory.getLogger(AddressGenerator.class);
 
@@ -56,6 +56,7 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     }
 
     public AddressGenerator(Country country) {
+    	super(Address.class);
         setCountry(country);
     }
 
@@ -95,10 +96,6 @@ public class AddressGenerator extends LightweightGenerator<Address> {
         super.init(context);
 	}
 
-    public Class<Address> getGeneratedType() {
-	    return Address.class;
-    }
-
     public Address generate() throws IllegalGeneratorStateException {
     	assertInitialized();
         City city = cityGenerator.generate();
@@ -123,11 +120,11 @@ public class AddressGenerator extends LightweightGenerator<Address> {
     // private helpers -------------------------------------------------------------------------------------------------
 
 	private void initMembers(GeneratorContext context) {
-	    cityGenerator = new CityGenerator(country);
+	    cityGenerator = registerComponent(new CityGenerator(country));
         cityGenerator.init(context);
-        streetNameGenerator = new StreetNameGenerator(country.getIsoCode());
+        streetNameGenerator = registerComponent(new StreetNameGenerator(country.getIsoCode()));
         streetNameGenerator.init(context);
-        localPhoneNumberGenerator = new RegexStringGenerator("[1-9]\\d{5}");
+        localPhoneNumberGenerator = registerComponent(new RegexStringGenerator("[1-9]\\d{5}"));
         localPhoneNumberGenerator.init(context);
     }
 	

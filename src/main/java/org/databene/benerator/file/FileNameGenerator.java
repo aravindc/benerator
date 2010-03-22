@@ -21,9 +21,9 @@
 
 package org.databene.benerator.file;
 
-import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.util.AbstractGenerator;
-import org.databene.commons.BeanUtil;
+import java.io.File;
+
+import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
  * Generates file and/or directory names out of a directory.<br/><br/>
@@ -31,16 +31,14 @@ import org.databene.commons.BeanUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FileNameGenerator extends AbstractGenerator<String> {
+public class FileNameGenerator extends GeneratorWrapper<File, String> {
 
-	FileGenerator fileGenerator;
-	
 	public FileNameGenerator() {
 	    this(".", null, false, true, false);
     }
 	
 	public FileNameGenerator(String rootUri, String filter, boolean recursive, boolean files, boolean folders) {
-		this.fileGenerator = new FileGenerator(rootUri, filter, recursive, folders, files);
+		super(new FileGenerator(rootUri, filter, recursive, folders, files));
 	    setRootUri(rootUri);
 	    setFilter(filter);
 	    setRecursive(recursive);
@@ -51,27 +49,27 @@ public class FileNameGenerator extends AbstractGenerator<String> {
 	// properties ------------------------------------------------------------------------------------------------------
 
 	public void setRootUri(String rootUri) {
-	    fileGenerator.setRootUri(rootUri);
+	    ((FileGenerator) source).setRootUri(rootUri);
     }
 
 	public void setFilter(String filter) {
-	    fileGenerator.setFilter(filter);
+		((FileGenerator) source).setFilter(filter);
     }
 
 	public void setFiles(boolean files) {
-	    fileGenerator.setFiles(files);
+		((FileGenerator) source).setFiles(files);
     }
 
 	public void setFolders(boolean folders) {
-	    fileGenerator.setFolders(folders);
+		((FileGenerator) source).setFolders(folders);
     }
 
 	public void setRecursive(boolean recursive) {
-	    fileGenerator.setRecursive(recursive);
+		((FileGenerator) source).setRecursive(recursive);
     }
 
 	public void setUnique(boolean unique) {
-	    fileGenerator.setUnique(unique);
+		((FileGenerator) source).setUnique(unique);
     }
 
 	
@@ -81,39 +79,8 @@ public class FileNameGenerator extends AbstractGenerator<String> {
 	    return String.class;
     }
 
-	@Override
-    public void init(GeneratorContext context) {
-	    fileGenerator.init(context);
-	    super.init(context);
-    }
-	
 	public String generate() {
-	    return fileGenerator.generate().getAbsolutePath();
+	    return source.generate().getAbsolutePath();
     }
-
-	public void reset() {
-	    fileGenerator.reset();
-    }
-
-	public void close() {
-	    fileGenerator.close();
-    }
-
-	// java.lang.Object overrides --------------------------------------------------------------------------------------
-
-	@Override
-    public boolean equals(Object obj) {
-	    return fileGenerator.equals(obj);
-    }
-
-	@Override
-    public int hashCode() {
-	    return fileGenerator.hashCode();
-    }
-
-	@Override
-	public String toString() {
-	    return BeanUtil.toString(this);
-	}
 
 }

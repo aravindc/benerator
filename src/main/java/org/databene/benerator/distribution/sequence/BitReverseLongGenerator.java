@@ -61,7 +61,7 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
 
-    public Long generate() throws IllegalGeneratorStateException {
+	public Long generate() throws IllegalGeneratorStateException {
         assertInitialized();
         Long index = indexGenerator.generate();
         if (index == null)

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -41,6 +42,8 @@ public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
 
     private static final long DEFAULT_MAX = Long.MAX_VALUE / 2;
 	private static final long DEFAULT_MIN = Long.MIN_VALUE / 2;
+
+    RandomLongGenerator baseGen;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -65,9 +68,14 @@ public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     public Long generate() {
-        RandomLongGenerator baseGen = new RandomLongGenerator(min, max);
         long exactValue = (baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + 2) / 5L;
         return min + (exactValue - min) / precision * precision;
+    }
+    
+    @Override
+    public void init(GeneratorContext context) {
+        super.init(context);
+        baseGen = new RandomLongGenerator(min, max);
     }
     
 }

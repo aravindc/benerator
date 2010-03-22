@@ -64,6 +64,11 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 		super(getOrCreateSource(name));
 	}
 	
+	public static void invalidateInstances() {
+	    MAP.clear();
+		init();
+	}
+	
 	// Generator interface ---------------------------------------------------------------------------------------------
 
 	@Override

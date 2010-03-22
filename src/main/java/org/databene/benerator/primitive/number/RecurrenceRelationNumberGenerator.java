@@ -23,6 +23,7 @@ package org.databene.benerator.primitive.number;
 
 import java.util.LinkedList;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.domain.math.FibonacciLongGenerator;
 
@@ -72,7 +73,7 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
     	this.depth = depth;
     	this.recentProducts = new LinkedList<E>();
     	this.n = 0;
-	    reset();
+	    resetMembers();
     }
     
     public int getDepth() {
@@ -84,16 +85,14 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
     }
     
     // generator interface ---------------------------------------------------------------------------------------------
-/*     
-    @SuppressWarnings("unchecked")
+
     @Override
-    public boolean available() {
-    	E next = calculateNext();
-    	Comparable<E> c = (Comparable<E>) next;
-    	return (max == null || (c.compareTo(min) >= 0 && c.compareTo(max) <= 0));
+    public void init(GeneratorContext context) {
+        super.init(context);
+        resetMembers();
     }
-*/
-	/** See {@link org.databene.benerator.Generator#generate()} */
+    
+    /** See {@link org.databene.benerator.Generator#generate()} */
     @SuppressWarnings("unchecked")
     public synchronized E generate() {
     	E next = calculateNext();
@@ -110,8 +109,7 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
 	/** See {@link org.databene.benerator.Generator#reset()} */
 	@Override
     public void reset() {
-	    recentProducts.clear();
-	    n = 0;
+	    resetMembers();
 	    super.reset();
     }
 
@@ -144,8 +142,13 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
 		return recentProducts.get(- offset - 1);
 	}
 
-	// helper method ---------------------------------------------------------------------------------------------------
+	// helper methods --------------------------------------------------------------------------------------------------
 	
+	protected void resetMembers() {
+	    recentProducts.clear();
+	    n = 0;
+    }
+
 	protected E calculateNext() {
 	    E result;
 	    if (n < depth)

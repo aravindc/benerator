@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,26 +45,34 @@ public class CumulatedDoubleGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testSingle() {
-        checkProductSet(new CumulatedDoubleGenerator( 0,  0), 100, CollectionUtil.toSet( 0.));
-        checkProductSet(new CumulatedDoubleGenerator(-1, -1), 100, CollectionUtil.toSet(-1.));
-        checkProductSet(new CumulatedDoubleGenerator( 1,  1), 100, CollectionUtil.toSet( 1.));
-        checkProductSet(new CumulatedDoubleGenerator( 1,  1, 1), 100, CollectionUtil.toSet(1.));
+        checkProductSet(createAndInit(0, 0), 100, CollectionUtil.toSet( 0.));
+        checkProductSet(createAndInit(-1, -1), 100, CollectionUtil.toSet(-1.));
+        checkProductSet(createAndInit( 1,  1), 100, CollectionUtil.toSet( 1.));
+        checkProductSet(createAndInit( 1,  1, 1), 100, CollectionUtil.toSet(1.));
     }
 
     @Test
     public void testRange() {
-        checkProductSet(new CumulatedDoubleGenerator( 0,  1, 1), 1000, CollectionUtil.toSet( 0.,  1.));
-        checkProductSet(new CumulatedDoubleGenerator( 1,  2, 1), 1000, CollectionUtil.toSet( 1.,  2.));
-        checkProductSet(new CumulatedDoubleGenerator(-2, -1, 1), 1000, CollectionUtil.toSet(-2., -1.));
-        checkProductSet(new CumulatedDoubleGenerator(-1,  0, 1), 1000, CollectionUtil.toSet(-1.,  0.));
-        checkProductSet(new CumulatedDoubleGenerator(-1,  1, 1), 1000, CollectionUtil.toSet(-1.,  0., 1.));
+        checkProductSet(createAndInit( 0,  1, 1), 1000, CollectionUtil.toSet( 0.,  1.));
+        checkProductSet(createAndInit( 1,  2, 1), 1000, CollectionUtil.toSet( 1.,  2.));
+        checkProductSet(createAndInit(-2, -1, 1), 1000, CollectionUtil.toSet(-2., -1.));
+        checkProductSet(createAndInit(-1,  0, 1), 1000, CollectionUtil.toSet(-1.,  0.));
+        checkProductSet(createAndInit(-1,  1, 1), 1000, CollectionUtil.toSet(-1.,  0., 1.));
     }
 
     @Test
     public void testPrecision() {
-        checkProductSet(new CumulatedDoubleGenerator( 1,  3, 2), 100, CollectionUtil.toSet( 1.,  3.));
-        checkProductSet(new CumulatedDoubleGenerator(-3, -1, 2), 100, CollectionUtil.toSet(-3., -1.));
-        checkProductSet(new CumulatedDoubleGenerator(-1,  1, 2), 100, CollectionUtil.toSet(-1.,  1.));
+        checkProductSet(createAndInit( 1,  3, 2), 100, CollectionUtil.toSet( 1.,  3.));
+        checkProductSet(createAndInit(-3, -1, 2), 100, CollectionUtil.toSet(-3., -1.));
+        checkProductSet(createAndInit(-1,  1, 2), 100, CollectionUtil.toSet(-1.,  1.));
     }
     
+	private CumulatedDoubleGenerator createAndInit(int min, int max) {
+	    return initialize(new CumulatedDoubleGenerator(min, max));
+    }
+
+	private CumulatedDoubleGenerator createAndInit(int min, int max, int precision) {
+	    return initialize(new CumulatedDoubleGenerator(min, max, precision));
+    }
+
 }

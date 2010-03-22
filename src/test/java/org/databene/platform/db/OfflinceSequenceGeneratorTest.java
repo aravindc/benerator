@@ -24,7 +24,7 @@ package org.databene.platform.db;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.db.hsql.HSQLUtil;
 import org.junit.Test;
 
@@ -34,11 +34,7 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class OfflinceSequenceGeneratorTest extends GeneratorClassTest {
-
-	public OfflinceSequenceGeneratorTest() {
-	    super(OfflineSequenceGenerator.class);
-    }
+public class OfflinceSequenceGeneratorTest extends GeneratorTest {
 
 	@Test
 	public void testLifeCycle() throws Exception {

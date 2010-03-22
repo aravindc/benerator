@@ -28,7 +28,7 @@ package org.databene.benerator.test;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.UnsafeGenerator;
 
 /**
  * Mock implementation of the {@link Generator} interface.<br/>
@@ -38,7 +38,7 @@ import org.databene.benerator.util.LightweightGenerator;
  * @author Volker Bergmann
  */
 
-public class GeneratorMock extends LightweightGenerator<Integer> {
+public class GeneratorMock extends UnsafeGenerator<Integer> {
 	
 	public int value;
 

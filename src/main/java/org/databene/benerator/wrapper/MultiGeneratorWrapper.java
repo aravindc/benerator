@@ -89,18 +89,34 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
         super.init(context);
     }
 
+    @Override
     public synchronized void reset() {
-    	assertInitialized();
         for (Generator<S> source : sources)
             source.reset();
         this.availableSources = CollectionUtil.toList(sources);
+    	super.reset();
     }
 
+    @Override
     public synchronized void close() {
-    	assertInitialized();
         for (Generator<S> source : sources)
             source.close();
         this.availableSources.clear();
+    	super.close();
+    }
+    
+    public boolean isThreadSafe() {
+    	for (Generator<S> source : sources)
+    		if (!source.isThreadSafe())
+    			return false;
+        return true;
+    }
+    
+    public boolean isParallelizable() {
+    	for (Generator<S> source : sources)
+    		if (!source.isParallelizable())
+    			return false;
+        return true;
     }
     
     // helpers ---------------------------------------------------------------------------------------------------------

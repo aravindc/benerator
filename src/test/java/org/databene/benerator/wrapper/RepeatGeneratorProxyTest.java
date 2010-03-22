@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
@@ -37,11 +37,7 @@ import org.junit.Test;
  * Created: 01.09.2007 11:05:04
  * @author Volker Bergmann
  */
-public class RepeatGeneratorProxyTest extends GeneratorClassTest {
-
-    public RepeatGeneratorProxyTest() {
-        super(RepeatGeneratorProxy.class);
-    }
+public class RepeatGeneratorProxyTest extends GeneratorTest {
 
     @Test
     public void testNonRepeating() {

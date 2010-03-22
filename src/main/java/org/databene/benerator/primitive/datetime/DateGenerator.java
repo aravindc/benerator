@@ -26,11 +26,10 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.Period;
 import org.databene.commons.converter.DateString2DurationConverter;
 
@@ -44,13 +43,10 @@ import java.util.GregorianCalendar;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class DateGenerator extends AbstractGenerator<Date> {
+public class DateGenerator extends GeneratorWrapper<Long, Date> {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
-    /** The generator to use for generating millisecond values */
-    private Generator<Long> source;
-    
     private long min;
     private long max;
     private long precision;
@@ -76,12 +72,13 @@ public class DateGenerator extends AbstractGenerator<Date> {
 
     /** Initializes the generator to create dates of a Sequence or WeightFunction */
     public DateGenerator(Date min, Date max, long precision, Distribution distribution, boolean unique) {
+    	super(null);
         this.distribution = distribution;
 		this.min = (min != null ? min.getTime() : Long.MIN_VALUE);
 		this.max = (max != null ? max.getTime() : Long.MAX_VALUE);
 		this.precision = precision;
 		this.unique = unique;
-        source = distribution.createGenerator(Long.class, this.min, this.max, this.precision, this.unique);
+        this.source = distribution.createGenerator(Long.class, this.min, this.max, this.precision, this.unique);
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -129,13 +126,15 @@ public class DateGenerator extends AbstractGenerator<Date> {
         else
         	return null;
     }
-
-    public void reset() {
-        source.reset();
+    
+    @Override
+    public boolean isThreadSafe() {
+        return super.isThreadSafe() && dateConverter.isThreadSafe();
     }
-
-    public void close() {
-        source.close();
+    
+    @Override
+    public boolean isParallelizable() {
+        return super.isParallelizable() && dateConverter.isParallelizable();
     }
 
     // implementation --------------------------------------------------------------------------------------------------

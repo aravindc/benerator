@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.Context;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class ScriptGenerator extends LightweightGenerator<Object>{
+public class ScriptGenerator extends ThreadSafeGenerator<Object>{
     
     private Script script;
     private Context context;

@@ -112,5 +112,5 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
         return getClass().getSimpleName() + '[' + minLength + "<=length<=" + maxLength + ", " +
                 "charSet=[" + ArrayFormat.formatChars(", ", charSet) + "]]";
     }
-    
+
 }

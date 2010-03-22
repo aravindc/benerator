@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,14 +26,18 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
  * Double Generator that implements a 'cumulated' Double Sequence.<br/>
  * Created: 07.06.2006 19:33:37<br/>
+ * @since 0.1
  * @author Volker Bergmann
  */
 public class CumulatedDoubleGenerator extends AbstractNumberGenerator<Double> {
+	
+    RandomDoubleGenerator baseGen;
 
     public CumulatedDoubleGenerator() {
         this(Long.MIN_VALUE, Long.MAX_VALUE);
@@ -46,9 +50,15 @@ public class CumulatedDoubleGenerator extends AbstractNumberGenerator<Double> {
     public CumulatedDoubleGenerator(double min, double max, double precision) {
         super(Double.class, min, max, precision);
     }
+    
+    @Override
+    public void init(GeneratorContext context) {
+        super.init(context);
+        baseGen = new RandomDoubleGenerator(min, max);
+    }
 
     public Double generate() {
-        RandomDoubleGenerator baseGen = new RandomDoubleGenerator(min, max);
+    	assertInitialized();
         double exactValue = (baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate()) / 5.;
         return min + (int)(Math.round((exactValue - min) / precision)) * precision;
     }

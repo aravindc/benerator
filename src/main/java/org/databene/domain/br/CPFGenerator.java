@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Eric Chaves & Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Eric Chaves & Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,20 +23,18 @@ package org.databene.domain.br;
 
 import java.util.ArrayList;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 import java.util.Random;
 
 /**
- * Generates Brazilian CPF numbers.
- * CPF stands for 'Cadastro de Pessoa Fisica' 
- * and is a tax payer number assigned to an 
- * individual person (Pessoa Fisica).
+ * Generates Brazilian CPF numbers. CPF stands for 'Cadastro de Pessoa Fisica' 
+ * and is a tax payer number assigned to an individual person (Pessoa Fisica).
  * @since 0.6.0
  * @author Eric Chaves
  * @author Volker Bergmann
  */
-public class CPFGenerator extends TypedLightweightGenerator<String> {
+public class CPFGenerator extends ThreadSafeGenerator<String> {
 
     /**
      * flag indicating should return CPF in numeric or formatted form.
@@ -50,7 +48,6 @@ public class CPFGenerator extends TypedLightweightGenerator<String> {
     }
 
     public CPFGenerator(boolean formatted){
-    	super(String.class);
     	this.random = new Random();
     	this.formatted = formatted;
     }
@@ -72,6 +69,10 @@ public class CPFGenerator extends TypedLightweightGenerator<String> {
 			buf.insert(11, '-');
 	    }
 	    return buf.toString();
+    }
+    
+    public Class<String> getGeneratedType() {
+        return String.class;
     }
     
     private void addDigit(ArrayList<Integer> digits){

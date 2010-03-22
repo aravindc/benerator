@@ -21,7 +21,7 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates mobile phone numbers.<br/><br/>
@@ -29,7 +29,7 @@ import org.databene.benerator.util.TypedLightweightGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class MobileNumberGenerator extends TypedLightweightGenerator<PhoneNumber> {
+public class MobileNumberGenerator extends ThreadSafeGenerator<PhoneNumber> {
 
     private Country country;
 
@@ -38,7 +38,6 @@ public class MobileNumberGenerator extends TypedLightweightGenerator<PhoneNumber
     }
 
     public MobileNumberGenerator(Country country) {
-    	super(PhoneNumber.class);
         this.country = country;
     }
 
@@ -50,4 +49,8 @@ public class MobileNumberGenerator extends TypedLightweightGenerator<PhoneNumber
         return country.generateMobileNumber();
     }
 
+	public Class<PhoneNumber> getGeneratedType() {
+	    return PhoneNumber.class;
+	}
+	
 }

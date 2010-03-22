@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,11 +29,11 @@ package org.databene.benerator.primitive;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
+import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.databene.domain.address.Country;
 
 /**
@@ -48,7 +48,7 @@ import org.databene.domain.address.Country;
  * @author Volker Bergmann
  */
 
-public class UnluckyNumberValidator implements ConstraintValidator<UnluckyNumber, String> {
+public class UnluckyNumberValidator extends AbstractConstraintValidator<UnluckyNumber, String> {
 	
 	private static final String UNLUCKY_CN = "4,14";
 	private static final String LUCKY_CN = "2,8,9,13";

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,45 +43,45 @@ public class UniqueFixedLengthStringGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testZeroLength() {
-        expectGeneratedSequence(create(0), "").withCeasedAvailability();
+        expectGeneratedSequence(createAndInit(0), "").withCeasedAvailability();
     }
 
     @Test
     public void testConstantDigit() {
-        expectGeneratedSequence(create(1, '0'), "0").withCeasedAvailability();
+        expectGeneratedSequence(createAndInit(1, '0'), "0").withCeasedAvailability();
     }
 
     @Test
     public void testOneBinaryDigit() {
-        expectGeneratedSet(create(1, '0', '1'), "0", "1").withCeasedAvailability();
-        expectUniqueProducts(create(1, '0', '1'), 2).withCeasedAvailability();
+        expectGeneratedSet(createAndInit(1, '0', '1'), "0", "1").withCeasedAvailability();
+        expectUniqueProducts(createAndInit(1, '0', '1'), 2).withCeasedAvailability();
     }
 
     @Test
     public void testTwoBinaryDigits() {
-        expectGeneratedSet(create(2, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
-        expectUniqueProducts(create(2, '0', '1'), 4).withCeasedAvailability();
+        expectGeneratedSet(createAndInit(2, '0', '1'), "00", "01", "10", "11").withCeasedAvailability();
+        expectUniqueProducts(createAndInit(2, '0', '1'), 4).withCeasedAvailability();
     }
 
     @Test
     public void testTwoAlphaDigits() {
-        expectGeneratedSet(create(2, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
-        expectUniqueProducts(create(2, 'A', 'O'), 4).withCeasedAvailability();
-        expectUniqueProducts(create(2, 'A', 'B', 'C'), 9).withCeasedAvailability();
+        expectGeneratedSet(createAndInit(2, 'A', 'O'), "AA", "AO", "OA", "OO").withCeasedAvailability();
+        expectUniqueProducts(createAndInit(2, 'A', 'O'), 4).withCeasedAvailability();
+        expectUniqueProducts(createAndInit(2, 'A', 'B', 'C'), 9).withCeasedAvailability();
     }
 
     @Test
     public void testLongString() {
-        expectUniqueProducts(create(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
+        expectUniqueProducts(createAndInit(4, 'A', 'E', 'I', 'O', 'U'), 625).withCeasedAvailability();
     }
 
     @Test
     public void testMany() {
-        UniqueFixedLengthStringGenerator generator = create(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
+        UniqueFixedLengthStringGenerator generator = createAndInit(7, '0', '9', '2', '6', '4', '5', '3', '7', '8', '1');
         expectUniqueProducts(generator, 1000).withContinuedAvailability();
     }
 
-    private UniqueFixedLengthStringGenerator create(int length, char... chars) {
+    private UniqueFixedLengthStringGenerator createAndInit(int length, char... chars) {
     	return initialize(new UniqueFixedLengthStringGenerator(length, chars));
     }
     

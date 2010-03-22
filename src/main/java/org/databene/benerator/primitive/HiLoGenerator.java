@@ -120,15 +120,25 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
         return hi * (maxLo + 1) + lo;
     }
     
+    @Override
     public void reset() {
-        assertInitialized();
         hiGenerator.reset();
         resetMembers();
+        super.reset();
     }
 
+    @Override
     public void close() {
-        assertInitialized();
         hiGenerator.close();
+        super.close();
+    }
+
+	public boolean isThreadSafe() {
+	    return hiGenerator.isThreadSafe();
+    }
+    
+	public boolean isParallelizable() {
+	    return hiGenerator.isParallelizable();
     }
 
     @Override
@@ -140,5 +150,5 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
 	    this.lo = -1;
         this.hi = -1L;
     }
-    
+
 }

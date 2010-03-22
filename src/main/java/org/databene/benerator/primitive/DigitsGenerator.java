@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.RandomUtil;
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates {@link String}s composed of numerical digits.<br/><br/>
@@ -31,7 +31,7 @@ import org.databene.benerator.util.TypedLightweightGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DigitsGenerator extends TypedLightweightGenerator<String> {
+public class DigitsGenerator extends ThreadSafeGenerator<String> {
 
 	private int minLength;
 	private int maxLength;
@@ -43,7 +43,6 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
     }
 
 	public DigitsGenerator(int minLength, int maxLength, int minInitial) {
-	    super(String.class);
 	    this.minLength = minLength;
 	    this.maxLength = maxLength;
 	    this.minInitial = minInitial;
@@ -51,7 +50,6 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
     }
 
 	public DigitsGenerator(int minLength, int maxLength, String prefix) {
-	    super(String.class);
 	    this.minLength = minLength;
 	    this.maxLength = maxLength;
 	    this.minInitial = 0;
@@ -92,12 +90,16 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
     	this.prefix = prefix;
     }
 
+	// Generator interface implementation ------------------------------------------------------------------------------
+
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+	
 	public String generate() {
 	    return generate(prefix);
     }
 	
-	// Generator interface implementation ------------------------------------------------------------------------------
-
 	public String generate(String prefix) throws IllegalGeneratorStateException {
 		int length = RandomUtil.randomInt(minLength, maxLength);
 		StringBuilder builder = new StringBuilder(prefix);
@@ -107,5 +109,5 @@ public class DigitsGenerator extends TypedLightweightGenerator<String> {
 			builder.append(RandomUtil.randomDigit(0));
 	    return builder.toString();
     }
-	
+
 }

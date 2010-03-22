@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.Generator;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -39,11 +39,7 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class AlternativeGeneratorTest extends GeneratorClassTest {
-
-    public AlternativeGeneratorTest() {
-        super(AlternativeGenerator.class);
-    }
+public class AlternativeGeneratorTest extends GeneratorTest {
 
     @Test
     @SuppressWarnings("unchecked")

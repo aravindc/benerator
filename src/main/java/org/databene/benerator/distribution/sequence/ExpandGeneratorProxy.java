@@ -145,7 +145,7 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
     }
 	
 	@Override
-	public void reset() {
+	public synchronized void reset() {
 	    super.reset();
 	    createBuckets();
 	}

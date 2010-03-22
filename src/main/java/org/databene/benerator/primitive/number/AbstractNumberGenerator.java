@@ -28,7 +28,7 @@ package org.databene.benerator.primitive.number;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.comparator.NumberComparator;
 import org.databene.commons.converter.NumberToNumberConverter;
 
@@ -40,14 +40,14 @@ import org.databene.commons.converter.NumberToNumberConverter;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class AbstractNumberGenerator<E extends Number> extends LightweightGenerator<E> {
+public abstract class AbstractNumberGenerator<E extends Number> extends AbstractGenerator<E> {
 
 	protected Class<E> generatedType;
 
 	protected E min;
     protected E max;
     protected E precision;
-
+    
     // constructors ----------------------------------------------------------------------------------------------------
 
     public AbstractNumberGenerator(Class<E> generatedType, E min, E max, E precision) {
@@ -89,7 +89,15 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Lightwei
     	return generatedType;
     }
     
-    @Override
+    public boolean isThreadSafe() {
+    	return true;
+    }
+
+	public boolean isParallelizable() {
+    	return true;
+    }
+
+	@Override
     public void init(GeneratorContext context) {
     	if (min != null && max != null && NumberComparator.compareNumbers(min, max) > 0)
     		throw new InvalidGeneratorSetupException("min (" + min + ") is greater than max (" + max + ")");

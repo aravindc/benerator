@@ -45,8 +45,13 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
     private Converter converter;
 
 	public QueryLongGenerator(String selector, StorageSystem source, BeneratorContext context) {
-	    super(selector, source, Long.class, context);
+	    super(selector, source, context);
     }
+	
+	@Override
+	public Class<Long> getGeneratedType() {
+	    return Long.class;
+	}
 	
 	@Override
 	public Long generate() {

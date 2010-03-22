@@ -22,7 +22,7 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.util.TypedLightweightGenerator;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates landline or mobile phone numbers in a given {@link Country}.<br/><br/>
@@ -30,12 +30,11 @@ import org.databene.benerator.util.TypedLightweightGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PhoneNumberGenerator extends TypedLightweightGenerator<PhoneNumber> {
+public class PhoneNumberGenerator extends ThreadSafeGenerator<PhoneNumber> {
 	
 	private Country country;
 	
 	public PhoneNumberGenerator(Country country) {
-		super(PhoneNumber.class);
 	    this.country = country;
     }
 	
@@ -43,6 +42,10 @@ public class PhoneNumberGenerator extends TypedLightweightGenerator<PhoneNumber>
     	this.country = country;
     }
 
+	public Class<PhoneNumber> getGeneratedType() {
+	    return PhoneNumber.class;
+	}
+	
 	public PhoneNumber generate() throws IllegalGeneratorStateException {
 		return country.generatePhoneNumber();
     }

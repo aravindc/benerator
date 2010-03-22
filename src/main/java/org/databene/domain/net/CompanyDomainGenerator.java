@@ -29,7 +29,7 @@ package org.databene.domain.net;
 import java.io.IOException;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.primitive.LightweightStringGenerator;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
@@ -44,7 +44,7 @@ import org.databene.text.DelocalizingConverter;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class CompanyDomainGenerator extends LightweightStringGenerator {
+public class CompanyDomainGenerator extends AbstractGenerator<String> {
 
 	private CompanyNameGenerator companyNameGenerator;
 	private TopLevelDomainGenerator tldGenerator;
@@ -71,6 +71,10 @@ public class CompanyDomainGenerator extends LightweightStringGenerator {
 	    super.init(context);
 	}
 	
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+
 	public String generate() {
 		return normalizer.convert(companyNameGenerator.generate()) + '.' + tldGenerator.generate();
 	}
@@ -96,5 +100,13 @@ public class CompanyDomainGenerator extends LightweightStringGenerator {
 		}
 
 	}
+
+	public boolean isThreadSafe() {
+	    return companyNameGenerator.isThreadSafe() && tldGenerator.isThreadSafe() && normalizer.isThreadSafe();
+    }
+
+	public boolean isParallelizable() {
+	    return companyNameGenerator.isParallelizable() && tldGenerator.isParallelizable() && normalizer.isParallelizable();
+    }
 
 }

@@ -45,6 +45,7 @@ public class IncrementalIdGeneratorTest extends GeneratorClassTest {
 	@Test
 	public void testLifeCycle() {
 		IncrementalIdGenerator generator = new IncrementalIdGenerator();
+		generator.init(context);
 		assertEquals(1L, generator.generate().longValue());
 		generator.reset();
 		assertEquals(2L, generator.generate().longValue());
@@ -53,6 +54,7 @@ public class IncrementalIdGeneratorTest extends GeneratorClassTest {
 	@Test
 	public void testMultiThreading() throws Exception {
 		final IncrementGenerator generator = new IncrementGenerator(0);
+		generator.init(context);
 		ExecutorService service = Executors.newCachedThreadPool();
 		Runnable runner = new Runnable() {
 			public void run() {

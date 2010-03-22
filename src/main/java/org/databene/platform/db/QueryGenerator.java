@@ -29,66 +29,44 @@ package org.databene.platform.db;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TypedIterable;
 import org.databene.model.storage.StorageSystem;
 
 /**
- * Generates values based on a database queries.<br/>
+ * Generates values based on a database query.<br/>
  * <br/>
  * Created at 06.07.2009 08:02:21
  * @since 0.6.0
  * @author Volker Bergmann
  */
 
-public class QueryGenerator<E> extends AbstractGenerator<E> {
+public class QueryGenerator<E> extends GeneratorProxy<E> {
 	
-	private StorageSystem source;
+	private StorageSystem storage;
 	private String selector;
-	private Class<E> targetType;
 	
-	private IteratingGenerator<E> sourceGen;
-	
-    @SuppressWarnings("unchecked")
-    public QueryGenerator(String selector, StorageSystem source) {
-		this(selector, source, (Class<E>) Object.class, null);
+    public QueryGenerator(String selector, StorageSystem storage) {
+		this(selector, storage, null);
 	}
 
     @SuppressWarnings("unchecked")
-    public QueryGenerator(String selector, StorageSystem source, Class<E> targetType, BeneratorContext context) {
-		this.source = source;
+    public QueryGenerator(String selector, StorageSystem source, BeneratorContext context) {
+		this.storage = source;
 		this.selector = selector;
-		this.targetType = targetType;
-		this.sourceGen = new IteratingGenerator<E>((TypedIterable<E>) source.query(selector, context));
+		this.source = new IteratingGenerator<E>((TypedIterable<E>) source.query(selector, context));
 	}
 
     @Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	assertNotInitialized();
-	    if (source == null)
+	    if (storage == null)
 	    	throw new InvalidGeneratorSetupException("source is null");
 	    if (StringUtil.isEmpty(selector))
 	    	throw new InvalidGeneratorSetupException("no query defined");
 	    super.init(context);
-    }
-
-    public Class<E> getGeneratedType() {
-	    return targetType;
-    }
-
-    public void close() {
-	    sourceGen.close();
-    }
-
-    public E generate() {
-    	assertInitialized();
-	    return sourceGen.generate();
-    }
-
-    public void reset() {
-	    sourceGen.reset();
     }
 
     @Override

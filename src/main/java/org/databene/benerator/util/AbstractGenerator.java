@@ -35,15 +35,27 @@ import org.databene.commons.BeanUtil;
  */
 public abstract class AbstractGenerator<E> implements Generator<E> {
 
-	protected GeneratorState state = GeneratorState.created;
+	protected GeneratorState state;
 
 	protected GeneratorContext context;
+
+	public AbstractGenerator() {
+	    this.state = GeneratorState.created;
+    }
 
 	public synchronized void init(GeneratorContext context) {
 		this.context = context;
 		this.state = GeneratorState.initialized;
     }
 
+	public void reset() {
+	    this.state = GeneratorState.initialized;
+	}
+	
+	public void close() {
+	    this.state = GeneratorState.closed;
+	}
+	
 	// internal helpers ------------------------------------------------------------------------------------------------
     
     protected final void assertNotInitialized() {
@@ -51,7 +63,7 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	    	if (state == GeneratorState.initialized)
 	    		throw new IllegalGeneratorStateException("Trying to initialize generator a 2nd time: " + this);
 	    	else
-	    		throw new IllegalGeneratorStateException("Trying to initialize generator in state " + state + ": " + this);
+	    		throw new IllegalGeneratorStateException("Trying to initialize generator in '" + state + "' state: " + this);
     }
 
     protected final void assertInitialized() {

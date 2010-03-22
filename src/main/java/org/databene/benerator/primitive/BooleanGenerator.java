@@ -26,17 +26,21 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.util.LightweightGenerator;
+import java.util.Random;
+
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
  * Generates boolean values with a configurable quota of true values.<br/>
  * <br/>
  * Created: 09.06.2006 20:03:18
  */
-public class BooleanGenerator extends LightweightGenerator<Boolean> {
+public class BooleanGenerator extends ThreadSafeGenerator<Boolean> {
 
     /** The quota of true values to create */
     private double trueQuota;
+    
+    private Random random;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -48,6 +52,7 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
     /** Initializes the generator to a trueQuota */
     public BooleanGenerator(double trueQuota) {
         this.trueQuota = trueQuota;
+        this.random = new Random();
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -70,7 +75,7 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
 
     /** generates boolean values with a quota of true values according to the trueQuota property */
     public Boolean generate() {
-        return (Math.random() <= trueQuota);
+        return (random.nextFloat() <= trueQuota);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -79,4 +84,5 @@ public class BooleanGenerator extends LightweightGenerator<Boolean> {
     public String toString() {
         return getClass().getSimpleName() + "[trueQuota=" + trueQuota + ']';
     }
+    
 }

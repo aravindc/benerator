@@ -27,7 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -37,11 +37,7 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class SkipGeneratorProxyTest extends GeneratorClassTest {
-
-    public SkipGeneratorProxyTest() {
-        super(SkipGeneratorProxy.class);
-    }
+public class SkipGeneratorProxyTest extends GeneratorTest {
 
     @Test
     public void testSkip() {

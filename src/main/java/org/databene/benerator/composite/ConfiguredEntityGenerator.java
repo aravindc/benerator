@@ -114,4 +114,12 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	        + "    " + entityGenerator + "\n" + "]";
 	}
 
+	public boolean isParallelizable() {
+	    return false; // TODO derive from components
+    }
+
+	public boolean isThreadSafe() {
+	    return false; // TODO derive from components
+    }
+
 }

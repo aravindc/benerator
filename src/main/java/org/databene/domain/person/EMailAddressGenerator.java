@@ -67,12 +67,12 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements Genera
 		personGenerator.setLocale(locale);
 	}
 	
+	// Generator interface ---------------------------------------------------------------------------------------------
+	
 	public Class<String> getGeneratedType() {
 	    return String.class;
     }
 
-	// Generator interface ---------------------------------------------------------------------------------------------
-	
 	@Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
 		personGenerator.init(context);
@@ -90,4 +90,19 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements Genera
 		return generate(person.getGivenName(), person.getFamilyName());
 	}
 
+	@Override
+	public boolean isThreadSafe() {
+	    return super.isThreadSafe() && personGenerator.isThreadSafe();
+	}
+
+	@Override
+	public boolean isParallelizable() {
+	    return super.isParallelizable() && personGenerator.isParallelizable();
+	}
+	
+	@Override
+	public String toString() {
+	    return getClass().getName() + '[' + personGenerator.getDataset() + ']';
+	}
+	
 }
