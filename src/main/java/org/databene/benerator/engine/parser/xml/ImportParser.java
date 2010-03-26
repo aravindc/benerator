@@ -53,22 +53,12 @@ public class ImportParser extends AbstractDescriptorParser {
 		if (!StringUtil.isEmpty(attribute))
 			classImports.add(attribute);
 		
-		// domain import
-		attribute = element.getAttribute("domain");
-		if (!StringUtil.isEmpty(attribute))
-			domainImports.add(attribute);
-		
-		// multiple domain import
+		// (multiple) domain import
 		attribute = element.getAttribute("domains");
 		if (!StringUtil.isEmpty(attribute))
 			domainImports.addAll(StringUtil.tokenize(attribute, ','));
 		
-		// platform import
-		attribute = element.getAttribute("platform");
-		if (!StringUtil.isEmpty(attribute))
-			platformImports.add(attribute);
-		
-		// multiple platform import
+		// (multiple) platform import
 		attribute = element.getAttribute("platforms");
 		if (!StringUtil.isEmpty(attribute))
 			platformImports.addAll(StringUtil.tokenize(attribute, ','));
