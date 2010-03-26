@@ -27,9 +27,9 @@ import java.util.Set;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.Locales;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
-import org.databene.domain.lang.Language;
 
 /**
  * Formats {@link Person} objects.<br/><br/>
@@ -40,7 +40,7 @@ import org.databene.domain.lang.Language;
 public abstract class PersonFormatter extends ThreadSafeConverter<Person, String> {
 	
 	private static final Set<Locale> EASTERN_LOCALES = CollectionUtil.toSet(
-		Language.CHINESE, Language.JAPANESE, Language.KOREAN, Language.THAI, Language.VIETNAMESE
+		Locales.CHINESE, Locales.JAPANESE, Locales.KOREAN, Locales.THAI, Locales.VIETNAMESE
 	);
 	
 	public static final PersonFormatter WESTERN = new Western();

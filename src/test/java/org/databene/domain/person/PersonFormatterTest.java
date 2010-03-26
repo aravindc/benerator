@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 import java.util.Locale;
 
-import org.databene.domain.lang.Language;
+import org.databene.commons.Locales;
 import org.junit.Test;
 
 /**
@@ -44,7 +44,7 @@ public class PersonFormatterTest {
 
 	@Test
 	public void testEastern() {
-		check("Lee Bruce", Language.CHINESE, null, "Bruce", "Lee");
+		check("Lee Bruce", Locales.CHINESE, null, "Bruce", "Lee");
 	}
 
 	private void check(String expected, Locale locale, String salutation, String givenName, String familyName) {
