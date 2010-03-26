@@ -105,7 +105,9 @@ public class UnluckyNumberValidator extends AbstractConstraintValidator<UnluckyN
 		this.unluckyNumbers = CollectionUtil.toSet(unluckyNumbers);
 	}
 
+    @Override
     public void initialize(UnluckyNumber parameters) {
+    	super.initialize(parameters);
 	    setLuckyNumberRequired(parameters.luckyNumberRequired());
     }
     
