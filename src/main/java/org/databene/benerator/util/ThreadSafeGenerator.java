@@ -22,18 +22,27 @@
 package org.databene.benerator.util;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parent class for Generators which are thread-safe.<br/><br/>
  * Created: 20.03.2010 10:29:03
  * @since 0.6.0
  * @author Volker Bergmann
  */
 public abstract class ThreadSafeGenerator<E> extends AbstractGenerator<E> {
 
+	/** 
+	 * Returns <code>true</code> to indicate thread-safety and may not be overwritten by child classes.
+	 * @return true to indicate thread-safety. 
+	 */
 	public final boolean isThreadSafe() {
 	    return true;
     }
 
-	public final boolean isParallelizable() {
+	/** 
+	 * Returns <code>true</code> to indicate parallelization support, 
+	 * but may be overwritten by child classes.
+	 * @return true to indicate parallelization support
+	 */
+	public boolean isParallelizable() {
 	    return true;
     }
 
