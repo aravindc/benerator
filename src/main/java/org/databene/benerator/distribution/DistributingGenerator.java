@@ -27,9 +27,11 @@ import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Collects all products a source {@link Generator} is able to generate, 
+ * puts them into a list and serves the list elements based on its 
+ * {@link Distribution}.<br/><br/>
  * Created: 22.03.2010 10:45:48
- * @since TODO version
+ * @since 0.6.0
  * @author Volker Bergmann
  */
 public class DistributingGenerator<E> extends SampleGenerator<E> {
