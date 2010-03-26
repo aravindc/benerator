@@ -28,7 +28,7 @@ package org.databene.platform.db;
 
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConversionException;
-import org.databene.commons.converter.UnsafeConverter;
+import org.databene.commons.converter.SimpleConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import java.sql.SQLException;
  * Created: 15.08.2007 18:19:25
  * @author Volker Bergmann
  */
-public class ResultSetConverter<E> extends UnsafeConverter<ResultSet, E> {
+public class ResultSetConverter<E> extends SimpleConverter<ResultSet, E> {
 
 	private Class<E> targetType;
     private boolean simplifying;
