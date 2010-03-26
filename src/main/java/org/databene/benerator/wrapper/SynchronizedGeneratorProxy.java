@@ -32,8 +32,6 @@ import org.databene.benerator.GeneratorContext;
  */
 public class SynchronizedGeneratorProxy<E> implements Generator<E> {
 	
-	// TODO Use this for wrapping non-thread-safe generators which are to be shared
-	
 	private final Generator<E> source;
 
 	private SynchronizedGeneratorProxy(Generator<E> source) {
