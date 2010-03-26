@@ -85,9 +85,7 @@
 	<xs:element name="import">
 		<xs:complexType>
 			<xs:attribute name="class"     type="xs:string"/>
-			<xs:attribute name="domain"    type="xs:string"/> <!-- TODO -->
 			<xs:attribute name="domains"   type="xs:string"/>
-			<xs:attribute name="platform"  type="xs:string"/> <!-- TODO -->
 			<xs:attribute name="platforms" type="xs:string"/>
 			<xs:attribute name="defaults"  type="xs:string"/>
 		</xs:complexType>
