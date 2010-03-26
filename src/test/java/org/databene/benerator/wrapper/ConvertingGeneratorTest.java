@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
-import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.ThreadSafeConverter;
