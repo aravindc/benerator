@@ -28,7 +28,7 @@ import java.util.Set;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.util.UnsafeGenerator;
+import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConstantExpression;
@@ -66,7 +66,7 @@ public class GenerateOrIterateStatementTest {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	class EntityGeneratorMock extends UnsafeGenerator<Entity> {
+	class EntityGeneratorMock extends SimpleGenerator<Entity> {
 		
 		public int invocationCount;
 		public Set<Thread> threads = new HashSet<Thread>();

@@ -36,7 +36,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
-import org.databene.benerator.util.UnsafeGenerator;
+import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
 
@@ -48,7 +48,7 @@ import org.databene.commons.ParseException;
  * @author Volker Bergmann
  */
 
-public class StateGenerator<E> extends UnsafeGenerator<E> {
+public class StateGenerator<E> extends SimpleGenerator<E> {
 	
 	private Class<E> generatedType;
 	private E nextState;

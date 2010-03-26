@@ -27,7 +27,7 @@ package org.databene.benerator.util;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class UnsafeGenerator<E> extends AbstractGenerator<E> {
+public abstract class SimpleGenerator<E> extends AbstractGenerator<E> {
 
 	public boolean isParallelizable() {
 	    return false;

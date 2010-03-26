@@ -31,7 +31,7 @@ import java.util.List;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.UnsafeGenerator;
+import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 
@@ -43,7 +43,7 @@ import org.databene.commons.CollectionUtil;
  * @author Volker Bergmann
  */
 
-public class SeedGenerator<E> extends UnsafeGenerator<E[]>{
+public class SeedGenerator<E> extends SimpleGenerator<E[]>{
 	
 	private Class<E> atomType;
 	private Class<E[]> targetType;

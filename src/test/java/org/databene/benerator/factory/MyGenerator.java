@@ -29,10 +29,10 @@ package org.databene.benerator.factory;
 
 import java.util.Locale;
 
-import org.databene.benerator.util.UnsafeGenerator;
+import org.databene.benerator.util.SimpleGenerator;
 import org.databene.model.data.Entity;
 
-public class MyGenerator extends UnsafeGenerator<Entity> {
+public class MyGenerator extends SimpleGenerator<Entity> {
 	
 	private Locale locale;
 	
