@@ -28,6 +28,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.Converter;
 import org.databene.commons.ThreadAware;
+import org.databene.commons.ThreadUtil;
 import org.databene.commons.context.ContextAware;
 
 /**
@@ -62,17 +63,11 @@ public abstract class CompositeGenerator<E> extends AbstractGenerator<E> {
     }
 
 	public boolean isThreadSafe() {
-		for (ThreadAware component : components)
-			if (!component.isThreadSafe())
-				return false;
-		return true;
+		return ThreadUtil.allThreadSafe(components);
     }
 
 	public boolean isParallelizable() {
-		for (ThreadAware component : components)
-			if (!component.isParallelizable())
-				return false;
-		return true;
+		return ThreadUtil.allParallelizable(components);
     }
 
 }
