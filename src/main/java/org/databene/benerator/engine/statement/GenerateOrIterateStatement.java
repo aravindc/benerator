@@ -38,6 +38,8 @@ import org.databene.commons.Expression;
 import org.databene.contiperf.PerformanceTracker;
 import org.databene.model.data.Entity;
 import org.databene.task.PageListener;
+import org.databene.task.SynchronizedTask;
+import org.databene.task.Task;
 import org.databene.task.runner.PagedTaskRunner;
 
 /**
@@ -72,11 +74,15 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	
     public void execute(BeneratorContext context) {
     	generator.init(context);
-	    this.tracker = PagedTaskRunner.execute(task, context, 
+    	Task taskToUse = this.task;
+    	int threadCount = threads.evaluate(context);
+		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
+			taskToUse = new SynchronizedTask(taskToUse);
+	    this.tracker = PagedTaskRunner.execute(taskToUse, context, 
 	    		count.evaluate(context), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
-	    		threads.evaluate(context),
+	    		threadCount,
 	    		false, 
 	    		context.getExecutorService(),
 	    		getErrorHandler(context));
