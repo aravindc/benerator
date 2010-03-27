@@ -33,6 +33,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
+import org.databene.commons.ThreadUtil;
 import org.databene.model.data.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,11 +116,11 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	}
 
 	public boolean isParallelizable() {
-	    return false; // TODO derive from components
+	    return entityGenerator.isParallelizable() && ThreadUtil.allParallelizable(variables.values());
     }
 
 	public boolean isThreadSafe() {
-	    return false; // TODO derive from components
+	    return entityGenerator.isThreadSafe() && ThreadUtil.allThreadSafe(variables.values());
     }
 
 }
