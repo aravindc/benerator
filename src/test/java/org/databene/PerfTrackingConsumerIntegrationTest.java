@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
 import org.databene.benerator.engine.parser.xml.ParserTest;
+import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedEntityStatement;
@@ -78,7 +79,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 
 	private void checkStats(TimedEntityStatement statement) {
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) ((LazyStatement) statement.getRealStatement()).getTarget(null);
-		ConsumerChain<?> chain = (ConsumerChain<?>) realStatement.getTarget().getConsumer(null);
+		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeEntityTask) realStatement.getTarget()).getConsumer(null);
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
