@@ -88,5 +88,13 @@ public class PlainComponentBuilder implements ComponentBuilder {
 	public String toString() {
 		return getClass().getSimpleName() + '[' + name + ',' + source + ']';
 	}
+
+	public boolean isParallelizable() {
+	    return source.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
 	
 }

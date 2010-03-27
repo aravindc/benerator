@@ -27,6 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.commons.ThreadAware;
 import org.databene.model.data.Entity;
 
 /**
@@ -35,7 +36,7 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public interface ComponentBuilder {
+public interface ComponentBuilder extends ThreadAware {
 	void init(GeneratorContext context);
 	Class<?> getGeneratedType();
 	boolean buildComponentFor(Entity entity);

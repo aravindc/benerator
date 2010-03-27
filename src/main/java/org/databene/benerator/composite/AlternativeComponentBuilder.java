@@ -26,6 +26,7 @@
 
 package org.databene.benerator.composite;
 
+import org.databene.commons.ThreadUtil;
 import org.databene.model.data.Entity;
 
 /**
@@ -43,5 +44,13 @@ public class AlternativeComponentBuilder extends MultiComponentBuilder {
 	public boolean buildComponentFor(Entity entity) {
 		return buildRandomComponentFor(entity);
 	}
+
+	public boolean isParallelizable() {
+	    return ThreadUtil.allParallelizable(builders);
+    }
+
+	public boolean isThreadSafe() {
+	    return ThreadUtil.allThreadSafe(builders);
+    }
 
 }
