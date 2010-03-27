@@ -38,7 +38,7 @@ import org.databene.commons.Expression;
 import org.databene.contiperf.PerformanceTracker;
 import org.databene.model.data.Entity;
 import org.databene.task.PageListener;
-import org.databene.task.PagedTaskRunner;
+import org.databene.task.runner.PagedTaskRunner;
 
 /**
  * Creates a number of entities in parallel execution and a given page size.<br/><br/>

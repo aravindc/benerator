@@ -29,8 +29,8 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.task.PageListener;
-import org.databene.task.PagedTaskRunner;
 import org.databene.task.Task;
+import org.databene.task.runner.PagedTaskRunner;
 
 /**
  * {@link Statement} that executes a {@link Task} supporting paging and multithreading.<br/><br/>
