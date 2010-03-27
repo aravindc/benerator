@@ -65,17 +65,17 @@ public class MultiThreadedTaskRunner implements TaskRunner {
     }
 
 	@SuppressWarnings("unchecked")
-    public long run(long invocationCount) {
+    public long run(Long maxInvocationCount) {
         AtomicLong counter = new AtomicLong();
-        int maxLoopsPerPage = (int)((invocationCount + threadCount - 1) / threadCount);
-        int shorterLoops = (int)(threadCount * maxLoopsPerPage - invocationCount);
+        int maxLoopsPerPage = (int)((maxInvocationCount + threadCount - 1) / threadCount);
+        int shorterLoops = (int)(threadCount * maxLoopsPerPage - maxInvocationCount);
         boolean threadSafe = target.isThreadSafe();
         boolean parallelizable = target.isParallelizable();
         // create threads for a page
         CountDownLatch latch = new CountDownLatch(threadCount);
         for (int threadNo = 0; threadNo < threadCount; threadNo++) {
             int loopSize = maxLoopsPerPage;
-            if (invocationCount >= 0 && threadNo >= threadCount - shorterLoops)
+            if (maxInvocationCount >= 0 && threadNo >= threadCount - shorterLoops)
                 loopSize--;
             if (loopSize > 0) {
                 Task task = target;
@@ -114,7 +114,7 @@ public class MultiThreadedTaskRunner implements TaskRunner {
 		private AtomicLong counter;
 		
 	    public TaskRunnable(long requestedInvocationCount, AtomicLong counter, CountDownLatch latch, boolean closeAfterwards) {
-	        this.latch   = latch;
+	        this.latch = latch;
 	        this.closeAfterwards = closeAfterwards;
 	        this.requestedInvocationCount = requestedInvocationCount;
 	        this.counter = counter;

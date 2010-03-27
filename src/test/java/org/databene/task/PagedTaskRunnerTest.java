@@ -100,7 +100,7 @@ public class PagedTaskRunnerTest {
 	public void testMinCount() {
         CountTask countTask = new CountTask(1);
         PagedTaskRunner pagedTask = new PagedTaskRunner(countTask, null, 2, 2, false, executors, context, errHandler);
-        pagedTask.run(2);
+        pagedTask.run(2L);
 	}
 
 	// helpers ---------------------------------------------------------------------------------------------------------

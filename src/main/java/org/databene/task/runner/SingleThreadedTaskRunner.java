@@ -45,7 +45,7 @@ public class SingleThreadedTaskRunner implements TaskRunner {
 	    this.errorHandler = errorHandler;
     }
 
-	public long run(long invocationCount) {
+	public long run(Long invocationCount) {
 		try {
 			return runWithoutClosing(target, invocationCount, context, errorHandler);
 		} finally {
@@ -53,9 +53,9 @@ public class SingleThreadedTaskRunner implements TaskRunner {
 		}
     }
 
-	public static long runWithoutClosing(Task target, long invocationCount, Context context, ErrorHandler errorHandler) {
+	public static long runWithoutClosing(Task target, Long invocationCount, Context context, ErrorHandler errorHandler) {
 		long actualCount = 0;
-        for (int i = 0; i < invocationCount; i++) {
+        for (int i = 0; invocationCount == null || i < invocationCount; i++) {
             TaskResult stepResult = target.execute(context, errorHandler);
 			if (stepResult != TaskResult.UNAVAILABLE)
             	actualCount++;

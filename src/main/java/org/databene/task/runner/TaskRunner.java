@@ -30,5 +30,5 @@ import org.databene.task.Task;
  * @author Volker Bergmann
  */
 public interface TaskRunner {
-	long run(long invocationCount);
+	long run(Long maxInvocationCount);
 }

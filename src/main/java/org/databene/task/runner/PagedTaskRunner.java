@@ -112,11 +112,11 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         return threadCount;
     }
     
-	public long run(long invocationCount) {
-    	if (invocationCount == 0)
+	public long run(Long invocationCount) {
+    	if (invocationCount != null && invocationCount == 0)
     		return 0;
     	this.actualCount.set(0);
-    	if (invocationCount != -1) {
+    	if (invocationCount != null) {
 	    	queuedPages.set((invocationCount + pageSize - 1) / pageSize);
 	    	queuedInvocations.set(invocationCount);
     	}
@@ -133,11 +133,11 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         do {
         	try {
 	            pageStarting(currentPageNo);
-	            long currentPageSize = (invocationCount == -1 ? pageSize : Math.min(pageSize, queuedInvocations.get()));
+	            long currentPageSize = (invocationCount == null ? pageSize : Math.min(pageSize, queuedInvocations.get()));
 	            queuedInvocations.addAndGet(- currentPageSize);
 	            long localCount = pageRunner.run(currentPageSize);
 	            actualCount.addAndGet(localCount);
-	            if (invocationCount != -1)
+	            if (invocationCount != null)
 	            	queuedPages.decrementAndGet();
 	            pageFinished(currentPageNo, context);
 	            if (exception != null)
@@ -150,7 +150,7 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
         long countValue = actualCount.get();
-        long minCount = (invocationCount != -1 ? invocationCount : 0);
+        long minCount = (invocationCount != null ? invocationCount : 0);
 		if (countValue < minCount)
         	throw new TaskUnavailableException(target, minCount, countValue);
 		if (tracker != null)
@@ -181,10 +181,10 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
 	
     // non-public helpers ----------------------------------------------------------------------------------------------
 
-    protected boolean workPending(long invocationCount) {
+    protected boolean workPending(Long maxInvocationCount) {
         if (!target.isAvailable())
             return false;
-        if (invocationCount == -1)
+        if (maxInvocationCount == null)
         	return true;
         return (queuedPages.get() > 0);
 	}
