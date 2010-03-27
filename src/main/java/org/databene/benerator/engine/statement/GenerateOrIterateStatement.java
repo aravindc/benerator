@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.GeneratorTask;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -38,23 +39,23 @@ import org.databene.contiperf.PerformanceTracker;
 import org.databene.model.data.Entity;
 import org.databene.task.PageListener;
 import org.databene.task.PagedTaskRunner;
-import org.databene.task.Task;
 
 /**
  * Creates a number of entities in parallel execution and a given page size.<br/><br/>
  * Created: 01.02.2008 14:43:15
  * @author Volker Bergmann
  */
-public class GenerateOrIterateStatement extends AbstractStatement implements PageListener {
+public class GenerateOrIterateStatement extends AbstractStatement 
+		implements GeneratorStatement, PageListener {
 
-	protected Task task;
+	protected GeneratorTask task;
 	protected Expression<Long> count;
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
 	protected PerformanceTracker tracker;
 
-	public GenerateOrIterateStatement(GenerateAndConsumeEntityTask task,
+	public GenerateOrIterateStatement(GeneratorTask task,
 			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, 
 			Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
 	    this.task = task;
@@ -62,7 +63,7 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Pag
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
-		this.generator = task.getEntityGenerator();
+		this.generator = task.getGenerator();
     }
 
 	private Generator<Entity> generator;
@@ -96,8 +97,8 @@ public class GenerateOrIterateStatement extends AbstractStatement implements Pag
 	    return listeners;
     }
 
-	public GenerateAndConsumeEntityTask getTarget() {
-	    return (GenerateAndConsumeEntityTask) task;
+	public GeneratorTask getTarget() {
+	    return task;
     }
 
     public PerformanceTracker getTracker() {

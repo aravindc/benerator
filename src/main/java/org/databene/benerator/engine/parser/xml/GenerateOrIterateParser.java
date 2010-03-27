@@ -30,6 +30,7 @@ import java.util.Set;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorParser;
+import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ParserFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
@@ -110,7 +111,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
     public GenerateOrIterateStatement parseCreateEntities(Element element, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
-		GenerateAndConsumeEntityTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
+		GeneratorTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
 		
 		Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
 		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
@@ -126,7 +127,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	}
 
 	@SuppressWarnings("unchecked")
-    private GenerateAndConsumeEntityTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, 
+    private GeneratorTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, 
     		ResourceManager resourceManager, BeneratorContext context) {
 		descriptor.setNullable(false);
 		if (!isSubTask)

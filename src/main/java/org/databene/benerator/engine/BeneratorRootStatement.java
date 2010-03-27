@@ -22,8 +22,7 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
-import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
+import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
@@ -67,11 +66,11 @@ public class BeneratorRootStatement extends SequentialStatement {
 		public void visit(Statement element) {
 			if (result != null)
 				return;
-			if (element instanceof GenerateOrIterateStatement) {
-				GenerateOrIterateStatement candidate = (GenerateOrIterateStatement) element;
-				GenerateAndConsumeEntityTask target = candidate.getTarget();
+			if (element instanceof GeneratorStatement) {
+				GeneratorStatement candidate = (GeneratorStatement) element;
+				GeneratorTask target = candidate.getTarget();
 				if (name.equals(target.getTaskName())) {
-					result = target.getEntityGenerator();
+					result = target.getGenerator();
 					return;
 				}
 			} else if (element instanceof StatementProxy)

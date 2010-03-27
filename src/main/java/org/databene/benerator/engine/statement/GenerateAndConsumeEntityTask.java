@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
@@ -43,7 +44,6 @@ import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
-import org.databene.task.Task;
 import org.databene.task.TaskResult;
 
 /**
@@ -51,7 +51,7 @@ import org.databene.task.TaskResult;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
+public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceManager {
 
 	private String taskName;
     private Generator<Entity> entityGenerator;
@@ -78,7 +78,7 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
     	this.subStatements.add(statement);
     }
     
-    public Generator<Entity> getEntityGenerator() {
+    public Generator<Entity> getGenerator() {
     	return entityGenerator;
     }
 
@@ -94,11 +94,11 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
     }
 
     public boolean isThreadSafe() {
-        return true; // TODO derive from components
+        return false;
     }
     
     public boolean isParallelizable() {
-        return true; // TODO derive from components
+        return false;
     }
     
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
@@ -126,11 +126,6 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
     	}
     }
     
-    private void runSubTasks(BeneratorContext context) {
-	    for (Statement subStatement : subStatements)
-	    	runSubTask(subStatement, context);
-    }
-    
     public void reset() {
 	    entityGenerator.reset();
     }
@@ -149,9 +144,14 @@ public  class GenerateAndConsumeEntityTask implements Task, ResourceManager {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
+    private void runSubTasks(BeneratorContext context) {
+	    for (Statement subStatement : subStatements)
+	    	runSubTask(subStatement, context);
+    }
+    
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
-        if (subStatement instanceof GenerateOrIterateStatement) {
-            GenerateAndConsumeEntityTask target = ((GenerateOrIterateStatement) subStatement).getTarget();
+        if (subStatement instanceof GeneratorStatement) {
+            GeneratorTask target = ((GeneratorStatement) subStatement).getTarget();
 			target.reset();
 	        subStatement.execute(context);
 	        try {
