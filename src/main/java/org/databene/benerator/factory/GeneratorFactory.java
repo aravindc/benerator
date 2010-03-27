@@ -111,41 +111,10 @@ public class GeneratorFactory {
             Distribution distribution, Uniqueness uniqueness) {
         if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
-        Generator<T> source = distribution.createGenerator(numberType, min, max, precision, uniqueness.isUnique()); // TODO support WeightFunction, fractionDigits 
-        /*
-        if (Integer.class.equals(type) || Long.class.equals(type) || Byte.class.equals(type) || Short.class.equals(type) || BigInteger.class.equals(type))
-            source = new IntegralNumberGenerator<T>(type, min, max, precision, distribution);
-        else if (Double.class.equals(type) || Float.class.equals(type))
-            source = (Generator<T>) new DecimalNumberGenerator(
-                    type, 
-                    min, 
-                    max(type, max, totalDigits, fractionDigits), 
-                    precision(type, precision, fractionDigits), 
-                    distribution);
-        else if (BigDecimal.class.equals(type))
-            source = (Generator<T>) new BigDecimalGenerator(
-                    (BigDecimal) min, 
-                    (BigDecimal) max(type, max, totalDigits, fractionDigits), 
-                    (BigDecimal) precision(type, precision, fractionDigits), 
-                    distribution);
-        else
-            throw new UnsupportedOperationException("Number type not supported: " + type.getName());
-        */
-        return source;
-    }
-/*
-    private static <T> T max(Class<T> type, T max, int totalDigits, int fractionDigits) {
-        if (max != null)
-            return max;
-        return NumberConverter.convert(Math.pow(10, totalDigits - fractionDigits), type);
+        return distribution.createGenerator(numberType, min, max, precision, uniqueness.isUnique()); 
+        // TODO v0.6.1 define difference between precision and fractionDigits and implement it accordingly
     }
 
-    private static <T> T precision(Class<T> type, T precision, int fractionDigits) {
-        if (precision != null)
-            return precision;
-        return NumberConverter.convert(Math.pow(10, -fractionDigits), type);
-    }
-*/
     // sample source ------------------------------------------------------------------------------------------------
 
     /**

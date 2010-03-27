@@ -82,9 +82,9 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 	
 	@Test
-	public void testCreateSampleGeneratorNA() {
+	public void testCreateSampleGeneratorWithoutValues() {
 		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test"), Uniqueness.NONE, null);
-		assertNull(generator); // TODO what's this?
+		assertNull(generator);
 	}
 	
 	@Test

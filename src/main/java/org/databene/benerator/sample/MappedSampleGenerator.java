@@ -42,7 +42,7 @@ import org.databene.commons.math.MutableDouble;
  * @author Volker Bergmann
  */
 
-public class MappedSampleGenerator<E> extends IndividualWeightGenerator<E> { // TODO find appropriate name
+public class MappedSampleGenerator<E> extends IndividualWeightGenerator<E> { // TODO v0.6.1 find appropriate name
 	
 	Map<E, MutableDouble> weights;
 	
