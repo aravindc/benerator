@@ -32,6 +32,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.Context;
+import org.databene.commons.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
     private String entityName;
-       private Generator<Entity> source;
+    private Generator<Entity> source;
     private List<ComponentBuilder> componentBuilders;
     private Context context;
     private Entity currentEntity;
@@ -144,11 +145,11 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
     }
 
 	public boolean isParallelizable() {
-	    return false; // TODO derive from components
+	    return source.isParallelizable() && ThreadUtil.allParallelizable(componentBuilders);
     }
 
 	public boolean isThreadSafe() {
-	    return false; // TODO derive from components
+	    return source.isThreadSafe() && ThreadUtil.allThreadSafe(componentBuilders);
     }
 
 }
