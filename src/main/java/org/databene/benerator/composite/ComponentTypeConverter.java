@@ -84,12 +84,10 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
 	}
 
 	public boolean isParallelizable() {
-	    // TODO Auto-generated method stub
 	    return false;
     }
 
 	public boolean isThreadSafe() {
-	    // TODO Auto-generated method stub
 	    return false;
     }
 
