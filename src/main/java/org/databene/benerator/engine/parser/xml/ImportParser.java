@@ -40,7 +40,7 @@ public class ImportParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_IMPORT);
     }
 
-	public ImportStatement parse(Element element, ResourceManager resourceManager) {
+	public ImportStatement parse(Element element, Element parent, ResourceManager resourceManager) {
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 

@@ -82,7 +82,6 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    		false, 
 	    		context.getExecutorService(),
 	    		getErrorHandler(context));
-        // TODO count all generations // context.countGenerations(getActualCount());
     }
 
 	public void reset() {

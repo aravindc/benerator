@@ -41,7 +41,7 @@ public class EchoParser extends AbstractDescriptorParser {
 	    super(EL_ECHO);
     }
 
-	public EchoStatement parse(Element element, ResourceManager resourceManager) {
+	public EchoStatement parse(Element element, Element parent, ResourceManager resourceManager) {
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
 			return new EchoStatement(parseScriptableTextAttribute(ATT_MESSAGE, element));
 		else

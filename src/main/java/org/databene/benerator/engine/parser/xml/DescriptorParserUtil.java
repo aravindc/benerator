@@ -51,7 +51,7 @@ public class DescriptorParserUtil {
 	    for (Element child : XMLUtil.getChildElements(parent)) {
 			String childName = child.getNodeName();
             DescriptorParser elementParser = ParserFactory.getParser(childName, parentName);
-	    	Statement statement = elementParser.parse(child, resourceManager);
+	    	Statement statement = elementParser.parse(child, null, resourceManager);
 	    	result.add(statement);
 	    }
 	    return result;

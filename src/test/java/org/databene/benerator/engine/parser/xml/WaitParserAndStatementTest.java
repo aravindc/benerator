@@ -41,7 +41,7 @@ public class WaitParserAndStatementTest {
 	public void testConstantDuration() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<wait duration='12'/>");
 		BeneratorContext context = new BeneratorContext();
-		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null);
+		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null, null);
 		assertEquals(12, statement.generateDuration(context));
 		statement.execute(context);
 	}
@@ -51,7 +51,7 @@ public class WaitParserAndStatementTest {
 		Element element = XMLUtil.parseStringAsElement(
 				"<wait min='11' max='25' precision='2' distribution='step'/>");
 		BeneratorContext context = new BeneratorContext();
-		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null);
+		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null, null);
 		for (int i = 0; i < 5; i++)
 			assertEquals(11 + i * 2, statement.generateDuration(context));
 		statement.execute(context);

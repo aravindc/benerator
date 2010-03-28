@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class LazyStatement implements Statement {
+public class LazyStatement implements Statement { // TODO remove this class
 
 	private Expression<Statement> targetExpression;
 	private Statement target;
@@ -47,13 +47,14 @@ public class LazyStatement implements Statement {
 	    return targetExpression;
     }
 
-	public void execute(BeneratorContext context) {
-	    getTarget(context).execute(context);
-    }
-
 	public Statement getTarget(BeneratorContext context) {
 	    if (target == null)
 	    	target = targetExpression.evaluate(context);
 	    return target;
 	}
+	
+	public void execute(BeneratorContext context) {
+	    getTarget(context).execute(context);
+    }
+
 }

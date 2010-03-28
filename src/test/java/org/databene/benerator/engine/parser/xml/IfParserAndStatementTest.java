@@ -42,7 +42,7 @@ public class IfParserAndStatementTest {
 	public void testPlainTrue() throws Exception {
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='1==1'><property name='executed' value='OK'/></if>");
-		Statement statement = new IfParser().parse(element, null);
+		Statement statement = new IfParser().parse(element, null, null);
 		statement.execute(context);
 		assertEquals("OK", context.getProperty("executed"));
 	}
@@ -51,7 +51,7 @@ public class IfParserAndStatementTest {
 	public void testPlainFalse() throws Exception {
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><property name='executed' value='OK'/></if>");
-		Statement statement = new IfParser().parse(element, null);
+		Statement statement = new IfParser().parse(element, null, null);
 		statement.execute(context);
 		assertEquals(null, context.getProperty("executed"));
 	}
@@ -60,7 +60,7 @@ public class IfParserAndStatementTest {
 	public void testThenTrue() throws Exception {
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='1==1'><then><property name='executed' value='OK'/></then></if>");
-		Statement statement = new IfParser().parse(element, null);
+		Statement statement = new IfParser().parse(element, null, null);
 		statement.execute(context);
 		assertEquals("OK", context.getProperty("executed"));
 	}
@@ -69,7 +69,7 @@ public class IfParserAndStatementTest {
 	public void testThenFalse() throws Exception {
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then><property name='executed' value='OK'/></then></if>");
-		Statement statement = new IfParser().parse(element, null);
+		Statement statement = new IfParser().parse(element, null, null);
 		statement.execute(context);
 		assertEquals(null, context.getProperty("executed"));
 	}
@@ -87,7 +87,7 @@ public class IfParserAndStatementTest {
 			"	</else>" +
 			"</if>"
 		);
-		Statement statement = new IfParser().parse(element, null);
+		Statement statement = new IfParser().parse(element, null, null);
 		// test 'then' part
 		context.set("x", 3);
 		statement.execute(context);
@@ -102,21 +102,21 @@ public class IfParserAndStatementTest {
 	public void testElseWithoutIf() throws Exception {
 		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><else/></if>");
-		new IfParser().parse(element, null);
+		new IfParser().parse(element, null, null);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testTwoThens() throws Exception {
 		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then/><then/></if>");
-		new IfParser().parse(element, null);
+		new IfParser().parse(element, null, null);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testTwoElses() throws Exception {
 		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then/><else/><else/></if>");
-		new IfParser().parse(element, null);
+		new IfParser().parse(element, null, null);
 	}
 	
 }

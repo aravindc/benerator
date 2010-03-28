@@ -46,7 +46,7 @@ public class EvaluateParser implements DescriptorParser {
 	    	|| DescriptorConstants.EL_EXECUTE.equals(elementName);
     }
 
-	public EvaluateStatement parse(Element element, ResourceManager resourceManager) {
+	public EvaluateStatement parse(Element element, Element parent, ResourceManager resourceManager) {
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		Expression<String> text         = parseTextElement(element);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);

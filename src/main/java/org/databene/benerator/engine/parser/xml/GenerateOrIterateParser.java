@@ -50,6 +50,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.StringUtil;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
@@ -83,23 +84,27 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	    return EL_GENERATE.equals(elementName) || EL_ITERATE.equals(elementName);
     }
 	
-	public Statement parse(final Element element, final ResourceManager resourceManager) {
+	public Statement parse(final Element element, Element parent, final ResourceManager resourceManager) {
 		Expression<Statement> expression = new DynamicExpression<Statement>() {
 			public Statement evaluate(Context context) {
 				return parseCreateEntities(
 						element, false, resourceManager, (BeneratorContext) context);
             }
 		};
-		return new TimedEntityStatement(getNameOrType(element), new LazyStatement(expression));
+		Statement statement = new LazyStatement(expression);
+		String parentName = parent.getNodeName();
+		if (!parentName.equals(EL_GENERATE) && !parentName.equals(EL_ITERATE))
+			statement = new TimedEntityStatement(getNameOrType(element), statement);
+		return statement;
 	}
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private String getNameOrType(Element element) {
 		String result = element.getAttribute(ATT_NAME);
-		if (result == null)
+		if (StringUtil.isEmpty(result))
 			result = element.getAttribute(ATT_TYPE);
-		if (result == null)
+		if (StringUtil.isEmpty(result))
 			result = "anonymous";
 		return result;
 	}
@@ -151,7 +156,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
 	            DescriptorParser parser = ParserFactory.getParser(childName, element.getNodeName());
-	            Statement subStatement = parser.parse(child, task);
+	            Statement subStatement = parser.parse(child, element, task);
 				task.addSubStatement(subStatement);
             }
 		}

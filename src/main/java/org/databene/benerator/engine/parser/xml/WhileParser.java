@@ -52,7 +52,7 @@ public class WhileParser implements DescriptorParser {
 	private static final Set<String> LEGAL_PARENTS = CollectionUtil.toSet(
 			EL_SETUP, EL_IF, EL_WHILE);
 
-	public Statement parse(Element element, ResourceManager resourceManager) {
+	public Statement parse(Element element, Element parent, ResourceManager resourceManager) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, element);
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 

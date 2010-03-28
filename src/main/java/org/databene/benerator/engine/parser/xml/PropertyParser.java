@@ -53,7 +53,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_PROPERTY);
     }
 
-    public Statement parse(Element element, ResourceManager resourceManager) {
+    public Statement parse(Element element, Element parent, ResourceManager resourceManager) {
 		String propertyName = element.getAttribute(ATT_NAME);
 		Expression<?> valueEx = parseValue(element, resourceManager);
 		return new SetGlobalPropertyStatement(propertyName, valueEx);

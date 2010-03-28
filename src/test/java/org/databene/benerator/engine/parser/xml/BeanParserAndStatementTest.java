@@ -68,7 +68,7 @@ public class BeanParserAndStatementTest {
 	private BeneratorContext parseAndExecute(String xml) throws IOException {
 	    Element element = XMLUtil.parseStringAsElement(xml);
         BeanParser parser = new BeanParser();
-		BeanStatement statement = parser.parse(element, new ResourceManagerSupport());
+		BeanStatement statement = parser.parse(element, null, new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		statement.execute(context);
 	    return context;

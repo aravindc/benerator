@@ -53,7 +53,7 @@ public class BeanParser extends AbstractDescriptorParser {
 	    super(EL_BEAN);
     }
 
-	public BeanStatement parse(Element element, ResourceManager resourceManager) {
+	public BeanStatement parse(Element element, final Element parent, ResourceManager resourceManager) {
 		try {
 			String id = element.getAttribute(ATT_ID);
 			Expression<?> bean = parseBeanExpression(element, resourceManager);

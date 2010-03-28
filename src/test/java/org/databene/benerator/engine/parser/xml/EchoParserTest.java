@@ -41,14 +41,14 @@ public class EchoParserTest {
 	@Test
 	public void testMessageAttribute() throws Exception {
 		Document doc = XMLUtil.parse("string://<echo message='Hello' />");
-		EchoStatement statement = new EchoParser().parse(doc.getDocumentElement(), new ResourceManagerSupport());
+		EchoStatement statement = new EchoParser().parse(doc.getDocumentElement(), null, new ResourceManagerSupport());
 		assertEquals("Hello", statement.getExpression().evaluate(new BeneratorContext()));
 	}
 	
 	@Test
 	public void testElementText() throws Exception {
 		Document doc = XMLUtil.parse("string://<echo>Hello</echo>");
-		EchoStatement statement = new EchoParser().parse(doc.getDocumentElement(), new ResourceManagerSupport());
+		EchoStatement statement = new EchoParser().parse(doc.getDocumentElement(), null, new ResourceManagerSupport());
 		assertEquals("Hello", statement.getExpression().evaluate(new BeneratorContext()));
 	}
 	

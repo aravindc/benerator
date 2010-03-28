@@ -46,7 +46,7 @@ public class WhileParserAndStatementTest {
 				"</while>");
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
 		context.set("count", 0);
-		Statement statement = new WhileParser().parse(element, null);
+		Statement statement = new WhileParser().parse(element, null, null);
 		statement.execute(context);
 		assertEquals(0, context.get("count"));
 	}
@@ -59,7 +59,7 @@ public class WhileParserAndStatementTest {
 				"</while>");
 		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
 		context.set("count", 0);
-		Statement statement = new WhileParser().parse(element, null);
+		Statement statement = new WhileParser().parse(element, null, null);
 		statement.execute(context);
 		assertEquals(3, context.get("count"));
 	}

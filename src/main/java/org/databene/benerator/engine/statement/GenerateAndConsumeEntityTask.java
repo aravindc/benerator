@@ -115,6 +115,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
 		        Thread.yield();
 	        	return TaskResult.UNAVAILABLE;
 	        }
+	        context.countGenerations(1);
 	        // consume entity
         	Consumer<Entity> consumer = getConsumer(context);
         	if (consumer != null)
@@ -183,4 +184,9 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     	return consumer;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '(' + taskName + ')';
+    }
+    
 }

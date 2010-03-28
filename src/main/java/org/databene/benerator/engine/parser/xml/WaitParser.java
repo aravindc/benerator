@@ -49,7 +49,7 @@ public class WaitParser extends AbstractDescriptorParser {
 	    super(EL_WAIT);
     }
 
-	public Statement parse(Element element, ResourceManager resourceManager) {
+	public Statement parse(Element element, Element parent, ResourceManager resourceManager) {
 		// check for constant value
 		Expression<Long> duration  = parseLongAttribute(ATT_DURATION, element, null);
 		if (duration != null)

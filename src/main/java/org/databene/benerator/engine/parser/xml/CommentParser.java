@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,7 +39,7 @@ public class CommentParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_COMMENT);
     }
 
-	public CommentStatement parse(Element element, ResourceManager resourceManager) {
+	public CommentStatement parse(Element element, Element parent, ResourceManager resourceManager) {
 	    return new CommentStatement(XMLUtil.getText(element));
     }
 

@@ -41,7 +41,7 @@ public class IncludeParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_INCLUDE);
     }
 
-	public IncludeStatement parse(Element element, ResourceManager resourceManager) {
+	public IncludeStatement parse(Element element, Element parent, ResourceManager resourceManager) {
         String uriAttr = element.getAttribute(DescriptorConstants.ATT_URI);
 		Expression<String> uriEx = new StringExpression(new ScriptableExpression(uriAttr, null));
         return new IncludeStatement(uriEx);

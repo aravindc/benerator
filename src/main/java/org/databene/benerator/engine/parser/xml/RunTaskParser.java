@@ -52,7 +52,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
     }
 
     @SuppressWarnings("unchecked")
-    public RunTaskStatement parse(Element element, ResourceManager resourceManager) {
+    public RunTaskStatement parse(Element element, Element parent, ResourceManager resourceManager) {
 		try {
 		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(
 		    		element, resourceManager);

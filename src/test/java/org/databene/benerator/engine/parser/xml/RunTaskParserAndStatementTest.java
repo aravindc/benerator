@@ -55,7 +55,7 @@ public class RunTaskParserAndStatementTest {
         		"</run-task>";
         Element element = XMLUtil.parseStringAsElement(xml);
 		BeneratorContext context = new BeneratorContext();
-        RunTaskStatement statement = new RunTaskParser().parse(element, new ResourceManagerSupport());
+        RunTaskStatement statement = new RunTaskParser().parse(element, null, new ResourceManagerSupport());
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
@@ -72,7 +72,7 @@ public class RunTaskParserAndStatementTest {
         		"</run-task>";
         Element element = XMLUtil.parseStringAsElement(xml);
 		BeneratorContext context = new BeneratorContext();
-        RunTaskStatement statement = new RunTaskParser().parse(element, new ResourceManagerSupport());
+        RunTaskStatement statement = new RunTaskParser().parse(element, null, new ResourceManagerSupport());
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));

@@ -104,7 +104,7 @@ public class DescriptorRunner implements ResourceManager {
 	    for (Element element : XMLUtil.getChildElements(root)) {
 			String elementName = element.getNodeName();
             DescriptorParser elementParser = ParserFactory.getParser(elementName, EL_SETUP);
-	    	Statement statement = elementParser.parse(element, this);
+	    	Statement statement = elementParser.parse(element, root, this);
 	    	mainTask.addSubStatement(statement);
 	    }
 		// prepare system

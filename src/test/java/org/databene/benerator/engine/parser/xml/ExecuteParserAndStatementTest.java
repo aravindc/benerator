@@ -42,7 +42,7 @@ public class ExecuteParserAndStatementTest {
 	@Test
 	public void testBeanInvocation() throws Exception {
         Element element = XMLUtil.parseStringAsElement("<execute>bean.invoke(2)</execute>");
-		EvaluateStatement statement = new EvaluateParser().parse(element, new ResourceManagerSupport());
+		EvaluateStatement statement = new EvaluateParser().parse(element, null, new ResourceManagerSupport());
 		BeneratorContext context = new BeneratorContext();
 		BeanMock bean = new BeanMock();
 		context.set("bean", bean);
@@ -55,7 +55,7 @@ public class ExecuteParserAndStatementTest {
 	public void testSimpleTypeVariableDefinition() throws Exception {
 		BeneratorContext context = new BeneratorContext();
         Element element = XMLUtil.parseStringAsElement("<execute>x = 3</execute>");
-		EvaluateStatement statement = new EvaluateParser().parse(element, new ResourceManagerSupport());
+		EvaluateStatement statement = new EvaluateParser().parse(element, null, new ResourceManagerSupport());
 		statement.execute(context);
 		assertEquals(3, context.get("x"));
 	}
@@ -65,7 +65,7 @@ public class ExecuteParserAndStatementTest {
 		BeneratorContext context = new BeneratorContext();
 		context.set("x", 3);
         Element element = XMLUtil.parseStringAsElement("<execute>x = x + 2</execute>");
-		EvaluateStatement statement = new EvaluateParser().parse(element, new ResourceManagerSupport());
+		EvaluateStatement statement = new EvaluateParser().parse(element, null, new ResourceManagerSupport());
 		statement.execute(context);
 		assertEquals(5, context.get("x"));
 	}

@@ -60,7 +60,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	private ClassCache classCache;
 	
 	private volatile AtomicLong totalGenerationCount = new AtomicLong();
-	private volatile AtomicLong latestGenerationCount = new AtomicLong();
 	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
@@ -248,16 +247,11 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 
 	public void countGenerations(long newGenerations) {
-		this.latestGenerationCount.set(newGenerations);
 		this.totalGenerationCount.addAndGet(newGenerations);
 	}
 	
 	public long getTotalGenerationCount() {
 	    return totalGenerationCount.get();
-    }
-
-	public long getLatestGenerationCount() {
-	    return latestGenerationCount.get();
     }
 
 	public ExecutorService getExecutorService() {

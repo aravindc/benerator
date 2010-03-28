@@ -33,8 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * {Task} implementation that acts as a proxy to another tasks, forwards calls to it, 
- * measures execution times and logs them.<br/>
- * <br/>
+ * measures execution times and logs them.<br/><br/>
  * Created at 23.07.2009 06:55:46
  * @since 0.6.0
  * @author Volker Bergmann
@@ -53,9 +52,10 @@ public class TimedEntityStatement extends StatementProxy {
 
     @Override
     public void execute(BeneratorContext context) {
+    	long c0 = context.getTotalGenerationCount();
 	    long t0 = System.currentTimeMillis();
 		super.execute(context);
-		long dc = context.getLatestGenerationCount();
+		long dc = context.getTotalGenerationCount() - c0;
 		long dt = System.currentTimeMillis() - t0;
 		if (dc == 0)
 			logger.info("No entities created for '" + name + "' setup");
@@ -64,7 +64,7 @@ public class TimedEntityStatement extends StatementProxy {
 					+ name + "' setup in " + dt + " ms ("
 					+ (dc * 1000 / dt) + "/s)");
 		else
-			logger.info("Created " + dc + " entities for '" + name);
+			logger.info("Created " + dc + " entities for '" + name + "'");
     }
 
 }
