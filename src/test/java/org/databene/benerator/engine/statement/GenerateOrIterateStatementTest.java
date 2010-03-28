@@ -26,9 +26,11 @@ import static org.junit.Assert.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -53,7 +55,7 @@ public class GenerateOrIterateStatementTest {
 		
 		GeneratorTask task = new GenerateAndConsumeEntityTask("myTask", entityGenerator, null, false);
 		
-		Expression<Long> count = new ConstantExpression<Long>(INVOCATION_COUNT);
+		Generator<Long> count = new ConstantGenerator<Long>(INVOCATION_COUNT);
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
 		Expression<Integer> threads = new ConstantExpression<Integer>(THREAD_COUNT);
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
