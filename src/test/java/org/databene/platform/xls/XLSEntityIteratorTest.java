@@ -69,7 +69,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 			assertProduct(PROD1, iterator.next());
 			assertTrue(iterator.hasNext());
 			Entity next = iterator.next();
-			assertProduct(PROD2, next); // TODO 1.95 is imported as 1.9500...2
+			assertProduct(PROD2, next);
 			assertTrue(iterator.hasNext());
 			assertPerson(PERSON1, iterator.next());
 			assertFalse(iterator.hasNext());
