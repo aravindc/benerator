@@ -28,13 +28,16 @@ package org.databene.benerator.factory;
 
 import java.beans.PropertyDescriptor;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.AttachedWeight;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.DistributedNumberExpression;
+import org.databene.benerator.primitive.DynamicCountGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.util.ExpressionBasedGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -43,6 +46,7 @@ import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.DynamicExpression;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
@@ -84,6 +88,7 @@ public class GeneratorFactoryUtil {
     }
         
     public static Expression<Long> getCountExpression(final InstanceDescriptor descriptor) {
+    	// TODO remove this method
     	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
     		return count;
@@ -177,5 +182,20 @@ public class GeneratorFactoryUtil {
     		
     	};
     }
-    
+
+	public static Generator<Long> getCountGenerator(final InstanceDescriptor descriptor) {
+    	Expression<Long> count = DescriptorUtil.getCount(descriptor);
+    	if (count != null)
+    		return new ExpressionBasedGenerator<Long>(count, Long.class);
+    	else {
+			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor);
+			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor);
+			final Expression<Long> countPrecision = DescriptorUtil.getCountPrecision(descriptor);
+			final Expression<Distribution> countDistribution = 
+				getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
+			return new DynamicCountGenerator(minCount, maxCount, countPrecision, countDistribution, 
+					ExpressionUtil.constant(false));
+    	}
+    }
+
 }
