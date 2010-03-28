@@ -36,6 +36,8 @@ import org.databene.commons.expression.DynamicExpression;
  * @author Volker Bergmann
  */
 public class DistributedNumberExpression<E extends Number> extends DynamicExpression<E> {
+	
+	// TODO remove class?
 
 	protected Class<E> numberType;
 	protected Expression<E> min;

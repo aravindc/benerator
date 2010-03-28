@@ -30,6 +30,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
@@ -59,6 +60,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     private Expression<Consumer<Entity>> consumerExpr;
     private List<Statement> subStatements;
     private ResourceManager resourceManager = new ResourceManagerSupport();
+    private volatile AtomicBoolean generatorInitialized;
 
     private Consumer<Entity> consumer;
     
@@ -70,6 +72,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
         this.consumerExpr = consumerExpr;
     	this.subStatements = new ArrayList<Statement>();
         this.isSubTask = isSubTask;
+        this.generatorInitialized = new AtomicBoolean(false);
     }
 
     // interface -------------------------------------------------------------------------------------------------------
@@ -103,6 +106,8 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
     	BeneratorContext context = (BeneratorContext) ctx;
+    	if (!generatorInitialized.get())
+    		initGenerator(context);
     	try {
     		// generate entity
 	        Entity entity = entityGenerator.generate();
@@ -125,15 +130,19 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     		return TaskResult.EXECUTING; // stay available if the ErrorHandler has not canceled execution
     	}
     }
-    
+
     public void reset() {
 	    entityGenerator.reset();
     }
 
-    public void close() throws IOException {
-		resourceManager.close();
-        if (!isSubTask && consumer != null)
-            consumer.flush();
+    public void close() {
+		try {
+	        resourceManager.close();
+	        if (!isSubTask && consumer != null)
+	            consumer.flush();
+        } catch (IOException e) {
+	        throw new RuntimeException(e);
+        }
     }
 
     // ResourceManager interface ---------------------------------------------------------------------------------------
@@ -144,6 +153,15 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
 
     // private helpers -------------------------------------------------------------------------------------------------
 
+	private void initGenerator(BeneratorContext context) {
+	    synchronized (generatorInitialized) {
+	    	if (!generatorInitialized.get()) {
+	    		entityGenerator.init(context);
+	    		generatorInitialized.set(true);
+	    	}
+	    }
+    }
+    
     private void runSubTasks(BeneratorContext context) {
 	    for (Statement subStatement : subStatements)
 	    	runSubTask(subStatement, context);
@@ -151,14 +169,10 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
         if (subStatement instanceof GeneratorStatement) {
-            GeneratorTask target = ((GeneratorStatement) subStatement).getTarget();
-			target.reset();
-	        subStatement.execute(context);
-	        try {
-	        	target.close();
-	        } catch (IOException e) {
-	        	throw new RuntimeException(e);
-	        }
+            GeneratorStatement generatorStatement = (GeneratorStatement) subStatement;
+			generatorStatement.reset();
+			generatorStatement.execute(context);
+        	generatorStatement.close();
         } else
         	subStatement.execute(context);
     }

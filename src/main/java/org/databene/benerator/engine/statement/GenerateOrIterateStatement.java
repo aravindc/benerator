@@ -36,7 +36,6 @@ import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.contiperf.PerformanceTracker;
-import org.databene.model.data.Entity;
 import org.databene.task.PageListener;
 import org.databene.task.SynchronizedTask;
 import org.databene.task.Task;
@@ -51,35 +50,32 @@ public class GenerateOrIterateStatement extends AbstractStatement
 		implements GeneratorStatement, PageListener {
 
 	protected GeneratorTask task;
-	protected Expression<Long> count;
+	protected Generator<Long> countGenerator;
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
 	protected PerformanceTracker tracker;
-
+	
 	public GenerateOrIterateStatement(GeneratorTask task,
-			Expression<Long> count, Expression<Long> pageSize, Expression<PageListener> pageListener, 
+			Generator<Long> countGenerator, Expression<Long> pageSize, Expression<PageListener> pageListener, 
 			Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
 	    this.task = task;
-	    this.count = count;
+	    this.countGenerator = countGenerator;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
-		this.generator = task.getGenerator();
     }
 
-	private Generator<Entity> generator;
-	
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
     public void execute(BeneratorContext context) {
-    	generator.init(context);
+		countGenerator.init(context);
     	Task taskToUse = this.task;
     	int threadCount = threads.evaluate(context);
 		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
 			taskToUse = new SynchronizedTask(taskToUse);
 	    this.tracker = PagedTaskRunner.execute(taskToUse, context, 
-	    		count.evaluate(context), 
+	    		countGenerator.generate(), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
 	    		threadCount,
@@ -87,9 +83,16 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    		context.getExecutorService(),
 	    		getErrorHandler(context));
         // TODO count all generations // context.countGenerations(getActualCount());
-	    synchronized(generator) {
-	        generator.close();
-	    }
+    }
+
+	public void reset() {
+	    task.reset();
+	    countGenerator.reset();
+    }
+	
+	public void close() {
+	    task.close();
+	    countGenerator.close();
     }
 
 	private List<PageListener> getPageListeners(Context context) {
@@ -117,5 +120,5 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	public void pageFinished() {
 		getTarget().flushConsumer();
 	}
-	
+
 }

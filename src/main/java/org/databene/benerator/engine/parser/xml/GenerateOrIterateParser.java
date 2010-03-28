@@ -22,9 +22,9 @@
 package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
-import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseAttribute;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.databene.benerator.Generator;
@@ -62,9 +62,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.task.PageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 
 /**
  * Parses a &lt;generate&gt; or &lt;update&gt; element in a Benerator descriptor file.<br/><br/>
@@ -82,8 +80,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
 	public boolean supports(String elementName, String parentName) {
-	    return EL_GENERATE.equals(elementName)
-			|| EL_ITERATE.equals(elementName);
+	    return EL_GENERATE.equals(elementName) || EL_ITERATE.equals(elementName);
     }
 	
 	public Statement parse(final Element element, final ResourceManager resourceManager) {
@@ -113,7 +110,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		GeneratorTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
 		
-		Expression<Long> countExpression = GeneratorFactoryUtil.getCountExpression(descriptor);
+		Generator<Long> countExpression = GeneratorFactoryUtil.getCountGenerator(descriptor);
 		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
 		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));
@@ -174,16 +171,14 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		if (parentType != null) {
 			entityType = parentType.getName(); // take over capitalization of the parent
 			localType = new ComplexTypeDescriptor(parentType.getName(), (ComplexTypeDescriptor) parentType);
-		} else 
+		} else
 			localType = new ComplexTypeDescriptor(entityType, "entity");
 		InstanceDescriptor instance = new InstanceDescriptor(entityType, entityType);
 		instance.setLocalType(localType);
-		NamedNodeMap attributes = element.getAttributes();
-		for (int i = 0; i < attributes.getLength(); i++) {
-			Attr attribute = (Attr) attributes.item(i);
-			String attributeName = attribute.getName();
+		for (Map.Entry<String, String> attribute : XMLUtil.getAttributes(element).entrySet()) {
+			String attributeName = attribute.getKey();
 			if (!CREATE_ENTITIES_EXT_SETUP.contains(attributeName)) {
-				Object attributeValue = parseAttribute(attribute, context);
+				Object attributeValue = attribute.getValue();
 				if (instance.supportsDetail(attributeName))
 					instance.setDetailValue(attributeName, attributeValue);
 				else if (localType != null)
