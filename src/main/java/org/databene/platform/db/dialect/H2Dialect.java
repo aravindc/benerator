@@ -46,7 +46,7 @@ public class H2Dialect extends DatabaseDialect {
 	@Override
     public String[] querySequences(Connection connection) throws SQLException {
         String query = "select SEQUENCE_NAME from INFORMATION_SCHEMA.SEQUENCES";
-        // TODO restrict to catalog and schema, see http://www.h2database.com/html/grammar.html
+        // TODO v0.6.1 restrict to catalog and schema, see http://www.h2database.com/html/grammar.html
         return DBUtil.queryScalarArray(query, String.class, connection);
 	}
 
