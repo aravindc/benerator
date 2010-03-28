@@ -30,7 +30,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ExpressionBasedGenerator<E> extends ThreadSafeGenerator<E> { // TODO test
+public class ExpressionBasedGenerator<E> extends ThreadSafeGenerator<E> {
 
 	private Expression<E> expression;
 	private Class<E> generatedType;

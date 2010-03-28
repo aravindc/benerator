@@ -19,40 +19,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive;
+package org.databene.benerator.util;
 
-import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.Generator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.ExpressionUtil;
+import org.junit.Test;
 
 /**
- * Behaves similar to the {@link DynamicLongGenerator}, 
- * but generates <code>null</code> values, if <code>max</code> is set to <code>null</code>.
- * The <code>null</code> value are to be interpreted as not-externally-limited loop size
- * (the default case when iterating over a limited data source).<br/><br/>
- * Created: 28.03.2010 08:48:11
+ * Tests the {@link ExpressionBasedGenerator}.<br/><br/>
+ * Created: 28.03.2010 12:33:00
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DynamicCountGenerator extends DynamicLongGenerator {
+public class ExpressionBasedGeneratorTest extends GeneratorTest {
 
-    public DynamicCountGenerator() {
-        super();
-    }
-
-    public DynamicCountGenerator(Expression<Long> min, Expression<Long> max, Expression<Long> precision, 
-    		Expression<? extends Distribution> distribution, Expression<Boolean> unique) {
-        super(min, max, precision, distribution, unique);
-    }
-    
-	@Override
-	protected void resetMembers(Long maxValue) {
-		if (maxValue != null)
-		    super.resetMembers(maxValue);
-		else {
-			source = GeneratorFactory.getConstantGenerator(null);
-	        source.init(context);
-		}
+	@Test
+	public void test() {
+		Expression<Integer> expression = ExpressionUtil.constant(1);
+		Generator<Integer> generator = new ExpressionBasedGenerator<Integer>(expression, Integer.class);
+		expectGeneratedSequence(generator, 1, 1, 1, 1).withContinuedAvailability();
+		generator.close();
 	}
-	
+
 }

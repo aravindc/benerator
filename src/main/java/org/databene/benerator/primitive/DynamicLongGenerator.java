@@ -38,7 +38,7 @@ import org.databene.commons.expression.ExpressionUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DynamicLongGenerator extends GeneratorProxy<Long> { // TODO test
+public class DynamicLongGenerator extends GeneratorProxy<Long> {
 
     protected Expression<Long> min;
     protected Expression<Long> max;
