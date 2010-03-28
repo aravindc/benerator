@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.util;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -95,4 +96,8 @@ public class RandomUtil {
 	    return random.nextFloat();
     }
 
+	public static Date randomDate(Date min, Date max) {
+		return new Date(randomLong(min.getTime(), max.getTime()));
+	}
+	
 }
