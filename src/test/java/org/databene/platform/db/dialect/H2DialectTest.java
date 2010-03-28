@@ -49,7 +49,7 @@ public class H2DialectTest extends DatabaseDialectTest {
 	
 	@Test
 	public void testSequencesOnline() throws Exception {
-		testSequencesOnline("benerator-test");
+		testSequencesOnline("h2");
 	}
 	
 	@Test
