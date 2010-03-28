@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
@@ -56,7 +55,6 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 	public void testAttributes() throws Exception {
 		Statement statement = parse(
 				"<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}' consumer='cons'/>");
-		BeneratorContext context = new BeneratorContext();
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(false);
 		context.set("cons", consumer);
 		context.set("c", 100);
@@ -75,7 +73,6 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
         		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(false, 2)'/>" +
         		"</generate>"
         );
-		BeneratorContext context = new BeneratorContext();
 		ConsumerMock<Entity> outerConsumer = new ConsumerMock<Entity>(false, 1);
 		context.set("cons1", outerConsumer);
 		statement.execute(context);
@@ -86,9 +83,27 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		assertTrue(innerConsumer.closeCount.get() > 0);
 	}
 
+    /** Tests a sub loop that derives its loop length from a parent attribute. */
 	@Test
-	public void testSubCreateLoop() throws Exception {
-        // TODO test if sub loop that retrieves its loop length from the availability of a source, is properly reset between top loops
+	public void testSubGenerate() throws Exception {
+		Statement statement = parse(
+				"<generate type='outer' count='3' consumer='cons'>" +
+				"    <attribute name='n' type='int' distribution='step' />" +
+				"    <generate type='inner' count='{outer.n}' consumer='cons' />" + // TODO v0.6.1 make the brackets unnecessary
+        		"</generate>");
+		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true, 1);
+		context.set("cons", consumer);
+		statement.execute(context);
+		assertEquals(9, consumer.startConsumingCount.get());
+		assertEquals(new Entity("outer", "n", 1), consumer.products.get(0));
+		assertEquals(new Entity("inner"), consumer.products.get(1));
+		assertEquals(new Entity("outer", "n", 2), consumer.products.get(2));
+		assertEquals(new Entity("inner"), consumer.products.get(3));
+		assertEquals(new Entity("inner"), consumer.products.get(4));
+		assertEquals(new Entity("outer", "n", 3), consumer.products.get(5));
+		assertEquals(new Entity("inner"), consumer.products.get(6));
+		assertEquals(new Entity("inner"), consumer.products.get(7));
+		assertEquals(new Entity("inner"), consumer.products.get(8));
 	}
 
 	/** Tests the nesting of an &lt;execute&gt; element within a &lt;generate&gt; element */
