@@ -34,7 +34,6 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.expression.DistributedNumberExpression;
 import org.databene.benerator.primitive.DynamicCountGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
@@ -44,7 +43,6 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.FeatureDescriptor;
@@ -85,38 +83,6 @@ public class GeneratorFactoryUtil {
                 throw new RuntimeException("Error setting '" + detailName + "' of class " + bean.getClass().getName(), e); 
             }
         }
-    }
-        
-    public static Expression<Long> getCountExpression(final InstanceDescriptor descriptor) {
-    	// TODO remove this method
-    	Expression<Long> count = DescriptorUtil.getCount(descriptor);
-    	if (count != null)
-    		return count;
-    	else {
-			final Expression<Long> min = DescriptorUtil.getMinCount(descriptor);
-			final Expression<Long> max = DescriptorUtil.getMaxCount(descriptor);
-			final Expression<Long> prec = DescriptorUtil.getCountPrecision(descriptor);
-			final Expression<Boolean> unique = DescriptorUtil.getUniqueness(descriptor);
-			final Expression<Long> distSpecExpr = new DynamicExpression<Long>() {
-
-				public Long evaluate(Context context) {
-					// TODO this sucks!!!
-					Long minVal = min.evaluate(context);
-					Long maxVal = max.evaluate(context);
-					if (maxVal == null)
-						return null;
-					if (minVal.equals(maxVal))
-						return minVal;
-					String distSpec = descriptor.getCountDistribution();
-	                Distribution d = getDistribution(distSpec, Uniqueness.NONE, true, (BeneratorContext) context);
-	    			DistributedNumberExpression<Long> distributedNumberExpression 
-	    				= new DistributedNumberExpression<Long>(Long.class, new ConstantExpression<Distribution>(d), min, max, prec, unique);
-					return distributedNumberExpression.evaluate(context);
-                }
-				
-			};
-			return distSpecExpr;
-    	}
     }
 
     /**

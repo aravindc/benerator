@@ -49,7 +49,6 @@ import org.databene.benerator.composite.DynamicInstanceArrayGenerator;
 import org.databene.benerator.composite.PlainComponentBuilder;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.benerator.nullable.ConvertingNullableGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableScriptGenerator;
@@ -60,7 +59,6 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
-import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.Validator;
 import org.slf4j.Logger;
@@ -202,9 +200,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
-    	Expression countExpression = GeneratorFactoryUtil.getCountExpression(instance);
+    	Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(instance);
     	return new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
-    			new CachedExpression(countExpression), context);
+    			countGenerator, context);
     }
 
 	@SuppressWarnings("unchecked")

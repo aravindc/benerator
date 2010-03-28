@@ -22,8 +22,8 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.ArrayUtil;
 
@@ -35,11 +35,11 @@ import org.databene.commons.ArrayUtil;
  */
 public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Object> {
 	
-	private CachedExpression<Long> countExpression;
+	private Generator<Long> countGenerator;
 
-    public DynamicInstanceArrayGenerator(Generator<Object> source, CachedExpression<Long> countExpression, BeneratorContext context) {
+    public DynamicInstanceArrayGenerator(Generator<Object> source, Generator<Long> countGenerator, BeneratorContext context) {
         super(source);
-        this.countExpression = countExpression;
+        this.countGenerator = countGenerator;
         this.context = context;
     }
     
@@ -47,8 +47,14 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
 	    return Object.class;
     }
 
+	@Override
+	public synchronized void init(GeneratorContext context) {
+	    countGenerator.init(context);
+	    super.init(context);
+	}
+	
     public Object generate() {
-        int count = ((Number) countExpression.evaluate(context)).intValue();
+        int count = countGenerator.generate().intValue();
         if (count == 0)
             return new Object[0];
         if (count == 1)
@@ -69,7 +75,17 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
     @Override
     public void reset() {
         super.reset();
-        countExpression.invalidate();
+        countGenerator.reset();
+    }
+    
+    @Override
+    public boolean isThreadSafe() {
+        return countGenerator.isThreadSafe() && super.isThreadSafe();
+    }
+
+    @Override
+    public boolean isParallelizable() {
+        return countGenerator.isParallelizable() && super.isParallelizable();
     }
     
 }

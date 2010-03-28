@@ -21,9 +21,9 @@
 
 package org.databene.benerator.engine.statement;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.Expression;
 
 /**
  * Causes the thread to sleep for a certain number of milliseconds.<br/><br/>
@@ -33,15 +33,12 @@ import org.databene.commons.Expression;
  */
 public class WaitStatement implements Statement {
 	
-	private Expression<Integer> duration;
+	private Generator<Long> durationGenerator;
+	private boolean generatorInitialized = false;
 
-	public WaitStatement(Expression<Integer> duration) {
-	    this.duration = duration;
+	public WaitStatement(Generator<Long> durationGenerator) {
+	    this.durationGenerator = durationGenerator;
     }
-	
-	public int generateDuration(BeneratorContext context) {
-		return duration.evaluate(context);
-	}
 	
 	public void execute(BeneratorContext context) {
 		try {
@@ -51,4 +48,12 @@ public class WaitStatement implements Statement {
         }
 	}
 
+	public int generateDuration(BeneratorContext context) {
+		if (!generatorInitialized) {
+			durationGenerator.init(context);
+			generatorInitialized = true;
+		}
+		return durationGenerator.generate().intValue();
+	}
+	
 }
