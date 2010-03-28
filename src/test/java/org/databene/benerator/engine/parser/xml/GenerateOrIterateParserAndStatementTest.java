@@ -63,6 +63,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		statement.execute(context);
 		assertEquals(100, consumer.startConsumingCount.get());
 		assertEquals(100, consumer.finishConsumingCount.get());
+		assertEquals(100L, context.getTotalGenerationCount());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,6 +82,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(2);
 		assertEquals(6, innerConsumer.startConsumingCount.get());
 		assertTrue(innerConsumer.closeCount.get() > 0);
+		assertEquals(9L, context.getTotalGenerationCount());
 	}
 
     /** Tests a sub loop that derives its loop length from a parent attribute. */
