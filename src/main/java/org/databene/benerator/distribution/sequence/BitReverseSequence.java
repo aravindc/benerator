@@ -44,7 +44,7 @@ import static org.databene.commons.NumberUtil.*;
 public class BitReverseSequence extends Sequence {
 
     public BitReverseSequence() {
-    	super("cumulated");
+    	super("bitReverse");
     }
 
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
