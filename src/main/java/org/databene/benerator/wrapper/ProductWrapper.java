@@ -38,4 +38,9 @@ public class ProductWrapper<E> {
 		return this;
 	}
 	
+	@Override
+	public String toString() {
+	    return product.toString();
+	}
+	
 }

@@ -34,4 +34,9 @@ public class ThreadLocalProductWrapper<E> extends ThreadLocal<ProductWrapper<E>>
 	    return new ProductWrapper<E>();
 	}
 	
+	@Override
+	public String toString() {
+	    return get().toString();
+	}
+	
 }
