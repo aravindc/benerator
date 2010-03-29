@@ -51,6 +51,7 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 		Generator<?> generator = new DescriptorBasedGenerator(uri, "perGen", new BeneratorContext());
 		assertEquals(Entity.class, generator.getGeneratedType());
 		assertNotNull(generator);
+		generator.init(context);
 		for (int i = 0; i < 10; i++)
 			checkGeneration(generator);
 		assertAvailable(generator);

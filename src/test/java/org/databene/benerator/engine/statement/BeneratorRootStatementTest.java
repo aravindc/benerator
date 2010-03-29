@@ -53,9 +53,11 @@ public class BeneratorRootStatementTest extends GeneratorTest {
 		Generator<Entity> generator = task.getGenerator("Person", runner.getContext());
 		assertEquals(Entity.class, generator.getGeneratedType());
 		assertNotNull(generator);
+		generator.init(context);
 		for (int i = 0; i < 10; i++)
 			checkGeneration(generator);
 		assertAvailable(generator);
+		generator.close();
 	}
 
 	private void checkGeneration(Generator<Entity> generator) {

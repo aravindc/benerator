@@ -54,10 +54,12 @@ public class LocalSequenceGeneratorTest extends GeneratorClassTest {
 		LocalSequenceGenerator.invalidateInstances();
     	try {
 			LocalSequenceGenerator generator = new LocalSequenceGenerator(sequenceName);
+			generator.init(context);
 	    	expectGeneratedSequenceOnce(generator, 1L, 2L, 3L);
 	    	generator.close();
 	    	
 	    	LocalSequenceGenerator generator2 = new LocalSequenceGenerator(sequenceName);
+	    	generator2.init(context);
 	    	expectGeneratedSequenceOnce(generator2, 4L, 5L, 6L);
 	    	generator.close();
     	} finally {
