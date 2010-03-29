@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,17 +26,19 @@
 
 package org.databene.benerator.xml;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 
 import org.databene.benerator.file.XMLFileGenerator;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.xml.XMLUtil;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the XMLFileGenerator.<br/><br/>
@@ -44,22 +46,22 @@ import junit.framework.TestCase;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class XMLFileGeneratorTest extends TestCase {
+public class XMLFileGeneratorTest extends GeneratorTest {
     
+	private static final String SIMPLE_ELEMENT_TEST_XSD = "org/databene/platform/xml/simple-element-test.xsd";
+	private static final String BEAN_TEST_XSD = "org/databene/benerator/xml/bean_test.xsd";
+    private static final String VARIABLE_TEST_XSD = "org/databene/benerator/xml/variable_test.xsd";
+
     private static final Logger logger = LoggerFactory.getLogger(XMLFileGeneratorTest.class);
-    
-/*
-    private static final String ROOT_ELEMENT = "product";
-    private static final String SCHEMA_FILE = "demo/shop/product-simple.xsd";
-    private static final String SCHEMA_FILE = "demo/shop/product-annotated.xsd";
-*/
-/*
+
+    @Test
     public void testSimpleTypeElement() throws IOException {
-        createXMLFile("org/databene/platform/xml/simple-element-test.xsd", "root", "target/simple-element-test.xml");
+        createXMLFile(SIMPLE_ELEMENT_TEST_XSD, "root", "target/simple-element-test.xml");
     }
-*/    
+
+    @Test
     public void testBean() throws IOException {
-        Document document = createXMLFile("org/databene/benerator/xml/bean_test.xsd", "root", "target/bean_test.xml");
+        Document document = createXMLFile(BEAN_TEST_XSD, "root", "target/bean_test.xml");
         Element root = document.getDocumentElement();
         assertEquals("root", root.getNodeName());
         Element[] children = XMLUtil.getChildElements(root);
@@ -67,8 +69,9 @@ public class XMLFileGeneratorTest extends TestCase {
         assertElementNameAndText(children[0], "result", "OK");
     }
 
+    @Test
     public void testVariables() throws IOException {
-        Document document = createXMLFile("org/databene/benerator/xml/variable_test.xsd", "root", "target/variable_test.xml");
+        Document document = createXMLFile(VARIABLE_TEST_XSD, "root", "target/variable_test.xml");
         Element root = document.getDocumentElement();
         assertEquals("root", root.getNodeName());
         assertEquals(0, root.getChildNodes().getLength());
@@ -87,6 +90,7 @@ public class XMLFileGeneratorTest extends TestCase {
 
     private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
         XMLFileGenerator generator = new XMLFileGenerator(schemaUri, root, filename);
+        generator.init(context);
         File file = generator.generate();
         assertNotNull(file);
         logger.debug("Generated " + file);

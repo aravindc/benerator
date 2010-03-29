@@ -46,6 +46,7 @@ public class CreditCardNumberGeneratorTest extends GeneratorClassTest {
     @Test
 	public void test() {
 		CreditCardNumberGenerator generator = new CreditCardNumberGenerator();
+		generator.init(context);
 		CreditCardNumberValidator validator = new CreditCardNumberValidator();
 		for (int i = 0; i < 10; i++)
 			assertTrue(validator.isValid(generator.generate(), null));

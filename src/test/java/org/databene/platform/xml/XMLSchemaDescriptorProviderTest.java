@@ -117,6 +117,7 @@ public class XMLSchemaDescriptorProviderTest {
         assertEquals("org/databene/platform/xml/person.csv", complexType.getSource());
         
         XMLFileGenerator g = new XMLFileGenerator(ANNOTATION_TEST_FILE, "root", "test{0}.xml");
+        g.init(new BeneratorContext());
         g.generate();
         g.generate();
     }
