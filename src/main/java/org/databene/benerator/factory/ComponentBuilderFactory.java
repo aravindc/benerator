@@ -116,7 +116,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         	return null;
         Script script = ScriptUtil.parseScriptText(scriptText);
         NullableScriptGenerator source = new NullableScriptGenerator(script, context);
-		return new PlainComponentBuilder(type.getName(), source);
+		return new PlainComponentBuilder(component.getName(), source);
     }
 
 	private static ComponentBuilder createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
