@@ -42,6 +42,7 @@ import org.databene.benerator.composite.ComponentTypeConverter;
 import org.databene.benerator.composite.ConfiguredEntityGenerator;
 import org.databene.benerator.composite.MutatingEntityGeneratorProxy;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
+import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
@@ -170,7 +171,7 @@ public class ComplexTypeGeneratorFactory {
         }
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
-        	generator = distribution.applyTo(generator, uniqueness.isUnique());
+        	generator = new DistributingGenerator<Entity>(generator, distribution, uniqueness.isUnique());
     	return generator;
     }
 
