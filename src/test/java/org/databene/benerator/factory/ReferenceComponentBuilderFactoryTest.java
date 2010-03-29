@@ -31,6 +31,7 @@ import static junit.framework.Assert.*;
 
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -43,6 +44,7 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ReferenceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.storage.StorageSystem;
 
 /**
@@ -53,33 +55,90 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 public class ReferenceComponentBuilderFactoryTest { 
+	
+    @Test
+	public void testScript() {
+		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
+			.withCount(1);
+		ref.getTypeDescriptor().setScript("8");
+		ComponentBuilder generator = createAndInitBuilder(ref);
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals(8, entity.get("ref"));
+	}
 
-	@Test
+    @Test
+	public void testNullQuotaOne() {
+		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
+			.withNullQuota(1).withCount(1);
+		ComponentBuilder generator = createAndInitBuilder(ref);
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals(null, entity.get("ref"));
+	}
+
+    @Test
+	public void testNullable() {
+		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
+			.withCount(1);
+		ref.setNullable(true);
+		ComponentBuilder generator = createAndInitBuilder(ref);
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals(null, entity.get("ref"));
+	}
+
+    @Test
+	public void testGenerator() {
+		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
+			.withCount(1);
+		ref.getTypeDescriptor().setGenerator("new " + ConstantGenerator.class.getName() + "(42)");
+		ComponentBuilder generator = createAndInitBuilder(ref);
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals(42, entity.get("ref"));
+	}
+
+    @Test
+	public void testConstant() {
+		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
+			.withCount(1);
+		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setConstant("3");
+		ComponentBuilder generator = createAndInitBuilder(ref);
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals(3, entity.get("ref"));
+	}
+
+    @Test
+	public void testSample() {
+		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
+			.withCount(1);
+		((SimpleTypeDescriptor) ref.getTypeDescriptor()).setValues("6");
+		ComponentBuilder generator = createAndInitBuilder(ref);
+		Entity entity = new Entity("Person");
+		generator.buildComponentFor(entity);
+		assertEquals(6, entity.get("ref"));
+	}
+
+	// tests that resolve the target type ------------------------------------------------------------------------------
+	
+	@Test(expected = ConfigurationError.class)
 	public void testMissingType() {
-		try {
-			ReferenceDescriptor ref = createDescriptor("ref", null, "Storage");
-			createAndInitBuilder(ref);
-			fail(ConfigurationError.class.getSimpleName() + " expected");
-		} catch (ConfigurationError e) {
-			// this is expected
-		}
+		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", null, "Storage");
+		createAndInitBuilder(ref);
 	}
 	
-	@Test
+	@Test(expected = ConfigurationError.class)
 	public void testMissingSource() {
-		try {
-			ReferenceDescriptor ref = createDescriptor("ref", "Referee", null);
-			createAndInitBuilder(ref);
-			fail(ConfigurationError.class.getSimpleName() + " expected");
-		} catch (ConfigurationError e) {
-			// this is expected
-		}
+		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Referee", null);
+		createAndInitBuilder(ref);
 	}
 
 	@Test
 	@SuppressWarnings("null")
     public void testSingleRef() {
-		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
+		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(1L));
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		assertTrue(generator != null);
@@ -91,7 +150,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	@Test
 	@SuppressWarnings("null")
     public void testMultiRef() {
-		ReferenceDescriptor ref = createDescriptor("ref", "Person", "Storage");
+		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(2L));
 		ComponentBuilder builder = createAndInitBuilder(ref);
 		assertTrue(builder != null);
@@ -105,7 +164,7 @@ public class ReferenceComponentBuilderFactoryTest {
 
 	// private helpers -------------------------------------------------------------------------------------------------
 
-	private ReferenceDescriptor createDescriptor(String refName, String targetType, String source) {
+	private ReferenceDescriptor createTargetTypeDescriptor(String refName, String targetType, String source) {
 		DataModel.getDefaultInstance().clear();
 		ReferenceDescriptor descriptor = new ReferenceDescriptor(refName, "string");
 		descriptor.getLocalType(false).setSource(source);
@@ -118,7 +177,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
-		ComponentBuilder builder = ComponentBuilderFactory.createReferenceBuilder(ref, context);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(ref, context);
 		builder.init(context);
 		return builder;
 	}

@@ -39,6 +39,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -65,8 +66,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Creates generators that generate entity components.<br/>
- * <br/>
+ * Creates generators that generate entity components.<br/><br/>
  * Created: 14.10.2007 22:16:34
  * @author Volker Bergmann
  */
@@ -150,29 +150,39 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
     public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
-    	
-    	// TODO v0.6 support 'attribute'-like syntax, only fall back to targetType+source+selector
-        TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
-        
-        // check target type
-        String targetTypeName = descriptor.getTargetTye();
-		ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
+        boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
+        Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.ORDERED);
+        SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) descriptor.getTypeDescriptor();
+
         Generator<?> generator = null;
-        if (targetType == null)
-            throw new ConfigurationError("Type not defined: " + targetTypeName);
+		generator = DescriptorUtil.getGeneratorByName(typeDescriptor, context);
+        if (generator == null)
+            generator = SimpleTypeGeneratorFactory.createScriptGenerator(typeDescriptor, context);
+        if (generator == null)
+        	generator = SimpleTypeGeneratorFactory.createConstantGenerator(typeDescriptor, context);
+        if (generator == null)
+        	generator = SimpleTypeGeneratorFactory.createSampleGenerator(typeDescriptor, uniqueness, context);
         
-        // check source
-        String sourceName = typeDescriptor.getSource();
-        if (sourceName == null)
-            throw new ConfigurationError("'source' is not set for " + descriptor);
-        Object sourceObject = context.get(sourceName);
-        if (sourceObject instanceof StorageSystem) {
-            StorageSystem sourceSystem = (StorageSystem) sourceObject;
-            String selector = typeDescriptor.getSelector();
-            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
-            generator = new IteratingGenerator<Object>(entityIds);
-        } else
-        	throw new ConfigurationError("Not a supported source type: " + sourceName);
+        if (generator == null) {
+	        // check target type
+	        String targetTypeName = descriptor.getTargetTye();
+			ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
+	        if (targetType == null)
+	            throw new ConfigurationError("Type not defined: " + targetTypeName);
+	        
+	        // check source
+	        String sourceName = typeDescriptor.getSource();
+	        if (sourceName == null)
+	            throw new ConfigurationError("'source' is not set for " + descriptor);
+	        Object sourceObject = context.get(sourceName);
+	        if (sourceObject instanceof StorageSystem) {
+	            StorageSystem sourceSystem = (StorageSystem) sourceObject;
+	            String selector = typeDescriptor.getSelector();
+	            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
+	            generator = new IteratingGenerator<Object>(entityIds);
+	        } else
+	        	throw new ConfigurationError("Not a supported source type: " + sourceName);
+        }
         
         // check distribution
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(
