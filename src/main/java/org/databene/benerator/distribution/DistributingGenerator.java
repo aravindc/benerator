@@ -21,10 +21,13 @@
 
 package org.databene.benerator.distribution;
 
+import java.util.List;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
  * Collects all products a source {@link Generator} is able to generate, 
@@ -34,19 +37,28 @@ import org.databene.benerator.util.GeneratorUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DistributingGenerator<E> extends SampleGenerator<E> {
+public class DistributingGenerator<E> extends GeneratorProxy<E> {
 	
-	private Generator<E> source;
+	private Generator<E> dataProvider;
+	private Distribution distribution;
+	private boolean unique;
 
-	public DistributingGenerator(Generator<E> source, Distribution distribution) {
-		super(source.getGeneratedType(), distribution);
-		this.source = source;
+	public DistributingGenerator(Generator<E> dataProvider, Distribution distribution, boolean unique) {
+		super(null);
+		this.dataProvider = dataProvider;
+		this.distribution = distribution;
+		this.unique = unique;
     }
 	
 	@Override
 	public void init(GeneratorContext context) {
-		source.init(context);
-		setValues(GeneratorUtil.allProducts(source));
+		dataProvider.init(context);
+		if (distribution instanceof FeatureWeight)
+			setSource(distribution.applyTo(dataProvider, unique));
+		else {
+			List<E> products = GeneratorUtil.allProducts(dataProvider);
+			setSource(new SampleGenerator<E>(dataProvider.getGeneratedType(), distribution, unique, products));
+		}
 	    super.init(context);
 	}
 	
