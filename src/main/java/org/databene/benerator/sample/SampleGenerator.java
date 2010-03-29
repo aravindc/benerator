@@ -89,9 +89,10 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     }
 
     /** Initializes the generator to a sample list */
-    public SampleGenerator(Class<E> generatedType, Distribution distribution, Iterable<E> values) {
+    public SampleGenerator(Class<E> generatedType, Distribution distribution, boolean unique, Iterable<E> values) {
     	super(generatedType);
         this.distribution = distribution;
+        this.unique = unique;
         setValues(values);
     }
 
