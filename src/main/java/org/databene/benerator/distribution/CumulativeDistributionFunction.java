@@ -53,7 +53,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 	    List<T> allProducts = GeneratorUtil.allProducts(source);
 	    if (allProducts.size() == 1)
 	    	return new ConstantGenerator<T>(allProducts.get(0));
-	    return new SampleGenerator<T>(source.getGeneratedType(), this, allProducts);
+	    return new SampleGenerator<T>(source.getGeneratedType(), this, unique, allProducts);
     }
 
 	public <T extends Number> Generator<T> createGenerator(
