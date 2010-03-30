@@ -43,7 +43,8 @@ import org.databene.benerator.Generator;
 public class WrapperFactory {
 
     @SuppressWarnings("unchecked")
-    public static <T extends Number> Generator<T> wrapNumberGenerator(Class<T> numberType, Generator<? extends Number> source) {
+    public static <T extends Number> Generator<T> wrapNumberGenerator(
+    		Class<T> numberType, Generator<? extends Number> source, T min, T precision) {
     	if (numberType.equals(source.getGeneratedType()))
     	 	return (Generator<T>) source;
     	if (Integer.class.equals(numberType))
@@ -59,7 +60,7 @@ public class WrapperFactory {
     	else if (Float.class.equals(numberType))
     		return new AsFloatGeneratorWrapper(source);
     	else if (BigDecimal.class.equals(numberType))
-    		return new AsBigDecimalGeneratorWrapper(source);
+    		return new AsBigDecimalGeneratorWrapper(source, (BigDecimal) min, (BigDecimal) precision);
     	else if (BigInteger.class.equals(numberType))
     		return new AsBigIntegerGeneratorWrapper(source);
     	else 
