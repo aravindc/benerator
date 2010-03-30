@@ -47,7 +47,7 @@ public class DatabaseParser extends AbstractDescriptorParser {
 
 	public DefineDatabaseStatement parse(Element element, final Element parent, ResourceManager resourceManager) {
 		try {
-			Expression<String>  id          = parseScriptableStringAttribute(ATT_ID,       element);
+			Expression<String>  id          = parseAttribute(ATT_ID, element);
 			Expression<String>  url         = parseScriptableStringAttribute(ATT_URL,      element);
 			Expression<String>  driver      = parseScriptableStringAttribute(ATT_DRIVER,   element);
 			Expression<String>  user        = parseScriptableStringAttribute(ATT_USER,     element);
