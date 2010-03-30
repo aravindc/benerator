@@ -28,8 +28,11 @@ package org.databene.benerator.engine.statement;
 
 import java.io.Closeable;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -58,7 +61,8 @@ public class BeanStatement extends SequentialStatement {
         this.resourceManager = resourceManager;
     }
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void execute(BeneratorContext context) {
 		// invoke constructor
         Object bean = constructionExpression.evaluate(context);
@@ -66,13 +70,29 @@ public class BeanStatement extends SequentialStatement {
         super.execute(context);
         if (!StringUtil.isEmpty(id))
             BeanUtil.setPropertyValue(bean, "id", id, false);
-		context.set(id, bean);
 		if (bean instanceof ContextAware)
 			((ContextAware) bean).setContext(context);
 		if (bean instanceof DescriptorProvider)
 			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
 		if (bean instanceof Closeable)
 			resourceManager.addResource((Closeable) bean);
+		if (bean instanceof Generator)
+			bean = new InitOnceGenerator((Generator) bean, context);
+		context.set(id, bean);
     }
 
+	static class InitOnceGenerator<E> extends GeneratorProxy<E> {
+		
+		InitOnceGenerator(Generator<E> realGenerator, GeneratorContext context) {
+			super(realGenerator);
+			super.init(context); // init realGenerator and set internal state by super class
+		}
+		
+		@Override
+		public void init(GeneratorContext context) {
+			// prevent the real generator from being re-initialized in subsequent use
+		}
+		
+	}
+	
 }
