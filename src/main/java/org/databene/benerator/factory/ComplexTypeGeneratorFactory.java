@@ -86,7 +86,6 @@ public class ComplexTypeGeneratorFactory {
     @SuppressWarnings("unchecked")
     public static Generator<Entity> createComplexTypeGenerator(String instanceName, 
     		ComplexTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-    	Assert.notNull(instanceName, "instance name");
         if (logger.isDebugEnabled())
             logger.debug("create(" + type.getName() + ")");
         // create original generator
