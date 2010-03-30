@@ -24,16 +24,11 @@ package org.databene.platform.contiperf;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.databene.commons.ArrayBuilder;
-import org.databene.commons.ParseException;
 import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
-import org.databene.contiperf.PercentileRequirement;
 import org.databene.contiperf.PerformanceRequirement;
 import org.databene.contiperf.PerformanceTracker;
 import org.databene.contiperf.log.FileExecutionLogger;
-
-import freemarker.template.utility.StringUtil;
 
 /**
  * Common parent class for Benerator runners that support performance tracking.<br/><br/>
@@ -62,7 +57,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	}
 
 	public void setPercentiles(String percentilesSpec) {
-		requirement.setPercentiles(parsePercentilesSpec(percentilesSpec));
+		requirement.setPercentiles(percentilesSpec);
 	}
 	
 	public PerformanceTracker getTracker() {
@@ -81,22 +76,4 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	    tracker.stop();
     }
 	
-	private PercentileRequirement[] parsePercentilesSpec(String percentilesSpec) {
-		String[] assignments = StringUtil.split(percentilesSpec, ',');
-		ArrayBuilder<PercentileRequirement> builder = new ArrayBuilder<PercentileRequirement>(
-				PercentileRequirement.class, assignments.length);
-		for (String assignment : assignments)
-			builder.add(parsePercentileSpec(assignment));
-	    return builder.toArray();
-    }
-
-	private PercentileRequirement parsePercentileSpec(String assignment) {
-	    String[] parts = StringUtil.split(assignment, ':');
-	    if (parts.length != 2)
-	    	throw new ParseException("Ilegal percentile syntax", assignment);
-	    int base  = Integer.parseInt(parts[0]);
-	    int limit = Integer.parseInt(parts[1]);
-		return new PercentileRequirement(base, limit);
-    }
-
 }
