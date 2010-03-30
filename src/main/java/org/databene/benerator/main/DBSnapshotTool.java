@@ -52,7 +52,11 @@ import org.slf4j.LoggerFactory;
  */
 public class DBSnapshotTool {
 	
-	public static final String DEFAULT_FORMAT = "dbunit";
+	public static final String DBUNIT_FORMAT = "dbunit";
+	public static final String XLS_FORMAT = "xls";
+	public static final String SQL_FORMAT = "sql";
+
+	public static final String DEFAULT_FORMAT = DBUNIT_FORMAT;
     
 	public static final String DB_PASSWORD = "dbPassword";
 	public static final String DB_URL = "dbUrl";
@@ -107,11 +111,11 @@ public class DBSnapshotTool {
 
         // create exporter
 		Consumer<Entity> exporter;
-        if ("dbunit".equals(format.toLowerCase()))
+        if (DBUNIT_FORMAT.equals(format.toLowerCase()))
         	exporter = new DbUnitEntityExporter(filename, fileEncoding);
-        else if ("xls".equals(format))
-        	exporter = new XLSEntityExporter();
-        else if ("sql".equals(format))
+        else if (XLS_FORMAT.equals(format))
+        	exporter = new XLSEntityExporter(filename);
+        else if (SQL_FORMAT.equals(format))
         	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator, dialect);
         else
         	throw new IllegalArgumentException("Unknown format: " + format);
