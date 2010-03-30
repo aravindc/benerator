@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,11 @@ package org.databene.benerator.main;
 import java.io.File;
 import java.sql.Connection;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.IOUtil;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.commons.xml.XMLUtil;
@@ -47,52 +51,40 @@ import static junit.framework.Assert.*;
  */
 public class DBSnaphotToolTest {
 
-	private static final String SCRIPT = "org/databene/benerator/main/create_tables.hsql.sql";
-	private static final String SNAPSHOT = "target/test.snapshot.dbunit.xml";
+	private static final String CREATION_SCRIPT = "org/databene/benerator/main/create_tables.hsql.sql";
+	private static final String DBUNIT_SNAPSHOT_FILE = "target/test.snapshot.dbunit.xml";
+	private static final String XLS_SNAPSHOT_FILE = "target/test.snapshot.xls";
 	private static final String ENCODING = "iso-8859-15";
 	
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testMissingUrl() {
-		try {
-			System.setProperty(DBSnapshotTool.DB_URL, "");
-			System.setProperty(DBSnapshotTool.DB_DRIVER, HSQLUtil.DRIVER);
-			DBSnapshotTool.main(new String[0]);
-			fail("Expected " + IllegalArgumentException.class.getSimpleName());
-		} catch (IllegalArgumentException e) {
-			// this is required
-		}
+		System.setProperty(DBSnapshotTool.DB_URL, "");
+		System.setProperty(DBSnapshotTool.DB_DRIVER, HSQLUtil.DRIVER);
+		DBSnapshotTool.main(new String[0]);
 	}
 
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testMissingDriver() {
-		try {
-			System.setProperty(DBSnapshotTool.DB_URL, HSQLUtil.IN_MEMORY_URL_PREFIX + "benerator");
-			System.setProperty(DBSnapshotTool.DB_DRIVER, "");
-			DBSnapshotTool.main(new String[0]);
-			fail("Expected " + IllegalArgumentException.class.getSimpleName());
-		} catch (IllegalArgumentException e) {
-			// this is required
-		}
+		System.setProperty(DBSnapshotTool.DB_URL, HSQLUtil.IN_MEMORY_URL_PREFIX + "benerator");
+		System.setProperty(DBSnapshotTool.DB_DRIVER, "");
+		DBSnapshotTool.main(new String[0]);
 	}
 	
 	@Test
-	public void testSuccess() throws Exception {
+	public void testHsqlDbUnitSnapshot() throws Exception {
 		// prepare DB
 		String db = getClass().getSimpleName();
 		Connection connection = HSQLUtil.connectInMemoryDB(db);
-		DBUtil.runScript(SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
+		DBUtil.runScript(CREATION_SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
 		// prepare snapshot
-		System.setProperty(DBSnapshotTool.DB_URL, HSQLUtil.IN_MEMORY_URL_PREFIX + db);
-		System.setProperty(DBSnapshotTool.DB_DRIVER, HSQLUtil.DRIVER);
-		System.setProperty(DBSnapshotTool.DB_USER, HSQLUtil.DEFAULT_USER);
-		System.setProperty(DBSnapshotTool.DB_SCHEMA, HSQLUtil.DEFAULT_SCHEMA);
-		System.setProperty(DBSnapshotTool.DB_SCHEMA, HSQLUtil.DEFAULT_SCHEMA);
-		System.setProperty("file.encoding", ENCODING);
+		setSystemProperties(HSQLUtil.IN_MEMORY_URL_PREFIX + db, HSQLUtil.DRIVER,
+				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, HSQLUtil.DEFAULT_SCHEMA, 
+				DBSnapshotTool.DBUNIT_FORMAT, ENCODING);
 		// create snapshot
-		DBSnapshotTool.main(new String[] { SNAPSHOT });
-		File file = new File(SNAPSHOT);
+		DBSnapshotTool.main(new String[] { DBUNIT_SNAPSHOT_FILE });
+		File file = new File(DBUNIT_SNAPSHOT_FILE);
 		assertTrue(file.exists());
-		Document document = XMLUtil.parse(SNAPSHOT);
+		Document document = XMLUtil.parse(DBUNIT_SNAPSHOT_FILE);
 		assertTrue(ENCODING.equalsIgnoreCase(document.getXmlEncoding()));
 		Element root = document.getDocumentElement();
 		assertEquals("dataset", root.getNodeName());
@@ -102,4 +94,42 @@ public class DBSnaphotToolTest {
 		assertEquals("R&B", child.getAttribute("NAME"));
 	}
 	
+	@Test
+	public void testHsqlXlsSnapshot() throws Exception {
+		// prepare DB
+		String db = getClass().getSimpleName();
+		Connection connection = HSQLUtil.connectInMemoryDB(db);
+		DBUtil.runScript(CREATION_SCRIPT, ENCODING, connection, true, new ErrorHandler(getClass()));
+		// prepare snapshot
+		setSystemProperties(HSQLUtil.IN_MEMORY_URL_PREFIX + db, HSQLUtil.DRIVER,
+				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD, HSQLUtil.DEFAULT_SCHEMA, 
+				DBSnapshotTool.XLS_FORMAT, ENCODING);
+		// create snapshot
+		DBSnapshotTool.main(new String[] { XLS_SNAPSHOT_FILE });
+		File file = new File(XLS_SNAPSHOT_FILE);
+		assertTrue("Snapshot file was not created: " + file, file.exists());
+
+		HSSFWorkbook workbook = new HSSFWorkbook(IOUtil.getInputStreamForURI(XLS_SNAPSHOT_FILE));
+		HSSFSheet sheet = workbook.getSheet("T1");
+		assertNotNull("Sheet T1 not found", sheet);
+		HSSFRow headerRow = sheet.getRow(0);
+		assertEquals("ID", headerRow.getCell(0).getStringCellValue());
+		assertEquals("NAME", headerRow.getCell(1).getStringCellValue());
+		HSSFRow dataRow1 = sheet.getRow(1);
+		assertEquals(1., dataRow1.getCell(0).getNumericCellValue());
+		assertEquals("R&B", dataRow1.getCell(1).getStringCellValue());
+	}
+	
+	private static void setSystemProperties(String url, String driver, 
+			String user, String password, String schema, 
+			String format, String encoding) {
+		System.setProperty(DBSnapshotTool.DB_URL, url);
+		System.setProperty(DBSnapshotTool.DB_DRIVER, driver);
+		System.setProperty(DBSnapshotTool.DB_USER, user);
+		System.setProperty(DBSnapshotTool.DB_PASSWORD, password);
+		System.setProperty(DBSnapshotTool.DB_SCHEMA, schema);
+		System.setProperty(DBSnapshotTool.FORMAT, format);
+		System.setProperty("file.encoding", encoding);
+	}
+
 }
