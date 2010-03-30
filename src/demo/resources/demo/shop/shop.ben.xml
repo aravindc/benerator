@@ -12,8 +12,8 @@
 		 !       -Dstage=development -Ddatabase=oracle               !
 		 !                                                           !
 		 !   These database types are provided:                      !
-		 !       oracle, db, sql_server, mysql, postgres, hsql,      !
-		 !       hsqlmem, mysql, firebird &amp; derby                !
+		 !       oracle, db2, sql_server, mysql, postgres, hsql,     !
+		 !       hsqlmem, mysql, firebird, derby, h2                 !
 		 !                                                           !
 		 !   ...and these stage configurations:                      !
 		 !       development, perftest                               !
@@ -26,9 +26,9 @@
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	</comment>
 	 
-	<import defaults="true"
-			domains="person,net,product"
-			platform="db"/>
+	<import defaults  = "true"
+			domains   = "person,net,product"
+			platforms = "db"/>
 
 	<comment>set default values</comment>
 	<property name="dbSchema"   value="" />
@@ -58,19 +58,22 @@
 	
 	<bean id="idGen" spec="new DBSeqHiLoGenerator('seq_id_gen', 100, db)" />
 
-	<comment>Create a valid base data set for regression testing by importing a DbUnit file</comment>
-	<generate source="shop.dbunit.xml" consumer="db" />
+	<comment>Creating a valid base data set for regression testing by importing a DbUnit file</comment>
+	<iterate source="shop.dbunit.xml" consumer="db" />
 
-	<comment>import some more predefined products from a CSV file</comment>
-	<generate type="db_product" source="products.import.csv" encoding="utf-8" consumer="db" />
+	<comment>Importing some more predefined products from a CSV file</comment>
+	<iterate source="products.import.csv" type="db_product" encoding="utf-8" consumer="db" />
 
-	<comment>you could import them from a flat file as well, e.g.
-		generate name="db_product" source="products.import.flat" 
+	<comment>You could import them from a flat file as well, e.g.
+		iterate name="db_product" source="products.import.flat" 
 			pattern="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]" consumer="db" /</comment>
 
-	<comment>create products of random attributes &amp; category</comment>
+	<comment>
+		Creating products of random attributes &amp; category and exporting them to 
+		the database as well as to a flat file
+	</comment>
 	<generate type="db_product" count="{product_count}" consumer="db">
-		<id name="ean_code" generator="EANGenerator(true)" />
+		<id name="ean_code" generator="new EANGenerator(true)" />
 		<reference name="category_id" targetType="db_category" source="db" distribution="random" />
 		<attribute name="price" type="big_decimal" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
@@ -84,7 +87,7 @@
 	<!-- generate name="db_order" consumer="db">
 		<id name="id" generator="idGen" />
 		<attribute name="customer_id" source="db" selector="select id from db_customer" />
-		<generate name="db_order_item" source="default_order.dbunit.xml" consumer="db">
+		<iterate source="default_order.dbunit.xml" type="db_order_item" consumer="db">
 	        <id name="id" generator="idGen" />
 		</generate>
 	</generate-->
@@ -93,12 +96,12 @@
     <generate type="db_user" count="{customer_count}" consumer="db">
         <variable name="person" generator="PersonGenerator" dataset="{country}" locale="{locale}"/>
         <id name="id" generator="idGen" />
-        <attribute name="name" script="{person.givenName + ' ' + person.familyName}" />
+        <attribute name="name" script="person.givenName + ' ' + person.familyName" />
         <attribute name="email" generator="EMailAddressGenerator" />
         <attribute name="password" pattern="[A-Za-z0-9]{8,12}" />
-        <attribute name="role_id" constant="customer" />
+        <reference name="role_id" constant="customer" />
         <generate type="db_customer" count="1" consumer="db">
-            <id name="id" source="db_user.id" />
+            <id name="id" script="db_user.id" />
             <attribute name="category" values="'A','B','C'" />
             <attribute name="salutation" script="person.salutation" />
             <attribute name="first_name" script="person.givenName" />
@@ -115,7 +118,7 @@
 	<comment>create orders for random customers and random products</comment>
 	<generate type="db_order" count="{customer_count * orders_per_customer}" consumer="db">
         <id name="id" generator="idGen" />
-		<reference name="customer_id" targetType="db_customer" source="db" cyclic="true" />
+		<reference name="customer_id" source="db" targetType="db_customer" cyclic="true" />
         <attribute name="total_price" constant="0" />
 	</generate>
 
@@ -126,15 +129,15 @@
         <id name="id" generator="idGen" />
 		<attribute name="number_of_items" min="1" max="27" distribution="cumulated" />
 		<reference name="order_id" source="db" selector="select id from db_order where id &gt; 1" cyclic="true" />
-		<reference name="product_ean_code" script="{${product[0]}}" />
-		<attribute name="total_price" script="{product[1] * db_order_item.number_of_items}" />
+		<reference name="product_ean_code" script="product[0]" />
+		<attribute name="total_price" script="product[1] * db_order_item.number_of_items" />
 	</generate>
 
     <comment>fix order data</comment>
-    <update-entities name="db_order" source="db">
+    <iterate source="db" type="db_order" consumer="db.updater()">
         <attribute name="total_price" source="db" 
             selector="{{ftl:select sum(total_price) from db_order_item where order_id = ${db_order.id}}}" 
             cyclic="true"/>
-    </update-entities>
+    </iterate>
 
 </setup>
