@@ -101,7 +101,8 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
             return null;
         }
         
-        context.set(entityName, currentEntity);
+        if (entityName != null)
+        	context.set(entityName, currentEntity);
         context.set("this", currentEntity);
         
         for (ComponentBuilder componentBuilder : componentBuilders) {
