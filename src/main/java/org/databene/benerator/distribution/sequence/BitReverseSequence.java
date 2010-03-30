@@ -50,7 +50,7 @@ public class BitReverseSequence extends Sequence {
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
 		Generator<? extends Number> base;
 		base = new BitReverseLongGenerator(toLong(min), toLong(max), toLong(precision));
-		return WrapperFactory.wrapNumberGenerator(numberType, base);
+		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
     }
 
 }

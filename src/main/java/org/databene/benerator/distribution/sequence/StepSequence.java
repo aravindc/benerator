@@ -89,7 +89,7 @@ public class StepSequence extends Sequence {
         else
 			base = new StepDoubleGenerator(toDouble(min), toDouble(max), 
 					toDouble(incrementToUse), toDouble(initial));
-		return WrapperFactory.wrapNumberGenerator(numberType, base);
+		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
 	}
 
 	private <T extends Number> Number incrementToUse(T precision) {

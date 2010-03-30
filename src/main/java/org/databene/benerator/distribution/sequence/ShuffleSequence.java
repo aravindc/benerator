@@ -70,7 +70,7 @@ public class ShuffleSequence extends Sequence {
 		else
 			base = new ShuffleDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(precision), toDouble(increment));
-		return WrapperFactory.wrapNumberGenerator(numberType, base);
+		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
     }
     
 }

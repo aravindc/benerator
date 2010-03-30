@@ -57,7 +57,7 @@ public class CumulatedSequence extends Sequence {
 		else
 			base = new CumulatedDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(precision));
-		return WrapperFactory.wrapNumberGenerator(numberType, base);
+		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
     }
 
 }

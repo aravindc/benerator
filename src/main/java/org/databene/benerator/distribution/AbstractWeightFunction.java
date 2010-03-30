@@ -50,9 +50,9 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     	else if (Double.class.equals(numberType))
     		return (Generator<T>) createDoubleGenerator(min, max, precision);
     	else if (BeanUtil.isIntegralNumberType(numberType))
-    		return WrapperFactory.wrapNumberGenerator(numberType, createLongGenerator(min, max, precision));
+    		return WrapperFactory.wrapNumberGenerator(numberType, createLongGenerator(min, max, precision), min, precision);
     	else
-    		return WrapperFactory.wrapNumberGenerator(numberType, createDoubleGenerator(min, max, precision));
+    		return WrapperFactory.wrapNumberGenerator(numberType, createDoubleGenerator(min, max, precision), min, precision);
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {

@@ -68,7 +68,7 @@ public class RandomSequence extends Sequence {
 			else
 				base = new RandomDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision));
     	}
-		return WrapperFactory.wrapNumberGenerator(numberType, base);
+		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
 	}
 
     @Override
