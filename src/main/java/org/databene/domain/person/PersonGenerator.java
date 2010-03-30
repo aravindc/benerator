@@ -106,8 +106,7 @@ public class PersonGenerator extends CompositeGenerator<Person> {
 	}
 
 	public void setLocale(Locale locale) {
-        acadTitleGen.setLocale(locale);
-        salutationProvider.setLocale(locale);
+		this.locale = locale;
     }
 
 	public String getDataset() {
@@ -132,11 +131,13 @@ public class PersonGenerator extends CompositeGenerator<Person> {
         birthDateGenerator.init(context);
         acadTitleGen = registerComponent(new AcademicTitleGenerator(locale));
         acadTitleGen.init(context);
+        acadTitleGen.setLocale(locale);
         maleNobilityTitleGen = registerComponent(new NobilityTitleGenerator(Gender.MALE, locale));
         maleNobilityTitleGen.init(context);
         femaleNobilityTitleGen = registerComponent(new NobilityTitleGenerator(Gender.FEMALE, locale));
         femaleNobilityTitleGen.init(context);
         salutationProvider = new SalutationProvider(locale);
+        salutationProvider.setLocale(locale);
 
 		try {
 	        initMembers(context);
