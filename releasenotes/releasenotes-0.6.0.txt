@@ -60,11 +60,19 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
     - file names: FileNameGenerator
     - text file contents (as String): TextFileGenerator
     - binary file contents (as byte[]): BinaryFileGenerator
-  - <run-task stats="true" />
   - removed <create-entities> and <update-entities>, introducing <generate> and <iterate> with different semantics
   - <update-entities name="tableName" source="db"> is replaced with <iterate type="tableName" source="db" consumer="db.updater()" />
   - supporting sub invocation of descriptor files: <include uri="included.ben.xml" />
+  - removed TreePathGenerator
+  - <reference> and <id> may now use similar settings like <attribute>
 
+- Supporting the H2 database
+
+- Performance measurement
+  - <run-task stats="true" />
+  - proxy class PerfTrackingConsumer for measuring the execution time of Consumer.startConsuming()
+    use e.g. like <consumer spec='new org.databene.platform.contiperf.PerfTrackingConsumer(realConsumer)'/>" +
+  
 - Distributions
   - Completely redesigned the Distribution concept
   - Supporting the efficient generation of non-uniformly distributed numbers 
@@ -137,6 +145,7 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - ToHexConverter
   - RegexReplacer
   - SubstringExtractor
+  - FloatingPointQuantizer, IntegralQuantizer
   
 - new Validators:
   - Supporting JSR 303 Bean Validation
