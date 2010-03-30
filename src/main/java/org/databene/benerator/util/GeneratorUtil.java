@@ -56,7 +56,8 @@ public class GeneratorUtil {
 		while ((product = generator.generate()) != null) {
 			list.add(product);
 			if (count++ > MAX_SIZE)
-				throw new ConfigurationError("Dataset is to large");
+				throw new ConfigurationError("Dataset of generator is too large " +
+						"(more than " + MAX_SIZE + " elements): " + generator);
 		}
 		return list;
 	}
