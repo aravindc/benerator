@@ -149,6 +149,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return new PlainComponentBuilder(part.getName(), generator, DescriptorUtil.getNullQuota(part));
     }
 
+    @SuppressWarnings("unchecked")
     public static ComponentBuilder createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
         boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
         Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.ORDERED);
@@ -178,8 +179,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	        if (sourceObject instanceof StorageSystem) {
 	            StorageSystem sourceSystem = (StorageSystem) sourceObject;
 	            String selector = typeDescriptor.getSelector();
-	            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
-	            generator = new IteratingGenerator<Object>(entityIds);
+	            if (selector != null && selector.startsWith("select")) {
+	            	generator = new IteratingGenerator(sourceSystem.query(selector, context));
+	            } else {
+		            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
+		            generator = new IteratingGenerator<Object>(entityIds);
+	            }
 	        } else
 	        	throw new ConfigurationError("Not a supported source type: " + sourceName);
         }
@@ -194,6 +199,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
+        
+        // check 'cyclic' config
+        generator = DescriptorUtil.wrapWithProxy(generator, typeDescriptor);
         return new PlainComponentBuilder(descriptor.getName(), generator, DescriptorUtil.getNullQuota(descriptor));
     }
 
