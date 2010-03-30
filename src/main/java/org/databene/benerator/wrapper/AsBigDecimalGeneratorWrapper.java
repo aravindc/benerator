@@ -27,8 +27,10 @@
 package org.databene.benerator.wrapper;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.databene.benerator.Generator;
+import org.databene.commons.MathUtil;
 
 /**
  * Converts the {@link Number} products of another {@link Generator} to {@link BigDecimal}.<br/>
@@ -40,8 +42,24 @@ import org.databene.benerator.Generator;
 
 public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWrapper<E, BigDecimal> {
 
+	private MathContext mathContext;
+	
     public AsBigDecimalGeneratorWrapper(Generator<E> source) {
+	    this(source, null, null);
+    }
+
+    public AsBigDecimalGeneratorWrapper(Generator<E> source, BigDecimal min, BigDecimal precision) {
 	    super(source);
+	    int mcPrecision;
+	    if (precision != null) {
+	    	mcPrecision = MathUtil.fractionDigits(precision.doubleValue());
+	    	if (min != null)
+	    		mcPrecision = Math.min(mcPrecision, MathUtil.fractionDigits(min.doubleValue()));
+	    } else if (min != null)
+	    	mcPrecision = MathUtil.fractionDigits(min.doubleValue());
+	    else
+	    	mcPrecision = 0;
+	    mathContext = new MathContext(mcPrecision);
     }
 
 	public Class<BigDecimal> getGeneratedType() {
@@ -49,9 +67,8 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
     }
 
     public BigDecimal generate() {
-    	assertInitialized();
 	    E feed = source.generate();
-		return (feed != null ? BigDecimal.valueOf(feed.doubleValue()) : null);
+	    return (feed != null ? new BigDecimal(feed.doubleValue(), mathContext) : null);
     }
 
 }
