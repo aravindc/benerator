@@ -28,12 +28,12 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ParserFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
@@ -71,7 +71,8 @@ public class DescriptorParserUtil {
 
 	public static Expression<String> parseScriptableStringAttribute(String name, Element element) {
 	    String attribute = getAttribute(name, element);
-		return (attribute != null ? new StringScriptExpression(attribute) : null);
+		return (attribute != null ? new TypeConvertingExpression<String>(
+				new ScriptableExpression(attribute, null), String.class) : null);
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element) {
