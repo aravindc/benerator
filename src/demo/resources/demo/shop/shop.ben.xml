@@ -35,14 +35,14 @@
 	<property name="dbPassword" value="" />
 	<property name="dbBatch"    value="false" />
 	
-	<if test="{stage == null}">
+	<if test="context.get('stage') == null">
 		<comment>no stage specified, using 'development'</comment>
 		<execute>stage = 'development'</execute>
 	</if>
 
-	<if test="{database == null}">
+	<if test="context.get('database') == null">
 		<comment>no database specified, using 'hsqlmem'</comment>
-		<execute>stage = 'development'</execute>
+		<execute>database = 'hsqlmem'</execute>
 	</if>
 
 	<comment>import stage and database specific properties</comment>
