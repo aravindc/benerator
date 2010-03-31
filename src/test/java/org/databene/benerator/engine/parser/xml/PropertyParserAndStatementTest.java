@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PropertyParserTest {
+public class PropertyParserAndStatementTest extends ParserTest {
 	
 	@Test
 	public void testValue() throws Exception {
@@ -97,6 +97,15 @@ public class PropertyParserTest {
 	public void testInvalid() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' xyz='XYZ' />");
 		new PropertyParser().parse(element, null, null);
+	}
+	
+	@Test
+	public void testBeneratorProperty() throws Exception {
+		Element element = XMLUtil.parseStringAsElement("<property name='benerator.defaultPageSize' value='123' />");
+		Statement statement = new PropertyParser().parse(element, null, null);
+		assertTrue(context.getDefaultPageSize() != 123);
+		statement.execute(context);
+		assertEquals(123, context.getDefaultPageSize());
 	}
 	
 }
