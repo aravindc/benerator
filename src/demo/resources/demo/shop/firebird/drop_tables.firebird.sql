@@ -5,3 +5,4 @@ DROP TABLE db_user;
 DROP TABLE db_role;
 DROP TABLE db_product;
 DROP TABLE db_category;
+DROP GENERATOR seq_id_gen;

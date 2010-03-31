@@ -86,3 +86,4 @@ CREATE TABLE db_order_item (
 );
 CREATE INDEX db_order_item_order_fki ON db_order_item (order_id);
 CREATE INDEX db_order_item_product_fki ON db_order_item (product_ean_code);
+CREATE GENERATOR seq_id_gen;
