@@ -91,13 +91,15 @@ public class Address {
         this.houseNumber = houseNumber;
     }
 
+    @Deprecated
     public String getZipCode() {
-    	escalator.escalate("Property 'zipCode' is deprecated and replaced with 'areaCode'", getClass(), "zipCode");
+    	escalator.escalate("Property 'zipCode' is deprecated and replaced with 'postalCode'", getClass(), "zipCode");
         return getPostalCode();
     }
 
+    @Deprecated
     public void setZipCode(String zipCode) {
-    	escalator.escalate("Property 'zipCode' is deprecated and replaced with 'areaCode'", getClass(), "zipCode");
+    	escalator.escalate("Property 'zipCode' is deprecated and replaced with 'postalCode'", getClass(), "zipCode");
         setPostalCode(zipCode);
     }
 
