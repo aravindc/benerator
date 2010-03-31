@@ -268,7 +268,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 Expression<?> beanExpression = BeanParser.parseBeanExpression(child, resourceManager);
                 String id = child.getAttribute("id");
 				new BeanStatement(id, beanExpression, this).execute(context);
-                System.out.println(beanExpression.evaluate(context));
+                beanExpression.evaluate(context);
             } else
                 throw new UnsupportedOperationException("Document annotation type not supported: " 
                 		+ child.getNodeName());
