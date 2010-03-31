@@ -53,7 +53,7 @@ public class IfParser implements DescriptorParser {
 	private static final Set<String> STRICT_CHILDREN = CollectionUtil.toSet(
 			EL_THEN, EL_ELSE, EL_COMMENT);
 
-	public Statement parse(Element ifElement, Element parent, ResourceManager resourceManager) {
+	public Statement parse(Element ifElement, Statement[] parentPath, ResourceManager resourceManager) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, ifElement);
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'if' statement is missing or empty", 

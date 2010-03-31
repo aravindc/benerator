@@ -25,6 +25,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.DefineDatabaseStatement;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
@@ -45,7 +46,7 @@ public class DatabaseParser extends AbstractDescriptorParser {
 	    super(EL_DATABASE);
     }
 
-	public DefineDatabaseStatement parse(Element element, final Element parent, ResourceManager resourceManager) {
+	public DefineDatabaseStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		try {
 			Expression<String>  id          = parseAttribute(ATT_ID, element);
 			Expression<String>  url         = parseScriptableStringAttribute(ATT_URL,      element);

@@ -23,6 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.StringUtil;
@@ -40,7 +41,7 @@ public class ImportParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_IMPORT);
     }
 
-	public ImportStatement parse(Element element, Element parent, ResourceManager resourceManager) {
+	public ImportStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 

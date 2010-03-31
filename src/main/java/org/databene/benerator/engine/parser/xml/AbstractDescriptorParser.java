@@ -22,6 +22,10 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorParser;
+import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.statement.GeneratorStatement;
+import org.databene.benerator.engine.statement.RunTaskStatement;
+import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,4 +58,25 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
 			&& (this.parentName == null || this.parentName.equals(parentName));
 	}
 	
+	public static boolean containsLoop(Statement[] parentPath) {
+		for (Statement statement : parentPath)
+			if (isLoop(statement))
+				return true;
+		return false;
+	}
+
+	public static boolean isLoop(Statement statement) {
+	    return (statement instanceof RunTaskStatement) 
+	    	|| (statement instanceof GeneratorStatement)
+	    	|| (statement instanceof WhileStatement);
+    }
+	
+	public static boolean containsGeneratorStatement(Statement[] parentPath) {
+		for (Statement statement : parentPath)
+			if (statement instanceof GeneratorStatement)
+				return true;
+		return false;
+    }
+
+
 }

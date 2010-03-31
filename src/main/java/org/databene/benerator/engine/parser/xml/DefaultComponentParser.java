@@ -49,7 +49,7 @@ public class DefaultComponentParser implements DescriptorParser {
 	    return EL_DEFAULT_COMPONENTS.equals(elementName);
     }
 
-	public XMLDefaultComponentsStatement parse(Element element, final Element parent, ResourceManager resourceManager) {
+	public XMLDefaultComponentsStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		return new XMLDefaultComponentsStatement(element);
 	}
 

@@ -27,6 +27,7 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
@@ -46,7 +47,7 @@ public class EvaluateParser implements DescriptorParser {
 	    	|| DescriptorConstants.EL_EXECUTE.equals(elementName);
     }
 
-	public EvaluateStatement parse(Element element, Element parent, ResourceManager resourceManager) {
+	public EvaluateStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		Expression<String> text         = parseTextElement(element);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);

@@ -23,6 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.commons.Expression;
@@ -41,7 +42,7 @@ public class IncludeParser extends AbstractDescriptorParser {
 	    super(DescriptorConstants.EL_INCLUDE);
     }
 
-	public IncludeStatement parse(Element element, Element parent, ResourceManager resourceManager) {
+	public IncludeStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
         String uriAttr = element.getAttribute(DescriptorConstants.ATT_URI);
 		Expression<String> uriEx = new StringExpression(new ScriptableExpression(uriAttr, null));
         return new IncludeStatement(uriEx);

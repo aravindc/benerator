@@ -24,6 +24,7 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.script.Assignment;
 import org.databene.benerator.script.BeanConstruction;
@@ -53,7 +54,7 @@ public class BeanParser extends AbstractDescriptorParser {
 	    super(EL_BEAN);
     }
 
-	public BeanStatement parse(Element element, final Element parent, ResourceManager resourceManager) {
+	public BeanStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		try {
 			String id = element.getAttribute(ATT_ID);
 			Expression<?> bean = parseBeanExpression(element, resourceManager);
