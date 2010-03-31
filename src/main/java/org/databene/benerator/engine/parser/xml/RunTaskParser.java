@@ -25,6 +25,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.ResourceManager;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.statement.RunTaskStatement;
@@ -52,7 +53,7 @@ public class RunTaskParser extends AbstractDescriptorParser {
     }
 
     @SuppressWarnings("unchecked")
-    public RunTaskStatement parse(Element element, Element parent, ResourceManager resourceManager) {
+    public RunTaskStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		try {
 		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(
 		    		element, resourceManager);
@@ -62,7 +63,9 @@ public class RunTaskParser extends AbstractDescriptorParser {
 			Expression<PageListener> pager  = parsePager(element);
 		    Expression<Boolean> stats       = parseBooleanExpressionAttribute(ATT_STATS, element, false);
 			Expression<ErrorHandler> errorHandler = parseErrorHandler(element);
-			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, stats, errorHandler);
+			boolean infoLog = containsLoop(parentPath);
+			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, 
+					stats, errorHandler, infoLog);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
         }

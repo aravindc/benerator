@@ -55,17 +55,23 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
 	protected PerformanceTracker tracker;
+	protected boolean infoLog;
 	
 	public GenerateOrIterateStatement(GeneratorTask task,
 			Generator<Long> countGenerator, Expression<Long> pageSize, Expression<PageListener> pageListener, 
-			Expression<Integer> threads, Expression<ErrorHandler> errorHandler) {
+			Expression<Integer> threads, Expression<ErrorHandler> errorHandler, boolean infoLog) {
 	    this.task = task;
 	    this.countGenerator = countGenerator;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
+	    this.infoLog = infoLog;
     }
 
+	public void setTask(GeneratorTask task) {
+		this.task = task;
+	}
+	
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
     public void execute(BeneratorContext context) {
@@ -81,7 +87,8 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    		threadCount,
 	    		false, 
 	    		context.getExecutorService(),
-	    		getErrorHandler(context));
+	    		getErrorHandler(context),
+	    		infoLog);
     }
 
 	public void reset() {

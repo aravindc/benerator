@@ -48,11 +48,13 @@ public class RunTaskStatement extends AbstractStatement {
 	protected Expression<PageListener> pageListener;
 	protected Expression<Boolean> stats;
 	protected Expression<ErrorHandler> errorHandler;
+	protected boolean infoLog;
 
 	public RunTaskStatement(Expression<? extends Task> taskProvider, 
 			Expression<Long> count, Expression<Long> pageSize, 
 			Expression<PageListener> pageListener, Expression<Integer> threads, 
-			Expression<Boolean> stats, Expression<ErrorHandler> errorHandler) {
+			Expression<Boolean> stats, Expression<ErrorHandler> errorHandler,
+			boolean infoLog) {
 		super(errorHandler);
 	    this.taskProvider = taskProvider;
 	    this.count = count;
@@ -61,6 +63,7 @@ public class RunTaskStatement extends AbstractStatement {
 	    this.pageListener = pageListener;
 	    this.stats = stats;
 	    this.errorHandler = errorHandler;
+	    this.infoLog = infoLog;
     }
 
 	public Expression<Long> getCount() {
@@ -88,7 +91,8 @@ public class RunTaskStatement extends AbstractStatement {
 	    		threads.evaluate(context),
 	    		stats.evaluate(context),
 	    		context.getExecutorService(),
-	    		getErrorHandler(context));
+	    		getErrorHandler(context),
+	    		infoLog);
 	}
 
 	public synchronized Task getTask(BeneratorContext context) {

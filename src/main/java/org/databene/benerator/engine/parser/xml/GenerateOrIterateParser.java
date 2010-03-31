@@ -46,6 +46,7 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -84,16 +85,17 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	    return EL_GENERATE.equals(elementName) || EL_ITERATE.equals(elementName);
     }
 	
-	public Statement parse(final Element element, Element parent, final ResourceManager resourceManager) {
+	public Statement parse(final Element element, final Statement[] parentPath, 
+			final ResourceManager resourceManager) {
+		final boolean looped = AbstractDescriptorParser.containsLoop(parentPath);
 		Expression<Statement> expression = new DynamicExpression<Statement>() {
 			public Statement evaluate(Context context) {
 				return parseCreateEntities(
-						element, false, resourceManager, (BeneratorContext) context);
+						element, parentPath, resourceManager, (BeneratorContext) context, !looped);
             }
 		};
 		Statement statement = new LazyStatement(expression);
-		String parentName = parent.getNodeName();
-		if (!parentName.equals(EL_GENERATE) && !parentName.equals(EL_ITERATE))
+		if (!looped)
 			statement = new TimedEntityStatement(getNameOrType(element), statement);
 		return statement;
 	}
@@ -110,10 +112,9 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	}
 	
     @SuppressWarnings("unchecked")
-    public GenerateOrIterateStatement parseCreateEntities(Element element, boolean isSubTask, 
-    		ResourceManager resourceManager, BeneratorContext context) {
+    public GenerateOrIterateStatement parseCreateEntities(Element element, Statement[] parentPath,
+    		ResourceManager resourceManager, BeneratorContext context, boolean infoLog) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
-		GeneratorTask task = parseTask(element, descriptor, isSubTask, resourceManager, context);
 		
 		Generator<Long> countExpression = GeneratorFactoryUtil.getCountGenerator(descriptor);
 		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
@@ -124,18 +125,23 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
 		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
 		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
-				task, countExpression, pageSize, pager, threads, errorHandler);
+				null, countExpression, pageSize, pager, threads, errorHandler, infoLog);
+		GeneratorTask task = parseTask(element, parentPath, creator, descriptor, resourceManager, context, infoLog);
+		creator.setTask(task);
 		return creator;
 	}
 
 	@SuppressWarnings("unchecked")
-    private GeneratorTask parseTask(Element element, InstanceDescriptor descriptor, boolean isSubTask, 
-    		ResourceManager resourceManager, BeneratorContext context) {
+    private GeneratorTask parseTask(Element element, Statement[] parentPath, GenerateOrIterateStatement statement, 
+    		InstanceDescriptor descriptor, ResourceManager resourceManager, BeneratorContext context, 
+    		boolean infoLog) {
 		descriptor.setNullable(false);
-		if (!isSubTask)
+		if (infoLog)
 			logger.info(descriptor.toString());
 		else if (logger.isDebugEnabled())
 			logger.debug(descriptor.toString());
+		
+		boolean isSubCreator = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
 		Generator<Entity> generator = (Generator<Entity>) InstanceGeneratorFactory
@@ -149,14 +155,14 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		
-		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubTask);
+		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubCreator);
 
 		// handle sub-<generate/>
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
 	            DescriptorParser parser = ParserFactory.getParser(childName, element.getNodeName());
-	            Statement subStatement = parser.parse(child, element, task);
+	            Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);
 				task.addSubStatement(subStatement);
             }
 		}
