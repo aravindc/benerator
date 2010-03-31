@@ -30,10 +30,20 @@
 			domains   = "person,net,product"
 			platforms = "db"/>
 
-	<comment>set default values</comment>
+	<comment>setting default values</comment>
 	<property name="dbSchema"   value="" />
 	<property name="dbPassword" value="" />
 	<property name="dbBatch"    value="false" />
+	
+	<if test="{stage == null}">
+		<comment>no stage specified, using 'development'</comment>
+		<execute>stage = 'development'</execute>
+	</if>
+
+	<if test="{database == null}">
+		<comment>no database specified, using 'hsqlmem'</comment>
+		<execute>stage = 'development'</execute>
+	</if>
 
 	<comment>import stage and database specific properties</comment>
 	<include uri="{ftl:${database}/shop.${database}.properties}" />
@@ -46,10 +56,10 @@
 	<echo message="{ftl:  ${orders_per_customer} orders per customer}" />
 	<echo message="{ftl:  ${items_per_order} items per order}" />
 	<echo message="{ftl:Setup: ${benerator.defaultEncoding} def.pageSize=${benerator.defaultPageSize} def.script=${benerator.defaultScript}}" />
-	<echo message="{ftl:JDBC URL: ${dbUri}}" />
+	<echo message="{ftl:JDBC URL: ${dbUrl}}" />
 
     <comment>define a database that will be referred by the id 'db' later</comment>
-    <database id="db" url="{dbUri}" driver="{dbDriver}" schema="{dbSchema}"
+    <database id="db" url="{dbUrl}" driver="{dbDriver}" schema="{dbSchema}"
         user="{dbUser}" password="{dbPassword}" batch="{dbBatch}" />
 
 	<comment>drop the current tables/sequences if they exist and recreate them</comment>
