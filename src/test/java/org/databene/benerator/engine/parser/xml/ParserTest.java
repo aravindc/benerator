@@ -52,7 +52,7 @@ public abstract class ParserTest {
 	
 	protected Statement parse(String xml) throws IOException {
 		Element element = XMLUtil.parseStringAsElement(xml);
-		return parser.parse(element, XMLUtil.parseStringAsElement("<dummy/>"), resourceManager);
+		return parser.parse(element, new Statement[0], resourceManager);
     }
 	
 }

@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.task.PageListenerMock;
@@ -55,7 +56,7 @@ public class RunTaskParserAndStatementTest {
         		"</run-task>";
         Element element = XMLUtil.parseStringAsElement(xml);
 		BeneratorContext context = new BeneratorContext();
-        RunTaskStatement statement = new RunTaskParser().parse(element, null, new ResourceManagerSupport());
+        RunTaskStatement statement = new RunTaskParser().parse(element, new Statement[0], new ResourceManagerSupport());
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
@@ -72,7 +73,7 @@ public class RunTaskParserAndStatementTest {
         		"</run-task>";
         Element element = XMLUtil.parseStringAsElement(xml);
 		BeneratorContext context = new BeneratorContext();
-        RunTaskStatement statement = new RunTaskParser().parse(element, null, new ResourceManagerSupport());
+        RunTaskStatement statement = new RunTaskParser().parse(element, new Statement[0], new ResourceManagerSupport());
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));

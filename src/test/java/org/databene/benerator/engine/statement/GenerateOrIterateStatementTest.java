@@ -59,7 +59,7 @@ public class GenerateOrIterateStatementTest {
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
 		Expression<Integer> threads = new ConstantExpression<Integer>(THREAD_COUNT);
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
-		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(task, count, pageSize, null, threads, errorHandler);
+		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(task, count, pageSize, null, threads, errorHandler, true);
 		statement.execute(new BeneratorContext());
 		
 		assertEquals(INVOCATION_COUNT, entityGenerator.invocationCount);
