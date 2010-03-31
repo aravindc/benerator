@@ -68,7 +68,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 
 	@SuppressWarnings("unchecked")
     @Test
-	public void testSubCreate() throws Exception {
+	public void testSimpleSubGenerate() throws Exception {
 		Statement statement = parse(
 				"<generate type='top' count='3' consumer='cons1'>" +
         		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(false, 2)'/>" +
@@ -87,11 +87,11 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 
     /** Tests a sub loop that derives its loop length from a parent attribute. */
 	@Test
-	public void testSubGenerate() throws Exception {
+	public void testSubGenerateParentRef() throws Exception {
 		Statement statement = parse(
-				"<generate type='outer' count='3' consumer='cons'>" +
+				"<generate name='pName' type='outer' count='3' consumer='cons'>" +
 				"    <attribute name='n' type='int' distribution='step' />" +
-				"    <generate type='inner' count='{outer.n}' consumer='cons' />" + // TODO v0.6.1 make the brackets unnecessary
+				"    <generate type='inner' count='{pName.n}' consumer='cons'/>" + // TODO v0.6.1 make the brackets unnecessary
         		"</generate>");
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true, 1);
 		context.set("cons", consumer);
