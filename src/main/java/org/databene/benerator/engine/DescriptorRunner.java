@@ -101,10 +101,11 @@ public class DescriptorRunner implements ResourceManager {
 	    XMLUtil.mapAttributesToProperties(root, context, true, new XMLNameNormalizer());
 	    BeneratorRootStatement mainTask = new BeneratorRootStatement();
 	    // process sub elements
+    	Statement[] path = new Statement[] { mainTask };
 	    for (Element element : XMLUtil.getChildElements(root)) {
 			String elementName = element.getNodeName();
             DescriptorParser elementParser = ParserFactory.getParser(elementName, EL_SETUP);
-	    	Statement statement = elementParser.parse(element, root, this);
+			Statement statement = elementParser.parse(element, path, this);
 	    	mainTask.addSubStatement(statement);
 	    }
 		// prepare system
