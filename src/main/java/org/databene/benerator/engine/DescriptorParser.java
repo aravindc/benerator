@@ -31,5 +31,5 @@ import org.w3c.dom.Element;
  */
 public interface DescriptorParser {
 	boolean supports(String elementName, String parentName);
-	Statement parse(Element element, Element parent, ResourceManager resourceManager);
+	Statement parse(Element element, Statement[] parentPath, ResourceManager resourceManager);
 }
