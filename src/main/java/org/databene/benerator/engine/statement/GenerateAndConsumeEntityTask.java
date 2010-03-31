@@ -56,7 +56,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
 
 	private String taskName;
     private Generator<Entity> entityGenerator;
-    private boolean isSubTask;
+    private boolean isSubCreator;
     private Expression<Consumer<Entity>> consumerExpr;
     private List<Statement> subStatements;
     private ResourceManager resourceManager = new ResourceManagerSupport();
@@ -65,13 +65,13 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     private Consumer<Entity> consumer;
     
     public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
-    		Expression<Consumer<Entity>> consumerExpr, boolean isSubTask) {
+    		Expression<Consumer<Entity>> consumerExpr, boolean isSubCreator) {
     	this.taskName = taskName;
     	Assert.notNull(entityGenerator, "entityGenerator");
         this.entityGenerator = entityGenerator;
         this.consumerExpr = consumerExpr;
     	this.subStatements = new ArrayList<Statement>();
-        this.isSubTask = isSubTask;
+        this.isSubCreator = isSubCreator;
         this.generatorInitialized = new AtomicBoolean(false);
     }
 
@@ -139,7 +139,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     public void close() {
 		try {
 	        resourceManager.close();
-	        if (!isSubTask && consumer != null)
+	        if (!isSubCreator && consumer != null)
 	            consumer.flush();
         } catch (IOException e) {
 	        throw new RuntimeException(e);
