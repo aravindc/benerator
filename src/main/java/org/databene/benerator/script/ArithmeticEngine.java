@@ -274,8 +274,11 @@ public class ArithmeticEngine {
     @SuppressWarnings("unchecked")
     public boolean equals(Object part1, Object part2) {
     	// null handling
+    	if (part2 == null && part1 == null)
+			return true;
     	if (part2 == null || part1 == null)
-			throw new IllegalArgumentException("Cannot compare null");
+			return false;
+    	// comparing non-null values
 	    Class<?> resultType = TypeManager.combinedType(part1.getClass(), part2.getClass());
 	    // convert the terms to the same type and compare them
 	    Object s1 = AnyConverter.convert(part1, resultType);
