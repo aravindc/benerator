@@ -164,21 +164,14 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
     
     public static PerformanceTracker execute(Task task, Context context, Long invocations,
             List<PageListener> pageListeners, long pageSize, int threadCount, boolean stats,
-            ExecutorService executorService, ErrorHandler errorHandler) {
-		if (logger.isInfoEnabled()) {
-			String invocationInfo = (invocations == null ? "as long as available" :
-			     (invocations > 1 ? invocations + " times" : ""));
-			if (invocationInfo.length() > 0)
-				invocationInfo += " with page size " + pageSize + " in " 
-					+ (threadCount > 1 ? threadCount + " threads" : "a single thread");
-			logger.info("Running task " + task + " " + invocationInfo);
-		}
+            ExecutorService executorService, ErrorHandler errorHandler, boolean infoLog) {
+		logExecutionInfo(task, invocations, pageSize, threadCount, infoLog);
 		PagedTaskRunner pagedTask = new PagedTaskRunner(task, pageListeners, 
 				pageSize, threadCount, stats, ExpressionUtil.constant(executorService), context, errorHandler);
 		pagedTask.run(invocations);
 		return pagedTask.tracker;
 	}
-	
+
     // non-public helpers ----------------------------------------------------------------------------------------------
 
     protected boolean workPending(Long maxInvocationCount) {
@@ -205,6 +198,28 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         		listener.pageFinished();
     }
 
+	private static void logExecutionInfo(Task task, Long invocations, long pageSize, int threadCount, 
+			boolean infoLog) {
+	    if (infoLog) {
+			if (logger.isInfoEnabled()) {
+				String invocationInfo = executionInfo(task, invocations, pageSize, threadCount);
+				logger.info(invocationInfo);
+			}
+		} else if (logger.isDebugEnabled()) {
+			String invocationInfo = executionInfo(task, invocations, pageSize, threadCount);
+			logger.debug(invocationInfo);
+		}
+    }
+
+	private static String executionInfo(Task task, Long invocations, long pageSize, int threadCount) {
+	    String invocationInfo = (invocations == null ? "as long as available" :
+	         (invocations > 1 ? invocations + " times" : ""));
+	    if (invocationInfo.length() > 0)
+	    	invocationInfo += " with page size " + pageSize + " in " 
+	    		+ (threadCount > 1 ? threadCount + " threads" : "a single thread");
+	    return "Running task " + task + " " + invocationInfo;
+    }
+	
     public void uncaughtException(Thread t, Throwable e) {
         this.exception = e;
     }
