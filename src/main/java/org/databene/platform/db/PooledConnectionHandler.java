@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 public class PooledConnectionHandler implements InvocationHandler {
     
     private static final Logger jdbcLogger = LoggerFactory.getLogger(LogCategories.JDBC);
+    private static final Logger sqlLogger = LoggerFactory.getLogger(LogCategories.SQL);
     
     private static long nextId = 0;
 
@@ -106,12 +107,13 @@ public class PooledConnectionHandler implements InvocationHandler {
 	}
 
 	private Statement createStatement(Method method, Object[] args) {
-		Statement realStatement = (Statement) BeanUtil.invoke(realConnection, method, args);
+		Statement statement = (Statement) BeanUtil.invoke(realConnection, method, args);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Statement proxy = (Statement) Proxy.newProxyInstance(classLoader, 
-				new Class[] { Statement.class }, 
-				new LoggingStatementHandler(realStatement, db.isReadOnly()));
-		return proxy;
+        if (sqlLogger.isDebugEnabled() || jdbcLogger.isDebugEnabled())
+	        statement = (Statement) Proxy.newProxyInstance(classLoader, 
+					new Class[] { Statement.class }, 
+					new LoggingStatementHandler(statement, db.isReadOnly()));
+		return statement;
 	}
 
 	// PooledConnection implementation ---------------------------------------------------------------------------------
