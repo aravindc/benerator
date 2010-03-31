@@ -109,7 +109,7 @@ public class PooledConnectionHandler implements InvocationHandler {
 	private Statement createStatement(Method method, Object[] args) {
 		Statement statement = (Statement) BeanUtil.invoke(realConnection, method, args);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (sqlLogger.isDebugEnabled() || jdbcLogger.isDebugEnabled())
+        if (sqlLogger.isDebugEnabled() || jdbcLogger.isDebugEnabled() || db.isReadOnly())
 	        statement = (Statement) Proxy.newProxyInstance(classLoader, 
 					new Class[] { Statement.class }, 
 					new LoggingStatementHandler(statement, db.isReadOnly()));
