@@ -125,8 +125,10 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     	assertNotInitialized();
     	this.dateGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
     			Long.class, minDate, maxDate, datePrecision, dateDistribution, false));
+    	this.dateGenerator.init(context);
     	this.timeOffsetGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, false));
+    	this.timeOffsetGenerator.init(context);
         super.init(context);
     }
 
