@@ -55,8 +55,7 @@ public class XmlDescriptorParser {
 
     public static String parseStringAttribute(Element element, String name, Context context, boolean resolveScript) {
 		Object value = parseAttribute(element, name, context, resolveScript);
-		String result = ToStringConverter.convert(value, null);
-		return StringUtil.unescape(result);
+		return ToStringConverter.convert(value, null);
 	}
 
     public static String parseStringAttribute(Attr attribute, Context context) {
