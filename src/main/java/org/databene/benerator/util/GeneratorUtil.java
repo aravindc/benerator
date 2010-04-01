@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 
@@ -74,5 +75,10 @@ public class GeneratorUtil {
     	}
 		return type;
 	}
+
+	public static void initAll(Generator<?>[] generators, GeneratorContext context) {
+	    for (Generator<?> generator : generators)
+	    	generator.init(context);
+    }
 
 }
