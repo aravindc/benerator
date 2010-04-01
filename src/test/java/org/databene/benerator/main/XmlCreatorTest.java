@@ -26,12 +26,15 @@
 
 package org.databene.benerator.main;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 
 import org.junit.Test;
 
 import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Tests the {@link XmlCreator}.<br/><br/>
@@ -41,18 +44,26 @@ import org.w3c.dom.Document;
  */
 public class XmlCreatorTest {
 
-	private static final String SCHEMA_FILE = "org/databene/platform/xml/simple-element-test.xsd";
+	private static final String SIMPLE_ELEMENT_FILE = "org/databene/platform/xml/simple-element-test.xsd";
+	private static final String ENUM_FILE = "org/databene/platform/xml/enum-test.xsd";
 
 	@Test
 	public void testSimpleTypeElement() throws IOException {
-        createXMLFile(SCHEMA_FILE, "root", "target/" + getClass().getSimpleName() + ".xml");
+        createXMLFile(SIMPLE_ELEMENT_FILE, "root", "target/simpleType.xml");
+    }
+	
+	@Test
+	public void testEnum() throws IOException {
+        Document doc = createXMLFile(ENUM_FILE, "address", "target/enum.xml");
+        Element address = doc.getDocumentElement();
+        String box = address.getAttribute("box");
+        assertTrue("".equals(box) || "0203".equals(box));
     }
 
     private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
     	String[] args = new String[] { schemaUri, root, filename, "1" };
         XmlCreator.main(args);
-        Document document = XMLUtil.parse(filename);
-        return document;
+        return XMLUtil.parse(filename);
     }
     
 }
