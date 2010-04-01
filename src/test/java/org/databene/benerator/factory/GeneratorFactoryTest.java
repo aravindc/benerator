@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,7 +47,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
-import org.databene.model.data.Uniqueness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -92,7 +91,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
     
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
-        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, sequence, Uniqueness.NONE);
+        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, sequence, false);
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             T n = generator.generate();
@@ -103,7 +102,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, WeightFunction weightFunction) {
-        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, weightFunction, Uniqueness.NONE);
+        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, weightFunction, false);
         generator.init(context);
         int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
         int[] count = new int[range];
@@ -217,13 +216,13 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetUniqueRegexGenerator() {
-      Generator<String> generator = GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{3}", 3, 3);
+      Generator<String> generator = GeneratorFactory.getRegexStringGenerator("[0-9]{3}", 3, 3, true);
       generator.init(context);
       expectUniqueGenerations(generator, 1000).withCeasedAvailability();
   }
 
     private void checkRegexGeneration(String pattern, int minLength, int maxLength, boolean nullable) {
-        Generator<String> generator = GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength);
+        Generator<String> generator = GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, false);
         generator.init(context);
         RegexStringGeneratorFactoryTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
