@@ -49,8 +49,7 @@ import org.databene.model.storage.StorageSystemConsumer;
 import org.w3c.dom.Element;
 
 /**
- * Parses a {@link Consumer} specification in an XML element in a descriptor file.<br/>
- * <br/>
+ * Parses a {@link Consumer} specification in an XML element in a descriptor file.<br/><br/>
  * Created at 24.07.2009 07:21:16
  * @since 0.6.0
  * @author Volker Bergmann
@@ -74,7 +73,6 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<Entity>> {
 	@SuppressWarnings("unchecked")
     public Consumer<Entity> evaluate(Context context) {
 		BeneratorContext beneratorContext = (BeneratorContext) context;
-		String entityName = parseStringAttribute(entityElement, ATT_NAME, context);
 		ConsumerChain<Entity> consumerChain = new ConsumerChain<Entity>();
 		
 		// parse consumer attribute
@@ -104,8 +102,10 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<Entity>> {
 			addConsumer(bean, beneratorContext, consumerChain);
 		}
 		
-		if (consumerChain.componentCount() == 0 && consumersExpected)
+		if (consumerChain.componentCount() == 0 && consumersExpected) {
+			String entityName = parseStringAttribute(entityElement, ATT_NAME, context, false);
 			escalator.escalate("No consumers defined for " + entityName, this, null);
+		}
 		for (Consumer<Entity> consumer : consumerChain.getComponents())
 			resourceManager.addResource(consumer);
 		return consumerChain;
