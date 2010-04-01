@@ -176,7 +176,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	private InstanceDescriptor mapEntityDescriptorElement(Element element,
 			BeneratorContext context) {
 		ModelParser parser = new ModelParser(context);
-		String entityType = parseStringAttribute(element, ATT_TYPE, context);
+		String entityType = parseStringAttribute(element, ATT_TYPE, context, false);
 		TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(entityType);
 		TypeDescriptor localType;
 		if (parentType != null) {
