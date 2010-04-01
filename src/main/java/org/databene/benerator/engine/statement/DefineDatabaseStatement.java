@@ -83,15 +83,15 @@ public class DefineDatabaseStatement implements Statement {
 	    String idValue = id.evaluate(context);
 		DBSystem db = new DBSystem(
 	    		idValue, 
-	    		url.evaluate(context), 
-	    		driver.evaluate(context), 
-	    		user.evaluate(context), 
-	    		password.evaluate(context));
-	    db.setSchema(schema.evaluate(context));
+	    		ExpressionUtil.evaluate(url, context), 
+	    		ExpressionUtil.evaluate(driver, context), 
+	    		ExpressionUtil.evaluate(user, context), 
+	    		ExpressionUtil.evaluate(password, context));
+	    db.setSchema(ExpressionUtil.evaluate(schema, context));
 	    db.setTableFilter(ExpressionUtil.evaluate(tableFilter, context));
-	    db.setBatch(batch.evaluate(context));
-	    db.setFetchSize(fetchSize.evaluate(context));
-	    db.setBatch(readOnly.evaluate(context));
+	    db.setBatch(ExpressionUtil.evaluate(batch, context));
+	    db.setFetchSize(ExpressionUtil.evaluate(fetchSize, context));
+	    db.setBatch(ExpressionUtil.evaluate(readOnly, context));
 	    context.set(idValue, db);
 	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate());
 	    resourceManager.addResource(db);
