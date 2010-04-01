@@ -73,23 +73,23 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public SimpleTypeDescriptor(String name, String parentName) {
         super(name, parentName);
         // number setup
-        addConstraint(MIN,             String.class,   "1", new MaxNumberStringOperation());
-        addConstraint(MAX,             String.class,   "9", new MinNumberStringOperation());
-        addConstraint(MIN_EXCLUSIVE,   String.class,   "0", new MaxNumberStringOperation());
-        addConstraint(MAX_EXCLUSIVE,   String.class,  "10", new MinNumberStringOperation());
-        addConstraint(TOTAL_DIGITS,    String.class,  "10", new FirstArgSelector<String>());
-        addConstraint(FRACTION_DIGITS, String.class,   "0", new FirstArgSelector<String>());
-        addConfig(PRECISION,            String.class,   "1");
+        addConstraint(MIN,             String.class,  "1", new MaxNumberStringOperation());
+        addConstraint(MAX,             String.class,  "9", new MinNumberStringOperation());
+        addConstraint(MIN_EXCLUSIVE,   String.class,  "0", new MaxNumberStringOperation());
+        addConstraint(MAX_EXCLUSIVE,   String.class, "10", new MinNumberStringOperation());
+        addConstraint(TOTAL_DIGITS,    String.class, "10", new FirstArgSelector<String>());
+        addConstraint(FRACTION_DIGITS, String.class,  "0", new FirstArgSelector<String>());
+        addConfig(PRECISION,           String.class,  "1");
         // boolean setup
-        addConfig(TRUE_QUOTA,           Double.class,   0.5);
+        addConfig(TRUE_QUOTA,          Double.class, 0.5);
         // string setup
-        addConstraint(MIN_LENGTH,      Integer.class,     1, new MaxOperation<Integer>());
-        addConstraint(MAX_LENGTH,      Integer.class,    30, new MinOperation<Integer>());
-        addConfig(LENGTH_DISTRIBUTION,  String.class, "random");
+        addConstraint(MIN_LENGTH,      Integer.class,  1, new MaxOperation<Integer>());
+        addConstraint(MAX_LENGTH,      Integer.class, 30, new MinOperation<Integer>());
+        addConfig(LENGTH_DISTRIBUTION, String.class, "random");
         // other config
-        addConfig(VALUES,               String.class, null);
-        addConfig(CONSTANT,             String.class, null);
-        addConfig(MAP,                  String.class, null);
+        addConfig(VALUES,              String.class, null);
+        addConfig(CONSTANT,            String.class, null);
+        addConfig(MAP,                 String.class, null);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -206,7 +206,11 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     }
 
 	public void addValue(String value) {
-		setValues(getValues() + ',' + value);
+		String valuesBefore = getValues();
+		if (valuesBefore == null || valuesBefore.length() == 0)
+			setValues(value);
+		else
+			setValues(valuesBefore + ',' + value);
 	}
 
     public String getConstant() {
