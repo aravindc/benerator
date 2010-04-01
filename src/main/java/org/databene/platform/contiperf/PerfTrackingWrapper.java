@@ -28,7 +28,7 @@ import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
 import org.databene.contiperf.PerformanceRequirement;
 import org.databene.contiperf.PerformanceTracker;
-import org.databene.contiperf.log.FileExecutionLogger;
+import org.databene.contiperf.log.ConsoleExecutionLogger;
 
 /**
  * Common parent class for Benerator runners that support performance tracking.<br/><br/>
@@ -40,6 +40,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 
 	private PerformanceTracker tracker;
 	private PerformanceRequirement requirement;
+	private ExecutionLogger executionLogger;
 
 	protected abstract Invoker getInvoker();
 
@@ -50,6 +51,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	public PerfTrackingWrapper(PerformanceTracker tracker) {
 	    this.tracker = tracker;
 	    this.requirement = new PerformanceRequirement();
+	    this.executionLogger = new ConsoleExecutionLogger();
     }
 	
 	public void setMax(int max) {
@@ -60,13 +62,16 @@ public abstract class PerfTrackingWrapper implements Closeable {
 		requirement.setPercentiles(percentilesSpec);
 	}
 	
+	public void setExecutionLogger(ExecutionLogger executionLogger) {
+		this.executionLogger = executionLogger;
+	}
+	
 	public PerformanceTracker getTracker() {
 		if (tracker == null) {
 			// the tracker is initialized lazily for allowing the class to be first constructed in a simple way 
 			// and then be configured by calling the property setters.
 			Invoker invoker = getInvoker();
-			ExecutionLogger logger = new FileExecutionLogger();
-			tracker = new PerformanceTracker(invoker, requirement, logger);
+			tracker = new PerformanceTracker(invoker, requirement, executionLogger);
 		}
 		return tracker;
 	}
