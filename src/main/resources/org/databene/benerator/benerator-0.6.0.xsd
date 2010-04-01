@@ -340,6 +340,9 @@
                 <xs:element ref="generate"        minOccurs="0" />
                 <xs:element ref="iterate"         minOccurs="0" />
                 <xs:element ref="execute"         minOccurs="0" />
+                <xs:element ref="wait"            minOccurs="0" />
+                <xs:element ref="if"              minOccurs="0" />
+                <xs:element ref="while"           minOccurs="0" />
             </xs:sequence>
             <xs:attributeGroup ref="generator-attrs" />
             <xs:attribute name="minCount"  type="xs:string"/>
