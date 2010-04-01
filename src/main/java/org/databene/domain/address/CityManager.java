@@ -52,7 +52,7 @@ public class CityManager {
     private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
 
     public static void readCities(Country country) {
-        String filename = "org/databene/domain/address/city_" + Country.GERMANY.getIsoCode() + ".csv";
+        String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
         readCities(country, filename, new HashMap<String, String>());
     }
 
