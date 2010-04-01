@@ -139,8 +139,9 @@ public class Person {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[name='" + name + "', birthDate=" + df.format(birthDate) 
-			+ ", score=" + score + ", registered=" + registered + ", rank='" + rank + "'";
+		return getClass().getSimpleName() + "[name='" + name + "', " +
+				"birthDate=" + (birthDate != null ? df.format(birthDate) : "null") + ", " +
+				"score=" + score + ", registered=" + registered + ", rank='" + rank + "'";
 	}
 	
 }
