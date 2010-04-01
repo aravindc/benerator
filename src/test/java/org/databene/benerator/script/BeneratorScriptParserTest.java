@@ -90,6 +90,7 @@ public class BeneratorScriptParserTest {
 	@Test
 	public void testStringLiteral() throws Exception {
 		checkExpression("Test", "'Test'");
+		checkExpression("\r\n", "'\\r\\n'");
 		checkExpression("", "''");
 	}
 	
@@ -98,6 +99,7 @@ public class BeneratorScriptParserTest {
 		checkExpression("", "new java.lang.String()");
 		checkExpression("Test", "new java.lang.String('Test')");
 		checkExpression("Test", "new java.lang.String(new java.lang.String('Test'))");
+		checkExpression("\r\n", "new java.lang.String('\\r\\n')");
 	}
 	
 	@Test public void testEnum() throws Exception {
@@ -460,6 +462,9 @@ public class BeneratorScriptParserTest {
 		checkBeanSpec(new Person("Alice", TimeUtil.date(1972, 1, 3), 102, true, 'A'),
 				"new org.databene.benerator.test.Person{name='Alice', birthDate=(date) '1972-02-03', score=102, " +
 				"registered=true, rank='A'}");
+		checkBeanSpec(new Person("X\r\n", null, 0, false, 'A'),
+				"new org.databene.benerator.test.Person{name='X\\r\\n', birthDate=null, score=0, " +
+				"registered=false, rank='A'}");
 	}
 
 	@Test
