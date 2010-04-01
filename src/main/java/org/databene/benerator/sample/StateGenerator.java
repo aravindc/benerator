@@ -39,6 +39,7 @@ import org.databene.benerator.script.WeightedTransition;
 import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
+import org.databene.commons.StringUtil;
 
 /**
  * Generates states as configured by a state machine.<br/>
@@ -56,6 +57,10 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
 	
 	// initialization --------------------------------------------------------------------------------------------------
 
+    public StateGenerator() {
+	    this((String) null);
+    }
+    
     @SuppressWarnings("unchecked")
     public StateGenerator(String transitionSpec) {
 	    this((Class<E>) Object.class);
@@ -70,6 +75,10 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
     
     @SuppressWarnings("unchecked")
     public void setTransitions(String transitionSpec) {
+		if (StringUtil.isEmpty(transitionSpec)) {
+			transitions.clear();
+			return;
+		}
     	try {
     		WeightedTransition[] ts = BeneratorScriptParser.parseTransitionList(transitionSpec);
 	    	for (WeightedTransition t : ts)
