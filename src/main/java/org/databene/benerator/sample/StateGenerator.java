@@ -115,13 +115,13 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
     }
 	
     public E generate() throws IllegalGeneratorStateException {
-    	if (state == GeneratorState.closed)
+    	if (state == GeneratorState.CLOSED)
     		return null;
     	E result = nextState;
 	    MappedSampleGenerator<E> subGenerator = transitions.get(nextState);
 		nextState = subGenerator.generate();
 		if (nextState == null)
-			state = GeneratorState.closed;
+			state = GeneratorState.CLOSED;
 		return result;
     }
 

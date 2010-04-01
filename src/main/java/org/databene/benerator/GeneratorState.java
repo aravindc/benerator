@@ -28,6 +28,5 @@ package org.databene.benerator;
  * @author Volker Bergmann
  */
 public enum GeneratorState {
-
-	created, initialized, closed
+	CREATED, RUNNING, CLOSED
 }

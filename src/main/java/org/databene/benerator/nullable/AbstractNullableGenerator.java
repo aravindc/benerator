@@ -34,21 +34,21 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  */
 public abstract class AbstractNullableGenerator<E> implements NullableGenerator<E> {
 	
-	protected GeneratorState state = GeneratorState.created;
+	protected GeneratorState state = GeneratorState.CREATED;
 
 	public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-	    state = GeneratorState.initialized;
+	    state = GeneratorState.RUNNING;
     }
 
 	// internal helpers ------------------------------------------------------------------------------------------------
     
     protected final void assertNotInitialized() {
-	    if (state != GeneratorState.created)
+	    if (state != GeneratorState.CREATED)
     		throw new IllegalGeneratorStateException("Trying to initialize generator in state " + state);
     }
 
     protected final void assertInitialized() {
-    	if (state != GeneratorState.initialized)
+    	if (state != GeneratorState.RUNNING)
     		throw new IllegalGeneratorStateException("Generator was not initialized: " + this);
     }
     

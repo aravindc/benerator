@@ -40,34 +40,34 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	protected GeneratorContext context;
 
 	public AbstractGenerator() {
-	    this.state = GeneratorState.created;
+	    this.state = GeneratorState.CREATED;
     }
 
 	public synchronized void init(GeneratorContext context) {
 		this.context = context;
-		this.state = GeneratorState.initialized;
+		this.state = GeneratorState.RUNNING;
     }
 
 	public void reset() {
-	    this.state = GeneratorState.initialized;
+	    this.state = GeneratorState.RUNNING;
 	}
 	
 	public void close() {
-	    this.state = GeneratorState.closed;
+	    this.state = GeneratorState.CLOSED;
 	}
 	
 	// internal helpers ------------------------------------------------------------------------------------------------
     
     protected final void assertNotInitialized() {
-	    if (state != GeneratorState.created)
-	    	if (state == GeneratorState.initialized)
+	    if (state != GeneratorState.CREATED)
+	    	if (state == GeneratorState.RUNNING)
 	    		throw new IllegalGeneratorStateException("Trying to initialize generator a 2nd time: " + this);
 	    	else
 	    		throw new IllegalGeneratorStateException("Trying to initialize generator in '" + state + "' state: " + this);
     }
 
     protected final void assertInitialized() {
-    	if (state != GeneratorState.initialized)
+    	if (state != GeneratorState.RUNNING)
     		throw new IllegalGeneratorStateException("Generator was not initialized: " + this);
     }
     
