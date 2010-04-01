@@ -94,7 +94,10 @@ public class DescriptorUtil {
 	        Generator<?> generator = null;
 	        String generatorSpec = descriptor.getGenerator();
 	        if (generatorSpec != null) {
-	        	generator = (Generator) BeneratorScriptParser.parseBeanSpec(generatorSpec).evaluate(context);
+	        	if (generatorSpec.startsWith("{") && generatorSpec.endsWith("}"))
+	        		generatorSpec = generatorSpec.substring(1, generatorSpec.length() - 1);
+	        	Expression<?> beanCreator = BeneratorScriptParser.parseBeanSpec(generatorSpec);
+				generator = (Generator) beanCreator.evaluate(context);
 	            mapDetailsToBeanProperties(descriptor, generator, context);
 	        }
 	        return generator;
