@@ -215,9 +215,9 @@ public class BeneratorScriptParser {
 	    return parser;
     }
 	
-    private static ParseException mapToParseException(RecognitionException e, String text) {
-    	return new ParseException("Error parsing Benerator Script expression: " + e.getMessage(), 
-    			text, e.line, e.charPositionInLine);
+    private static ParseException mapToParseException(RecognitionException cause, String text) {
+    	return new ParseException("Error parsing Benerator Script expression", cause, 
+    			text, cause.line, cause.charPositionInLine);
     }
 
     private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws ParseException {
