@@ -56,6 +56,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected Expression<PageListener> pageListener;
 	protected PerformanceTracker tracker;
 	protected boolean infoLog;
+	protected boolean initialized;
 	
 	public GenerateOrIterateStatement(GeneratorTask task,
 			Generator<Long> countGenerator, Expression<Long> pageSize, Expression<PageListener> pageListener, 
@@ -66,6 +67,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    this.threads = threads;
 	    this.pageListener = pageListener;
 	    this.infoLog = infoLog;
+	    this.initialized = false;
     }
 
 	public void setTask(GeneratorTask task) {
@@ -75,7 +77,10 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
     public void execute(BeneratorContext context) {
-		countGenerator.init(context);
+    	if (!initialized) {
+    		countGenerator.init(context);
+    		initialized = true;
+    	}
     	Task taskToUse = this.task;
     	int threadCount = threads.evaluate(context);
 		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
