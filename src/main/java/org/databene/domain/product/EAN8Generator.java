@@ -65,10 +65,7 @@ public class EAN8Generator extends GeneratorWrapper<String, String> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-        if (unique)
-            setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{7}", 7, 7));
-        else
-            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7));
+        setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7, unique));
         super.init(context);
     }
     

@@ -40,7 +40,6 @@ import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVCellIterable;
 import org.databene.document.csv.CSVLineIterable;
-import org.databene.model.data.Uniqueness;
 import org.databene.regex.RegexParser;
 
 import java.text.DateFormat;
@@ -91,10 +90,10 @@ public class GeneratorFactory {
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, T precision,
-            Distribution distribution, Uniqueness uniqueness) {
+            Distribution distribution, boolean unique) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
-        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
+        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique);
     }
     
     /**
@@ -108,10 +107,10 @@ public class GeneratorFactory {
      */
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
-            Distribution distribution, Uniqueness uniqueness) {
+            Distribution distribution, boolean unique) {
         if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
-        return distribution.createGenerator(numberType, min, max, precision, uniqueness.isUnique()); 
+        return distribution.createGenerator(numberType, min, max, precision, unique); 
         // TODO v0.6.1 define difference between precision and fractionDigits and implement it accordingly
     }
 
@@ -294,14 +293,9 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      * @throws ConfigurationError 
      */
-    public static Generator<String> getRegexStringGenerator(String pattern, int minLength, Integer maxLength) 
+    public static Generator<String> getRegexStringGenerator(String pattern, int minLength, Integer maxLength, boolean unique) 
             	throws ConfigurationError {
-        return getUniqueRegexStringGenerator(pattern, minLength, maxLength);
-    }
-
-    public static Generator<String> getUniqueRegexStringGenerator(
-            String pattern, int minLength, Integer maxLength) throws ConfigurationError {
-        Generator<String> generator = RegexGeneratorFactory.create(pattern, maxLength, true);
+        Generator<String> generator = RegexGeneratorFactory.create(pattern, maxLength, unique);
         return new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength));
     }

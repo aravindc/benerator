@@ -61,10 +61,7 @@ public class EAN13Generator extends GeneratorWrapper<String, String> {
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-        if (unique)
-            setSource(GeneratorFactory.getUniqueRegexStringGenerator("[0-9]{12}", 12, 12));
-        else
-            setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{12}", 12, 12));
+        setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{12}", 12, 12, unique));
         super.init(context);
     }
     

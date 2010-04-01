@@ -386,7 +386,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
         return GeneratorFactory.getNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
+                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness.isUnique());
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
@@ -427,10 +427,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         if (locale == null)
             locale = (Locale) descriptor.getDetailDefault(LOCALE);
         // evaluate uniqueness and create generator
-        if (uniqueness.isUnique())
-            return GeneratorFactory.getUniqueRegexStringGenerator(pattern, minLength, maxLength);
-        else
-            return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength);
+        return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, uniqueness.isUnique());
     }
     
     @SuppressWarnings("unchecked")
