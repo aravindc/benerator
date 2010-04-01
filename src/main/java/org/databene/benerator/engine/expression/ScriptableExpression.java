@@ -62,7 +62,7 @@ public class ScriptableExpression extends DynamicExpression<Object> {
 
 	@Override
 	public String toString() {
-		return scriptOrText.toString();
+		return (ScriptUtil.isScript(scriptOrText) ? scriptOrText : "'" + scriptOrText + "'");
 	}
 	
 }
