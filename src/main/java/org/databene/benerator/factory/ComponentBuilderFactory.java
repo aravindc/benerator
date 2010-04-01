@@ -207,7 +207,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     public static ComponentBuilder createIdBuilder(IdDescriptor id, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(id, context);
-        generator = createMultiplicityWrapper(id, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return new PlainComponentBuilder(id.getName(), generator, DescriptorUtil.getNullQuota(id));
