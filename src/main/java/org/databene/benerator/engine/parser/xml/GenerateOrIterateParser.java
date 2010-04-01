@@ -76,7 +76,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GenerateOrIterateParser.class);
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
-			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER, EL_WAIT);
+			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	private Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
