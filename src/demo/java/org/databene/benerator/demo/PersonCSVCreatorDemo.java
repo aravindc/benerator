@@ -26,6 +26,7 @@
 
 package org.databene.benerator.demo;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.domain.person.PersonGenerator;
 import org.databene.domain.person.Person;
@@ -56,7 +57,9 @@ public class PersonCSVCreatorDemo {
             System.out.println("Running...");
             long startMillis = System.currentTimeMillis();
             writer.setVariable("length", LENGTH);
-            FileBuilder.build(new PersonGenerator(), LENGTH, writer);
+            PersonGenerator generator = new PersonGenerator();
+            generator.init(new BeneratorContext());
+			FileBuilder.build(generator, LENGTH, writer);
             long elapsedTime = System.currentTimeMillis() - startMillis;
             System.out.println("Created file " + FILE_NAME + " with " + LENGTH + " entries " +
                     "within " + (elapsedTime / 1000) + "s (" + (LENGTH * 1000L / elapsedTime) + " entries per second)");

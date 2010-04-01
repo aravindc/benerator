@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,20 +26,20 @@
 
 package org.databene.benerator.demo;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.domain.address.Country;
 import org.databene.domain.person.PersonGenerator;
 
 import java.util.Locale;
 
 /**
- * Demonstrates the use of the PersonGenerator.<br/>
- * <br/>
- * Created: 07.06.2007 17:03:28
+ * Demonstrates the programmatic use of the {@link PersonGenerator}.
  * @author Volker Bergmann
  */
 public class PersonDemo {
     public static void main(String[] args) {
         PersonGenerator generator = new PersonGenerator(Country.US, Locale.US);
+        generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++)
             System.out.println(generator.generate());
         generator.close();
