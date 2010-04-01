@@ -83,8 +83,12 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
     }
 
 	protected void resetMembers(Long maxValue) {
-		Long minValue = min.evaluate(context);
-		Long precisionValue = precision.evaluate(context);
+		Long minValue = ExpressionUtil.evaluate(min, context);
+		if (minValue == null)
+			minValue = 0L;
+		Long precisionValue = ExpressionUtil.evaluate(precision, context);
+		if (precisionValue == null)
+			precisionValue = 1L;
 	    Distribution dist = distribution.evaluate(context);
 		source = dist.createGenerator(Long.class, minValue, maxValue, precisionValue, false);
         source.init(context);
