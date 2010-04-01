@@ -61,6 +61,7 @@ import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.PartDescriptor;
+import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
@@ -777,7 +778,10 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             String nodeName = localName(child);
             String value = child.getAttribute(VALUE);
             if (ENUMERATION.equals(nodeName)) {
-                descriptor.addValue(value);
+            	if (PrimitiveType.STRING.equals(descriptor.getPrimitiveType()))
+            		descriptor.addValue("'" + value + "'");
+            	else
+            		descriptor.addValue(value);
             } else if (MIN_INCLUSIVE.equals(nodeName)) {
                 descriptor.setMin(value);
             } else if (MAX_INCLUSIVE.equals(nodeName)) {
