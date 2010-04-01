@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,6 +43,7 @@ public class UserValidator extends EntityValidator {
         super(entityName);
     }
 
+    @Override
     public boolean valid(Entity user) {
         if (user.getComponent("id") == null)
             return false;
@@ -57,11 +58,11 @@ public class UserValidator extends EntityValidator {
             return false;*/
         Object active = user.getComponent("active");
         if (active instanceof Number) {
-            int value = ((Number)active).intValue();
-            if (active == null || value < 0 || value > 1)
+            int value = ((Number) active).intValue();
+            if (value < 0 || value > 1)
                 return false;
         } else if (active instanceof Boolean)
-            return active != null;
+            return (Boolean) active;
         else
             return false;
         return true;

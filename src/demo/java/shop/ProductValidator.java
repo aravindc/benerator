@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -47,6 +47,7 @@ public class ProductValidator extends EntityValidator {
 
     private EANValidator eanValidator = new EANValidator();
     
+    @Override
     public boolean valid(Entity product) {
         if (!super.valid(product))
             return false;

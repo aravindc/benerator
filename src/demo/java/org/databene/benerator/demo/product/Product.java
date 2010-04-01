@@ -71,6 +71,7 @@ public class Product {
         this.category = category;
     }
 
+    @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         if (category != null) {

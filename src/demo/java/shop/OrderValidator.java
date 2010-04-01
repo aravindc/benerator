@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,6 +46,7 @@ public class OrderValidator extends EntityValidator {
         super(entityName);
     }
 
+    @Override
     public boolean valid(Entity order) {
         if (!super.valid(order))
             return false;
