@@ -166,10 +166,10 @@ public class XLSEntityExporter extends FormattingConsumer<Entity> implements Fil
 	        PrimitiveType primitiveType;
 	        if (cd.getTypeDescriptor() instanceof SimpleTypeDescriptor)
 	            primitiveType = ((SimpleTypeDescriptor) cd.getTypeDescriptor()).getPrimitiveType();
-            else
+	        else
 	        	throw new UnsupportedOperationException("Can only export simple type attributes, " +
 	        			"failed to export " + entity.type() + '.' + cd.getName());
-	        Class<?> javaType = primitiveType.getJavaType();
+	        Class<?> javaType = (primitiveType != null ? primitiveType.getJavaType() : String.class);
 	        String formatString = null;
 	        if (BeanUtil.isIntegralNumberType(javaType))
 	            formatString = getIntegralPattern();
