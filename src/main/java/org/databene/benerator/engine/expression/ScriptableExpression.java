@@ -38,14 +38,19 @@ public class ScriptableExpression extends DynamicExpression<Object> {
 
 	private String scriptOrText;
 	private Expression<?> defaultValueExpression;
+	private boolean isScript;
 
     public ScriptableExpression(String scriptOrText, Object defaultValue) {
     	this(scriptOrText, (defaultValue != null ? new ConstantExpression<Object>(defaultValue) : null));
     }
 
     private ScriptableExpression(String scriptOrText, Expression<?> defaultValueExpression) {
-    	this.scriptOrText = scriptOrText;
     	this.defaultValueExpression = defaultValueExpression;
+    	this.isScript = ScriptUtil.isScript(scriptOrText);
+    	if (isScript)
+    		this.scriptOrText = StringUtil.unescape(scriptOrText);
+    	else
+    		this.scriptOrText = scriptOrText;
     }
     
     public static Expression<?> createWithDefaultExpression(
