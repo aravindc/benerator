@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Expression;
 
 /**
- * Represents an assignment of an expression (result) to a target name.<br/>
- * <br/>
+ * Represents an assignment of an expression (result) to a target name.<br/><br/>
  * Created at 08.10.2009 19:06:08
  * @since 0.6.0
  * @author Volker Bergmann
@@ -52,6 +51,11 @@ public class Assignment {
 	
 	public Expression<?> getExpression() {
 		return expression;
+	}
+	
+	@Override
+	public String toString() {
+	    return name + "=" + expression;
 	}
 	
 }

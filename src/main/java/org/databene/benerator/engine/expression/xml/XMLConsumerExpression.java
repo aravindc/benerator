@@ -126,4 +126,9 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<Entity>> {
     	chain.addComponent(consumer);
 	}
 
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName() + '(' + XMLUtil.format(entityElement) + ')';
+	}
+	
 }

@@ -54,4 +54,9 @@ public class ScriptableLiteral extends UnaryExpression<Object> {
 			return feed;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '(' + term + ')';
+    }
+    
 }

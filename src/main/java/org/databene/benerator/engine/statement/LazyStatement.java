@@ -57,4 +57,9 @@ public class LazyStatement implements Statement { // TODO v0.6.1 remove this cla
 	    getTarget(context).execute(context);
     }
 
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName() + '(' + (target != null ? target : targetExpression) + ')';
+	}
+
 }

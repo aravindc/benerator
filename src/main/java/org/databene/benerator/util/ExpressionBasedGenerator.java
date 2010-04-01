@@ -48,4 +48,9 @@ public class ExpressionBasedGenerator<E> extends ThreadSafeGenerator<E> {
 	    return generatedType;
     }
 
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName() + "(" + expression + " -> " + generatedType + ")";
+	}
+	
 }
