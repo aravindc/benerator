@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,19 +26,20 @@
 
 package org.databene.benerator.demo;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.domain.address.Address;
 import org.databene.domain.address.AddressGenerator;
 import org.databene.domain.address.Country;
 
 /**
- * Demonstrates the use of the AddressGenerator.<br/>
- * <br/> 
- * Created: 07.06.2007 16:59:55
+ * Demonstrates the use of the {@link AddressGenerator}.
+ * @author Volker Bergmann
  */
 public class AddressDemo { 
 	
     public static void main(String[] args) {
         AddressGenerator generator = new AddressGenerator(Country.US);
+        generator.init(new BeneratorContext());
         for (int i = 0; i < 3; i++) {
             Address address = generator.generate();
 			System.out.println(address);
@@ -47,4 +48,5 @@ public class AddressDemo {
             System.out.println();
         }
     }
+    
 }
