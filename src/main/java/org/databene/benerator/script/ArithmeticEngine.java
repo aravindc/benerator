@@ -235,8 +235,10 @@ public class ArithmeticEngine {
 	    else if (resultType == BigDecimal.class)
 	    	return ((BigDecimal) s1).divide((BigDecimal) s2);
 	    else
-	    	throw new UnsupportedOperationException("Multiplication of type " + BeanUtil.simpleClassName(dividend) + 
-	    		" with " + BeanUtil.simpleClassName(divisor) + " is not supported");
+	    	throw new UnsupportedOperationException(
+	    			"Multiplication of type " + 
+	    			BeanUtil.simpleClassName(dividend) + " (" + dividend + ") with " + 
+	    			BeanUtil.simpleClassName(divisor) + " (" + divisor + ") is not supported");
     }
 
     @SuppressWarnings("unchecked")
