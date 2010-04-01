@@ -48,18 +48,23 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
     }
 	
 	public PerfTrackingConsumer(Consumer<Object> target, String id) {
+		this.id = id;
 	    this.target = target;
     }
 	
 	// properties ------------------------------------------------------------------------------------------------------
 	
+    public void setId(String id) {
+    	this.id = id;
+    }
+
     public void setTarget(Consumer<Object> target) {
 	    this.target = target;
     }
 	
     // Consumer interface implementation -------------------------------------------------------------------------------
     
-    public void startConsuming(Object object) {
+	public void startConsuming(Object object) {
 	    try {
 	        getTracker().invoke(new Object[] { object });
         } catch (Exception e) {
