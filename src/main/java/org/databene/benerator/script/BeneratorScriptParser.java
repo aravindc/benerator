@@ -350,7 +350,9 @@ public class BeneratorScriptParser {
 
     private static Expression<String> convertStringLiteral(CommonTree node) {
 		String rawString = node.getText();
-		return new ConstantExpression<String>(rawString.substring(1, rawString.length() - 1));
+		String text = rawString.substring(1, rawString.length() - 1);
+		text = StringUtil.unescape(text);
+		return new ConstantExpression<String>(text);
     }
 
     private static Expression<String> convertIdentifier(CommonTree node) {
