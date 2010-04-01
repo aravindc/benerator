@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package shop;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,9 +45,9 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
-
-import java.io.IOException;
+import org.junit.Test;
 
 import javax.validation.ConstraintValidator;
 
@@ -57,16 +57,17 @@ import javax.validation.ConstraintValidator;
  * Created: 28.02.2008 15:17:13
  * @author Volker Bergmann
  */
-public class ShopXMLTest extends TestCase {
+public class ShopXMLTest {
     
     private static final Log logger = LogFactory.getLog(ShopXMLTest.class);
     
     String schemaUri = "demo/shop/shop.xsd";
     String contextUri = IOUtil.getContextUri(schemaUri);
     
-    public void test() throws IOException {
-        
-        System.setProperty("stage", "test");
+    @Test
+    public void test() {
+
+    	System.setProperty("stage", "test");
         
         BeneratorContext context = new BeneratorContext(contextUri);
         XMLSchemaDescriptorProvider provider = new XMLSchemaDescriptorProvider(schemaUri, context);
@@ -96,13 +97,14 @@ public class ShopXMLTest extends TestCase {
         checkComplexType("customer", provider, new CustomerValidator());
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void checkSimpleType(String name, XMLSchemaDescriptorProvider provider, Object validator) {
         SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) provider.getTypeDescriptor(name);
         logger.debug("");
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-            descriptor, false, false, provider.getContext());
+            descriptor, false, Uniqueness.NONE, provider.getContext());
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
             logger.debug(object);
@@ -110,20 +112,22 @@ public class ShopXMLTest extends TestCase {
         }
     }
 
-	private <T> void validate(T object, Object validator) {
+	@SuppressWarnings("unchecked")
+    private <T> void validate(T object, Object validator) {
 		if (validator instanceof ConstraintValidator)
 			assertTrue("Invalid object: " + object, ((ConstraintValidator) validator).isValid(object, null));
 		else
 			assertTrue("Invalid object: " + object, ((Validator<T>) validator).valid(object));
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void checkSimpleType(String name, XMLSchemaDescriptorProvider provider, Validator<T> validator) {
         SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) provider.getTypeDescriptor(name);
         logger.debug("");
         logger.debug("Testing simple type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-            descriptor, false, false, provider.getContext());
+            descriptor, false, Uniqueness.NONE, provider.getContext());
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
             logger.debug(object);
@@ -137,12 +141,13 @@ public class ShopXMLTest extends TestCase {
         logger.debug("Testing complex type: " + descriptor.getName());
         logger.debug("-------------------------------------");
         Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
-                descriptor, false, provider.getContext());
-        for (int i = 0; i < 10; i++)
-            if (generator.available()) {
-                Entity entity = generator.generate();
-                logger.debug(entity);
-                assertTrue("Invalid entity: " + entity, validator.valid(entity));
+        		"instance", descriptor, Uniqueness.NONE, provider.getContext());
+        for (int i = 0; i < 10; i++) {
+            Entity entity = generator.generate();
+            if (entity != null) {
+	            logger.debug(entity);
+	            assertTrue("Invalid entity: " + entity, validator.valid(entity));
             }
+        }
     }
 }

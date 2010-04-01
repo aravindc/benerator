@@ -7,7 +7,7 @@
 		elementFormDefault="qualified">
 		
 	<xs:annotation>
-		<xs:appinfo><ben:include uri="{demo/shop/shop.${stage}.properties}"/></xs:appinfo>
+		<xs:appinfo><ben:include uri="{ftl:demo/shop/shop.${stage}.properties}"/></xs:appinfo>
 	</xs:annotation>
 
 	<xs:simpleType name="category-id">
@@ -89,14 +89,14 @@
 				<xs:element ref="customer" minOccurs="0" maxOccurs="unbounded">
 					<xs:annotation>
 						<xs:appinfo>
-							<ben:part count="{ftl:${customer_count}}" />
+							<ben:part count="{customer_count}" />
 						</xs:appinfo>
 					</xs:annotation>
 				</xs:element>
 				<xs:element ref="order"    minOccurs="0" maxOccurs="unbounded">
 					<xs:annotation>
 						<xs:appinfo>
-							<ben:part count="{ftl:${customer_count * orders_per_customer}}" />
+							<ben:part count="{customer_count * orders_per_customer}" />
 						</xs:appinfo>
 					</xs:annotation>
 				</xs:element>
@@ -261,7 +261,7 @@
 					</xs:attribute>
 					<xs:attribute name="salutation">
 						<xs:annotation>
-							<xs:appinfo><ben:part script="{${person.salutation}}"/></xs:appinfo>
+							<xs:appinfo><ben:part script="person.salutation"/></xs:appinfo>
 						</xs:annotation>
 						<xs:simpleType>
 							<xs:restriction base="xs:string">
@@ -271,12 +271,12 @@
 					</xs:attribute>
 					<xs:attribute name="first_name" type="string30" use="required">
 						<xs:annotation>
-							<xs:appinfo><ben:part script="{${person.givenName}}"/></xs:appinfo>
+							<xs:appinfo><ben:part script="person.givenName"/></xs:appinfo>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="last_name" type="string30" use="required">
 						<xs:annotation>
-							<xs:appinfo><ben:part script="{${person.familyName}}"/></xs:appinfo>
+							<xs:appinfo><ben:part script="person.familyName"/></xs:appinfo>
 						</xs:annotation>
 					</xs:attribute>
 					<xs:attribute name="birth_date" type="xs:date" />
@@ -291,7 +291,7 @@
 				<xs:element ref="order_item" minOccurs="1" maxOccurs="unbounded">
 					<xs:annotation>
 						<xs:appinfo>
-							<ben:part minCount="1" maxCount="{${orders_per_customer * 2 - 1}}" countDistribution="cumulated"/>
+							<ben:part minCount="1" maxCount="{orders_per_customer * 2 - 1}" countDistribution="cumulated"/>
 						</xs:appinfo>
 					</xs:annotation>
 				</xs:element>
@@ -317,7 +317,7 @@
 				<!-- TODO v1.0 calculate total price 
 				<xs:annotation>
 					<xs:appinfo>
-						<ben:part script="{${(product[1] * order_item.number_of_items)?c}}" />
+						<ben:part script="product[1] * order_item.number_of_items" />
 					</xs:appinfo>
 				</xs:annotation> -->
 			</xs:attribute>

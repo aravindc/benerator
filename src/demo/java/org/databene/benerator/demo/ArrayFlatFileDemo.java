@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,12 +28,15 @@ package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
-import org.databene.benerator.wrapper.FormatFormatGenerator;
+import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.*;
+import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
@@ -93,19 +96,22 @@ public class ArrayFlatFileDemo {
         private static Generator<Object>[] createSources() {
             Generator<Date> dateGenerator = GeneratorFactory.getDateGenerator( // transaction date
                     TimeUtil.date(2004, 0, 1), TimeUtil.date(2006, 11, 31), Period.DAY.getMillis(),
-                    Sequence.RANDOM, 0);
-            return (Generator<Object>[]) new Generator[] {
+                    SequenceManager.RANDOM_SEQUENCE);
+            FormatFormatConverter<Date> dateRenderer = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat("yyyyMMdd"), false);
+			Generator<Object>[] sources = (Generator<Object>[]) new Generator[] {
                     new ConstantGenerator<String>("R"),
-                    GeneratorFactory.getNumberGenerator(Integer.class, 1, LENGTH, 1, Sequence.RANDOM_WALK, 0),
+                    GeneratorFactory.getNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, false),
                     GeneratorFactory.getSampleGenerator("BUY", "SALE"), // transaction type
-                    new FormatFormatGenerator(dateGenerator, new SimpleDateFormat("yyyyMMdd")),
+                    new ConvertingGenerator(dateGenerator, dateRenderer), // transaction date
                     GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly"), // partner
-                    GeneratorFactory.getRegexStringGenerator("[A-Z0-9]{6}", 6, 6, null, 0), // article number
-                    GeneratorFactory.getNumberGenerator(Integer.class, 1, 20, 1, Sequence.RANDOM, 0), // item count
+                    GeneratorFactory.getRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
+                    GeneratorFactory.getNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, false), // item count
                     GeneratorFactory.getNumberGenerator(BigDecimal.class, // item price
                             new BigDecimal("0.50"), new BigDecimal("99.99"), new BigDecimal("0.01"),
-                            Sequence.CUMULATED, 0)
+                            SequenceManager.CUMULATED_SEQUENCE, false)
             };
+			GeneratorUtil.initAll(sources, new BeneratorContext());
+			return sources;
         }
     }
 

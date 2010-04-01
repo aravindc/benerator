@@ -2,9 +2,11 @@ package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
 import org.databene.benerator.distribution.sequence.StepSequence;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 
 import javax.swing.*;
@@ -30,19 +32,25 @@ public class DistributionDemo {
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new GridLayout(2, 4));
         contentPane.setBackground(Color.WHITE);
-        contentPane.add(new DistributionPane("random", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, Sequence.RANDOM, 0)));
-        contentPane.add(new DistributionPane("cumulated", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, Sequence.CUMULATED, 0)));
-        contentPane.add(new DistributionPane("randomWalk[0,2]", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, new RandomWalkSequence(BigDecimal.valueOf(0), BigDecimal.valueOf(2)), 0)));
-        contentPane.add(new DistributionPane("randomWalk[-1,1]", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, new RandomWalkSequence(BigDecimal.valueOf(-1), BigDecimal.valueOf(1)), 0)));
-        contentPane.add(new DistributionPane("step[1]", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, new StepSequence(BigDecimal.ONE), 0)));
-        contentPane.add(new DistributionPane("wedge", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, Sequence.WEDGE, 0)));
-        contentPane.add(new DistributionPane("shuffle", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, new ShuffleSequence(BigDecimal.valueOf(8)), 0)));
-        contentPane.add(new DistributionPane("bitreverse", GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, Sequence.BIT_REVERSE, 0)));
+        contentPane.add(createDistributionPane("random", SequenceManager.RANDOM_SEQUENCE));
+        contentPane.add(createDistributionPane("cumulated", SequenceManager.CUMULATED_SEQUENCE));
+        contentPane.add(createDistributionPane("randomWalk[0,2]", new RandomWalkSequence(BigDecimal.valueOf(0), BigDecimal.valueOf(2))));
+        contentPane.add(createDistributionPane("randomWalk[-1,1]", new RandomWalkSequence(BigDecimal.valueOf(-1), BigDecimal.valueOf(1))));
+        contentPane.add(createDistributionPane("step[1]", new StepSequence(BigDecimal.ONE)));
+        contentPane.add(createDistributionPane("wedge", SequenceManager.WEDGE_SEQUENCE));
+        contentPane.add(createDistributionPane("shuffle", new ShuffleSequence(BigDecimal.valueOf(8))));
+        contentPane.add(createDistributionPane("bitreverse", SequenceManager.BIT_REVERSE_SEQUENCE));
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
+    private static DistributionPane createDistributionPane(String label, Sequence sequence) {
+    	Generator<Integer> generator = GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, sequence, false);
+    	generator.init(new BeneratorContext());
+		return new DistributionPane(label, generator);
+    }
+    
     /** Pane that displays a title and a visualization of the Sequence's products */
     private static class DistributionPane extends Component {
 

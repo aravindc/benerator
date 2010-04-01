@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.task;
 
+import org.databene.commons.Context;
+import org.databene.commons.ErrorHandler;
 import org.databene.task.AbstractTask;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -35,12 +37,15 @@ import org.apache.commons.logging.Log;
  * and logging that opinion on info level.<br/>
  * <br/>
  * Created: 19.08.2007 16:26:37
+ * @author Volker Bergmann
  */
 public class SpecialTask extends AbstractTask {
 
     private static final Log logger = LogFactory.getLog(SpecialTask.class);
     
-    public void run() {
+	public TaskResult execute(Context context, ErrorHandler errorHandler) {
         logger.info("I'm special");
+        return TaskResult.EXECUTING;
     }
+
 }

@@ -1,6 +1,7 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 
 /**
@@ -15,11 +16,15 @@ public class RegexDemo {
     private static final String EMAIL_PATTERN = "[a-z][a-z0-9\\.]{3,12}[a-z0-9]@[a-z0-9]{3,12}\\.com";
 
     public static void main(String[] args) {
-        Generator<String> phoneGenerator = GeneratorFactory.getRegexStringGenerator(PHONE_PATTERN, 1, 16, null, 0);
+    	BeneratorContext context = new BeneratorContext();
+        Generator<String> phoneGenerator = GeneratorFactory.getRegexStringGenerator(PHONE_PATTERN, 1, 16, false);
+        phoneGenerator.init(context);
         for (int i = 0; i < 5; i++)
             System.out.println(phoneGenerator.generate());
-        Generator<String> emailGenerator = GeneratorFactory.getRegexStringGenerator(EMAIL_PATTERN, 1, 16, null, 0);
+        Generator<String> emailGenerator = GeneratorFactory.getRegexStringGenerator(EMAIL_PATTERN, 1, 100, false);
+        emailGenerator.init(context);
         for (int i = 0; i < 5; i++)
             System.out.println(emailGenerator.generate());
     }
+    
 }

@@ -2,7 +2,7 @@ package org.databene.benerator.demo;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.AbstractWeightFunction;
-import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.factory.GeneratorFactory;
 
 import javax.swing.*;
@@ -22,8 +22,8 @@ public class ScatterplotDemo extends Component {
 
 	@Override
     public void paint(Graphics g) {
-        Generator<Integer> xGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getWidth(), 1, new XFunction(), 0);
-        Generator<Integer> yGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getHeight(), 1, Sequence.CUMULATED, 0.);
+        Generator<Integer> xGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getWidth(), 1, new XFunction(), false);
+        Generator<Integer> yGen = GeneratorFactory.getNumberGenerator(Integer.class, 0, getHeight(), 1, SequenceManager.CUMULATED_SEQUENCE, false);
         int n = getWidth() * getHeight() / 16;
         for (int i = 0; i < n; i++) {
             int x = xGen.generate();

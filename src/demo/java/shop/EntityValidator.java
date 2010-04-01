@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,15 +37,16 @@ import org.databene.model.data.Entity;
  */
 public class EntityValidator implements Validator<Entity> {
 
-    private String entityName;
+    private String entityType;
     
-    public EntityValidator(String entityName) {
-        this.entityName = entityName;
+    public EntityValidator(String entityType) {
+        this.entityType = entityType;
     }
 
     public boolean valid(Entity entity) {
         if (entity == null)
             return false;
-        return entityName.equalsIgnoreCase(entity.name());
+        return entityType.equalsIgnoreCase(entity.type());
     }
+    
 }

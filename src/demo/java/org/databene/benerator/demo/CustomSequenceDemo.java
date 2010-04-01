@@ -1,8 +1,9 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.util.LightweightGenerator;
+import org.databene.benerator.util.SimpleGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.benerator.Generator;
 
@@ -12,13 +13,15 @@ import org.databene.benerator.Generator;
  * 3, 5, 7, ...<br/>
  * <br/>
  * Created: 13.09.2006 20:27:54
+ * @author Volker Bergmann
  */
 public class CustomSequenceDemo {
 
 	/** Defines the Sequence 'odd', creates an Integer generator that acceses it and invokes the generator 10 times */
     public static void main(String[] args) {
         Sequence odd = new OddNumberSequence();
-        Generator<Integer> generator = GeneratorFactory.getNumberGenerator(Integer.class, 3, Integer.MAX_VALUE, 2, odd, 0);
+        Generator<Integer> generator = GeneratorFactory.getNumberGenerator(Integer.class, 3, Integer.MAX_VALUE, 2, odd, false);
+        generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++)
             System.out.println(generator.generate());
     }
@@ -30,14 +33,14 @@ public class CustomSequenceDemo {
 	        super("odd");
         }
 
-        @Override
-        public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision) {
+		public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+                boolean unique) {
         	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());
-			return WrapperFactory.wrapNumberGenerator(numberType, doubleGenerator);
+			return WrapperFactory.wrapNumberGenerator(numberType, doubleGenerator, min, precision);
         }
     }
 
-    public static class OddNumberGenerator extends LightweightGenerator<Double> {
+    public static class OddNumberGenerator extends SimpleGenerator<Double> {
     	
     	private double min;
     	private double max;
@@ -62,12 +65,9 @@ public class CustomSequenceDemo {
 	        return Double.class;
         }
     	
-        @Override
-        public boolean available() {
-            return (next < max);
-        }
-        
         public Double generate() {
+        	if (next >= max)
+        		return null;
 	        double result = next;
 	        next += precision;
 	        return result;
