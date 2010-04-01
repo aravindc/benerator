@@ -74,8 +74,9 @@ public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
     
     @Override
     public void init(GeneratorContext context) {
-        super.init(context);
         baseGen = new RandomLongGenerator(min, max);
+        baseGen.init(context);
+        super.init(context);
     }
     
 }

@@ -55,6 +55,7 @@ public class CumulatedDoubleGenerator extends AbstractNumberGenerator<Double> {
     public void init(GeneratorContext context) {
         super.init(context);
         baseGen = new RandomDoubleGenerator(min, max);
+        baseGen.init(context);
     }
 
     public Double generate() {
