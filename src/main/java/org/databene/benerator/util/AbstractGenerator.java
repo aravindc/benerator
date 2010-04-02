@@ -47,6 +47,10 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 		this.context = context;
 		this.state = GeneratorState.RUNNING;
     }
+	
+	public boolean wasInitialized() {
+	    return (state != GeneratorState.CREATED);
+	}
 
 	public void reset() {
 	    this.state = GeneratorState.RUNNING;

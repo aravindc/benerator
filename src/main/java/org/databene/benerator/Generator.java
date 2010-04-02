@@ -69,6 +69,8 @@ public interface Generator<E> extends ThreadAware, Resettable, Closeable {
 
     void init(GeneratorContext context);
     
+    boolean wasInitialized();
+    
     /**
      * Returns an instance of the generic type E.
      */

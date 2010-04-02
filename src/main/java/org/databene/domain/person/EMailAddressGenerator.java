@@ -78,7 +78,11 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements Genera
 		personGenerator.init(context);
 		super.init(context);
     }
-
+	
+	public boolean wasInitialized() {
+	    return personGenerator.wasInitialized();
+	}
+	
 	public void reset() {
     }
 

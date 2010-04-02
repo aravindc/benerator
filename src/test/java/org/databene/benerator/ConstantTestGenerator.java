@@ -37,13 +37,16 @@ public class ConstantTestGenerator<E> implements Generator<E> {
 
     private final E value;
     private String lastMethodCall;
+    private boolean initialized;
 
     public ConstantTestGenerator(E value) {
         this.value = value;
         this.lastMethodCall = "constructor";
+        this.initialized = false;
     }
 
     public void init(GeneratorContext context) {
+    	this.initialized = true;
     }
 
     @SuppressWarnings("unchecked")
@@ -56,8 +59,8 @@ public class ConstantTestGenerator<E> implements Generator<E> {
         return value;
     }
 
-    public boolean available() {
-        return true;
+    public boolean wasInitialized() {
+        return initialized;
     }
 
     public void reset() {

@@ -38,10 +38,12 @@ public class SequenceTestGenerator<E> implements Generator<E> {
 
     private E[] sequence;
     int cursor;
+    boolean initialized;
 
     public SequenceTestGenerator(E... sequence) {
         this.sequence = sequence;
         this.cursor = 0;
+        this.initialized = false;
     }
 
     public void init(GeneratorContext context) {
@@ -60,8 +62,8 @@ public class SequenceTestGenerator<E> implements Generator<E> {
         return sequence[cursor++];
     }
 
-    public boolean available() {
-        return cursor < sequence.length;
+    public boolean wasInitialized() {
+        return initialized;
     }
 
     public void reset() {

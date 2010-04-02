@@ -69,6 +69,10 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
         	varGen.init(context);
         entityGenerator.init(context);
 	}
+	
+	public boolean wasInitialized() {
+	    return entityGenerator.wasInitialized();
+	}
 
 	@SuppressWarnings("unchecked")
     public Entity generate() {

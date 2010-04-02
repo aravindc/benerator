@@ -41,6 +41,10 @@ public class SynchronizedGeneratorProxy<E> implements Generator<E> {
 	public synchronized void init(GeneratorContext context) {
 	    source.init(context);
     }
+	
+	public synchronized boolean wasInitialized() {
+		return source.wasInitialized();
+	}
 
 	public synchronized Class<E> getGeneratedType() {
 	    return source.getGeneratedType();
