@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,7 +42,7 @@ public class SeedSentenceGeneratorTest extends GeneratorTest {
 
 	@Test
 	public void test() throws Exception {
-		SeedSentenceGenerator generator = new SeedSentenceGenerator("gg.txt");
+		SeedSentenceGenerator generator = new SeedSentenceGenerator("license.txt");
 		generator.init(context);
 		for (int i = 0; i < 10; i++) {
 	        String sentence = generator.generate();
