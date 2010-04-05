@@ -35,12 +35,12 @@
 	<property name="dbPassword" value="" />
 	<property name="dbBatch"    value="false" />
 	
-	<if test="context.get('stage') == null">
+	<if test="benerator.get('stage') == null">
 		<comment>no stage specified, using 'development'</comment>
 		<execute>stage = 'development'</execute>
 	</if>
 
-	<if test="context.get('database') == null">
+	<if test="benerator.get('database') == null">
 		<comment>no database specified, using 'hsqlmem'</comment>
 		<execute>database = 'hsqlmem'</execute>
 	</if>
