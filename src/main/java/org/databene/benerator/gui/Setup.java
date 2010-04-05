@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,14 +29,20 @@ package org.databene.benerator.gui;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Locale;
 
+import org.databene.benerator.archetype.Archetype;
+import org.databene.benerator.archetype.ArchetypeManager;
+import org.databene.benerator.main.DBSnapshotTool;
 import org.databene.commons.FileUtil;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ObservableBean;
+import org.databene.commons.db.JDBCDriverInfo;
 import org.databene.commons.ui.I18NError;
 
 /**
@@ -47,13 +53,14 @@ import org.databene.commons.ui.I18NError;
  * @author Volker Bergmann
  */
 
-public class Setup implements ObservableBean {
+public class Setup implements ObservableBean, Serializable {
+	
+	private static final long serialVersionUID = 3353941855988168161L;
 	
 	private static final String DEFAULT_PROJECT_NAME = "myproject";
 	private static final String DEFAULT_GROUP_ID = "com.my";
 	private static final String DEFAULT_PROJECT_VERSION = "1.0";
 
-	private static final String DEFAULT_DB_URL = "jdbc:oracle:thin:@127.0.0.1:1521:XE";
 	private static final String DEFAULT_DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
 
 	private PropertyChangeSupport changeSupport;
@@ -62,6 +69,8 @@ public class Setup implements ObservableBean {
 	private String  groupId;
 	private String  version;
 	private File    projectFolder;
+	
+	private Archetype archetype;
 	
 	private boolean eclipseProject;
 	private boolean offline;
@@ -73,19 +82,19 @@ public class Setup implements ObservableBean {
 	private String locale;
 	private String dataset;
 
-	private boolean databaseProject;
+	private JDBCDriverInfo jdbcDriverType;
 	private String dbUrl;
 	private String dbDriver;
 	private String dbPassword;
 	private String dbSchema;
 	private String dbUser;
 	
+	private File dropScriptFile;
+	private File createScriptFile;
 	private String dbSnapshot;
 	
 	private MavenDependency[] dbDependencies;
 
-	private File[] importFiles;
-	
 	public Setup() {
 		this.changeSupport = new PropertyChangeSupport(this);
 		
@@ -102,16 +111,25 @@ public class Setup implements ObservableBean {
 		setLocale(Locale.getDefault().toString());
 		setDataset(LocaleUtil.getDefaultCountryCode());
 
-		this.databaseProject = true;
 		String url = System.getenv("DEFAULT_DATABASE");
-		if (StringUtil.isEmpty(url))
-			url = DEFAULT_DB_URL;
+		if (!StringUtil.isEmpty(url)) {
+			for (JDBCDriverInfo candidate : JDBCDriverInfo.getInstances()) {
+				String prefix = candidate.getUrlPrefix();
+				if (url.startsWith(prefix)) {
+					setJdbcDriverType(candidate);
+					break;
+				}
+			}
+			if (jdbcDriverType == null)
+				setJdbcDriverType(JDBCDriverInfo.HSQL);
+		}
 		setDbUrl(url);
 		setDbDriver(DEFAULT_DB_DRIVER);
 		setDbUser(SystemInfo.getUserName());
 		setDbSnapshot("DbUnit");
-		this.importFiles = new File[0];
-		this.dbDependencies = new MavenDependency[0]; // TODO v0.6 handle maven dependencies
+		this.dbDependencies = new MavenDependency[0]; // TODO v0.6.1 handle maven dependencies
+		if (archetype == null)
+			setArchetype(ArchetypeManager.getInstance().getDefaultArchetype());
 	}
 
 	public String getProjectName() {
@@ -142,6 +160,16 @@ public class Setup implements ObservableBean {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+
+	public void setArchetype(Archetype archetype) {
+		Archetype oldValue = this.archetype;
+	    this.archetype = archetype;
+		changeSupport.firePropertyChange("eclipseProject", oldValue, this.archetype);
+    }
+
+	public Archetype getArchetype() {
+    	return archetype;
+    }
 
 	public boolean isEclipseProject() {
 		return eclipseProject;
@@ -222,13 +250,28 @@ public class Setup implements ObservableBean {
 	}
 	
 	public boolean isDatabaseProject() {
-    	return databaseProject;
+    	return archetype.getId().endsWith("db");
     }
 
-	public void setDatabaseProject(boolean databaseProject) {
-		boolean oldValue = this.databaseProject;
-    	this.databaseProject = databaseProject;
-    	changeSupport.firePropertyChange("databaseProject", oldValue, this.databaseProject);
+	public JDBCDriverInfo getJdbcDriverType() {
+    	return jdbcDriverType;
+    }
+
+	public void setJdbcDriverType(JDBCDriverInfo driver) {
+		JDBCDriverInfo oldValue = this.jdbcDriverType;
+    	this.jdbcDriverType = driver;
+    	changeSupport.firePropertyChange("jdbcDriverType", oldValue, this.jdbcDriverType);
+    	if (!NullSafeComparator.equals(oldValue, this.jdbcDriverType)) {
+    		String urlPattern = driver.getUrlPattern();
+			String db = driver.getDefaultDatabase();
+			if (StringUtil.isEmpty(db))
+				db = "<database>";
+			setDbUrl(MessageFormat.format(urlPattern, 
+					"<host>", driver.getDefaultPort(), db));
+			setDbDriver(driver.getDriverClass());
+			setDbUser(driver.getDefaultUser());
+			setDbSchema(driver.getDefaultSchema());
+    	}
     }
 
 	public String getDbUrl() {
@@ -285,6 +328,22 @@ public class Setup implements ObservableBean {
 		if (this.dbPassword == null || NullSafeComparator.equals(oldValue, this.dbPassword))
 			setDbPassword(dbUser);
 	}
+	
+	public File getDropScriptFile() {
+    	return dropScriptFile;
+    }
+
+	public void setDropScriptFile(File dropScriptFile) {
+    	this.dropScriptFile = dropScriptFile;
+    }
+
+	public File getCreateScriptFile() {
+    	return createScriptFile;
+    }
+
+	public void setCreateScriptFile(File createScriptFile) {
+    	this.createScriptFile = createScriptFile;
+    }
 
 	public MavenDependency[] getDbDependencies() {
 		return dbDependencies;
@@ -297,27 +356,13 @@ public class Setup implements ObservableBean {
 	public String getDbSnapshot() {
 		return dbSnapshot;
 	}
+	
+	public boolean isDbUnitSnapshot() {
+		return DBSnapshotTool.DBUNIT_FORMAT.equals(dbSnapshot);
+	}
 
 	public void setDbSnapshot(String dbSnapshot) {
 		this.dbSnapshot = dbSnapshot;
-	}
-	
-	public File[] getImportFiles() {
-		return importFiles;
-	}
-
-	public void setImportFiles(File... importFiles) {
-		File[] oldValue = this.importFiles;
-		this.importFiles = importFiles;
-		changeSupport.firePropertyChange("importFiles", oldValue, this.importFiles);
-	}
-
-	public void addImportFile(File importFile) {
-		File[] oldValue = this.importFiles;
-		this.importFiles = new File[oldValue.length + 1];
-		System.arraycopy(oldValue, 0, this.importFiles, 0, oldValue.length);
-		this.importFiles[this.importFiles.length - 1] = importFile;
-		changeSupport.firePropertyChange("importFiles", oldValue, this.importFiles);
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
