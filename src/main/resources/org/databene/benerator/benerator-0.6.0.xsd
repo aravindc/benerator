@@ -129,7 +129,11 @@
 	<!-- Outputs a message to the console. -->
 	<xs:element name="echo">
 		<xs:complexType>
-			<xs:attribute name="message" type="xs:string" use="required"/>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="message" type="xs:string" />
+				</xs:extension>
+			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
 	
