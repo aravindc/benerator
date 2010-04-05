@@ -45,7 +45,7 @@ public class BeneratorShutdownHook extends Thread {
 	@Override
 	public void run() {
 		try {
-			logger.debug("Running shutdown hook");
+			logger.debug("Shutdown down Benerator...");
 			resourceManager.close();
 		} catch (IOException e) {
 	        logger.error("Error closing resource manager", e);
