@@ -84,10 +84,10 @@ import org.databene.text.LFNormalizingStringBuilder;
 
 public class ProjectBuilder implements Runnable {
 
-	private static final char TAB = '\t';
+	private static final String TAB = "    ";
     private static final String DBUNIT_SNAPSHOT_FILENAME = "base.dbunit.xml";
-	private static final String COMMENT_DBUNIT = "Create a valid predefined base data set for regression testing by " +
-		"importing a DbUnit file";
+	private static final String COMMENT_SNAPSHOT = "Create a valid predefined base data set for regression testing " +
+			"by importing a snapshot file";
 	private static final String COMMENT_DROP_TABLES = "Drop the current tables and sequences if they already exist";
 	private static final String COMMENT_CREATE_TABLES = "Create the tables and sequences";
 
@@ -258,11 +258,11 @@ public class ProjectBuilder implements Runnable {
 	}
 
 	private File createProjectPropertiesFile() {
-		String filename = setup.getProjectName() + ".properties";
+		String filename = "benerator.properties";
 		noteMonitor("creating " + filename);
 		File file = setup.projectFile(filename);
 		PrintWriter writer = null;
-		try { 
+		try { // TODO parse existing benerator.properties file and replace ${setup.} expressions instead of overwriting it
 			writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			writer.println("benerator.defaultEncoding=" + setup.getEncoding());
 		} catch (IOException e) {
@@ -332,7 +332,7 @@ public class ProjectBuilder implements Runnable {
     			} else if (EL_GENERATE.equals(nodeName)) {
     				Map<String, String> attributes = tokenizer.attributes();
     				if (DBUNIT_SNAPSHOT_FILENAME.equals(attributes.get(ATT_SOURCE))) {
-	    		    	if (setup.isDbUnitSnapshot())
+	    		    	if (setup.getDbSnapshot() != null)
 	    		    		appendElement(nodeName, attributes, writer, false);
     				} else if ("tables".equals(attributes.get(ATT_TYPE))) {
     					generateTables(setup, writer);
@@ -417,7 +417,7 @@ public class ProjectBuilder implements Runnable {
 		String commentText = tokenizer.text().trim();
 		if (   (COMMENT_DROP_TABLES.equals(commentText) && setup.getDropScriptFile() == null)
 			|| (COMMENT_CREATE_TABLES.equals(commentText) && setup.getCreateScriptFile() == null) 
-			|| (COMMENT_DBUNIT.equals(commentText) && !setup.isDbUnitSnapshot())) {
+			|| (COMMENT_SNAPSHOT.equals(commentText) && setup.getDbSnapshot() == null)) {
 				while (tokenizer.nextToken() != HTMLTokenizer.END_TAG) {
 					// skip all elements until comment end
 				}
@@ -434,7 +434,7 @@ public class ProjectBuilder implements Runnable {
           	ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) descriptor;
           	final String name = complexType.getName();
           	InstanceDescriptor iDesc = new InstanceDescriptor(name, name);
-          	if (setup.isDbUnitSnapshot())
+          	if (setup.getDbSnapshot() != null)
           		iDesc.setCount(ExpressionUtil.constant(0L));
           	else
           		iDesc.setCount(ExpressionUtil.constant(db.countEntities(name)));
@@ -470,7 +470,7 @@ public class ProjectBuilder implements Runnable {
             addAttribute(cd, writer);
         writer.append(TAB);
         appendEndElement(EL_GENERATE, writer);
-        writer.append("\n\n\t");
+        writer.append("\n\n").append(TAB);
     }
 	
     private static void appendEndElement(String nodeName, LFNormalizingStringBuilder writer) {
