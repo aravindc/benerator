@@ -35,7 +35,6 @@ import java.util.Locale;
 
 import org.databene.benerator.archetype.Archetype;
 import org.databene.benerator.archetype.ArchetypeManager;
-import org.databene.benerator.main.DBSnapshotTool;
 import org.databene.commons.FileUtil;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.NullSafeComparator;
@@ -126,7 +125,7 @@ public class Setup implements ObservableBean, Serializable {
 		setDbUrl(url);
 		setDbDriver(DEFAULT_DB_DRIVER);
 		setDbUser(SystemInfo.getUserName());
-		setDbSnapshot("DbUnit");
+		setDbSnapshot("dbunit");
 		this.dbDependencies = new MavenDependency[0]; // TODO v0.6.1 handle maven dependencies
 		if (archetype == null)
 			setArchetype(ArchetypeManager.getInstance().getDefaultArchetype());
@@ -357,10 +356,6 @@ public class Setup implements ObservableBean, Serializable {
 		return dbSnapshot;
 	}
 	
-	public boolean isDbUnitSnapshot() {
-		return DBSnapshotTool.DBUNIT_FORMAT.equals(dbSnapshot);
-	}
-
 	public void setDbSnapshot(String dbSnapshot) {
 		this.dbSnapshot = dbSnapshot;
 	}
