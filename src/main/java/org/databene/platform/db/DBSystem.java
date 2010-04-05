@@ -374,13 +374,11 @@ public class DBSystem extends AbstractStorageSystem {
     // database-specific interface -------------------------------------------------------------------------------------
 
     public void createSequence(String name) throws SQLException {
-    	checkDialect();
-		dialect.createSequence(name, 1, getThreadContext().connection);
+		getDialect().createSequence(name, 1, getThreadContext().connection);
     }
 
     public void dropSequence(String name) throws SQLException {
-    	checkDialect();
-        execute(dialect.renderDropSequence(name));
+        execute(getDialect().renderDropSequence(name));
     }
 
     public void execute(String sql) throws SQLException {
@@ -388,13 +386,11 @@ public class DBSystem extends AbstractStorageSystem {
     }
     
     public long nextSequenceValue(String sequenceName) {
-    	checkDialect();
-    	return DBUtil.queryLong(dialect.renderFetchSequenceValue(sequenceName), getThreadContext().connection);
+    	return DBUtil.queryLong(getDialect().renderFetchSequenceValue(sequenceName), getThreadContext().connection);
     }
     
     public void setSequenceValue(String sequenceName, long increment) throws SQLException {
-    	checkDialect();
-    	dialect.setSequenceValue(sequenceName, increment, getThreadContext().connection);
+    	getDialect().setSequenceValue(sequenceName, increment, getThreadContext().connection);
     }
     
     public Connection createConnection() {
@@ -428,7 +424,7 @@ public class DBSystem extends AbstractStorageSystem {
             this.tables = new HashMap<String, DBTable>();
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
-            checkDialect();
+            getDialect(); // make sure dialect is initialized
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
@@ -449,9 +445,7 @@ public class DBSystem extends AbstractStorageSystem {
         return getClass().getSimpleName() + '[' + user + '@' + url + ']';
     }
 
-    // private helpers ------------------------------------------------------------------------------
-
-    private void checkDialect() {
+    public DatabaseDialect getDialect() {
     	if (dialect == null) {
         	try {
         		DatabaseMetaData metaData = getThreadContext().connection.getMetaData();
@@ -460,8 +454,11 @@ public class DBSystem extends AbstractStorageSystem {
     	        throw new ConfigurationError("Database meta data access failed", e);
     		}
     	}
+    	return dialect;
     }
     
+    // private helpers ------------------------------------------------------------------------------
+
 	private QueryIterable createQuery(String query, Context context, Connection connection) {
 	    return new QueryIterable(connection, query, fetchSize, (dynamicQuerySupported ? context : null));
     }
