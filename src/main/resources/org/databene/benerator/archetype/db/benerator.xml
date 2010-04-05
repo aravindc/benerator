@@ -13,22 +13,24 @@
     <comment>defining a database that will be referred by the id 'db' later</comment>
     <database id="db" />
 
-	<comment>Drop the current tables and sequences if they already exist</comment>
+	<comment>Drop the testtable if it already exist. If it does not exist yet, the error message is ignored</comment>
 	<execute target="db" onError="ignore">
 		drop table testtable;
 	</execute>
 	
-	<comment>Create the tables and sequences</comment>
-	<execute target="db" optimize="true">
+	<comment>Creating testtable</comment>
+	<execute target="db" >
 		create table testtable (
-			id integer primary key,
-			value integer
-		);
+			id int not null,
+			n  int not null,
+			primary key (id)
+		)
 	</execute>
 	
-	<generate type="testtable" consumer="db" count="100">
+	<comment>Generating 100 entries for testtable</comment>
+	<generate type="testtable" consumer="db,ConsoleExporter" count="100">
 		<id name="id" />
-		<attribute name="value" />
+		<attribute name="n" min="1" max="42" distribution="cumulated"/>
 	</generate>
 
 </setup>
