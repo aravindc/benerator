@@ -73,6 +73,7 @@ import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.db.DBSystem;
+import org.databene.text.LFNormalizingStringBuilder;
 
 /**
  * Creates benerator project archetypes.<br/>
@@ -279,28 +280,27 @@ public class ProjectBuilder implements Runnable {
     	if (descriptorFile.exists()) { // not applicable for XML schema based generation
 	    	BufferedReader reader = IOUtil.getReaderForURI(descriptorFile.getAbsolutePath());
 			DefaultHTMLTokenizer tokenizer = new DefaultHTMLTokenizer(reader);
-	    	StringBuilder writer = new StringBuilder(2000);
+	    	String lineSeparator = setup.getLineSeparator();
+	    	if (lineSeparator == null)
+	    		lineSeparator = SystemInfo.getLineSeparator();
+			LFNormalizingStringBuilder writer = new LFNormalizingStringBuilder(lineSeparator);
 	    	while (tokenizer.nextToken() != HTMLTokenizer.END)
 	    		processToken(setup, tokenizer, writer);
-	    	IOUtil.writeTextFile(descriptorFile.getAbsolutePath(), writer.toString());
+	    	IOUtil.writeTextFile(descriptorFile.getAbsolutePath(), writer.toString(), "UTF-8");
     	}
     	monitor.advance();
     }
 
     private static void processToken(Setup setup, 
-    		DefaultHTMLTokenizer tokenizer, StringBuilder writer) 
+    		DefaultHTMLTokenizer tokenizer, LFNormalizingStringBuilder writer) 
     			throws FileNotFoundException, IOException, ParseException {
 
-    	String lineSeparator = setup.getLineSeparator();
-    	if (lineSeparator == null)
-    		lineSeparator = SystemInfo.getLineSeparator();
-    	
     	switch (tokenizer.tokenType()) {
     		case HTMLTokenizer.START_TAG: {
     			String nodeName = tokenizer.name();
-				if ("setup".equals(nodeName))
-    				appendStartTag(nodeName, renderSetupAttributes(tokenizer, setup), writer, lineSeparator);
-				else if ("comment".equals(nodeName))
+				if (EL_SETUP.equals(nodeName))
+    				appendStartTag(nodeName, renderSetupAttributes(tokenizer, setup), writer, true);
+				else if (EL_COMMENT.equals(nodeName))
     				processComment(tokenizer, setup, writer);
     			else
     				writer.append(tokenizer.text());
@@ -308,9 +308,9 @@ public class ProjectBuilder implements Runnable {
     		}
     		case HTMLTokenizer.CLOSED_TAG: {
     			String nodeName = tokenizer.name();
-    			if ("database".equals(nodeName) && setup.isDatabaseProject()) {
-    				appendElement(nodeName, renderDbAttributes(setup, tokenizer), writer, "");
-    			} else if ("execute".equals(nodeName)) {
+    			if (EL_DATABASE.equals(nodeName) && setup.isDatabaseProject()) {
+    				appendElement(nodeName, renderDbAttributes(setup, tokenizer), writer, false);
+    			} else if (EL_EXECUTE.equals(nodeName)) {
     				Map<String, String> attributes = tokenizer.attributes();
     				String uri = attributes.get("uri");
     				if ("{drop_tables.sql}".equals(uri)) {
@@ -318,14 +318,14 @@ public class ProjectBuilder implements Runnable {
     			    		File dropScriptFile = setup.getDropScriptFile();
     						copyToProject(dropScriptFile, setup.getProjectFolder());
     						attributes.put("uri", dropScriptFile.getName());
-    						appendElement(nodeName, attributes, writer, "");
+    						appendElement(nodeName, attributes, writer, false);
     			    	}
     				} else if ("{create_tables.sql}".equals(uri)) {
     			    	if (setup.getCreateScriptFile() != null) {
     			    		File createScriptFile = setup.getCreateScriptFile();
     						copyToProject(createScriptFile, setup.getProjectFolder());
     						attributes.put("uri", createScriptFile.getName());
-    						appendElement(nodeName, attributes, writer, "");
+    						appendElement(nodeName, attributes, writer, false);
     			    	}
     				} else
     					writer.append(tokenizer.text());
@@ -333,16 +333,16 @@ public class ProjectBuilder implements Runnable {
     				Map<String, String> attributes = tokenizer.attributes();
     				if (DBUNIT_SNAPSHOT_FILENAME.equals(attributes.get(ATT_SOURCE))) {
 	    		    	if (setup.isDbUnitSnapshot())
-	    		    		appendElement(nodeName, attributes, writer, "");
+	    		    		appendElement(nodeName, attributes, writer, false);
     				} else if ("tables".equals(attributes.get(ATT_TYPE))) {
-    					generateTables(setup, writer, lineSeparator);
+    					generateTables(setup, writer);
     				} else
     					writer.append(tokenizer.text());
     			} else
     				writer.append(tokenizer.text());
     			break;
     		}
-    		default: writer.append(StringUtil.normalizeLineSeparators(tokenizer.text(), lineSeparator));
+    		default: writer.append(tokenizer.text());
     	}
     }
     
@@ -358,9 +358,10 @@ public class ProjectBuilder implements Runnable {
 	    return attributes;
     }
 
-	private static void appendStartTag(String nodeName, Map<String, String> attributes, StringBuilder writer, String lineSeparator) {
+	private static void appendStartTag(String nodeName, Map<String, String> attributes, 
+			LFNormalizingStringBuilder writer, boolean wrapLines) {
 	    writer.append('<').append(nodeName);
-	    writeAttributes(attributes, writer, lineSeparator);
+	    writeAttributes(attributes, writer, wrapLines);
 	    writer.append('>');
     }
 
@@ -378,22 +379,22 @@ public class ProjectBuilder implements Runnable {
 	    return attributes;
     }
 	
-    private static void appendElement(String nodeName, Map<String, String> attributes, StringBuilder writer, String lineSeparator) {
+    private static void appendElement(String nodeName, Map<String, String> attributes, LFNormalizingStringBuilder writer, boolean wrapLines) {
 	    writer.append('<').append(nodeName);
-	    writeAttributes(attributes, writer, lineSeparator);
+	    writeAttributes(attributes, writer, wrapLines);
 	    writer.append("/>");
     }
 
-	private static void writeAttributes(Map<String, String> attributes, StringBuilder writer, String lineSeparator) {
+	private static void writeAttributes(Map<String, String> attributes, LFNormalizingStringBuilder writer, boolean wrapLines) {
 		int i = 0;
 	    for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-	    	if (!StringUtil.isEmpty(lineSeparator) && i > 0) 
+	    	if (wrapLines && i > 0) 
 	    		writer.append(TAB).append(TAB);
 	    	else
 	    		writer.append(' ');
 	    	writer.append(attribute.getKey()).append("=\"").append(attribute.getValue()).append("\"");
 	    	if (i < attributes.size() - 1)
-	    		writer.append(lineSeparator);
+	    		writer.append('\n');
 	    	i++;
 	    }
     }
@@ -403,7 +404,8 @@ public class ProjectBuilder implements Runnable {
     	FileUtil.copy(srcFile, dstFile, true);
     }
 	
-    private static void processComment(DefaultHTMLTokenizer tokenizer, Setup setup, StringBuilder writer) throws IOException, ParseException {
+    private static void processComment(DefaultHTMLTokenizer tokenizer, Setup setup, 
+    		LFNormalizingStringBuilder writer) throws IOException, ParseException {
     	String startText = tokenizer.text();
 	    int nextToken = tokenizer.nextToken();
 	    if (nextToken == HTMLTokenizer.END_TAG) {
@@ -425,7 +427,7 @@ public class ProjectBuilder implements Runnable {
 		}
     }
 	
-    private static void generateTables(Setup setup, StringBuilder writer, String lineSeparator) {
+    private static void generateTables(Setup setup, LFNormalizingStringBuilder writer) {
     	final DBSystem db = getDBSystem(setup);
     	TypeDescriptor[] descriptors = db.getTypeDescriptors();
 		for (TypeDescriptor descriptor : descriptors) {
@@ -436,7 +438,7 @@ public class ProjectBuilder implements Runnable {
           		iDesc.setCount(ExpressionUtil.constant(0L));
           	else
           		iDesc.setCount(ExpressionUtil.constant(db.countEntities(name)));
-			generate(iDesc, writer, lineSeparator);
+			generate(iDesc, writer);
        }
 	}
 
@@ -449,7 +451,7 @@ public class ProjectBuilder implements Runnable {
     }
 	
 	@SuppressWarnings("unchecked")
-    private static void generate(InstanceDescriptor descriptor, StringBuilder writer, String lineSeparator) {
+    private static void generate(InstanceDescriptor descriptor, LFNormalizingStringBuilder writer) {
         ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getTypeDescriptor();
         Map<String, String> attributes = new OrderedMap<String, String>();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
@@ -461,23 +463,21 @@ public class ProjectBuilder implements Runnable {
             }
         }
         attributes.put(ATT_CONSUMER, "db");
-        appendStartTag(EL_GENERATE, attributes, writer, "");
-        writer.append(lineSeparator);
+        appendStartTag(EL_GENERATE, attributes, writer, false);
+        writer.append('\n');
         
         for (ComponentDescriptor cd : type.getComponents())
-            addAttribute(cd, writer, lineSeparator);
+            addAttribute(cd, writer);
         writer.append(TAB);
         appendEndElement(EL_GENERATE, writer);
-        writer.append(lineSeparator);
-        writer.append(lineSeparator);
-        writer.append(TAB);
+        writer.append("\n\n\t");
     }
 	
-    private static void appendEndElement(String nodeName, StringBuilder writer) {
+    private static void appendEndElement(String nodeName, LFNormalizingStringBuilder writer) {
 	    writer.append("</").append(nodeName).append(">");
     }
 
-	private static void addAttribute(ComponentDescriptor component, StringBuilder writer, String lineSeparator) {
+	private static void addAttribute(ComponentDescriptor component, LFNormalizingStringBuilder writer) {
     	// normalize
     	boolean nullable = (component.isNullable() == null || component.isNullable());
 		if (component.getMaxCount() != null && component.getMaxCount().evaluate(null) == 1)
@@ -516,7 +516,7 @@ public class ProjectBuilder implements Runnable {
     	for (Map.Entry<String, String> entry : attributes.entrySet())
     		writer.append(' ').append(entry.getKey()).append("=\"").append(entry.getValue()).append('"');
     	writer.append(" /-->");
-    	writer.append(lineSeparator);
+    	writer.append('\n');
     }
     
 	private static void format(FeatureDetail<? extends Object> detail, Map<String, String> attributes) {
