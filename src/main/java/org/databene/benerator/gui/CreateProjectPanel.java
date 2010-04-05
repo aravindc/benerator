@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,13 +28,19 @@ package org.databene.benerator.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.DriverManager;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -47,8 +53,12 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.databene.benerator.archetype.ArchetypeManager;
+import org.databene.benerator.archetype.MavenFolderLayout;
 import org.databene.commons.FileUtil;
+import org.databene.commons.IOUtil;
 import org.databene.commons.converter.ToStringConverter;
+import org.databene.commons.db.JDBCDriverInfo;
 import org.databene.commons.ui.FileOperation;
 import org.databene.commons.ui.FileTypeSupport;
 import org.databene.commons.ui.I18NError;
@@ -58,7 +68,6 @@ import org.databene.gui.swing.SwingUtil;
 import org.databene.gui.swing.delegate.PropertyCheckBox;
 import org.databene.gui.swing.delegate.PropertyComboBox;
 import org.databene.gui.swing.delegate.PropertyFileField;
-import org.databene.gui.swing.delegate.PropertyFileList;
 import org.databene.gui.swing.delegate.PropertyTextField;
 import org.databene.gui.swing.ProgressMonitor;
 
@@ -72,6 +81,8 @@ import org.databene.gui.swing.ProgressMonitor;
  */
 public class CreateProjectPanel extends JPanel {
 	
+	private static final String SETUP_FILE = "setup.ser";
+
 	private static final long serialVersionUID = 167461075459757736L;
 
 	private static final int WIDE = 30;
@@ -80,7 +91,8 @@ public class CreateProjectPanel extends JPanel {
 	I18NSupport i18n;
 	PropertyFileField folderField;
 	JButton createButton;
-	JCheckBox dbProjectCheckBox;
+	JComboBox archetypeField;
+	JComboBox dbDriverTypeField;
 	JTextField dbUrlField;
 	JTextField dbDriverField;
 	JTextField dbUserField;
@@ -88,10 +100,12 @@ public class CreateProjectPanel extends JPanel {
 	JTextField dbPasswordField;
 	JComboBox dbSnapshotField;
 	JButton testButton;
+	PropertyFileField createTablesField;
+	PropertyFileField dropTablesField;
 	
-	public CreateProjectPanel(Setup setup, I18NSupport i18n) {
+	public CreateProjectPanel(I18NSupport i18n) {
 		super(new BorderLayout());
-		this.setup = setup;
+		this.setup = loadOrCreateSetup();
 		this.i18n = i18n;
 		
 		setBorder(BorderFactory.createEmptyBorder(16, 16, 16, 16));
@@ -129,8 +143,8 @@ public class CreateProjectPanel extends JPanel {
 	private Component createPropertiesPane() {
 		AlignedPane pane = AlignedPane.createVerticalPane(4);
 		
-		// project properties
-		createTextFieldRow("projectName", pane);
+		// project name
+		createTextField("projectName", pane);
 		folderField = new PropertyFileField(setup, "projectFolder", WIDE, 
 				FileTypeSupport.directoriesOnly, FileOperation.save);
 		folderField.addActionListener(new ActionListener() {
@@ -139,47 +153,62 @@ public class CreateProjectPanel extends JPanel {
 				if (! setup.isOverwrite() && folder.exists() && !FileUtil.isEmptyFolder(folder))
 					showErrors(i18n.getString("error.projectFolderNotEmpty"));
 			}
-			
 		});
+
+		// archetype
+		archetypeField = createComboBox("archetype", null, pane, (Object[]) ArchetypeManager.getInstance().getArchetypes());
+		ArchetypeListener archetypeListener = new ArchetypeListener();
+		archetypeField.addActionListener(archetypeListener);
+		pane.endRow();
+
+		// project folder
 		pane.addRow(i18n.getString("projectFolder"), folderField);
 		pane.addSeparator();
 		
+		// maven group id, version & options
 		createTextField("groupId", pane);
 		createTextField("version", pane);
 		pane.endRow();
-		
-		createCheckBox("eclipseProject", pane);
-		createCheckBox("overwrite", pane);
-		pane.endRow();
-		
-		dbProjectCheckBox = createCheckBox("databaseProject", pane);
-		dbProjectCheckBox.addActionListener(new DBProjectListener());
-		
-		createCheckBox("offline", pane);
+
+		pane.addSeparator();
+			
+		Box optionsPane = Box.createHorizontalBox();
+		createCheckBox("eclipseProject", optionsPane);
+		createCheckBox("overwrite", optionsPane);
+		createCheckBox("offline", optionsPane);
+		pane.addRow(i18n.getString("projectOptions"), optionsPane);
+
 		pane.endRow();
 		pane.addSeparator();
+
 		
 		// db properties
-		dbUrlField = createTextFieldRow("dbUrl", pane);
-		dbDriverField = createTextFieldRow("dbDriver", pane);
-		dbUserField = createTextField("dbUser", pane);
-		dbSchemaField = createTextField("dbSchema", pane);
+		dbDriverTypeField = createComboBox("jdbcDriverType", null, pane, JDBCDriverInfo.getInstances().toArray());
+		dbDriverField = createTextField("dbDriver", pane);
 		pane.endRow();
 		
+		dbUrlField = createTextField("dbUrl", pane);
+		dbSchemaField = createTextField("dbSchema", pane);
+		pane.endRow();
+
+		dbUserField = createTextField("dbUser", pane);
 		dbPasswordField = createTextField("dbPassword", pane);
+		pane.endRow();
+		
 		pane.addElement(new JLabel(""));
 		testButton = createButton("testConnection", new TestConnectionListener());
 		pane.addElement(testButton);
+
+		dbSnapshotField = createComboBoxRow( "dbSnapshot", i18n, pane, "DbUnit", "none");
 		pane.endRow();
 
-		dbSnapshotField = createComboBox( "dbSnapshot", pane, "DbUnit", "none");
+		// 'create/drop table' scripts
+		createTablesField = new PropertyFileField(setup, "createScriptFile", 20, FileTypeSupport.filesOnly, FileOperation.open);
+		pane.addElement(i18n.getString("createScriptFile"), createTablesField);
+		dropTablesField = new PropertyFileField(setup, "dropScriptFile", 20, FileTypeSupport.filesOnly, FileOperation.open);
+		pane.addElement(i18n.getString("dropScriptFile"), dropTablesField);
 		pane.addSeparator();
-		
-		// import files
-		PropertyFileList importList =  new PropertyFileList(setup, "importFiles", i18n);
-		pane.addRow(i18n.getString("importFiles"), importList);
-		pane.addSeparator();
-		
+
 		createTextField("encoding",      pane);
 		createTextField("lineSeparator", pane);
 		pane.endRow();
@@ -189,23 +218,31 @@ public class CreateProjectPanel extends JPanel {
 		pane.endRow();
 		pane.addSeparator();
 		
+		archetypeListener.actionPerformed(null);
 		return pane;
 	}
 
-	private JCheckBox createCheckBox(String propertyName, AlignedPane pane) {
+	private JCheckBox createCheckBox(String propertyName, Container pane) {
 		PropertyCheckBox checkBox = new PropertyCheckBox(setup, propertyName, i18n.getString(propertyName));
-		pane.addElement("", checkBox);
+		pane.add(checkBox);
 		return checkBox;
 	}
 
-	private JComboBox createComboBox(String propertyName, AlignedPane pane, String... options) {
-		JComboBox comboBox = new PropertyComboBox(setup, propertyName, i18n, "dbSnapshot.", (Object[]) options);
-		String label = i18n.getString(propertyName);
-		pane.addRow(label, comboBox);
+	private JComboBox createComboBoxRow(String propertyName, I18NSupport itemI18n, AlignedPane pane, Object... options) {
+		JComboBox comboBox = createComboBox(propertyName, itemI18n, pane, options);
+		pane.endRow();
 		return comboBox;
 	}
 
-	private JTextField createTextFieldRow(String propertyName, AlignedPane pane) {
+	private JComboBox createComboBox(String propertyName, I18NSupport itemI18n, AlignedPane pane, Object... options) {
+	    JComboBox comboBox = new PropertyComboBox(setup, propertyName, itemI18n, propertyName + ".", options);
+		String label = this.i18n.getString(propertyName);
+		pane.addElement(label, comboBox);
+	    return comboBox;
+    }
+
+	@SuppressWarnings("unused")
+    private JTextField createTextFieldRow(String propertyName, AlignedPane pane) {
 		JTextField textfield = new PropertyTextField(setup, propertyName, WIDE);
 		String label = i18n.getString(propertyName);
 		pane.addRow(label, textfield);
@@ -226,11 +263,12 @@ public class CreateProjectPanel extends JPanel {
 	}
 	
 	public void exit() {
+		saveSetup();
 		JFrame frame = (JFrame) SwingUtilities.getRoot(this);
 		frame.dispose();
 		System.exit(0);
 	}
-	
+
 	void showErrors(Object... errors) {
 		String[] messages = new String[errors.length];
 		for (int i = 0; i < errors.length; i++) {
@@ -243,9 +281,10 @@ public class CreateProjectPanel extends JPanel {
 		JOptionPane.showMessageDialog(CreateProjectPanel.this, messages, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
-	class DBProjectListener implements ActionListener {
+	class ArchetypeListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-	        boolean useDB = dbProjectCheckBox.isSelected();
+	        boolean useDB = setup.isDatabaseProject();
+	        dbDriverTypeField.setEnabled(useDB);
         	dbUrlField.setEnabled(useDB);
         	dbDriverField.setEnabled(useDB);
         	dbUserField.setEnabled(useDB);
@@ -253,6 +292,8 @@ public class CreateProjectPanel extends JPanel {
         	dbPasswordField.setEnabled(useDB);
         	dbSnapshotField.setEnabled(useDB);
         	testButton.setEnabled(useDB);
+        	createTablesField.setEnabled(useDB);
+        	dropTablesField.setEnabled(useDB);
         }
 	}
 	
@@ -266,7 +307,7 @@ public class CreateProjectPanel extends JPanel {
 				ProgressMonitor monitor = new ProgressMonitor(null, taskName, message, 0, 100);
 				monitor.setMillisToDecideToPopup(10);
 				monitor.setMillisToPopup(10);
-				ArchetypeBuilder builder = new ArchetypeBuilder(setup, monitor);
+				ProjectBuilder builder = new ProjectBuilder(setup, new MavenFolderLayout(), monitor);
 				builder.run();
 				String[] errors = builder.getErrors();
 				if (errors.length > 0)
@@ -300,6 +341,31 @@ public class CreateProjectPanel extends JPanel {
 	        	showErrors(e.toString());
 	        }
         }
-		
 	}
+
+	private Setup loadOrCreateSetup() {
+		ObjectInputStream in = null;
+		try {
+			in = new ObjectInputStream(new FileInputStream(SETUP_FILE));
+			return (Setup) in.readObject();
+		} catch (Exception e) {
+			// if no serialized setup exists or loading fails, simply create a new one
+		    return new Setup();
+		} finally {
+			IOUtil.close(in);
+		}
+    }
+
+	private void saveSetup() {
+	    ObjectOutputStream out = null;
+		try {
+	        out = new ObjectOutputStream(new FileOutputStream(SETUP_FILE));
+	        out.writeObject(setup);
+        } catch (Exception e) {
+	        e.printStackTrace();
+        } finally {
+        	IOUtil.close(out);
+        }
+    }
+	
 }
