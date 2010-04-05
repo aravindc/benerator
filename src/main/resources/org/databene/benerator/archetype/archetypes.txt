@@ -7,5 +7,6 @@ flat
 reprodb
 shopdb
 xml
+snapshotdb
 annoxsd
 extend

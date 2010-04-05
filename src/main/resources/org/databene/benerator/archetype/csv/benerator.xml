@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<setup	xmlns="http://databene.org/benerator/0.6.0"
+<setup xmlns="http://databene.org/benerator/0.6.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 benerator-0.6.0.xsd">
 
@@ -7,12 +7,21 @@
 
     <generate type="transaction" count="100" consumer="CSVEntityExporter">
         <variable name="product" type="entity" source="products.ent.csv" distribution="random"/>
-
         <id name="id" type="long"/>
         <attribute name="comment" pattern="[A-Z][a-z]{5,12}"/>
         <attribute name="ean_code" script="product.ean_code"/>
         <attribute name="price" script="product.price"/>
         <attribute name="items" type="short" min="1" max="27"/>
-
     </generate>
+
+    <echo>Generated data:</echo> 
+    <if test="org.databene.commons.SystemInfo.isWindows()">
+        <then>
+            <execute type="shell">type export.csv</execute>
+        </then>
+        <else>
+            <execute type="shell">cat export.csv</execute>
+        </else>
+    </if>
+
 </setup>

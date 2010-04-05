@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <setup xmlns="http://databene.org/benerator/0.6.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator/0.6.0 benerator-0.6.0.xsd"
-		defaultEncoding="MacRoman"
-		defaultDataset="DE"
-		defaultLocale="de_DE"
-		defaultLineSeparator="\n">
+		xsi:schemaLocation="http://databene.org/benerator/0.6.0 benerator-0.6.0.xsd">
 
 	<comment>
 		Hello World example
@@ -23,11 +19,10 @@
 	</generate>
 
 	<comment>now greet the planet's inhabitants</comment>
-	<import domain="person"/>
 	<generate name="message" count="10" consumer="ConsoleExporter">
 		<variable name="person" generator="PersonGenerator"/>
 		<variable name="salutation" values="'Hello','Howdy','Hi'"/>
-		<attribute name="text" script="{ftl:${person.salutation} ${person.givenName}}" />
+		<attribute name="text" script="{ftl:${salutation} ${person.givenName}!}" />
 	</generate>
 
 </setup>

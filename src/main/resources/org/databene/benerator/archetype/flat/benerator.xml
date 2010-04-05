@@ -8,23 +8,33 @@
     <bean id="products_flat" class="FlatFileEntitySource">
         <property name="uri" value="demo/file/products.import.flat"/>
         <property name="entity" value="product"/>
-        <property name="properties" value="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]"/>
+        <property name="columns" value="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]"/>
     </bean>
 
     <generate type="transaction" count="100">
         <variable name="product" type="entity" source="products_flat" distribution="random"/>
         
         <id name="id" type="long" />
-        <attribute name="ean_code" script="{${product.ean_code}}"/>
-        <attribute name="price" script="{${product.price}}"/>
+        <attribute name="ean_code" script="product.ean_code"/>
+        <attribute name="price" script="product.price"/>
         <attribute name="items" type="short" min="1" max="27"/>
         <attribute name="date" type="date"/>
         
         <consumer class="FlatFileEntityExporter">
             <property name="uri" value="transactions.flat"/>
-            <property name="properties" value="id[8r0],ean_code[13],price[8r0],items[4r0],date[8]"/>
+            <property name="columns" value="id[8r0],ean_code[13],price[8r0],items[4r0],date[8]"/>
             <property name="datePattern" value="yyyyMMdd"/>
         </consumer>
     </generate>
     
+    <echo>Generated data:</echo> 
+    <if test="org.databene.commons.SystemInfo.isWindows()">
+        <then>
+            <execute type="shell">type transactions.flat</execute>
+        </then>
+        <else>
+            <execute type="shell">cat transactions.flat</execute>
+        </else>
+    </if>
+
 </setup>
