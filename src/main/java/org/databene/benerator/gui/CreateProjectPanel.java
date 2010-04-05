@@ -55,6 +55,8 @@ import javax.swing.SwingUtilities;
 
 import org.databene.benerator.archetype.ArchetypeManager;
 import org.databene.benerator.archetype.MavenFolderLayout;
+import org.databene.benerator.main.DBSnapshotTool;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.converter.ToStringConverter;
@@ -68,6 +70,7 @@ import org.databene.gui.swing.SwingUtil;
 import org.databene.gui.swing.delegate.PropertyCheckBox;
 import org.databene.gui.swing.delegate.PropertyComboBox;
 import org.databene.gui.swing.delegate.PropertyFileField;
+import org.databene.gui.swing.delegate.PropertyPasswordField;
 import org.databene.gui.swing.delegate.PropertyTextField;
 import org.databene.gui.swing.ProgressMonitor;
 
@@ -192,14 +195,15 @@ public class CreateProjectPanel extends JPanel {
 		pane.endRow();
 
 		dbUserField = createTextField("dbUser", pane);
-		dbPasswordField = createTextField("dbPassword", pane);
+		dbPasswordField = createPasswordField("dbPassword", pane);
 		pane.endRow();
 		
 		pane.addElement(new JLabel(""));
 		testButton = createButton("testConnection", new TestConnectionListener());
 		pane.addElement(testButton);
 
-		dbSnapshotField = createComboBoxRow( "dbSnapshot", i18n, pane, "DbUnit", "none");
+		String[] supportedFormats = ArrayUtil.append(DBSnapshotTool.supportedFormats(), "none");
+		dbSnapshotField = createComboBoxRow( "dbSnapshot", i18n, pane, (Object[]) supportedFormats);
 		pane.endRow();
 
 		// 'create/drop table' scripts
@@ -254,6 +258,13 @@ public class CreateProjectPanel extends JPanel {
 		String label = i18n.getString(propertyName);
 		pane.addElement(label, textfield);
 		return textfield;
+	}
+	
+	private JTextField createPasswordField(String propertyName, AlignedPane pane) {
+		PropertyPasswordField pwfield = new PropertyPasswordField(setup, propertyName, WIDE / 2);
+		String label = i18n.getString(propertyName);
+		pane.addElement(label, pwfield);
+		return pwfield;
 	}
 	
 	private JButton createButton(String label, ActionListener listener) {
