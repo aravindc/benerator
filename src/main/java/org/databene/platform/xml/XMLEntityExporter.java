@@ -136,8 +136,10 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
     public void close() {
         if (out != null) { 
             try {
-				handler.endDocument();
-				handler = null;
+            	if (handler != null) {
+					handler.endDocument();
+					handler = null;
+            	}
 			} catch (SAXException e) {
 				throw new ConfigurationError("Error closing XML file.", e);
 			} finally {
