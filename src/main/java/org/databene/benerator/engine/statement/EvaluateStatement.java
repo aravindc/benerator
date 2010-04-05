@@ -210,8 +210,10 @@ public class EvaluateStatement implements Statement {
 		else if (uri != null)
 			ShellUtil.runShellCommand(uri, writer, errorHandler);
 		else
-			throw new ConfigurationError("At least uri or text must be provided in <execute>");
-		return LiteralParser.parse(writer.toString());
+			throw new ConfigurationError("At least uri or text must be provided in <execute> and <evaluate>");
+		String output = writer.toString();
+		System.out.println(output);
+		return LiteralParser.parse(output);
 	}
 
 	private Object runSql(String uri, Object targetObject, String onError,
