@@ -53,11 +53,11 @@ public abstract class DatabaseDialect {
 	
 	private static final String DEFAULT_TIMESTAMP_PREFIX_PATTERN = "yyyy-MM-dd HH:mm:ss.";
 
-    private String system;
-    protected boolean quoteTableNames;
-    protected boolean sequenceSupported;
-	private DateFormat dateFormat;
-	private DateFormat timeFormat;
+    private   final String system;
+    protected final boolean quoteTableNames;
+    protected final boolean sequenceSupported;
+	private   final DateFormat dateFormat;
+	private   final DateFormat timeFormat;
     
     public DatabaseDialect(String system, boolean quoteTableNames, boolean sequenceSupported, 
     		String datePattern, String timePattern) {
@@ -68,7 +68,11 @@ public abstract class DatabaseDialect {
         this.timeFormat = new SimpleDateFormat(timePattern);
     }
 
-    public boolean isSequenceSupported() {
+    public String getSystem() {
+    	return system;
+    }
+
+	public boolean isSequenceSupported() {
     	return sequenceSupported;
     }
 
