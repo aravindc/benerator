@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup 
+	xmlns="http://databene.org/benerator/0.6.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://databene.org/benerator/0.6.0 benerator-0.6.0.xsd">
+
+	<comment>
+		 Populates a database
+	</comment>
+	 
+	<import defaults="true"/>
+
+    <comment>defining a database that will be referred by the id 'db' later</comment>
+    <database id="db" />
+
+	<comment>Drop the current tables and sequences if they already exist</comment>
+	<execute target="db" onError="ignore">
+		drop table testtable;
+	</execute>
+	
+	<comment>Create the tables and sequences</comment>
+	<execute target="db" optimize="true">
+		create table testtable (
+			id integer primary key,
+			value integer
+		);
+	</execute>
+	
+	<generate type="testtable" consumer="db" count="100">
+		<id name="id" />
+		<attribute name="value" />
+	</generate>
+
+</setup>

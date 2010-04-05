@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<setup xmlns="http://databene.org/benerator/0.6.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://databene.org/benerator/0.6.0 benerator-0.6.0.xsd"
+		defaultEncoding="MacRoman"
+		defaultDataset="DE"
+		defaultLocale="de_DE"
+		defaultLineSeparator="\n">
+
+	<comment>
+		Hello World example
+	 </comment>
+	 
+	<import defaults="true"/>
+	<import domains="person"/>
+
+	<echo message="running the 'Hello World' example..." />
+
+	<comment>first greet the planet</comment>
+	<generate name="greeting" count="5" consumer="ConsoleExporter">
+		<attribute name="salutation" values="'Hello','Howdy','Hi'"/>
+		<attribute name="name" values="'World','Earth','Planet'" />
+	</generate>
+
+	<comment>now greet the planet's inhabitants</comment>
+	<import domain="person"/>
+	<generate name="message" count="10" consumer="ConsoleExporter">
+		<variable name="person" generator="PersonGenerator"/>
+		<variable name="salutation" values="'Hello','Howdy','Hi'"/>
+		<attribute name="text" script="{ftl:${person.salutation} ${person.givenName}}" />
+	</generate>
+
+</setup>

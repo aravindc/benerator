@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>${setup.groupId}</groupId>
+	<artifactId>${setup.projectName}</artifactId>
+	<version>${setup.version}</version>
+
+	<packaging>jar</packaging>
+	<name>${setup.projectName} data generation project</name>
+	<description>Start the 'Hello World' example by typing 'mvn benerator:generate' on the command line.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.databene</groupId>
+			<artifactId>databene-benerator</artifactId>
+			<version>0.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.databene</groupId>
+			<artifactId>databene-webdecs</artifactId>
+			<version>0.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.databene</groupId>
+			<artifactId>databene-commons</artifactId>
+			<version>0.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.databene</groupId>
+			<artifactId>contiperf</artifactId>
+			<version>1.01</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+            <plugin>
+                <groupId>org.databene</groupId>
+                <artifactId>maven-benerator-plugin</artifactId>
+                <version>0.6.0</version>
+                <configuration>
+                    <descriptor>benerator.xml</descriptor>
+                    <encoding>${setup.encoding}</encoding>
+                    <validate>true</validate>
+                    <dbUrl>${setup.dbUrl}</dbUrl>
+                    <dbDriver>${setup.dbDriver}</dbDriver>
+                    <dbSchema>${setup.dbSchema}</dbSchema>
+                    <dbUser>${setup.dbUser}</dbUser>
+                    <dbPassword>${setup.dbPassword}</dbPassword>
+                </configuration>
+                <dependencies>
+<!--  
+                    <dependency>
+                        <groupId>com.oracle</groupId>
+                        <artifactId>ojdbc6</artifactId>
+                        <version>11.1.0.7</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.ibm</groupId>
+                        <artifactId>db2jcc</artifactId>
+                        <version>3.50.152</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.firebirdsql</groupId>
+                        <artifactId>jaybird-full</artifactId>
+                        <version>2.1.6</version>
+                        <scope>provided</scope>
+                    </dependency>
+-->
+                    <dependency>
+                        <groupId>net.sourceforge.jtds</groupId> <!-- MS SQL server and Sybase -->
+                        <artifactId>jtds</artifactId>
+                        <version>1.2.2</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.6</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>hsqldb</groupId>
+                        <artifactId>hsqldb</artifactId>
+                        <version>1.8.0.7</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derbyclient</artifactId>
+                        <version>10.4.2.0</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>8.3-603.jdbc4</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                        <version>1.2.13</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi</artifactId>
+                        <version>3.5-beta5</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+		</plugins>
+	</build>
+
+</project>
