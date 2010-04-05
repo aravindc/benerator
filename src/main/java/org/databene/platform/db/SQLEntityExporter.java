@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
-import org.databene.platform.db.dialect.OracleDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +51,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private DatabaseDialect dialect = new OracleDialect();
+    private DatabaseDialect dialect = null;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -74,10 +73,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     }
     
     public void setDialect(String dialectName) {
-    	if (dialectName != null)
-    		this.dialect = DatabaseDialectManager.getDialectForProduct(dialectName);
-    	else
-    		this.dialect = null;
+		this.dialect = (dialectName != null ? DatabaseDialectManager.getDialectForProduct(dialectName) : null);
     }
 
     // Callback methods for parent class functionality -----------------------------------------------------------------
