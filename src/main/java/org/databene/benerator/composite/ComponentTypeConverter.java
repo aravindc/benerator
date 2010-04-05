@@ -28,7 +28,6 @@ package org.databene.benerator.composite;
 
 import java.util.Map;
 
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.AbstractConverter;
 import org.databene.commons.converter.AnyConverter;
@@ -59,8 +58,6 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
 	public Entity convert(Entity entity) throws ConversionException {
 		if (entity == null)
 			return null;
-		if (!type.getName().equals(entity.type()))
-			throw new ConfigurationError("Expected '" + type.getName() + "', found: '" + entity + "'");
 		Map<String, Object> components = entity.getComponents();
 		for (Map.Entry<String, Object> entry : components.entrySet()) {
 			String componentName = entry.getKey();
