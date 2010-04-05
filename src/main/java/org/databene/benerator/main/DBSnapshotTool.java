@@ -69,6 +69,12 @@ public class DBSnapshotTool {
 	// TODO v0.6.1 test with each database
     private static final Logger logger = LoggerFactory.getLogger(DBSnapshotTool.class);
     
+    public static String[] supportedFormats() {
+    	return new String[] {
+    		DBUNIT_FORMAT, XLS_FORMAT, SQL_FORMAT
+    	};
+    }
+    
     public static void main(String[] args) {
         logger.info("Starting " + DBSnapshotTool.class.getSimpleName());
         String filename = (args.length > 0 ? args[0] : "snapshot.dbunit.xml");
@@ -109,17 +115,7 @@ public class DBSnapshotTool {
         String lineSeparator = SystemInfo.getLineSeparator();
 		long startTime = System.currentTimeMillis();
 
-        // create exporter
-		Consumer<Entity> exporter;
-        if (DBUNIT_FORMAT.equals(format.toLowerCase()))
-        	exporter = new DbUnitEntityExporter(filename, fileEncoding);
-        else if (XLS_FORMAT.equals(format))
-        	exporter = new XLSEntityExporter(filename);
-        else if (SQL_FORMAT.equals(format))
-        	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator, dialect);
-        else
-        	throw new IllegalArgumentException("Unknown format: " + format);
-
+		Consumer<Entity> exporter = null;
         DBSystem db = null;
         int count = 0;
         try {
@@ -129,6 +125,19 @@ public class DBSnapshotTool {
                 db.setSchema(dbSchema);
             db.setDynamicQuerySupported(false);
 
+            // create exporter
+            if (DBUNIT_FORMAT.equals(format.toLowerCase()))
+            	exporter = new DbUnitEntityExporter(filename, fileEncoding);
+            else if (XLS_FORMAT.equals(format))
+            	exporter = new XLSEntityExporter(filename);
+            else if (SQL_FORMAT.equals(format)) {
+            	if (dialect == null)
+            		dialect = db.getDialect().getSystem();
+            	exporter = new SQLEntityExporter(filename, fileEncoding, lineSeparator, dialect);
+            } else
+            	throw new IllegalArgumentException("Unknown format: " + format);
+
+            // export data
             List<TypeDescriptor> descriptors = Arrays.asList(db.getTypeDescriptors());
             logger.info("Starting export");
             for (TypeDescriptor descriptor : descriptors) {
