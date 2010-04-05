@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,8 @@ package org.databene.benerator.main;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import org.databene.benerator.gui.CreateProjectPanel;
-import org.databene.benerator.gui.Setup;
 import org.databene.commons.StringUtil;
 import org.databene.commons.ui.I18NSupport;
 
@@ -50,23 +51,28 @@ import org.databene.commons.ui.I18NSupport;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class BeneratorGUI extends JFrame {
+public class MavenProjectWizard extends JFrame {
 	
 	private static final long serialVersionUID = -5866303491038671990L;
+	I18NSupport i18n = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
+	CreateProjectPanel mainPanel = new CreateProjectPanel(i18n);
 
-	public BeneratorGUI() {
+	public MavenProjectWizard() {
 		setIcons("org/databene/benerator/gui/benerator{0}.png", 16, 32, 64, 128);
 		
 		checkLocale();
-		I18NSupport bundle = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
-		Setup setup = new Setup();
 		
-		setTitle(bundle.getString("beneratorGuiTitle"));
+		setTitle(i18n.getString("mavenProjectWizardTitle"));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		contentPane.add(new CreateProjectPanel(setup, bundle), BorderLayout.CENTER);
+		contentPane.add(mainPanel, BorderLayout.CENTER);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				mainPanel.exit();
+			}
+		});
 		pack();
 		setLocationRelativeTo(null);
 	}
@@ -89,6 +95,6 @@ public class BeneratorGUI extends JFrame {
 	
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		new BeneratorGUI().setVisible(true);
+		new MavenProjectWizard().setVisible(true);
 	}
 }
