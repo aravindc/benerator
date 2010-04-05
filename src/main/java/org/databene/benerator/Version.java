@@ -52,7 +52,10 @@ public class Version {
 
 	private static String readVersion() {
 	    try {
-	        return IOUtil.getContentOfURI("org/databene/benerator/version.txt");
+	        String version = IOUtil.getContentOfURI("org/databene/benerator/version.txt");
+	        if (version.startsWith("${")) // in Eclipse, the version is not resolved
+	        	version = "0.6.0"; // TODO v0.6.1 resolve version automatically in Eclipse
+			return version;
         } catch (IOException e) {
 	        throw new ConfigurationError("Error reading version info file", e);
         }
