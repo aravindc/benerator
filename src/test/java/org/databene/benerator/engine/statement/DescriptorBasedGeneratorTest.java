@@ -25,7 +25,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.SystemInfo;
@@ -48,7 +47,8 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 				"		<attribute name='name' constant='Alice'/>" + lf +
 				"	</generate>" + lf +
 				"</setup>";
-		Generator<?> generator = new DescriptorBasedGenerator(uri, "perGen", new BeneratorContext());
+		context.setValidate(false);
+		Generator<?> generator = new DescriptorBasedGenerator(uri, "perGen", context);
 		assertEquals(Entity.class, generator.getGeneratedType());
 		assertNotNull(generator);
 		generator.init(context);
