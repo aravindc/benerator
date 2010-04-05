@@ -66,6 +66,7 @@ public class MavenProjectWizard extends JFrame {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		contentPane.add(mainPanel, BorderLayout.CENTER);
+		getRootPane().setDefaultButton(mainPanel.getCreateButton());
 		
 		addWindowListener(new WindowAdapter() {
 			@Override

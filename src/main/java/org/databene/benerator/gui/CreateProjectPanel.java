@@ -379,4 +379,8 @@ public class CreateProjectPanel extends JPanel {
         }
     }
 	
+	public JButton getCreateButton() {
+		return createButton;
+	}
+	
 }
