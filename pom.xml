@@ -5,12 +5,12 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.6.0-alpha</version>
+    <version>0.6.0</version>
 
     <properties>
-        <gui_version>0.2.0-alpha</gui_version>
-        <webdecs_version>0.5.0-alpha</webdecs_version>
-	    <commons_version>0.5.0-alpha</commons_version>
+        <gui_version>0.2.0</gui_version>
+        <webdecs_version>0.5.0</webdecs_version>
+	    <commons_version>0.5.0</commons_version>
     </properties>
 
 <!--
@@ -83,14 +83,14 @@
         <dependency>
             <groupId>org.databene</groupId>
 		    <artifactId>contiperf</artifactId>
-		    <version>0.1</version>
+		    <version>1.01</version>
         </dependency>
         
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.7</version>
-            <!-- NOT in test scope because Benerator provides test halper classes -->
+            <!-- NOT in test scope because Benerator provides test helper classes -->
         </dependency>
 
         <!-- test dependencies -->
@@ -121,6 +121,12 @@
 		    <scope>provided</scope>
 		</dependency>
 		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>1.2.132</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
 		    <groupId>org.apache.derby</groupId>
 		    <artifactId>derbyclient</artifactId>
 		    <version>10.4.2.0</version>
@@ -132,17 +138,17 @@
 		    <version>8.3-603.jdbc4</version>
 		    <scope>provided</scope>
 		</dependency>
+		<dependency>
+		    <groupId>net.sf.squirrel-sql.thirdparty-non-maven</groupId>
+		    <artifactId>jaybird</artifactId>
+		    <version>2.1.6</version>
+		    <scope>provided</scope>
+		</dependency>
         
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr</artifactId>
             <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Dependencies to JDBC drivers that are closed source or not available on the maven repository -->
@@ -159,13 +165,14 @@
 		    <version>3.50.152</version>
 		    <scope>runtime</scope>
 		</dependency>
-		<dependency>
-		    <groupId>org.firebirdsql</groupId>
-		    <artifactId>jaybird-full</artifactId>
-		    <version>2.1.6</version>
-		    <scope>runtime</scope>
-		</dependency>
 	-->
+		<!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.8</version>
+            <scope>provided</scope>
+        </dependency>
     
     </dependencies>
     
@@ -190,6 +197,8 @@
                     <include>**/*.xsd</include>
                     <include>**/*.csv</include>
                     <include>**/*.txt</include>
+                    <include>**/*.xls</include>
+                    <include>**/*.java</include>
                 </includes>
                 <excludes>
                     <exclude>log4j.xml</exclude>
