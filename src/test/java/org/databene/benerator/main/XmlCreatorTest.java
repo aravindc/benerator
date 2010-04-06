@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,6 +46,9 @@ public class XmlCreatorTest {
 
 	private static final String SIMPLE_ELEMENT_FILE = "org/databene/platform/xml/simple-element-test.xsd";
 	private static final String ENUM_FILE = "org/databene/platform/xml/enum-test.xsd";
+	private static final String CARDINALITY_FILE = "org/databene/platform/xml/cardinality-test.xsd";
+
+	// tests -----------------------------------------------------------------------------------------------------------
 
 	@Test
 	public void testSimpleTypeElement() throws IOException {
@@ -62,6 +65,18 @@ public class XmlCreatorTest {
 		}
     }
 
+	@Test
+	public void testCardinalities() throws IOException {
+		for (int i = 0; i < 10; i++) {
+	        Document doc = createXMLFile(CARDINALITY_FILE, "outer", "target/cardinalities.xml");
+	        Element outer = doc.getDocumentElement();
+	        Element[] inners = XMLUtil.getChildElements(outer);
+	        assertTrue("Expected 3-5 inners, found: " + inners.length, inners.length >= 3 && inners.length <= 5);
+		}
+	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
     private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
     	String[] args = new String[] { schemaUri, root, filename, "1" };
         XmlCreator.main(args);
