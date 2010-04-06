@@ -28,9 +28,7 @@ package org.databene.platform.xml;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -102,10 +100,11 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     
     // attributes ------------------------------------------------------------------------------------------------------
     
-    private ModelParser parser;
     private BeneratorContext context;
+    private String schemaUri;
     private DataModel dataModel;
-    private List<String> propertiesFiles;
+
+    private ModelParser parser;
 	private Map<String, String> namespaces;
 	private ResourceManager resourceManager = new ResourceManagerSupport();
 
@@ -123,39 +122,26 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     
     public XMLSchemaDescriptorProvider(String schemaUri, BeneratorContext context, DataModel dataModel) {
         super(schemaUri, true);
+        dataModel.addDescriptorProvider(new XMLNativeTypeDescriptorProvider(SCHEMA_NAMESPACE));
         this.namespaces = new HashMap<String, String>();
         parser = new ModelParser(context);
-        this.context = context;
+        setContext(context);
         this.dataModel = dataModel;
-        this.propertiesFiles = new ArrayList<String>();
-        if (schemaUri != null)
-        	setSchemaUri(schemaUri);
+        setSchemaUri(schemaUri);
     }
     
     // interface -------------------------------------------------------------------------------------------------------
     
     public void setContext(Context context) {
     	this.context = (BeneratorContext) context;
+    	checkSchema();
     }
     
     public void setSchemaUri(String schemaUri) {
-        try {
-            dataModel.addDescriptorProvider(new XMLNativeTypeDescriptorProvider(SCHEMA_NAMESPACE));
-    		Document document = parse(schemaUri);
-    		this.namespaces = getNamespaces(document);
-            this.id = getTargetNamespace(document);
-            dataModel.addDescriptorProvider(this);
-            parseStructure(document);
-            parseDetails(document);
-        } catch (IOException e) {
-            throw new ConfigurationError("Error parsing schemaUri: " + schemaUri, e);
-        }
+    	this.schemaUri = schemaUri;
+    	checkSchema();
     }
-
-	public String[] getPropertiesFiles() {
-        return CollectionUtil.toArray(propertiesFiles);
-    }
-
+    
     public BeneratorContext getContext() {
         return context;
     }
@@ -172,6 +158,21 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 
     // private helpers -------------------------------------------------------------------------------------------------
     
+    private void checkSchema() {
+    	if (!StringUtil.isEmpty(schemaUri) && context != null) {
+	        try {
+	    		Document document = parse(schemaUri);
+	    		this.namespaces = getNamespaces(document);
+	            this.id = getTargetNamespace(document);
+	            dataModel.addDescriptorProvider(this);
+	            parseStructure(document);
+	            parseDetails(document);
+	        } catch (IOException e) {
+	            throw new ConfigurationError("Error parsing schemaUri: " + schemaUri, e);
+	        }
+    	}
+    }
+
 	private void parseStructure(Document document) throws IOException {
         logger.debug("parseStructure()");
         Element root = document.getDocumentElement();
@@ -262,9 +263,8 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                IncludeStatement task = new IncludeParser().parse(child, null, this);
-                String filename = task.getUri().evaluate(context);
-                propertiesFiles.add(filename);
+                IncludeStatement statement = new IncludeParser().parse(child, null, this);
+                statement.execute(context);
             } else if ("bean".equals(childName)) {
                 Expression<?> beanExpression = BeanParser.parseBeanExpression(child, resourceManager);
                 String id = child.getAttribute("id");
@@ -487,15 +487,17 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         
         if (descriptor == null) { 
             String type = element.getAttribute("type");
-            if (!StringUtil.isEmpty(type))
+            if (!StringUtil.isEmpty(type)) {
             	descriptor = parseElementWithType(element);
+                parseOccurrences(element, descriptor);
+            }
         } else
-        	descriptor = parseElementAppInfo(descriptor, annotation);
+            parseOccurrences(element, descriptor);
+        	parseElementAppInfo(descriptor, annotation);
         if (descriptor == null)
             descriptor = new PartDescriptor(name, "string"); // possibly there i a more useful default type
         if ("false".equals(element.getAttribute("nillable")))
         	descriptor.setNullable(false);
-        parseOccurrences(element, descriptor);
         owner.addComponent(descriptor);
         return descriptor;
     }
@@ -550,8 +552,15 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 descriptor = (T) parser.parseComplexType(info, (ComplexTypeDescriptor) descriptor);
             else if (descriptor instanceof SimpleTypeDescriptor)
                 descriptor = (T) parser.parseSimpleType(info, (SimpleTypeDescriptor) descriptor);
-            else
-                throw new UnsupportedOperationException("Unsupported element (" + childName + ") or type: " + descriptor.getClass().getName());
+            else if ("type".equals(childName)) {
+            	TypeDescriptor typeDescriptor = (descriptor instanceof InstanceDescriptor ? ((InstanceDescriptor) descriptor).getTypeDescriptor() : (TypeDescriptor) descriptor);
+            	if (typeDescriptor instanceof SimpleTypeDescriptor)
+            		descriptor = (T) parser.parseSimpleType(info, (SimpleTypeDescriptor) typeDescriptor);
+            	else
+            		descriptor = (T) parser.parseComplexType(info, (ComplexTypeDescriptor) typeDescriptor);
+            } else
+                throw new UnsupportedOperationException("Unsupported element (" + childName + ") " +
+                		"or descriptor type: " + descriptor.getClass().getName());
         }
         return descriptor;
     }
@@ -802,6 +811,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         throw unsupportedElementType(importElement, null); // TODO v0.7 implement parseImport()
     }
 
+    /** parses an XML Schema inclusion and adds its types to the {@link DataModel} */
     private void parseStructureOfInclude(Element includeElement) throws IOException {
         logger.debug("parseStructureOfInclude()");
     	assert "include".equals(localName(includeElement));
