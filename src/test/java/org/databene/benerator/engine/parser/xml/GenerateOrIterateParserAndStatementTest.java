@@ -30,6 +30,7 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.commons.iterator.IteratorTestCase;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.platform.db.DBSystem;
@@ -49,6 +50,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 	public void setUp() {
 	    super.setUp();
 		parser = new GenerateOrIterateParser();
+		DataModel.getDefaultInstance().clear();
 	}
 	
 	@Test
@@ -97,16 +99,22 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(9, consumer.startConsumingCount.get());
-		assertEquals(new Entity("outer", "n", 1), consumer.products.get(0));
+		assertOuter(1, consumer.products.get(0));
 		assertEquals(new Entity("inner"), consumer.products.get(1));
-		assertEquals(new Entity("outer", "n", 2), consumer.products.get(2));
+		assertOuter(2, consumer.products.get(2));
 		assertEquals(new Entity("inner"), consumer.products.get(3));
 		assertEquals(new Entity("inner"), consumer.products.get(4));
-		assertEquals(new Entity("outer", "n", 3), consumer.products.get(5));
+		assertOuter(3, consumer.products.get(5));
 		assertEquals(new Entity("inner"), consumer.products.get(6));
 		assertEquals(new Entity("inner"), consumer.products.get(7));
 		assertEquals(new Entity("inner"), consumer.products.get(8));
 	}
+
+	private void assertOuter(int n, Entity entity) {
+	    assertNotNull(entity);
+	    assertEquals("outer", entity.type());
+	    assertEquals(n, ((Integer) entity.get("n")).intValue());
+    }
 
 	/** Tests the nesting of an &lt;execute&gt; element within a &lt;generate&gt; element */
 	@Test
