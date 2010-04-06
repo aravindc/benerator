@@ -6,17 +6,13 @@
 		targetNamespace="http://databene.org/shop-0.6.0.xsd"
 		elementFormDefault="qualified">
 		
-	<xs:annotation>
-		<xs:appinfo><ben:include uri="benerator.properties"/></xs:appinfo>
-	</xs:annotation>
-
 	<xs:element name="transactions">
 		<xs:complexType>
 			<xs:sequence maxOccurs="unbounded">
 				<xs:element ref="transaction">
 					<xs:annotation>
 						<xs:appinfo>
-							<ben:part minCount="{minTxCount}" maxCount="{maxTxCount}" countDistribution="cumulated"/>
+							<ben:part minCount="10" maxCount="50" countDistribution="cumulated"/>
 						</xs:appinfo>
 					</xs:annotation>
 				</xs:element>
@@ -31,7 +27,7 @@
 			</xs:appinfo>
 		</xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="id" type="xs:string" use="required">
+			<xs:attribute name="id" type="xs:long" use="required">
 				<xs:annotation>
 					<xs:appinfo>
 						<ben:id/>
