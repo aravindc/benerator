@@ -6,7 +6,7 @@
     <generate type="greeting" count="10">
         <attribute name="salutation" values="Hello,Hi,Howdy"/>
         <attribute name="name" values="'Alice','Bob','Charly'"/>
-        <consumer id="csv" class="org.databene.platform.csv.CSVEntityExporter">
+        <consumer class="org.databene.platform.csv.CSVEntityExporter">
             <property name="uri"     value="greetings.csv"/>
             <property name="columns" value="salutation,name"/>
         </consumer>
