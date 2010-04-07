@@ -301,10 +301,17 @@ public class CreateProjectPanel extends JPanel {
         	dbUserField.setEnabled(useDB);
         	dbSchemaField.setEnabled(useDB);
         	dbPasswordField.setEnabled(useDB);
-        	dbSnapshotField.setEnabled(useDB);
         	testButton.setEnabled(useDB);
+        	dbSnapshotField.setEnabled(useDB);
         	createTablesField.setEnabled(useDB);
         	dropTablesField.setEnabled(useDB);
+        	
+        	boolean shop = setup.isShopProject();
+        	if (shop) {
+	        	dbSnapshotField.setEnabled(false);
+	        	createTablesField.setEnabled(false);
+	        	dropTablesField.setEnabled(false);
+        	}
         }
 	}
 	
@@ -320,7 +327,7 @@ public class CreateProjectPanel extends JPanel {
 				monitor.setMillisToPopup(10);
 				ProjectBuilder builder = new ProjectBuilder(setup, new MavenFolderLayout(), monitor);
 				builder.run();
-				String[] errors = builder.getErrors();
+				Exception[] errors = builder.getErrors();
 				if (errors.length > 0)
 					showErrors((Object[]) errors);
 				else {
