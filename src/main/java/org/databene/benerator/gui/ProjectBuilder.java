@@ -26,17 +26,12 @@
 
 package org.databene.benerator.gui;
 
-import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,8 +41,9 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.databene.benerator.archetype.FolderLayout;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.main.DBSnapshotTool;
-import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
@@ -55,6 +51,8 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.accessor.GraphAccessor;
+import org.databene.commons.context.DefaultContext;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.maven.MavenUtil;
@@ -99,13 +97,13 @@ public class ProjectBuilder implements Runnable {
 	protected TypeDescriptor[]  descriptors;
 	protected TransformerHandler handler;
 	protected DBSystem db;
-    private List<String> errors;
+    private List<Exception> errors;
     private ProgressMonitor monitor;
     private FolderLayout folderLayout;
 	
 	public ProjectBuilder(Setup setup, FolderLayout folderLayout, ProgressMonitor monitor) {
 		this.setup = setup;
-		this.errors = new ArrayList<String>();
+		this.errors = new ArrayList<Exception>();
 		this.monitor = monitor;
 		this.descriptors = new TypeDescriptor[0];
 		this.folderLayout = folderLayout;
@@ -132,23 +130,23 @@ public class ProjectBuilder implements Runnable {
 			
 			// create db snapshot project.dbunit.xml
 			Exception exception = null;
-			if (setup.isDatabaseProject() && "DbUnit".equals(setup.getDbSnapshot())) {
+			if (setup.isDatabaseProject() && !"none".equals(setup.getDbSnapshot()) && !setup.isShopProject()) {
 				try {
-					createDbUnitSnapshot();
+					createDbSnapshot();
 				} catch (Exception e) {
 					exception = e;
 				}
 			}			
 			
 			// create project.ben.xml (including imports)
-			createBeneratorXml(setup, monitor);
+			createBeneratorXml();
 
 	        createEclipseProject();
 	        
 	        if (exception != null)
 	        	throw exception;
 		} catch (Exception e) {
-			errors.add(e.getMessage());
+			errors.add(e);
 			e.printStackTrace();
 		} finally {
 			if (db != null)
@@ -198,8 +196,8 @@ public class ProjectBuilder implements Runnable {
 		FileUtil.ensureDirectoryExists(setup.subDirectory(folderLayout.mapSubFolder(relativePath)));
 	}
 	
-	public String[] getErrors() {
-		return CollectionUtil.toArray(errors, String.class);
+	public Exception[] getErrors() {
+		return CollectionUtil.toArray(errors, Exception.class);
 	}
 
 	private void advanceMonitor() {
@@ -213,8 +211,10 @@ public class ProjectBuilder implements Runnable {
 	}
 	
 	private void copyImportFiles() {
-		copyImportFile(setup.getDropScriptFile());
-		copyImportFile(setup.getCreateScriptFile());
+		if (!setup.isShopProject()) {
+			copyImportFile(setup.getDropScriptFile());
+			copyImportFile(setup.getCreateScriptFile());
+		}
 	}
 
 	private void copyImportFile(File importFile) {
@@ -229,53 +229,53 @@ public class ProjectBuilder implements Runnable {
 	    		throw new I18NError("ErrorCopying", e, importFile.getAbsolutePath(), copy);
 	    	}
 	    } else
-	    	errors.add("File not found: " + importFile);
+	    	errors.add(new I18NError("FileNotFound", 
+	    			new FileNotFoundException(importFile.getAbsolutePath()), importFile));
 	    advanceMonitor();
     }
 
-	private File createDbUnitSnapshot() {
-		File file = setup.projectFile(setup.getProjectName() + ".dbunit.xml");
-		if (!setup.isOverwrite() && file.exists())
-			throw new I18NError("FileAlreadyExists", null, file.getAbsolutePath());
+	private File createDbSnapshot() {
+		String format = setup.getDbSnapshot();
+		File file = setup.projectFile(setup.getDbSnapshotFile());
 		DBSnapshotTool.export(setup.getDbUrl(), setup.getDbDriver(), setup.getDbSchema(), 
-				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), "dbunit", null, monitor);
+				setup.getDbUser(), setup.getDbPassword(), file.getAbsolutePath(), format, null, monitor);
 		return file;
 	}
 
 	private File createPOM() {
-        noteMonitor("creating pom");
-		File file = new File(setup.getProjectFolder(), "pom.xml");
-		try {
-			String content = IOUtil.getContentOfURI(file.getAbsolutePath());
-			content = replaceVariables(content);
-			file.delete();
-			IOUtil.writeTextFile(file.getAbsolutePath(), content, setup.getEncoding());
-		} catch (IOException e) {
-			throw new I18NError("ErrorCreatingFile", e, file);
-		}
-		advanceMonitor();
-		return file;	
+        noteMonitor("creating pom.xml");
+		return resolveVariables(new File(setup.getProjectFolder(), "pom.xml"));
 	}
 
 	private File createProjectPropertiesFile() {
 		String filename = "benerator.properties";
-		noteMonitor("creating " + filename);
-		File file = setup.projectFile(filename);
-		PrintWriter writer = null;
-		try { // TODO parse existing benerator.properties file and replace ${setup.} expressions instead of overwriting it
-			writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-			writer.println("benerator.defaultEncoding=" + setup.getEncoding());
+		File file = new File(setup.getProjectFolder(), filename);
+		if (file.exists()) {
+			noteMonitor("creating " + filename);
+			return resolveVariables(file);
+		}
+		return null;
+	}
+	
+	public File resolveVariables(File file) {
+		try {
+		    String content = IOUtil.getContentOfURI(file.getAbsolutePath());
+		    content = resolveVariables(content);
+		    file.delete();
+		    IOUtil.writeTextFile(file.getAbsolutePath(), content, setup.getEncoding());
+		    return file;
 		} catch (IOException e) {
 			throw new I18NError("ErrorCreatingFile", e, file);
 		} finally {
-			IOUtil.close(writer);
+			advanceMonitor();
 		}
-		advanceMonitor();
-		return file;
-	}
-	
-    public static void createBeneratorXml(Setup setup, ProgressMonitor monitor) 
-    		throws IOException, ParseException {
+    }
+
+	private String resolveVariables(String content) {
+	    return replaceVariables(content);
+    }
+
+    public void createBeneratorXml() throws IOException, ParseException {
     	File descriptorFile = new File(setup.getProjectFolder(), "benerator.xml");
     	if (descriptorFile.exists()) { // not applicable for XML schema based generation
 	    	BufferedReader reader = IOUtil.getReaderForURI(descriptorFile.getAbsolutePath());
@@ -286,7 +286,9 @@ public class ProjectBuilder implements Runnable {
 			LFNormalizingStringBuilder writer = new LFNormalizingStringBuilder(lineSeparator);
 	    	while (tokenizer.nextToken() != HTMLTokenizer.END)
 	    		processToken(setup, tokenizer, writer);
-	    	IOUtil.writeTextFile(descriptorFile.getAbsolutePath(), writer.toString(), "UTF-8");
+	    	String xml = writer.toString();
+	    	xml = resolveVariables(xml);
+			IOUtil.writeTextFile(descriptorFile.getAbsolutePath(), xml, "UTF-8");
     	}
     	monitor.advance();
     }
@@ -299,7 +301,7 @@ public class ProjectBuilder implements Runnable {
     		case HTMLTokenizer.START_TAG: {
     			String nodeName = tokenizer.name();
 				if (EL_SETUP.equals(nodeName))
-    				appendStartTag(nodeName, renderSetupAttributes(tokenizer, setup), writer, true);
+    				appendStartTag(nodeName, defineSetupAttributes(tokenizer, setup), writer, true);
 				else if (EL_COMMENT.equals(nodeName))
     				processComment(tokenizer, setup, writer);
     			else
@@ -309,7 +311,7 @@ public class ProjectBuilder implements Runnable {
     		case HTMLTokenizer.CLOSED_TAG: {
     			String nodeName = tokenizer.name();
     			if (EL_DATABASE.equals(nodeName) && setup.isDatabaseProject()) {
-    				appendElement(nodeName, renderDbAttributes(setup, tokenizer), writer, false);
+    				appendElement(nodeName, defineDbAttributes(setup, tokenizer), writer, true);
     			} else if (EL_EXECUTE.equals(nodeName)) {
     				Map<String, String> attributes = tokenizer.attributes();
     				String uri = attributes.get("uri");
@@ -346,7 +348,7 @@ public class ProjectBuilder implements Runnable {
     	}
     }
     
-	private static Map<String, String> renderDbAttributes(Setup setup, DefaultHTMLTokenizer tokenizer) {
+	private static Map<String, String> defineDbAttributes(Setup setup, DefaultHTMLTokenizer tokenizer) {
 	    Map<String, String> attributes = tokenizer.attributes();
 	    attributes.put("url", setup.getDbUrl());	    		
 	    attributes.put("driver", setup.getDbDriver());
@@ -359,13 +361,13 @@ public class ProjectBuilder implements Runnable {
     }
 
 	private static void appendStartTag(String nodeName, Map<String, String> attributes, 
-			LFNormalizingStringBuilder writer, boolean wrapLines) {
+			LFNormalizingStringBuilder writer, boolean wrapAttribs) {
 	    writer.append('<').append(nodeName);
-	    writeAttributes(attributes, writer, wrapLines);
+	    writeAttributes(attributes, writer, wrapAttribs);
 	    writer.append('>');
     }
 
-    private static Map<String, String> renderSetupAttributes(DefaultHTMLTokenizer tokenizer,
+    private static Map<String, String> defineSetupAttributes(DefaultHTMLTokenizer tokenizer,
             Setup setup) {
 	    Map<String, String> attributes = tokenizer.attributes();
 	    if (setup.getEncoding() != null)
@@ -379,21 +381,21 @@ public class ProjectBuilder implements Runnable {
 	    return attributes;
     }
 	
-    private static void appendElement(String nodeName, Map<String, String> attributes, LFNormalizingStringBuilder writer, boolean wrapLines) {
+    private static void appendElement(String nodeName, Map<String, String> attributes, LFNormalizingStringBuilder writer, boolean wrapAttribs) {
 	    writer.append('<').append(nodeName);
-	    writeAttributes(attributes, writer, wrapLines);
+	    writeAttributes(attributes, writer, wrapAttribs);
 	    writer.append("/>");
     }
 
-	private static void writeAttributes(Map<String, String> attributes, LFNormalizingStringBuilder writer, boolean wrapLines) {
+	private static void writeAttributes(Map<String, String> attributes, LFNormalizingStringBuilder writer, boolean wrapAttribs) {
 		int i = 0;
 	    for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-	    	if (wrapLines && i > 0) 
+	    	if (wrapAttribs && i > 0) 
 	    		writer.append(TAB).append(TAB);
 	    	else
 	    		writer.append(' ');
 	    	writer.append(attribute.getKey()).append("=\"").append(attribute.getValue()).append("\"");
-	    	if (i < attributes.size() - 1)
+	    	if (wrapAttribs && i < attributes.size() - 1)
 	    		writer.append('\n');
 	    	i++;
 	    }
@@ -438,7 +440,7 @@ public class ProjectBuilder implements Runnable {
           		iDesc.setCount(ExpressionUtil.constant(0L));
           	else
           		iDesc.setCount(ExpressionUtil.constant(db.countEntities(name)));
-			generate(iDesc, writer);
+			generateTable(iDesc, writer);
        }
 	}
 
@@ -451,7 +453,7 @@ public class ProjectBuilder implements Runnable {
     }
 	
 	@SuppressWarnings("unchecked")
-    private static void generate(InstanceDescriptor descriptor, LFNormalizingStringBuilder writer) {
+    private static void generateTable(InstanceDescriptor descriptor, LFNormalizingStringBuilder writer) {
         ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getTypeDescriptor();
         Map<String, String> attributes = new OrderedMap<String, String>();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
@@ -498,7 +500,7 @@ public class ProjectBuilder implements Runnable {
             throw new UnsupportedOperationException("Component descriptor type not supported: " + 
                     component.getClass().getSimpleName());
         
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new OrderedMap<String, String>();
         attributes.put(ATT_NAME, component.getName());
         SimpleTypeDescriptor type = (SimpleTypeDescriptor) (component.getType() != null ? 
         		DataModel.getDefaultInstance().getTypeDescriptor(component.getType()) : 
@@ -529,12 +531,19 @@ public class ProjectBuilder implements Runnable {
 	}
 
 	private String replaceVariables(String text) {
-		for (PropertyDescriptor property : BeanUtil.getPropertyDescriptors(Setup.class)) {
-			String propertyName = property.getName();
-			String var = "${setup." + propertyName + "}";
-			Object propertyValue = BeanUtil.getPropertyValue(setup, propertyName);
-			String propertyString = toStringConverter.convert(propertyValue);
-			text = text.replace(var, propertyString);
+		int varStart;
+		Context context = new DefaultContext();
+		context.set("setup", setup);
+		while ((varStart = text.indexOf("${setup.")) >= 0) {
+			int varEnd = text.indexOf("}", varStart);
+			if (varEnd < 0)
+				throw new ConfigurationError("'${setup.' without '}'");
+			String template = text.substring(varStart, varEnd + 1);
+			String path = template.substring(2, template.length() - 1).trim();
+			GraphAccessor accessor = new GraphAccessor(path);
+			Object varValue = accessor.getValue(context);
+			String varString = toStringConverter.convert(varValue);
+			text = text.replace(template, varString);
 		}
 		return text;
 	}
