@@ -47,7 +47,7 @@ public class FirebirdDialect extends DatabaseDialect {
 	private static final String TIME_PATTERN = "''HH:mm:ss''";
 
     public FirebirdDialect() {
-	    super("Firebird", true, true, DATE_PATTERN, TIME_PATTERN);
+	    super("firebird", true, true, DATE_PATTERN, TIME_PATTERN);
     }
 
     public String getJDBCDriverClass() {

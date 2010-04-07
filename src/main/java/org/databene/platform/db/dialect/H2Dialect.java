@@ -40,7 +40,7 @@ public class H2Dialect extends DatabaseDialect {
 	private static final String TIME_PATTERN = "''HH:mm:ss''";
 
     public H2Dialect() {
-	    super("HSQL", false, true, DATE_PATTERN, TIME_PATTERN);
+	    super("h2", false, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override

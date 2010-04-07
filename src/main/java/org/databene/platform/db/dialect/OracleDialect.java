@@ -46,7 +46,7 @@ public class OracleDialect extends DatabaseDialect {
     private static final String TIMESTAMP_PREFIX_PATTERN = "yyyy-MM-dd HH:mm:ss.";
 
 	public OracleDialect() {
-	    super("Oracle", true, true, DATE_PATTERN, TIME_PATTERN);
+	    super("oracle", true, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override

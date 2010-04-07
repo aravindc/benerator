@@ -42,7 +42,7 @@ public class PostgreSQLDialect extends DatabaseDialect {
 	private static final String TIME_PATTERN = "'time '''HH:mm:ss''";
 
     public PostgreSQLDialect() {
-	    super("PostreSQL", false, true, DATE_PATTERN, TIME_PATTERN);
+	    super("postgres", false, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override

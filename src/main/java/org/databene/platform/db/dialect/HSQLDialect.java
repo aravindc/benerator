@@ -44,7 +44,7 @@ public class HSQLDialect extends DatabaseDialect {
 	private static final String TIME_PATTERN = "''HH:mm:ss''";
 
     public HSQLDialect() {
-	    super("HSQL", false, true, DATE_PATTERN, TIME_PATTERN);
+	    super("hsql", false, true, DATE_PATTERN, TIME_PATTERN);
     }
 
 	@Override
