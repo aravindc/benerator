@@ -49,8 +49,6 @@ import org.databene.model.data.Uniqueness;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 import org.junit.Test;
 
-import javax.validation.ConstraintValidator;
-
 /**
  * Tests processing of the shop.xsd file.<br/>
  * <br/>
@@ -98,29 +96,6 @@ public class ShopXMLTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> void checkSimpleType(String name, XMLSchemaDescriptorProvider provider, Object validator) {
-        SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) provider.getTypeDescriptor(name);
-        logger.debug("");
-        logger.debug("Testing simple type: " + descriptor.getName());
-        logger.debug("-------------------------------------");
-        Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-            descriptor, false, Uniqueness.NONE, provider.getContext());
-        for (int i = 0; i < 10; i++) {
-            T object = generator.generate();
-            logger.debug(object);
-            validate(object, validator);
-        }
-    }
-
-	@SuppressWarnings("unchecked")
-    private <T> void validate(T object, Object validator) {
-		if (validator instanceof ConstraintValidator)
-			assertTrue("Invalid object: " + object, ((ConstraintValidator) validator).isValid(object, null));
-		else
-			assertTrue("Invalid object: " + object, ((Validator<T>) validator).valid(object));
-    }
-
-    @SuppressWarnings("unchecked")
     private <T> void checkSimpleType(String name, XMLSchemaDescriptorProvider provider, Validator<T> validator) {
         SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) provider.getTypeDescriptor(name);
         logger.debug("");
@@ -128,6 +103,7 @@ public class ShopXMLTest {
         logger.debug("-------------------------------------");
         Generator<T> generator = (Generator<T>) SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
             descriptor, false, Uniqueness.NONE, provider.getContext());
+        generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
             logger.debug(object);
@@ -142,6 +118,7 @@ public class ShopXMLTest {
         logger.debug("-------------------------------------");
         Generator<Entity> generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(
         		"instance", descriptor, Uniqueness.NONE, provider.getContext());
+        generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
             Entity entity = generator.generate();
             if (entity != null) {
@@ -150,4 +127,5 @@ public class ShopXMLTest {
             }
         }
     }
+    
 }
