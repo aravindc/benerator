@@ -6,5 +6,5 @@ if [ -z "$BENERATOR_HOME" ]; then
   exit 1
 fi
 . $BENERATOR_HOME/bin/benerator_common.sh
-benerator_exec_command="exec \"$JAVACMD\" $BENERATOR_OPTS -classpath \"$LOCALCLASSPATH\" org.databene.benerator.main.BeneratorGUI $*"
+benerator_exec_command="exec \"$JAVACMD\" $BENERATOR_OPTS -classpath \"$LOCALCLASSPATH\" org.databene.benerator.main.MavenProjectWizard $*"
 eval $benerator_exec_command
