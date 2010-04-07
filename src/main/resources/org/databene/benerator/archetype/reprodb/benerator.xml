@@ -20,7 +20,7 @@
 	<execute uri="{create_tables.sql}" target="db" optimize="true"/>
 
 	<comment>Create a valid predefined base data set for regression testing by importing a DbUnit file</comment>
-	<generate source="base.dbunit.xml" consumer="db" />
+	<iterate source="${setup.dbSnapshotFile}" consumer="db" />
 
 	<generate type="tables" />
 	
