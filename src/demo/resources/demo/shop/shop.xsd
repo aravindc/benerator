@@ -189,7 +189,7 @@
 		<xs:attribute name="id" type="surrogate-id" use="required">
 		 	<xs:annotation>
 				<xs:appinfo>
-					<ben:id strategy="increment" />
+					<ben:id/>
 				</xs:appinfo>
 			</xs:annotation>
 		</xs:attribute>
