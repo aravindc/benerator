@@ -7,47 +7,14 @@
 	<comment>
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		 !   Demonstration file for populating the shop database.    !
-		 !                                                           !
-		 !   You can choose a database and a stage like this:        !
-		 !       -Dstage=development -Ddatabase=oracle               !
-		 !                                                           !
-		 !   These database types are provided:                      !
-		 !       oracle, db2, sql_server, mysql, postgres, hsql,     !
-		 !       hsqlmem, mysql, firebird, derby, h2                 !
-		 !                                                           !
-		 !   ...and these stage configurations:                      !
-		 !       development, perftest                               !
-		 !                                                           !
-		 !   Set up your database connection in the file             !
-		 !       &lt;database&gt;/shop.&lt;database&gt;.properties   !
-		 !                                                           !
-		 !   You may want to try different generation quantities in  !
-		 !       shop.&lt;stage&gt;.properties                       !
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 	</comment>
 	 
 	<import defaults  = "true"
-			domains   = "person,net,product"
-			platforms = "db"/>
+            domains   = "person,net,product"
+            platforms = "db"/>
 
-	<comment>setting default values</comment>
-	<property name="dbSchema"   value="" />
-	<property name="dbPassword" value="" />
-	<property name="dbBatch"    value="false" />
-	
-	<if test="benerator.get('stage') == null">
-		<comment>no stage specified, using 'development'</comment>
-		<execute>stage = 'development'</execute>
-	</if>
-
-	<if test="benerator.get('database') == null">
-		<comment>no database specified, using 'hsqlmem'</comment>
-		<execute>database = 'hsqlmem'</execute>
-	</if>
-
-	<comment>import stage and database specific properties</comment>
-	<include uri="{ftl:${database}/shop.${database}.properties}" />
-	<include uri="{ftl:shop.${stage}.properties}" />
+	<include uri="benerator.properties" />
 
 	<comment>log the settings to the console</comment>
 	<echo message="Starting generation for" />
@@ -59,20 +26,19 @@
 	<echo message="{ftl:JDBC URL: ${dbUrl}}" />
 
     <comment>define a database that will be referred by the id 'db' later</comment>
-    <database id="db" url="{dbUrl}" driver="{dbDriver}" schema="{dbSchema}"
-        user="{dbUser}" password="{dbPassword}" batch="{dbBatch}" />
+    <database id="db" />
 
 	<comment>drop the current tables/sequences if they exist and recreate them</comment>
-	<execute uri="{ftl:${database}/drop_tables.${database}.sql}"   target="db" onError="ignore" />
-	<execute uri="{ftl:${database}/create_tables.${database}.sql}" target="db" />
-	
-	<bean id="idGen" spec="new DBSeqHiLoGenerator('seq_id_gen', 100, db)" />
+	<execute uri="{ftl:sql/${db.system}/drop_tables.${db.system}.sql}"   target="db" onError="ignore" />
+	<execute uri="{ftl:sql/${db.system}/create_tables.${db.system}.sql}" target="db" />
+
+	<bean id="idGen" spec="new IncrementGenerator(100)" />
 
 	<comment>Creating a valid base data set for regression testing by importing a DbUnit file</comment>
 	<iterate source="shop.dbunit.xml" consumer="db" />
 
 	<comment>Importing some more predefined products from a CSV file</comment>
-	<iterate source="products.import.csv" type="db_product" encoding="utf-8" consumer="db" />
+	<iterate source="products.ent.csv" type="db_product" encoding="utf-8" consumer="db" />
 
 	<comment>You could import them from a flat file as well, e.g.
 		iterate name="db_product" source="products.import.flat" 
@@ -104,7 +70,7 @@
 
     <comment>create customers</comment>
     <generate type="db_user" count="{customer_count}" consumer="db">
-        <variable name="person" generator="PersonGenerator" dataset="{country}" locale="{locale}"/>
+        <variable name="person" generator="PersonGenerator" />
         <id name="id" generator="idGen" />
         <attribute name="name" script="person.givenName + ' ' + person.familyName" />
         <attribute name="email" generator="EMailAddressGenerator" />

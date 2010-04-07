@@ -43,7 +43,7 @@
     <db_role name="customer" />
 
     <db_user id="1" name="alice"  password="alice"  email="alice@somewhere.com"       role_id="administrator" active="1"/>
-    <db_user id="2" name="{ftl:${user.name}}"       password="{ftl:${user.name}}" email="{ftl:${user_email}}" role_id="administrator" active="1"/>
+    <db_user id="2" name="{user.name}" password="{user.name}" email="{user_email}" role_id="administrator" active="1"/>
     <db_user id="3" name="bob"    password="bob"    email="bob@somewhere.com"         role_id="clerk"         active="1"/>
     <db_user id="4" name="charly" password="charly" email="charly@somewhere_else.com" role_id="customer"      active="1"/>
 
