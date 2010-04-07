@@ -158,7 +158,12 @@ public class DBSnapshotTool {
                 	monitor.advance();
             }
             long duration = System.currentTimeMillis() - startTime;
-            logger.info("Exported " + NumberUtil.format(count, 0) + " entities in " + RoundedNumberFormat.format(duration, 0) + " ms (" + RoundedNumberFormat.format(count * 3600000L / duration, 0) + " p.h.)");
+            if (count == 0)
+            	logger.warn("No entities found for snapshot.");
+            else
+            	logger.info("Exported " + NumberUtil.format(count, 0) + " entities in " + 
+            			RoundedNumberFormat.format(duration, 0) + " ms " +
+            			"(" + RoundedNumberFormat.format(count * 3600000L / duration, 0) + " p.h.)");
         } finally {
             IOUtil.close(exporter);
             if (db != null)
