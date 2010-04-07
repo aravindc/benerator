@@ -438,13 +438,6 @@ public class DBSystem extends AbstractStorageSystem {
         }
     }
 	
-	// java.lang.Object overrides ------------------------------------------------------------------
-	
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + user + '@' + url + ']';
-    }
-
     public DatabaseDialect getDialect() {
     	if (dialect == null) {
         	try {
@@ -457,6 +450,17 @@ public class DBSystem extends AbstractStorageSystem {
     	return dialect;
     }
     
+    public String getSystem() {
+    	return getDialect().getSystem();
+    }
+    
+	// java.lang.Object overrides ------------------------------------------------------------------
+	
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + user + '@' + url + ']';
+    }
+
     // private helpers ------------------------------------------------------------------------------
 
 	private QueryIterable createQuery(String query, Context context, Connection connection) {
