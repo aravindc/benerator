@@ -81,6 +81,16 @@
             <directory>target/site/apidocs</directory>
             <outputDirectory>doc/api</outputDirectory>
         </fileSet>
+	    <fileSet>
+			<directory>target</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+			<excludes>
+				<exclude>*-sources.jar</exclude>
+			</excludes>
+	    </fileSet>
     </fileSets>
 
 	<!-- filtered script files -->
@@ -99,21 +109,20 @@
 
     <dependencySets>
         <dependencySet>
+            <scope>runtime</scope>
             <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
-            <scope>runtime</scope>
             <excludes>
                 <exclude>junit:junit</exclude>
-                <exclude>databene:databene-benerator</exclude>
             </excludes>
         </dependencySet>
         <dependencySet>
-            <outputDirectory>/</outputDirectory>
+        	<scope>provided</scope>
+            <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
-            <scope>runtime</scope>
-            <includes>
-                <include>databene:databene-benerator</include>
-            </includes>
+            <excludes>
+                <exclude>log4j:log4j</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
 </assembly>
