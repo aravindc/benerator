@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import org.databene.benerator.archetype.Archetype;
 import org.databene.benerator.archetype.ArchetypeManager;
+import org.databene.benerator.main.DBSnapshotTool;
 import org.databene.commons.FileUtil;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.NullSafeComparator;
@@ -101,7 +102,7 @@ public class Setup implements ObservableBean, Serializable {
 		setProjectName(DEFAULT_PROJECT_NAME);
 		setGroupId(DEFAULT_GROUP_ID);
 		setVersion(DEFAULT_PROJECT_VERSION);
-		eclipseProject = true;
+		eclipseProject = false;
 		offline = false;
 		overwrite = false;
 		
@@ -252,6 +253,10 @@ public class Setup implements ObservableBean, Serializable {
     	return archetype.getId().endsWith("db");
     }
 
+	public boolean isShopProject() {
+    	return archetype.getId().endsWith("shopdb");
+    }
+
 	public JDBCDriverInfo getJdbcDriverType() {
     	return jdbcDriverType;
     }
@@ -358,6 +363,17 @@ public class Setup implements ObservableBean, Serializable {
 	
 	public void setDbSnapshot(String dbSnapshot) {
 		this.dbSnapshot = dbSnapshot;
+	}
+	
+	public String getDbSnapshotFile() {
+		if (DBSnapshotTool.DBUNIT_FORMAT.equals(dbSnapshot))
+			return "base.dbunit.xml";
+		else if (DBSnapshotTool.SQL_FORMAT.equals(dbSnapshot))
+			return "base.sql";
+		else if (DBSnapshotTool.XLS_FORMAT.equals(dbSnapshot))
+			return "base.xls";
+		else
+			return null;
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
