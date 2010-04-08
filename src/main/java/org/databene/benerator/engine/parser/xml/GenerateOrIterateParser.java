@@ -116,7 +116,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
     		ResourceManager resourceManager, BeneratorContext context, boolean infoLog) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		
-		Generator<Long> countExpression = GeneratorFactoryUtil.getCountGenerator(descriptor);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
 		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
 		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));
@@ -125,7 +125,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
 		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
 		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
-				null, countExpression, pageSize, pager, threads, errorHandler, infoLog);
+				null, countGenerator, pageSize, pager, threads, errorHandler, infoLog);
 		GeneratorTask task = parseTask(element, parentPath, creator, descriptor, resourceManager, context, infoLog);
 		creator.setTask(task);
 		return creator;
