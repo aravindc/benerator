@@ -46,7 +46,7 @@ public class DynamicCountGeneratorTest extends GeneratorTest {
 	
 	@Test
 	public void testNormal() {
-		DynamicCountGenerator generator = new DynamicCountGenerator(ONE, TWO, ONE, STEP, FALSE);
+		DynamicCountGenerator generator = new DynamicCountGenerator(ONE, TWO, ONE, STEP, FALSE, false);
 		generator.init(context);
 		expectGeneratedSequence(generator, 1L, 2L);
 		generator.close();
@@ -54,9 +54,9 @@ public class DynamicCountGeneratorTest extends GeneratorTest {
 	
 	@Test
 	public void testMaxIsNull() {
-		DynamicCountGenerator generator = new DynamicCountGenerator(ONE, NULL, ONE, STEP, FALSE);
+		DynamicCountGenerator generator = new DynamicCountGenerator(ONE, NULL, ONE, STEP, FALSE, true);
 		generator.init(context);
-		assertNull(generator.generate()); // if max == null, the generator is required to return null to indicate non-limitedness
+		assertEquals(1L, generator.generate().longValue());
 		generator.close();
 	}
 	
