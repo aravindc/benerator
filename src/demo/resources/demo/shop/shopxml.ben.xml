@@ -4,13 +4,16 @@
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
 		
 	<import defaults="true" 
-			platform="xml"/>
+			platforms="xml"/>
 	
-	<bean class="XMLSchemaDescriptorProvider" id="schema"> <!-- use 'include' -->
+	<bean class="XMLSchemaDescriptorProvider" id="schema"> <!-- TODO use 'include' -->
 		<property name="schemaUri" value="demo/shop/shop-plain.xsd" />
 	</bean>
 	
-	<generate type="shop" count="1" consumer="XMLEntityConsumer">
-		<!-- make it work! -->
+	<bean id="cons" spec="new XMLEntityExporter('test.xml')" />
+	
+	<generate type="shop" count="1" consumer="cons">
+		<generate type="product" count="5" consumer="cons" />
 	</generate>
+	
 </setup>
