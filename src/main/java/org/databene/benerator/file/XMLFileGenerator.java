@@ -72,7 +72,6 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
         this.encoding = SystemInfo.getFileEncoding();
         this.dataModel = DataModel.getDefaultInstance();
-        dataModel.clear();
         this.root = root;
         this.filenamePattern = filenamePattern;
         
