@@ -217,7 +217,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
-    	Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(instance);
+    	Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(instance, true);
     	return new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
     			countGenerator, context);
     }

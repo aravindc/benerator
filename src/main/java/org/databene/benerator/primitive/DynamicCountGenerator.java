@@ -27,30 +27,32 @@ import org.databene.commons.Expression;
 
 /**
  * Behaves similar to the {@link DynamicLongGenerator}, 
- * but generates <code>null</code> values, if <code>max</code> is set to <code>null</code>.
- * The <code>null</code> value are to be interpreted as not-externally-limited loop size
- * (the default case when iterating over a limited data source).<br/><br/>
+ * but generates <code>maxFallback</code> values, if <code>max</code> is set to <code>null</code>.<br/><br/>
  * Created: 28.03.2010 08:48:11
  * @since 0.6.0
  * @author Volker Bergmann
  */
 public class DynamicCountGenerator extends DynamicLongGenerator {
+	
+	private boolean fallBackToMin;
 
     public DynamicCountGenerator() {
         super();
     }
 
     public DynamicCountGenerator(Expression<Long> min, Expression<Long> max, Expression<Long> precision, 
-    		Expression<? extends Distribution> distribution, Expression<Boolean> unique) {
+    		Expression<? extends Distribution> distribution, Expression<Boolean> unique, boolean fallBackToMin) {
         super(min, max, precision, distribution, unique);
+        this.fallBackToMin = fallBackToMin;
     }
     
 	@Override
-	protected void resetMembers(Long maxValue) {
+	protected void resetMembers(Long minValue, Long maxValue) {
 		if (maxValue != null)
-		    super.resetMembers(maxValue);
+		    super.resetMembers(minValue, maxValue);
 		else {
-			source = GeneratorFactory.getConstantGenerator(null);
+			Long constant = (fallBackToMin ? minValue : null);
+			source = GeneratorFactory.getConstantGenerator(constant);
 	        source.init(context);
 		}
 	}

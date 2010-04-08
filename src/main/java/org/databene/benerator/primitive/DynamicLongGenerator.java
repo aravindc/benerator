@@ -71,19 +71,18 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
     public void init(GeneratorContext context) {
     	assertNotInitialized();
     	this.context = context;
-    	resetMembers(max.evaluate(context));
+    	resetMembers(min.evaluate(context), max.evaluate(context));
         super.init(context);
     }
 
     @Override
     public void reset() {
     	assertInitialized();
-    	resetMembers(max.evaluate(context));
+    	resetMembers(min.evaluate(context), max.evaluate(context));
         super.reset();
     }
 
-	protected void resetMembers(Long maxValue) {
-		Long minValue = ExpressionUtil.evaluate(min, context);
+	protected void resetMembers(Long minValue, Long maxValue) {
 		if (minValue == null)
 			minValue = 0L;
 		Long precisionValue = ExpressionUtil.evaluate(precision, context);

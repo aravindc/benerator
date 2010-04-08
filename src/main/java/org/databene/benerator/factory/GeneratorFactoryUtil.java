@@ -149,7 +149,7 @@ public class GeneratorFactoryUtil {
     	};
     }
 
-	public static Generator<Long> getCountGenerator(final InstanceDescriptor descriptor) {
+	public static Generator<Long> getCountGenerator(final InstanceDescriptor descriptor, boolean fallBackToMin) {
     	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
     		return new ExpressionBasedGenerator<Long>(count, Long.class);
@@ -160,7 +160,7 @@ public class GeneratorFactoryUtil {
 			final Expression<Distribution> countDistribution = 
 				getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
 			return new DynamicCountGenerator(minCount, maxCount, countPrecision, countDistribution, 
-					ExpressionUtil.constant(false));
+					ExpressionUtil.constant(false), fallBackToMin);
     	}
     }
 
