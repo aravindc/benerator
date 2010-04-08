@@ -97,4 +97,9 @@ public class PrimitiveType {
         return instancesByName.values();
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }
