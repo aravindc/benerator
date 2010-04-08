@@ -11,10 +11,10 @@
         <variable name="product" type="Product" source="products.ent.xls" distribution="random"/>
         
         <id name="id" type="long"/>
-        <attribute name="comment" pattern="[A-Z][a-z]{5,12}"/>
-        <attribute name="ean_code" script="product.ean_code"/>
-        <attribute name="price" type="big_decimal" precision="0.01" script="product.price"/>
-        <attribute name="items" type="short" min="1" max="27"/>
+        <attribute name="comment"  type="string" pattern="[A-Z][a-z]{5,12}"/>
+        <attribute name="ean_code" type="string" script="product.ean_code"/>
+        <attribute name="price"    type="big_decimal" precision="0.01" script="product.price"/>
+        <attribute name="items"    type="short" min="1" max="27"/>
         
         <consumer class="XLSEntityExporter">
             <property name="uri" value="transactions.out.xls"/>
