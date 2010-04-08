@@ -28,9 +28,9 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.iterator.HeavyweightIteratorProxy;
 import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
+import org.databene.model.data.PartDescriptor;
 
 /**
  * {@link EntitySource} implementation for testing.<br/><br/>
@@ -41,8 +41,8 @@ import org.databene.model.data.EntitySource;
 public class PersonIterable extends AbstractEntitySource {
 
 	public static final ComplexTypeDescriptor PERSON_DESCRIPTOR = new ComplexTypeDescriptor("Person")
-		.withComponent(new ComponentDescriptor("name", "string"))
-		.withComponent(new ComponentDescriptor("age", "int"));
+		.withComponent(new PartDescriptor("name", "string"))
+		.withComponent(new PartDescriptor("age", "int"));
 	
 	public static final Entity ALICE = new Entity(PERSON_DESCRIPTOR, "name", "Alice", "age", "23");
 	public static final Entity BOB = new Entity(PERSON_DESCRIPTOR, "name", "Bob", "age", "34");

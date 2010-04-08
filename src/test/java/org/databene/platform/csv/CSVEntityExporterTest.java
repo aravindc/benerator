@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 
@@ -67,9 +66,9 @@ public class CSVEntityExporterTest {
 	public void setUp() {
 		// create descriptor for 'Person' entities
 		descriptor = new ComplexTypeDescriptor("Person", "entity");
-		descriptor.addComponent(new ComponentDescriptor("name", "string"));
-		descriptor.addComponent(new ComponentDescriptor("age", "int"));
-		descriptor.addComponent(new ComponentDescriptor("score", "inst"));
+		descriptor.addComponent(new PartDescriptor("name", "string"));
+		descriptor.addComponent(new PartDescriptor("age", "int"));
+		descriptor.addComponent(new PartDescriptor("score", "inst"));
 		// create Person instances for testing
 		alice = new Entity("Person", "name", "Alice", "age", 23, "score", 10);
 		bob = new Entity("Person", "name", "Bob", "age", 34, "score", 3);

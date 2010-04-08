@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,8 +28,8 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class SimpleTypeEntityGeneratorTest {
 	private ComplexTypeDescriptor createComplexType() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor(null);
 		SimpleTypeDescriptor content = new SimpleTypeDescriptor(null, "string");
-		type.addComponent(new ComponentDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, content));
+		type.addComponent(new PartDescriptor(ComplexTypeDescriptor.__SIMPLE_CONTENT, content));
 		return type;
 	}
 	
