@@ -33,7 +33,7 @@ package org.databene.model.data;
  * @since 0.4.2
  * @author Volker Bergmann
  */
-public class ComponentDescriptor extends InstanceDescriptor {
+public abstract class ComponentDescriptor extends InstanceDescriptor {
     
     public static final String MODE = "mode";
     
