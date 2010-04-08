@@ -147,8 +147,8 @@
         
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>3.2</version>
+            <artifactId>antlr-runtime</artifactId>
+            <version>3.1.3</version>
         </dependency>
 
         <!-- Dependencies to JDBC drivers that are closed source or not available on the maven repository -->
@@ -199,6 +199,8 @@
                     <include>**/*.txt</include>
                     <include>**/*.xls</include>
                     <include>**/*.java</include>
+                    <include>**/*.sql</include>
+                    <include>**/*.gif</include>
                 </includes>
                 <excludes>
                     <exclude>log4j.xml</exclude>
