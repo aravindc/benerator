@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.databene.commons.expression.ExpressionUtil.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
@@ -197,7 +198,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 						addDescriptor(new UnresolvedTypeDescriptor(nameAttribute, typeName));
 				} else if (XMLUtil.getChildElements(element, false, "complexType").length > 0) {
                 	addDescriptor(new ComplexTypeDescriptor(nameAttribute));
-            	} else if (XMLUtil.getChildElements(element, false, "simpleType").length > 0) {
+            	} else if (XMLUtil.getChildElements(element, false, SIMPLE_TYPE).length > 0) {
                 	addDescriptor(new SimpleTypeDescriptor(nameAttribute));
             	} else
             		addDescriptor(new ComplexTypeDescriptor(nameAttribute));
@@ -457,8 +458,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         String name = element.getAttribute(NAME);
         if (logger.isDebugEnabled())
             logger.debug("parseElement(" + element.getAttribute(NAME) + ')');
-        if (owner == null)
-        	throw new RuntimeException("No owner provided");
+        Assert.notNull(owner, "owner");
         PartDescriptor descriptor = null;
         if (!StringUtil.isEmpty(element.getAttribute(REF)))
             descriptor = parseElementRef(element);
@@ -489,13 +489,12 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             String type = element.getAttribute("type");
             if (!StringUtil.isEmpty(type)) {
             	descriptor = parseElementWithType(element);
-                parseOccurrences(element, descriptor);
             }
         } else
-            parseOccurrences(element, descriptor);
         	parseElementAppInfo(descriptor, annotation);
         if (descriptor == null)
             descriptor = new PartDescriptor(name, "string"); // possibly there i a more useful default type
+        parseOccurrences(element, descriptor);
         if ("false".equals(element.getAttribute("nillable")))
         	descriptor.setNullable(false);
         owner.addComponent(descriptor);
@@ -526,7 +525,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         } else {
         	descriptor = new PartDescriptor(refName, refName);
         }
-        parseOccurrences(element, descriptor);
         return descriptor;
     }
 
@@ -638,8 +636,17 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         Long maxOccurs = 1L;
         if (!StringUtil.isEmpty(maxOccursString))
             maxOccurs = ("unbounded".equals(maxOccursString) ? null : Long.parseLong(maxOccursString));
-        descriptor.setMinCount(new ConstantExpression<Long>(minOccurs));
-        descriptor.setMaxCount(new ConstantExpression<Long>(maxOccurs));
+        if (minOccurs.equals(maxOccurs) && descriptor.getCount() != null) {
+        	descriptor.setCount(constant(maxOccurs));
+        	descriptor.setMinCount(null);
+        	descriptor.setMaxCount(null);
+        } else {
+        	descriptor.setCount(null);
+        	if (descriptor.getMinCount() == null)
+        		descriptor.setMinCount(constant(minOccurs));
+        	if (descriptor.getMaxCount() == null)
+        		descriptor.setMaxCount(constant(maxOccurs));
+        }
     }
 
     private void parseKeyRef(Element child) {
