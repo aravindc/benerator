@@ -54,6 +54,7 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
 	}
 	
     public Object generate() {
+    	assertInitialized();
         int count = countGenerator.generate().intValue();
         if (count == 0)
             return new Object[0];
