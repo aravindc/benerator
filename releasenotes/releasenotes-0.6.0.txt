@@ -65,7 +65,8 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - supporting sub invocation of descriptor files: <include uri="included.ben.xml" />
   - removed TreePathGenerator
   - <reference> and <id> may now use similar settings like <attribute>
-
+  - AddingConsumer{type='long' feature='amount'}
+  
 - Supporting the H2 database
 
 - Performance measurement
@@ -161,6 +162,10 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
 - New database snapshots export formats:
   - Excel(TM) document
   - SQL
+
+- Maven Project Wizard
+  - Providing 12 predefined project archetypes for different generation tasks
+  - Easier database configuration
 
 - Internals:
   - new class 'Version'
