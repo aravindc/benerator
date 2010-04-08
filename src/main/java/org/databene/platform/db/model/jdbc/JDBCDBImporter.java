@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -137,6 +137,7 @@ public final class JDBCDBImporter implements DBImporter {
             logger.debug("found schema " + schemaName);
             if (!schemaName.equalsIgnoreCase(this.schemaName) && !(this.schemaName == null && this.user.equalsIgnoreCase(schemaName)))
                 continue;
+            logger.debug("importing schema " + schemaName);
             this.schemaName = schemaName;
             DBSchema schema = new DBSchema(schemaName);
             database.addSchema(schema);
@@ -421,20 +422,20 @@ public final class JDBCDBImporter implements DBImporter {
     private void importImportedKeys(Database database, DatabaseMetaData metaData) {
         logger.info("Importing imported keys");
         int count = 0;
-        for (DBCatalog catalog : database.getCatalogs())
-            for (DBTable table : catalog.getTables()) {
-                if (ignoreTable(table.getName()))
-                	continue;
-                importImportedKeys(catalog, null, table, metaData);
-                count++;
-            }
-        if (count > 0)
-            return;
         for (DBSchema schema : database.getSchemas())
             for (DBTable table : schema.getTables()) {
                 if (ignoreTable(table.getName()))
                 	continue;
-                importImportedKeys(null, schema, table, metaData);
+                importImportedKeys(table.getCatalog(), table.getSchema(), table, metaData);
+                count++;
+            }
+        if (count > 0)
+            return;
+        for (DBCatalog catalog : database.getCatalogs())
+            for (DBTable table : catalog.getTables()) {
+                if (ignoreTable(table.getName()))
+                	continue;
+                importImportedKeys(table.getCatalog(), table.getSchema(), table, metaData);
                 count++;
             }
     }
@@ -469,6 +470,8 @@ public final class JDBCDBImporter implements DBImporter {
 	                foreignKeyConstraint.addForeignKeyColumn(foreignKeyColumn);
 	            }
 	            table.addForeignKeyConstraint(foreignKeyConstraint);
+	            if (logger.isDebugEnabled())
+	            	logger.debug("Imported foreign key: " + foreignKeyConstraint);
 	        }
         } catch (SQLException e) {
         	errorHandler.handleError("Error importing foreign key constraints", e);
