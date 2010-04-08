@@ -38,21 +38,28 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.DriverManager;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import org.databene.benerator.archetype.Archetype;
 import org.databene.benerator.archetype.ArchetypeManager;
 import org.databene.benerator.archetype.MavenFolderLayout;
 import org.databene.benerator.main.DBSnapshotTool;
@@ -73,6 +80,8 @@ import org.databene.gui.swing.delegate.PropertyFileField;
 import org.databene.gui.swing.delegate.PropertyPasswordField;
 import org.databene.gui.swing.delegate.PropertyTextField;
 import org.databene.gui.swing.ProgressMonitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Lets the user enter benerator project data and 
@@ -83,6 +92,8 @@ import org.databene.gui.swing.ProgressMonitor;
  * @author Volker Bergmann
  */
 public class CreateProjectPanel extends JPanel {
+	
+	static final Logger logger = LoggerFactory.getLogger(CreateProjectPanel.class);
 	
 	private static final String SETUP_FILE = "setup.ser";
 
@@ -160,6 +171,7 @@ public class CreateProjectPanel extends JPanel {
 
 		// archetype
 		archetypeField = createComboBox("archetype", null, pane, (Object[]) ArchetypeManager.getInstance().getArchetypes());
+		archetypeField.setRenderer(new ArchetypeRenderer());
 		ArchetypeListener archetypeListener = new ArchetypeListener();
 		archetypeField.addActionListener(archetypeListener);
 		pane.endRow();
@@ -319,6 +331,9 @@ public class CreateProjectPanel extends JPanel {
 
 		public void run() {
 			try {
+				logger.info("Creating project " + setup.getProjectName() + " " +
+						"of type " + setup.getArchetype().getId() + " " +
+								"in " + setup.getProjectFolder());
 				createButton.setEnabled(false);
 				String taskName = i18n.format("message.project.create", setup.getProjectName());
 				String message = i18n.getString("message.project.initializing");
@@ -331,7 +346,7 @@ public class CreateProjectPanel extends JPanel {
 				if (errors.length > 0)
 					showErrors((Object[]) errors);
 				else {
-					JOptionPane.showMessageDialog(CreateProjectPanel.this, "Done");
+					JOptionPane.showMessageDialog(CreateProjectPanel.this, i18n.getString("message.done"));
 					exit();
 				}
 			} catch (I18NError e) {
@@ -388,6 +403,33 @@ public class CreateProjectPanel extends JPanel {
 	
 	public JButton getCreateButton() {
 		return createButton;
+	}
+	
+	@SuppressWarnings("serial")
+    class ArchetypeRenderer extends DefaultListCellRenderer {
+		
+		private Map<Archetype, Icon> icons = new HashMap<Archetype, Icon>(20);
+	
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+		        boolean cellHasFocus) {
+			super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			Archetype archetype = (Archetype) value;
+			archetype.getIconURL();
+			Icon icon = getIcon(archetype);
+			setIcon(icon);
+			setText(archetype.getDescription());
+		    return this;
+		}
+
+		private Icon getIcon(Archetype archetype) {
+			Icon icon = icons.get(archetype);
+	        if (icon == null) {
+	        	icon = new ImageIcon(archetype.getIconURL());
+	        	icons.put(archetype, icon);
+	        }
+	        return icon;
+        }
 	}
 	
 }
