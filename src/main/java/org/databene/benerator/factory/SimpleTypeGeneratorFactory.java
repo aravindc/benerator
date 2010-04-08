@@ -60,6 +60,7 @@ import org.databene.commons.converter.ArrayElementExtractor;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.converter.LiteralParser;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.iterator.ArrayIterable;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.validator.StringLengthValidator;
@@ -403,7 +404,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         }
 
         // check pattern against null
-        String pattern = descriptor.getPattern();
+        String pattern = ToStringConverter.convert(descriptor.getDetailValue(PATTERN), null);
         if (pattern == null)
             pattern = (String) descriptor.getDetailDefault(PATTERN);
 
