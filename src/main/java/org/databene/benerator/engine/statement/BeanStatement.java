@@ -26,6 +26,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.beans.PropertyDescriptor;
 import java.io.Closeable;
 
 import org.databene.benerator.Generator;
@@ -68,9 +69,12 @@ public class BeanStatement extends SequentialStatement {
         Object bean = constructionExpression.evaluate(context);
         // post construction steps
         super.execute(context);
-        if (!StringUtil.isEmpty(id))
-            BeanUtil.setPropertyValue(bean, "id", id, false);
-		if (bean instanceof ContextAware)
+        if (!StringUtil.isEmpty(id)) {
+        	PropertyDescriptor descriptor = BeanUtil.getPropertyDescriptor(bean.getClass(), "id");
+        	if (descriptor != null && descriptor.getWriteMethod() != null)
+        		BeanUtil.setPropertyValue(bean, "id", id, false);
+        }
+        if (bean instanceof ContextAware)
 			((ContextAware) bean).setContext(context);
 		if (bean instanceof DescriptorProvider)
 			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
