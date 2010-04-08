@@ -43,6 +43,7 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
+import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.array.Array2EntityConverter;
@@ -180,7 +181,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		    		String header = headers[i];
 		    		SimpleTypeDescriptor componentType = 
 		    			PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(feed[i].getClass());
-		    		ComponentDescriptor component = new ComponentDescriptor(header, componentType);
+		    		ComponentDescriptor component = new PartDescriptor(header, componentType);
 		    		complexTypeDescriptor.addComponent(component);
 		    	}
 		    	DefaultDescriptorProvider provider = (DefaultDescriptorProvider) dataModel.getDescriptorProvider(defaultProviderId);
