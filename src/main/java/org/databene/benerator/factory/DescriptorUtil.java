@@ -199,13 +199,9 @@ public class DescriptorUtil {
     }
 	
 	public static Expression<Boolean> getUniqueness(final InstanceDescriptor descriptor) {
-		return new DynamicExpression<Boolean>() {
-			public Boolean evaluate(Context context) {
-				return isUnique(descriptor);
-            }
-		};
+		return new UniquenessExpression(descriptor);
     }
-
+	
     public static double getNullQuota(InstanceDescriptor descriptor) {
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota == null)
@@ -281,11 +277,7 @@ public class DescriptorUtil {
 	}
 
 	private static Expression<Long> getGlobalMaxCount() {
-		return new DynamicExpression<Long>() {
-			public Long evaluate(Context context) {
-	            return ((BeneratorContext) context).getMaxCount();
-            }
-		};
+		return new GlobalMaxCountExpression();
     }
 
 	public static Expression<Long> getCountPrecision(InstanceDescriptor descriptor) {
@@ -345,5 +337,23 @@ public class DescriptorUtil {
             throw new ConfigurationError(e);
         }
     }
+
+	static class UniquenessExpression extends DynamicExpression<Boolean> {
+		InstanceDescriptor descriptor;
+		
+		public UniquenessExpression(InstanceDescriptor descriptor) {
+	        this.descriptor = descriptor;
+        }
+
+		public Boolean evaluate(Context context) {
+			return isUnique(descriptor);
+        }
+	}
+
+	static class GlobalMaxCountExpression extends DynamicExpression<Long> {
+		public Long evaluate(Context context) {
+            return ((BeneratorContext) context).getMaxCount();
+        }
+	}
 
 }
