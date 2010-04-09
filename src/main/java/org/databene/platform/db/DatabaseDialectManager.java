@@ -37,17 +37,19 @@ import org.databene.platform.db.dialect.UnknownDialect;
  */
 public class DatabaseDialectManager {
 
+    private static final String FILENAME = "org/databene/platform/db/databene.db_dialect.properties";
+
     public static DatabaseDialect getDialectForProduct(String productName) { 
-        String filename = "org/databene/platform/db/databene.db_dialect.properties";
+        String normalizedProductName = productName.toLowerCase().replace(' ', '_');
         try {
-            Map<String, String> mappings = IOUtil.readProperties(filename);
+            Map<String, String> mappings = IOUtil.readProperties(FILENAME);
             for (Map.Entry<String, String> entry : mappings.entrySet())
-                if (productName.toLowerCase().contains(entry.getKey())) {
+	            if (normalizedProductName.contains(entry.getKey())) {
                     return (DatabaseDialect) BeanUtil.newInstance(entry.getValue());
-                }
+            }
             return new UnknownDialect(productName);
         } catch (IOException e) {
-            throw new ConfigurationError("Database dialect mapping not found: " + filename, e);
+            throw new ConfigurationError("Database dialect mapping not found: " + FILENAME, e);
         }
     }
 
