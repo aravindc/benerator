@@ -153,7 +153,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
 		return resourceManager.addResource(resource);
 	}
 	
-	public void close() throws IOException {
+	public void close() {
 		resourceManager.close();
 	}
 
