@@ -160,12 +160,15 @@ public final class JDBCDBImporter implements DBImporter {
                                 "execute 'PURGE RECYCLEBIN;')", this, tableName);
                 continue;
             }
-            if (ignoreTable(tableName))
+            if (ignoreTable(tableName)) {
+                if (logger.isDebugEnabled())
+                    logger.debug("ignoring table: " + tCatalogName + ", " + tSchemaName + ", " + tableName);
             	continue;
+            }
             String tableType = tableSet.getString(4); // Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
             String tableRemarks = tableSet.getString(5);
             if (logger.isDebugEnabled())
-                logger.debug("found table: " + tCatalogName + ", " + tSchemaName + ", " + tableName + ", " + tableType + ", " + tableRemarks);
+                logger.debug("importing table: " + tCatalogName + ", " + tSchemaName + ", " + tableName + ", " + tableType + ", " + tableRemarks);
 
             // building table
             DBTable table = new DBTable(tableName);
