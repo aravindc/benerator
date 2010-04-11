@@ -38,6 +38,7 @@ import org.databene.commons.ErrorHandler;
 public class CountTask extends AbstractTask {
 
     public int runCount = 0;
+    public int pageCount = 0;
     public int closeCount = 0;
     public int runLimit;
     
@@ -60,6 +61,12 @@ public class CountTask extends AbstractTask {
         	return TaskResult.FINISHED;
         else
         	return TaskResult.UNAVAILABLE;
+    }
+    
+    @Override
+    public void pageFinished() {
+        super.pageFinished();
+        pageCount++;
     }
 
     @Override

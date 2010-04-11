@@ -83,6 +83,8 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		assertTrue(outerConsumer.closeCount.get() == 0);
 		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(2);
 		assertEquals(6, innerConsumer.startConsumingCount.get());
+		assertTrue(innerConsumer.flushCount.get() > 0);
+		assertTrue(outerConsumer.closeCount.get() == 0);
 		assertTrue(innerConsumer.closeCount.get() > 0);
 		assertEquals(9L, context.getTotalGenerationCount());
 	}

@@ -120,13 +120,14 @@ public class PagedTaskRunnerTest {
     }
 
     private void checkRun(long totalInvocations, int pageSize, int threads,
-                          int expectedInitCount, int expectedRunCount, int expectedCloseCount) {
+                          int expectedInitCount, int expectedRunCount, int expectedPageCount) {
         CountTask countTask = new CountTask();
         PagedTaskRunner pagedTask = new PagedTaskRunner(countTask, null, pageSize, threads, false, executors, 
         		context, errHandler);
         pagedTask.run(totalInvocations);
         assertEquals("Unexpected runCount,", expectedRunCount, countTask.runCount);
-        assertEquals("Unexpected closeCount,", expectedCloseCount, countTask.closeCount);
+        assertEquals("Unexpected pageCount,", expectedPageCount, countTask.pageCount);
+        assertEquals("Unexpected closeCount,", 0, countTask.closeCount);
     }
     
 }
