@@ -21,8 +21,6 @@
 
 package org.databene.benerator.engine;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +42,8 @@ public class BeneratorShutdownHook extends Thread {
 
 	@Override
 	public void run() {
-		try {
-			logger.debug("Shutdown down Benerator...");
-			resourceManager.close();
-		} catch (IOException e) {
-	        logger.error("Error closing resource manager", e);
-        }
+		logger.info("Shutdown down Benerator...");
+		resourceManager.close();
 	}
 	
 }
