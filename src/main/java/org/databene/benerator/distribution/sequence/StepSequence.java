@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.wrapper.SkipGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import static org.databene.commons.NumberUtil.*;
@@ -77,6 +78,14 @@ public class StepSequence extends Sequence {
     	return initial;
     }
 
+	@Override
+	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+		if (increment.longValue() < 0)
+			return super.applyTo(source, unique);
+		else
+			return new SkipGeneratorProxy<T>(toLong(increment), toLong(increment));
+	}
+	
     public <T extends Number> Generator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
         Number incrementToUse = incrementToUse(precision);
