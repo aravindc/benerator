@@ -22,7 +22,6 @@
 package org.databene.platform.contiperf;
 
 import java.io.Closeable;
-import java.io.IOException;
 
 import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
@@ -76,8 +75,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 		return tracker;
 	}
 
-	@SuppressWarnings("unused")
-    public void close() throws IOException {
+    public void close() {
 	    tracker.stop();
     }
 	

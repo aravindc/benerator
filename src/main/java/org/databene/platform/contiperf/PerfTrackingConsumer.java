@@ -21,8 +21,6 @@
 
 package org.databene.platform.contiperf;
 
-import java.io.IOException;
-
 import org.databene.contiperf.Invoker;
 import org.databene.model.consumer.Consumer;
 
@@ -81,7 +79,7 @@ public class PerfTrackingConsumer extends PerfTrackingWrapper implements Consume
     }
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
 	    super.close();
 	    target.close();
 	}

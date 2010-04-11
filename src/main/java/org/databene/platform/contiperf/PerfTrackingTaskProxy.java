@@ -21,8 +21,6 @@
 
 package org.databene.platform.contiperf;
 
-import java.io.IOException;
-
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -58,7 +56,7 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
 	}
 	
 	@Override
-    public void close() throws IOException {
+    public void close() {
 	    super.close();
 	    realTask.close();
 	}
