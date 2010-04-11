@@ -55,6 +55,10 @@ public class PerfTrackingTaskProxy extends PerfTrackingWrapper implements Task {
         }
 	}
 	
+	public void pageFinished() {
+	    // nothing special to do here
+	}
+	
 	@Override
     public void close() {
 	    super.close();
