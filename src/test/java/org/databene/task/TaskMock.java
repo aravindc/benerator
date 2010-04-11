@@ -21,7 +21,6 @@
 
 package org.databene.task;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.util.RandomUtil;
@@ -81,7 +80,7 @@ public class TaskMock extends AbstractTask implements ContextAware {
     }
 	
 	@Override
-	public void close() throws IOException {
+	public void close() {
 	    super.close();
 	}
 
