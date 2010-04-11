@@ -26,8 +26,6 @@
 
 package org.databene.task;
 
-import java.io.IOException;
-
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 
@@ -70,7 +68,7 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask implements 
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         realTask.close();
     }
     

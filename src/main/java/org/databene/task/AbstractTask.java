@@ -26,8 +26,6 @@
 
 package org.databene.task;
 
-import java.io.IOException;
-
 /**
  * Simple abstract implementation of the Task interface.<br/>
  * <br/>
@@ -77,8 +75,7 @@ public abstract class AbstractTask implements Task {
         return parallelizable;
     }
     
-    @SuppressWarnings("unused")
-    public void close() throws IOException {
+    public void close() {
     	// empty
     }
 

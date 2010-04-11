@@ -53,4 +53,6 @@ public interface Task extends ThreadAware, Closeable {
      */
     TaskResult execute(Context context, ErrorHandler errorHandler);
 
+    void close();
+    
 }
