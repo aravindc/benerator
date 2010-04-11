@@ -135,10 +135,13 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
 	    entityGenerator.reset();
     }
 
-    public void close() {
-        resourceManager.close();
+    public void pageFinished() {
         if (!isSubCreator && consumer != null)
             consumer.flush();
+    }
+    
+    public void close() {
+        resourceManager.close();
     }
 
     // ResourceManager interface ---------------------------------------------------------------------------------------

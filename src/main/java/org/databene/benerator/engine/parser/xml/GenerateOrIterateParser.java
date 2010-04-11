@@ -88,10 +88,11 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	public Statement parse(final Element element, final Statement[] parentPath, 
 			final ResourceManager resourceManager) {
 		final boolean looped = AbstractDescriptorParser.containsLoop(parentPath);
+		final boolean nested = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
 		Expression<Statement> expression = new DynamicExpression<Statement>() {
 			public Statement evaluate(Context context) {
 				return parseCreateEntities(
-						element, parentPath, resourceManager, (BeneratorContext) context, !looped);
+						element, parentPath, resourceManager, (BeneratorContext) context, !looped, nested);
             }
 		};
 		Statement statement = new LazyStatement(expression);
@@ -113,7 +114,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	
     @SuppressWarnings("unchecked")
     public GenerateOrIterateStatement parseCreateEntities(Element element, Statement[] parentPath,
-    		ResourceManager resourceManager, BeneratorContext context, boolean infoLog) {
+    		ResourceManager resourceManager, BeneratorContext context, boolean infoLog, boolean nested) {
 	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
 		
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
@@ -125,7 +126,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
 		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
 		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
-				null, countGenerator, pageSize, pager, threads, errorHandler, infoLog);
+				null, countGenerator, pageSize, pager, threads, errorHandler, infoLog, nested);
 		GeneratorTask task = parseTask(element, parentPath, creator, descriptor, resourceManager, context, infoLog);
 		creator.setTask(task);
 		return creator;

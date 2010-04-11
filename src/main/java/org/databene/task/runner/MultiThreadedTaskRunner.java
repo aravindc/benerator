@@ -29,7 +29,6 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.IOUtil;
 import org.databene.contiperf.PerformanceTracker;
 import org.databene.task.StateTrackingTaskProxy;
 import org.databene.task.Task;
@@ -101,31 +100,31 @@ public class MultiThreadedTaskRunner implements TaskRunner {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (threadSafe) // TODO v0.6.1 close only if it was actually run in shared mode
-            IOUtil.close(target);
+        if (threadSafe) // TODO v0.6.1 call pageFinished only if it was actually run in shared mode
+            target.pageFinished();
         return counter.get();
     }
 
 	public class TaskRunnable implements Runnable {
 
 	    private CountDownLatch latch;
-		private boolean closeAfterwards;
+		private boolean page;
 		private long requestedInvocationCount;
 		private AtomicLong counter;
 		
-	    public TaskRunnable(long requestedInvocationCount, AtomicLong counter, CountDownLatch latch, boolean closeAfterwards) {
+	    public TaskRunnable(long requestedInvocationCount, AtomicLong counter, CountDownLatch latch, boolean page) {
 	        this.latch = latch;
-	        this.closeAfterwards = closeAfterwards;
+	        this.page = page;
 	        this.requestedInvocationCount = requestedInvocationCount;
 	        this.counter = counter;
 	    }
 
 	    public void run() {
 	        try {
-	            long count = SingleThreadedTaskRunner.runWithoutClosing(target, requestedInvocationCount, context, errorHandler);
+	            long count = SingleThreadedTaskRunner.runWithoutPage(target, requestedInvocationCount, context, errorHandler);
 	            counter.addAndGet(count);
-	            if (closeAfterwards)
-	                IOUtil.close(target);
+	            if (page)
+	                target.pageFinished();
 	        } finally {
 	            if (latch != null)
 	            	latch.countDown();

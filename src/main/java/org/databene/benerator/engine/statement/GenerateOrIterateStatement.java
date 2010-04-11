@@ -56,17 +56,19 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected Expression<PageListener> pageListener;
 	protected PerformanceTracker tracker;
 	protected boolean infoLog;
+	protected boolean nested;
 	protected boolean initialized;
 	
 	public GenerateOrIterateStatement(GeneratorTask task,
 			Generator<Long> countGenerator, Expression<Long> pageSize, Expression<PageListener> pageListener, 
-			Expression<Integer> threads, Expression<ErrorHandler> errorHandler, boolean infoLog) {
+			Expression<Integer> threads, Expression<ErrorHandler> errorHandler, boolean infoLog, boolean nested) {
 	    this.task = task;
 	    this.countGenerator = countGenerator;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
 	    this.infoLog = infoLog;
+	    this.nested = nested;
 	    this.initialized = false;
     }
 
@@ -94,6 +96,8 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    		context.getExecutorService(),
 	    		getErrorHandler(context),
 	    		infoLog);
+	    if (!nested)
+	    	close();
     }
 
 	public void reset() {

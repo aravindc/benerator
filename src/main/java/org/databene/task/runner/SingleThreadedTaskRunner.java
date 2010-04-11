@@ -23,7 +23,6 @@ package org.databene.task.runner;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
-import org.databene.commons.IOUtil;
 import org.databene.task.Task;
 import org.databene.task.TaskResult;
 
@@ -47,13 +46,13 @@ public class SingleThreadedTaskRunner implements TaskRunner {
 
 	public long run(Long invocationCount) {
 		try {
-			return runWithoutClosing(target, invocationCount, context, errorHandler);
+			return runWithoutPage(target, invocationCount, context, errorHandler);
 		} finally {
-        	IOUtil.close(target);
+        	target.pageFinished();
 		}
     }
 
-	public static long runWithoutClosing(Task target, Long invocationCount, Context context, ErrorHandler errorHandler) {
+	public static long runWithoutPage(Task target, Long invocationCount, Context context, ErrorHandler errorHandler) {
 		long actualCount = 0;
         for (int i = 0; invocationCount == null || i < invocationCount; i++) {
             TaskResult stepResult = target.execute(context, errorHandler);
