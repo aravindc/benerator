@@ -21,8 +21,6 @@
 
 package org.databene.model.consumer;
 
-import java.io.IOException;
-
 /**
  * Parent class for {@link Consumer}s that serve as proxy to other Consumers.<br/><br/>
  * Created: 22.10.2009 16:18:07
@@ -49,7 +47,7 @@ public abstract class ConsumerProxy<E> implements Consumer<E> {
 	    target.flush();
     }
 
-	public void close() throws IOException {
+	public void close() {
 	    target.close();
     }
 

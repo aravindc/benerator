@@ -42,4 +42,5 @@ public interface Consumer<E> extends Closeable {
     void startConsuming(E object);
     void finishConsuming(E object);
     void flush();
+    void close();
 }
