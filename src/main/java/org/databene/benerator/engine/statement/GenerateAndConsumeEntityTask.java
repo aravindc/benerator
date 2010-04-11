@@ -27,7 +27,6 @@
 package org.databene.benerator.engine.statement;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -137,13 +136,9 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     }
 
     public void close() {
-		try {
-	        resourceManager.close();
-	        if (!isSubCreator && consumer != null)
-	            consumer.flush();
-        } catch (IOException e) {
-	        throw new RuntimeException(e);
-        }
+        resourceManager.close();
+        if (!isSubCreator && consumer != null)
+            consumer.flush();
     }
 
     // ResourceManager interface ---------------------------------------------------------------------------------------
