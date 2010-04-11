@@ -55,7 +55,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
     private Converter<Entity, String> converters[];
 
     public FlatFileEntityExporter() {
-        this(null, null);
+        this("export.flat", null);
     }
 
     public FlatFileEntityExporter(String uri, String columnFormatList) {
