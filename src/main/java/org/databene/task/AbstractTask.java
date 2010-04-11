@@ -75,6 +75,10 @@ public abstract class AbstractTask implements Task {
         return parallelizable;
     }
     
+    public void pageFinished() {
+        // empty
+    }
+    
     public void close() {
     	// empty
     }

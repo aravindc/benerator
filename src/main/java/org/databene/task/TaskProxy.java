@@ -58,6 +58,11 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask implements 
     }
     
     @Override
+    public void pageFinished() {
+        realTask.pageFinished();
+    }
+    
+    @Override
     public boolean isThreadSafe() {
         return realTask.isThreadSafe();
     }
