@@ -56,7 +56,7 @@ public class RandomSequence extends Sequence {
 		Generator<? extends Number> base;
     	if (unique) {
     		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
-    	} else {	
+    	} else {
 			if (Integer.class.equals(numberType.getClass()))
 				base = new RandomIntegerGenerator(toInteger(min), toInteger(max), toInteger(precision));
 			else if (BigInteger.class.equals(numberType.getClass()))
