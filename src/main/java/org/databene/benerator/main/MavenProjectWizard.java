@@ -54,13 +54,16 @@ import org.databene.commons.ui.I18NSupport;
 public class MavenProjectWizard extends JFrame {
 	
 	private static final long serialVersionUID = -5866303491038671990L;
-	I18NSupport i18n = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
-	CreateProjectPanel mainPanel = new CreateProjectPanel(i18n);
+	
+	I18NSupport i18n;
+	CreateProjectPanel mainPanel;
 
 	public MavenProjectWizard() {
 		setIcons("org/databene/benerator/gui/benerator{0}.png", 16, 32, 64, 128);
 		
 		checkLocale();
+		i18n = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
+		mainPanel = new CreateProjectPanel(i18n);
 		
 		setTitle(i18n.getString("mavenProjectWizardTitle"));
 		Container contentPane = getContentPane();
