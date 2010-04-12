@@ -19,7 +19,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.distribution.integral;
+package org.databene.benerator.distribution.cumulative;
 
 import org.databene.benerator.distribution.CumulativeDistributionFunction;
 
