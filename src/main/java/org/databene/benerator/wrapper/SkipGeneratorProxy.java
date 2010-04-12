@@ -73,12 +73,26 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
     /** Initializes the generator to use a random increment of uniform distribution */
     public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement, Distribution incrementDistribution) {
         super(source);
+        
+        // replace nulls with defult values
+        if (minIncrement == null) {
+        	if (maxIncrement != null)
+        		minIncrement = Math.min(1L, maxIncrement);
+        	else
+        		minIncrement = maxIncrement = 1L;
+        } else if (maxIncrement == null) {
+        	maxIncrement = 3L;
+        }
+        
+        // check values
         if (minIncrement < 0)
         	throw new InvalidGeneratorSetupException("minIncrement is less than zero");
         if (maxIncrement < 0)
         	throw new InvalidGeneratorSetupException("maxIncrement is less than zero");
         if (minIncrement > maxIncrement)
         	throw new InvalidGeneratorSetupException("minIncrement (" + minIncrement + ") is larger than maxIncrement (" + maxIncrement + ")");
+        
+        // create geneator
         this.incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, 1L, false);
     }
 

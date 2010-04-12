@@ -80,10 +80,10 @@ public class StepSequence extends Sequence {
 
 	@Override
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-		if (increment.longValue() < 0)
+		if (increment != null && increment.longValue() < 0)
 			return super.applyTo(source, unique);
 		else
-			return new SkipGeneratorProxy<T>(toLong(increment), toLong(increment));
+			return new SkipGeneratorProxy<T>(source, toLong(increment), toLong(increment));
 	}
 	
     public <T extends Number> Generator<T> createGenerator(
