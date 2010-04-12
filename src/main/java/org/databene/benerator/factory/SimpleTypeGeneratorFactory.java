@@ -155,7 +155,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 				for (int i = 0; i < samples.length; i++)
 					values[i] = samples[i].getValue();
 				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, true, context);
-		        return distribution.applyTo(new IteratingGenerator(new ArrayIterable(values, targetType)), uniqueness.isUnique());
+		        IteratingGenerator source = new IteratingGenerator(new ArrayIterable(values, targetType));
+				return distribution.applyTo(source, uniqueness.isUnique());
 			}
         } catch (org.databene.commons.ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
