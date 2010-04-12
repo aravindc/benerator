@@ -52,6 +52,14 @@ public class GenderConverter extends ThreadSafeConverter<Gender, String> {
 	    this.female = female;
     }
 
+	public void setMale(String male) {
+    	this.male = male;
+    }
+
+	public void setFemale(String female) {
+    	this.female = female;
+    }
+
 	public String convert(Gender gender) throws ConversionException {
 	    return (gender != null ? (Gender.MALE.equals(gender) ? male : female) : null);
     }
