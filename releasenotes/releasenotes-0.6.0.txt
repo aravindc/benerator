@@ -14,11 +14,9 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
     - <if> <then> <else>
     - <while>
     - <wait>
-  - added support for package import, e.g. <import package="com.my"/>
   - new constant attribute definition, e.g. <attribute ... constant="0" />
-  - new benerator property: defaultTimeZone
-  - in script="..." marker curly braces are not necessary any more
-  - supporting source attribute in property element, e.g. <property name="number" source="LocalSequenceGenerator('filenum')"/>
+  - in script="..." curly braces are not necessary any more
+  - supporting source attribute in property element, e.g. <property name="number" source="new LocalSequenceGenerator('filenum')"/>
   - new separator attribute in <create-entities>, <update-entities>, <attribute>, <reference>, <id>
   - new 'tableFilter' property <database ... tableFilter="my_.*" />
   - mapping attribute values, e.g. <attribute ... map="true->'Y',false->'N'" />
@@ -38,7 +36,7 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
       e.g. <id name="id" strategy="sequence" source="db" /> 
       needs to be migrated to <id name="id" generator="DBSequenceGenerator" source="db" />
   - <setup default-script="" default-null=""> -> <setup defaultScript="" defaultNull="">
-  - <create-entities name="typeAndVarName"/> -> <create-entities name="varName" type="typeName"/>
+  - <create-entities name="typeAndVarName"/> -> <generate name="varName" type="typeName"/>
   - renamed pagesize to pageSize
   - renamed defaultPagesize to defaultPageSize
   - create-/update-entities may have (almost) arbitrary child elements, e.g. <execute> or <run-task>
@@ -66,6 +64,8 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
   - removed TreePathGenerator
   - <reference> and <id> may now use similar settings like <attribute>
   - AddingConsumer{type='long' feature='amount'}
+
+- clarified license conditions
   
 - Supporting the H2 database
 
@@ -184,17 +184,18 @@ Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?gr
     - new method incrementSequenceValue(sequenceName, amount)
   - Removed all deprecated elements
   - Redesigned distribution concept
-	- Removed the 'generatedType' property implementation from 'LightweightGenerator' 
-	  and moved it to the new 'TypedLightweightGenerator'.
-	  When migrating older generator implementations that extended LightweightGenerator, 
-	  make the extend TypedLightweightGenerator now.
+  - Removed the 'generatedType' property implementation from 'LightweightGenerator' 
+    and moved it to the new 'TypedLightweightGenerator'.
+    When migrating older generator implementations that extended LightweightGenerator, 
+    make the extend TypedLightweightGenerator now.
   - Class Entity
     - renamed getName() to type()
     - new method removeComponent(String componentName) 
 	- new copy constructor
   - Task interface:
     - replaced destroy() with close() (from java.io.Closeable)
-    - added 'context' parameter to the run() method
+    - replaced run() with execute(Context, ErrorHandler) method
+    - new pageFinished() method
   - Migrated from commons-logging to slf4j
   - Upgraded to JUnit 4.7
   - removed QuickScript support
