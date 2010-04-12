@@ -37,7 +37,7 @@ import org.databene.commons.validator.bean.AbstractConstraintValidator;
 import org.databene.domain.address.Country;
 
 /**
- * Checks if a String contains an 'unlucky' number like 13 in western cultures or 4 in far-east cultures. 
+ * Checks if a String contains an 'unlucky' number like 13 in western cultures or 4 in east-asian cultures. 
  * See <a href="http://www.knowledgerush.com/kr/encyclopedia/Unlucky_number/">knowledgerush.com</a>,
  * <a href="http://vortex-japan.seesaa.net/article/113266312.html">vortex-japan.seesaa.net</a>,
  * <a href="http://en.wikipedia.org/wiki/Numerology">Wikipedia: Numerology</a> 
