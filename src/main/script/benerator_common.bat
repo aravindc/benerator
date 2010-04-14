@@ -29,7 +29,7 @@ rem and for NT handling to skip to.
 
 :doneStart
 rem check the value of BENERATOR_HOME
-if exist "%BENERATOR_HOME%\gpl.txt" goto setLocalClassPath
+if exist "%BENERATOR_HOME%\license.txt" goto setLocalClassPath
 
 :noBeneratorHome
 echo BENERATOR_HOME is set incorrectly. 
