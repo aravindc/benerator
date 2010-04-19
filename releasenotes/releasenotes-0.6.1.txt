@@ -1,0 +1,23 @@
+release notes benerator 0.6.1
+=============================
+
+
+
+summary
+-------
+
+
+enhancements
+------------
+- <property> now can mutate public attributes of an object
+
+
+
+Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
+-----------------------------------------------------------------------------------------------------------
+
+  
+
+bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
+-------------------------------------------------------------------------------------------------
+- If a consumer implements Consumer and StorageSystem, the Consumer interface is used
