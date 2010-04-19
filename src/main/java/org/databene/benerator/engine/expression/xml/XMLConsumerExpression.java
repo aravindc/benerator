@@ -115,10 +115,10 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<Entity>> {
     public static void addConsumer(Object bean, BeneratorContext context, ConsumerChain<?> chain) {
     	Consumer consumer;
     	// check consumer type
-    	if (bean instanceof StorageSystem)
-    		consumer = new StorageSystemConsumer((StorageSystem) bean, true);
-    	else if (bean instanceof Consumer)
+    	if (bean instanceof Consumer)
     		consumer = (Consumer<?>) bean;
+    	else if (bean instanceof StorageSystem)
+    		consumer = new StorageSystemConsumer((StorageSystem) bean, true);
     	else
     		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
     	if (bean instanceof ContextAware)
