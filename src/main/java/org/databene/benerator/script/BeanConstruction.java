@@ -57,8 +57,14 @@ public class BeanConstruction<E> extends DynamicExpression<E> {
 
 	public E evaluate(Context context) {
 	    E bean = instantiation.evaluate(context);
-	    for (Assignment assignment : assignments)
-	    	BeanUtil.setPropertyValue(bean, assignment.getName(), assignment.getExpression().evaluate(context), false);
+	    for (Assignment assignment : assignments) {
+	    	String name = assignment.getName();
+	    	Object value = assignment.getExpression().evaluate(context);
+	    	if (BeanUtil.hasProperty(bean.getClass(), name))
+	    		BeanUtil.setPropertyValue(bean, name, value, false);
+	    	else
+	    		BeanUtil.setAttributeValue(bean, name, value);
+	    }
 	    if (bean instanceof ContextAware)
 	    	((ContextAware) bean).setContext(context);
 		return bean;
