@@ -4,13 +4,12 @@
         xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
 
 	<!-- This demonstrates how to create an Excel Sheet using the XLSEntityExporter -->
-	<!-- author: Volker Bergmann -->
 
     <import defaults="true"/>
 
     <generate type="transaction" count="100" 
             consumer="new XLSEntityExporter{uri='target/xls-demo.xls', columns='id,items,name,comment'}">
-        <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
+        <id name="id" type="long" />
         <attribute name="items" type="short" min="1" max="27"/>
         <attribute name="name" pattern="[A-Z][a-z]{5,12}"/>
         <attribute name="comment" pattern="[A-Z][a-z]{5,64}"/>

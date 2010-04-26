@@ -11,6 +11,6 @@
         <property name="properties" value="ean_code[13],name[30],category_id[9],price[8r0],manufacturer[30]"/>
     </bean>
 
-    <generate type="product" source="products_flat" consumer="ConsoleExporter"/>
+    <iterate type="product" source="products_flat" consumer="ConsoleExporter"/>
     
 </setup>

@@ -2,12 +2,12 @@
 <setup	xmlns="http://databene.org/benerator/0.6.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://databene.org/benerator/0.6.0 http://databene.org/benerator-0.6.0.xsd">
-		
+	
     <generate type="transaction" count="10">
         <variable name="product" type="entity" source="demo/file/products.import.csv" distribution="random"/>
-        <attribute name="id" type="long" min="1" max="1000000000" distribution="step"/>
-        <attribute name="ean_code" script="{${product.ean_code}}"/>
-        <attribute name="price" script="{${product.price}}"/>
+        <attribute name="id" type="long" />
+        <attribute name="ean_code" script="product.ean_code"/>
+        <attribute name="price" script="product.price"/>
         <attribute name="items" type="short" min="1" max="27"/>
         <consumer class="org.databene.platform.script.ScriptedEntityExporter">
             <property name="uri" value="transactions.xml"/>
