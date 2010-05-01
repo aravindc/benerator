@@ -71,7 +71,7 @@ public class ConsoleExporterTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(Object in, String expectedOut) {
-		ConsoleExporter<Object> exporter = new ConsoleExporter<Object>();
+		ConsoleExporter exporter = new ConsoleExporter();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		exporter.out = new PrintStream(stream);
 		try {

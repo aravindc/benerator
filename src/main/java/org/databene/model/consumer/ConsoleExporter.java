@@ -37,7 +37,7 @@ import org.databene.model.data.Entity;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class ConsoleExporter<E> extends FormattingConsumer<E> {
+public class ConsoleExporter extends FormattingConsumer<Object> {
 	
 	private CompositeFormatter compositeFormatter;
 	PrintStream out = System.out;
@@ -60,7 +60,7 @@ public class ConsoleExporter<E> extends FormattingConsumer<E> {
 		compositeFormatter.setTimestampPattern(timestampPattern);
 	}
 
-	public void startConsuming(E object) {
+	public void startConsuming(Object object) {
 		if (object instanceof Entity)
 			out.println(compositeFormatter.render(((Entity) object).type() + '[', (Entity) object, "]"));
 		else
