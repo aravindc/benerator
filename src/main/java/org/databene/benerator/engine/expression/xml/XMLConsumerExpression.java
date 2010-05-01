@@ -55,7 +55,7 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 
-public class XMLConsumerExpression extends DynamicExpression<Consumer<Entity>> {
+public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 	
 	private Escalator escalator;
 
