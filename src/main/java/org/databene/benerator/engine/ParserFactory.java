@@ -71,7 +71,7 @@ public class ParserFactory {
 		for (DescriptorParser parser : parsers)
 			if (parser.supports(elementName, parentName))
 				return parser;
-		throw new ConfigurationError("Unknown element: " + elementName);
+		throw new ConfigurationError("Unknown element: <" + elementName + ">");
     }
 
 }
