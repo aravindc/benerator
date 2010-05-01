@@ -31,15 +31,22 @@ import static org.databene.model.data.TypeDescriptor.LOCALE;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.composite.VariableAwareGenerator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.commons.BeanUtil;
@@ -58,6 +65,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
@@ -69,6 +77,7 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.script.ScriptConverter;
 
 /**
  * Utility class for parsing and combining descriptor settings.<br/>
@@ -285,6 +294,65 @@ public class DescriptorUtil {
 					descriptor.getCountPrecision() : 
 					new ConstantExpression<Long>(1L));
 	}
+
+    @SuppressWarnings("unchecked")
+    public static <T> Generator<T> wrapGeneratorWithVariables(
+            TypeDescriptor type, BeneratorContext context, Generator<T> generator) {
+        Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
+            Map<String, NullableGenerator<?>> varGens = new HashMap<String, NullableGenerator<?>>();
+            for (InstanceDescriptor variable : variables) {
+                Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
+				NullableGenerator<?> varGen = new NullInjectingGeneratorProxy(gen, variable.getNullQuota());
+                varGens.put(variable.getName(), varGen);
+            }
+        return new VariableAwareGenerator(generator, varGens, context);
+    }
+    
+	public static Converter<String, String> createScriptConverter(BeneratorContext context) {
+		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
+				new ScriptConverter(context),
+				new ToStringConverter(null)
+			);
+		return scriptConverter;
+	}
+
+    public static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
+        try {
+            String detailValue = (String) descriptor.getDetailValue(MAX);
+            if (detailValue == null)
+            	if (unique)
+            		return NumberUtil.maxValue(targetType);
+            	else
+            		detailValue = (String) descriptor.getDetailDefault(MAX);
+            return AnyConverter.convert(detailValue, targetType);
+        } catch (ConversionException e) {
+            throw new ConfigurationError(e);
+        }
+    }
+
+    public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
+        try {
+            String detailValue = (String) descriptor.getDetailValue(detailName);
+            if (detailValue == null)
+                detailValue = (String) descriptor.getDetailDefault(detailName);
+            return AnyConverter.convert(detailValue, targetType);
+        } catch (ConversionException e) {
+            throw new ConfigurationError(e);
+        }
+    }
+
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
+	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
+        Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
+        while (type instanceof ComplexTypeDescriptor) {
+            variables.addAll(((ComplexTypeDescriptor) type).getVariables());
+            type = type.getParent();
+        }
+        return variables;
+    }
+    
+	
 /*
 	static Expression<Distribution> getCountDistribution(InstanceDescriptor descriptor) {
 		return (descriptor.getCountDistribution() != null ? descriptor.getCountDistribution() : null);
@@ -311,31 +379,6 @@ public class DescriptorUtil {
                 maxLength = 10000;
         }
         return maxLength;
-    }
-
-    public static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
-        try {
-            String detailValue = (String) descriptor.getDetailValue(MAX);
-            if (detailValue == null)
-            	if (unique)
-            		return NumberUtil.maxValue(targetType);
-            	else
-            		detailValue = (String) descriptor.getDetailDefault(MAX);
-            return AnyConverter.convert(detailValue, targetType);
-        } catch (ConversionException e) {
-            throw new ConfigurationError(e);
-        }
-    }
-
-    public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
-        try {
-            String detailValue = (String) descriptor.getDetailValue(detailName);
-            if (detailValue == null)
-                detailValue = (String) descriptor.getDetailDefault(detailName);
-            return AnyConverter.convert(detailValue, targetType);
-        } catch (ConversionException e) {
-            throw new ConfigurationError(e);
-        }
     }
 
 	static class UniquenessExpression extends DynamicExpression<Boolean> {
