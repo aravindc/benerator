@@ -23,8 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
-
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.parser.xml.BeanParser;
@@ -65,7 +63,7 @@ public class BeanParserAndStatementTest {
 	
 	// test helpers ----------------------------------------------------------------------------------------------------
 
-	private BeneratorContext parseAndExecute(String xml) throws IOException {
+	private BeneratorContext parseAndExecute(String xml) {
 	    Element element = XMLUtil.parseStringAsElement(xml);
         BeanParser parser = new BeanParser();
 		BeanStatement statement = parser.parse(element, null, new ResourceManagerSupport());
