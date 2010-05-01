@@ -21,11 +21,13 @@ enhancements
 - DescriptorBasedGenerator now takes over the minCount/maxCount/count settings from the descriptor files
 
 
+
 Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
 -----------------------------------------------------------------------------------------------------------
-Redesigned ComponentBuilder concept
+- Redesigned ComponentBuilder concept
+- Using GA version of bean validation API
 
-  
+
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
