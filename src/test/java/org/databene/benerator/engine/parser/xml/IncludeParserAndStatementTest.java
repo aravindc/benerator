@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IncludeStatement;
+import org.databene.commons.ConfigurationError;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,4 +61,9 @@ public class IncludeParserAndStatementTest extends ParserTest {
 		assertEquals("done", context.get("incProp"));
 	}
 
+	@Test(expected = ConfigurationError.class)
+	public void testAttributeTypo() {
+		parse("<include urr='bla.bla' />");
+	}
+	
 }
