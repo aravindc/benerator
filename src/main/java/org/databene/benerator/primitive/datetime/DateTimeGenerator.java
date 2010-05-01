@@ -94,7 +94,7 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
         this.maxDate = maxDate.getTime();
     }
     
-    public void setDatePrecision(String datePrecision) {
+    public void setDatePrecision(String datePrecision) { // TODO 0.6.1 for setting this, a ScriptedLiteral has been evaluated to a Date before, then converted back to a Date (in wrong format)
         this.datePrecision = dateConverter.convert(datePrecision);
     }
     
