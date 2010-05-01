@@ -33,13 +33,24 @@ import org.databene.benerator.wrapper.ProductWrapper;
 public class ConstantNullableGenerator<E> extends AbstractNullableGenerator<E> {
 	
 	private Class<E> generatedType;
+	private E value;
+
+	@SuppressWarnings("unchecked")
+    public ConstantNullableGenerator(E value) {
+	    this(value, (Class<E>) (value != null ? value.getClass() : Object.class));
+    }
 
 	public ConstantNullableGenerator(Class<E> generatedType) {
+	    this(null, generatedType);
+    }
+
+	public ConstantNullableGenerator(E value, Class<E> generatedType) {
+		this.value = value;
 	    this.generatedType = generatedType;
     }
 
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-	    return wrapper.setProduct(null);
+	    return wrapper.setProduct(value);
     }
 
 	public Class<E> getGeneratedType() {
