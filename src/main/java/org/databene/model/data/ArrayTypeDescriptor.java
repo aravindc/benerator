@@ -26,19 +26,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.databene.commons.collection.OrderedNameMap;
+
 /**
  * Describes an array.<br/><br/>
  * Created: 29.04.2010 07:32:52
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class ArrayTypeDescriptor extends TypeDescriptor {
+public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolder {
 
-	private List<ArrayElementDescriptor> elements = new ArrayList<ArrayElementDescriptor>();
+	private List<ArrayElementDescriptor> elements;
     private Map<String, InstanceDescriptor> variables;
     
     public ArrayTypeDescriptor(String name) {
 	    super(name);
+	    this.elements = new ArrayList<ArrayElementDescriptor>();
+        this.variables = new OrderedNameMap<InstanceDescriptor>();
     }
 
     // element handling ------------------------------------------------------------------------------------------------
