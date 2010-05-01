@@ -43,7 +43,7 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 	public void testGetGenerator() throws Exception {
 		String lf = SystemInfo.getLineSeparator();
 		String uri = "string://<setup>" + lf +
-				"	<generate name='perGen' type='Person' count='1'>" + lf +
+				"	<generate name='perGen' type='Person' count='3'>" + lf +
 				"		<attribute name='name' constant='Alice'/>" + lf +
 				"	</generate>" + lf +
 				"</setup>";
@@ -52,13 +52,15 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 		assertEquals(Entity.class, generator.getGeneratedType());
 		assertNotNull(generator);
 		generator.init(context);
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 3; i++)
 			checkGeneration(generator);
-		assertAvailable(generator);
+		assertUnavailable(generator);
+		generator.close();
 	}
 
 	private void checkGeneration(Generator<?> generator) {
 	    Entity entity = (Entity) generator.generate();
+	    assertNotNull(entity);
 		assertEquals("Person", entity.type());
 		assertEquals("Alice", entity.get("name"));
     }
