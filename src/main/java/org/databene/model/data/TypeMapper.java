@@ -48,13 +48,13 @@ public class TypeMapper {
         for (int i = 0; i < typeMappings.length; i += 2) {
             String abstractType = (String) typeMappings[i];
             Object concreteType = typeMappings[i + 1];
-            abstractToConcrete.put(abstractType, (Class<?>) concreteType);
+            map(abstractType, (Class<?>) concreteType);
         }
     }
     
-    public void map(String abstactType, Class<?> concreteType) {
-        abstractToConcrete.put(abstactType, concreteType);
-        concreteToAbstract.put(concreteType, abstactType);
+    public void map(String abstractType, Class<?> concreteType) {
+        abstractToConcrete.put(abstractType, concreteType);
+        concreteToAbstract.put(concreteType, abstractType);
     }
     
     public Class<?> concreteType(String abstractType) {
