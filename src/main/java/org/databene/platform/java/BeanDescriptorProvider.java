@@ -140,9 +140,9 @@ public class BeanDescriptorProvider implements DescriptorProvider {
         }
     }
 
-    private TypeDescriptor createTypeDescriptor(String typeName) {
-        Class<?> beanClass = BeanUtil.forName(typeName);
-        ComplexTypeDescriptor td = new ComplexTypeDescriptor(typeName);
+    private TypeDescriptor createTypeDescriptor(String className) {
+        Class<?> beanClass = BeanUtil.forName(className);
+        ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
         for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
             if ("class".equals(propertyDescriptor.getName()))
                 continue;
