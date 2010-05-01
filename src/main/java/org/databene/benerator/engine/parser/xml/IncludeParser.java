@@ -21,14 +21,18 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import java.util.Set;
+
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.statement.IncludeStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
  * Parses an <lt;include&gt; element in a Benerator descriptor file.<br/><br/>
@@ -37,12 +41,15 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class IncludeParser extends AbstractDescriptorParser {
+	
+	Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(ATT_URI);
 
 	public IncludeParser() {
 	    super(DescriptorConstants.EL_INCLUDE);
     }
 
 	public IncludeStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+		checkAttributes(element, SUPPORTED_ATTRIBUTES);
         String uriAttr = element.getAttribute(DescriptorConstants.ATT_URI);
 		Expression<String> uriEx = new StringExpression(new ScriptableExpression(uriAttr, null));
         return new IncludeStatement(uriEx);
