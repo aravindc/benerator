@@ -26,6 +26,7 @@
 
 package org.databene.platform.array;
 
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.model.data.Entity;
 
@@ -39,15 +40,26 @@ public class Entity2ArrayConverter extends ThreadSafeConverter<Entity, Object[]>
 
     private String[] featureNames;
 
+    public Entity2ArrayConverter() {
+    	this(null);
+    }
+
     public Entity2ArrayConverter(String[] featureNames) {
     	super(Entity.class, Object[].class);
         this.featureNames = featureNames;
     }
 
-    public Object[] convert(Entity target) {
+    public Object[] convert(Entity entity) {
+    	if (featureNames == null)
+    		initFeatureNamesFromTemplate(entity);
         Object[] result = new Object[featureNames.length];
         for (int i = 0; i < featureNames.length; i++)
-            result[i] = target.getComponent(featureNames[i]);
+            result[i] = entity.getComponent(featureNames[i]);
         return result;
     }
+
+	private void initFeatureNamesFromTemplate(Entity entity) {
+		this.featureNames = CollectionUtil.toArray(entity.getComponents().keySet());
+	}
+	
 }
