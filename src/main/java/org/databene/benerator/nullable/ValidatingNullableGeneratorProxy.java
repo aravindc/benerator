@@ -45,10 +45,10 @@ public class ValidatingNullableGeneratorProxy<E> extends NullableGeneratorWrappe
     public static final int ERROR_THRESHOLD   = 1000;
 
     /** The validator used for validation */
-    protected Validator<E> validator;
+    protected Validator<? super E> validator;
 
     /** Constructor that takes the validator */
-	public ValidatingNullableGeneratorProxy(NullableGenerator<E> realValidator, Validator<E> validator) {
+	public ValidatingNullableGeneratorProxy(NullableGenerator<E> realValidator, Validator<? super E> validator) {
 	    super(realValidator);
 	    this.validator = validator;
     }
