@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,8 +41,15 @@ import java.math.BigInteger;
 /**
  * Provides EntityDescriptors for JavaBeanClasses
  * Created: 27.06.2007 23:04:19
+ * @author Volker Bergmann
  */
 public class BeanDescriptorProvider implements DescriptorProvider {
+	
+	private static final BeanDescriptorProvider DEFAULT_INSTANCE = new BeanDescriptorProvider();
+	
+	public static BeanDescriptorProvider defaultInstance() {
+		return DEFAULT_INSTANCE;
+	}
     
     private TypeMapper mapper;
 
@@ -97,7 +104,6 @@ public class BeanDescriptorProvider implements DescriptorProvider {
         return createTypeDescriptor(typeName);
     }
     
-    
 /*
     public String getType(Object bean) {
         return bean.getClass().getName();
@@ -140,31 +146,29 @@ public class BeanDescriptorProvider implements DescriptorProvider {
         }
     }
 
-    private TypeDescriptor createTypeDescriptor(String className) {
-        Class<?> beanClass = BeanUtil.forName(className);
-        ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
-        for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
-            if ("class".equals(propertyDescriptor.getName()))
-                continue;
-            Class<?> propertyType = propertyDescriptor.getPropertyType();
-            String abstractType = mapper.abstractType(propertyType);
-            if (abstractType == null)
-                abstractType = propertyType.getName();
-            PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), abstractType);
-            td.addComponent(pd);
-        }
-        return td;
-    }
-
-    // private helpers -------------------------------------------------------------------------------------------------
-
     public Class<?> javaTypeForAbstractType(String abstractType) {
         Class<?> type = mapper.concreteType(abstractType);
         if (type == null)
             throw new UnsupportedOperationException("Not mapped to a Java type: " + abstractType);
         return type;
     }
-    
 
+    // private helpers -------------------------------------------------------------------------------------------------
+
+	private TypeDescriptor createTypeDescriptor(String className) {
+	    Class<?> beanClass = BeanUtil.forName(className);
+	    ComplexTypeDescriptor td = new ComplexTypeDescriptor(className);
+	    for (PropertyDescriptor propertyDescriptor : BeanUtil.getPropertyDescriptors(beanClass)) {
+	        if ("class".equals(propertyDescriptor.getName()))
+	            continue;
+	        Class<?> propertyType = propertyDescriptor.getPropertyType();
+	        String abstractType = mapper.abstractType(propertyType);
+	        if (abstractType == null)
+	            abstractType = propertyType.getName();
+	        PartDescriptor pd = new PartDescriptor(propertyDescriptor.getName(), abstractType);
+	        td.addComponent(pd);
+	    }
+	    return td;
+	}
 
 }
