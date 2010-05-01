@@ -21,14 +21,20 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.Assert;
+import org.databene.commons.ConfigurationError;
+import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 /**
  * Abstract parent class for Descriptor parsers.<br/><br/>
@@ -78,5 +84,11 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
 		return false;
     }
 
+	protected static void checkAttributes(Element element, Set<String> supportedAttributes) {
+	    for (Map.Entry<String, String> attribute : XMLUtil.getAttributes(element).entrySet()) {
+	        if (!supportedAttributes.contains(attribute.getKey()))
+				throw new ConfigurationError("Not a supported import attribute: " + attribute.getKey());
+        }
+    }
 
 }
