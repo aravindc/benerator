@@ -21,8 +21,6 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import java.io.IOException;
-
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
@@ -50,7 +48,7 @@ public abstract class ParserTest {
 		resourceManager = new ResourceManagerSupport();
 	}
 	
-	protected Statement parse(String xml) throws IOException {
+	protected Statement parse(String xml) {
 		Element element = XMLUtil.parseStringAsElement(xml);
 		return parser.parse(element, new Statement[0], resourceManager);
     }
