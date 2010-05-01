@@ -6,9 +6,7 @@
 	<import defaults="true" 
 			platforms="xml"/>
 	
-	<bean class="XMLSchemaDescriptorProvider" id="schema"> <!-- TODO use 'include' -->
-		<property name="schemaUri" value="demo/shop/shop-plain.xsd" />
-	</bean>
+	<include uri="demo/shop/shop-plain.xsd" />
 	
 	<bean id="cons" spec="new XMLEntityExporter('test.xml')" />
 	

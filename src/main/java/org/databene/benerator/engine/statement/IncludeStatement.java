@@ -35,6 +35,7 @@ import org.databene.benerator.parser.DefaultEntryConverter;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.IOUtil;
+import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 import org.databene.script.ScriptConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,8 @@ public class IncludeStatement implements Statement {
 	            importProperties(uri, context);
 			else if (lcUri.endsWith(".ben.xml") || lcUri.endsWith("benerator.xml"))
 				importDescriptor(uri, context);
+			else if (lcUri.endsWith(".xsd"))
+				importXmlSchema(uri, context);
 			else
 				throw new ConfigurationError("Not a supported import file type: " + uri);
         } catch (IOException e) {
@@ -81,13 +84,19 @@ public class IncludeStatement implements Statement {
 	}
 
 	public static void importProperties(String uri, BeneratorContext context) throws IOException {
-        logger.debug("reading properties from uri: " + uri);
+        logger.debug("Including properties file: " + uri);
         ScriptConverter preprocessor = new ScriptConverter(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
         IOUtil.readProperties(uri, converter);
     }
 
+	public static void importXmlSchema(String uri, BeneratorContext context) {
+        logger.debug("Including XML Schema: " + uri);
+        new XMLSchemaDescriptorProvider(uri, context);
+    }
+
     private static void importDescriptor(String uri, BeneratorContext context) throws IOException {
+        logger.debug("Including Benerator descriptor file: " + uri);
 		new DescriptorRunner(uri, context).run();
     }
 
