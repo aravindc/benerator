@@ -45,23 +45,24 @@ public class BeneratorRootStatementTest extends GeneratorTest {
 		BeneratorRootStatement task = null;
 		String lf = SystemInfo.getLineSeparator();
 		DescriptorRunner runner = new DescriptorRunner("string://<setup>" + lf +
-				"	<generate type='Person' count='1'>" + lf +
+				"	<generate type='Person' count='3'>" + lf +
 				"		<attribute name='name' constant='Alice'/>" + lf +
 				"	</generate>" + lf +
 				"</setup>");
 		task = runner.parseDescriptorFile();
-		Generator<Entity> generator = task.getGenerator("Person", runner.getContext());
+		Generator<?> generator = task.getGenerator("Person", runner.getContext());
 		assertEquals(Entity.class, generator.getGeneratedType());
 		assertNotNull(generator);
 		generator.init(context);
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 3; i++)
 			checkGeneration(generator);
-		assertAvailable(generator);
+		assertUnavailable(generator);
 		generator.close();
 	}
 
-	private void checkGeneration(Generator<Entity> generator) {
-	    Entity entity = generator.generate();
+	private void checkGeneration(Generator<?> generator) {
+	    Entity entity = (Entity) generator.generate();
+	    assertNotNull("generator unavailable: " + generator, entity);
 		assertEquals("Person", entity.type());
 		assertEquals("Alice", entity.get("name"));
     }

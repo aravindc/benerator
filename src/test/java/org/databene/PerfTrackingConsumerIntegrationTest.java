@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
 import org.databene.benerator.engine.parser.xml.ParserTest;
-import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
+import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
-import org.databene.benerator.engine.statement.TimedEntityStatement;
+import org.databene.benerator.engine.statement.TimedGeneratorStatement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.model.consumer.ConsumerChain;
 import org.databene.platform.contiperf.PerfTrackingConsumer;
@@ -51,7 +51,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 	
 	@Test
 	public void testNesting() throws Exception {
-		TimedEntityStatement statement = (TimedEntityStatement) parse(
+		TimedGeneratorStatement statement = (TimedGeneratorStatement) parse(
 				"<generate type='bla' count='10'>" +
 				"	<consumer class='org.databene.platform.contiperf.PerfTrackingConsumer'>" +
 				"		<property name='target'>" +
@@ -67,7 +67,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 
 	@Test
 	public void testScript() throws Exception {
-		TimedEntityStatement statement = (TimedEntityStatement) parse(
+		TimedGeneratorStatement statement = (TimedGeneratorStatement) parse(
 				"<generate type='bla' count='10'>" +
 				"	<consumer spec='new org.databene.platform.contiperf.PerfTrackingConsumer(new org.databene.benerator.test.ConsumerMock(false, 0, 20, 40))'/>" +
 				"</generate>");
@@ -77,9 +77,9 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 		checkStats(statement);
 	}
 
-	private void checkStats(TimedEntityStatement statement) {
+	private void checkStats(TimedGeneratorStatement statement) {
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) ((LazyStatement) statement.getRealStatement()).getTarget(null);
-		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeEntityTask) realStatement.getTarget()).getConsumer(null);
+		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer(null);
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
