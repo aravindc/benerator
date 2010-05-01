@@ -48,6 +48,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.VariableHolder;
 
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.*;
 
@@ -141,7 +142,7 @@ public class ModelParser {
         return mapTypeDetails(element, descriptor);
     }
 
-    public InstanceDescriptor parseVariable(Element varElement, ComplexTypeDescriptor owner) {
+    public InstanceDescriptor parseVariable(Element varElement, VariableHolder owner) {
         assertElementName(varElement, "variable");
         InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"));
         InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor);

@@ -62,6 +62,7 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.VariableHolder;
 import org.databene.task.PageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,7 +215,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
 			if (EL_VARIABLE.equals(childType)) {
-				parser.parseVariable(child, (ComplexTypeDescriptor) localType);
+				parser.parseVariable(child, (VariableHolder) localType);
 			} else if (COMPONENT_TYPES.contains(childType)) {
 				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType);
 				((ComplexTypeDescriptor) instance.getTypeDescriptor()).addComponent(component);

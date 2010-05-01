@@ -77,6 +77,7 @@ import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
 
 /**
@@ -345,8 +346,8 @@ public class DescriptorUtil {
 	
 	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
         Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
-        while (type instanceof ComplexTypeDescriptor) {
-            variables.addAll(((ComplexTypeDescriptor) type).getVariables());
+        while (type instanceof VariableHolder) {
+            variables.addAll(((VariableHolder) type).getVariables());
             type = type.getParent();
         }
         return variables;
