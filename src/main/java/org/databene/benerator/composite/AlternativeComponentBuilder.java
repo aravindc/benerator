@@ -27,7 +27,6 @@
 package org.databene.benerator.composite;
 
 import org.databene.commons.ThreadUtil;
-import org.databene.model.data.Entity;
 
 /**
  * Creates one component from an arbitrary choice of different available ones.<br/><br/>
@@ -35,14 +34,14 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class AlternativeComponentBuilder extends MultiComponentBuilder {
+public class AlternativeComponentBuilder<E> extends MultiComponentBuilder<E> {
 	
-	public AlternativeComponentBuilder(ComponentBuilder[] alternatives) {
+	public AlternativeComponentBuilder(ComponentBuilder<E>[] alternatives) {
 		super(alternatives);
 	}
 
-	public boolean buildComponentFor(Entity entity) {
-		return buildRandomComponentFor(entity);
+	public boolean buildComponentFor(E target) {
+		return buildRandomComponentFor(target);
 	}
 
 	public boolean isParallelizable() {

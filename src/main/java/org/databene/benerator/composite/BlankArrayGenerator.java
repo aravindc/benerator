@@ -19,22 +19,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.composite;
 
-import org.databene.benerator.Generator;
-import org.databene.model.consumer.Consumer;
-import org.databene.task.Task;
+import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
- * Parent interface for {@link Task}s that use a {@link Generator} to generate data 
- * and a {@link Consumer} to consume it.<br/><br/>
- * Created: 27.03.2010 07:32:45
- * @since 0.6.0
+ * Generates an array of fixed size filled with nulls.<br/><br/>
+ * Created: 30.04.2010 08:36:00
+ * @since 0.6.1
  * @author Volker Bergmann
  */
-public interface GeneratorTask extends Task {
-	Generator<?> getGenerator();
-	void flushConsumer(); // TODO v0.6.1 is this really necessary?
-	void reset();
-	void close();
+public class BlankArrayGenerator extends ThreadSafeGenerator<Object[]> {
+
+    private static final Class<Object[]> GENERATED_TYPE = Object[].class;
+
+    private int length;
+
+    public BlankArrayGenerator(int length) {
+        this.length = length;
+    }
+
+	public Class<Object[]> getGeneratedType() {
+        return GENERATED_TYPE;
+    }
+
+    public Object[] generate() {
+        return new Object[length];
+    }
+    
 }

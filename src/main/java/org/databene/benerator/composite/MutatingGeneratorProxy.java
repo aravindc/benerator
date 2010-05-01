@@ -26,8 +26,6 @@
 
 package org.databene.benerator.composite;
 
-import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.Entity;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
@@ -44,15 +42,15 @@ import java.util.List;
  * Created: 27.06.2007 23:51:42
  * @author Volker Bergmann
  */
-public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
+public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
 
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
-    private String entityName;
-    private Generator<Entity> source;
-    private List<ComponentBuilder> componentBuilders;
+    private String instanceName;
+    private Generator<E> source;
+    private List<ComponentBuilder<E>> componentBuilders;
     private Context context;
-    private Entity currentEntity;
+    private E currentInstance;
 
     // constructors --------------------------------------------------------------------------------------
 
@@ -60,72 +58,74 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
      * @param descriptor Entity descriptor. 
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public MutatingEntityGeneratorProxy(String name, ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
-        this(name, new BlankEntityGenerator(descriptor), componentBuilders, context);
+    /* TODO remove
+    public MutatingEntityGeneratorProxy(String instanceName, ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
+        this(instanceName, new BlankEntityGenerator(descriptor), componentBuilders, context);
     }
-
+*/
+    
     /**
-     * @param name instance name for the generated entities. 
+     * @param instanceName instance name for the generated entities. 
      * @param source another Generator of entities that serves as Entity builder. 
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public MutatingEntityGeneratorProxy(String name, Generator<Entity> source, List<ComponentBuilder> componentBuilders, Context context) {
-        this.entityName = name;
+    public MutatingGeneratorProxy(String instanceName, Generator<E> source, List<ComponentBuilder<E>> componentBuilders, Context context) {
+        this.instanceName = instanceName;
         this.source = source;
         this.componentBuilders = componentBuilders;
         this.context = context;
-        this.currentEntity = null;
+        this.currentInstance = null;
     }
 
     // Generator interface -----------------------------------------------------------------------------------
     
-    public Class<Entity> getGeneratedType() {
-        return Entity.class;
+    public Class<E> getGeneratedType() {
+        return source.getGeneratedType();
     }
 
     @Override
     public void init(GeneratorContext context) {
         source.init(context);
-        for (ComponentBuilder compGen : componentBuilders)
+        for (ComponentBuilder<E> compGen : componentBuilders)
             compGen.init(context);
         super.init(context);
     }
     
-    public synchronized Entity generate() {
+    public synchronized E generate() {
     	
-    	currentEntity = source.generate();
-        if (currentEntity == null) {
+    	currentInstance = source.generate();
+        if (currentInstance == null) {
             if (stateLogger.isDebugEnabled())
-                stateLogger.debug("Source for entity '" + entityName + "' is not available any more: " + source);
+                stateLogger.debug("Source for entity '" + instanceName + "' is not available any more: " + source);
             return null;
         }
         
-        if (entityName != null)
-        	context.set(entityName, currentEntity);
-        context.set("this", currentEntity);
+        if (instanceName != null)
+        	context.set(instanceName, currentInstance);
+        context.set("this", currentInstance);
         
-        for (ComponentBuilder componentBuilder : componentBuilders) {
+        for (ComponentBuilder<E> componentBuilder : componentBuilders) {
             try {
-                if (!componentBuilder.buildComponentFor(currentEntity)) {
+                if (!componentBuilder.buildComponentFor(currentInstance)) {
                     if (stateLogger.isDebugEnabled())
-                        stateLogger.debug("Component generator for entity '" + entityName + 
+                        stateLogger.debug("Component generator for entity '" + instanceName + 
                         		"' is not available any more: " + componentBuilder);
                     return null;
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Failure in generation of entity '" + entityName + "'", e);
+                throw new RuntimeException("Failure in generation of entity '" + instanceName + "'", e);
             }
         }
-    	Entity result = currentEntity;
-    	currentEntity = null;
+    	E result = currentInstance;
+    	currentInstance = null;
         return result;
     }
 
     @Override
     public void close() {
         source.close();
-        for (ComponentBuilder compGen : componentBuilders)
+        for (ComponentBuilder<E> compGen : componentBuilders)
             compGen.close();
         super.close();
     }
@@ -133,7 +133,7 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
     @Override
     public void reset() {
         source.reset();
-        for (ComponentBuilder compGen : componentBuilders)
+        for (ComponentBuilder<E> compGen : componentBuilders)
             compGen.reset();
         super.reset();
     }
@@ -142,7 +142,7 @@ public class MutatingEntityGeneratorProxy extends AbstractGenerator<Entity> {
     
     @Override
 	public String toString() {
-        return getClass().getSimpleName() + '[' + entityName + ']' + componentBuilders;
+        return getClass().getSimpleName() + '[' + instanceName + ']' + componentBuilders;
     }
 
 	public boolean isParallelizable() {

@@ -60,6 +60,7 @@ public interface DescriptorConstants {
     static final String EL_PROPERTY = "property";
     static final String EL_RUN_TASK = "run-task";
     static final String EL_VARIABLE = "variable";
+    static final String EL_VALUE = "value";
     static final String EL_REFERENCE = "reference";
     static final String EL_ID = "id";
     static final String EL_COMPOSITE_ID = "composite-id";
@@ -106,7 +107,11 @@ public interface DescriptorConstants {
     static final String ATT_CLASS = "class";
     static final String ATT_SPEC = "spec";
 
-	static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
+    static final String ATT_DEFAULTS = "defaults";
+    static final String ATT_PLATFORMS = "platforms";
+    static final String ATT_DOMAINS = "domains";
+
+    static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet(ATT_PAGESIZE, ATT_THREADS, ATT_CONSUMER, ATT_ON_ERROR);
 
 	static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet(EL_ATTRIBUTE, EL_PART, EL_ID, EL_REFERENCE);

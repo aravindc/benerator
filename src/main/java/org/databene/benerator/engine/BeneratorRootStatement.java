@@ -26,10 +26,10 @@ import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
+import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.Expression;
 import org.databene.commons.Visitor;
 import org.databene.commons.expression.ExpressionUtil;
-import org.databene.model.data.Entity;
 
 /**
  * The root {@link Statement} for executing descriptor file based data generation.<br/><br/>
@@ -39,27 +39,29 @@ import org.databene.model.data.Entity;
  */
 public class BeneratorRootStatement extends SequentialStatement {
 
-    public Generator<Entity> getGenerator(String name, BeneratorContext context) {
-    	GenVisitor visitor = new GenVisitor(name, context);
+    @SuppressWarnings("unchecked")
+    public Generator<?> getGenerator(String name, BeneratorContext context) {
+    	BeneratorVisitor visitor = new BeneratorVisitor(name, context);
     	accept(visitor);
-    	if (visitor.getResult() == null)
+    	GeneratorStatement statement = visitor.getResult();
+		if (statement == null)
     		throw new IllegalArgumentException("Generator not found: " + name);
-    	return visitor.getResult();
+    	Generator<?> generator = statement.getTarget().getGenerator();
+		return new NShotGeneratorProxy(generator, statement.generateCount(context));
 	}
 
-	class GenVisitor implements Visitor<Statement> {
+	class BeneratorVisitor implements Visitor<Statement> {
 		
 		private String name;
 		private BeneratorContext context;
-		private Generator<Entity> result;
+		private GeneratorStatement result;
 		
-		public GenVisitor(String name, BeneratorContext context) {
-	        super();
+		public BeneratorVisitor(String name, BeneratorContext context) {
 	        this.name = name;
 	        this.context = context;
         }
 
-		public Generator<Entity> getResult() {
+		public GeneratorStatement getResult() {
         	return result;
         }
 
@@ -67,10 +69,10 @@ public class BeneratorRootStatement extends SequentialStatement {
 			if (result != null)
 				return;
 			if (element instanceof GeneratorStatement) {
-				GeneratorStatement candidate = (GeneratorStatement) element;
-				GeneratorTask target = candidate.getTarget();
+				GeneratorStatement generatorStatement = (GeneratorStatement) element;
+				GeneratorTask target = generatorStatement.getTarget();
 				if (name.equals(target.getTaskName())) {
-					result = target.getGenerator();
+					result = generatorStatement;
 					return;
 				}
 			} else if (element instanceof StatementProxy)
@@ -87,4 +89,5 @@ public class BeneratorRootStatement extends SequentialStatement {
 	public String toString() {
 	    return "root";
 	}
+	
 }

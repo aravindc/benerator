@@ -32,9 +32,9 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ThreadUtil;
-import org.databene.model.data.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,38 +44,39 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class ConfiguredEntityGenerator implements Generator<Entity> {
+public class VariableAwareGenerator<E> implements Generator<E> {
 	
-    private static Logger logger = LoggerFactory.getLogger(ConfiguredEntityGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(VariableAwareGenerator.class);
     
-    private Generator<Entity> entityGenerator;
+    private Generator<E> realGenerator;
 	private Map<String, NullableGenerator<?>> variables;
 	private Context context;
 	
-	public ConfiguredEntityGenerator(Generator<Entity> entityGenerator, Map<String, NullableGenerator<?>> variables, Context context) {
-		this.entityGenerator = entityGenerator;
+	public VariableAwareGenerator(Generator<E> realGenerator, Map<String, NullableGenerator<?>> variables, Context context) {
+        Assert.notNull(realGenerator, "realGenerator");
+		this.realGenerator = realGenerator;
 		this.variables = variables;
 		this.context = context;
 	}
 	
 	// Generator implementation ----------------------------------------------------------------------------------------
 	
-	public Class<Entity> getGeneratedType() {
-		return Entity.class;
+	public Class<E> getGeneratedType() {
+		return realGenerator.getGeneratedType();
 	}
 
 	public void init(GeneratorContext context) {
         for (NullableGenerator<?> varGen : variables.values())
         	varGen.init(context);
-        entityGenerator.init(context);
+        realGenerator.init(context);
 	}
 	
 	public boolean wasInitialized() {
-	    return entityGenerator.wasInitialized();
+	    return realGenerator.wasInitialized();
 	}
 
 	@SuppressWarnings("unchecked")
-    public Entity generate() {
+    public E generate() {
 		// initialize variables
 		for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
 			NullableGenerator<?> generator = entry.getValue();
@@ -88,7 +89,7 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
             context.set(entry.getKey(), productWrapper.product);
         }
 
-        Entity entity = entityGenerator.generate();
+        E entity = realGenerator.generate();
         if (entity == null)
         	return null;
         if (logger.isDebugEnabled())
@@ -99,13 +100,13 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	public void reset() {
 		for (NullableGenerator<?> variable : variables.values())
 			variable.reset();
-		entityGenerator.reset();
+		realGenerator.reset();
 	}
 
 	public void close() {
 		for (NullableGenerator<?> variable : variables.values())
 			variable.close();
-		entityGenerator.close();
+		realGenerator.close();
         for (String variableName : variables.keySet())
             context.remove(variableName);
 	}
@@ -116,15 +117,15 @@ public class ConfiguredEntityGenerator implements Generator<Entity> {
 	public String toString() {
 	    return getClass().getSimpleName() + "[\n"
 	        + (variables.size() > 0 ? "    variables" + variables + "\n" : "")
-	        + "    " + entityGenerator + "\n" + "]";
+	        + "    " + realGenerator + "\n" + "]";
 	}
 
 	public boolean isParallelizable() {
-	    return entityGenerator.isParallelizable() && ThreadUtil.allParallelizable(variables.values());
+	    return realGenerator.isParallelizable() && ThreadUtil.allParallelizable(variables.values());
     }
 
 	public boolean isThreadSafe() {
-	    return entityGenerator.isThreadSafe() && ThreadUtil.allThreadSafe(variables.values());
+	    return realGenerator.isThreadSafe() && ThreadUtil.allThreadSafe(variables.values());
     }
 
 }

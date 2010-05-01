@@ -43,31 +43,30 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
-import org.databene.model.data.Entity;
 import org.databene.task.TaskResult;
 
 /**
- * Task that creates one entity instance per run() invocation and sends it to the specified consumer.<br/><br/>
+ * Task that creates one data set instance per run() invocation and sends it to the specified consumer.<br/><br/>
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceManager {
+public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager {
 
 	private String taskName;
-    private Generator<Entity> entityGenerator;
+    private Generator<?> generator;
     private boolean isSubCreator;
-    private Expression<Consumer<Entity>> consumerExpr;
+    private Expression<Consumer<?>> consumerExpr;
     private List<Statement> subStatements;
     private ResourceManager resourceManager = new ResourceManagerSupport();
     private volatile AtomicBoolean generatorInitialized;
 
-    private Consumer<Entity> consumer;
+    private Consumer<?> consumer;
     
-    public GenerateAndConsumeEntityTask(String taskName, Generator<Entity> entityGenerator, 
-    		Expression<Consumer<Entity>> consumerExpr, boolean isSubCreator) {
+    public GenerateAndConsumeTask(String taskName, Generator<?> generator, 
+    		Expression<Consumer<?>> consumerExpr, boolean isSubCreator) {
     	this.taskName = taskName;
-    	Assert.notNull(entityGenerator, "entityGenerator");
-        this.entityGenerator = entityGenerator;
+    	Assert.notNull(generator, "generator");
+        this.generator = generator;
         this.consumerExpr = consumerExpr;
     	this.subStatements = new ArrayList<Statement>();
         this.isSubCreator = isSubCreator;
@@ -80,8 +79,8 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     	this.subStatements.add(statement);
     }
     
-    public Generator<Entity> getGenerator() {
-    	return entityGenerator;
+    public Generator<?> getGenerator() {
+    	return generator;
     }
 
 	public void flushConsumer() {
@@ -103,26 +102,27 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
         return false;
     }
     
+    @SuppressWarnings("unchecked")
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
     	BeneratorContext context = (BeneratorContext) ctx;
     	if (!generatorInitialized.get())
     		initGenerator(context);
     	try {
-    		// generate entity
-	        Entity entity = entityGenerator.generate();
-	        if (entity == null) {
+    		// generate data object
+	        Object data = generator.generate();
+	        if (data == null) {
 		        Thread.yield();
 	        	return TaskResult.UNAVAILABLE;
 	        }
 	        context.countGenerations(1);
-	        // consume entity
-        	Consumer<Entity> consumer = getConsumer(context);
+	        // consume data object
+        	Consumer consumer = getConsumer(context);
         	if (consumer != null)
-        		consumer.startConsuming(entity);
-        	// generate and consume sub entities
+        		consumer.startConsuming(data);
+        	// generate and consume sub data objects
         	runSubTasks(context);
         	if (consumer != null)
-        		consumer.finishConsuming(entity);
+        		consumer.finishConsuming(data);
 	        Thread.yield();
 	        return TaskResult.EXECUTING;
     	} catch (Exception e) {
@@ -132,7 +132,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
     }
 
     public void reset() {
-	    entityGenerator.reset();
+	    generator.reset();
     }
 
     public void pageFinished() {
@@ -155,7 +155,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
 	private void initGenerator(BeneratorContext context) {
 	    synchronized (generatorInitialized) {
 	    	if (!generatorInitialized.get()) {
-	    		entityGenerator.init(context);
+	    		generator.init(context);
 	    		generatorInitialized.set(true);
 	    	}
 	    }
@@ -176,7 +176,7 @@ public class GenerateAndConsumeEntityTask implements GeneratorTask, ResourceMana
         	subStatement.execute(context);
     }
     
-    public Consumer<Entity> getConsumer(Context context) {
+    public Consumer<?> getConsumer(Context context) {
     	if (consumer == null)
     		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;

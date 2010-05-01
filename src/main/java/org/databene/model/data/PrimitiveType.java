@@ -62,6 +62,7 @@ public class PrimitiveType {
     public static final PrimitiveType TIMESTAMP   = new PrimitiveType("timestamp", Timestamp.class);
     public static final PrimitiveType OBJECT      = new PrimitiveType("object", Object.class);
     public static final PrimitiveType BINARY      = new PrimitiveType("binary", byte[].class);
+    public static final PrimitiveType ARRAY       = new PrimitiveType("array", Object[].class);
     
     private String   name;
     private Class<?> javaType;

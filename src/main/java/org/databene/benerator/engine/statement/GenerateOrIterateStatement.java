@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.commons.Context;
@@ -79,16 +80,12 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	// PagedTask interface ---------------------------------------------------------------------------------------------
 	
     public void execute(BeneratorContext context) {
-    	if (!initialized) {
-    		countGenerator.init(context);
-    		initialized = true;
-    	}
     	Task taskToUse = this.task;
     	int threadCount = threads.evaluate(context);
 		if (threadCount > 1 && !taskToUse.isParallelizable() && !task.isThreadSafe())
 			taskToUse = new SynchronizedTask(taskToUse);
 	    this.tracker = PagedTaskRunner.execute(taskToUse, context, 
-	    		countGenerator.generate(), 
+	    		generateCount(context), 
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
 	    		threadCount,
@@ -110,15 +107,12 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    countGenerator.close();
     }
 
-	private List<PageListener> getPageListeners(Context context) {
-		List<PageListener> listeners = new ArrayList<PageListener>();
-		if (pageListener != null) {
-	        PageListener listener = pageListener.evaluate(context);
-	        if (listener != null)
-	        	listeners.add(listener);
-        }
-		listeners.add(this);
-	    return listeners;
+	public Long generateCount(GeneratorContext context) {
+    	if (!initialized) {
+    		countGenerator.init(context);
+    		initialized = true;
+    	}
+	    return countGenerator.generate();
     }
 
 	public GeneratorTask getTarget() {
@@ -135,5 +129,18 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	public void pageFinished() {
 		getTarget().flushConsumer();
 	}
+
+	// private helper --------------------------------------------------------------------------------------------------
+	
+	private List<PageListener> getPageListeners(Context context) {
+		List<PageListener> listeners = new ArrayList<PageListener>();
+		if (pageListener != null) {
+	        PageListener listener = pageListener.evaluate(context);
+	        if (listener != null)
+	        	listeners.add(listener);
+        }
+		listeners.add(this);
+	    return listeners;
+    }
 
 }

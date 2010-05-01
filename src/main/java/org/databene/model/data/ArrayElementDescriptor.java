@@ -19,22 +19,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
-
-import org.databene.benerator.Generator;
-import org.databene.model.consumer.Consumer;
-import org.databene.task.Task;
+package org.databene.model.data;
 
 /**
- * Parent interface for {@link Task}s that use a {@link Generator} to generate data 
- * and a {@link Consumer} to consume it.<br/><br/>
- * Created: 27.03.2010 07:32:45
- * @since 0.6.0
+ * Describes an array element.<br/><br/>
+ * Created: 30.04.2010 10:08:31
+ * @since 0.6.1
  * @author Volker Bergmann
  */
-public interface GeneratorTask extends Task {
-	Generator<?> getGenerator();
-	void flushConsumer(); // TODO v0.6.1 is this really necessary?
-	void reset();
-	void close();
+public class ArrayElementDescriptor extends ComponentDescriptor {
+
+	public ArrayElementDescriptor(int index, String typeName, TypeDescriptor localType) {
+	    super(String.valueOf(index), typeName, localType);
+    }
+
+	public ArrayElementDescriptor(int index, String typeName) {
+	    super(String.valueOf(index), typeName);
+    }
+
+	public ArrayElementDescriptor(int index, TypeDescriptor localType) {
+	    super(String.valueOf(index), localType);
+    }
+
+	public int getIndex() {
+		return Integer.parseInt(getName());
+	}
+	
+	public void setIndex(int index) {
+		setName(String.valueOf(index));
+	}
+	
 }

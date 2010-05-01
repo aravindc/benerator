@@ -30,30 +30,25 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
-import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Mode;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.benerator.*;
+import org.databene.benerator.composite.BlankEntityGenerator;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.ComponentTypeConverter;
-import org.databene.benerator.composite.ConfiguredEntityGenerator;
-import org.databene.benerator.composite.MutatingEntityGeneratorProxy;
+import org.databene.benerator.composite.MutatingGeneratorProxy;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
-import org.databene.commons.converter.ConverterChain;
-import org.databene.commons.converter.ToStringConverter;
 import org.databene.dataset.DatasetFactory;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.FlatFileUtil;
@@ -61,7 +56,6 @@ import org.databene.platform.dbunit.DbUnitEntitySource;
 import org.databene.platform.flat.FlatFileEntitySource;
 import org.databene.platform.xls.XLSEntitySource;
 import org.databene.platform.csv.CSVEntitySource;
-import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +81,7 @@ public class ComplexTypeGeneratorFactory {
     public static Generator<Entity> createComplexTypeGenerator(String instanceName, 
     		ComplexTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
         if (logger.isDebugEnabled())
-            logger.debug("create(" + type.getName() + ")");
+            logger.debug("createComplexTypeGenerator(" + type.getName() + ")");
         // create original generator
         Generator<Entity> generator = null;
         generator = (Generator<Entity>) DescriptorUtil.getGeneratorByName(type, context);
@@ -99,35 +93,11 @@ public class ComplexTypeGeneratorFactory {
             generator = createMutatingEntityGenerator(instanceName, type, context, generator);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = wrapGeneratorWithVariables(type, context, generator);
+        generator = DescriptorUtil.wrapGeneratorWithVariables(type, context, generator);
         generator = DescriptorUtil.wrapWithProxy(generator, type);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return generator;
-    }
-    
-    // private helpers -------------------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    private static Generator<Entity> wrapGeneratorWithVariables(
-            ComplexTypeDescriptor type, BeneratorContext context, Generator<Entity> generator) {
-        Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-            Map<String, NullableGenerator<?>> varGens = new HashMap<String, NullableGenerator<?>>();
-            for (InstanceDescriptor variable : variables) {
-                Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
-				NullableGenerator<?> varGen = new NullInjectingGeneratorProxy(gen, variable.getNullQuota());
-                varGens.put(variable.getName(), varGen);
-            }
-        return new ConfiguredEntityGenerator(generator, varGens, context);
-    }
-
-	private static Collection<InstanceDescriptor> variablesOfThisAndParents(TypeDescriptor type) {
-        Collection<InstanceDescriptor> variables = new ArrayList<InstanceDescriptor>();
-        while (type instanceof ComplexTypeDescriptor) {
-            variables.addAll(((ComplexTypeDescriptor) type).getVariables());
-            type = type.getParent();
-        }
-        return variables;
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
@@ -200,20 +170,11 @@ public class ComplexTypeGeneratorFactory {
 		if (pattern == null)
 		    throw new ConfigurationError("No pattern specified for flat file import: " + sourceName);
 		FlatFileColumnDescriptor[] ffcd = FlatFileUtil.parseProperties(pattern);
-		Converter<String, String> scriptConverter = createScriptConverter(context);
+		Converter<String, String> scriptConverter = DescriptorUtil.createScriptConverter(context);
 		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 		iterable.setContext(context);
 		generator = new IteratingGenerator<Entity>(iterable);
 		return generator;
-	}
-
-	private static Converter<String, String> createScriptConverter(
-			BeneratorContext context) {
-		Converter<String, String> scriptConverter = new ConverterChain<String, String>(
-				new ScriptConverter(context),
-				new ToStringConverter(null)
-			);
-		return scriptConverter;
 	}
 
     @SuppressWarnings("unchecked")
@@ -223,7 +184,7 @@ public class ComplexTypeGeneratorFactory {
 		String encoding = complexType.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-		Converter<String, String> scriptConverter = createScriptConverter(context);
+		Converter<String, String> scriptConverter = DescriptorUtil.createScriptConverter(context);
 		String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
 		char separator = DescriptorUtil.getSeparator(complexType, context);
@@ -253,7 +214,7 @@ public class ComplexTypeGeneratorFactory {
 		String encoding = complexType.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-		Converter<String, String> scriptConverter = createScriptConverter(context);
+		Converter<String, String> scriptConverter = DescriptorUtil.createScriptConverter(context);
 		String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
 		if (dataset != null && nesting != null) {
@@ -275,9 +236,10 @@ public class ComplexTypeGeneratorFactory {
 		return generator;
 	}
 
+    @SuppressWarnings("unchecked")
     private static Generator<Entity> createSyntheticEntityGenerator(String name, 
             ComplexTypeDescriptor complexType, Uniqueness uniqueness, BeneratorContext context) {
-        List<ComponentBuilder> componentBuilders = new ArrayList<ComponentBuilder>();
+        List<ComponentBuilder<Entity>> componentBuilders = new ArrayList<ComponentBuilder<Entity>>();
         if (DescriptorUtil.isWrappedSimpleType(complexType)) {
     		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getTypeDescriptor();
     		Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
@@ -291,21 +253,25 @@ public class ComplexTypeGeneratorFactory {
 				ComponentDescriptor defaultComponentConfig = context.getDefaultComponentConfig(componentName);
 				if (!complexType.isDeclaredComponent(componentName) && defaultComponentConfig != null)
 					component = defaultComponentConfig;
-            	ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(component, context);
+            	ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, context);
 				componentBuilders.add(builder); 
             }
         }
-    	return new MutatingEntityGeneratorProxy(name, complexType, componentBuilders, context);
+    	BlankEntityGenerator source = new BlankEntityGenerator(complexType);
+		return new MutatingGeneratorProxy<Entity>(name, source, componentBuilders, context);
     }
 
-	private static Generator<Entity> createMutatingEntityGenerator(String name, 
+	@SuppressWarnings("unchecked")
+    private static Generator<Entity> createMutatingEntityGenerator(String name, 
             ComplexTypeDescriptor descriptor, BeneratorContext context, Generator<Entity> generator) {
-    	List<ComponentBuilder> componentGenerators = new ArrayList<ComponentBuilder>();
+    	List<ComponentBuilder<Entity>> componentGenerators = new ArrayList<ComponentBuilder<Entity>>();
         Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
         for (ComponentDescriptor component : components)
-            if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName()))
-            	componentGenerators.add(ComponentBuilderFactory.createComponentBuilder(component, context));
-        return new MutatingEntityGeneratorProxy(name, generator, componentGenerators, context);
+            if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName())) {
+            	ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, context);
+	            componentGenerators.add(builder);
+            }
+        return new MutatingGeneratorProxy<Entity>(name, generator, componentGenerators, context);
     }
 	
 }

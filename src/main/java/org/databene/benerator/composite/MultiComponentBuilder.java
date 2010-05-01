@@ -32,7 +32,6 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
-import org.databene.model.data.Entity;
 
 /**
  * Abstract parent class for all builders that relate to a group of components.<br/><br/>
@@ -40,12 +39,12 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public abstract class MultiComponentBuilder implements ComponentBuilder {
+public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	
-	protected ComponentBuilder[] builders;
-	private List<ComponentBuilder> avalailableBuilders;
+	protected ComponentBuilder<E>[] builders;
+	private List<ComponentBuilder<E>> avalailableBuilders;
 
-	public MultiComponentBuilder(ComponentBuilder[] builders) {
+	public MultiComponentBuilder(ComponentBuilder<E>[] builders) {
 		this.builders = builders;
 		this.avalailableBuilders = CollectionUtil.toList(builders);
 	}
@@ -57,29 +56,29 @@ public abstract class MultiComponentBuilder implements ComponentBuilder {
 	}
 	
 	public void init(GeneratorContext context) {
-		for (ComponentBuilder builder : builders)
+		for (ComponentBuilder<E> builder : builders)
 			builder.init(context);
 	}
 
 	public void reset() {
-		for (ComponentBuilder builder : builders)
+		for (ComponentBuilder<E> builder : builders)
 			builder.reset();
 		this.avalailableBuilders = CollectionUtil.toList(builders);
 	}
 
 	public void close() {
-		for (ComponentBuilder builder : builders)
+		for (ComponentBuilder<E> builder : builders)
 			builder.close();
 		this.avalailableBuilders.clear();
 	}
 	
-	public boolean buildRandomComponentFor(Entity entity) {
+	public boolean buildRandomComponentFor(E target) {
 		if (avalailableBuilders.size() == 0)
 			return false;
 		boolean success;
 		do {
 			int builderIndex = RandomUtil.randomIndex(avalailableBuilders);
-			success = avalailableBuilders.get(builderIndex).buildComponentFor(entity);
+			success = avalailableBuilders.get(builderIndex).buildComponentFor(target);
 		} while (!success && avalailableBuilders.size() > 0);
 	    return success;
 	}

@@ -26,6 +26,7 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
@@ -63,6 +64,9 @@ public class InstanceGeneratorFactory {
             else if (type instanceof ComplexTypeDescriptor)
         		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(),
         				(ComplexTypeDescriptor) type, uniqueness, context);
+            else if (type instanceof ArrayTypeDescriptor)
+        		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(),
+        				(ArrayTypeDescriptor) type, uniqueness, context);
             else if (type == null) {
             	if (descriptor instanceof IdDescriptor)
     				generator = new IncrementGenerator(1);

@@ -19,22 +19,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.model.consumer.Consumer;
-import org.databene.task.Task;
+import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.commons.Mutator;
+import org.databene.commons.UpdateFailedException;
 
 /**
- * Parent interface for {@link Task}s that use a {@link Generator} to generate data 
- * and a {@link Consumer} to consume it.<br/><br/>
- * Created: 27.03.2010 07:32:45
- * @since 0.6.0
+ * {@link ComponentBuilder} implementation which builds array elements.<br/><br/>
+ * Created: 30.04.2010 09:57:50
+ * @since 0.6.1
  * @author Volker Bergmann
  */
-public interface GeneratorTask extends Task {
-	Generator<?> getGenerator();
-	void flushConsumer(); // TODO v0.6.1 is this really necessary?
-	void reset();
-	void close();
+public class ArrayElementBuilder extends DefaultComponentBuilder<Object[]> {
+
+	@SuppressWarnings("unchecked")
+    public ArrayElementBuilder(int index, Generator<?> source, double nullQuota) {
+		this(index, new NullInjectingGeneratorProxy(source, nullQuota));
+    }
+
+	public ArrayElementBuilder(int index, NullableGenerator<?> source) {
+	    super(source, new Mutator_(index));
+    }
+
+	private static class Mutator_ implements Mutator {
+		
+		int index;
+		
+		public Mutator_(int index) {
+	        this.index = index;
+        }
+
+		public void setValue(Object target, Object value) throws UpdateFailedException {
+	        ((Object[]) target)[index] = value;
+        }
+	}
+
 }

@@ -38,10 +38,10 @@ import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
+import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
-import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
 import org.databene.benerator.engine.statement.LazyStatement;
-import org.databene.benerator.engine.statement.TimedEntityStatement;
+import org.databene.benerator.engine.statement.TimedGeneratorStatement;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
@@ -55,11 +55,12 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
+import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
-import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.task.PageListener;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GenerateOrIterateParser.class);
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
-			EL_VARIABLE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
+			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	private Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
@@ -91,13 +92,13 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		final boolean nested = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
 		Expression<Statement> expression = new DynamicExpression<Statement>() {
 			public Statement evaluate(Context context) {
-				return parseCreateEntities(
+				return parseGenerate(
 						element, parentPath, resourceManager, (BeneratorContext) context, !looped, nested);
             }
 		};
 		Statement statement = new LazyStatement(expression);
 		if (!looped)
-			statement = new TimedEntityStatement(getNameOrType(element), statement);
+			statement = new TimedGeneratorStatement(getNameOrType(element), statement);
 		return statement;
 	}
 	
@@ -113,9 +114,9 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	}
 	
     @SuppressWarnings("unchecked")
-    public GenerateOrIterateStatement parseCreateEntities(Element element, Statement[] parentPath,
+    public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath,
     		ResourceManager resourceManager, BeneratorContext context, boolean infoLog, boolean nested) {
-	    InstanceDescriptor descriptor = mapEntityDescriptorElement(element, context);
+	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 		
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
 		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
@@ -145,8 +146,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		boolean isSubCreator = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
-		Generator<Entity> generator = (Generator<Entity>) InstanceGeneratorFactory
-				.createSingleInstanceGenerator(descriptor, context);
+		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, context);
 		
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
@@ -156,7 +156,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		
-		GenerateAndConsumeEntityTask task = new GenerateAndConsumeEntityTask(taskName, generator, consumer, isSubCreator);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, consumer, isSubCreator);
 
 		// handle sub-<generate/>
 		for (Element child : XMLUtil.getChildElements(element)) {
@@ -170,23 +170,32 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		return task;
     }
 
-	private Expression<Consumer<Entity>> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
+	private Expression<Consumer<?>> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
 		return new XMLConsumerExpression(entityElement, consumersExpected, resourceManager);
 	}
 
-	private InstanceDescriptor mapEntityDescriptorElement(Element element,
-			BeneratorContext context) {
-		ModelParser parser = new ModelParser(context);
-		String entityType = parseStringAttribute(element, ATT_TYPE, context, false);
-		TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(entityType);
+	private InstanceDescriptor mapDescriptorElement(Element element, BeneratorContext context) {
+		
+		// evaluate type
+		String type = parseStringAttribute(element, ATT_TYPE, context, false);
 		TypeDescriptor localType;
-		if (parentType != null) {
-			entityType = parentType.getName(); // take over capitalization of the parent
-			localType = new ComplexTypeDescriptor(parentType.getName(), (ComplexTypeDescriptor) parentType);
-		} else
-			localType = new ComplexTypeDescriptor(entityType, "entity");
-		InstanceDescriptor instance = new InstanceDescriptor(entityType, entityType);
+		if (PrimitiveType.ARRAY.getName().equals(type) 
+				|| XMLUtil.getChildElements(element, false, EL_VALUE).length > 0)
+			localType = new ArrayTypeDescriptor(element.getAttribute(ATT_NAME));
+		else {
+			TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(type);
+			if (parentType != null) {
+				type = parentType.getName(); // take over capitalization of the parent
+				localType = new ComplexTypeDescriptor(parentType.getName(), (ComplexTypeDescriptor) parentType);
+			} else
+				localType = new ComplexTypeDescriptor(type, "entity");
+		}
+		
+		// assemble instance descriptor
+		InstanceDescriptor instance = new InstanceDescriptor(type, type);
 		instance.setLocalType(localType);
+		
+		// map element attributes
 		for (Map.Entry<String, String> attribute : XMLUtil.getAttributes(element).entrySet()) {
 			String attributeName = attribute.getKey();
 			if (!CREATE_ENTITIES_EXT_SETUP.contains(attributeName)) {
@@ -198,6 +207,10 @@ public class GenerateOrIterateParser implements DescriptorParser {
 				// else we expect different types
 			}
 		}
+		
+		// parse child elements
+		ModelParser parser = new ModelParser(context);
+		int valueCount = 0;
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childType = XMLUtil.localName(child);
 			if (EL_VARIABLE.equals(childType)) {
@@ -205,6 +218,8 @@ public class GenerateOrIterateParser implements DescriptorParser {
 			} else if (COMPONENT_TYPES.contains(childType)) {
 				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType);
 				((ComplexTypeDescriptor) instance.getTypeDescriptor()).addComponent(component);
+			} else if (EL_VALUE.equals(childType)) {
+				parser.parseSimpleTypeArrayElement(child, (ArrayTypeDescriptor) localType, valueCount++);
 			}
 		}
 		return instance;

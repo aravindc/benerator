@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.Statement;
 
@@ -32,6 +33,7 @@ import org.databene.benerator.engine.Statement;
  */
 public interface GeneratorStatement extends Statement {
 	GeneratorTask getTarget();
+	Long generateCount(GeneratorContext context);
 	void reset();
 	void close();
 }

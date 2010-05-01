@@ -39,13 +39,13 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  */
 
-public class TimedEntityStatement extends StatementProxy {
+public class TimedGeneratorStatement extends StatementProxy {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimedEntityStatement.class);
+	private static final Logger logger = LoggerFactory.getLogger(TimedGeneratorStatement.class);
 
 	private String name;
 	
-    public TimedEntityStatement(String name, Statement realStatement) {
+    public TimedGeneratorStatement(String name, Statement realStatement) {
     	super(realStatement);
     	this.name = name;
     }
@@ -58,13 +58,13 @@ public class TimedEntityStatement extends StatementProxy {
 		long dc = context.getTotalGenerationCount() - c0;
 		long dt = System.currentTimeMillis() - t0;
 		if (dc == 0)
-			logger.info("No entities created for '" + name + "' setup");
+			logger.info("No data created for '" + name + "' setup");
 		else if (dt > 0)
-			logger.info("Created " + dc + " entities from '"
+			logger.info("Created " + dc + " data sets from '"
 					+ name + "' setup in " + dt + " ms ("
 					+ (dc * 1000 / dt) + "/s)");
 		else
-			logger.info("Created " + dc + " entities for '" + name + "'");
+			logger.info("Created " + dc + " '" + name + "' data set(s)");
     }
 
 }

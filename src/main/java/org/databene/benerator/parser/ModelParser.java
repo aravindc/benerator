@@ -35,6 +35,8 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.model.data.ArrayElementDescriptor;
+import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
@@ -139,12 +141,19 @@ public class ModelParser {
         return mapTypeDetails(element, descriptor);
     }
 
-    public InstanceDescriptor parseVariable(Element varElement, ComplexTypeDescriptor parent) {
+    public InstanceDescriptor parseVariable(Element varElement, ComplexTypeDescriptor owner) {
         assertElementName(varElement, "variable");
         InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"));
         InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
-        parent.addVariable(variable);
+        owner.addVariable(variable);
         return variable;
+    }
+
+	public ArrayElementDescriptor parseSimpleTypeArrayElement(Element element, ArrayTypeDescriptor owner, int index) {
+		ArrayElementDescriptor descriptor = new ArrayElementDescriptor(index, element.getAttribute("name"));
+		mapInstanceDetails(element, false, descriptor);
+		owner.addElement(descriptor);
+		return descriptor;
     }
 
     // private helpers -------------------------------------------------------------------------------------------------

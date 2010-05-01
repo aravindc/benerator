@@ -27,11 +27,10 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
-import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
+import org.databene.commons.Mutator;
+import org.databene.commons.UpdateFailedException;
 import org.databene.model.data.Entity;
 
 /**
@@ -40,61 +39,37 @@ import org.databene.model.data.Entity;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class PlainComponentBuilder implements ComponentBuilder {
-	
-	private String name;
-	private NullableGenerator<Object> source;
-	private ThreadLocalProductWrapper<Object> productWrapper = new ThreadLocalProductWrapper<Object>();
+public class PlainEntityComponentBuilder extends DefaultComponentBuilder<Entity> {
 	
     @SuppressWarnings("unchecked")
-    public PlainComponentBuilder(String name, Generator<?> source, double nullQuota) {
+    public PlainEntityComponentBuilder(String name, Generator<?> source, double nullQuota) {
 		this(name, new NullInjectingGeneratorProxy<Object>((Generator<Object>) source, nullQuota));
 	}
 
-    public PlainComponentBuilder(String name, NullableGenerator<Object> source) {
-		this.name = name;
-		this.source = source;
+    public PlainEntityComponentBuilder(String name, NullableGenerator<?> source) {
+    	super(source, new Mutator_(name));
 	}
+    
+    public String getName() {
+    	return ((Mutator_) mutator).name;
+    }
 
-	public String getName() {
-		return name;
-	}
-	
-	public Class<?> getGeneratedType() {
-	    return source.getGeneratedType();
-	}
-	
-	public boolean buildComponentFor(Entity entity) {
-		ProductWrapper<Object> wrapper = source.generate(productWrapper.get());
-		if (wrapper == null)
-			return false;
-		entity.setComponent(name, wrapper.product);
-		return true;
-	}
-	
-	public void close() {
-    	source.close();
-	}
-
-	public void init(GeneratorContext context) {
-		source.init(context);
-	}
-
-	public void reset() {
-		source.reset();
-	}
-	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '[' + name + ',' + source + ']';
+		return getClass().getSimpleName() + '{' + getName() + ',' + source + '}';
+	}
+	
+	private static class Mutator_ implements Mutator {
+		
+		String name;
+		
+		public Mutator_(String name) {
+	        this.name = name;
+        }
+
+		public void setValue(Object target, Object value) throws UpdateFailedException {
+			((Entity) target).setComponent(name, value);
+        }
 	}
 
-	public boolean isParallelizable() {
-	    return source.isParallelizable();
-    }
-
-	public boolean isThreadSafe() {
-	    return source.isThreadSafe();
-    }
-	
 }
