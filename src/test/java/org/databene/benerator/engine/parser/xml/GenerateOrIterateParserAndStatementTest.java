@@ -23,6 +23,8 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
@@ -66,6 +68,28 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		assertEquals(100, consumer.startConsumingCount.get());
 		assertEquals(100, consumer.finishConsumingCount.get());
 		assertEquals(100L, context.getTotalGenerationCount());
+	}
+
+	@Test
+	public void testArray() throws Exception {
+		Statement statement = parse(
+				"<generate type='array' count='5' consumer='cons'>" +
+				"  <value pattern='ABC' />" +
+				"  <value type='int' constant='42' />" +
+				"</generate>");
+		ConsumerMock<Object[]> consumer = new ConsumerMock<Object[]>(true);
+		context.set("cons", consumer);
+		statement.execute(context);
+		List<Object[]> products = consumer.getProducts();
+		assertEquals(5, products.size());
+		Object[] array1 = products.get(0);
+		assertEquals(2, array1.length);
+		assertEquals("ABC", array1[0]);
+		assertEquals(42, array1[1]);
+		Object[] array2 = products.get(1);
+		assertEquals(2, array2.length);
+		assertEquals("ABC", array2[0]);
+		assertEquals(42, array2[1]);
 	}
 
 	@SuppressWarnings("unchecked")
