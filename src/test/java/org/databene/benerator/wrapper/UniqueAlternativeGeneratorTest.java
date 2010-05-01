@@ -82,38 +82,4 @@ public class UniqueAlternativeGeneratorTest extends GeneratorClassTest {
         return new UniqueAlternativeGenerator<Integer>(Integer.class, gens);
     }
     
-    static class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
-
-        private long shots;
-
-        private long remainingShots;
-
-        public NShotGeneratorProxy(Generator<E> source, long shots) {
-            super(source);
-            this.shots = shots;
-            this.remainingShots = shots;
-        }
-
-        @Override
-        public E generate() {
-        	E product;
-            if (remainingShots <= 0 || (product = super.generate()) == null)
-                return null;
-            this.remainingShots--;
-            return product;
-        }
-
-        @Override
-        public void reset() {
-            super.reset();
-            remainingShots = shots;
-        }
-
-        @Override
-        public void close() {
-            super.close();
-            remainingShots = 0;
-        }
-    }
-
 }
