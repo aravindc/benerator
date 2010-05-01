@@ -13,7 +13,7 @@
     </iterate>
 
     <!-- read pipe-sparated csv and output to comma separated csv -->
-    <bean id="csv_semicolon_reader" class="org.databene.platform.csv.CSVEntityIterable">
+    <bean id="csv_semicolon_reader" class="org.databene.platform.csv.CSVEntitySource">
         <property name="entityName" value="db_product"/>
         <property name="uri"        value="demo/file/products.pipe.csv"/>
         <property name="separator"  value="|"/>
