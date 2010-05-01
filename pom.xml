@@ -5,21 +5,14 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
 
     <properties>
         <gui_version>0.2.0</gui_version>
-        <webdecs_version>0.5.0</webdecs_version>
-	    <commons_version>0.5.0</commons_version>
+        <webdecs_version>0.5.1</webdecs_version>
+	    <commons_version>0.5.1</commons_version>
     </properties>
 
-<!--
-    <parent>
-        <groupId>databene</groupId>
-        <artifactId>databene.org</artifactId>
-        <version>1.0</version>
-    </parent>
--->
     <packaging>jar</packaging>
     <name>databene benerator</name>
     <url>http://databene.org/databene-benerator</url>
@@ -83,7 +76,7 @@
         <dependency>
             <groupId>org.databene</groupId>
 		    <artifactId>contiperf</artifactId>
-		    <version>1.01</version>
+		    <version>1.04</version>
         </dependency>
         
         <dependency>
