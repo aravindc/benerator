@@ -73,6 +73,10 @@ public class ConsumerMock<E> implements Consumer<E> {
 	    	products = new ArrayList<E>();
 	    instances.put(id, this);
     }
+	
+	public List<E> getProducts() {
+    	return products;
+    }
 
 	public void startConsuming(E product) {
 	    startConsumingCount.incrementAndGet();
