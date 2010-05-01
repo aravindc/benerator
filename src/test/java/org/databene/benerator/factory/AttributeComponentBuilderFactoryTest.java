@@ -353,7 +353,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	}
 	
 	@Test
-    @SuppressWarnings("cast")
+    @SuppressWarnings({ "cast", "unchecked" })
     public void testAlternative() {
     	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
     	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("'1'");
@@ -368,7 +368,8 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		builder.buildComponentFor(entity);
     }
 	
-	@Test
+	@SuppressWarnings("unchecked")
+    @Test
 	public void testMap() {
 		String componentName = "flag";
 		PartDescriptor part = new PartDescriptor(componentName);
@@ -678,17 +679,20 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 */
 	// private helpers -------------------------------------------------------------------------------------------------
 	
+	@SuppressWarnings("unchecked")
 	private ComponentBuilder createComponentBuilder(ComponentDescriptor component) {
 		return createComponentBuilder(component, new BeneratorContext());
 	}
 	
+	@SuppressWarnings("unchecked")
 	private ComponentBuilder createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
 		return ComponentBuilderFactory.createComponentBuilder(component, context);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static final class ComponentBuilderGenerator<E> extends AbstractNullableGenerator<E> {
 		
-		private ComponentBuilder builder;
+        private ComponentBuilder builder;
 		private String componentName;
 
         public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
@@ -702,12 +706,10 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	        super.init(context);
         }
 
-		@SuppressWarnings("unchecked")
         public Class<E> getGeneratedType() {
-	        return (Class<E>) builder.getGeneratedType();
+	        return builder.getGeneratedType();
         }
 
-		@SuppressWarnings("unchecked")
         public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 			Entity entity = new Entity("Test");
 			if (!builder.buildComponentFor(entity))

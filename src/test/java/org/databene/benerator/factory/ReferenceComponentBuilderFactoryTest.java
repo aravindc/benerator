@@ -56,6 +56,7 @@ import org.databene.model.storage.StorageSystem;
  */
 public class ReferenceComponentBuilderFactoryTest { 
 	
+    @SuppressWarnings("unchecked")
     @Test
 	public void testScript() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -67,6 +68,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		assertEquals(8, entity.get("ref"));
 	}
 
+    @SuppressWarnings("unchecked")
     @Test
 	public void testNullQuotaOne() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -77,6 +79,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		assertEquals(null, entity.get("ref"));
 	}
 
+    @SuppressWarnings("unchecked")
     @Test
 	public void testNullable() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -88,6 +91,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		assertEquals(null, entity.get("ref"));
 	}
 
+    @SuppressWarnings("unchecked")
     @Test
 	public void testGenerator() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -99,6 +103,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		assertEquals(42, entity.get("ref"));
 	}
 
+    @SuppressWarnings("unchecked")
     @Test
 	public void testConstant() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -110,6 +115,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		assertEquals(3, entity.get("ref"));
 	}
 
+    @SuppressWarnings("unchecked")
     @Test
 	public void testSample() {
 		ReferenceDescriptor ref = (ReferenceDescriptor) createTargetTypeDescriptor("ref", "Person", "Storage")
@@ -136,7 +142,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	}
 
 	@Test
-	@SuppressWarnings("null")
+	@SuppressWarnings({ "null", "unchecked" })
     public void testSingleRef() {
 		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(1L));
@@ -148,7 +154,7 @@ public class ReferenceComponentBuilderFactoryTest {
 	}
 
 	@Test
-	@SuppressWarnings("null")
+	@SuppressWarnings({ "null", "unchecked" })
     public void testMultiRef() {
 		ReferenceDescriptor ref = createTargetTypeDescriptor("ref", "Person", "Storage");
 		ref.setCount(new ConstantExpression<Long>(2L));
@@ -172,7 +178,8 @@ public class ReferenceComponentBuilderFactoryTest {
 		return descriptor;
 	}
 
-	private ComponentBuilder createAndInitBuilder(ReferenceDescriptor ref) {
+	@SuppressWarnings("unchecked")
+    private ComponentBuilder createAndInitBuilder(ReferenceDescriptor ref) {
 		BeneratorContext context = new BeneratorContext(null);
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);

@@ -33,7 +33,7 @@ import java.util.List;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
-import org.databene.benerator.engine.statement.GenerateAndConsumeEntityTask;
+import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
@@ -49,7 +49,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 /**
- * Tests the {@link GenerateAndConsumeEntityTask}.<br/>
+ * Tests the {@link GenerateAndConsumeTask}.<br/>
  * <br/>
  * Created at 25.07.2009 12:42:25
  * @since 0.6.0
@@ -67,8 +67,8 @@ public class GenerateAndConsumeEntityTaskTest extends AbstractTaskTest {
     public void testFlat() throws Exception {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();
-		Expression<Consumer<Entity>> consumerExpr = new ConstantExpression<Consumer<Entity>>(consumer);
-		GeneratorTask task = new GenerateAndConsumeEntityTask("tn", generator, consumerExpr, false);
+		Expression<Consumer<?>> consumerExpr = new ConstantExpression<Consumer<?>>(consumer);
+		GeneratorTask task = new GenerateAndConsumeTask("tn", generator, consumerExpr, false);
 		checkIteration(task, consumer);
 		consumer.list.clear();
 		task.reset();
