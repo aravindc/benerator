@@ -21,13 +21,16 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import org.databene.benerator.engine.DescriptorConstants;
+import java.util.Set;
+
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ArrayBuilder;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.StringUtil;
 import org.w3c.dom.Element;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
  * Parses an &lt;import&gt; element in a Benerator descriptor file.<br/><br/>
@@ -36,12 +39,17 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class ImportParser extends AbstractDescriptorParser {
+	
+	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(ATT_CLASS, ATT_DEFAULTS, ATT_DOMAINS, ATT_PLATFORMS);
 
 	public ImportParser() {
-	    super(DescriptorConstants.EL_IMPORT);
+	    super(EL_IMPORT);
     }
 
 	public ImportStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+		
+		checkAttributes(element, SUPPORTED_ATTRIBUTES);
+		
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 
@@ -57,12 +65,12 @@ public class ImportParser extends AbstractDescriptorParser {
 		// (multiple) domain import
 		attribute = element.getAttribute("domains");
 		if (!StringUtil.isEmpty(attribute))
-			domainImports.addAll(StringUtil.tokenize(attribute, ','));
+			domainImports.addAll(StringUtil.trimAll(StringUtil.tokenize(attribute, ',')));
 		
 		// (multiple) platform import
 		attribute = element.getAttribute("platforms");
 		if (!StringUtil.isEmpty(attribute))
-			platformImports.addAll(StringUtil.tokenize(attribute, ','));
+			platformImports.addAll(StringUtil.trimAll(StringUtil.tokenize(attribute, ',')));
 		
 		return new ImportStatement(defaults, classImports.toArray(), 
 				domainImports.toArray(), platformImports.toArray());
