@@ -56,7 +56,7 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class GenerateAndConsumeEntityTaskTest extends AbstractTaskTest {
+public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 	
     static final Entity ALICE = new Entity("Person", "name", "Alice");
     static final Entity BOB = new Entity("Person", "name", "Bob");
