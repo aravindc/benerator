@@ -27,30 +27,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation which describes how to generate arbitrary Java objects.<br/><br/>
- * Created: 19.04.2010 09:14:31
+ * Specifies the maximum value to use when generating data for the annotated element.<br/><br/>
+ * Created: 02.05.2010 19:04:49
  * @since 0.6.1
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER } )
-public @interface GeneratedObject { // TODO map this to descriptor (BeanDescriptorProvider?)
-
-    boolean nullable() default false;
-    double nullQuota() default 0;
-
-    String generator() default "";
-    String[] values() default { };
-    boolean unique() default false;
-    String distribution() default "";
-
-    String source() default "";
-    String separator() default ",";
-	String encoding() default "";
-	String selector() default "";
-	String dataset() default "";
-	String nesting() default "";
-	String locale() default "";
-	String filter() default "";
-
+public @interface Max {
+	double value();
 }

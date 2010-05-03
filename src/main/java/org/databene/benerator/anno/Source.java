@@ -27,35 +27,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation which describes how to generate {@link Number}s.<br/><br/>
- * Created: 19.04.2010 09:07:49
+ * Specifies a data source and its characteristics for generating data for the annotated element.<br/><br/>
+ * Created: 02.05.2010 19:01:59
  * @since 0.6.1
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER } )
-public @interface GeneratedString { // TODO map this to descriptor (BeanDescriptorProvider?)
-
-    boolean nullable() default false;
-    double nullQuota() default 0;
-
-    String generator() default "";
-    String[] values() default { };
-    boolean unique() default false;
-    String distribution() default "";
-
-    String pattern() default "";
-    int minLength() default 0;
-    int maxLength() default 30;
-    String lengthDistribution() default "";
-
-    String source() default "";
-    String separator() default ",";
-	String encoding() default "";
+public @interface Source {
+	String value() default "";
+	
+	String id() default "";
 	String selector() default "";
+	
+	String uri() default "";
+	String filter() default "";
+	String separator() default "";
 	String dataset() default "";
 	String nesting() default "";
-	String locale() default "";
-	String filter() default "";
+	String encoding() default "";
 	
 }

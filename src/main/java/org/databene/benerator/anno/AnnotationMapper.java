@@ -27,14 +27,13 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.StringUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveDescriptorProvider;
-import org.databene.model.data.TypeDescriptor;
 import org.databene.platform.java.BeanDescriptorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +46,8 @@ import org.slf4j.LoggerFactory;
  */
 public class AnnotationMapper {
 	
+	private static final Package BENERATOR_ANNO_PACKAGE = Unique.class.getPackage();
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AnnotationMapper.class);
 	
 	private static final Set<String> STANDARD_METHODS;
@@ -55,16 +56,11 @@ public class AnnotationMapper {
 		STANDARD_METHODS = new HashSet<String>();
 		for (Method method : Annotation.class.getMethods())
 			STANDARD_METHODS.add(method.getName());
-		for (Method method : Object.class.getMethods())
-			STANDARD_METHODS.add(method.getName());
 	}
-
-	private static BeanDescriptorProvider bdp;
 
 	static {
 		DataModel dataModel = DataModel.getDefaultInstance();
 		dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
-		bdp = new BeanDescriptorProvider();
 	}
 	
 	private AnnotationMapper() {}
@@ -82,44 +78,66 @@ public class AnnotationMapper {
 	    return arrayType;
     }
 
-	public static void mapDetails(Object annotation, InstanceDescriptor instanceDescriptor) {
+	public static void mapAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) {
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("mapDetails(" + annotation + ", " + instanceDescriptor + ")");
-		try {
-			TypeDescriptor typeDescriptor = instanceDescriptor.getLocalType(false);
-			Method[] methods = annotation.getClass().getMethods();
-			for (Method method : methods) {
-				String methodName = method.getName();
-				if (ArrayUtil.isEmpty(method.getParameterTypes()) && !STANDARD_METHODS.contains(methodName)) {
-					Object value = method.invoke(annotation);
-					value = normalize(value);
-					if (instanceDescriptor.supportsDetail(methodName))
-						instanceDescriptor.setDetailValue(methodName, value);
-					else
-						typeDescriptor.setDetailValue(methodName, value);
-				}
-			}
+	    try {
+			Class<?> annotationType = annotation.annotationType();
+			if (Unique.class.equals(annotationType))
+				instanceDescriptor.setDetailValue("unique", true);
+			else if (Source.class.equals(annotationType))
+				mapSourceAnnotation((Source) annotation, instanceDescriptor);
+			else
+				mapValueAnnotation(annotation, instanceDescriptor);
 		} catch (Exception e) {
 			throw new ConfigurationError("Error mapping annotation settings", e);
 		}
     }
 
-	
+	private static void mapSourceAnnotation(Source source, InstanceDescriptor instanceDescriptor) throws Exception {
+		mapSourceSetting(source.value(),     "source",    instanceDescriptor);
+		mapSourceSetting(source.id(),        "source",    instanceDescriptor);
+		mapSourceSetting(source.uri(),       "source",    instanceDescriptor);
+		mapSourceSetting(source.dataset(),   "dataset",   instanceDescriptor);
+		mapSourceSetting(source.nesting(),   "nesting",   instanceDescriptor);
+		mapSourceSetting(source.encoding(),  "encoding",  instanceDescriptor);
+		mapSourceSetting(source.filter(),    "filter",    instanceDescriptor);
+		mapSourceSetting(source.selector(),  "selector",  instanceDescriptor);
+		mapSourceSetting(source.separator(), "separator", instanceDescriptor);
+    }
+
+	private static void mapSourceSetting(String value, String detailName, InstanceDescriptor instanceDescriptor) {
+	    if (!StringUtil.isEmpty(value))
+	    	setDetail(detailName, value, instanceDescriptor);
+    }
+
+	private static void mapValueAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) throws Exception {
+		Method method = annotation.annotationType().getMethod("value");
+		Object value = normalize(method.invoke(annotation));
+		String detailName = StringUtil.uncapitalize(annotation.annotationType().getSimpleName());
+		setDetail(detailName, value, instanceDescriptor);
+    }
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	private static ArrayElementDescriptor mapArrayElement(Class<?> type, Annotation[] annos, int index) {
-		String abstractType = bdp.abstractType(type);
+		String abstractType = BeanDescriptorProvider.defaultInstance().abstractType(type);
 	    return map(type, annos, new ArrayElementDescriptor(index, abstractType));
     }
 	
 	private static <T extends InstanceDescriptor> T map(Class<?> type, Annotation[] annos, T descriptor) {
 		for (Annotation annotation : annos)
-			if (annotation instanceof GeneratedNumber || annotation instanceof GeneratedString 
-					|| annotation instanceof GeneratedObject)
-				mapDetails(annotation, descriptor);
+	        if (BENERATOR_ANNO_PACKAGE.equals(annotation.annotationType().getPackage()))
+				mapAnnotation(annotation, descriptor);
 		return descriptor;
 	}
+
+	private static void setDetail(String detailName, Object detailValue, InstanceDescriptor instanceDescriptor) {
+		if (instanceDescriptor.supportsDetail(detailName))
+			instanceDescriptor.setDetailValue(detailName, detailValue);
+		else
+			instanceDescriptor.getLocalType(false).setDetailValue(detailName, detailValue);
+    }
 
 	private static Object normalize(Object value) {
 		if (value == null)

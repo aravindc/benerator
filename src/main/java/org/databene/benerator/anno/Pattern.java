@@ -27,33 +27,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation which describes how to generate {@link Number}s.<br/><br/>
- * Created: 19.04.2010 09:09:17
+ * Specifies a regular expression that must be matched by data generated for the annotated element.<br/><br/>
+ * Created: 02.05.2010 18:57:56
  * @since 0.6.1
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER } )
-public @interface GeneratedNumber { // TODO map this to descriptor (BeanDescriptorProvider?)
-
-    boolean nullable() default false;
-    double nullQuota() default 0;
-
-    String generator() default "";
-    String[] values() default { };
-    boolean unique() default false;
-    String distribution() default "";
-	
-	double min() default 0;
-    double max() default 127;
-    double precision() default 1;
-
-    String source() default "";
-    String separator() default ",";
-	String encoding() default "";
-	String selector() default "";
-	String dataset() default "";
-	String nesting() default "";
-	String locale() default "";
-	String filter() default "";
+public @interface Pattern {
+	String value();
 }
