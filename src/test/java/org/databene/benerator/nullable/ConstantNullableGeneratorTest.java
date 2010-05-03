@@ -27,9 +27,9 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link ConstantNullableGenerator}.<br/><br/>
  * Created: 01.05.2010 10:13:07
- * @since TODO version
+ * @since 0.6.1
  * @author Volker Bergmann
  */
 public class ConstantNullableGeneratorTest {
