@@ -50,6 +50,7 @@ import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
  * Provides utility methods for Generator factories.<br/><br/>
@@ -59,8 +60,10 @@ import org.databene.model.storage.StorageSystem;
 public class GeneratorFactoryUtil {
 
     public static void mapDetailsToBeanProperties(FeatureDescriptor descriptor, Object bean, Context context) {
-        for (FeatureDetail<?> detail : descriptor.getDetails())
-            mapDetailToBeanProperty(descriptor, detail.getName(), bean, context);
+        for (FeatureDetail<?> detail : descriptor.getDetails()) {
+        	if (!ATT_NAME.equals(detail.getName()))
+        		mapDetailToBeanProperty(descriptor, detail.getName(), bean, context);
+        }
     }
 
     public static void mapDetailToBeanProperty(FeatureDescriptor descriptor, String detailName, Object bean, Context context) {
