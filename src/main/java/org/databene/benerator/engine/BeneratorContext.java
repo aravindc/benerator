@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.parser.String2DistributionConverter;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
@@ -43,6 +44,7 @@ import org.databene.commons.bean.ClassProvider;
 import org.databene.commons.context.CaseInsensitiveContext;
 import org.databene.commons.context.ContextStack;
 import org.databene.commons.context.DefaultContext;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.domain.address.Country;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -76,6 +78,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     static {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
     	ScriptUtil.setDefaultScriptEngine("ben");
+    	ConverterManager.getInstance().registerConverterClass(String2DistributionConverter.class);
     }
     
 	public BeneratorContext() {
