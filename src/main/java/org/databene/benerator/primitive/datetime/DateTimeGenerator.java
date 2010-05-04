@@ -53,15 +53,15 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     private Generator<Long> dateGenerator;
     private Generator<Long> timeOffsetGenerator;
     
-    private long minDate;
-    private long maxDate;
-    private long datePrecision = Period.DAY.getMillis();
-    private Distribution dateDistribution;
+    long minDate;
+    long maxDate;
+    long datePrecision = Period.DAY.getMillis();
+    Distribution dateDistribution;
     
-    private long minTime;
-    private long maxTime;
-    private long timePrecision;
-    private Distribution timeDistribution;
+    long minTime;
+    long maxTime;
+    long timePrecision;
+    Distribution timeDistribution;
     
     public DateTimeGenerator() {
         this(
