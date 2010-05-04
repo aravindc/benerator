@@ -27,7 +27,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.expression.ScriptableLiteral;
+import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -62,7 +62,7 @@ public class PropertyParser extends AbstractDescriptorParser {
     @SuppressWarnings("unchecked")
     public static Expression<?> parseValue(Element element, ResourceManager resourceManager) {
 		if (element.hasAttribute(ATT_VALUE))
-			return new ScriptableLiteral(element.getAttribute(ATT_VALUE));
+			return new ScriptableExpression(element.getAttribute(ATT_VALUE), null);
 		else if (element.hasAttribute(ATT_REF))
 			return new ContextReference(element.getAttribute(ATT_REF));
 		else if (element.hasAttribute(ATT_SOURCE))
