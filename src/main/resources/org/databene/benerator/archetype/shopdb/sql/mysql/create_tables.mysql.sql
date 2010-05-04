@@ -27,7 +27,7 @@ CREATE TABLE db_role (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE db_user (
-  id       int(10)     NOT NULL auto_increment,
+  id       int(10)     NOT NULL,
   name     varchar(30) NOT NULL,
   email    varchar(50) NOT NULL,
   password varchar(16) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE db_user (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE db_customer (
-  id         int(10)     NOT NULL default '0',
+  id         int(10)     NOT NULL,
   category   char(1)      NOT NULL,
   salutation varchar(10) NULL,
   first_name varchar(30) NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE db_customer (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE db_order (
-  id          int(10)  NOT NULL auto_increment,
+  id          int(10)  NOT NULL,
   customer_id int(10)  NOT NULL,
   total_price float(8,2)  NOT NULL,
   created_at  DATETIME NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE db_order (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE db_order_item (
-  id              int(10)     NOT NULL auto_increment,
+  id              int(10)     NOT NULL,
   order_id        int(10)     NOT NULL,
   number_of_items int(10)     NOT NULL default 1,
   product_ean_code      varchar(13) NOT NULL,
