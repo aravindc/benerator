@@ -24,11 +24,10 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.assertEquals;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.statement.EvaluateStatement;
-import org.databene.commons.xml.XMLUtil;
+import org.databene.benerator.engine.Statement;
+import org.databene.commons.ConfigurationError;
+import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the {@link EvaluateParser} with respect to the features used 
@@ -37,12 +36,18 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ExecuteParserAndStatementTest {
+public class ExecuteParserAndStatementTest extends ParserTest {
 
+	@Override
+	@Before
+	public void setUp() {
+	    super.setUp();
+		parser = new EvaluateParser();
+	}
+	
 	@Test
 	public void testBeanInvocation() throws Exception {
-        Element element = XMLUtil.parseStringAsElement("<execute>bean.invoke(2)</execute>");
-		EvaluateStatement statement = new EvaluateParser().parse(element, null, new ResourceManagerSupport());
+		Statement statement = parse("<execute>bean.invoke(2)</execute>");
 		BeneratorContext context = new BeneratorContext();
 		BeanMock bean = new BeanMock();
 		context.set("bean", bean);
@@ -54,8 +59,7 @@ public class ExecuteParserAndStatementTest {
 	@Test
 	public void testSimpleTypeVariableDefinition() throws Exception {
 		BeneratorContext context = new BeneratorContext();
-        Element element = XMLUtil.parseStringAsElement("<execute>x = 3</execute>");
-		EvaluateStatement statement = new EvaluateParser().parse(element, null, new ResourceManagerSupport());
+		Statement statement = parse("<execute>x = 3</execute>");
 		statement.execute(context);
 		assertEquals(3, context.get("x"));
 	}
@@ -64,10 +68,15 @@ public class ExecuteParserAndStatementTest {
 	public void testSimpleTypeVariableAccess() throws Exception {
 		BeneratorContext context = new BeneratorContext();
 		context.set("x", 3);
-        Element element = XMLUtil.parseStringAsElement("<execute>x = x + 2</execute>");
-		EvaluateStatement statement = new EvaluateParser().parse(element, null, new ResourceManagerSupport());
+		Statement statement = parse("<execute>x = x + 2</execute>");
 		statement.execute(context);
 		assertEquals(5, context.get("x"));
 	}
 	
+	@Test(expected = ConfigurationError.class)
+	public void testSqlExecutionWithoutTarget() throws Exception {
+		Statement statement = parse("<execute type='sql'>create sequence seq</execute>");
+		statement.execute(context);
+	}
+
 }
