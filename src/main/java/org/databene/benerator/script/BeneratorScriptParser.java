@@ -484,7 +484,7 @@ public class BeneratorScriptParser {
 
     private static Expression<?> convertNegation(CommonTree node) throws ParseException {
 		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
-			// TODO v0.6.1 convert anonymous classes to inner/top level classes with custom toString() methods
+			// TODO v0.6.2 convert anonymous classes to inner/top level classes with custom toString() methods
 			public Object evaluate(Context context) {
 				return ArithmeticEngine.defaultInstance().negate(term.evaluate(context));
             }

@@ -119,7 +119,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		Statement statement = parse(
 				"<generate name='pName' type='outer' count='3' consumer='cons'>" +
 				"    <attribute name='n' type='int' distribution='step' />" +
-				"    <generate type='inner' count='{pName.n}' consumer='cons'/>" + // TODO v0.6.1 make the brackets unnecessary
+				"    <generate type='inner' count='{pName.n}' consumer='cons'/>" + // TODO v0.6.2 make the brackets unnecessary
         		"</generate>");
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true, 1);
 		context.set("cons", consumer);

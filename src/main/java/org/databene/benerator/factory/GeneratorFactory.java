@@ -111,7 +111,7 @@ public class GeneratorFactory {
         if (numberType == null)
             throw new IllegalArgumentException("Number type is null");
         return distribution.createGenerator(numberType, min, max, precision, unique); 
-        // TODO v0.6.1 define difference between precision and fractionDigits and implement it accordingly
+        // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
     }
 
     // sample source ------------------------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ import org.databene.task.Task;
  */
 public interface GeneratorTask extends Task {
 	Generator<?> getGenerator();
-	void flushConsumer(); // TODO v0.6.1 is this really necessary?
+	void flushConsumer(); // TODO v0.7 is this really necessary?
 	void reset();
 	void close();
 }

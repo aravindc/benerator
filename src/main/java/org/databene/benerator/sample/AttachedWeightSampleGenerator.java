@@ -46,7 +46,7 @@ import java.util.Collection;
  * @author Volker Bergmann
  */
 public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E> { 
-	// TODO v0.6.1 possibly this class and WeightedSample are obsolete (replaceable by MappedSampleGenerator)
+	// TODO v0.7 possibly this class and WeightedSample are obsolete (replaceable by MappedSampleGenerator)
 	
     /** Keeps the Sample information */
     List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
