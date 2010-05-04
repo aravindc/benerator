@@ -55,16 +55,6 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
     // constructors --------------------------------------------------------------------------------------
 
     /**
-     * @param descriptor Entity descriptor. 
-     * @param componentBuilders Generators that generate values for the entities' components
-     */
-    /* TODO remove
-    public MutatingEntityGeneratorProxy(String instanceName, ComplexTypeDescriptor descriptor, List<ComponentBuilder> componentBuilders, Context context) {
-        this(instanceName, new BlankEntityGenerator(descriptor), componentBuilders, context);
-    }
-*/
-    
-    /**
      * @param instanceName instance name for the generated entities. 
      * @param source another Generator of entities that serves as Entity builder. 
      *     It may construct empty Entities or may import them (so this may overwrite imported attributes). 
