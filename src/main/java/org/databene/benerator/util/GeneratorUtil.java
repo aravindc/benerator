@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
 
@@ -81,4 +82,12 @@ public class GeneratorUtil {
 	    	generator.init(context);
     }
 
+	@SuppressWarnings("unchecked")
+    public static Generator<?> unwrap(Generator<?> generator) {
+		Generator<?> result = generator;
+		while (result instanceof GeneratorWrapper)
+			result = ((GeneratorWrapper) result).getSource();
+		return result;
+	}
+	
 }
