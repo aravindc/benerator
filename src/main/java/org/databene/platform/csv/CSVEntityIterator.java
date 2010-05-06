@@ -78,11 +78,11 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
         this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
     }
 
-    public CSVEntityIterator(String uri, String entityName, Converter<String, String> preprocessor, char separator, String encoding) throws FileNotFoundException {
+    public CSVEntityIterator(String uri, String entityName, Converter<String, ?> preprocessor, char separator, String encoding) throws FileNotFoundException {
         this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
     }
 
-    public CSVEntityIterator(String uri, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, char separator, String encoding) throws FileNotFoundException {
+    public CSVEntityIterator(String uri, ComplexTypeDescriptor descriptor, Converter<String, ?> preprocessor, char separator, String encoding) throws FileNotFoundException {
         this.uri = uri;
         this.separator = separator;
         this.encoding = encoding;
@@ -129,7 +129,7 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     // private helpers -------------------------------------------------------------------------------------------------
     
 	@SuppressWarnings("unchecked")
-	private void init(String uri, Converter<String, String> preprocessor,
+	private void init(String uri, Converter<String, ?> preprocessor,
 			char separator, String encoding) throws FileNotFoundException {
 		try {
         	String[] featureNames;
@@ -138,7 +138,7 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 				featureNames = cellIterator.next();
 			else
 				throw new ConfigurationError("empty CSV file");
-	        Converter<String[], String[]> arrayConverter = new ArrayConverter<String, String>(String.class, String.class, preprocessor); 
+	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
 	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
 	        this.source = new ConvertingIterator<String[], Entity>(cellIterator, converter);
