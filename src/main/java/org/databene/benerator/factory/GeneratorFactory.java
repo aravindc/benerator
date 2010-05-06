@@ -59,7 +59,7 @@ public class GeneratorFactory {
     // Singleton related stuff -----------------------------------------------------------------------------------------
 
     /**
-     * Private constructor that prevents the user from multiple instantiantion
+     * Private constructor that prevents the user from multiple instantiation
      */
     private GeneratorFactory() {
     }
