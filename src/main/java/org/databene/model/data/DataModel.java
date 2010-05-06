@@ -140,8 +140,16 @@ public class DataModel {
             validate((SimpleTypeDescriptor) type);
         } else if (type instanceof ComplexTypeDescriptor) {
             validate((ComplexTypeDescriptor) type);
+        } else if (type instanceof ArrayTypeDescriptor) {
+            validate((ArrayTypeDescriptor) type);
         } else
             throw new UnsupportedOperationException("Descriptor type not supported: " + type.getClass());
+    }
+
+    private void validate(SimpleTypeDescriptor desc) {
+        PrimitiveType primitiveType = desc.getPrimitiveType();
+        if (primitiveType == null)
+            throw new ConfigurationError("No primitive type defined for simple type: " + desc.getName());
     }
 
     private void validate(ComplexTypeDescriptor desc) {
@@ -152,10 +160,12 @@ public class DataModel {
         }
     }
 
-    private void validate(SimpleTypeDescriptor desc) {
-        PrimitiveType primitiveType = desc.getPrimitiveType();
-        if (primitiveType == null)
-            throw new ConfigurationError("No primitive type defined for simple type: " + desc.getName());
+    private void validate(ArrayTypeDescriptor desc) {
+        for (ArrayElementDescriptor element : desc.getElements()) {
+            TypeDescriptor type = element.getTypeDescriptor();
+            if (!(type instanceof ComplexTypeDescriptor))
+                validate(type);
+        }
     }
 
     public void clear() {
