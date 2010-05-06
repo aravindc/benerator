@@ -35,6 +35,8 @@ import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates and manages {@link Dataset}s.<br/><br/>
@@ -43,6 +45,8 @@ import org.databene.commons.StringUtil;
  * @author Volker Bergmann
  */
 public class DatasetFactory {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatasetFactory.class);
     
     protected static Map<String, Map<String, Dataset>> types = new HashMap<String, Map<String, Dataset>>();
 
@@ -62,11 +66,14 @@ public class DatasetFactory {
                 builder.add(filename);
             else
                 throw new ConfigurationError("File not found: " + filename);
-        } else
+        } else {
             for (Dataset atomicSet : dataset.getAtomicSubSets()) {
                 String filename = MessageFormat.format(filenamePattern, atomicSet);
-            if (IOUtil.isURIAvailable(filename))
-                builder.add(filename);
+	            if (IOUtil.isURIAvailable(filename))
+	                builder.add(filename);
+	            else
+	            	LOGGER.warn("Data file not found: " + filename);
+            }
         }
         return builder.toArray();
     }
