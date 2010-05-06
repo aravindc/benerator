@@ -57,7 +57,9 @@ public class DistributingGenerator<E> extends GeneratorProxy<E> {
 			setSource(distribution.applyTo(dataProvider, unique));
 		else {
 			List<E> products = GeneratorUtil.allProducts(dataProvider);
-			setSource(new SampleGenerator<E>(dataProvider.getGeneratedType(), distribution, unique, products));
+			SampleGenerator<E> sampleGen = new SampleGenerator<E>(dataProvider.getGeneratedType(), distribution, unique, products);
+			sampleGen.init(context);
+			setSource(sampleGen);
 		}
 	    super.init(context);
 	}
