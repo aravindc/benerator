@@ -72,6 +72,8 @@ public class JavaInvoker extends AbstractConsumer<Object> {
 	public void startConsuming(Object object) {
 	    if (object instanceof Entity)
 	    	invokeByEntity((Entity) object);
+	    else if (object.getClass().isArray())
+	    	invokeByArray((Object[]) object);
 	    else
 	    	invokeByObject(object);
     }
@@ -86,8 +88,18 @@ public class JavaInvoker extends AbstractConsumer<Object> {
 			BeanUtil.invoke(false, target, methodName, args);
     }
 
+	private void invokeByArray(Object[] args) {
+		if (target instanceof Class)
+			BeanUtil.invokeStatic((Class<?>) target, methodName, args);
+		else
+			BeanUtil.invoke(target, methodName, args);
+    }
+
 	private void invokeByObject(Object object) {
-	    BeanUtil.invoke(target, methodName, object);
+		if (target instanceof Class)
+			BeanUtil.invokeStatic((Class<?>) target, methodName, object);
+		else
+			BeanUtil.invoke(target, methodName, object);
     }
 
 }
