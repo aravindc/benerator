@@ -48,7 +48,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
+import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -60,6 +62,7 @@ import org.databene.commons.NumberUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.TypedIterable;
 import org.databene.commons.Validator;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.AnyConverter;
@@ -72,8 +75,10 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
+import org.databene.dataset.DatasetFactory;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
@@ -340,6 +345,28 @@ public class DescriptorUtil {
         } catch (ConversionException e) {
             throw new ConfigurationError(e);
         }
+    }
+
+	@SuppressWarnings("unchecked")
+    public static Generator<Entity> createRawEntitySourceGenerator(TypeDescriptor complexType,
+            BeneratorContext context, String sourceName, SourceFactory factory) {
+	    Generator<Entity> generator;
+	    String dataset = complexType.getDataset();
+		String nesting = complexType.getNesting();
+		if (dataset != null && nesting != null) {
+		    String[] uris = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
+            Generator<Entity>[] sources = new Generator[uris.length];
+            for (int i = 0; i < uris.length; i++) {
+            	TypedIterable<Entity> source = factory.create(uris[i], context);
+                sources[i] = new IteratingGenerator<Entity>(source);
+            }
+			generator = new AlternativeGenerator<Entity>(Entity.class, sources);
+		} else {
+		    // iterate over (possibly large) data file
+			TypedIterable<Entity> source = factory.create(sourceName, context);
+		    generator = new IteratingGenerator<Entity>(source);
+		}
+		return generator;
     }
 
 	// helpers ---------------------------------------------------------------------------------------------------------
