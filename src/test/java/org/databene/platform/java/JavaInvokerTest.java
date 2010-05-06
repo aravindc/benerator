@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,10 +46,11 @@ public class JavaInvokerTest {
 
 	@Test
 	public void testStaticMethodEntity() {
+		POJO.statCountP2 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP2");
-		invoker.startConsuming(new Entity("params", "age", 23, "name", "Alice"));
-		invoker.startConsuming(new Entity("params", "age", 34, "name", "Bob"));
+		invoker.startConsuming(new Entity("params", "name", "Alice", "age", 23));
+		invoker.startConsuming(new Entity("params", "name", "Bob", "age", 34));
 		assertEquals(2, POJO.statCountP2);
 	}
 	
@@ -57,21 +58,42 @@ public class JavaInvokerTest {
 	public void testInstanceMethodObject() {
 		POJO target = new POJO();
 		JavaInvoker invoker = new JavaInvoker(target, "dynP1");
-		invoker.startConsuming(new Entity("params", "name", "Alice"));
-		invoker.startConsuming(new Entity("params", "name", "Bob"));
+		invoker.startConsuming("Alice");
+		invoker.startConsuming("Bob");
 		assertEquals(2, target.dynCountP1);
 	}
 
 	@Test
 	public void testStaticMethodObject() {
+		POJO.statCountP1 = 0;
 		Class<POJO> target = POJO.class;
 		JavaInvoker invoker = new JavaInvoker(target, "statP1");
-		invoker.startConsuming(new Entity("params", "age", 23));
-		invoker.startConsuming(new Entity("params", "age", 34));
+		invoker.startConsuming(23);
+		invoker.startConsuming(34);
 		assertEquals(2, POJO.statCountP1);
 	}
 	
+	@Test
+	public void testInstanceMethodArray() {
+		POJO target = new POJO();
+		JavaInvoker invoker = new JavaInvoker(target, "dynP2");
+		invoker.startConsuming(new Object[] { "Alice", 23 });
+		invoker.startConsuming(new Object[] { "Bob",   34 });
+		assertEquals(2, target.dynCountP2);
+	}
+
+	@Test
+	public void testStaticMethodArray() {
+		POJO.statCountP2= 0;
+		Class<POJO> target = POJO.class;
+		JavaInvoker invoker = new JavaInvoker(target, "statP2");
+		invoker.startConsuming(new Object[] { "Alice", 23 });
+		invoker.startConsuming(new Object[] { "Bob",   34 });
+		assertEquals(2, POJO.statCountP2);
+	}
+	
 	public static class POJO {
+		
 		public int dynCountP1 = 0;
 		public static int statCountP1 = 0;
 		public int dynCountP2 = 0;
@@ -89,7 +111,7 @@ public class JavaInvokerTest {
 			dynCountP2++;
 		}
 		
-		public static void statP2(int age, String name) {
+		public static void statP2(String name, int age) {
 			statCountP2++;
 		}
 	}
