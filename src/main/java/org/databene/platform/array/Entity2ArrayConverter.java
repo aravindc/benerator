@@ -50,6 +50,8 @@ public class Entity2ArrayConverter extends ThreadSafeConverter<Entity, Object[]>
     }
 
     public Object[] convert(Entity entity) {
+    	if (entity == null)
+    		return null;
     	if (featureNames == null)
     		initFeatureNamesFromTemplate(entity);
         Object[] result = new Object[featureNames.length];

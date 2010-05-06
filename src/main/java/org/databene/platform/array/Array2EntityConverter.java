@@ -78,6 +78,8 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
 
     @SuppressWarnings("unchecked")
     public Entity convert(Object[] sourceValue) {
+    	if (sourceValue == null)
+    		return null;
         Entity entity = new Entity(descriptor);
         int length;
         if (sourceValue.length > featureNames.length) {
