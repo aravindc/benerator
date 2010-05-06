@@ -40,7 +40,7 @@ public class CSVEntitySource extends FileBasedEntitySource {
 	
     private char separator;
     private String encoding;
-    private Converter<String, String> preprocessor;
+    private Converter<String, ?> preprocessor;
 
     private ComplexTypeDescriptor entityDescriptor;
 
@@ -62,12 +62,12 @@ public class CSVEntitySource extends FileBasedEntitySource {
         this(uri, new ComplexTypeDescriptor(entityName), new NoOpConverter<String>(), separator, encoding);
     }
 
-    public CSVEntitySource(String uri, String entityName, Converter<String, String> preprocessor, 
+    public CSVEntitySource(String uri, String entityName, Converter<String, ?> preprocessor, 
     		char separator, String encoding) {
         this(uri, new ComplexTypeDescriptor(entityName), preprocessor, separator, encoding);
     }
 
-    public CSVEntitySource(String uri, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, 
+    public CSVEntitySource(String uri, ComplexTypeDescriptor descriptor, Converter<String, ?> preprocessor, 
     		char separator, String encoding) {
         super(uri);
         this.separator = separator;
