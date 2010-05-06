@@ -48,7 +48,7 @@ import static junit.framework.Assert.*;
 public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	
     private static final String PERSON_TAB_CSV = "org/databene/benerator/factory/person_tab.csv";
-    private static final String PERSON_CSV = "org/databene/benerator/factory/person.csv";
+    private static final String PERSON_CSV = "org/databene/benerator/factory/person.ent.csv";
     
 	private Entity alice = new Entity("person", "name", "Alice", "age", "23");
 	private Entity otto = new Entity("person", "name", "Otto", "age", "89");
@@ -124,7 +124,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testUniqueCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource("org/databene/benerator/factory/person.csv");
+		type.setSource(PERSON_CSV);
 		InstanceDescriptor instance = new InstanceDescriptor("person", type);
 		instance.setUnique(true);
 		Generator<Entity> generator = createGenerator(instance);
