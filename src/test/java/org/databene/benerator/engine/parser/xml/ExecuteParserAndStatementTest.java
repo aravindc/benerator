@@ -26,6 +26,8 @@ import static org.junit.Assert.assertEquals;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.db.hsql.HSQLUtil;
+import org.databene.platform.db.DBSystem;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,6 +79,22 @@ public class ExecuteParserAndStatementTest extends ParserTest {
 	public void testSqlExecutionWithoutTarget() throws Exception {
 		Statement statement = parse("<execute type='sql'>create sequence seq</execute>");
 		statement.execute(context);
+	}
+
+	@Test
+	public void testEmptyResultSet() throws Exception {
+		String url = HSQLUtil.getInMemoryURL("benerator");
+		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
+		BeneratorContext context = new BeneratorContext();
+		context.set("db", db);
+		try {
+			db.execute("create table epast_test (id int)");
+			Statement statement = parse("<execute target='db'>select * from epast_test where 1 = 0</execute>");
+			statement.execute(context);
+		} finally {
+			db.execute("drop table epast_test");
+			db.close();
+		}
 	}
 
 }
