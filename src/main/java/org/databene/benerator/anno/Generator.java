@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER } )
+@Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR } )
 public @interface Generator {
 	String value();
 }
