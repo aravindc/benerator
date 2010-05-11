@@ -87,10 +87,10 @@ public class JdbcMetaTypeMapper {
             String lcName = columnType.getName().toLowerCase();
             if (lcName.startsWith("timestamp"))
                 return PrimitiveType.TIMESTAMP.getName();
-            else if (lcName.startsWith("xml"))
+            else if (lcName.endsWith("char") || lcName.startsWith("xml") || lcName.endsWith("varchar2"))
                 return PrimitiveType.STRING.getName();
             else
-                throw new ConfigurationError("Platform specific SQL type (" + jdbcType + ") not mapped: " + jdbcType);
+                throw new ConfigurationError("Platform specific SQL type (" + jdbcType + ") not mapped: " + columnType.getName());
         }
     }
 
