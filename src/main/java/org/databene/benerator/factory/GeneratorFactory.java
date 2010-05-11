@@ -215,6 +215,10 @@ public class GeneratorFactory {
      */
     public static Generator<Date> getDateGenerator(
             Date min, Date max, long precision, Distribution distribution) {
+    	if (min != null && max == null)
+    		max = TimeUtil.add(min, Calendar.DATE, 365);
+    	if (max != null && min == null)
+    		min = TimeUtil.add(max, Calendar.DATE, -365);
         return new DateGenerator(min, max, precision, distribution);
     }
 
