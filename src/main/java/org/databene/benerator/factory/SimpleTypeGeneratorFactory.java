@@ -39,6 +39,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
@@ -59,6 +60,7 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ArrayElementExtractor;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.ConvertingIterable;
+import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.iterator.ArrayIterable;
@@ -336,9 +338,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Date min = parseDate(descriptor, MIN, TimeUtil.date(1970, 0, 1));
-        Date max = parseDate(descriptor, MAX, TimeUtil.today().getTime());
-        Date precisionDate = parseDate(descriptor, PRECISION, TimeUtil.date(1970, 0, 2));
-        long precision = precisionDate.getTime() - TimeUtil.date(1970, 0, 1).getTime();
+        Date max = parseDate(descriptor, MAX, null);
+        long precision = parseDatePrecision(descriptor);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
 	    return GeneratorFactory.getDateGenerator(min, max, precision, distribution);
@@ -367,6 +368,14 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             logger.error("Error parsing date " + detail, e);
             return defaultDate;
         }
+    }
+
+    private static long parseDatePrecision(SimpleTypeDescriptor descriptor) {
+        String detail = (String) descriptor.getDeclaredDetailValue(DescriptorConstants.ATT_PRECISION);
+		if (detail != null)
+        	return DateString2DurationConverter.defaultInstance().convert(detail);
+        else
+            return 24 * 3600 * 1000L;
     }
 
     private static Generator<Boolean> createBooleanGenerator(SimpleTypeDescriptor descriptor) {
