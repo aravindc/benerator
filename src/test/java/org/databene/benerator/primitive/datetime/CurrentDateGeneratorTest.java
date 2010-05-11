@@ -45,7 +45,7 @@ public class CurrentDateGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testProducts() {
-        ConstantValidator validator = new ConstantValidator(TimeUtil.today().getTime());
+        ConstantValidator validator = new ConstantValidator(TimeUtil.today());
 		expectGenerations(new CurrentDateGenerator(), 10, validator);
     }
     
