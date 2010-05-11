@@ -25,6 +25,11 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -89,7 +94,7 @@ public class AnnotationMapperTest {
 		checkMethod("patternMethod", String.class, "string", "pattern", "ABC");
 	}
 
-	public void patternMethod(@Pattern("ABC") String name) { }
+	public void patternMethod(@Pattern(regexp = "ABC") String name) { }
 
 	
 	
@@ -98,7 +103,7 @@ public class AnnotationMapperTest {
 		checkMethod("patternMinMaxLengthMethod", String.class, "string", "pattern", "[A-Z]*", "minLength", 5, "maxLength", 8);
 	}
 
-	public void patternMinMaxLengthMethod(@Pattern("[A-Z]*") @MinLength(5) @MaxLength(8) String name) { }
+	public void patternMinMaxLengthMethod(@Pattern(regexp = "[A-Z]*") @Size(min = 5, max = 8) String name) { }
 	
 
 	
@@ -137,13 +142,13 @@ public class AnnotationMapperTest {
 	@Test
 	public void testStdSequenceInt() throws Exception {
 		checkMethod("predefSequenceIntMethod", int.class, "int", 
-				"min", "3.0", 
-				"max", "8.0", 
+				"min", "3", 
+				"max", "8", 
 				"precision", "2.0",
 				"distribution", "cumulated");
 	}
 
-	public void predefSequenceIntMethod(@Min(3) @Max(8) @Precision(2) @Distribution("cumulated") int n) { }
+	public void predefSequenceIntMethod(@Min(3) @Max(8) @Granularity(2) @Distribution("cumulated") int n) { }
 	
 
 	
@@ -180,7 +185,7 @@ public class AnnotationMapperTest {
 	}
 
 	public void predefLengthSequenceIntMethod(
-			@MinLength(3) @MaxLength(8) @LengthDistribution("cumulated") String s) { }
+			@Size(min = 3, max = 8) @SizeDistribution("cumulated") String s) { }
 	
 
 	
@@ -191,7 +196,7 @@ public class AnnotationMapperTest {
 	}
 
 	public void lengthSequenceClassIntMethod(
-			@LengthDistribution("org.databene.benerator.distribution.sequence.StepSequence") String s) { }
+			@SizeDistribution("org.databene.benerator.distribution.sequence.StepSequence") String s) { }
 	
 
 	
@@ -202,7 +207,7 @@ public class AnnotationMapperTest {
 	}
 
 	public void lengthSequenceCtorIntMethod(
-			@LengthDistribution("new org.databene.benerator.distribution.sequence.StepSequence()") String s) { }
+			@SizeDistribution("new org.databene.benerator.distribution.sequence.StepSequence()") String s) { }
 	
 	
 	
