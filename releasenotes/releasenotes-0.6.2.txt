@@ -1,0 +1,23 @@
+release notes benerator 0.6.2
+=============================
+
+
+
+summary
+-------
+
+
+enhancements
+------------
+- Added support for Oracle NVARCHAR and NCHAR
+
+
+Changes (Find the feature request tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057389)
+-----------------------------------------------------------------------------------------------------------
+- supporting Java annotations from the Bean Validation API (JSR 303) and Java 7
+- removed Java annotations which overlap annotation semantic in the Bean Validation API (JSR 303) and Java 7
+
+
+bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
+-------------------------------------------------------------------------------------------------
+- 2999746 Date generation goes wrong when using precision
