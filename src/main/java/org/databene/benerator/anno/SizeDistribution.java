@@ -27,13 +27,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies the maximum value to use when generating data for the annotated element.<br/><br/>
- * Created: 02.05.2010 19:04:49
+ * Specifies which length {@link org.databene.benerator.distribution.Distribution} 
+ * to use when generating data for the annotated element
+ * Created: 02.05.2010 19:01:02
  * @since 0.6.1
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER } )
-public @interface Max {
-	double value();
+public @interface SizeDistribution {
+	String value();
 }

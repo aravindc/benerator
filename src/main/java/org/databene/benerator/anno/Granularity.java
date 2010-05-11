@@ -34,6 +34,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER } )
-public @interface Precision { // TODO v0.7 rename to 'Granularity'?
+public @interface Granularity {
 	double value();
 }
