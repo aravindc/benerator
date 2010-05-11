@@ -59,7 +59,7 @@ public class BirthDateGenerator extends GeneratorProxy<Date> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-        Date today = TimeUtil.today().getTime();
+        Date today = TimeUtil.today();
         Calendar min = TimeUtil.calendar(today);
         min.add(Calendar.YEAR, -maxAgeYears);
         Calendar max = TimeUtil.calendar(today);

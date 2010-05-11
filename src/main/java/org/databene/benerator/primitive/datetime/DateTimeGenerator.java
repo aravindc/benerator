@@ -65,8 +65,8 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     
     public DateTimeGenerator() {
         this(
-            TimeUtil.add(TimeUtil.today().getTime(), Calendar.YEAR, -1), 
-            TimeUtil.today().getTime(), 
+            TimeUtil.add(TimeUtil.today(), Calendar.YEAR, -1), 
+            TimeUtil.today(), 
             TimeUtil.time(9, 0), 
             TimeUtil.time(17, 0));
     }

@@ -40,7 +40,7 @@ import java.util.Date;
 public class CurrentDateGenerator extends ThreadSafeGenerator<Date> {
 
 	public Date generate() {
-        return TimeUtil.today().getTime();
+        return TimeUtil.today();
     }
 
 	public Class<Date> getGeneratedType() {
