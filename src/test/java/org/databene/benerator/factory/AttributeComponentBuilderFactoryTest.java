@@ -26,6 +26,8 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Date;
+
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
@@ -37,6 +39,7 @@ import org.databene.benerator.primitive.HibUUIDGenerator;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.NullableGeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.validator.StringValidator;
@@ -387,8 +390,27 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		assertEquals("B", entity.get("flag"));
 	}
     
-    // test construction alternatives ----------------------------------------------------------------------------------
-    
+    // test date and time generation -----------------------------------------------------------------------------------
+
+	@Test
+	public void testDateMinMax() {
+		String componentName = "part";
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("lDate", "date").withMin("2000-03-04").withMax("2000-08-09");
+		type.setPrecision(String.valueOf(3600 * 24L));
+		PartDescriptor attribute = new PartDescriptor(componentName, type);
+		ComponentBuilder<Entity> builder = createComponentBuilder(attribute);
+		ComponentBuilderGenerator<Date> helper = new ComponentBuilderGenerator<Date>(builder, componentName);
+		helper.init(context);
+		Validator<Date> validator = new Validator<Date>() {
+			final Date minDate = TimeUtil.date(2000, 2, 4);
+			final Date maxDate = TimeUtil.date(2000, 7, 9);
+			public boolean valid(Date date) {
+	            return !minDate.after(date) && !maxDate.before(date);
+            }
+		};
+		expectGenerations(helper, 100, validator);
+	}
+	
 /*
 	@Test
     public void testGenerator() {
@@ -521,12 +543,6 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	@Test
     public void testDate() {
         createGenerator("test", "type", "date");
-        createGenerator("test",
-                "type", "date",
-                "min", "2000-01-01",
-                "max", "2000-12-31",
-                "pattern", "yyyy-MM-dd"
-        );
         createGenerator("test",
                 "type", "date",
                 "min", "01/01/2000",
@@ -679,14 +695,13 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 */
 	// private helpers -------------------------------------------------------------------------------------------------
 	
-	@SuppressWarnings("unchecked")
-	private ComponentBuilder createComponentBuilder(ComponentDescriptor component) {
+	private ComponentBuilder<Entity> createComponentBuilder(ComponentDescriptor component) {
 		return createComponentBuilder(component, new BeneratorContext());
 	}
 	
 	@SuppressWarnings("unchecked")
-	private ComponentBuilder createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
-		return ComponentBuilderFactory.createComponentBuilder(component, context);
+    private ComponentBuilder<Entity> createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
+		return (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, context);
 	}
 	
 	@SuppressWarnings("unchecked")
