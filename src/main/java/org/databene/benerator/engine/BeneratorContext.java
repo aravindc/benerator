@@ -71,6 +71,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected String  contextUri           = "./";
     public    boolean validate             = true;
     public    Long    maxCount             = null;
+    // TODO defaultLineSeparator?
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
     protected ExecutorService executorService = Executors.newCachedThreadPool();
