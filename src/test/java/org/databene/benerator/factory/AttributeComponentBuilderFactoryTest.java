@@ -396,7 +396,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	public void testDateMinMax() {
 		String componentName = "part";
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("lDate", "date").withMin("2000-03-04").withMax("2000-08-09");
-		type.setPrecision(String.valueOf(3600 * 24L));
+		type.setPrecision("0000-00-01");
 		PartDescriptor attribute = new PartDescriptor(componentName, type);
 		ComponentBuilder<Entity> builder = createComponentBuilder(attribute);
 		ComponentBuilderGenerator<Date> helper = new ComponentBuilderGenerator<Date>(builder, componentName);
