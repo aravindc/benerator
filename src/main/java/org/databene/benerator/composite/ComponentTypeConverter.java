@@ -28,13 +28,12 @@ package org.databene.benerator.composite;
 
 import java.util.Map;
 
+import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.converter.AbstractConverter;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 
@@ -46,7 +45,7 @@ import org.databene.model.data.TypeDescriptor;
  * @since 0.5.3
  * @author Volker Bergmann
  */
-public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
+public class ComponentTypeConverter extends AbstractConverter<Entity, Entity> {
 
 	private ComplexTypeDescriptor type;
 
@@ -66,11 +65,7 @@ public class ComponentTypeConverter extends AbstractConverter<Entity, Entity>{
 				TypeDescriptor componentType = componentDescriptor.getTypeDescriptor();
 				Object componentValue = entry.getValue();
 				if (componentType instanceof SimpleTypeDescriptor) {
-					PrimitiveType primitive = ((SimpleTypeDescriptor) componentType).getPrimitiveType();
-					if (primitive == null)
-						primitive = PrimitiveType.STRING;
-			        Class<?> javaType = primitive.getJavaType();
-			        Object javaValue = AnyConverter.convert(componentValue, javaType);
+					Object javaValue = DescriptorUtil.map(componentValue, (SimpleTypeDescriptor) componentType);
 			        components.put(componentName, javaValue);
 				} else {
 			        components.put(componentName, convert((Entity) componentValue));
