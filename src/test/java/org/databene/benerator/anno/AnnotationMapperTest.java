@@ -144,7 +144,7 @@ public class AnnotationMapperTest {
 		checkMethod("predefSequenceIntMethod", int.class, "int", 
 				"min", "3", 
 				"max", "8", 
-				"precision", "2.0",
+				"precision", "2",
 				"distribution", "cumulated");
 	}
 
