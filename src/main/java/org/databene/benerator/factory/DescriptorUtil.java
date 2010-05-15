@@ -80,6 +80,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.VariableHolder;
@@ -97,6 +98,16 @@ public class DescriptorUtil {
 
 	private DescriptorUtil() {}
 
+	public static Object map(Object sourceValue, SimpleTypeDescriptor targetType) { // TODO test
+		if (sourceValue == null)
+			return null;
+		PrimitiveType primitive = targetType.getPrimitiveType();
+		if (primitive == null)
+			primitive = PrimitiveType.STRING;
+        Class<?> javaType = primitive.getJavaType();
+        return AnyConverter.convert(sourceValue, javaType);
+	}
+	
     public static boolean isWrappedSimpleType(ComplexTypeDescriptor complexType) {
 		List<ComponentDescriptor> components = complexType.getComponents();
 		return (components.size() == 1 
