@@ -48,6 +48,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.factory.ArrayGeneratorFactory;
+import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.StringUtil;
@@ -121,7 +122,7 @@ public class AnnotationMapper {
 			if (Unique.class.equals(annotationType))
 				instanceDescriptor.setDetailValue("unique", true);
 			else if (Granularity.class.equals(annotationType))
-				instanceDescriptor.getLocalType(false).setDetailValue("precision", ((Granularity) annotation).value());
+				instanceDescriptor.getLocalType(false).setDetailValue("precision", String.valueOf(DescriptorUtil.map(((Granularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
 			else if (SizeDistribution.class.equals(annotationType))
 				instanceDescriptor.getLocalType(false).setDetailValue("lengthDistribution", ((SizeDistribution) annotation).value());
 			else if (Pattern.class.equals(annotationType))
@@ -247,9 +248,9 @@ public class AnnotationMapper {
     	else if (annotation instanceof AssertTrue)
     		typeDescriptor.setTrueQuota(1.);
     	else if (annotation instanceof DecimalMax)
-    		typeDescriptor.setMax(((DecimalMax) annotation).value());
+    		typeDescriptor.setMax(String.valueOf(DescriptorUtil.map(((DecimalMax) annotation).value(), typeDescriptor)));
     	else if (annotation instanceof DecimalMin)
-    		typeDescriptor.setMax(((DecimalMin) annotation).value());
+    		typeDescriptor.setMax(String.valueOf(DescriptorUtil.map(((DecimalMin) annotation).value(), typeDescriptor)));
     	else if (annotation instanceof Digits) {
     		Digits digits = (Digits) annotation;
 			typeDescriptor.setPrecision(String.valueOf(Math.pow(10, - digits.fraction())));
@@ -257,8 +258,8 @@ public class AnnotationMapper {
     	} else if (annotation instanceof Future)
 	        typeDescriptor.setMin(new SimpleDateFormat("yyyy-MM-dd").format(TimeUtil.tomorrow()));
         else if (annotation instanceof Max)
-    		typeDescriptor.setMax(String.valueOf(((Max) annotation).value()));
-    	else if (annotation instanceof Min)
+			typeDescriptor.setMax(String.valueOf(((Max) annotation).value()));
+        else if (annotation instanceof Min)
     		typeDescriptor.setMin(String.valueOf(((Min) annotation).value()));
     	else if (annotation instanceof NotNull) {
     		element.setNullable(false);
