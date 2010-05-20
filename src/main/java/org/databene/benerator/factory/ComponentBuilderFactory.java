@@ -76,7 +76,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     // factory methods for component generators ------------------------------------------------------------------------
 
-    protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) {
+    protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) { // TODO remove method 
+    	return createComponentBuilder(descriptor, Uniqueness.NONE, context);
+    }
+
+    protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
         
@@ -94,15 +98,15 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // ...
         if (descriptor instanceof ArrayElementDescriptor)
-        	return createPartBuilder(descriptor, context);
+        	return createPartBuilder(descriptor, ownerUniqueness, context);
         else if (descriptor instanceof PartDescriptor) {
         	TypeDescriptor type = descriptor.getTypeDescriptor();
         	if (type instanceof AlternativeGroupDescriptor)
 				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, context);
 			else
-				return createPartBuilder(descriptor, context);
+				return createPartBuilder(descriptor, ownerUniqueness, context);
         } else if (descriptor instanceof ReferenceDescriptor)
-            return createReferenceGenerator((ReferenceDescriptor)descriptor, context);
+            return createReferenceBuilder((ReferenceDescriptor)descriptor, context);
         else if (descriptor instanceof IdDescriptor)
             return createIdBuilder((IdDescriptor)descriptor, context);
         else 
@@ -156,9 +160,9 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 		return new AlternativeComponentBuilder(builders);
 	}
 
-    static ComponentBuilder<?> createPartBuilder(
-            ComponentDescriptor part, BeneratorContext context) {
-        Generator<?> generator = createSingleInstanceGenerator(part, context);
+    private static ComponentBuilder<?> createPartBuilder(
+            ComponentDescriptor part, Uniqueness ownerUniqueness, BeneratorContext context) {
+        Generator<?> generator = createSingleInstanceGenerator(part, ownerUniqueness, context);
         generator = createMultiplicityWrapper(part, generator, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -173,7 +177,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
 	@SuppressWarnings("unchecked")
-    static ComponentBuilder<?> createReferenceGenerator(ReferenceDescriptor descriptor, BeneratorContext context) {
+    static ComponentBuilder<?> createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
         boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
         Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.ORDERED);
         SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) descriptor.getTypeDescriptor();
