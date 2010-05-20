@@ -29,6 +29,7 @@ package org.databene.benerator.test;
 import org.junit.Before;
 import static junit.framework.Assert.*;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.Collection;
@@ -270,7 +271,11 @@ public abstract class GeneratorTest {
         for (T expectedProduct : products) {
             T generatedProduct = generator.generate();
             assertNotNull("Generator is unavailable after generating " + count + " of " + products.length + " products: " + generator, generatedProduct);
-			assertEquals(expectedProduct, generatedProduct);
+            if (generatedProduct.getClass().isArray())
+            	assertTrue("Expected " + Arrays.toString((Object[]) expectedProduct) + ", found: " + Arrays.toString((Object[]) generatedProduct), 
+            			Arrays.equals((Object[]) expectedProduct, (Object[]) generatedProduct));
+            else
+            	assertEquals(expectedProduct, generatedProduct);
 			count++;
         }
     }
