@@ -42,7 +42,7 @@ public class BeneratorShutdownHook extends Thread {
 
 	@Override
 	public void run() {
-		logger.info("Shutdown down Benerator...");
+		logger.info("Shutting down Benerator...");
 		resourceManager.close();
 	}
 	
