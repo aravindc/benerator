@@ -31,8 +31,10 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Resettable;
 import org.databene.commons.StringUtil;
 
 /**
@@ -80,6 +82,16 @@ public class GeneratorUtil {
 	public static void initAll(Generator<?>[] generators, GeneratorContext context) {
 	    for (Generator<?> generator : generators)
 	    	generator.init(context);
+    }
+
+	public static void initAll(NullableGenerator<?>[] generators, GeneratorContext context) {
+	    for (NullableGenerator<?> generator : generators)
+	    	generator.init(context);
+    }
+
+	public static void resetAll(Resettable[] resettables) {
+	    for (Resettable resettable : resettables)
+	    	resettable.reset();
     }
 
 	@SuppressWarnings("unchecked")
