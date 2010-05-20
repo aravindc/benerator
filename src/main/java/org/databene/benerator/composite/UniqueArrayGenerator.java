@@ -29,9 +29,9 @@ import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 
 /**
- * TODO Document class.<br/><br/>
+ * Uses one dedicated generator for each array element and combines their outputs in a cartesian product.<br/><br/>
  * Created: 16.05.2010 10:05:12
- * @since TODO version
+ * @since 0.6.2
  * @author Volker Bergmann
  */
 public class UniqueArrayGenerator extends CompositeGenerator<Object[]> {
