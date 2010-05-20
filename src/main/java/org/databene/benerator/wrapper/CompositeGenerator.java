@@ -48,6 +48,9 @@ public abstract class CompositeGenerator<E> extends AbstractGenerator<E> {
 		this.components = new ArrayList<ThreadAware>();
 	}
 	
+	
+	// component registration ------------------------------------------------------------------------------------------
+	
 	protected <T extends Generator<U>, U> T registerComponent(T component) {
 		components.add(component);
 		return component;
@@ -58,6 +61,15 @@ public abstract class CompositeGenerator<E> extends AbstractGenerator<E> {
 		return component;
 	}
 
+	protected void registerComponents(ThreadAware[] components) {
+		for (ThreadAware component : components)
+			this.components.add(component);
+	}
+
+	
+	
+	// partial Generator interface implementation ----------------------------------------------------------------------
+	
 	public Class<E> getGeneratedType() {
 	    return generatedType;
     }
