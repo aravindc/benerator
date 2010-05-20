@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.test.PersonIterable;
 import org.databene.benerator.wrapper.ConvertingGenerator;
@@ -38,6 +39,7 @@ import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.DefaultDescriptorProvider;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
@@ -54,6 +56,12 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 	static final Object[] ALICE = new Object[] { "Alice", 23 };
 	static final Object[] BOB   = new Object[] { "Bob",   34 };
 	static final Object[] OTTO  = new Object[] { "Otto",  89 };
+	
+	static final Object[] INT13 = new Object[] { 1, 3 };
+	static final Object[] INT14 = new Object[] { 1, 4 };
+	static final Object[] INT23 = new Object[] { 2, 3 };
+	static final Object[] INT24 = new Object[] { 2, 4 };
+
 	
 	static {
 		initDataModel();
@@ -211,7 +219,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 			assertTrue((Integer) product[1] == 23 || (Integer) product[1] == 34);
 		}
 	}
-	
+
 	/** TODO v0.6.2 implement array mutation
 	@Test
 	public void testMutatingGeneration() {
@@ -231,9 +239,83 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 			assertEqualArrays(MUTATED_ALICE, generator.generate());
 	}
 	*/
-	
+
+	@Test
+	@SuppressWarnings("unchecked")
+    public void testUniqueArrayGeneration() {
+		ArrayTypeDescriptor arrayTypeDescriptor = new ArrayTypeDescriptor("MyArray");
+		
+		context.set("gen0", new SequenceTestGenerator<Integer>(1, 2));
+		ArrayElementDescriptor e0 = new ArrayElementDescriptor(0, "int");
+		((SimpleTypeDescriptor) e0.getLocalType(false)).setGenerator("gen0");
+		arrayTypeDescriptor.addElement(e0);
+		
+		context.set("gen1", new SequenceTestGenerator<Integer>(3, 4));
+		ArrayElementDescriptor e1 = new ArrayElementDescriptor(1, "int");
+		((SimpleTypeDescriptor) e1.getLocalType(false)).setGenerator("gen1");
+		arrayTypeDescriptor.addElement(e1);
+		
+		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
+		arrayInstDescriptor.setUnique(true);
+		
+		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, context);
+		generator.init(context);
+		assertArray(INT13, generator.generate());
+		assertArray(INT14, generator.generate());
+		assertArray(INT23, generator.generate());
+		assertArray(INT24, generator.generate());
+		assertNull(generator.generate());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+    public void testUniqueValuesArrayGeneration() {
+		ArrayElementDescriptor e0 = new ArrayElementDescriptor(0, "int");
+		((SimpleTypeDescriptor) e0.getLocalType(false)).setValues("1,2");
+		
+		ArrayElementDescriptor e1 = new ArrayElementDescriptor(1, "int");
+		((SimpleTypeDescriptor) e1.getLocalType(false)).setValues("3,4");
+		
+		ArrayTypeDescriptor arrayTypeDescriptor = new ArrayTypeDescriptor("MyArray");
+		arrayTypeDescriptor.addElement(e0);
+		arrayTypeDescriptor.addElement(e1);
+		
+		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
+		arrayInstDescriptor.setUnique(true);
+		
+		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, context);
+		generator.init(context);
+		for (int i = 0; i < 4; i++) {
+	        Object[] product = generator.generate();
+	        assertTrue(
+        		Arrays.equals(INT13, product)
+        		|| Arrays.equals(INT14, product)
+        		|| Arrays.equals(INT23, product)
+        		|| Arrays.equals(INT24, product)
+        	);
+        }
+		assertUnavailable(generator);
+	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
+
+	@SuppressWarnings("null")
+    private void assertArray(Object[] expected, Object[] actual) {
+	    if (expected == null) {
+	    	assertNull(actual);
+	    	return;
+	    }
+        String failureMessage = failureMessage(expected, actual);
+	    if (actual == null)
+	        fail(failureMessage);
+	    assertEquals(failureMessage, expected.length, actual.length);
+	    for (int i = 0; i < expected.length; i++)
+	    	assertTrue(failureMessage, expected[i].equals(actual[i]));
+    }
+
+	private String failureMessage(Object[] expected, Object[] actual) {
+		return "Expected " + Arrays.toString(expected) + ", found: " + Arrays.toString(actual);
+    }
 
 	private static ArrayTypeDescriptor createPersonDescriptor() {
 		ArrayTypeDescriptor arrayDescriptor = new ArrayTypeDescriptor("personType");
