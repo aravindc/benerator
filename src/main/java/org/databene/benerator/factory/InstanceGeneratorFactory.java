@@ -50,13 +50,20 @@ public class InstanceGeneratorFactory {
     
     protected InstanceGeneratorFactory() {}
 
-    public static Generator<?> createSingleInstanceGenerator(
+    public static Generator<?> createSingleInstanceGenerator( // TODO remove method
             InstanceDescriptor descriptor, BeneratorContext context) {
+    	return createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
+    }
+
+    public static Generator<?> createSingleInstanceGenerator(
+            InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = null;
         // create a source generator
         generator = createNullQuotaOneGenerator(descriptor);
         if (generator == null) {
             Uniqueness uniqueness = uniqueness(descriptor);
+            if (!uniqueness.isUnique())
+            	uniqueness = ownerUniqueness;
             TypeDescriptor type = descriptor.getTypeDescriptor();
             if (type instanceof SimpleTypeDescriptor)
 				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
