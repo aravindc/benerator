@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.junit.Test;
 
@@ -72,11 +73,23 @@ public class AnnotationMapperTest {
 	
 	
 	@Test
-	public void testUnique() throws Exception {
-		checkMethod("uniqueMethod", String.class, "string", "unique", true);
+	public void testUniqueMethod() throws Exception {
+	    Method stringMethod = getClass().getDeclaredMethod("uniqueMethod", new Class[] { String.class });
+		InstanceDescriptor arrayDescriptor = AnnotationMapper.mapMethodParams(stringMethod);
+		assertEquals(true, arrayDescriptor.isUnique());
+	}
+	
+	@Unique
+	public void uniqueMethod(String name) { }
+
+	
+	
+	@Test
+	public void testUniqueParam() throws Exception {
+		checkMethod("uniqueParam", String.class, "string", "unique", true);
 	}
 
-	public void uniqueMethod(@Unique String name) { }
+	public void uniqueParam(@Unique String name) { }
 
 	
 	
@@ -216,9 +229,10 @@ public class AnnotationMapperTest {
 	private void checkMethod(String method, Class<?> methodArgType, String expectedType, Object ... details)
             throws NoSuchMethodException {
 	    Method stringMethod = getClass().getDeclaredMethod(method, new Class[] { methodArgType });
-		ArrayTypeDescriptor arrayDescriptor = AnnotationMapper.mapMethodParams(stringMethod);
-		assertEquals(1, arrayDescriptor.getElements().size());
-		ArrayElementDescriptor param1 = arrayDescriptor.getElement(0);
+		InstanceDescriptor arrayDescriptor = AnnotationMapper.mapMethodParams(stringMethod);
+		ArrayTypeDescriptor typeDescriptor = (ArrayTypeDescriptor) arrayDescriptor.getTypeDescriptor();
+		assertEquals(1, typeDescriptor.getElements().size());
+		ArrayElementDescriptor param1 = typeDescriptor.getElement(0);
 		assertEquals(expectedType, ((SimpleTypeDescriptor) param1.getTypeDescriptor()).getPrimitiveType().getName());
 		for (int i = 0; i < details.length; i += 2) {
 	        String detailName = (String) details[i];
