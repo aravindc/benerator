@@ -40,6 +40,10 @@ public abstract class AbstractComponentBuilder<E> implements ComponentBuilder<E>
     public AbstractComponentBuilder(Generator<?> source, double nullQuota) {
 		this(new NullInjectingGeneratorProxy<Object>((Generator<Object>) source, nullQuota));
 	}
+    
+    public NullableGenerator<?> getSource() {
+    	return source;
+    }
 
     public AbstractComponentBuilder(NullableGenerator<?> source) {
 		this.source = source;
