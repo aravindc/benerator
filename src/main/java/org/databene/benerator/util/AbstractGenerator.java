@@ -79,7 +79,7 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 
     @Override
     public String toString() {
-        return BeanUtil.toString(this);
+        return (state == GeneratorState.RUNNING ? BeanUtil.toString(this) : getClass().getSimpleName());
     }
     
 }
