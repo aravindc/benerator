@@ -26,6 +26,8 @@
 
 package org.databene.benerator.factory;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -45,6 +47,7 @@ import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -71,6 +74,47 @@ public class DescriptorUtilTest {
 
 	// instantiation tests ---------------------------------------------------------------------------------------------
 
+	@Test
+	public void testConvertType() {
+		// test string parsing
+		checkConversion("1", "long", 1L);
+		checkConversion("1", "int", 1);
+		checkConversion("1", "short", (short) 1);
+		checkConversion("1", "byte", (byte) 1);
+		checkConversion("1", "big_decimal", BigDecimal.ONE);
+		checkConversion("1", "big_integer", BigInteger.ONE);
+		checkConversion("1", "string", "1");
+		checkConversion("true", "boolean", true);
+
+		// test object to string conversion
+		checkConversion(1L, "string", "1");
+		checkConversion(1, "string", "1");
+		checkConversion((short) 1, "string", "1");
+		checkConversion((byte) 1, "string", "1");
+		checkConversion(BigDecimal.ONE, "string", "1");
+		checkConversion(BigInteger.ONE, "string", "1");
+		checkConversion("1", "string", "1");
+		checkConversion(true, "string", "true");
+
+		// test number to number conversion
+		checkConversion((byte) 1, "long", 1L);
+		checkConversion(1L, "int", 1);
+		checkConversion((short) 1, "short", (short) 1);
+		checkConversion(1, "byte", (byte) 1);
+		checkConversion(1, "big_integer", BigInteger.ONE);
+		checkConversion(1, "big_decimal", BigDecimal.ONE);
+	}
+	
+	private void checkConversion(Object source, String targetType, Object expectedResult) {
+		DataModel model = DataModel.getDefaultInstance();
+		SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) model.getTypeDescriptor(targetType);
+		Object result = DescriptorUtil.convertType(source, typeDescriptor);
+		if (expectedResult instanceof BigDecimal && result instanceof BigDecimal)
+			assertTrue(((BigDecimal) expectedResult).compareTo((BigDecimal) result) == 0);
+		else
+			assertEquals(expectedResult, result);
+	}
+	
 	@Test
 	public void testGetConverter() {
 		
