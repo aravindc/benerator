@@ -78,6 +78,7 @@ public class Benerator {
 	}
 
 	private static void checkSystem() {
+		configLogger.debug("Max heap size: " + Runtime.getRuntime().maxMemory() / 1024 / 1024 + " MB");
 		configLogger.debug("Java " + VMInfo.getJavaVersion());
 		configLogger.debug(VMInfo.getJavaVmName() + " " + VMInfo.getJavaVmVersion() + " (" + VMInfo.getJavaVmVendor() + ")");
 		configLogger.debug(SystemInfo.getOsName() + " " + SystemInfo.getOsVersion() + " (" + SystemInfo.getOsArchitecture() + ")");
