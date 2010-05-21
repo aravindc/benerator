@@ -71,7 +71,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected String  contextUri           = "./";
     public    boolean validate             = true;
     public    Long    maxCount             = null;
-    // TODO defaultLineSeparator?
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
     protected ExecutorService executorService = Executors.newCachedThreadPool();
@@ -147,7 +146,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     }
     
     public void setDefaultEncoding(String defaultEncoding) {
-    	System.setProperty("file.encoding", defaultEncoding);
+    	SystemInfo.setFileEncoding(defaultEncoding);
         this.defaultEncoding = defaultEncoding;
     }
     
@@ -156,7 +155,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 
 	public void setDefaultLineSeparator(String defaultLineSeparator) {
-    	System.setProperty("line.separator", defaultLineSeparator);
+    	SystemInfo.setLineSeparator(defaultLineSeparator);
 	}
 
 	public Locale getDefaultLocale() {
