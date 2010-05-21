@@ -98,7 +98,7 @@ public class DescriptorUtil {
 
 	private DescriptorUtil() {}
 
-	public static Object map(Object sourceValue, SimpleTypeDescriptor targetType) { // TODO test
+	public static Object convertType(Object sourceValue, SimpleTypeDescriptor targetType) {
 		if (sourceValue == null)
 			return null;
 		PrimitiveType primitive = targetType.getPrimitiveType();
