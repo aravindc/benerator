@@ -39,7 +39,7 @@ public class DiscreteFunction extends AbstractWeightFunction {
 
     private double[] values;
 
-    public DiscreteFunction(double ... weights) {
+    public DiscreteFunction(double ... weights) { // TODO v0.6.x support varargs arguments in BeneratorScript
         this.values = weights;
     }
 
