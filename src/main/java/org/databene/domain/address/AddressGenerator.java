@@ -124,13 +124,14 @@ public class AddressGenerator extends CompositeGenerator<Address> {
         cityGenerator.init(context);
         streetNameGenerator = registerComponent(new StreetNameGenerator(country.getIsoCode()));
         streetNameGenerator.init(context);
-        localPhoneNumberGenerator = registerComponent(new RegexStringGenerator("[1-9]\\d{5}"));
+        localPhoneNumberGenerator = registerComponent(new RegexStringGenerator("[1-9]\\d{6}"));
         localPhoneNumberGenerator.init(context);
     }
 	
     private PhoneNumber generatePhoneNumber(City city) {
-        int localPhoneNumberLength = 10 - city.getAreaCode().length();
-        localPhoneNumberGenerator.setPattern("[2-9]\\d{" + (localPhoneNumberLength - 1) + '}');
+        // TODO this will not work any more for Germany (no property changes after init()): 
+        // int localPhoneNumberLength = 10 - city.getAreaCode().length();
+        // localPhoneNumberGenerator.setPattern("[2-9]\\d{" + (localPhoneNumberLength - 1) + '}'); 
         String localCode = localPhoneNumberGenerator.generate();
         return new PhoneNumber(country.getPhoneCode(), city.getAreaCode(), localCode);
     }
