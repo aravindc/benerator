@@ -5,4 +5,4 @@ if [ -z "$BENERATOR_HOME" ]; then
   echo "to the location of your benerator installation."
   exit 1
 fi
-. $BENERATOR_HOME/bin/benerator-project-wizard.sh
+. $BENERATOR_HOME/bin/benerator-wizard.sh

@@ -1,2 +1,2 @@
 @echo off
-CALL "%~dp0benerator-project-wizard.bat" %*
+CALL "%~dp0benerator-wizard.bat" %*
