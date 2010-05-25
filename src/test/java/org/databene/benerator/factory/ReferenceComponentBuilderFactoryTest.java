@@ -151,7 +151,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		assertTrue(generator != null);
 		Entity entity = new Entity("Person");
 		generator.buildComponentFor(entity);
-		assertEquals("Alice", entity.get("ref"));
+		assertTrue("Alice".equals(entity.get("ref")) || "Bob".equals(entity.get("ref")));
 	}
 
 	@Test
@@ -165,8 +165,8 @@ public class ReferenceComponentBuilderFactoryTest {
 		builder.buildComponentFor(entity);
 		String[] product = (String[]) entity.get("ref");
 		assertEquals(2, product.length);
-		assertEquals("Alice", product[0]);
-		assertEquals("Bob", product[1]);
+		for (String element : product)
+			assertTrue("Alice".equals(element) || "Bob".equals(element));
 	}
 
 	// private helpers -------------------------------------------------------------------------------------------------
