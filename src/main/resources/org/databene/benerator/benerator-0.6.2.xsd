@@ -49,6 +49,7 @@
 		            <xs:attribute name="defaultDataset"       type="xs:string"/>
 					<xs:attribute name="defaultPageSize"      type="xs:string"/>
 					<xs:attribute name="defaultSeparator"     type="xs:string"/>
+					<xs:attribute name="defaultOneToOne"      type="xs:string"/>
 					<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
 					<xs:attribute name="maxCount"             type="xs:string"/>
 				</xs:extension>
