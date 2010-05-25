@@ -356,7 +356,7 @@ public class DBSystem extends AbstractStorageSystem {
     @SuppressWarnings("unchecked")
     public <T> HeavyweightTypedIterable<T> query(String query, Context context) {
         if (logger.isDebugEnabled())
-            logger.debug("getBySelector(" + query + ")");
+            logger.debug("query(" + query + ")");
         Connection connection = getThreadContext().connection;
         QueryIterable resultSetIterable = createQuery(query, context, connection);
         ResultSetConverter converter = new ResultSetConverter(Object.class, true);
