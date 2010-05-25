@@ -50,6 +50,7 @@ import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -365,7 +366,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		alternativeType.addComponent(new PartDescriptor("b", typeB));
 		BeneratorContext context = new BeneratorContext(null);
 		PartDescriptor part = new PartDescriptor(null, alternativeType);
-		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.SIMPLE, context);
 		builder.init(context);
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
@@ -381,7 +382,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		((SimpleTypeDescriptor) part.getLocalType(false)).setMap("1->'A',2->'B'");
 		part.getLocalType(false).setGenerator("org.databene.benerator.primitive.IncrementGenerator");
 		BeneratorContext context = new BeneratorContext(null);
-		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, context);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(part, Uniqueness.NONE, context);
 		builder.init(context);
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
@@ -701,7 +702,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	
 	@SuppressWarnings("unchecked")
     private ComponentBuilder<Entity> createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
-		return (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, context);
+		return (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, Uniqueness.NONE, context);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -49,6 +49,8 @@ import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.DynamicInstanceArrayGenerator;
 import org.databene.benerator.composite.PlainEntityComponentBuilder;
 import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.ConstantNullableGenerator;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
@@ -75,11 +77,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     private static DataModel dataModel = DataModel.getDefaultInstance();
 
     // factory methods for component generators ------------------------------------------------------------------------
-
+/*
     protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) { // TODO remove method 
     	return createComponentBuilder(descriptor, Uniqueness.NONE, context);
     }
-
+*/
     protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
@@ -102,7 +104,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         else if (descriptor instanceof PartDescriptor) {
         	TypeDescriptor type = descriptor.getTypeDescriptor();
         	if (type instanceof AlternativeGroupDescriptor)
-				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, context);
+				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, ownerUniqueness, context);
 			else
 				return createPartBuilder(descriptor, ownerUniqueness, context);
         } else if (descriptor instanceof ReferenceDescriptor)
@@ -150,12 +152,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
 	@SuppressWarnings("unchecked")
     private static ComponentBuilder<?> createAlternativeGroupBuilder(
-			AlternativeGroupDescriptor type, BeneratorContext context) {
+			AlternativeGroupDescriptor type, Uniqueness ownerUniqueness, BeneratorContext context) {
     	int i = 0;
 		Collection<ComponentDescriptor> components = type.getComponents();
 		ComponentBuilder<?>[] builders = new ComponentBuilder[components.size()];
 		for (ComponentDescriptor component : components) {
-			builders[i++] = createComponentBuilder(component, context);
+			builders[i++] = createComponentBuilder(component, ownerUniqueness, context);
 		}
 		return new AlternativeComponentBuilder(builders);
 	}
@@ -191,6 +193,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (generator == null)
         	generator = SimpleTypeGeneratorFactory.createSampleGenerator(typeDescriptor, uniqueness, context);
         
+        // get distribution
+    	Distribution distribution = GeneratorFactoryUtil.getDistribution(
+    			typeDescriptor.getDistribution(), descriptor.getUniqueness(), false, context);
+    	
+    	// check source
         if (generator == null) {
 	        // check target type
 	        String targetTypeName = descriptor.getTargetTye();
@@ -211,14 +218,18 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            } else {
 		            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
 		            generator = new IteratingGenerator<Object>(entityIds);
+		            if (selector == null && distribution == null)
+		            	if (context.isDefaultOneToOne())
+		            		distribution = new ExpandSequence();
+		            	else
+		            		distribution = SequenceManager.RANDOM_SEQUENCE;
 	            }
+	            	
 	        } else
 	        	throw new ConfigurationError("Not a supported source type: " + sourceName);
         }
         
-        // check distribution
-    	Distribution distribution = GeneratorFactoryUtil.getDistribution(
-    			typeDescriptor.getDistribution(), descriptor.getUniqueness(), false, context);
+        // apply distribution if necessary
         if (distribution != null)
             generator = distribution.applyTo(generator, descriptor.isUnique());
         

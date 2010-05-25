@@ -45,6 +45,7 @@ import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 
 /**
@@ -184,7 +185,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		StorageSystemMock storageSystem = new StorageSystemMock();
 		DataModel.getDefaultInstance().addDescriptorProvider(storageSystem);
 		context.set(storageSystem.getId(), storageSystem);
-		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(ref, context);
+		ComponentBuilder builder = ComponentBuilderFactory.createComponentBuilder(ref, Uniqueness.NONE, context);
 		builder.init(context);
 		return builder;
 	}
