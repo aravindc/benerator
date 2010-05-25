@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,10 @@ import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.xml.XMLUtil;
@@ -75,17 +77,17 @@ public class ModelParser {
     }
 
     public ComponentDescriptor parseSimpleTypeComponent(
-    		Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor) {
+    		Element element, ComplexTypeDescriptor owner, ComponentDescriptor component) {
         String name = XMLUtil.localName(element);
-        if ("part".equals(name) || "attribute".equals(name))
-            return parsePart(element, owner, false, descriptor);
-        else if ("id".equals(name))
-            return parseId(element, descriptor);
-        else if ("reference".equals(name))
-            return parseReference(element, descriptor);
+        if ("part".equals(name) || EL_ATTRIBUTE.equals(name))
+            return parsePart(element, owner, false, component);
+        else if (EL_ID.equals(name))
+            return parseId(element, component);
+        else if (EL_REFERENCE.equals(name))
+            return parseReference(element, owner, component);
         else
             throw new ConfigurationError("Expected one of these element names: " +
-            		"'id', 'attribute', 'reference' or 'part'. Found: " + name);
+            		EL_ATTRIBUTE + ", " + EL_ID + ", " + EL_REFERENCE + ", or part. Found: " + name);
     }
 
     public ComplexTypeDescriptor parseComplexType(Element ctElement, ComplexTypeDescriptor descriptor) {
@@ -114,7 +116,7 @@ public class ModelParser {
         else if (descriptor != null)
             result = new PartDescriptor(descriptor.getName(), descriptor.getType());
         else {
-            String type = normalizeNull(element.getAttribute("type"));
+            String type = StringUtil.emptyToNull(element.getAttribute("type"));
             result = new PartDescriptor(element.getAttribute("name"), type);
         }
         mapInstanceDetails(element, complex, result);
@@ -233,10 +235,7 @@ public class ModelParser {
             		"found: " + elementName;
         throw new IllegalArgumentException(message);
     }
-    private String normalizeNull(String text) {
-        return ("".equals(text) ? null : text);
-    }
-
+    
     private IdDescriptor parseId(Element element, ComponentDescriptor descriptor) {
         assertElementName(element, "id");
         IdDescriptor result;
@@ -249,15 +248,22 @@ public class ModelParser {
         return mapInstanceDetails(element, false, result);
     }
 
-    private ReferenceDescriptor parseReference(Element element, ComponentDescriptor descriptor) {
+    private ReferenceDescriptor parseReference(Element element, ComplexTypeDescriptor owner, ComponentDescriptor component) {
         assertElementName(element, "reference");
         ReferenceDescriptor result;
-        if (descriptor instanceof ReferenceDescriptor)
-            result = (ReferenceDescriptor) descriptor;
-        else if (descriptor != null)
-            result = new ReferenceDescriptor(descriptor.getName(), descriptor.getType());
+        if (component instanceof ReferenceDescriptor)
+            result = (ReferenceDescriptor) component;
+        else if (component != null)
+            result = new ReferenceDescriptor(component.getName(), component.getType());
         else
-            result = new ReferenceDescriptor(element.getAttribute("name"), element.getAttribute("type"));
+            result = new ReferenceDescriptor(element.getAttribute("name"), StringUtil.emptyToNull(element.getAttribute("type")));
+        if (owner != null) {
+            ComponentDescriptor parentComponent = owner.getComponent(result.getName());
+            if (parentComponent != null) {
+                TypeDescriptor parentType = parentComponent.getTypeDescriptor();
+                result.getLocalType(false).setParent(parentType);
+            }
+        }
         return mapInstanceDetails(element, false, result);
     }
 
