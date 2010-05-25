@@ -53,6 +53,8 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	private Entity alice = new Entity("person", "name", "Alice", "age", "23");
 	private Entity otto = new Entity("person", "name", "Otto", "age", "89");
 	
+	// testing generator feature ---------------------------------------------------------------------------------------
+
 	@Test
 	public void testGeneratorBean() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("LocaleGenerator");
@@ -68,19 +70,29 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 	// testing CSV file import -----------------------------------------------------------------------------------------
 	
 	@Test
-	public void testTabbedCSVImport() {
+	public void testSimpleCSVImport() {
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource(PERSON_TAB_CSV);
-		type.setSeparator("\t");
+		type.setSource(PERSON_CSV);
 		Generator<Entity> generator = createGenerator(type);
 		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
 	}
 
 	@Test
-	public void testSimpleCSVImport() {
+	public void testSimpleCSVImport_scriptedSource() {
+		context.set("filepath", PERSON_CSV);
 		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
-		type.setSource(PERSON_CSV);
+		type.setSource("{filepath}");
+		Generator<Entity> generator = createGenerator(type);
+		generator.init(context);
+		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
+	}
+
+	@Test
+	public void testTabbedCSVImport() {
+		ComplexTypeDescriptor type = new ComplexTypeDescriptor("person");
+		type.setSource(PERSON_TAB_CSV);
+		type.setSeparator("\t");
 		Generator<Entity> generator = createGenerator(type);
 		generator.init(context);
 		expectGeneratedSequence(generator, alice, otto).withCeasedAvailability();
