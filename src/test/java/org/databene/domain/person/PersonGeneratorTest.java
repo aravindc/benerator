@@ -61,6 +61,23 @@ public class PersonGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
+    public void testFemaleQuota() {
+        PersonGenerator generator = new PersonGenerator();
+        generator.setDataset("DE");
+        generator.setLocale(new Locale("de_DE"));
+        generator.setFemaleQuota(0.1);
+        generator.init(context);
+        int femCount = 0;
+        for (int i = 0; i < 1000; i++) {
+            Person person = generator.generate();
+            if (person.getGender() == Gender.FEMALE)
+            	femCount++;
+            logger.debug(person.toString());
+        }
+        assertTrue(femCount < 200);
+    }
+
+    @Test
     public void testRussia() {
         PersonGenerator generator = new PersonGenerator(Country.RUSSIA, new Locale("ru"));
         generator.init(context);
