@@ -94,13 +94,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("create(" + descriptor.getName() + ')');
-        // try constructive setup
-        Generator<?> generator = createConstructiveGenerator(descriptor, uniqueness, context);
-        // fall back to descriptive setup
-        if (generator == null)
-        	generator = createConstantGenerator(descriptor, context);
+        Generator<?> generator = null;
+        generator = createConstantGenerator(descriptor, context);
         if (generator == null)
         	generator = createSampleGenerator(descriptor, uniqueness, context);
+        if (generator == null)
+        	generator = createConstructiveGenerator(descriptor, uniqueness, context);
 		if (generator == null && nullable) {
 	        Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
 			generator = new ConstantGenerator(null, javaType);
