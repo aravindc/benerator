@@ -32,6 +32,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 
 /**
@@ -67,7 +68,7 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	@SuppressWarnings("unchecked")
     private Generator<Integer> createInstanceGenerator(InstanceDescriptor instance) {
 		BeneratorContext context = new BeneratorContext();
-		return (Generator<Integer>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, context);
+		return (Generator<Integer>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, Uniqueness.NONE, context);
 	}
 
 }

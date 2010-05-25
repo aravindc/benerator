@@ -258,7 +258,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
 		arrayInstDescriptor.setUnique(true);
 		
-		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, context);
+		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		assertArray(INT13, generator.generate());
 		assertArray(INT14, generator.generate());
@@ -283,7 +283,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
 		arrayInstDescriptor.setUnique(true);
 		
-		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, context);
+		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 4; i++) {
 	        Object[] product = generator.generate();

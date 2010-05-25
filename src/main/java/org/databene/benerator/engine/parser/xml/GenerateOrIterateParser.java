@@ -62,6 +62,7 @@ import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.task.PageListener;
 import org.slf4j.Logger;
@@ -147,7 +148,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		boolean isSubCreator = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
-		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, context);
+		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());

@@ -77,11 +77,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     private static DataModel dataModel = DataModel.getDefaultInstance();
 
     // factory methods for component generators ------------------------------------------------------------------------
-/*
-    protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, BeneratorContext context) { // TODO remove method 
-    	return createComponentBuilder(descriptor, Uniqueness.NONE, context);
-    }
-*/
+
     protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         if (logger.isDebugEnabled())
             logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
@@ -110,7 +106,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         } else if (descriptor instanceof ReferenceDescriptor)
             return createReferenceBuilder((ReferenceDescriptor)descriptor, context);
         else if (descriptor instanceof IdDescriptor)
-            return createIdBuilder((IdDescriptor)descriptor, context);
+            return createIdBuilder((IdDescriptor)descriptor, ownerUniqueness, context);
         else 
             throw new ConfigurationError("Not a supported element: " + descriptor.getClass());
     }
@@ -243,8 +239,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return wrapWithNullInjector(generator, descriptor);
     }
 
-    static ComponentBuilder<?> createIdBuilder(IdDescriptor id, BeneratorContext context) {
-        Generator<?> generator = createSingleInstanceGenerator(id, context);
+    static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
+        Generator<?> generator = createSingleInstanceGenerator(id, ownerUniqueness, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return wrapWithNullInjector(generator, id);

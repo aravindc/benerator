@@ -83,6 +83,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
 
@@ -318,7 +319,7 @@ public class DescriptorUtil {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
             Map<String, NullableGenerator<?>> varGens = new HashMap<String, NullableGenerator<?>>();
             for (InstanceDescriptor variable : variables) {
-                Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, context);
+                Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, Uniqueness.NONE, context);
 				NullableGenerator<?> varGen = new NullInjectingGeneratorProxy(gen, variable.getNullQuota());
                 varGens.put(variable.getName(), varGen);
             }

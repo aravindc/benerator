@@ -34,6 +34,7 @@ import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -134,7 +135,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
 		ModelParser parser = new ModelParser(context);
     	ComplexTypeDescriptor parent = new ComplexTypeDescriptor("y");
 		InstanceDescriptor descriptor = parser.parseVariable(element, parent);
-		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, context);
+		Generator<Address> generator = (Generator<Address>) InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		generator.init(context);
         Country generatedCountry = generator.generate().getCountry();
 		if (country == null) {
