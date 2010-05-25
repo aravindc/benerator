@@ -179,7 +179,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	@SuppressWarnings("unchecked")
     static ComponentBuilder<?> createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
         boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
-        Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.ORDERED);
+        Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
         SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) descriptor.getTypeDescriptor();
 
         Generator<?> generator = null;
