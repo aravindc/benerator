@@ -26,10 +26,12 @@
 
 package org.databene.platform.db;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.db.DBUtil;
 import org.databene.model.data.Entity;
 
@@ -60,11 +62,12 @@ public class DBSystemTest {
 	}
 	
 	@Test
-	public void testReadOnly() {
+	public void testReadOnly() throws IOException {
 		db.setReadOnly(true);
 
 		// test select w/ readOnly
-		db.query("", null);
+		HeavyweightTypedIterable<Object> result = db.query("select id from Test", null);
+		result.iterator().close();
 
 		// test insert w/ readOnly
 		try {
