@@ -228,8 +228,13 @@ public class ComplexTypeGeneratorFactory {
         Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
         for (ComponentDescriptor component : components)
             if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName())) {
-            	ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, context);
-	            componentGenerators.add(builder);
+            	try {
+                	ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) 
+                		ComponentBuilderFactory.createComponentBuilder(component, context);
+    	            componentGenerators.add(builder);
+            	} catch (Exception e) {
+            		throw new ConfigurationError("Error creating component builder for " + component, e);
+            	}
             }
         return new MutatingGeneratorProxy<Entity>(name, generator, componentGenerators, context);
     }

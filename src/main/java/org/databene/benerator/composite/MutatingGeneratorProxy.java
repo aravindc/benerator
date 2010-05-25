@@ -29,6 +29,7 @@ package org.databene.benerator.composite;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ThreadUtil;
 import org.slf4j.Logger;
@@ -77,8 +78,13 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
     @Override
     public void init(GeneratorContext context) {
         source.init(context);
-        for (ComponentBuilder<E> compGen : componentBuilders)
-            compGen.init(context);
+        for (ComponentBuilder<E> compGen : componentBuilders) {
+            try {
+	            compGen.init(context);
+            } catch (RuntimeException e) {
+	            throw new ConfigurationError("Error initializing component builder: " + compGen);
+            }
+        }
         super.init(context);
     }
     
