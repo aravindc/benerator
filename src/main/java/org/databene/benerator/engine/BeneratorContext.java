@@ -71,6 +71,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected String  contextUri           = "./";
     public    boolean validate             = true;
     public    Long    maxCount             = null;
+    public    boolean defaultOneToOne      = true; // TODO v0.7 use 'false' as default
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
     protected ExecutorService executorService = Executors.newCachedThreadPool();
@@ -248,7 +249,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	public void setMaxCount(Long maxCount) {
 		this.maxCount = maxCount;
 	}
-
+	
 	public void countGenerations(long newGenerations) {
 		this.totalGenerationCount.addAndGet(newGenerations);
 	}
@@ -267,6 +268,14 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	
 	public String resolveRelativeUri(String relativeUri) {
 	    return IOUtil.resolveRelativeUri(relativeUri, contextUri);
+    }
+
+	public boolean isDefaultOneToOne() {
+    	return defaultOneToOne;
+    }
+
+	public void setDefaultOneToOne(boolean defaultOneToOne) {
+    	this.defaultOneToOne = defaultOneToOne;
     }
     
 }
