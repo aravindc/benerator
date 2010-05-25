@@ -76,7 +76,7 @@ public class DatabaseIntegrationTest {
 	
 	
 	// test methods ----------------------------------------------------------------------------------------------------
-	
+
 	@Test
 	public void testDbRef_default_nullable() {
 		parseAndExecute("<generate type='referer' count='3' consumer='cons'/>");
@@ -88,7 +88,23 @@ public class DatabaseIntegrationTest {
 	}
 
 	@Test
-	public void testDbRef_default_not_null() {
+	public void testDbRef_default_not_null_defaultOneToOne() {
+		context.setDefaultOneToOne(true);
+		parseAndExecute(
+				"<generate type='referer' consumer='cons'>" +
+	        	"  <reference name='referee_id' nullable='false' />" +
+	        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(2, products.size());
+		for (Entity product : products) {
+			int ref = (Integer) product.get("referee_id");
+			assertTrue(ref == 2 || ref == 3);
+		}
+	}
+
+	@Test
+	public void testDbRef_default_not_null_defaultOneToMany() {
+		context.setDefaultOneToOne(false);
 		parseAndExecute(
 				"<generate type='referer' count='3' consumer='cons'>" +
 	        	"  <reference name='referee_id' nullable='false' />" +
@@ -128,6 +144,48 @@ public class DatabaseIntegrationTest {
 	}
 
 	@Test
+	public void testDbRef_constant_script() {
+		context.set("rid", 2);
+		parseAndExecute(
+			"<generate type='referer' count='3' consumer='cons'>" +
+        	"  <reference name='referee_id' constant='{rid}' />" +
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (Entity product : products) {
+			assertEquals(2, product.get("referee_id"));
+		}
+	}
+
+	@Test
+	public void testDbRef_attribute_constant_script() {
+		context.set("rid", 2);
+		parseAndExecute(
+			"<generate type='referer' count='3' consumer='cons'>" +
+        	"  <attribute name='referee_id' constant='{rid}' />" +
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (Entity product : products) {
+			assertEquals(2, product.get("referee_id"));
+		}
+	}
+
+	@Test
+	public void testDbRef_script() {
+		context.set("rid", 2);
+		parseAndExecute(
+			"<generate type='referer' count='3' consumer='cons'>" +
+        	"  <reference name='referee_id' script='rid + 1' />" +
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (Entity product : products) {
+			assertEquals(3, product.get("referee_id"));
+		}
+	}
+
+	@Test
 	public void testDbRef_explicit_selector() {
 		context.set("key", 2);
 		parseAndExecute(
@@ -160,7 +218,8 @@ public class DatabaseIntegrationTest {
 	private void parseAndExecute(String xml) {
 	    Element element = XMLUtil.parseStringAsElement(xml);
 		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		Statement statement = new GenerateOrIterateParser().parse(element, new Statement[0], resourceManager);
+		GenerateOrIterateParser parser = new GenerateOrIterateParser();
+		Statement statement = parser.parse(element, new Statement[0], resourceManager);
 		statement.execute(context);
     }
 	
