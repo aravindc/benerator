@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,26 +51,18 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
     private static final Logger sqlLogger = LoggerFactory.getLogger("org.databene.SQL"); 
     private static final Logger logger = LoggerFactory.getLogger(QueryIterable.class); 
 
-    private Connection connection;
-    private String query;
-    private int fetchSize;
+    private final Connection connection;
+    private final String query;
+    private final int fetchSize;
     
     private Converter<String, ?> queryPreprocessor;
     private String renderedQuery;
 
-    public QueryIterable(Connection connection) {
-        this(connection, null, 100);
-    }
-
-    public QueryIterable(Connection connection, String query) {
-        this(connection, query, 100);
-    }
-
-    public QueryIterable(Connection connection, String query, int fetchSize) {
-        this(connection, query, fetchSize, null);
-    }
-
     public QueryIterable(Connection connection, String query, int fetchSize, Context context) {
+        if (connection == null)
+            throw new IllegalStateException("'connection' is null");
+        if (StringUtil.isEmpty(query))
+            throw new IllegalStateException("'query' is empty or null");
         this.connection = connection;
         this.query = query;
         this.fetchSize = fetchSize;
@@ -86,15 +78,7 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
         return query;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
     public HeavyweightIterator<ResultSet> iterator() {
-        if (connection == null)
-            throw new IllegalStateException("'connection' is null");
-        if (StringUtil.isEmpty(query))
-            throw new IllegalStateException("'query' is empty or null");
         renderedQuery = queryPreprocessor.convert(query).toString();
         try {
             if (sqlLogger.isDebugEnabled())
@@ -113,4 +97,5 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
     public String toString() {
     	return getClass().getSimpleName() + '[' + (renderedQuery != null ? renderedQuery : query) + ']';
     }
+    
 }
