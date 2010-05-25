@@ -104,30 +104,39 @@ public class ComplexTypeGeneratorFactory {
 
     private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
-        String sourceName = descriptor.getSource();
-        if (sourceName == null)
+        String sourceSpec = descriptor.getSource();
+        if (sourceSpec == null)
             return null;
+        Object sourceObject = null;
+        if (ScriptUtil.isScript(sourceSpec)) {
+        	Object tmp = ScriptUtil.render(sourceSpec, context); // TODO When to resolve scripts?
+        	if (tmp != null && tmp instanceof String) {
+        		sourceSpec = (String) tmp;
+        		sourceObject = context.get(sourceSpec);
+        	} else
+        		sourceObject = tmp;
+        }
         // create sourceObject generator
+        
         Generator<Entity> generator = null;
-        Object contextSourceObject = context.get(sourceName);
-        if (contextSourceObject != null)
-            generator = createSourceGeneratorFromObject(descriptor, context, generator, contextSourceObject);
+        if (sourceObject != null)
+            generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
         else {
-        	String lcSourceName = sourceName.toLowerCase();
+        	String lcSourceName = sourceSpec.toLowerCase();
         	if (lcSourceName.endsWith(".xml"))
-	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(sourceName, context));
+	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(sourceSpec, context));
 	        else if (lcSourceName.endsWith(".csv"))
-	            generator = createCSVSourceGenerator(descriptor, context, sourceName);
+	            generator = createCSVSourceGenerator(descriptor, context, sourceSpec);
 	        else if (lcSourceName.endsWith(".flat"))
-	            generator = createFlatSourceGenerator(descriptor, context, sourceName);
+	            generator = createFlatSourceGenerator(descriptor, context, sourceSpec);
 	        else if (lcSourceName.endsWith(".xls"))
-	            generator = createXLSSourceGenerator(descriptor, context, sourceName);
+	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec);
 	        else {
 	        	try {
-		        	Object sourceObject = BeneratorScriptParser.parseBeanSpec(sourceName).evaluate(context);
-		        	return createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
+		        	sourceObject = BeneratorScriptParser.parseBeanSpec(sourceSpec).evaluate(context);
+		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 	        	} catch (Exception e) {
-	        		throw new UnsupportedOperationException("Unknown source type: " + sourceName);
+	        		throw new UnsupportedOperationException("Unknown source type: " + sourceSpec);
 	        	}
 	        }
         }
