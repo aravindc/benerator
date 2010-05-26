@@ -21,13 +21,13 @@
 
 package org.databene.benerator.nullable;
 
+import java.io.Closeable;
+
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
-
-import com.sun.xml.internal.ws.Closeable;
 
 /**
  * Interface for classes that can generate <code>null</code> values.
