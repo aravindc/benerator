@@ -62,14 +62,12 @@ public class OracleDialectTest extends DatabaseDialectTest {
 	@Test
 	public void testFormatTime() {
 		Time time = TimeUtil.time(13, 14, 15, 123);
-		System.out.println(dialect.formatValue(time));
 		assertEquals("to_date('13:14:15', 'HH24:mi:ss')", dialect.formatValue(time));
 	}
 	
 	@Test
 	public void testFormatTimestamp() {
 		Timestamp timestamp = TimeUtil.timestamp(1971, 1, 3, 13, 14, 15, 123456789);
-		System.out.println(dialect.formatValue(timestamp));
 		assertEquals("to_timestamp('1971-02-03 13:14:15.123456789', 'yyyy-mm-dd HH24:mi:ss.FF')", 
 				dialect.formatValue(timestamp));
 	}
