@@ -51,7 +51,7 @@ import static junit.framework.Assert.*;
 
 public class XLSEntityExporterTest extends XLSTest {
 	
-	private static final boolean CLEAN_UP = false;
+	private static final boolean CLEAN_UP = true;
 
 	protected static final File STANDARD_FILE = new File("export.xls");
 	protected static final File CUSTOM_FILE = new File("target", XLSEntityExporterTest.class.getSimpleName() + ".xls");
