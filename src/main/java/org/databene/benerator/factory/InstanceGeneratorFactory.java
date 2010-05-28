@@ -49,12 +49,7 @@ public class InstanceGeneratorFactory {
     // protected constructor for preventing instantiation --------------------------------------------------------------
     
     protected InstanceGeneratorFactory() {}
-/*
-    public static Generator<?> createSingleInstanceGenerator( // TODO remove method
-            InstanceDescriptor descriptor, BeneratorContext context) {
-    	return createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
-    }
-*/
+
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = null;
