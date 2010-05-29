@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<setup	xmlns="http://databene.org/benerator/0.6.1"
+<setup	xmlns="http://databene.org/benerator/0.6.2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator/0.6.1 benerator-0.6.1.xsd">
+		xsi:schemaLocation="http://databene.org/benerator/0.6.2 benerator-0.6.2.xsd">
 
     <import defaults="true"/>
 	
@@ -18,7 +18,6 @@
         
         <consumer class="XLSEntityExporter">
             <property name="uri" value="transactions.out.xls"/>
-            <property name="columns" value="id,ean_code,comment,price,items"/>
         </consumer>
     </generate>
     
