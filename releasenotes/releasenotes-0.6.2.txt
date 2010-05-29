@@ -1,11 +1,9 @@
 release notes benerator 0.6.2
 =============================
 
-
-
 summary
 -------
-
+Release 0.6.2 primarily is a bug fix release. A small enhancement is the support of Oracle's NVARCHAR and NCHAR types.
 
 enhancements
 ------------
