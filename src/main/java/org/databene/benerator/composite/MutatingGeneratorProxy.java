@@ -82,7 +82,7 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
             try {
 	            compGen.init(context);
             } catch (RuntimeException e) {
-	            throw new ConfigurationError("Error initializing component builder: " + compGen);
+	            throw new ConfigurationError("Error initializing component builder: " + compGen, e);
             }
         }
         super.init(context);
