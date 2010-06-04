@@ -1,0 +1,22 @@
+release notes benerator 0.6.3
+=============================
+
+summary
+-------
+
+
+enhancements
+------------
+- New 'WeightedNumbers' sequence with short number weight literal
+  use e.g. distribution="new WeightedNumbers('1^70,3^30')" for generating 70% '1' values and 30% '3' values
+- new 'LiteralSequence' sequence for defining a number sequence with a comma-separated list
+  use e.g. distribution="new LiteralSequence('2,3,5,7,11')" for generating the numbers 2, 3, 5, 7, 11 consecutively 
+- using newest JDBC drivers for all supported databases
+
+
+changes 
+-------
+
+
+bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
+-------------------------------------------------------------------------------------------------
