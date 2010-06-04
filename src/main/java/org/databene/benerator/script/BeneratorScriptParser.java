@@ -71,7 +71,7 @@ public class BeneratorScriptParser {
 
     public static WeightedSample<?>[] parseWeightedLiteralList(String text) throws ParseException {
         if (StringUtil.isEmpty(text))
-            return null;
+            return new WeightedSample[0];
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.weightedLiteralList_return r = parser.weightedLiteralList();
