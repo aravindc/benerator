@@ -24,8 +24,11 @@ package org.databene.domain.address;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
+import org.databene.contiperf.junit.ContiPerfRule;
+import org.databene.contiperf.log.EmptyExecutionLogger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -35,6 +38,8 @@ import org.junit.Test;
  * @author Volker Bergmann
  */
 public class AddressGeneratorPerfTest {
+	
+	@Rule public ContiPerfRule rule = new ContiPerfRule(new EmptyExecutionLogger());
 
 	private AddressGenerator generatorDE;
 	
