@@ -54,12 +54,20 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 		plainConverter.setDatePattern(datePattern);
 	}
 
-	public String getTimestampPattern() {
+	public String getDateTimePattern() {
 		return plainConverter.getDateTimePattern();
+	}	
+
+	public void setDateTimePattern(String dateTimePattern) {
+		plainConverter.setDateTimePattern(dateTimePattern);
 	}
+	
+	public String getTimestampPattern() {
+		return plainConverter.getTimestampPattern();
+	}	
 
 	public void setTimestampPattern(String timestampPattern) {
-		plainConverter.setDateTimePattern(timestampPattern);
+		plainConverter.setTimestampPattern(timestampPattern);
 	}
 	
 	public String getDecimalPattern() {
