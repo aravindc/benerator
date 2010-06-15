@@ -29,6 +29,7 @@ package org.databene.platform.db;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.databene.commons.ConfigurationError;
 import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityExporter;
@@ -67,7 +68,7 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     	this(uri, encoding, null, null);
     }
 
-    public SQLEntityExporter(String uri, String encoding, String lineSeparator, String dialect) {
+    public SQLEntityExporter(String uri, String encoding, String lineSeparator, String dialect) { // TODO dialect is more important than encoding, so it should be the 2nd aparameter
     	super(uri, encoding, lineSeparator);
     	setDialect(dialect);
     }
@@ -82,6 +83,8 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
     protected void startConsumingImpl(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
+        if (dialect == null)
+        	throw new ConfigurationError("'dialect' not set in " + getClass().getSimpleName());
         String sql = createSQLInsert(entity);
         printer.println(sql);
     }
