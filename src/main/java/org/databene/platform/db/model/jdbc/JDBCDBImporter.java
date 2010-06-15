@@ -119,7 +119,9 @@ public final class JDBCDBImporter implements DBImporter {
         while (catalogSet.next()) {
             String catalogName = catalogSet.getString(1);
             logger.debug("found catalog " + catalogName);
-            if ((schemaName == null && user.equalsIgnoreCase(catalogName)) || (schemaName != null && schemaName.equalsIgnoreCase(catalogName)))
+            if ((schemaName == null && user.equalsIgnoreCase(catalogName)) 
+            		|| (schemaName != null && schemaName.equalsIgnoreCase(catalogName))
+            		|| catalogName.equalsIgnoreCase(connection.getCatalog()))
                 this.catalogName = catalogName;
             database.addCatalog(new DBCatalog(catalogName));
             catalogCount++;
@@ -189,24 +191,21 @@ public final class JDBCDBImporter implements DBImporter {
 	}
 
     private void importColumns(Database database, DatabaseMetaData metaData) {
-        for (DBCatalog catalog : database.getCatalogs()) {
-        	try {
-        		importColumns(database, catalog, metaData);
-        	} catch (SQLException e) {
-        		// possibly we try to access a catalog to which we do not have access rights
-        		errorHandler.handleError("Error in parsing colmns of catalog " + catalog.getName(), e);
-        	}
-        }
+		if (this.catalogName != null)
+			importColumns(database, database.getCatalog(this.catalogName), metaData);
+		else
+			for (DBCatalog catalog : database.getCatalogs())
+		importColumns(database, catalog, metaData);
     }
 
-    private void importColumns(Database database, DBCatalog catalog, DatabaseMetaData metaData) throws SQLException {
+    private void importColumns(Database database, DBCatalog catalog, DatabaseMetaData metaData) {
         String catalogName = catalog.getName();
         String schemaPattern = (database.getSchemas().size() == 1 ? database.getSchemas().get(0).getName() : schemaName);
         logger.info("Importing columns for catalog '" + catalogName + "' and schemaPattern '" + schemaName + "'");
-        if (isOracle()) // fix for Oracle varchar column size, see http://kr.forums.oracle.com/forums/thread.jspa?threadID=554236
-        	DBUtil.executeUpdate("ALTER SESSION SET NLS_LENGTH_SEMANTICS=CHAR", connection);
         ResultSet columnSet = null;
         try {
+            if (isOracle()) // fix for Oracle varchar column size, see http://kr.forums.oracle.com/forums/thread.jspa?threadID=554236
+            	DBUtil.executeUpdate("ALTER SESSION SET NLS_LENGTH_SEMANTICS=CHAR", connection);
         	columnSet = metaData.getColumns(catalogName, schemaPattern, null, null);
 	        ResultSetMetaData setMetaData = columnSet.getMetaData();
 	        if (setMetaData.getColumnCount() == 0)
@@ -257,6 +256,9 @@ public final class JDBCDBImporter implements DBImporter {
 	                table.addColumn(column);
 	            // not used: importVersionColumnInfo(catalogName, table, metaData);
 	        }
+    	} catch (SQLException e) {
+    		// possibly we try to access a catalog to which we do not have access rights
+    		errorHandler.handleError("Error in parsing columns of catalog " + catalog.getName(), e);
         } finally {
         	DBUtil.close(columnSet);
         }
