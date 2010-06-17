@@ -59,7 +59,9 @@ public class XmlCreator {
         String schemaUri = args[0];
         String root = args[1];
         String pattern = args[2];
-        long fileCount = Long.parseLong(args[3]);
+        long fileCount = 1;
+        if (args.length >= 4)
+        	fileCount = Long.parseLong(args[3]);
         String[] propertiesFiles = (args.length > 4 ? ArrayUtil.copyOfRange(args, 4, args.length - 4) : new String[0]);
         createXMLFiles(schemaUri, root, pattern, fileCount, propertiesFiles);
     }
@@ -99,7 +101,7 @@ public class XmlCreator {
     private static void printHelp() {
     	ConsoleInfoPrinter.printHelp(
         	"Invalid parameters",
-        	"parameters: schemaUri root fileNamePattern count [propertiesFilenames]"
+        	"parameters: schemaUri root fileNamePattern [count [propertiesFilenames]]"
         );
     }
 }
