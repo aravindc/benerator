@@ -12,6 +12,8 @@ enhancements
 - new 'LiteralSequence' sequence for defining a number sequence with a comma-separated list
   use e.g. distribution="new LiteralSequence('2,3,5,7,11')" for generating the numbers 2, 3, 5, 7, 11 consecutively 
 - using newest JDBC drivers for all supported databases
+- Feature Request #3018319: Accept unknown database column types
+  use <setup ... acceptUnknownSimpleTypes="true"> or <database ... acceptUnknownColumnTypes="true"/>
 
 
 changes 
@@ -20,3 +22,7 @@ changes
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
+3017727 ArrayIndexOutOfBoundsException if parameter is missing
+3016288 NullPointerException in SQLEntityExporter w/o dialect
+3016287 Benerator scans all catalogs on SQL Server
+3016016 Property CSVEntityExporter.timestampPattern is ignored
