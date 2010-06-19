@@ -53,6 +53,8 @@ public class DBColumnType {
     }
 */
     private DBColumnType(int sqlType, String name) {
+    	if (name.equals("NCLOB"))
+    		sqlType = Types.NCLOB;
         this.jdbcType = sqlType;
         this.name = name.toUpperCase();
 //        instances.put(this.name, this);
@@ -69,12 +71,13 @@ public class DBColumnType {
     }
 
     public boolean isLOB() {
-        return "CLOB".equals(name) || "BLOB".equals(name);
+        return name.endsWith("CLOB") || "BLOB".equals(name);
     }
 
     public boolean isAlpha() {
         return jdbcType == Types.VARCHAR || jdbcType == Types.CHAR
-                || jdbcType == Types.CLOB || jdbcType == Types.LONGVARCHAR;
+                || jdbcType == Types.CLOB || jdbcType == Types.LONGVARCHAR
+                || name.endsWith("VARCHAR2") || name.endsWith("CLOB");
     }
 
 // java.lang.Object overrides --------------------------------------------------------------------------------------

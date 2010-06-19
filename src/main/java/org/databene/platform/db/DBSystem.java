@@ -26,6 +26,7 @@
 
 package org.databene.platform.db;
 
+import org.databene.platform.db.dialect.OracleDialect;
 import org.databene.platform.db.model.jdbc.JDBCDBImporter;
 import org.databene.platform.db.model.*;
 import org.databene.commons.*;
@@ -59,6 +60,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Types;
 
 import javax.sql.PooledConnection;
 
@@ -698,7 +700,7 @@ public class DBSystem extends AbstractStorageSystem {
                 if (info.type != null)
                 	jdbcValue = AnyConverter.convert(jdbcValue, info.type);
                 try {
-                    if (jdbcValue != null)
+                    if (jdbcValue != null || (dialect instanceof OracleDialect && info.sqlType == Types.NCLOB)) // the second expression causes a workaround for Oracle's unability to perform a setNull() for NCLOBs
                         statement.setObject(i + 1, jdbcValue);
                     else
                         statement.setNull(i + 1, info.sqlType);
