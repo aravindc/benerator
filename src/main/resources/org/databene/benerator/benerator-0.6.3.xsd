@@ -52,6 +52,7 @@
 					<xs:attribute name="defaultOneToOne"      type="xs:string"/>
 					<xs:attribute name="defaultErrorHandler"  type="errorhandler-type"/>
 					<xs:attribute name="maxCount"             type="xs:string"/>
+		            <xs:attribute name="acceptUnknownSimpleTypes" type="xs:string"/>
 				</xs:extension>
 			</xs:complexContent>
 		</xs:complexType>
@@ -184,6 +185,7 @@
 			<xs:attribute name="batch"       type="xs:string"/>
             <xs:attribute name="fetchSize"   type="xs:string"/>
             <xs:attribute name="readOnly"    type="xs:string"/>
+            <xs:attribute name="acceptUnknownColumnTypes" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
