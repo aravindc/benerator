@@ -36,6 +36,7 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.java.BeanDescriptorProvider;
 
@@ -73,11 +74,12 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
             int columnCount = metaData.getColumnCount();
             for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                 String columnName = metaData.getColumnName(columnIndex);
-                String typeName;
+                String typeName = null;
                 if (descriptor != null) {
                     ComponentDescriptor component = descriptor.getComponent(columnName);
                     SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getTypeDescriptor();
-                    typeName = type.getPrimitiveType().getName();
+                    PrimitiveType primitiveType = type.getPrimitiveType();
+                    typeName = (primitiveType != null ? primitiveType.getName() : "string");
                 } else
                     typeName = "string";
                 Object javaValue = javaValue(resultSet, columnIndex, typeName);

@@ -58,13 +58,15 @@ public class DefineDatabaseStatement implements Statement {
 	private Expression<Boolean> batch;
 	private Expression<Integer> fetchSize;
 	private Expression<Boolean> readOnly;
+	private Expression<Boolean> acceptUnknownColumnTypes;
 	private ResourceManager resourceManager;
 	
 	public DefineDatabaseStatement(Expression<String> id, Expression<String> url, Expression<String> driver, 
 			Expression<String> user, Expression<String> password, 
 			Expression<String> schema, Expression<String> tableFilter, 
 			Expression<Boolean> batch, 
-			Expression<Integer> fetchSize, Expression<Boolean> readOnly, ResourceManager resourceManager) {
+			Expression<Integer> fetchSize, Expression<Boolean> readOnly, Expression<Boolean> acceptUnknownColumnTypes, 
+			ResourceManager resourceManager) {
 		this.id = id;
 	    this.url = url;
 	    this.driver = driver;
@@ -75,6 +77,7 @@ public class DefineDatabaseStatement implements Statement {
 	    this.batch = batch;
 	    this.fetchSize = fetchSize;
 	    this.readOnly = readOnly;
+	    this.acceptUnknownColumnTypes = acceptUnknownColumnTypes;
 	    this.resourceManager = resourceManager;
     }
 
@@ -91,7 +94,8 @@ public class DefineDatabaseStatement implements Statement {
 	    db.setTableFilter(ExpressionUtil.evaluate(tableFilter, context));
 	    db.setBatch(ExpressionUtil.evaluate(batch, context));
 	    db.setFetchSize(ExpressionUtil.evaluate(fetchSize, context));
-	    db.setBatch(ExpressionUtil.evaluate(readOnly, context));
+	    db.setReadOnly(ExpressionUtil.evaluate(readOnly, context));
+	    db.setAcceptUnknownColumnTypes(ExpressionUtil.evaluate(acceptUnknownColumnTypes, context));
 	    context.set(idValue, db);
 	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate());
 	    resourceManager.addResource(db);

@@ -78,7 +78,7 @@ public class JdbcMetaTypeMapper {
                 Types.VARCHAR, PrimitiveType.STRING);
     }
 
-    public static String abstractType(DBColumnType columnType) {
+    public static String abstractType(DBColumnType columnType, boolean acceptUnknown) {
         int jdbcType = columnType.getJdbcType();
         PrimitiveType primitiveType = TYPE_MAP.get(jdbcType);
         if (primitiveType != null)
@@ -87,10 +87,12 @@ public class JdbcMetaTypeMapper {
             String lcName = columnType.getName().toLowerCase();
             if (lcName.startsWith("timestamp"))
                 return PrimitiveType.TIMESTAMP.getName();
-            else if (lcName.endsWith("char") || lcName.startsWith("xml") || lcName.endsWith("varchar2"))
+            else if (lcName.endsWith("char") || lcName.startsWith("xml") /* TODO|| lcName.endsWith("varchar2")*/)
                 return PrimitiveType.STRING.getName();
-            else
+            else if (!acceptUnknown)
                 throw new ConfigurationError("Platform specific SQL type (" + jdbcType + ") not mapped: " + columnType.getName());
+            else
+            	return null;
         }
     }
 

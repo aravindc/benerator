@@ -93,6 +93,7 @@ public class DBSystem extends AbstractStorageSystem {
     private String tableFilter;
     boolean batch;
     boolean readOnly;
+    boolean acceptUnknownColumnTypes;
     
     private int fetchSize;
 
@@ -243,6 +244,10 @@ public class DBSystem extends AbstractStorageSystem {
 
 	public void setDynamicQuerySupported(boolean dynamicQuerySupported) {
     	this.dynamicQuerySupported = dynamicQuerySupported;
+    }
+
+	public void setAcceptUnknownColumnTypes(boolean acceptUnknownColumnTypes) {
+    	this.acceptUnknownColumnTypes = acceptUnknownColumnTypes;
     }
 
     
@@ -499,7 +504,7 @@ public class DBSystem extends AbstractStorageSystem {
         	String columnName = pkColumnNames[0];
         	DBColumn column = table.getColumn(columnName);
 			table.getColumn(columnName);
-            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType());
+            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType(), acceptUnknownColumnTypes);
         	IdDescriptor idDescriptor = new IdDescriptor(columnName, abstractType);
 			complexType.addComponent(idDescriptor);
         }
@@ -513,7 +518,7 @@ public class DBSystem extends AbstractStorageSystem {
                 DBTable targetTable = targetColumn.getTable();
                 String fkColumnName = foreignKeyColumn.getForeignKeyColumn().getName();
                 DBColumnType concreteType = foreignKeyColumn.getForeignKeyColumn().getType();
-                String abstractType = JdbcMetaTypeMapper.abstractType(concreteType);
+                String abstractType = JdbcMetaTypeMapper.abstractType(concreteType, acceptUnknownColumnTypes);
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
                         fkColumnName, 
                         abstractType,
@@ -542,7 +547,7 @@ public class DBSystem extends AbstractStorageSystem {
                 continue;
             }
             DBColumnType columnType = column.getType();
-            String type = JdbcMetaTypeMapper.abstractType(columnType);
+            String type = JdbcMetaTypeMapper.abstractType(columnType, acceptUnknownColumnTypes);
             String defaultValue = column.getDefaultValue();
             SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, type);
             if (defaultValue != null)
@@ -615,11 +620,20 @@ public class DBSystem extends AbstractStorageSystem {
                 continue;
             if (dbCompDescriptor.getMode() != Mode.ignored) {
                 String name = dbCompDescriptor.getName();
-                String primitiveType = ((SimpleTypeDescriptor) dbCompDescriptor.getTypeDescriptor()).getPrimitiveType().getName();
+                SimpleTypeDescriptor type = (SimpleTypeDescriptor) dbCompDescriptor.getTypeDescriptor();
+				PrimitiveType primitiveType = type.getPrimitiveType();
+				if (primitiveType == null && ! acceptUnknownColumnTypes)
+					throw new ConfigurationError("Column type of " + entityDescriptor.getName() + "." + 
+							dbCompDescriptor.getName() + "unknown: " + type.getName());
+				else if (entity.get(type.getName()) instanceof String)
+					primitiveType = PrimitiveType.STRING;
+				else
+					primitiveType = PrimitiveType.OBJECT;
+				String primitiveTypeName = primitiveType.getName();
                 DBColumn column = table.getColumn(name);
                 DBColumnType columnType = column.getType();
                 int sqlType = columnType.getJdbcType();
-                Class<?> javaType = driverTypeMapper.concreteType(primitiveType);
+                Class<?> javaType = driverTypeMapper.concreteType(primitiveTypeName);
                 ColumnInfo info = new ColumnInfo(name, sqlType, javaType);
                 if (pkColumnNames.contains(name))
     				pkInfos.add(info);
@@ -680,7 +694,9 @@ public class DBSystem extends AbstractStorageSystem {
             for (int i = 0; i < writeColumnInfos.size(); i++) {
             	ColumnInfo info = writeColumnInfos.get(i);
                 Object componentValue = entity.getComponent(info.name);
-                Object jdbcValue = AnyConverter.convert(componentValue, info.type);
+                Object jdbcValue = componentValue;
+                if (info.type != null)
+                	jdbcValue = AnyConverter.convert(jdbcValue, info.type);
                 try {
                     if (jdbcValue != null)
                         statement.setObject(i + 1, jdbcValue);

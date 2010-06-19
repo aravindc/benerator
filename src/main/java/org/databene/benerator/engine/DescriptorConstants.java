@@ -92,6 +92,7 @@ public interface DescriptorConstants {
     static final String ATT_TARGET = "target";
     static final String ATT_URI = "uri";
     static final String ATT_READ_ONLY = "readOnly";
+    static final String ATT_ACC_UNK_COL_TYPES = "acceptUnknownColumnTypes";
     static final String ATT_FETCH_SIZE = "fetchSize";
     static final String ATT_BATCH = "batch";
     static final String ATT_SCHEMA = "schema";

@@ -24,12 +24,16 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.DefineDatabaseStatement;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.DynamicExpression;
+import org.databene.commons.expression.FallbackExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -46,7 +50,8 @@ public class DatabaseParser extends AbstractDescriptorParser {
 	    super(EL_DATABASE);
     }
 
-	public DefineDatabaseStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@SuppressWarnings("unchecked")
+    public DefineDatabaseStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		try {
 			Expression<String>  id          = parseAttribute(ATT_ID, element);
 			Expression<String>  url         = parseScriptableStringAttribute(ATT_URL,      element);
@@ -58,10 +63,20 @@ public class DatabaseParser extends AbstractDescriptorParser {
 			Expression<Boolean> batch       = parseBooleanExpressionAttribute(ATT_BATCH, element, false);
 			Expression<Integer> fetchSize   = parseIntAttribute(ATT_FETCH_SIZE, element, 100);
 			Expression<Boolean> readOnly    = parseBooleanExpressionAttribute(ATT_READ_ONLY, element, false);
-			return new DefineDatabaseStatement(id, url, driver, user, password, schema, tableFilter, batch, fetchSize, readOnly, resourceManager);
+			Expression<Boolean> acceptUnknownColumnTypes = new FallbackExpression<Boolean>(
+					parseBooleanExpressionAttribute(ATT_ACC_UNK_COL_TYPES, element), 
+					new GlobalAcceptUnknownSimpleTypeExpression());
+			return new DefineDatabaseStatement(id, url, driver, user, password, schema, tableFilter, 
+					batch, fetchSize, readOnly, acceptUnknownColumnTypes, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
     }
+
+	static class GlobalAcceptUnknownSimpleTypeExpression extends DynamicExpression<Boolean> {
+		public Boolean evaluate(Context context) {
+            return ((BeneratorContext) context).isAcceptUnknownSimpleTypes();
+        }
+	}
 
 }

@@ -48,6 +48,7 @@ import org.databene.commons.converter.ConverterManager;
 import org.databene.domain.address.Country;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -72,6 +73,8 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     public    boolean validate             = true;
     public    Long    maxCount             = null;
     public    boolean defaultOneToOne      = true; // TODO v0.7 use 'false' as default
+    public    boolean acceptUnknownSimpleTypes = false;
+
 
     protected ComplexTypeDescriptor defaultComponent = new ComplexTypeDescriptor("benerator:defaultComponent");
     protected ExecutorService executorService = Executors.newCachedThreadPool();
@@ -276,6 +279,15 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 
 	public void setDefaultOneToOne(boolean defaultOneToOne) {
     	this.defaultOneToOne = defaultOneToOne;
+    }
+
+	public boolean isAcceptUnknownSimpleTypes() {
+    	return acceptUnknownSimpleTypes;
+    }
+
+	public void setAcceptUnknownSimpleTypes(boolean acceptUnknownSimpleTypes) {
+    	this.acceptUnknownSimpleTypes = acceptUnknownSimpleTypes;
+    	DataModel.getDefaultInstance().setAcceptUnknownPrimitives(acceptUnknownSimpleTypes);
     }
     
 }

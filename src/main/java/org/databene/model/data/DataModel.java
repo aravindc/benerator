@@ -47,12 +47,19 @@ public class DataModel {
 
     private Map<String, DescriptorProvider> providers;
 
+	private boolean acceptUnknownPrimitives;
+
     public DataModel() {
         this.providers = new HashMap<String, DescriptorProvider>();
+        this.acceptUnknownPrimitives = false;
         clear();
     }
 
-    public void addDescriptorProvider(DescriptorProvider provider) {
+    public void setAcceptUnknownPrimitives(boolean acceptUnknownPrimitives) {
+    	this.acceptUnknownPrimitives = acceptUnknownPrimitives;
+    }
+
+	public void addDescriptorProvider(DescriptorProvider provider) {
         addDescriptorProvider(provider, true);
     }
     
@@ -148,7 +155,7 @@ public class DataModel {
 
     private void validate(SimpleTypeDescriptor desc) {
         PrimitiveType primitiveType = desc.getPrimitiveType();
-        if (primitiveType == null)
+        if (primitiveType == null && !acceptUnknownPrimitives)
             throw new ConfigurationError("No primitive type defined for simple type: " + desc.getName());
     }
 
