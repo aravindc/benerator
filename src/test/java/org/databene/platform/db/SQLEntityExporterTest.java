@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
@@ -44,8 +45,20 @@ public class SQLEntityExporterTest {
 	private static final String FILENAME = "target" + File.separator 
 		+ SQLEntityExporterTest.class.getSimpleName() + ".sql";
 
+	@Test(expected = ConfigurationError.class)
+	public void testWithoutDialect() throws Exception {
+		SQLEntityExporter exporter = new SQLEntityExporter(FILENAME);
+		try {
+			Entity alice = new Entity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
+			exporter.startConsuming(alice);
+		} finally {
+			exporter.close();
+			FileUtil.deleteIfExists(new File(FILENAME));
+		}
+	}
+	
 	@Test
-	public void test() throws Exception {
+	public void testNormal() throws Exception {
 		try {
 			Entity alice = new Entity("Person", "name", "Alice", "birthDate", TimeUtil.date(1987, 11, 31), "score", 23);
 			Entity bob = new Entity("Person", "name", "Bob", "birthDate", TimeUtil.date(1977, 11, 31), "score", 34);
