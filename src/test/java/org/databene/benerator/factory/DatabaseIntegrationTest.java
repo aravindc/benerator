@@ -117,6 +117,22 @@ public class DatabaseIntegrationTest {
 		}
 	}
 
+	
+	/** Test for bug #3025805 */
+	@Test
+	public void testDbRef_distribution() {
+		parseAndExecute(
+			"<generate type='referer' count='3' consumer='cons'>" +
+        	"  <reference name='referee_id' targetType='referee' source='db' distribution='new org.databene.benerator.distribution.function.ExponentialFunction(-0.5)' />" +
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (Entity product : products) {
+			int ref = (Integer) product.get("referee_id");
+			assertTrue(ref == 2 || ref == 3);
+		}
+	}
+
 	@Test
 	public void testDbRef_values() {
 		parseAndExecute(
