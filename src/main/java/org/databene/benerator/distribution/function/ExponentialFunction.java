@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,8 @@ import org.databene.benerator.distribution.AbstractWeightFunction;
  * Exponential function. a * e^bx.<br/>
  * <br/>
  * Created: 04.09.2006 23:25:20
+ * @author Volker Bergmann
+ * @since 0.1
  */
 public class ExponentialFunction extends AbstractWeightFunction {
 
