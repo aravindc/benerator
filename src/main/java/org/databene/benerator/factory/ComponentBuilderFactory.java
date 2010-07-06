@@ -48,6 +48,7 @@ import org.databene.benerator.composite.ArrayElementBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.DynamicInstanceArrayGenerator;
 import org.databene.benerator.composite.PlainEntityComponentBuilder;
+import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.ExpandSequence;
@@ -227,7 +228,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // apply distribution if necessary
         if (distribution != null)
-            generator = distribution.applyTo(generator, descriptor.isUnique());
+            generator = new DistributingGenerator(generator, distribution, descriptor.isUnique());
         
         // check multiplicity
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
