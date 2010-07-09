@@ -27,8 +27,6 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 
@@ -56,7 +54,7 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-	    return new AttachedWeightSampleGenerator<T>(source.getGeneratedType(), this, GeneratorUtil.allProducts(source));
+	    return new DistributingGenerator<T>(source, this, unique);
     }
     
     // helper methods --------------------------------------------------------------------------------------------------
