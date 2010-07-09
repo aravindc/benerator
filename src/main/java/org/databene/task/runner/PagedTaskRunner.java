@@ -149,15 +149,9 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         } while (workPending(invocationCount));
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
-        long countValue = actualCount.get();
-        long minCount = (invocationCount != null ? invocationCount : 0);
-		if (countValue < minCount)
-        	throw new TaskUnavailableException(target, minCount, countValue);
-		if (tracker != null)
-			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
-		return actualCount.get();
+        return checkCount(invocationCount);
     }
-    
+
 	public String getTaskName() {
     	return target.getTaskName();
     }
@@ -224,6 +218,16 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         this.exception = e;
     }
 
+	private long checkCount(Long invocationCount) {
+	    long countValue = actualCount.get();
+        long minCount = (invocationCount != null ? invocationCount : 0);
+		if (countValue < minCount)
+        	throw new TaskUnavailableException(target, minCount, countValue);
+		if (tracker != null)
+			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
+		return countValue;
+    }
+    
 	@Override
 	public String toString() {
 	    return getClass().getSimpleName() + '[' + target + ']';
