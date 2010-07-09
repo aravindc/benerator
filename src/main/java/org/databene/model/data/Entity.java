@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,8 +32,6 @@ import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.platform.java.BeanDescriptorProvider;
 
-import java.util.Map;
-
 /**
  * Instance of a composite data type as described by a {@link ComplexTypeDescriptor}.<br/>
  * <br/>
@@ -41,7 +39,7 @@ import java.util.Map;
  * @since 0.3
  * @author Volker Bergmann
  */
-public class Entity implements Composite<Object> {
+public class Entity implements Composite {
 
 	private static final BeanDescriptorProvider BEAN_DESCRIPTOR_PROVIDER = new BeanDescriptorProvider();
 	
@@ -98,10 +96,14 @@ public class Entity implements Composite<Object> {
         return components.containsKey(componentName);
     }
 
-    public Map<String, Object> getComponents() {
+    public OrderedNameMap<Object> getComponents() {
         return components;
     }
 
+	public void setComponents(OrderedNameMap<Object> components) {
+	    this.components = components;
+    }
+	
     public void set(String componentName, Object component) {
         setComponent(componentName, component);
     }
@@ -153,4 +155,5 @@ public class Entity implements Composite<Object> {
     public String toString() {
         return new CompositeFormatter(true, true).render(type() + '[', this, "]");
     }
+
 }
