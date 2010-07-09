@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -69,4 +69,15 @@ public class DBForeignKeyConstraint extends DBConstraint {
         return columns;
     }
 
+    @Override
+    public String toString() {
+    	StringBuilder builder = new StringBuilder("\t(");
+    	for (DBForeignKeyColumn fkc : foreignKeyColumns)
+    		builder.append(fkc.getForeignKeyColumn().getName()).append(' ');
+    	builder.append(") -> ").append(foreignKeyColumns.get(0).getTargetColumn().getTable().getName()).append("(");
+    	for (DBForeignKeyColumn fkc : foreignKeyColumns)
+    		builder.append(fkc.getTargetColumn().getName()).append(' ');
+        return builder.append(")").toString();
+    }
+    
 }
