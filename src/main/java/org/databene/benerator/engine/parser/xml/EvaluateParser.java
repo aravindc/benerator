@@ -29,9 +29,12 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
+import org.databene.commons.expression.TypeConvertingExpression;
+import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -49,7 +52,7 @@ public class EvaluateParser implements DescriptorParser {
 
 	public EvaluateStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		Expression<String> id           = parseAttribute(ATT_ID, element);
-		Expression<String> text         = parseTextElement(element);
+		Expression<String> text         = new TypeConvertingExpression<String>(parseScriptableElementText(element), String.class);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);
 		Expression<String> type         = parseAttribute(ATT_TYPE, element);
 		Expression<?> targetObject      = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));
