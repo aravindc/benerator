@@ -41,6 +41,7 @@ import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.MessageHolder;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.task.TaskResult;
@@ -50,7 +51,7 @@ import org.databene.task.TaskResult;
  * Created: 01.02.2008 14:39:11
  * @author Volker Bergmann
  */
-public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager {
+public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, MessageHolder {
 
 	private String taskName;
     private Generator<?> generator;
@@ -86,6 +87,12 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager {
 	public void flushConsumer() {
 		if (consumer != null)
 			consumer.flush();
+    }
+
+    public Consumer<?> getConsumer(Context context) {
+    	if (consumer == null)
+    		consumer = ExpressionUtil.evaluate(consumerExpr, context);
+    	return consumer;
     }
 
     // Task interface implementation -----------------------------------------------------------------------------------
@@ -149,6 +156,19 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager {
 	public boolean addResource(Closeable resource) {
 	    return resourceManager.addResource(resource);
     }
+	
+	// MessageHolder interface -----------------------------------------------------------------------------------------
+	
+	public String getMessage() {
+	    return (generator instanceof MessageHolder ? ((MessageHolder) generator).getMessage() : null);
+    }
+	
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '(' + taskName + ')';
+    }
 
     // private helpers -------------------------------------------------------------------------------------------------
 
@@ -174,17 +194,6 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager {
         	generatorStatement.close();
         } else
         	subStatement.execute(context);
-    }
-    
-    public Consumer<?> getConsumer(Context context) {
-    	if (consumer == null)
-    		consumer = ExpressionUtil.evaluate(consumerExpr, context);
-    	return consumer;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '(' + taskName + ')';
     }
     
 }

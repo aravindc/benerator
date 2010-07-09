@@ -31,6 +31,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.MessageHolder;
 import org.databene.commons.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ import java.util.List;
  * Created: 27.06.2007 23:51:42
  * @author Volker Bergmann
  */
-public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
+public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> implements MessageHolder {
 
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
@@ -52,6 +53,7 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
     private List<ComponentBuilder<E>> componentBuilders;
     private Context context;
     private E currentInstance;
+    private String message;
 
     // constructors --------------------------------------------------------------------------------------
 
@@ -67,6 +69,10 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
         this.componentBuilders = componentBuilders;
         this.context = context;
         this.currentInstance = null;
+    }
+
+	public String getMessage() {
+	    return message;
     }
 
     // Generator interface -----------------------------------------------------------------------------------
@@ -92,8 +98,8 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
     	
     	currentInstance = source.generate();
         if (currentInstance == null) {
-            if (stateLogger.isDebugEnabled())
-                stateLogger.debug("Source for entity '" + instanceName + "' is not available any more: " + source);
+        	message = "Source for entity '" + instanceName + "' is not available any more: " + source;
+            stateLogger.debug(message);
             return null;
         }
         
@@ -104,9 +110,9 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
         for (ComponentBuilder<E> componentBuilder : componentBuilders) {
             try {
                 if (!componentBuilder.buildComponentFor(currentInstance)) {
-                    if (stateLogger.isDebugEnabled())
-                        stateLogger.debug("Component generator for entity '" + instanceName + 
-                        		"' is not available any more: " + componentBuilder);
+                	message = "Component generator for entity '" + instanceName + 
+                		"' is not available any more: " + componentBuilder;
+                    stateLogger.debug(message);
                     return null;
                 }
             } catch (Exception e) {
@@ -134,19 +140,19 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> {
         super.reset();
     }
 
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
-    
-    @Override
-	public String toString() {
-        return getClass().getSimpleName() + '[' + instanceName + ']' + componentBuilders;
-    }
-
 	public boolean isParallelizable() {
 	    return source.isParallelizable() && ThreadUtil.allParallelizable(componentBuilders);
     }
 
 	public boolean isThreadSafe() {
 	    return source.isThreadSafe() && ThreadUtil.allThreadSafe(componentBuilders);
+    }
+
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    
+    @Override
+	public String toString() {
+        return getClass().getSimpleName() + '[' + instanceName + ']' + componentBuilders;
     }
 
 }

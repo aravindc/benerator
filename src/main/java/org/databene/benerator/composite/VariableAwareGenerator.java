@@ -34,6 +34,7 @@ import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
+import org.databene.commons.MessageHolder;
 import org.databene.commons.ThreadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class VariableAwareGenerator<E> implements Generator<E> {
+public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 	
     private static Logger logger = LoggerFactory.getLogger(VariableAwareGenerator.class);
     
@@ -109,6 +110,10 @@ public class VariableAwareGenerator<E> implements Generator<E> {
 		realGenerator.close();
         for (String variableName : variables.keySet())
             context.remove(variableName);
+	}
+	
+	public String getMessage() {
+	    return (realGenerator instanceof MessageHolder ? ((MessageHolder) realGenerator).getMessage() : null);
 	}
 
 	// java.lang.Object overrides --------------------------------------------------------------------------------------

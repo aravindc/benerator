@@ -21,6 +21,9 @@
 
 package org.databene.task;
 
+import org.databene.commons.MessageHolder;
+import org.databene.commons.StringUtil;
+
 /**
  * Exception which indicates that a required Task is unavailable.<br/><br/>
  * Created: 20.10.2009 10:07:05
@@ -43,11 +46,18 @@ public class TaskUnavailableException extends TaskException {
     }
 
 	private static String renderMessage(Task task, long requiredCount, long actualCount) {
+		StringBuilder builder = new StringBuilder("Task ").append(task);
 		if (actualCount == 0)
-			return "Task " + task + " not available";
+			builder.append(" not available");
 		else
-			return "Task " + task + " could be executed only " + actualCount + " times, " +
-					"required minimum: " + requiredCount;
+			builder.append(" could be executed only ").append(actualCount)
+				.append(" times, required minimum: ").append(requiredCount);
+		if (task instanceof MessageHolder) {
+			String message = ((MessageHolder) task).getMessage();
+			if (!StringUtil.isEmpty(message))
+				builder.append(". ").append(message);
+		}
+		return builder.toString();
     }
 
 	public long getRequiredCount() {

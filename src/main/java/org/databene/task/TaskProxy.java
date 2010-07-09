@@ -28,6 +28,7 @@ package org.databene.task;
 
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
+import org.databene.commons.MessageHolder;
 
 /**
  * Wraps a Task and forwards invocations.<br/>
@@ -36,7 +37,7 @@ import org.databene.commons.ErrorHandler;
  * @since 0.2
  * @author Volker Bergmann
  */
-public abstract class TaskProxy<E extends Task> extends AbstractTask implements Cloneable {
+public abstract class TaskProxy<E extends Task> extends AbstractTask implements Cloneable, MessageHolder  {
 
     protected E realTask;
 
@@ -70,6 +71,10 @@ public abstract class TaskProxy<E extends Task> extends AbstractTask implements 
     @Override
     public boolean isParallelizable() {
         return realTask.isParallelizable();
+    }
+    
+    public String getMessage() {
+    	return (realTask instanceof MessageHolder ? ((MessageHolder) realTask).getMessage() : null);
     }
 
     @Override
