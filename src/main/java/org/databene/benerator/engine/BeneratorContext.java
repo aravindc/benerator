@@ -134,6 +134,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		importPackage("org.databene.benerator.distribution.function");
 		importPackage("org.databene.benerator.sample");
 		importPackage("org.databene.benerator.primitive");
+		importPackage("org.databene.benerator.composite");
 		importPackage("org.databene.platform.flat");
 		importPackage("org.databene.platform.csv");
 		importPackage("org.databene.platform.dbunit");
