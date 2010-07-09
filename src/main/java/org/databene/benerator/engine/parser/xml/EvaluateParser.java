@@ -29,12 +29,10 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
-import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
