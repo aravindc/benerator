@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.platform.db.model;
 
 import org.databene.commons.ObjectNotFoundException;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.db.DBUtil;
@@ -239,5 +240,17 @@ public class DBTable implements Dependent<DBTable>{
 		Object result = DBUtil.queryScalar("select count(*) from " + name, connection);
 		return ((Number) result).longValue();
 	}
+
+	public String renderFKInfo() {
+	    String lineSeparator = SystemInfo.getLineSeparator();
+		StringBuilder builder = new StringBuilder(name);
+		if (foreignKeyConstraints.size() > 0) {
+			builder.append("(").append(lineSeparator);
+	    	for (DBForeignKeyConstraint fkc : foreignKeyConstraints)
+	    		builder.append(fkc).append(lineSeparator);
+	    	builder.append(")");
+		}
+	    return builder.toString();
+    }
 
 }
