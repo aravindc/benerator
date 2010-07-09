@@ -38,7 +38,6 @@ import org.databene.commons.db.DBUtil;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
-import org.databene.model.depend.DependencyModel;
 import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemConsumer;
@@ -435,7 +434,7 @@ public class DBSystem extends AbstractStorageSystem {
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
-            List<DBTable> tables = dependencyOrderedTables(database);
+            List<DBTable> tables = DatabaseUtil.dependencyOrderedTables(database);
             for (DBTable table : tables)
                 parseTable(table);
         } catch (ConnectFailedException e) {
@@ -478,18 +477,6 @@ public class DBSystem extends AbstractStorageSystem {
     		ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
         ThreadContext context = getThreadContext();
         return context.getStatement(descriptor, insert, columnInfos);
-    }
-
-    private static List<DBTable> dependencyOrderedTables(Database database) {
-        DependencyModel<DBTable> model = new DependencyModel<DBTable>();
-        for (DBCatalog catalog : database.getCatalogs())
-            for (DBTable table : catalog.getTables())
-                model.addNode(table);
-        for (DBSchema schema : database.getSchemas())
-            for (DBTable table : schema.getTables())
-                model.addNode(table);
-        List<DBTable> tables = model.dependencyOrderedObjects(true);
-        return tables;
     }
 
     private void parseTable(DBTable table) {
@@ -624,13 +611,15 @@ public class DBSystem extends AbstractStorageSystem {
                 String name = dbCompDescriptor.getName();
                 SimpleTypeDescriptor type = (SimpleTypeDescriptor) dbCompDescriptor.getTypeDescriptor();
 				PrimitiveType primitiveType = type.getPrimitiveType();
-				if (primitiveType == null && ! acceptUnknownColumnTypes)
-					throw new ConfigurationError("Column type of " + entityDescriptor.getName() + "." + 
+				if (primitiveType == null) {
+					if (!acceptUnknownColumnTypes)
+						throw new ConfigurationError("Column type of " + entityDescriptor.getName() + "." + 
 							dbCompDescriptor.getName() + "unknown: " + type.getName());
-				else if (entity.get(type.getName()) instanceof String)
-					primitiveType = PrimitiveType.STRING;
-				else
-					primitiveType = PrimitiveType.OBJECT;
+					else if (entity.get(type.getName()) instanceof String)
+						primitiveType = PrimitiveType.STRING;
+					else
+						primitiveType = PrimitiveType.OBJECT;
+				}
 				String primitiveTypeName = primitiveType.getName();
                 DBColumn column = table.getColumn(name);
                 DBColumnType columnType = column.getType();
