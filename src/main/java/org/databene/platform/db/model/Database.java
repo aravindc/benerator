@@ -28,7 +28,9 @@ package org.databene.platform.db.model;
 
 import org.databene.commons.collection.OrderedNameMap;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a database.<br/><br/>
@@ -101,6 +103,19 @@ public class Database {
         schema.setDatabase(null);
     }
 
+    // table operations ------------------------------------------------------------------------------------------------
+    
+    public Set<DBTable> getTables() {
+    	Set<DBTable> tables = new HashSet<DBTable>();
+        for (DBCatalog catalog : catalogs.values())
+            for (DBTable table : catalog.getTables())
+            	tables.add(table);
+        for (DBSchema schema : schemas.values())
+            for (DBTable table : schema.getTables())
+            	tables.add(table);
+        return tables;
+    }
+    
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
