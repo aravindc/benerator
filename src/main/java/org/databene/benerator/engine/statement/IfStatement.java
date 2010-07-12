@@ -39,11 +39,15 @@ public class IfStatement extends ConditionStatement {
 	private CompositeStatement thenBranch;
 	private CompositeStatement elseBranch;
 
-	public IfStatement(Expression<Boolean> condition, 
-			List<Statement> thenBranch, List<Statement> elseBranch) {
+	public IfStatement(Expression<Boolean> condition) {
 	    super(condition);
-	    this.thenBranch = new SequentialStatement(thenBranch);
-	    this.elseBranch = new SequentialStatement(elseBranch);
+    }
+
+	public IfStatement(Expression<Boolean> condition, 
+			List<Statement> thenStatements, List<Statement> elseStatements) {
+	    super(condition);
+	    setThenStatements(thenStatements);
+	    setElseStatements(elseStatements);
     }
 
     public void execute(BeneratorContext context) {
@@ -51,6 +55,14 @@ public class IfStatement extends ConditionStatement {
 	    	thenBranch.execute(context);
 	    else
 	    	elseBranch.execute(context);
+    }
+
+	public void setThenStatements(List<Statement> thenStatements) {
+	    this.thenBranch = new SequentialStatement(thenStatements);
+    }
+
+	public void setElseStatements(List<Statement> elseStatements) {
+	    this.elseBranch = new SequentialStatement(elseStatements);
     }
 
 }

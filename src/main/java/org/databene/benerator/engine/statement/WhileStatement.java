@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
@@ -37,10 +38,18 @@ public class WhileStatement extends ConditionStatement {
 	
 	private SequentialStatement statements;
 
+	public WhileStatement(Expression<Boolean> condition) {
+	    this(condition, new ArrayList<Statement>());
+    }
+
 	public WhileStatement(Expression<Boolean> condition, List<Statement> statements) {
 	    super(condition);
-	    this.statements = new SequentialStatement(statements);
+	    setSubStatements(statements);
     }
+	
+	public void setSubStatements(List<Statement> statements) {
+	    this.statements = new SequentialStatement(statements);
+	}
 
 	public void execute(BeneratorContext context) {
 	    while (condition.evaluate(context))
