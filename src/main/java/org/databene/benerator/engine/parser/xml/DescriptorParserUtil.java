@@ -45,13 +45,13 @@ import org.w3c.dom.Element;
  */
 public class DescriptorParserUtil {
 
-	public static List<Statement> parseChildren(Element parent, ResourceManager resourceManager) {
+	public static List<Statement> parseChildren(Element parent, Statement[] parentPath, ResourceManager resourceManager) {
 		String parentName = parent.getNodeName();
 		ArrayList<Statement> result = new ArrayList<Statement>();
 	    for (Element child : XMLUtil.getChildElements(parent)) {
 			String childName = child.getNodeName();
             DescriptorParser elementParser = ParserFactory.getParser(childName, parentName);
-	    	Statement statement = elementParser.parse(child, null, resourceManager);
+	    	Statement statement = elementParser.parse(child, parentPath, resourceManager);
 	    	result.add(statement);
 	    }
 	    return result;

@@ -28,6 +28,7 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IfStatement;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
@@ -62,19 +63,23 @@ public class IfParser implements DescriptorParser {
 		Element elseElement = XMLUtil.getChildElement(ifElement, false, false, "else");
 		List<Statement> thenStatements = null;
 		List<Statement> elseStatements = null;
+		IfStatement ifStatement = new IfStatement(condition);
+		Statement[] path = ArrayUtil.append(parentPath, ifStatement);
 		if (elseElement != null) {
 			// if there is an 'else' element, there must be an 'if' element too
 			if (thenElement == null)
 				throw new ParseException("'else' without 'then'", XMLUtil.format(ifElement));
-			thenStatements = DescriptorParserUtil.parseChildren(thenElement, resourceManager);
-			elseStatements = DescriptorParserUtil.parseChildren(elseElement, resourceManager);
+			thenStatements = DescriptorParserUtil.parseChildren(thenElement, path, resourceManager);
+			elseStatements = DescriptorParserUtil.parseChildren(elseElement, path, resourceManager);
 			// check that no elements conflict with 'then' and 'else'
 			assertThenElseChildren(ifElement);
 		} else if (thenElement != null) {
-			thenStatements = DescriptorParserUtil.parseChildren(thenElement, resourceManager);
+			thenStatements = DescriptorParserUtil.parseChildren(thenElement, path, resourceManager);
 		} else
-			thenStatements = DescriptorParserUtil.parseChildren(ifElement, resourceManager);
-		return new IfStatement(condition, thenStatements, elseStatements);
+			thenStatements = DescriptorParserUtil.parseChildren(ifElement, path, resourceManager);
+		ifStatement.setThenStatements(thenStatements);
+		ifStatement.setElseStatements(elseStatements);
+		return ifStatement;
     }
 
     public boolean supports(String elementName, String parentName) {

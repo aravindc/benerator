@@ -34,6 +34,7 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.WhileStatement;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
@@ -57,9 +58,11 @@ public class WhileParser implements DescriptorParser {
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 
 					XMLUtil.format(element));
-		List<Statement> subStatements = DescriptorParserUtil.parseChildren(element, resourceManager);
-		WhileStatement statement = new WhileStatement(condition, subStatements);
-	    return statement;
+		WhileStatement whileStatement = new WhileStatement(condition);
+		Statement[] path = ArrayUtil.append(parentPath, whileStatement);
+		List<Statement> subStatements = DescriptorParserUtil.parseChildren(element, path, resourceManager);
+		whileStatement.setSubStatements(subStatements);
+	    return whileStatement;
     }
 
     public boolean supports(String elementName, String parentName) {
