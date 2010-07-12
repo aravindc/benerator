@@ -51,7 +51,7 @@ import org.databene.commons.ui.I18NSupport;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class MavenProjectWizard extends JFrame {
+public class MavenProjectWizard extends JFrame { // TODO rename to NewProjectWizard
 	
 	private static final long serialVersionUID = -5866303491038671990L;
 	
