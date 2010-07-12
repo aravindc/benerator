@@ -15,6 +15,7 @@ enhancements
 - Feature Request #3018319: Accept unknown database column types
   use <setup ... acceptUnknownSimpleTypes="true"> or <database ... acceptUnknownColumnTypes="true"/>
 - improved messaging in cases when not enough data instances could have been generated
+- Defined EntityRenamer class for feature request #3027213: Support easy transfer between tables w/ different names
 
 
 changes 
@@ -30,3 +31,5 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 3025805 IllegalGeneratorStateException for reference with distribution
 3027200 Exception when leaving out encoding in wizard
 3027204 <evaluate id="..." /> works but is not schema-valid
+3027209 Scripts are not evaluated in <execute>
+3028496 NullPointerException when nesting <generate> under <if>
