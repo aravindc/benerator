@@ -26,6 +26,7 @@
 
 package org.databene.benerator.primitive;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ import java.util.Map;
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
 /**
@@ -61,12 +63,27 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 	}
 	
 	public LocalSequenceGenerator(String name) {
-		super(getOrCreateSource(name));
+		super(getOrCreateSource(name, 1));
+	}
+	
+	// static methods --------------------------------------------------------------------------------------------------
+	
+	public static void resetAll() {
+		FileUtil.deleteIfExists(new File(FILENAME));
+	    invalidateInstances();
 	}
 	
 	public static void invalidateInstances() {
 	    MAP.clear();
 		init();
+	}
+	
+	public static Long next(String sequenceName) {
+		return next(sequenceName, 1);
+	}
+	
+	public static Long next(String sequenceName, long min) {
+		return getOrCreateSource(sequenceName, min).generate();
 	}
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
@@ -107,10 +124,10 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
         }
     }
 
-	private static Generator<Long> getOrCreateSource(String name) {
+	private static Generator<Long> getOrCreateSource(String name, long min) {
 		IncrementalIdGenerator generator = MAP.get(name);
 		if (generator == null) {
-			generator = new IncrementalIdGenerator();
+			generator = new IncrementalIdGenerator(min);
 			MAP.put(name, generator);
 		}
 		return generator;
