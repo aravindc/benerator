@@ -115,6 +115,7 @@ public class PersonGenerator extends CompositeGenerator<Person> {
 	}
 
     public void setDataset(String datasetName) {
+    	this.datasetName = datasetName;
         maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
         femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
         familyNameGen = new FamilyNameGenerator(datasetName);
