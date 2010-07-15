@@ -148,13 +148,21 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			Distribution distribution;
 			if (weightsUsed(samples)) {
 				AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
-				for (int i = 0; i < samples.length; i++)
-					generator.addSample(samples[i]);
+				for (int i = 0; i < samples.length; i++) {
+					WeightedSample<?> sample = samples[i];
+					if (sample.getValue() == null)
+						throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
+					generator.addSample(sample);
+				}
 				return generator;
 			} else {
 				Object[] values = new Object[samples.length];
-				for (int i = 0; i < samples.length; i++)
-					values[i] = samples[i].getValue();
+				for (int i = 0; i < samples.length; i++) {
+					Object value = samples[i].getValue();
+					if (value == null)
+						throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
+					values[i] = value;
+				}
 				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, true, context);
 		        IteratingGenerator source = new IteratingGenerator(new ArrayIterable(values, targetType));
 				return distribution.applyTo(source, uniqueness.isUnique());
