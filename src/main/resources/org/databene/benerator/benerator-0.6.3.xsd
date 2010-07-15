@@ -237,7 +237,7 @@
 	
 
     <!-- executes a script, e.g. SQL -->
-    <xs:element name="execute" />
+    <xs:element name="execute" type="execute-type" />
     
     <!-- evaluates a script, e.g. SQL -->
     <xs:element name="evaluate">
