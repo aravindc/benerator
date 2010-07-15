@@ -41,20 +41,20 @@ import org.databene.commons.IOUtil;
 
 public abstract class FileTest {
 
-    protected File createSource2() throws IOException {
-	    File sourceFile2;
-	    sourceFile2 = File.createTempFile(prefix(), ".txt");
-	    IOUtil.writeTextFile(sourceFile2.getAbsolutePath(), "123");
-	    return sourceFile2;
-    }
-
     protected File createSource1() throws IOException {
 	    File sourceFile1;
-	    sourceFile1 = File.createTempFile(prefix(), ".txt");
+	    sourceFile1 = new File("target" + File.separator + "FT1.txt");
 	    IOUtil.writeTextFile(sourceFile1.getAbsolutePath(), "ABC");
 	    return sourceFile1;
     }
 	
+    protected File createSource2() throws IOException {
+	    File sourceFile2;
+	    sourceFile2 = new File("target" + File.separator + "FT2.txt");
+	    IOUtil.writeTextFile(sourceFile2.getAbsolutePath(), "123");
+	    return sourceFile2;
+    }
+
     protected String prefix() {
     	return getClass().getSimpleName();
     }

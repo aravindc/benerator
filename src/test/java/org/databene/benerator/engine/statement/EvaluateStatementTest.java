@@ -23,6 +23,7 @@ package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Encodings;
+import org.databene.commons.SystemInfo;
 import org.junit.Test;
 
 import static org.databene.commons.expression.ExpressionUtil.*;
@@ -72,9 +73,12 @@ public class EvaluateStatementTest {
 	
 	@Test
 	public void testShell() {
+		String cmd = "echo 42";
+		if (SystemInfo.isWindows())
+			cmd = "cmd.exe /C " + cmd;
 		EvaluateStatement stmt = new EvaluateStatement(
 				constant("result"),
-				constant("echo 42"),
+				constant(cmd),
 				null,
 				constant("shell"),
 				null,

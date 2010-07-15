@@ -78,11 +78,11 @@ public class FileJoinerTest extends FileTest {
 		try {
 			sourceFile1 = createSource1();
 			sourceFile2 = createSource2();
-			destFile = File.createTempFile(prefix(), ".txt");
+			destFile = File.createTempFile(prefix(), ".txt", new File("target"));
 			FileJoiner joiner = new FileJoiner();
 			joiner.setAppend(append);
-			joiner.setSources(new String[] { sourceFile1.getAbsolutePath(), sourceFile2.getAbsolutePath() });
-			joiner.setDestination(destFile.getAbsolutePath());
+			joiner.setSources(new String[] { "target" + File.separator + sourceFile1.getName(), "target" + File.separator + sourceFile2.getName() });
+			joiner.setDestination("target" + File.separator + destFile.getName());
 			joiner.setDeleteSources(deleteSources);
 			for (int i = 0; i < executionCount; i++)
 				joiner.execute(context, ErrorHandler.getDefault());

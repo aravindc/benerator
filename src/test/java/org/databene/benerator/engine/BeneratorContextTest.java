@@ -43,7 +43,6 @@ public class BeneratorContextTest {
 		BeneratorContext context = new BeneratorContext();
 		assertEquals(".", context.getContextUri());
 		assertEquals(Country.getDefault().getIsoCode(), context.getDefaultDataset());
-		assertEquals(SystemInfo.getCharset().name(), context.getDefaultEncoding());
 		assertEquals("fatal", context.getDefaultErrorHandler());
 		assertEquals(SystemInfo.getLineSeparator(), context.getDefaultLineSeparator());
 		assertEquals(Locale.getDefault(), context.getDefaultLocale());
