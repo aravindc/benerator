@@ -62,7 +62,7 @@ public class UniqueFixedLengthStringGenerator extends ThreadSafeGenerator<String
     }
 
     public UniqueFixedLengthStringGenerator(int length, Set<Character> charSet) {
-        this(length, CollectionUtil.toArray(charSet));
+        this(length, CollectionUtil.toCharArray(charSet));
     }
 
     public UniqueFixedLengthStringGenerator(int length, char ... chars) {
