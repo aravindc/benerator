@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.Version;
 import org.databene.benerator.engine.parser.xml.BeneratorEntityResolver;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
@@ -96,7 +97,7 @@ public class DescriptorRunner implements ResourceManager {
 
 	public BeneratorRootStatement parseDescriptorFile() throws IOException {
 	    BeneratorEntityResolver entityResolver = (context.isValidate() ? new BeneratorEntityResolver() : null);
-		Document document = XMLUtil.parse(uri, entityResolver);
+		Document document = XMLUtil.parse(uri, entityResolver, Version.XML_HTTP_SYSTEM_ID);
 	    Element root = document.getDocumentElement();
 	    XMLUtil.mapAttributesToProperties(root, context, true, new XMLNameNormalizer());
 	    BeneratorRootStatement mainTask = new BeneratorRootStatement();
