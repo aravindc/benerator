@@ -24,12 +24,17 @@ changes
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
-3017727 ArrayIndexOutOfBoundsException if parameter is missing
-3016288 NullPointerException in SQLEntityExporter w/o dialect
-3016287 Benerator scans all catalogs on SQL Server
 3016016 Property CSVEntityExporter.timestampPattern is ignored
+3016287 Benerator scans all catalogs on SQL Server
+3016288 NullPointerException in SQLEntityExporter w/o dialect
+3017727 ArrayIndexOutOfBoundsException if parameter is missing
 3025805 IllegalGeneratorStateException for reference with distribution
 3027200 Exception when leaving out encoding in wizard
 3027204 <evaluate id="..." /> works but is not schema-valid
 3027209 Scripts are not evaluated in <execute>
 3028496 NullPointerException when nesting <generate> under <if>
+3028976 IllegalArgumentException on enum comparison
+3028979 PersonGenerator ignores dataset after Bean construction
+3029298 Default Id generation limited to 127 elements
+3029926 Benerator does not validate descriptor files
+3029944 Benerator does not build on Windows
