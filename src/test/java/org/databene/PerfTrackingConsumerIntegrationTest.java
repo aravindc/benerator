@@ -83,7 +83,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
-		assertTrue(counter.minLatency() >= 20);
+		assertTrue("Expected latency greater or equals 20, but measured " + counter.minLatency(), counter.minLatency() >= 20);
 		assertTrue(counter.averageLatency() > 20);
 		assertTrue(counter.minLatency() < counter.maxLatency());
     }
