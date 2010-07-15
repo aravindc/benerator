@@ -8,7 +8,7 @@
     <version>0.6.3</version>
 
     <properties>
-        <gui_version>0.2.2</gui_version>
+        <gui_version>0.2.3</gui_version>
         <webdecs_version>0.5.3</webdecs_version>
 	    <commons_version>0.5.3</commons_version>
     </properties>
