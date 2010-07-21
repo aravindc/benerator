@@ -21,25 +21,29 @@
 
 package org.databene.benerator.distribution;
 
+import java.util.List;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.sample.SampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * Collects all products a source {@link Generator} is able to generate, 
- * puts them into a list and serves the list elements based on its 
- * {@link Distribution}.<br/><br/>
- * Created: 22.03.2010 10:45:48
- * @since 0.6.0
+ * Uses a {@link SampleGenerator} and a Distribution's 
+ * {@link Distribution#createGenerator(Class, Number, Number, Number, boolean)}
+ * method for acting as a Generator proxy.<br/><br/>
+ * Created: 21.07.2010 01:57:31
+ * @since 0.6.3
  * @author Volker Bergmann
  */
-public class DistributingGenerator<E> extends GeneratorProxy<E> {
+public class DistributingSampleGeneratorProxy<E> extends GeneratorProxy<E> {
 	
 	private Generator<E> dataProvider;
 	private Distribution distribution;
 	private boolean unique;
 
-	public DistributingGenerator(Generator<E> dataProvider, Distribution distribution, boolean unique) {
+	public DistributingSampleGeneratorProxy(Generator<E> dataProvider, Distribution distribution, boolean unique) {
 		super(null);
 		this.dataProvider = dataProvider;
 		this.distribution = distribution;
@@ -48,9 +52,34 @@ public class DistributingGenerator<E> extends GeneratorProxy<E> {
 	
 	@Override
 	public void init(GeneratorContext context) {
-		dataProvider.init(context);
-		source = distribution.applyTo(dataProvider, unique);
+		if (!dataProvider.wasInitialized())
+			dataProvider.init(context);
+		initMembers(context);
 	    super.init(context);
 	}
+	
+	@Override
+	public void reset() {
+	    dataProvider.reset();
+	    initMembers(context);
+	    super.reset();
+	}
+	
+	@Override
+	public void close() {
+	    dataProvider.close();
+	    super.close();
+	}
+
+	private void initMembers(GeneratorContext context) {
+	    if (distribution instanceof FeatureWeight)
+			setSource(distribution.applyTo(dataProvider, unique));
+		else {
+			List<E> products = GeneratorUtil.allProducts(dataProvider);
+			SampleGenerator<E> sampleGen = new SampleGenerator<E>(dataProvider.getGeneratedType(), distribution, unique, products);
+			sampleGen.init(context);
+			setSource(sampleGen);
+		}
+    }
 	
 }

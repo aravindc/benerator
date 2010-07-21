@@ -54,7 +54,7 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-	    return new DistributingGenerator<T>(source, this, unique);
+	    return new DistributingSampleGeneratorProxy<T>(source, this, unique);
     }
     
     // helper methods --------------------------------------------------------------------------------------------------
