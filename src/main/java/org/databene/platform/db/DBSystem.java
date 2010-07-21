@@ -317,6 +317,7 @@ public class DBSystem extends AbstractStorageSystem {
         }
     }
 
+    @SuppressWarnings("null")
     public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("queryEntities(" + type + ")");
@@ -331,8 +332,10 @@ public class DBSystem extends AbstractStorageSystem {
     	    sql = "select * from " + type;
     	else if (StringUtil.startsWithIgnoreCase(selector, "select"))
     	    sql = selector;
-    	else
+    	else if (selector.startsWith("ftl:") || !script)
     	    sql = "select * from " + type + " WHERE " + selector;
+    	else
+    	    sql = "'select * from " + type + " WHERE ' + " + selector;
     	if (script)
     		sql = '{' + sql + '}';
         HeavyweightIterable<ResultSet> iterable = createQuery(sql, context, connection);
@@ -701,7 +704,7 @@ public class DBSystem extends AbstractStorageSystem {
                 statement.addBatch();
             else
                 statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Error in persisting " + entity, e);
         }
 	}
