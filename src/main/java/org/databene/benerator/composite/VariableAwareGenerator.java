@@ -36,6 +36,7 @@ import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.ThreadUtil;
+import org.databene.commons.collection.OrderedNameMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,14 +51,17 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
     private static Logger logger = LoggerFactory.getLogger(VariableAwareGenerator.class);
     
     private Generator<E> realGenerator;
-	private Map<String, NullableGenerator<?>> variables;
+	private OrderedNameMap<NullableGenerator<?>> variables;
+	private OrderedNameMap<ProductWrapper<?>> variableResults;
 	private Context context;
+	private boolean variablesCalculated;
 	
-	public VariableAwareGenerator(Generator<E> realGenerator, Map<String, NullableGenerator<?>> variables, Context context) {
+	public VariableAwareGenerator(Generator<E> realGenerator, OrderedNameMap<NullableGenerator<?>> variables, Context context) {
         Assert.notNull(realGenerator, "realGenerator");
 		this.realGenerator = realGenerator;
 		this.variables = variables;
 		this.context = context;
+		this.variablesCalculated = false;
 	}
 	
 	// Generator implementation ----------------------------------------------------------------------------------------
@@ -66,9 +70,16 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 		return realGenerator.getGeneratedType();
 	}
 
-	public void init(GeneratorContext context) {
-        for (NullableGenerator<?> varGen : variables.values())
+	@SuppressWarnings("unchecked")
+    public void init(GeneratorContext context) {
+		this.variableResults = new OrderedNameMap<ProductWrapper<?>>();
+        for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
+        	NullableGenerator<?> varGen = entry.getValue();
         	varGen.init(context);
+        	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
+			variableResults.put(entry.getKey(), result);
+        }
+        this.variablesCalculated = true;
         realGenerator.init(context);
 	}
 	
@@ -78,17 +89,30 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 
 	@SuppressWarnings("unchecked")
     public E generate() {
-		// initialize variables
-		for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
-			NullableGenerator<?> generator = entry.getValue();
-			ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
-			if (productWrapper == null) {
-	        	if (logger.isDebugEnabled())
-	        		logger.debug("No more available: " + generator);
-	            return null;
-			}
-            context.set(entry.getKey(), productWrapper.product);
-        }
+		// calculate variables
+		if (variablesCalculated) {
+			for (Map.Entry<String, ProductWrapper<?>> entry : variableResults.entrySet()) {
+				ProductWrapper<?> productWrapper = entry.getValue();
+				if (productWrapper == null) {
+		        	if (logger.isDebugEnabled()) // TODO set message
+		        		logger.debug("Variable no more available: " + entry.getKey());
+		            return null;
+				}
+	            context.set(entry.getKey(), productWrapper.product);
+	        }
+			variablesCalculated = false;
+		} else {
+			for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
+				NullableGenerator<?> generator = entry.getValue();
+				ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
+				if (productWrapper == null) {
+		        	if (logger.isDebugEnabled()) // TODO set message
+		        		logger.debug("No more available: " + generator);
+		            return null;
+				}
+	            context.set(entry.getKey(), productWrapper.product);
+	        }
+		}
 
         E entity = realGenerator.generate();
         if (entity == null)
@@ -102,6 +126,7 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 		for (NullableGenerator<?> variable : variables.values())
 			variable.reset();
 		realGenerator.reset();
+		variablesCalculated = false;
 	}
 
 	public void close() {
