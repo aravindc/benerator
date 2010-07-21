@@ -144,11 +144,13 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     @Override
     public void reset() {
     	indexGenerator.reset();
+    	super.reset();
     }
     
     @Override
     public void close() {
     	indexGenerator.close();
+    	super.close();
     }
 
     // static interface ------------------------------------------------------------------------------------------------
