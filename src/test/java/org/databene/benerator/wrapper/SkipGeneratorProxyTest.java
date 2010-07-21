@@ -27,8 +27,10 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.*;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
+
 import static junit.framework.Assert.*;
 
 /**
@@ -43,16 +45,29 @@ public class SkipGeneratorProxyTest extends GeneratorTest {
     public void testSkip() {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source, 1L, 2L);
+        generator.init(context);
         int value = generator.generate();
         assertTrue(value == 1 || value == 2);
+    }
+
+    @Test
+    public void testLimit1() {
+        SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
+        SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source, 1L, 1L, SequenceManager.RANDOM_SEQUENCE, 1L);
+        generator.init(context);
+        Integer value = generator.generate();
+        assertNotNull(value);
+        assertTrue(value == 1);
+        assertUnavailable(generator);
     }
 
     @Test
     public void testNonRepetitive() {
         SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2);
         SkipGeneratorProxy<Integer> generator = new SkipGeneratorProxy<Integer>(source);
-        assertEquals(1, (int)generator.generate());
-        assertEquals(2, (int)generator.generate());
+        generator.init(context);
+        assertEquals(1, (int) generator.generate());
+        assertEquals(2, (int) generator.generate());
         assertUnavailable(generator);
     }
 
