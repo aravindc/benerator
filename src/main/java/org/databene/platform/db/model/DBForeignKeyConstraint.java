@@ -27,6 +27,7 @@
 package org.databene.platform.db.model;
 
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ObjectNotFoundException;
 
 import java.util.List;
 
@@ -50,6 +51,22 @@ public class DBForeignKeyConstraint extends DBConstraint {
 
     public void addForeignKeyColumn(DBForeignKeyColumn foreignKeyColumn) {
         this.foreignKeyColumns.add(foreignKeyColumn);
+    }
+    
+    public DBColumn columnReferencedBy(DBColumn fkColumn) {
+    	return columnReferencedBy(fkColumn, true);
+    }
+
+    public DBColumn columnReferencedBy(DBColumn fkColumn, boolean required) {
+    	for (DBForeignKeyColumn column : foreignKeyColumns) {
+    		if (column.getForeignKeyColumn().equals(fkColumn))
+    			return column.getTargetColumn();
+    	}
+    	if (required)
+    		throw new ObjectNotFoundException(fkColumn.getName() + " is not a foreign key column " +
+    				"in table " + getOwner().getName());
+    	else
+    		return null;
     }
 
     public DBTable getForeignTable() {
