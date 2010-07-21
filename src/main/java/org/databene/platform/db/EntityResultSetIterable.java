@@ -58,4 +58,9 @@ public class EntityResultSetIterable implements TypedIterable<Entity> {
         return new ResultSetEntityIterator(iterable.iterator(), entityDescriptor);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + '[' + iterable + ']';
+    }
+    
 }
