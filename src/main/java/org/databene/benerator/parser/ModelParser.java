@@ -207,10 +207,9 @@ public class ModelParser {
                     }
                     if (partType != null) {
                         TypeDescriptor localTypeParent = DataModel.getDefaultInstance().getTypeDescriptor(partType);
-                        String name = attributes.get("name");
                         localType = (localTypeParent instanceof ComplexTypeDescriptor ? 
-                        		new ComplexTypeDescriptor(name, partType) : 
-                        			new SimpleTypeDescriptor(name, partType));
+                        		new ComplexTypeDescriptor(partType, partType) : 
+                        			new SimpleTypeDescriptor(partType, partType));
                     }
                     descriptor.setLocalType(localType);
                 }
