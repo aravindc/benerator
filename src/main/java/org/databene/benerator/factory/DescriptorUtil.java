@@ -33,10 +33,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 
@@ -64,6 +62,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.Validator;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
@@ -317,12 +316,12 @@ public class DescriptorUtil {
     public static <T> Generator<T> wrapGeneratorWithVariables(
             TypeDescriptor type, BeneratorContext context, Generator<T> generator) {
         Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-            Map<String, NullableGenerator<?>> varGens = new HashMap<String, NullableGenerator<?>>();
-            for (InstanceDescriptor variable : variables) {
-                Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, Uniqueness.NONE, context);
-				NullableGenerator<?> varGen = new NullInjectingGeneratorProxy(gen, variable.getNullQuota());
-                varGens.put(variable.getName(), varGen);
-            }
+        OrderedNameMap<NullableGenerator<?>> varGens = new OrderedNameMap<NullableGenerator<?>>();
+        for (InstanceDescriptor variable : variables) {
+            Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, Uniqueness.NONE, context);
+			NullableGenerator<?> varGen = new NullInjectingGeneratorProxy(gen, variable.getNullQuota());
+            varGens.put(variable.getName(), varGen);
+        }
         return new VariableAwareGenerator(generator, varGens, context);
     }
     
