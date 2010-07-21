@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.SkipGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
@@ -50,6 +51,7 @@ public class StepSequence extends Sequence {
 
     private BigDecimal increment;
 	private BigDecimal initial;
+	private BigDecimal limit;
 	
 	public StepSequence() {
 	    this(null); // when using null, the precision parameter will be used to set the increment in createGenerator
@@ -65,9 +67,14 @@ public class StepSequence extends Sequence {
     }
 	
 	public StepSequence(BigDecimal increment, BigDecimal initial) {
+	    this(increment, initial, null);
+    }
+	
+	public StepSequence(BigDecimal increment, BigDecimal initial, BigDecimal limit) {
 	    super(NAME);
 	    this.increment = increment;
 	    this.initial = initial;
+	    this.limit = limit;
     }
 	
 	public BigDecimal getIncrement() {
@@ -83,7 +90,8 @@ public class StepSequence extends Sequence {
 		if (increment != null && increment.longValue() < 0)
 			return super.applyTo(source, unique);
 		else
-			return new SkipGeneratorProxy<T>(source, toLong(increment), toLong(increment));
+			return new SkipGeneratorProxy<T>(source, toLong(increment), toLong(increment), 
+					SequenceManager.RANDOM_SEQUENCE, toLong(limit));
 	}
 	
     public <T extends Number> Generator<T> createGenerator(

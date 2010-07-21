@@ -49,6 +49,9 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
 
     /** The increment generator, which creates an individual increment on each generation */
     private Generator<Long> incrementGenerator;
+    
+    private long count;
+    private Long limit;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -67,14 +70,14 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
 
     /** Initializes the generator to use a random increment of uniform distribution */
     public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement) {
-        this(source, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
+        this(source, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE, null);
     }
 
     /** Initializes the generator to use a random increment of uniform distribution */
-    public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement, Distribution incrementDistribution) {
+    public SkipGeneratorProxy(Generator<E> source, Long minIncrement, Long maxIncrement, Distribution incrementDistribution, Long limit) {
         super(source);
         
-        // replace nulls with defult values
+        // replace nulls with default values
         if (minIncrement == null) {
         	if (maxIncrement != null)
         		minIncrement = Math.min(1L, maxIncrement);
@@ -92,8 +95,10 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
         if (minIncrement > maxIncrement)
         	throw new InvalidGeneratorSetupException("minIncrement (" + minIncrement + ") is larger than maxIncrement (" + maxIncrement + ")");
         
-        // create geneator
+        // create generator
         this.incrementGenerator = incrementDistribution.createGenerator(Long.class, minIncrement, maxIncrement, 1L, false);
+        this.count = 0;
+        this.limit = limit;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
@@ -108,12 +113,14 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
     @Override
     public E generate() {
     	Long increment = incrementGenerator.generate();
-    	if (increment != null) {
-	        for (long i = 0; i < increment - 1; i++)
-	            source.generate();
-	        return source.generate();
-    	} else
+    	if (increment == null)
     		return null;
+        for (long i = 0; i < increment - 1; i++)
+            source.generate();
+        count += increment;
+        if (limit != null && count > limit)
+        	return null;
+        return source.generate();
     }
 
     @Override
@@ -126,5 +133,7 @@ public class SkipGeneratorProxy<E> extends GeneratorProxy<E> {
     public void reset() {
         super.reset();
         incrementGenerator.reset();
+        count = 0;
     }
+    
 }
