@@ -70,7 +70,7 @@ public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
     @Override
     public void reset() {
         if (source != null)
-        	source.reset();
+        	super.reset();
     }
 
     @Override
