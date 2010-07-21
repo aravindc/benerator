@@ -77,7 +77,10 @@ public class DBSnapshotTool {
     
     public static void main(String[] args) {
         logger.info("Starting " + DBSnapshotTool.class.getSimpleName());
-        String filename = (args.length > 0 ? args[0] : "snapshot.dbunit.xml");
+        String format = System.getProperty(FORMAT);
+        if (format == null)
+        	format = DEFAULT_FORMAT;
+        String filename = (args.length > 0 ? args[0] : defaultFilename(format));
         
         String dbUrl = System.getProperty(DB_URL);
         if (StringUtil.isEmpty(dbUrl))
@@ -90,16 +93,22 @@ public class DBSnapshotTool {
         String dbUser = System.getProperty(DB_USER);
         String dbPassword = System.getProperty(DB_PASSWORD);
         String dbSchema = System.getProperty(DB_SCHEMA);
-        String format = System.getProperty(FORMAT);
         String dialect = System.getProperty(DIALECT);
-        if (format == null)
-        	format = DEFAULT_FORMAT;
         
         logger.info("Exporting data of database '" + dbUrl + "' with driver '" + dbDriver + "' as user '" + dbUser 
                 + "'" + (dbSchema != null ? " using schema '" + dbSchema + "'" : "") 
                 + " in " + format + " format to file " + filename);
 
         export(dbUrl, dbDriver, dbSchema, dbUser, dbPassword, filename, format, dialect);
+    }
+
+	private static String defaultFilename(String format) {
+		if (XLS_FORMAT.equals(format))
+		    return "snapshot.xls";
+		else if (SQL_FORMAT.equals(format))
+		    return "snapshot.sql";
+		else
+			return "snapshot.dbunit.xml";
     }
 
 	public static void export(String dbUrl, String dbDriver, String dbSchema,
