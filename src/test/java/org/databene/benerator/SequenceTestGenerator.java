@@ -39,6 +39,9 @@ public class SequenceTestGenerator<E> implements Generator<E> {
     private E[] sequence;
     int cursor;
     boolean initialized;
+    public int generateCount = 0;
+    public int resetCount = 0;
+    public int closeCount = 0;
 
     public SequenceTestGenerator(E... sequence) {
         this.sequence = sequence;
@@ -57,6 +60,7 @@ public class SequenceTestGenerator<E> implements Generator<E> {
     }
 
     public E generate() {
+    	generateCount++;
         if (cursor >= sequence.length)
             return null;
         return sequence[cursor++];
@@ -68,9 +72,11 @@ public class SequenceTestGenerator<E> implements Generator<E> {
 
     public void reset() {
         this.cursor = 0;
+        this.resetCount++;
     }
 
     public void close() {
+    	this.closeCount++;
         this.cursor = sequence.length;
     }
 
