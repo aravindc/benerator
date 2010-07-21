@@ -176,6 +176,15 @@ public class BeneratorScriptParserTest {
 	}
 	
 	@Test
+	public void testSubFieldMethod() throws Exception {
+		Context context = new DefaultContext();
+		context.set("tc", this);
+		checkExpression("hi!", "tc.stringAttrib.trim()", context);
+		checkExpression("hi", "tc.stringAttrib.substring(0, 2)", context);
+		checkExpression("hi!", "tc.stringAttrib.trim().trim()", context);
+	}
+	
+	@Test
 	public void testCast() throws Exception {
 		checkExpression(1L, "100000000002 - 100000000001");
 		checkExpression(1, "(int) (100000000002 - 100000000001)");

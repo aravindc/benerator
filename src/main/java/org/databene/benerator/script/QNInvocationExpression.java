@@ -26,6 +26,8 @@
 
 package org.databene.benerator.script;
 
+import java.util.Arrays;
+
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
@@ -70,16 +72,19 @@ public class QNInvocationExpression extends DynamicExpression<Object> {
 	    if (context.contains(objectOrClassName)) {
 	    	Object target = context.get(objectOrClassName);
 			return BeanUtil.invoke(target, methodName, args);
-	    } else {
-	    	try {
-	    		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
-	    		return BeanUtil.invokeStatic(type, methodName, args);
-	    	} catch (ConfigurationError e) {
-	    		if (LOGGER.isDebugEnabled())
-	    			LOGGER.debug("Class not found: " + objectOrClassName);
-	    	}
-	    	throw new UnsupportedOperationException("Cannot evaluate " + objectOrClassName);
 	    }
+    	try {
+    		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
+    		return BeanUtil.invokeStatic(type, methodName, args);
+    	} catch (ConfigurationError e) {
+    		if (LOGGER.isDebugEnabled())
+    			LOGGER.debug("Class not found: " + objectOrClassName);
+    	}
+    	QNExpression ownerEx = new QNExpression(Arrays.copyOfRange(qn, 0, qnLength));
+    	Object owner = ownerEx.evaluate(context);
+    	if (owner != null)
+			return BeanUtil.invoke(owner, methodName, args);
+    	throw new UnsupportedOperationException("Cannot evaluate " + objectOrClassName);
     }
 
 }
