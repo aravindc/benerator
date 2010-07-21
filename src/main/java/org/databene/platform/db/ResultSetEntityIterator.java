@@ -77,9 +77,12 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
                 String typeName = null;
                 if (descriptor != null) {
                     ComponentDescriptor component = descriptor.getComponent(columnName);
-                    SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getTypeDescriptor();
-                    PrimitiveType primitiveType = type.getPrimitiveType();
-                    typeName = (primitiveType != null ? primitiveType.getName() : "string");
+                    if (component != null) {
+	                    SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getTypeDescriptor();
+	                    PrimitiveType primitiveType = type.getPrimitiveType();
+	                    typeName = (primitiveType != null ? primitiveType.getName() : "string");
+                    } else
+                        typeName = "string";
                 } else
                     typeName = "string";
                 Object javaValue = javaValue(resultSet, columnIndex, typeName);
