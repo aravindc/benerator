@@ -86,6 +86,17 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 		return getOrCreateSource(sequenceName, min).generate();
 	}
 	
+    public static void persist() {
+    	Map<String, String> values = new HashMap<String, String>();
+    	for (Map.Entry<String, IncrementalIdGenerator> entry : MAP.entrySet())
+    		values.put(entry.getKey(), String.valueOf(entry.getValue().getCursor()));
+		try {
+	        IOUtil.writeProperties(values, FILENAME);
+        } catch (IOException e) {
+        	throw new RuntimeException(e);
+        }
+    }
+
 	// Generator interface ---------------------------------------------------------------------------------------------
 
 	@Override
@@ -113,17 +124,6 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 		}
     }
 	
-    private static void persist() {
-    	Map<String, String> values = new HashMap<String, String>();
-    	for (Map.Entry<String, IncrementalIdGenerator> entry : MAP.entrySet())
-    		values.put(entry.getKey(), String.valueOf(entry.getValue().getCursor()));
-		try {
-	        IOUtil.writeProperties(values, FILENAME);
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-    }
-
 	private static Generator<Long> getOrCreateSource(String name, long min) {
 		IncrementalIdGenerator generator = MAP.get(name);
 		if (generator == null) {
