@@ -71,7 +71,7 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 		GeneratorTask task = new GenerateAndConsumeTask("tn", generator, consumerExpr, false);
 		checkIteration(task, consumer);
 		consumer.list.clear();
-		task.reset();
+		task.prepare(new BeneratorContext());
 		checkIteration(task, consumer);
 		task.close();
 		assertEquals("tn", task.getTaskName());

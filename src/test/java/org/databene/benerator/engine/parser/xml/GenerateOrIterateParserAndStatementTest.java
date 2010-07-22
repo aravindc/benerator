@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.PersonIterable;
 import org.databene.commons.HeavyweightIterator;
@@ -109,6 +110,30 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		assertEquals(6, innerConsumer.startConsumingCount.get());
 		assertTrue(innerConsumer.flushCount.get() > 0);
 		assertTrue(outerConsumer.closeCount.get() == 0);
+		assertTrue(innerConsumer.closeCount.get() > 0);
+		assertEquals(9L, context.getTotalGenerationCount());
+	}
+
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testSubGenerateReset() throws Exception {
+		Statement statement = parse(
+				"<generate type='top' count='3'>" +
+        		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(true)'>" +
+        		"		<attribute name='x' type='int' generator='" + IncrementGenerator.class.getName() + "' />" +
+				"	</generate>" +
+        		"</generate>"
+        );
+		statement.execute(context);
+		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(0);
+		assertEquals(6, innerConsumer.products.size());
+		assertEquals(1, innerConsumer.products.get(0).get("x"));
+		assertEquals(2, innerConsumer.products.get(1).get("x"));
+		assertEquals(1, innerConsumer.products.get(2).get("x"));
+		assertEquals(2, innerConsumer.products.get(3).get("x"));
+		assertEquals(1, innerConsumer.products.get(4).get("x"));
+		assertEquals(2, innerConsumer.products.get(5).get("x"));
+		assertTrue(innerConsumer.flushCount.get() > 0);
 		assertTrue(innerConsumer.closeCount.get() > 0);
 		assertEquals(9L, context.getTotalGenerationCount());
 	}
