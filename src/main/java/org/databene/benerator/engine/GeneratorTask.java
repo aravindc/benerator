@@ -22,6 +22,7 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.model.consumer.Consumer;
 import org.databene.task.Task;
 
@@ -35,6 +36,6 @@ import org.databene.task.Task;
 public interface GeneratorTask extends Task {
 	Generator<?> getGenerator();
 	void flushConsumer(); // TODO v0.7 is this really necessary?
-	void reset();
+	void prepare(GeneratorContext context);
 	void close();
 }
