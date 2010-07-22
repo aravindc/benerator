@@ -97,9 +97,12 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    	close();
     }
 
-	public void reset() {
-	    task.reset();
-	    countGenerator.reset();
+	public void prepare(GeneratorContext context) {
+	    task.prepare(context);
+	    if (!countGenerator.wasInitialized())
+	    	countGenerator.init(context);
+	    else
+	    	countGenerator.reset();
     }
 	
 	public void close() {

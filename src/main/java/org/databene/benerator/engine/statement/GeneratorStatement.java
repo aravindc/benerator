@@ -34,6 +34,6 @@ import org.databene.benerator.engine.Statement;
 public interface GeneratorStatement extends Statement {
 	GeneratorTask getTarget();
 	Long generateCount(GeneratorContext context);
-	void reset();
+	void prepare(GeneratorContext context);
 	void close();
 }

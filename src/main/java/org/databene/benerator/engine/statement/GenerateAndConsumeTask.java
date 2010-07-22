@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
@@ -138,8 +139,11 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     	}
     }
 
-    public void reset() {
-	    generator.reset();
+    public void prepare(GeneratorContext context) {
+    	if (!generator.wasInitialized())
+    		initGenerator(context);
+    	else
+    		generator.reset();
     }
 
     public void pageFinished() {
@@ -172,7 +176,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-	private void initGenerator(BeneratorContext context) {
+	private void initGenerator(GeneratorContext context) {
 	    synchronized (generatorInitialized) {
 	    	if (!generatorInitialized.get()) {
 	    		generator.init(context);
@@ -187,9 +191,11 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     }
     
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
+    	while (subStatement instanceof LazyStatement)
+    		subStatement = ((LazyStatement) subStatement).getTarget(context);
         if (subStatement instanceof GeneratorStatement) {
             GeneratorStatement generatorStatement = (GeneratorStatement) subStatement;
-			generatorStatement.reset();
+			generatorStatement.prepare(context);
 			generatorStatement.execute(context);
         	generatorStatement.close();
         } else
