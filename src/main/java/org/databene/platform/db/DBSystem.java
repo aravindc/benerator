@@ -543,7 +543,7 @@ public class DBSystem extends AbstractStorageSystem {
             String defaultValue = column.getDefaultValue();
             SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, type);
             if (defaultValue != null)
-                typeDescriptor.setDetailValue("values", defaultValue);
+                typeDescriptor.setDetailValue("constant", defaultValue);
             if (column.getSize() != null)
                 typeDescriptor.setMaxLength(column.getSize());
             if (column.getFractionDigits() != null) {
