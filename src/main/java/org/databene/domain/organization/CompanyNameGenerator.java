@@ -29,7 +29,8 @@ package org.databene.domain.organization;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
@@ -67,9 +68,9 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
     private boolean legalForm;
     
     private AlternativeGenerator<String> core;
-    private NullInjectingGeneratorProxy<String> sectorGenerator;
+    private NullableGenerator<String> sectorGenerator;
     private Generator<String> legalFormGenerator;
-    private NullInjectingGeneratorProxy<String> locationGenerator;
+    private NullableGenerator<String> locationGenerator;
     
     private transient ThreadLocalProductWrapper<String> productWrapper;
     
@@ -182,8 +183,9 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
 	private void initSectorGenerator(String datasetName, GeneratorContext context) {
 	    if (sector) {
         	try {
-        		sectorGenerator = new NullInjectingGeneratorProxy<String>(new WeightedDatasetCSVGenerator<String>(
-        				ORG + "sector_{0}.csv", datasetName, REGION, Encodings.UTF_8), 0.7);
+        		WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
+        				ORG + "sector_{0}.csv", datasetName, REGION, Encodings.UTF_8);
+				sectorGenerator = NullableGeneratorFactory.injectNulls(source, 0.7);
         		sectorGenerator.init(context);
         	} catch (Exception e) {
         		logger.info("Cannot create sector generator: " + e.getMessage());
@@ -221,7 +223,7 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
         	}
         } else
         	locationBaseGen = new ConstantGenerator<String>(null);
-        locationGenerator = new NullInjectingGeneratorProxy<String>(locationBaseGen, nullQuota);
+        locationGenerator = NullableGeneratorFactory.injectNulls(locationBaseGen, nullQuota);
         locationGenerator.init(context);
     }
 
