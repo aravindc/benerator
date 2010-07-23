@@ -321,8 +321,8 @@ public class DBSystem extends AbstractStorageSystem {
     public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("queryEntities(" + type + ")");
-        boolean script = false;
     	Connection connection = getThreadContext().connection;
+        boolean script = false;
     	if (selector != null && selector.startsWith("{") && selector.endsWith("}")) {
     		selector = selector.substring(1, selector.length() - 1);
     		script = true;
@@ -352,13 +352,28 @@ public class DBSystem extends AbstractStorageSystem {
     public <T> TypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("getIds(" + tableName + ", " + selector + ")");
-        DBTable table = getTable(tableName);
+        
+        // check for script
+        boolean script = false;
+    	if (selector != null && selector.startsWith("{") && selector.endsWith("}")) {
+    		selector = selector.substring(1, selector.length() - 1);
+    		script = true;
+    	}
+
+    	// find out pk columns
+    	DBTable table = getTable(tableName);
         String[] pkColumnNames = table.getPKColumnNames();
         if (pkColumnNames.length == 0)
         	throw new ConfigurationError("Cannot create reference to table " + tableName + " since it does not define a primary key");
+        
+        // construct selector
         String query = "select " + ArrayFormat.format(pkColumnNames) + " from " + tableName;
-        if (selector != null)
-            query += " where " + selector;
+        if (selector != null) {
+        	if (script)
+        		query = "{'" + query + " where ' + " + selector + "}";
+        	else
+        		query += " where " + selector;
+        }
         return query(query, context);
     }
 
