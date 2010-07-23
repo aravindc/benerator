@@ -21,10 +21,10 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
 
 /**
- * Helper class for the {@link NullInjectingGeneratorProxy}.<br/><br/>
+ * Helper class for the {@link NullableGenerator}.<br/><br/>
  * Created: 26.01.2010 10:53:53
  * @since 0.6.0
  * @author Volker Bergmann
