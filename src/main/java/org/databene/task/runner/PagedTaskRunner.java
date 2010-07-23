@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * {@link TaskRunner} implementation that provides for repeated, paged, 
- * multi- or sibgle-threaded Task execution.<br/><br/>
+ * multi- or single-threaded Task execution.<br/><br/>
  * Created: 16.07.2007 19:25:30
  * @author Volker Bergmann
  */
