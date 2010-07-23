@@ -42,6 +42,7 @@ import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.IOUtil;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.consumer.Consumer;
@@ -61,6 +62,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     private List<Statement> subStatements;
     private ResourceManager resourceManager = new ResourceManagerSupport();
     private volatile AtomicBoolean generatorInitialized;
+    private BeneratorContext context;
 
     private Consumer<?> consumer;
     
@@ -112,7 +114,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     
     @SuppressWarnings("unchecked")
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
-    	BeneratorContext context = (BeneratorContext) ctx;
+    	this.context = (BeneratorContext) ctx;
     	if (!generatorInitialized.get())
     		initGenerator(context);
     	try {
@@ -153,6 +155,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     
     public void close() {
         resourceManager.close();
+        closeSubTasks();
     }
 
     // ResourceManager interface ---------------------------------------------------------------------------------------
@@ -197,9 +200,20 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
             GeneratorStatement generatorStatement = (GeneratorStatement) subStatement;
 			generatorStatement.prepare(context);
 			generatorStatement.execute(context);
-        	generatorStatement.close();
         } else
         	subStatement.execute(context);
+    }
+    
+    private void closeSubTasks() {
+	    for (Statement subStatement : subStatements)
+	    	closeSubTask(subStatement);
+    }
+    
+    protected void closeSubTask(Statement subStatement) {
+    	while (subStatement instanceof LazyStatement)
+    		subStatement = ((LazyStatement) subStatement).getTarget(context);
+        if (subStatement instanceof Closeable)
+        	IOUtil.close((Closeable) subStatement);
     }
     
 }

@@ -99,9 +99,10 @@ public class GenerateOrIterateStatement extends AbstractStatement
 
 	public void prepare(GeneratorContext context) {
 	    task.prepare(context);
-	    if (!countGenerator.wasInitialized())
+	    if (!countGenerator.wasInitialized()) {
 	    	countGenerator.init(context);
-	    else
+	    	initialized = true;
+	    } else
 	    	countGenerator.reset();
     }
 	
