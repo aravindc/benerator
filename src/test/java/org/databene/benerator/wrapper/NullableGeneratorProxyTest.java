@@ -24,6 +24,7 @@ package org.databene.benerator.wrapper;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.junit.Test;
 
@@ -64,11 +65,11 @@ public class NullableGeneratorProxyTest {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
-	private NullInjectingGeneratorProxy<Integer> createGenerator(double nullQuota) {
+	private NullableGenerator<Integer> createGenerator(double nullQuota) {
 	    return new NullInjectingGeneratorProxy<Integer>(new ConstantGenerator<Integer>(1), nullQuota);
     }
 
-	private int countNulls(NullInjectingGeneratorProxy<Integer> gen) {
+	private int countNulls(NullableGenerator<Integer> gen) {
 	    int nullCount = 0;
 		ProductWrapper<Integer> wrapper = new ProductWrapper<Integer>();
 		for (int i = 0; i < N; i++) {
