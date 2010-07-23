@@ -56,6 +56,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.ConstantNullableGenerator;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.nullable.NullableScriptGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
@@ -171,7 +172,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     private static ComponentBuilder<?> wrapWithNullInjector(Generator<?> source, ComponentDescriptor descriptor) {
     	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
-    	NullableGenerator generator = new NullInjectingGeneratorProxy(source, nullQuota);
+    	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
         return wrapGenerator(generator, descriptor);
     }
 

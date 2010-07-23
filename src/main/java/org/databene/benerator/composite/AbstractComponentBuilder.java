@@ -23,8 +23,8 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullableGeneratorFactory;
 
 /**
  * Parent class for facilitating individual {@link ComponentBuilder} implementation.<br/><br/>
@@ -36,9 +36,8 @@ public abstract class AbstractComponentBuilder<E> implements ComponentBuilder<E>
 
 	protected NullableGenerator<?> source;
 	
-    @SuppressWarnings("unchecked")
     public AbstractComponentBuilder(Generator<?> source, double nullQuota) {
-		this(new NullInjectingGeneratorProxy<Object>((Generator<Object>) source, nullQuota));
+		this(NullableGeneratorFactory.injectNulls(source, nullQuota));
 	}
     
     public NullableGenerator<?> getSource() {

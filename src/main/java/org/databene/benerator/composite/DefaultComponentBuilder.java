@@ -22,8 +22,8 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.Mutator;
@@ -40,9 +40,8 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 	protected Mutator mutator;
 	private ThreadLocalProductWrapper<Object> productWrapper = new ThreadLocalProductWrapper<Object>();
 	
-    @SuppressWarnings("unchecked")
     public DefaultComponentBuilder(Generator<?> source, Mutator mutator, double nullQuota) {
-		this(new NullInjectingGeneratorProxy<Object>((Generator<Object>) source, nullQuota), mutator);
+		this(NullableGeneratorFactory.injectNulls(source, nullQuota), mutator);
 	}
 
     public DefaultComponentBuilder(NullableGenerator<?> source, Mutator mutator) {

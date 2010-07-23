@@ -45,6 +45,7 @@ import org.databene.benerator.composite.VariableAwareGenerator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
@@ -319,7 +320,7 @@ public class DescriptorUtil {
         OrderedNameMap<NullableGenerator<?>> varGens = new OrderedNameMap<NullableGenerator<?>>();
         for (InstanceDescriptor variable : variables) {
             Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, Uniqueness.NONE, context);
-			NullableGenerator<?> varGen = new NullInjectingGeneratorProxy(gen, variable.getNullQuota());
+			NullableGenerator<?> varGen = NullableGeneratorFactory.injectNulls(gen, variable.getNullQuota());
             varGens.put(variable.getName(), varGen);
         }
         return new VariableAwareGenerator(generator, varGens, context);

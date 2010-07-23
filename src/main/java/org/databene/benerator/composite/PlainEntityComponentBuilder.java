@@ -28,7 +28,7 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
+import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.commons.Mutator;
 import org.databene.commons.UpdateFailedException;
 import org.databene.model.data.Entity;
@@ -41,9 +41,8 @@ import org.databene.model.data.Entity;
  */
 public class PlainEntityComponentBuilder extends DefaultComponentBuilder<Entity> {
 	
-    @SuppressWarnings("unchecked")
     public PlainEntityComponentBuilder(String name, Generator<?> source, double nullQuota) {
-		this(name, new NullInjectingGeneratorProxy<Object>((Generator<Object>) source, nullQuota));
+		this(name, NullableGeneratorFactory.injectNulls(source, nullQuota));
 	}
 
     public PlainEntityComponentBuilder(String name, NullableGenerator<?> source) {

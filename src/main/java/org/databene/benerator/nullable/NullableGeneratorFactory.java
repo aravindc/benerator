@@ -19,41 +19,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.composite;
+package org.databene.benerator.nullable;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
-import org.databene.commons.Mutator;
-import org.databene.commons.UpdateFailedException;
 
 /**
- * {@link ComponentBuilder} implementation which builds array elements.<br/><br/>
- * Created: 30.04.2010 09:57:50
- * @since 0.6.1
+ * TODO Document class.<br/><br/>
+ * Created: 22.07.2010 19:19:04
+ * @since 0.6.3
  * @author Volker Bergmann
  */
-public class ArrayElementBuilder extends DefaultComponentBuilder<Object[]> {
-
-    public ArrayElementBuilder(int index, Generator<?> source, double nullQuota) {
-		this(index, NullableGeneratorFactory.injectNulls(source, nullQuota));
-    }
-
-	public ArrayElementBuilder(int index, NullableGenerator<?> source) {
-	    super(source, new Mutator_(index));
-    }
-
-	private static class Mutator_ implements Mutator {
-		
-		int index;
-		
-		public Mutator_(int index) {
-	        this.index = index;
-        }
-
-		public void setValue(Object target, Object value) throws UpdateFailedException {
-	        ((Object[]) target)[index] = value;
-        }
+public class NullableGeneratorFactory {
+	
+	private NullableGeneratorFactory() {}
+	
+	public static <T> NullableGenerator<T> wrap(Generator<T> source) {
+		return new AsNullableGeneratorAdapter<T>(source);
 	}
 
+	public static <T> NullableGenerator<T> injectNulls(Generator<T> source, double nullQuota) {
+		if (nullQuota == 0.)
+			return wrap(source);
+		else
+			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
+	}
+	
 }
