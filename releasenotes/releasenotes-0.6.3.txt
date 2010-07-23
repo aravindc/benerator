@@ -16,6 +16,7 @@ enhancements
   use <setup ... acceptUnknownSimpleTypes="true"> or <database ... acceptUnknownColumnTypes="true"/>
 - improved messaging in cases when not enough data instances could have been generated
 - Defined EntityRenamer class for feature request #3027213: Support easy transfer between tables w/ different names
+- Added support for limiting the number of total steps in StepSequence
 
 
 changes 
@@ -38,3 +39,11 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 3029298 Default Id generation limited to 127 elements
 3029926 Benerator does not validate descriptor files
 3029944 Benerator does not build on Windows
+3032515 <variable>s cannot access each other
+3032513 <variables> are not calculated in the specified order
+3032520 bug when invoking methods on entity attributes
+3032524 Bug on dynamic database selectors with BeneratorScript
+3032528 DB queries for entities fail when using SQL join
+3032533 Entity DB queries fail in <variable>s
+3032535 dynamic DB queries are not reissued on distr. and cyclic
+3032990 sub <generate> elements are not reset on new parent
