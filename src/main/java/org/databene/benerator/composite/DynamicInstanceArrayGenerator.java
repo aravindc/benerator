@@ -89,4 +89,9 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
         return countGenerator.isParallelizable() && super.isParallelizable();
     }
     
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName() + "[" + source + ", " + countGenerator + "]";
+	}
+
 }
