@@ -624,19 +624,44 @@ public class BeneratorScriptParser {
     }
 
     private static Expression<Boolean> convertEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                return ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new EqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+    }
+    
+    static class EqualsExpression extends BinaryExpression<Boolean> {
+
+		public EqualsExpression(Expression<?> term1, Expression<?> term2) {
+	        super(term1, term2);
+        }
+
+		public Boolean evaluate(Context context) {
+	        return ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
+        }
+    	
+		@Override
+		public String toString() {
+		    return "(" + term1 + " == " + term2 + ")";
+		}
     }
 
     private static Expression<Boolean> convertNotEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                return !ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new NotEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+    }
+    
+    static class NotEqualsExpression extends BinaryExpression<Boolean> {
+
+		public NotEqualsExpression(Expression<?> term1, Expression<?> term2) {
+	        super(term1, term2);
+        }
+
+		public Boolean evaluate(Context context) {
+	        return !ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
+        }
+    	
+		@Override
+		public String toString() {
+		    return "(" + term1 + " != " + term2 + ")";
+		}
+		
     }
 
     private static Expression<Boolean> convertLess(CommonTree node) throws ParseException {
@@ -683,13 +708,28 @@ public class BeneratorScriptParser {
     }
 
     private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
-                boolean b2 = AnyConverter.convert(term2.evaluate(context), Boolean.class);
-				return b1 && b2;
-            }
-		};
+		return new ConditionalAndExpression(
+				convertNode(childAt(0, node)), 
+				convertNode(childAt(1, node)));
+    }
+    
+    static class ConditionalAndExpression extends BinaryExpression<Boolean> {
+
+		public ConditionalAndExpression(Expression<?> term1, Expression<?> term2) {
+	        super(term1, term2);
+        }
+
+		public Boolean evaluate(Context context) {
+            boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
+            boolean b2 = AnyConverter.convert(term2.evaluate(context), Boolean.class);
+			return b1 && b2;
+        }
+    	
+		@Override
+		public String toString() {
+		    return "(" + term1 + " && " + term2 + ")";
+		}
+		
     }
 
     @SuppressWarnings("unchecked")
