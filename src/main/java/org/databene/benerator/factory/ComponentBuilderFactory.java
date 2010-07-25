@@ -54,7 +54,6 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.ConstantNullableGenerator;
-import org.databene.benerator.nullable.NullInjectingGeneratorProxy;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.nullable.NullableScriptGenerator;
