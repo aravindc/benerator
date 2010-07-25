@@ -179,9 +179,9 @@
 			<xs:attribute name="url"         type="xs:string"/>
 			<xs:attribute name="driver"      type="xs:string"/>
 			<xs:attribute name="user"        type="xs:string"/>
+			<xs:attribute name="password"    type="xs:string"/>
 			<xs:attribute name="schema"      type="xs:string"/>
 			<xs:attribute name="tableFilter" type="xs:string"/>
-			<xs:attribute name="password"    type="xs:string"/>
 			<xs:attribute name="batch"       type="xs:string"/>
             <xs:attribute name="fetchSize"   type="xs:string"/>
             <xs:attribute name="readOnly"    type="xs:string"/>
@@ -520,21 +520,6 @@
 		<xs:attribute name="unique"       type="xs:string"/>
 		<xs:attribute name="distribution" type="xs:string"/>
 		<xs:attribute name="cyclic"       type="xs:string"/>
-		<xs:attribute name="proxy">
-			<xs:simpleType>
-				<xs:union>
-					<xs:simpleType> <!-- (skip | repeat) -->
-						<xs:restriction base="xs:string">
-							<xs:enumeration value="skip"/>
-							<xs:enumeration value="repeat"/>
-						</xs:restriction>
-					</xs:simpleType>
-					<xs:simpleType>
-						<xs:restriction base="xs:string"/>
-					</xs:simpleType>
-				</xs:union>
-			</xs:simpleType>
-		</xs:attribute>
 	</xs:attributeGroup>
 	
 </xs:schema>
