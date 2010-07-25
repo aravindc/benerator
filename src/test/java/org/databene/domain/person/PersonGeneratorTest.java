@@ -126,8 +126,11 @@ public class PersonGeneratorTest extends GeneratorClassTest {
         for (int i = 0; i < 1000; i++) {
             Person person = generator.generate();
             int age = TimeUtil.yearsBetween(person.getBirthDate(), today);
-            assertTrue("Person is expected to be at least 18 years old, but is " + age, age >= 18);
-            assertTrue("Person is expected to be at most 21 years old, but is " + age, age <= 21);
+            assertTrue("Person is expected to be at least 18 years old, but is " + age + ", " +
+            		"birthDate=" + person.getBirthDate(), 
+            		age >= 18);
+            assertTrue("Person is expected to be at most 21 years old, but is " + age + ", " +
+            		"birthDate=" + person.getBirthDate(), age <= 21);
             agesUsed.add(age);
             logger.debug(person.toString());
         }
