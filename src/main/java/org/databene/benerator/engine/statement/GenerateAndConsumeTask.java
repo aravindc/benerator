@@ -67,7 +67,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     private Consumer<?> consumer;
     
     public GenerateAndConsumeTask(String taskName, Generator<?> generator, 
-    		Expression<Consumer<?>> consumerExpr, boolean isSubCreator) {
+    		Expression<Consumer<?>> consumerExpr, boolean isSubCreator, BeneratorContext context) {
     	this.taskName = taskName;
     	Assert.notNull(generator, "generator");
         this.generator = generator;
@@ -75,6 +75,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     	this.subStatements = new ArrayList<Statement>();
         this.isSubCreator = isSubCreator;
         this.generatorInitialized = new AtomicBoolean(false);
+        this.context = context;
     }
 
     // interface -------------------------------------------------------------------------------------------------------
@@ -92,7 +93,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 			consumer.flush();
     }
 
-    public Consumer<?> getConsumer(Context context) {
+    public Consumer<?> getConsumer() {
     	if (consumer == null)
     		consumer = ExpressionUtil.evaluate(consumerExpr, context);
     	return consumer;
@@ -114,7 +115,6 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     
     @SuppressWarnings("unchecked")
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
-    	this.context = (BeneratorContext) ctx;
     	if (!generatorInitialized.get())
     		initGenerator(context);
     	try {
@@ -126,7 +126,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 	        }
 	        context.countGenerations(1);
 	        // consume data object
-        	Consumer consumer = getConsumer(context);
+        	Consumer consumer = getConsumer();
         	if (consumer != null)
         		consumer.startConsuming(data);
         	// generate and consume sub data objects

@@ -68,10 +68,11 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 		Generator<Entity> generator = new IteratingGenerator<Entity>(new AB());
 		final ListConsumer consumer = new ListConsumer();
 		Expression<Consumer<?>> consumerExpr = new ConstantExpression<Consumer<?>>(consumer);
-		GeneratorTask task = new GenerateAndConsumeTask("tn", generator, consumerExpr, false);
+		BeneratorContext context = new BeneratorContext();
+		GeneratorTask task = new GenerateAndConsumeTask("tn", generator, consumerExpr, false, context);
 		checkIteration(task, consumer);
 		consumer.list.clear();
-		task.prepare(new BeneratorContext());
+		task.prepare(context);
 		checkIteration(task, consumer);
 		task.close();
 		assertEquals("tn", task.getTaskName());

@@ -158,7 +158,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, consumer, isSubCreator);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, consumer, isSubCreator, context);
 
 		// handle sub-<generate/>
 		for (Element child : XMLUtil.getChildElements(element)) {

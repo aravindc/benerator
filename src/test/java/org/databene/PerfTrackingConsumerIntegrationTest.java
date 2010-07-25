@@ -79,7 +79,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 
 	private void checkStats(TimedGeneratorStatement statement) {
 	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) ((LazyStatement) statement.getRealStatement()).getTarget(null);
-		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer(null);
+		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer();
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
