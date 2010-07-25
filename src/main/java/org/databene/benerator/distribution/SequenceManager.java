@@ -34,6 +34,8 @@ import org.databene.benerator.distribution.sequence.ShuffleSequence;
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.benerator.distribution.sequence.WedgeSequence;
 import org.databene.commons.ConfigurationError;
+import org.databene.domain.math.FibonacciSequence;
+import org.databene.domain.math.PadovanSequence;
 
 /**
  * Manages {@link Sequence}s.<br/><br/>
@@ -53,6 +55,8 @@ public class SequenceManager {
     public static final Sequence WEDGE_SEQUENCE       = register(new WedgeSequence());
     public static final Sequence BIT_REVERSE_SEQUENCE = register(new BitReverseSequence());
     public static final Sequence EXPAND_SEQUENCE      = register(new ExpandSequence());
+    public static final Sequence FIBONACCI_SEQUENCE   = register(new FibonacciSequence());
+    public static final Sequence PADOVAN_SEQUENCE     = register(new PadovanSequence());
     
     // Construction & lookup -------------------------------------------------------------------------------------------
     
