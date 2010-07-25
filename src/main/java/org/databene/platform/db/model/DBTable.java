@@ -34,6 +34,8 @@ import org.databene.commons.db.DBUtil;
 import org.databene.model.depend.Dependent;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -253,4 +255,10 @@ public class DBTable implements Dependent<DBTable>{
 	    return builder.toString();
     }
 
+    // row operations --------------------------------------------------------------------------------------------------
+
+    public Iterator<DBRow> rowIterator(Connection connection) throws SQLException {
+        return new DBRowIterator(this, connection);
+    }
+    
 }
