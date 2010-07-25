@@ -59,4 +59,9 @@ public class ConditionalExpression<E> extends DynamicExpression<E> {
         return (cond ? alt1 : alt2).evaluate(context);
     }
 
+	@Override
+	public String toString() {
+	    return "(" + condition + " ? " + alt1 + " : " + alt2 + ")";
+	}
+	
 }
