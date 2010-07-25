@@ -51,7 +51,6 @@ public class PersonGenerator extends CompositeGenerator<Person> {
 	
 	private String datasetName;
 	private Locale locale;
-	private double femaleQuota;
 	
     private GenderGenerator genderGen;
     private GivenNameGenerator maleGivenNameGen;
@@ -81,16 +80,26 @@ public class PersonGenerator extends CompositeGenerator<Person> {
     	super(Person.class);
         this.datasetName = datasetName;
         this.locale = locale;
+		genderGen = registerComponent(new GenderGenerator(0.5));
+        birthDateGenerator = registerComponent(new BirthDateGenerator(15, 105));
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
+    public void setMinAgeYears(int minAgeYears) {
+    	birthDateGenerator.setMinAgeYears(minAgeYears);
+    }
+    
+    public void setMaxAgeYears(int maxAgeYears) {
+    	birthDateGenerator.setMaxAgeYears(maxAgeYears);
+    }
+    
 	public double getFemaleQuota() {
-		return femaleQuota;
+		return genderGen.getFemaleQuota();
 	}
 	
 	public void setFemaleQuota(double femaleQuota) {
-		this.femaleQuota = femaleQuota;
+		this.genderGen.setFemaleQuota(femaleQuota);
 	}
 	
 	public double getNobleQuota() {
@@ -127,9 +136,7 @@ public class PersonGenerator extends CompositeGenerator<Person> {
     public synchronized void init(GeneratorContext context) {
 		secondNameTest = registerComponent(new BooleanGenerator(0.2));
 		secondNameTest.init(context);
-		genderGen = registerComponent(new GenderGenerator(femaleQuota));
 		genderGen.init(context);
-        birthDateGenerator = registerComponent(new BirthDateGenerator(15, 105));
         birthDateGenerator.init(context);
         acadTitleGen = registerComponent(new AcademicTitleGenerator(locale));
         acadTitleGen.init(context);

@@ -27,13 +27,18 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.TimeUtil;
 import org.databene.domain.address.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Tests the {@link PersonGenerator}.<br/>
@@ -108,6 +113,25 @@ public class PersonGeneratorTest extends GeneratorClassTest {
             assertNotNull(person);
             logger.debug(person.toString());
         }
+    }
+
+    @Test
+    public void testMinMaxAgeYears() {
+        PersonGenerator generator = new PersonGenerator();
+        generator.setMinAgeYears(18);
+        generator.setMaxAgeYears(21);
+        generator.init(context);
+        Date today = TimeUtil.today();
+        Set<Integer> agesUsed = new HashSet<Integer>();
+        for (int i = 0; i < 1000; i++) {
+            Person person = generator.generate();
+            int age = TimeUtil.yearsBetween(person.getBirthDate(), today);
+            assertTrue("Person is expected to be at least 18 years old, but is " + age, age >= 18);
+            assertTrue("Person is expected to be at most 21 years old, but is " + age, age <= 21);
+            agesUsed.add(age);
+            logger.debug(person.toString());
+        }
+        assertEquals(CollectionUtil.toSet(18, 19, 20, 21), agesUsed);
     }
 
 }
