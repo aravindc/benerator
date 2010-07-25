@@ -56,18 +56,39 @@ public class BirthDateGenerator extends GeneratorProxy<Date> {
         this.minAgeYears = minAgeYears;
         this.maxAgeYears = maxAgeYears;
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
-    @Override
+    public int getMinAgeYears() {
+    	return minAgeYears;
+    }
+
+	public void setMinAgeYears(int minAgeYears) {
+    	this.minAgeYears = minAgeYears;
+    }
+
+	public int getMaxAgeYears() {
+    	return maxAgeYears;
+    }
+
+	public void setMaxAgeYears(int maxAgeYears) {
+    	this.maxAgeYears = maxAgeYears;
+    }
+
+    // Generator interface ---------------------------------------------------------------------------------------------
+
+	@Override
     public synchronized void init(GeneratorContext context) {
-        Date today = TimeUtil.today();
-        Calendar min = TimeUtil.calendar(today);
-        min.add(Calendar.YEAR, -maxAgeYears);
-        Calendar max = TimeUtil.calendar(today);
+        Calendar min = TimeUtil.calendar(TimeUtil.tomorrow());
+        min.add(Calendar.YEAR, - maxAgeYears - 1);
+        Calendar max = TimeUtil.calendar(TimeUtil.yesterday()); // TODO should be today, but there's a bug in DateGenerator
         max.add(Calendar.YEAR, -minAgeYears);
 		setSource(new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), SequenceManager.RANDOM_SEQUENCE));
         super.init(context);
     }
     
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[minAgeYears=" + minAgeYears + ", maxAgeYears=" + maxAgeYears + ']';
