@@ -45,6 +45,7 @@ import java.sql.ResultSet;
  * Creates Iterators for stepping through query results.<br/>
  * <br/>
  * Created: 17.08.2007 18:48:20
+ * @author Volker Bergmann
  */
 public class QueryIterable implements HeavyweightIterable<ResultSet> {
     

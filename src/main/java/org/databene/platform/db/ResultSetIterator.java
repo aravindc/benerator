@@ -39,6 +39,7 @@ import java.sql.Statement;
  * Wraps a ResultSet into the semantic of a {@link HeavyweightIterator}.
  * <br/>
  * Created: 15.08.2007 18:19:25
+ * @author Volker Bergmann
  * @see HeavyweightIterator
  */
 public class ResultSetIterator implements HeavyweightIterator<ResultSet> {
