@@ -88,12 +88,18 @@ public class DBForeignKeyConstraint extends DBConstraint {
 
     @Override
     public String toString() {
-    	StringBuilder builder = new StringBuilder("\t(");
-    	for (DBForeignKeyColumn fkc : foreignKeyColumns)
-    		builder.append(fkc.getForeignKeyColumn().getName()).append(' ');
+    	StringBuilder builder = new StringBuilder("(");
+		builder.append(foreignKeyColumns.get(0).getForeignKeyColumn().getName());
+    	for (int i = 1; i < foreignKeyColumns.size(); i++) {
+    		DBForeignKeyColumn fkc = foreignKeyColumns.get(i);
+    		builder.append(", ").append(fkc.getForeignKeyColumn().getName());
+    	}
     	builder.append(") -> ").append(foreignKeyColumns.get(0).getTargetColumn().getTable().getName()).append("(");
-    	for (DBForeignKeyColumn fkc : foreignKeyColumns)
-    		builder.append(fkc.getTargetColumn().getName()).append(' ');
+		builder.append(foreignKeyColumns.get(0).getTargetColumn().getName());
+    	for (int i = 1; i < foreignKeyColumns.size(); i++) {
+    		DBForeignKeyColumn fkc = foreignKeyColumns.get(i);
+    		builder.append(", ").append(fkc.getTargetColumn().getName());
+    	}
         return builder.append(")").toString();
     }
     
