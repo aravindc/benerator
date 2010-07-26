@@ -107,6 +107,21 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 
     @SuppressWarnings("unchecked")
     @Test
+	public void testScriptWithConverterAttribute() {
+		PartDescriptor name = new PartDescriptor("name");
+		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
+		type.setScript("'abc'");
+		type.setConverter("org.databene.commons.converter.ToUpperCaseConverter");
+		ComponentBuilder builder = createComponentBuilder(name);
+		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		helper.init(context);
+		ProductWrapper<String> wrapper = new ProductWrapper<String>();
+		for (int i = 0; i < 10; i++)
+			assertEquals("ABC", helper.generate(wrapper).product);
+	}
+
+    @SuppressWarnings("unchecked")
+    @Test
 	public void testEnumNameScriptAttribute() {
 		PartDescriptor part = new PartDescriptor("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) part.getLocalType(false);

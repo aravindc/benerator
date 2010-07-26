@@ -59,7 +59,6 @@ import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.nullable.NullableScriptGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Context;
 import org.databene.commons.TypedIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,13 +86,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         NullableGenerator<?> generator;
         generator = createNullableScriptBuilder(descriptor, context);
         if (generator != null)
-        	return wrapGenerator(generator, descriptor);
+        	return builderFromGenerator(generator, descriptor);
         generator = createNullQuotaOneBuilder(descriptor);
         if (generator != null)
-        	return wrapGenerator(generator, descriptor);
+        	return builderFromGenerator(generator, descriptor);
         generator = createNullableGenerator(descriptor, context);
         if (generator != null)
-        	return wrapGenerator(generator, descriptor);
+        	return builderFromGenerator(generator, descriptor);
         
         // ...
         if (descriptor instanceof ArrayElementDescriptor)
@@ -112,7 +111,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             throw new ConfigurationError("Not a supported element: " + descriptor.getClass());
     }
 
-    private static ComponentBuilder<?> wrapGenerator(NullableGenerator<?> generator, ComponentDescriptor descriptor) {
+    private static ComponentBuilder<?> builderFromGenerator(NullableGenerator<?> generator, ComponentDescriptor descriptor) {
     	if (descriptor instanceof ArrayElementDescriptor) {
     		int index = ((ArrayElementDescriptor) descriptor).getIndex();
     		return new ArrayElementBuilder(index, generator);
@@ -120,7 +119,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     		return new PlainEntityComponentBuilder(descriptor.getName(), generator);
     }
 
-	protected static NullableScriptGenerator createNullableScriptBuilder(ComponentDescriptor component, Context context) {
+	protected static NullableGenerator<?> createNullableScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
     	TypeDescriptor type = component.getTypeDescriptor();
         if (type == null)
         	return null;
@@ -128,7 +127,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (scriptText == null)
         	return null;
         Script script = ScriptUtil.parseScriptText(scriptText);
-        return new NullableScriptGenerator(script, context);
+        NullableGenerator<?> generator = new NullableScriptGenerator(script, context);
+        return NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
     }
 
     private static NullableGenerator<?> createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
@@ -172,7 +172,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     private static ComponentBuilder<?> wrapWithNullInjector(Generator<?> source, ComponentDescriptor descriptor) {
     	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
     	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
-        return wrapGenerator(generator, descriptor);
+        return builderFromGenerator(generator, descriptor);
     }
 
 	@SuppressWarnings("unchecked")

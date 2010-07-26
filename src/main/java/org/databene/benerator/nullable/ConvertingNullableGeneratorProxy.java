@@ -36,6 +36,7 @@ public class ConvertingNullableGeneratorProxy<S, P> extends NullableGeneratorWra
 	
 	public ConvertingNullableGeneratorProxy(NullableGenerator<S> realGenerator, Converter<S, P> converter) {
 		super(realGenerator); 
+		this.converter = converter;
 	}
 	
 	public Class<P> getGeneratedType() {

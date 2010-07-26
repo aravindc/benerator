@@ -21,7 +21,14 @@
 
 package org.databene.benerator.nullable;
 
+import static org.databene.model.data.TypeDescriptor.PATTERN;
+
 import org.databene.benerator.Generator;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.factory.DescriptorUtil;
+import org.databene.commons.BeanUtil;
+import org.databene.commons.Converter;
+import org.databene.model.data.TypeDescriptor;
 
 /**
  * TODO Document class.<br/><br/>
@@ -43,5 +50,17 @@ public class NullableGeneratorFactory {
 		else
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+    public static NullableGenerator<?> createConvertingGenerator(TypeDescriptor descriptor,
+            NullableGenerator<?> generator, BeneratorContext context) {
+        Converter<?, ?> converter = DescriptorUtil.getConverter(descriptor, context);
+        if (converter != null) {
+            if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN))
+                BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
+            return new ConvertingNullableGeneratorProxy(generator, converter);
+        }
+        return generator;
+    }
+
 }

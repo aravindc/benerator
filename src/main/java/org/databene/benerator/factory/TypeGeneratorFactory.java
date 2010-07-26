@@ -98,7 +98,7 @@ public class TypeGeneratorFactory {
     }
 
     @SuppressWarnings("unchecked")
-    protected static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
+    public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
         Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
