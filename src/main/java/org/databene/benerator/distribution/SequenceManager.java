@@ -28,6 +28,7 @@ import java.util.Map;
 import org.databene.benerator.distribution.sequence.BitReverseSequence;
 import org.databene.benerator.distribution.sequence.CumulatedSequence;
 import org.databene.benerator.distribution.sequence.ExpandSequence;
+import org.databene.benerator.distribution.sequence.HeadSequence;
 import org.databene.benerator.distribution.sequence.RandomSequence;
 import org.databene.benerator.distribution.sequence.RandomWalkSequence;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
@@ -57,6 +58,7 @@ public class SequenceManager {
     public static final Sequence EXPAND_SEQUENCE      = register(new ExpandSequence());
     public static final Sequence FIBONACCI_SEQUENCE   = register(new FibonacciSequence());
     public static final Sequence PADOVAN_SEQUENCE     = register(new PadovanSequence());
+    public static final Sequence SINGLE_SEQUENCE      = register(new HeadSequence());
     
     // Construction & lookup -------------------------------------------------------------------------------------------
     
