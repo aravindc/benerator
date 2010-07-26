@@ -110,7 +110,7 @@ public class StepSequence extends Sequence {
 	}
 
 	private <T extends Number> Number incrementToUse(T precision) {
-	    return (increment != null ? increment : precision);
+	    return (increment != null ? increment : (precision != null ? precision : 1));
     }
 
 	@Override
