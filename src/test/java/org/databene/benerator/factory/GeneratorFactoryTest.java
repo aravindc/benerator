@@ -40,6 +40,7 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.distribution.function.GaussianFunction;
+import org.databene.benerator.distribution.sequence.HeadSequence;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGeneratorFactoryTest;
@@ -85,7 +86,8 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision) {
         for (Sequence sequence : SequenceManager.registeredSequences())
-            checkNumberGenerator(type, min, max, precision, sequence);
+        	if (!(sequence instanceof HeadSequence))
+        		checkNumberGenerator(type, min, max, precision, sequence);
         for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
             checkNumberGenerator(type, min, max, precision, function);
     }
@@ -296,6 +298,8 @@ public class GeneratorFactoryTest extends GeneratorTest {
     public void testGetCollectionGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (Sequence sequence : SequenceManager.registeredSequences()) {
+        	if (sequence instanceof HeadSequence)
+        		continue;
             Generator<List> generator = GeneratorFactory.getCollectionGenerator(
                     List.class, source, 0, 5, sequence);
             initAndUseGenerator(generator);
@@ -321,6 +325,8 @@ public class GeneratorFactoryTest extends GeneratorTest {
     public void testGetArrayGeneratorByCardinalityDistributionType() {
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (Sequence sequence : SequenceManager.registeredSequences()) {
+        	if (sequence instanceof HeadSequence)
+        		continue;
             Generator<Integer[]> generator = GeneratorFactory.getArrayGenerator(source, Integer.class, 0, 5, sequence);
             initAndUseGenerator(generator);
         }
