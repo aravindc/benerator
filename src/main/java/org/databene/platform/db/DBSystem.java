@@ -707,7 +707,7 @@ public class DBSystem extends AbstractStorageSystem {
                 if (info.type != null)
                 	jdbcValue = AnyConverter.convert(jdbcValue, info.type);
                 try {
-                    if (jdbcValue != null || (dialect instanceof OracleDialect && info.sqlType == Types.NCLOB)) // the second expression causes a workaround for Oracle's unability to perform a setNull() for NCLOBs
+                    if (jdbcValue != null || (dialect instanceof OracleDialect && (info.sqlType == Types.NCLOB || info.sqlType == Types.OTHER))) // the second expression causes a workaround for Oracle's unability to perform a setNull() for NCLOBs and NVARCHAR2
                         statement.setObject(i + 1, jdbcValue);
                     else
                         statement.setNull(i + 1, info.sqlType);
