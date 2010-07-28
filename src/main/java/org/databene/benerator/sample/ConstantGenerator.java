@@ -26,7 +26,6 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
@@ -62,14 +61,6 @@ public class ConstantGenerator<E> extends ThreadSafeGenerator<E> {
     }
 
     // config properties -----------------------------------------------------------------------------------------------
-
-    /** convenience setter for generic setup */
-    public void setValues(E[] value) {
-        if (value.length != 0)
-            throw new InvalidGeneratorSetupException("The number of values must be 1 for the "
-                    + getClass().getSimpleName());
-        this.value = value[0];
-    }
 
     /** Returns the property 'value' */
     public E getValue() {
