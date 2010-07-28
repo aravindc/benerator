@@ -29,7 +29,6 @@ package org.databene.benerator.engine;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
@@ -61,8 +60,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	
     private DefaultContext properties;
 	private ClassCache classCache;
-	
-	private volatile AtomicLong totalGenerationCount = new AtomicLong();
 	
     protected String  defaultEncoding      = SystemInfo.getFileEncoding();
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
@@ -254,14 +251,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		this.maxCount = maxCount;
 	}
 	
-	public void countGenerations(long newGenerations) {
-		this.totalGenerationCount.addAndGet(newGenerations);
-	}
-	
-	public long getTotalGenerationCount() {
-	    return totalGenerationCount.get();
-    }
-
 	public ExecutorService getExecutorService() {
     	return executorService;
     }

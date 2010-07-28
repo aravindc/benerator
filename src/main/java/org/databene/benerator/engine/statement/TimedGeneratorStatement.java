@@ -27,6 +27,7 @@
 package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +53,10 @@ public class TimedGeneratorStatement extends StatementProxy {
 
     @Override
     public void execute(BeneratorContext context) {
-    	long c0 = context.getTotalGenerationCount();
+    	long c0 = BeneratorMonitor.INSTANCE.getTotalGenerationCount();
 	    long t0 = System.currentTimeMillis();
 		super.execute(context);
-		long dc = context.getTotalGenerationCount() - c0;
+		long dc = BeneratorMonitor.INSTANCE.getTotalGenerationCount() - c0;
 		long dt = System.currentTimeMillis() - t0;
 		if (dc == 0)
 			logger.info("No data created for '" + name + "' setup");

@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.ConsumerMock;
@@ -58,6 +59,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 	
 	@Test
 	public void testAttributes() throws Exception {
+		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(
 				"<generate type='dummy' count='{c}' threads='{tc}' pageSize='{ps}' consumer='cons'/>");
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(false);
@@ -68,7 +70,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		statement.execute(context);
 		assertEquals(100, consumer.startConsumingCount.get());
 		assertEquals(100, consumer.finishConsumingCount.get());
-		assertEquals(100L, context.getTotalGenerationCount());
+		assertEquals(100L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
 	@Test
@@ -96,6 +98,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 	@SuppressWarnings("unchecked")
     @Test
 	public void testSimpleSubGenerate() throws Exception {
+		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(
 				"<generate type='top' count='3' consumer='cons1'>" +
         		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(false, 2)'/>" +
@@ -111,12 +114,13 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		assertTrue(innerConsumer.flushCount.get() > 0);
 		assertTrue(outerConsumer.closeCount.get() == 0);
 		assertTrue(innerConsumer.closeCount.get() > 0);
-		assertEquals(9L, context.getTotalGenerationCount());
+		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
 	@SuppressWarnings("unchecked")
     @Test
 	public void testSubGenerateReset() throws Exception {
+		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
 		Statement statement = parse(
 				"<generate type='top' count='3'>" +
         		"    <generate type='sub' count='2' consumer='new " + ConsumerMock.class.getName() + "(true)'>" +
@@ -135,7 +139,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		assertEquals(2, innerConsumer.products.get(5).get("x"));
 		assertTrue(innerConsumer.flushCount.get() > 0);
 		assertTrue(innerConsumer.closeCount.get() > 0);
-		assertEquals(9L, context.getTotalGenerationCount());
+		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
 
     /** Tests a sub loop that derives its loop length from a parent attribute. */

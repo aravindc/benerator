@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
@@ -124,7 +125,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 		        Thread.yield();
 	        	return TaskResult.UNAVAILABLE;
 	        }
-	        context.countGenerations(1);
+	        BeneratorMonitor.INSTANCE.countGenerations(1);
 	        // consume data object
         	Consumer consumer = getConsumer();
         	if (consumer != null)

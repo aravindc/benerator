@@ -21,42 +21,27 @@
 
 package org.databene.benerator.engine;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Locale;
-
-import org.databene.commons.SystemInfo;
-import org.databene.domain.address.Country;
-import org.databene.script.ScriptUtil;
 import org.junit.Test;
 
 /**
- * Tests the {@link BeneratorContext}.<br/><br/>
- * Created: 31.03.2010 15:15:07
- * @since 0.6.0
+ * Tests the {@link BeneratorMonitor}.<br/><br/>
+ * Created: 27.07.2010 21:32:22
+ * @since 0.6.3
  * @author Volker Bergmann
  */
-public class BeneratorContextTest {
+public class BeneratorMonitorTest {
 
 	@Test
-	public void testDefaults() {
-		BeneratorContext context = new BeneratorContext();
-		assertEquals(".", context.getContextUri());
-		assertEquals(Country.getDefault().getIsoCode(), context.getDefaultDataset());
-		assertEquals("fatal", context.getDefaultErrorHandler());
-		assertEquals(SystemInfo.getLineSeparator(), context.getDefaultLineSeparator());
-		assertEquals(Locale.getDefault(), context.getDefaultLocale());
-		assertEquals(1, context.getDefaultPageSize());
-		assertEquals("ben", context.getDefaultScript());
-		assertEquals("ben", ScriptUtil.getDefaultScriptEngine());
-		assertEquals(',', context.getDefaultSeparator());
-		assertEquals(null, context.getMaxCount());
+	public void testGenerationCount() throws Exception {
+		BeneratorMonitor monitor = BeneratorMonitor.INSTANCE;
+		monitor.setTotalGenerationCount(0);
+		assertEquals(0L, monitor.getTotalGenerationCount());
+		monitor.countGenerations(100);
+		monitor.countGenerations(89);
+		assertEquals(189, monitor.getTotalGenerationCount());
+		Thread.sleep(60000);
 	}
-	
-	@Test
-	public void testSysPropAccess() {
-		BeneratorContext context = new BeneratorContext();
-		assertEquals(System.getProperty("user.name"), context.get("user.name"));
-	}
-	
+
 }

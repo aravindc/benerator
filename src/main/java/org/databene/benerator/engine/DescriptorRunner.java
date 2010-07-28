@@ -126,9 +126,9 @@ public class DescriptorRunner implements ResourceManager {
 			long elapsedTime = java.lang.System.currentTimeMillis() - startTime;
 			resourceManager.close();
 			StringBuilder message = new StringBuilder("Created a total of ")
-				.append(context.getTotalGenerationCount()).append(" entities ");
+				.append(BeneratorMonitor.INSTANCE.getTotalGenerationCount()).append(" entities ");
 			if (elapsedTime != 0) {
-	            long throughput = context.getTotalGenerationCount() * 3600000L / elapsedTime;
+	            long throughput = BeneratorMonitor.INSTANCE.getTotalGenerationCount() * 3600000L / elapsedTime;
 	            message.append("in ").append(elapsedTime).append(" ms (~")
 					.append(RoundedNumberFormat.format(throughput, 0)).append(" p.h.)");
             }
