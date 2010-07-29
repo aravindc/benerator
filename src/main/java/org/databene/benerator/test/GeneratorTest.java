@@ -73,6 +73,11 @@ public abstract class GeneratorTest {
     	return generator;
     }
     
+    public void printProducts(Generator<?> generator, int n) {
+    	for (int i = 0; i < n; i++)
+    		System.out.println(generator.generate());
+    }
+    
     public static <T> Map<T, AtomicInteger> countProducts(Generator<T> generator, int n) {
     	ObjectCounter<T> counter = new ObjectCounter<T>(Math.min(n, 1000));
     	for (int i = 0; i < n; i++) {
@@ -322,11 +327,13 @@ public abstract class GeneratorTest {
     private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
-            assertNotNull("Generator has gone unavailable before creating the required number of products ",
+            assertNotNull("Generator has gone unavailable before creating the required number of products, " +
+            		"required " + n + " but was " + i,
                     product);
             logger.debug("created " + format(product));
             for (Validator validator : validators) {
-                assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
+                assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator +
+                		", failed after " + i + " generations",
                         validator.valid(product));
             }
         }
