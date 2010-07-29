@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,9 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.ConstantTestGenerator;
-import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.Generator;
+import org.databene.benerator.SequenceTestGenerator;
+import org.databene.benerator.test.GeneratorTest;
 
 import java.util.Arrays;
 import org.junit.Test;
@@ -39,21 +41,28 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class CompositeArrayGeneratorTest extends GeneratorClassTest {
-
-    public CompositeArrayGeneratorTest() {
-        super(CompositeArrayGenerator.class);
-    }
+public class CompositeArrayGeneratorTest extends GeneratorTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test() {
+    public void testNonUnique() {
         ConstantTestGenerator<Integer> source1 = new ConstantTestGenerator<Integer>(1);
         ConstantTestGenerator<Integer> source2 = new ConstantTestGenerator<Integer>(2);
-        CompositeArrayGenerator<Integer> generator = new CompositeArrayGenerator<Integer>(Integer.class, source1, source2);
+        CompositeArrayGenerator<Integer> generator = new CompositeArrayGenerator<Integer>(Integer.class, false, source1, source2);
+        generator.init(context);
         Integer[] EXPECTED_ARRAY = new Integer[] {1, 2};
         for (int i = 0; i < 10; i++)
-            assertTrue(Arrays.equals(generator.generate(), EXPECTED_ARRAY));
+            assertTrue(Arrays.equals(EXPECTED_ARRAY, generator.generate()));
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnique() {
+        Generator<Integer> source1 = new SequenceTestGenerator<Integer>(1, 2);
+        Generator<Integer> source2 = new SequenceTestGenerator<Integer>(3, 4);
+        CompositeArrayGenerator<Integer> generator = new CompositeArrayGenerator<Integer>(Integer.class, true, source1, source2);
+        generator.init(context);
+        expectUniqueProducts(generator, 4).withCeasedAvailability();
     }
     
 }
