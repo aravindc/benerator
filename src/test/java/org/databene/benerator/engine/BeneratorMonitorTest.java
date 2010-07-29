@@ -41,7 +41,6 @@ public class BeneratorMonitorTest {
 		monitor.countGenerations(100);
 		monitor.countGenerations(89);
 		assertEquals(189, monitor.getTotalGenerationCount());
-		Thread.sleep(60000);
 	}
 
 }
