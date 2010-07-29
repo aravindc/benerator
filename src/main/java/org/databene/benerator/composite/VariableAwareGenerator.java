@@ -78,6 +78,7 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
         	varGen.init(context);
         	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
 			variableResults.put(entry.getKey(), result);
+			context.set(entry.getKey(), ProductWrapper.unwrap(result));
         }
         this.variablesCalculated = true;
         realGenerator.init(context);
