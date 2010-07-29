@@ -42,5 +42,9 @@ public class ProductWrapper<E> {
 	public String toString() {
 	    return product.toString();
 	}
+
+	public static Object unwrap(ProductWrapper<?> wrapper) {
+	    return (wrapper != null ? wrapper.product : null);
+    }
 	
 }
