@@ -47,25 +47,26 @@ import org.databene.commons.CollectionUtil;
  */
 public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
-    protected Generator<S>[] sources;
-    protected List<Generator<S>> availableSources;
+    protected Generator<? extends S>[] sources;
+    protected List<Generator<? extends S>> availableSources;
     
-    public MultiGeneratorWrapper(Generator<S> ... sources) {
+    @SuppressWarnings("unchecked")
+    public MultiGeneratorWrapper(Generator ... sources) {
         setSources(sources);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public Generator<S>[] getSources() {
+    public Generator<? extends S>[] getSources() {
         return sources;
     }
     
-    public synchronized void setSources(Generator<S> ... sources) {
+    public synchronized void setSources(Generator<? extends S> ... sources) {
         this.sources = sources;
         this.availableSources = CollectionUtil.toList(sources);
     }
 
-    public Generator<S> getSource(int index) {
+    public Generator<? extends S> getSource(int index) {
         return sources[index];
     }
     
@@ -84,14 +85,14 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     	assertNotInitialized();
         if (sources.length == 0)
             throw new InvalidGeneratorSetupException("sources", "is empty");
-        for (Generator<S> source : sources)
+        for (Generator<? extends S> source : sources)
             source.init(context);
         super.init(context);
     }
 
     @Override
     public synchronized void reset() {
-        for (Generator<S> source : sources)
+        for (Generator<? extends S> source : sources)
             source.reset();
         this.availableSources = CollectionUtil.toList(sources);
     	super.reset();
@@ -99,21 +100,21 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     @Override
     public synchronized void close() {
-        for (Generator<S> source : sources)
+        for (Generator<? extends S> source : sources)
             source.close();
         this.availableSources.clear();
     	super.close();
     }
     
     public boolean isThreadSafe() {
-    	for (Generator<S> source : sources)
+    	for (Generator<? extends S> source : sources)
     		if (!source.isThreadSafe())
     			return false;
         return true;
     }
     
     public boolean isParallelizable() {
-    	for (Generator<S> source : sources)
+    	for (Generator<? extends S> source : sources)
     		if (!source.isParallelizable())
     			return false;
         return true;
