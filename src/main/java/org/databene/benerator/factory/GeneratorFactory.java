@@ -27,7 +27,9 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
 import org.databene.benerator.*;
@@ -36,6 +38,7 @@ import org.databene.benerator.primitive.regex.RegexGeneratorFactory;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.*;
+import org.databene.commons.iterator.ArrayIterable;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVCellIterable;
@@ -115,6 +118,43 @@ public class GeneratorFactory {
     }
 
     // sample source ------------------------------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+	public static <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
+            Distribution distribution, boolean unique) {
+	    WeightedSample<?>[] samples = BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
+	    if (distribution == null && !unique && weightsUsed(samples)) {
+	    	AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
+	    	for (int i = 0; i < samples.length; i++) {
+	    		WeightedSample<?> sample = samples[i];
+	    		if (sample.getValue() == null)
+	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
+	    		generator.addSample(sample);
+	    	}
+	    	return generator;
+	    } else {
+	    	String[] values = new String[samples.length];
+	    	for (int i = 0; i < samples.length; i++) {
+	    		String value = String.valueOf(samples[i].getValue());
+	    		if (value == null)
+	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
+	    		values[i] = value;
+	    	}
+	        IteratingGenerator source = new IteratingGenerator(new ArrayIterable(values, String.class));
+	        if (distribution == null)
+	        	distribution = SequenceManager.RANDOM_SEQUENCE;
+	        Generator gen = GeneratorFactory.getConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	    	return distribution.applyTo(gen, unique);
+	    }
+    }
+
+    private static boolean weightsUsed(WeightedSample<?>[] samples) {
+	    for (WeightedSample<?> sample : samples)
+	    	if (sample.getWeight() != 1)
+	    		return true;
+	    return false;
+    }
+
 
     /**
      * Creates a generator that reads cell Strings from a CSV file and converts them into objects by a converter
@@ -333,7 +373,7 @@ public class GeneratorFactory {
     public static Generator<String> getMessageGenerator(
             String pattern, int minLength, int maxLength, Generator ... sources) {
         Generator<String> generator = new ConvertingGenerator<Object[], String>(
-                new CompositeArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
+                new SimpleCompositeArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
         generator = new ValidatingGeneratorProxy<String>(generator, new StringLengthValidator(minLength, maxLength));
         return generator;
     }
@@ -375,7 +415,7 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      */
     public static <T> Generator<T[]> getArrayGenerator(Class<T> componentType, Generator<T> ... sources) {
-        return new CompositeArrayGenerator<T>(componentType, sources);
+        return new SimpleCompositeArrayGenerator<T>(componentType, sources);
     }
 
     // wrappers --------------------------------------------------------------------------------------------------------
