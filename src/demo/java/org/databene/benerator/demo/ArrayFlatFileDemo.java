@@ -51,6 +51,7 @@ import java.math.BigDecimal;
  * Demonstrates the creation of flat files from an array generator.<br/>
  * <br/>
  * Created: 07.06.2007 12:04:39
+ * @author Volker Bergmann
  */
 public class ArrayFlatFileDemo {
 
@@ -89,7 +90,7 @@ public class ArrayFlatFileDemo {
     public static class TransactionGenerator extends CompositeArrayGenerator<Object> {
 
         public TransactionGenerator() {
-            super(Object.class, createSources());
+            super(Object.class, false, createSources());
         }
 
         @SuppressWarnings({ "unchecked", "cast" })
