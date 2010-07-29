@@ -40,10 +40,8 @@ import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorConstants;
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
-import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -63,7 +61,6 @@ import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.iterator.ArrayIterable;
 import org.databene.commons.iterator.DefaultTypedIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVLineIterable;
@@ -132,7 +129,6 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		return generator;
 	}
 
-    @SuppressWarnings("unchecked")
     protected static Generator<?> createSampleGenerator(
     		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
     	PrimitiveType primitiveType = descriptor.getPrimitiveType();
@@ -143,40 +139,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		if ("".equals(valueSpec))
 			return new ConstantGenerator<String>("");
         try {
-			WeightedSample<?>[] samples;
-		        samples = BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
-			Distribution distribution;
-			if (weightsUsed(samples)) {
-				AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
-				for (int i = 0; i < samples.length; i++) {
-					WeightedSample<?> sample = samples[i];
-					if (sample.getValue() == null)
-						throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-					generator.addSample(sample);
-				}
-				return generator;
-			} else {
-				Object[] values = new Object[samples.length];
-				for (int i = 0; i < samples.length; i++) {
-					Object value = samples[i].getValue();
-					if (value == null)
-						throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-					values[i] = value;
-				}
-				distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, true, context);
-		        IteratingGenerator source = new IteratingGenerator(new ArrayIterable(values, targetType));
-				return distribution.applyTo(source, uniqueness.isUnique());
-			}
+			Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+			return GeneratorFactory.createFromWeightedLiteralList(valueSpec, targetType, distribution, uniqueness.isUnique());
         } catch (org.databene.commons.ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
         }
-    }
-
-    private static boolean weightsUsed(WeightedSample<?>[] samples) {
-	    for (WeightedSample<?> sample : samples)
-	    	if (sample.getWeight() != 1)
-	    		return true;
-	    return false;
     }
 
 	@SuppressWarnings("unchecked")
