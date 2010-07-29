@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -27,52 +22,37 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-
-import java.lang.reflect.Array;
+import org.databene.benerator.GeneratorContext;
 
 /**
- * Keeps an array of generators, of which it combines the products to an array.<br/>
- * <br/>
- * Created: 26.08.2006 09:37:55
+ * Keeps an array of generators, of which it combines the products to an array.<br/><br/>
+ * Created: 28.07.2010 19:10:53
  * @since 0.1
  * @author Volker Bergmann
  */
-public class CompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
+public class CompositeArrayGenerator<S> extends GeneratorProxy<S[]> {
 
-    private Class<S> componentType;
-
-    // constructors ----------------------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    public CompositeArrayGenerator() {
-        super();
+	private Class<S> targetType;
+    private boolean unique;
+    private Generator<? extends S>[] sources;
+    
+	public CompositeArrayGenerator(Class<S> targetType, boolean unique, Generator<? extends S>... sources) {
+	    this.targetType = targetType;
+	    this.unique = unique;
+	    this.sources = sources;
     }
 
-    /** Initializes the generator to an array of source generators */
-    public CompositeArrayGenerator(Class<S> componentType, Generator<S> ... sources) {
-        super(sources);
-        this.componentType = componentType;
+	public void setUnique(boolean unique) {
+    	this.unique = unique;
     }
-
-    // Generator implementation ----------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    public Class<S[]> getGeneratedType() {
-        return (Class<S[]>) Array.newInstance(componentType, 0).getClass();
+    
+    @Override
+    public synchronized void init(GeneratorContext context) {
+		if (unique)
+			super.setSource(new UniqueCompositeArrayGenerator<S>(targetType, sources));
+		else
+			super.setSource(new SimpleCompositeArrayGenerator<S>(targetType, sources));
+	    super.init(context);
     }
-
-    /** @see org.databene.benerator.Generator#generate() */
-    @SuppressWarnings("unchecked")
-    public S[] generate() {
-        S[] array = (S[]) Array.newInstance(componentType, sources.length);
-        for (int i = 0; i < array.length; i++) {
-            try {
-                array[i] = sources[i].generate();
-            } catch (Exception e) {
-                throw new RuntimeException("Generation failed for generator #" + i + ": " + sources[i], e);
-            }
-        }
-        return array;
-    }
-
+    
 }
