@@ -31,7 +31,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DigitsGenerator extends ThreadSafeGenerator<String> {
+public class DigitsGenerator extends ThreadSafeGenerator<String> { // TODO support Distribution?
 
 	private int minLength;
 	private int maxLength;
