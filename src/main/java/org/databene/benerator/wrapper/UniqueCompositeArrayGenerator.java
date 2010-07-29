@@ -54,7 +54,6 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
     public UniqueCompositeArrayGenerator() {
         super();
     }
@@ -62,7 +61,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     /**
      * Initializes the generator to an array of source generators
      */
-    public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<S> ... sources) {
+    public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
         super(sources);
         this.componentType = componentType;
     }
@@ -121,7 +120,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         }
         // if available, fetch the digit's next value
         boolean rep = false;
-        Generator<S> gen = sources[index];
+        Generator<? extends S> gen = sources[index];
         
         Object tmp = gen.generate();
         if (tmp != null) {
