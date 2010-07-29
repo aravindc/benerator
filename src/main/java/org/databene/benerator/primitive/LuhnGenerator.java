@@ -21,6 +21,7 @@
 
 package org.databene.benerator.primitive;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.LuhnUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
@@ -34,8 +35,12 @@ import org.databene.commons.StringUtil;
  */
 public class LuhnGenerator extends GeneratorProxy<String> {
 	
+	String prefix;
+	int minLength;
+	int maxLength;
+	
 	public LuhnGenerator() {
-	    this("", 1, 10);
+	    this("", 2, 10);
     }
 	
 	public LuhnGenerator(String prefix, int length) {
@@ -43,9 +48,30 @@ public class LuhnGenerator extends GeneratorProxy<String> {
     }
 
 	public LuhnGenerator(String prefix, int minLength, int maxLength) {
-	    super(new DigitsGenerator(minLength, maxLength, prefix));
+	    super();
+	    this.prefix = prefix;
+	    this.minLength = minLength;
+	    this.maxLength = maxLength;
     }
 
+	public void setPrefix(String prefix) {
+    	this.prefix = prefix;
+    }
+
+	public void setMinLength(int minLength) {
+    	this.minLength = minLength;
+    }
+
+	public void setMaxLength(int maxLength) {
+    	this.maxLength = maxLength;
+    }
+
+	@Override
+	public synchronized void init(GeneratorContext context) {
+		super.setSource(new DigitsGenerator(minLength, maxLength, prefix));
+	    super.init(context);
+	}
+	
 	@Override
     public String generate() throws IllegalGeneratorStateException {
 		String number = super.generate();
