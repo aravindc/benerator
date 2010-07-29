@@ -35,7 +35,6 @@ import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
-import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
 import org.databene.benerator.primitive.ConcatenatingGenerator;
 import org.databene.benerator.primitive.UniqueStringGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
@@ -113,11 +112,7 @@ public class RegexGeneratorFactory {
     private static Generator<String> createFromSequence(Sequence sequence, int min, int max, int quantityLimit, boolean unique) {
     	Object[] factors = sequence.getFactors();
     	Generator[] components = createComponents(factors, quantityLimit, unique);
-    	Generator<String[]> partGenerator;
-    	if (unique)
-    		partGenerator = new UniqueCompositeArrayGenerator<String>(String.class, components);
-    	else
-    		partGenerator = new CompositeArrayGenerator<String>(String.class, components);
+    	Generator<String[]> partGenerator = new CompositeArrayGenerator<String>(String.class, unique, components);
     	return new ConcatenatingGenerator(partGenerator);
     }
 
