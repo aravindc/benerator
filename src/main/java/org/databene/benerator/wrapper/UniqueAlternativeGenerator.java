@@ -34,7 +34,7 @@ import org.databene.benerator.*;
  * Created: 17.11.2007 17:12:07
  * @author Volker Bergmann
  */
-public class UniqueAlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
+public class UniqueAlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> { // TODO is this obsolete compared to AlternativeGenerator?
 
     private Class<E> targetType;
 
