@@ -95,14 +95,15 @@ public class GeneratorFactory {
             Class<T> numberType, T min, T max, T precision,
             Distribution distribution, boolean unique) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
-        int totalDigits = MathUtil.prefixDigits(max.doubleValue()) + fractionDigits;
+        int prefixDigits = (max != null ? MathUtil.prefixDigits(max.doubleValue()) : MathUtil.prefixDigits(min.doubleValue()));
+		int totalDigits = prefixDigits + fractionDigits;
         return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique);
     }
     
     /**
      * Creates a generator for numbers.
      *
-     * @param numberType         the number type, e.g. java.lang.Integer
+     * @param numberType   the number type, e.g. java.lang.Integer
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
      * @param precision    the resolution to use in number generation.
@@ -111,8 +112,7 @@ public class GeneratorFactory {
     public static <T extends Number> Generator<T> getNumberGenerator(
             Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
             Distribution distribution, boolean unique) {
-        if (numberType == null)
-            throw new IllegalArgumentException("Number type is null");
+        Assert.notNull(numberType, "numberType");
         return distribution.createGenerator(numberType, min, max, precision, unique); 
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
     }
