@@ -31,11 +31,13 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorOpts;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.GeneratorWrapper;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Resettable;
 import org.databene.commons.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides utility methods for data generation.<br/><br/>
@@ -44,7 +46,7 @@ import org.databene.commons.StringUtil;
  */
 public class GeneratorUtil {
 	
-	private static final int MAX_SIZE = 100000;
+	private static Logger LOGGER = LoggerFactory.getLogger(GeneratorUtil.class);
 	
 	public static boolean isBeneratorFile(String localFilename) {
 		if (StringUtil.isEmpty(localFilename))
@@ -57,11 +59,17 @@ public class GeneratorUtil {
 		List<T> list = new ArrayList<T>();
 		int count = 0;
 		T product;
+		int cacheSize = BeneratorOpts.getCacheSize();
 		while ((product = generator.generate()) != null) {
+			count++;
+			if (count > cacheSize) {
+				LOGGER.error("Data set of generator has reached the cache limit and will be reduced to its size " +
+						"of " + cacheSize + " elements). " +
+						"If that is not acceptable then choose a distribution that does not cache data sets " +
+						"or increase the cache size.");
+				break;
+			}
 			list.add(product);
-			if (count++ > MAX_SIZE)
-				throw new ConfigurationError("Dataset of generator is too large " +
-						"(more than " + MAX_SIZE + " elements): " + generator);
 		}
 		return list;
 	}
