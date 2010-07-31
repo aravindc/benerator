@@ -361,13 +361,13 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
     private static <T extends Number> Generator<T> createNumberGenerator(
             SimpleTypeDescriptor descriptor, Class<T> targetType, Uniqueness uniqueness, BeneratorContext context) {
-        T min = DescriptorUtil.getNumberDetail(descriptor, MIN, targetType);
-        T max = DescriptorUtil.getMax(descriptor, targetType, uniqueness.isUnique());
+        T min = DescriptorUtil.getNumberDetailOrDefault(descriptor, MIN, targetType);
+        T max = DescriptorUtil.getNumberDetail(descriptor, MAX, targetType);
         if (min.equals(max))
             return new ConstantGenerator<T>(min);
-        Integer totalDigits = DescriptorUtil.getNumberDetail(descriptor, "totalDigits", Integer.class);
-        Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
-        T precision = DescriptorUtil.getNumberDetail(descriptor, PRECISION, targetType);
+        Integer totalDigits = DescriptorUtil.getNumberDetailOrDefault(descriptor, "totalDigits", Integer.class);
+        Integer fractionDigits = DescriptorUtil.getNumberDetailOrDefault(descriptor, "fractionDigits", Integer.class);
+        T precision = DescriptorUtil.getNumberDetailOrDefault(descriptor, PRECISION, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
         return GeneratorFactory.getNumberGenerator(
