@@ -66,7 +66,15 @@ public class CumulatedLongGeneratorTest extends GeneratorClassTest {
     public void testDistribution() throws Exception {
         checkDistribution(0, 1, 1000);
         checkDistribution(0, 5, 10000);
-        //checkDistribution(0, 25, 100000);
+    }
+
+    @Test
+    public void testRange() throws Exception {
+    	long min = -10;
+        long max = CumulatedLongGenerator.DEFAULT_MAX;
+		CumulatedLongGenerator generator = new CumulatedLongGenerator(min, max);
+        generator.init(context);
+        expectRange(generator, 1000, min, max);
     }
 
     // helpers ---------------------------------------------------------------------------------------------------------
