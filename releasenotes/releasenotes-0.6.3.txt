@@ -5,6 +5,12 @@ summary
 -------
 
 
+
+changes
+-------
+- Removed the restriction on the number of elements that distributions can cache in RAM
+
+
 enhancements
 ------------
 - New 'WeightedNumbers' sequence with short number weight literal
@@ -18,7 +24,16 @@ enhancements
 - Defined EntityRenamer class for feature request #3027213: Support easy transfer between tables w/ different names
 - Added support for limiting the number of total steps in StepSequence
 - PersonGenerator now has the properties minAgeYears and maxAgeYears
-- Defined HeadSequence (default distribution="head") which provides the first n (default 1) available values of another generator
+- Defined HeadSequence (default distribution="head") which provides the first n (default 1) available values of 
+  another generator
+- Introduced BeneratorMonitor MBean for monitoring Benerator
+- Defined helper generator classes
+  - WeightedLiteralGenerator
+  - CompositeStringGenerator
+- Added 'unique' property to CompositeArrayGenerator
+- If the cache size limit is reached (default: 100,000 data sets), Benerator does not cancel with an exception 
+  any more, but prints an error message and cuts of remaining data. The cache size can be configured by the VM
+  argument -Dbenerator.cacheSize=nnn
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
@@ -45,3 +60,5 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 3032533 Entity DB queries fail in <variable>s
 3032535 dynamic DB queries are not reissued on distr. and cyclic
 3032990 sub <generate> elements are not reset on new parent
+3034849 <attribute> ignores 'converter' when using 'script'
+3035221 Oracle fails when setting NVARHCHAR2 column to null
