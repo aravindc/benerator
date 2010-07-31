@@ -36,6 +36,7 @@ import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.MathUtil;
+import org.databene.commons.NumberUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
 
 import static org.databene.commons.NumberUtil.*;
@@ -82,6 +83,8 @@ public class RandomWalkSequence extends Sequence {
     // Distribution interface implementation ---------------------------------------------------------------------------
 
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	if (max == null)
+    		max = NumberUtil.maxValue(numberType);
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = createLongGenerator(toLong(min), toLong(max), toLong(precision), unique);

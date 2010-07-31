@@ -40,8 +40,8 @@ import org.databene.benerator.util.RandomUtil;
  */
 public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
 
-    private static final long DEFAULT_MIN = Long.MIN_VALUE / 2 + 1; // test if it works with these min/max values
-	private static final long DEFAULT_MAX = Long.MAX_VALUE / 2 - 1;
+    public static final long DEFAULT_MIN = Long.MIN_VALUE / 2 + 1;
+    public static final long DEFAULT_MAX = Long.MAX_VALUE / 2 - 1;
 	private static final long DEFAULT_PRECISION = 1;
 
     // constructors ----------------------------------------------------------------------------------------------------

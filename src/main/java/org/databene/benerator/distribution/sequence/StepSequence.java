@@ -104,8 +104,8 @@ public class StepSequence extends Sequence {
 	        base = new StepLongGenerator(
 					toLong(min), toLong(max), toLong(incrementToUse), toLong(initial));
         else
-			base = new StepDoubleGenerator(toDouble(min), toDouble(max), 
-					toDouble(incrementToUse), toDouble(initial));
+			base = new StepDoubleGenerator(
+					toDouble(min), toDouble(max), toDouble(incrementToUse), toDouble(initial));
 		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
 	}
 

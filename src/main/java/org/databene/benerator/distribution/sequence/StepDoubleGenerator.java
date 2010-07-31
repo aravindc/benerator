@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,14 +49,14 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
     }
 
     public StepDoubleGenerator(double min, double max) {
-        this(min, max, 1, null);
+        this(min, max, 1., null);
     }
 
     public StepDoubleGenerator(double min, double max, double increment) {
         this(min, max, increment, null);
     }
 
-    public StepDoubleGenerator(double min, double max, double increment, Double initial) {
+    public StepDoubleGenerator(double min, Double max, double increment, Double initial) {
         super(Double.class, min, max, Math.abs(increment));
         this.increment = increment;
         this.initial = (initial != null ? initial : (increment >= 0 ? min : max));
@@ -74,7 +74,7 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     public synchronized Double generate() {
     	assertInitialized();
-    	if (increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min)) {
+    	if (increment == 0 || (increment > 0 && (max == null || next <= max)) || (increment < 0 && next >= min)) {
 	        double value = next;
 	        next += increment;
 	        return value;

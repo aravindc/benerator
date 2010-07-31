@@ -40,8 +40,8 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  */
 public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
 
-    private static final long DEFAULT_MAX = Long.MAX_VALUE / 2;
-	private static final long DEFAULT_MIN = Long.MIN_VALUE / 2;
+    public static final long DEFAULT_MAX = Long.MAX_VALUE / 10;
+    public static final long DEFAULT_MIN = Long.MIN_VALUE / 10;
 
     RandomLongGenerator baseGen;
 
@@ -68,13 +68,13 @@ public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
     // Generator interface ---------------------------------------------------------------------------------------------
 
     public Long generate() {
-        long exactValue = (baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + 2) / 5L;
-        return min + (exactValue - min) / precision * precision;
+        long index = (baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + 2) / 5L;
+        return min + index * precision;
     }
     
     @Override
     public void init(GeneratorContext context) {
-        baseGen = new RandomLongGenerator(min, max);
+        baseGen = new RandomLongGenerator(0, (max - min) / precision);
         baseGen.init(context);
         super.init(context);
     }

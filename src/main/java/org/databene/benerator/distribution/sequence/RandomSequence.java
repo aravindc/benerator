@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,6 +34,8 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.NumberUtil;
+
 import static org.databene.commons.NumberUtil.*;
 
 /**
@@ -56,17 +58,20 @@ public class RandomSequence extends Sequence {
 		Generator<? extends Number> base;
     	if (unique) {
     		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
-    	} else {
+    	} else if (BeanUtil.isIntegralNumberType(numberType)) {
+        	long lMax = (max != null ? max.longValue() :
+        			Math.min(RandomLongGenerator.DEFAULT_MAX, NumberUtil.maxValue(numberType).longValue()));
 			if (Integer.class.equals(numberType.getClass()))
-				base = new RandomIntegerGenerator(toInteger(min), toInteger(max), toInteger(precision));
+				base = new RandomIntegerGenerator(toInteger(min), toInteger(lMax), toInteger(precision));
 			else if (BigInteger.class.equals(numberType.getClass()))
-				base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(max), toBigInteger(precision));
+				base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(lMax), toBigInteger(precision));
 			else if (BigDecimal.class.equals(numberType.getClass()))
-				base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(max), toBigDecimal(precision));
-			else if (BeanUtil.isIntegralNumberType(numberType))
-				base = new RandomLongGenerator(toLong(min), toLong(max), toLong(precision));
+				base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(lMax), toBigDecimal(precision));
 			else
-				base = new RandomDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision));
+				base = new RandomLongGenerator(toLong(min), lMax, toLong(precision));
+    	} else {
+    		double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
+			base = new RandomDoubleGenerator(toDouble(min), dMax, toDouble(precision));
     	}
 		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
 	}

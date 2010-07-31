@@ -47,9 +47,11 @@ public class BitReverseSequence extends Sequence {
     	super("bitReverse");
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> Generator<T> createGenerator(
+    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	long lMax = (max != null ? max.longValue() : BitReverseLongGenerator.MAX_INDEX_RANGE + toLong(min));
 		Generator<? extends Number> base;
-		base = new BitReverseLongGenerator(toLong(min), toLong(max), toLong(precision));
+		base = new BitReverseLongGenerator(toLong(min), lMax, toLong(precision));
 		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
     }
 

@@ -40,6 +40,7 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.distribution.function.GaussianFunction;
+import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.distribution.sequence.HeadSequence;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
@@ -73,23 +74,36 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetNumberGenerator() {
-        checkNumberGenerator(Byte.class, (byte)-10, (byte)10, (byte)1);
+        checkNumberGenerator(Byte.class, (byte) -10, (byte)10, (byte)1);
         checkNumberGenerator(Short.class, (short)-10, (short)10, (short)1);
         checkNumberGenerator(Integer.class, -10, 10, 1);
-        checkNumberGenerator(Long.class, (long)-10, (long)10, (long)1);
+        checkNumberGenerator(Long.class, (long) -10, (long)10, (long)1);
         checkNumberGenerator(BigInteger.class, new BigInteger("-10"), new BigInteger("10"), new BigInteger("1"));
-        checkNumberGenerator(Double.class, (double)-10, (double)10, (double)1);
-        checkNumberGenerator(Float.class, (float)-10, (float)10, (float)1);
+        checkNumberGenerator(Double.class, (double) -10, (double)10, (double)1);
+        checkNumberGenerator(Float.class, (float) -10, (float)10, (float)1);
         checkNumberGenerator(BigDecimal.class, new BigDecimal(-10), new BigDecimal(10), new BigDecimal(1));
+    }
+
+    @Test
+    public void testGetNumberGeneratorWithoutMax() {
+        checkNumberGenerator(Byte.class, (byte) -10, null, (byte) 1);
+        checkNumberGenerator(Short.class, (short) -10, null, (short) 1);
+        checkNumberGenerator(Integer.class, -10, null, 1);
+        checkNumberGenerator(Long.class, (long) -10, null, (long) 1);
+        checkNumberGenerator(BigInteger.class, new BigInteger("-10"), null, new BigInteger("1"));
+        checkNumberGenerator(Double.class, (double) -10, null, (double) 1);
+        checkNumberGenerator(Float.class, (float) -10, null, (float) 1);
+        checkNumberGenerator(BigDecimal.class, new BigDecimal(-10), null, new BigDecimal(1));
     }
 
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision) {
         for (Sequence sequence : SequenceManager.registeredSequences())
-        	if (!(sequence instanceof HeadSequence))
+        	if (!(sequence instanceof HeadSequence) && !(sequence instanceof ExpandSequence /* TODO remove */))
         		checkNumberGenerator(type, min, max, precision, sequence);
-        for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
-            checkNumberGenerator(type, min, max, precision, function);
+        if (max != null)
+	        for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
+	            checkNumberGenerator(type, min, max, precision, function);
     }
     
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
@@ -97,9 +111,12 @@ public class GeneratorFactoryTest extends GeneratorTest {
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             T n = generator.generate();
-            assertTrue("Generated value (" + n + ") is smaller than min (" + min + ") using " + sequence, 
+            assertNotNull("Generator not available: " + generator, n);
+            if (min != null)
+            	assertTrue("Generated value (" + n + ") is smaller than min (" + min + ") using sequence '" + sequence + "'", 
             		n.doubleValue() >= min.doubleValue());
-            assertTrue(n.doubleValue() <= max.doubleValue());
+            if (max != null)
+            	assertTrue(n.doubleValue() <= max.doubleValue());
         }
     }
 

@@ -26,11 +26,15 @@
 
 package org.databene.benerator.distribution.sequence;
 
+import java.math.BigInteger;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.NumberUtil;
+
 import static org.databene.commons.NumberUtil.*;
 
 /**
@@ -51,12 +55,14 @@ public class CumulatedSequence extends Sequence {
     	if (unique)
     		throw new ConfigurationError(getClass().getSimpleName() + " does not support uniqueness");
 		Generator<? extends Number> base;
-		if (BeanUtil.isIntegralNumberType(numberType))
-			base = new CumulatedLongGenerator(
-					toLong(min), toLong(max), toLong(precision));
-		else
-			base = new CumulatedDoubleGenerator(
-					toDouble(min), toDouble(max), toDouble(precision));
+		if (BeanUtil.isIntegralNumberType(numberType)) {
+	    	long lMax = (max != null ? max.longValue() : 
+	    		(numberType != Long.class && numberType != BigInteger.class ? NumberUtil.maxValue(numberType).longValue() : CumulatedLongGenerator.DEFAULT_MAX));
+			base = new CumulatedLongGenerator(toLong(min), lMax, toLong(precision));
+		} else {
+			double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
+			base = new CumulatedDoubleGenerator(toDouble(min), dMax, toDouble(precision));
+		}
 		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
     }
 

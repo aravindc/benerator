@@ -56,7 +56,7 @@ public class StepLongGenerator extends AbstractNumberGenerator<Long> {
         this(min, max, increment, null);
     }
 
-    public StepLongGenerator(long min, long max, long increment, Long initial) {
+    public StepLongGenerator(long min, Long max, long increment, Long initial) {
         super(Long.class, min, max, Math.abs(increment));
         this.increment = increment;
         this.initial = (initial != null ? initial : (increment >= 0 ? min : max));
@@ -78,7 +78,7 @@ public class StepLongGenerator extends AbstractNumberGenerator<Long> {
     }
 
     public synchronized Long generate() throws IllegalGeneratorStateException {
-        if ((increment == 0 || (increment > 0 && next <= max) || (increment < 0 && next >= min))) {
+        if ((increment == 0 || (increment > 0 && (max == null || next <= max)) || (increment < 0 && next >= min))) {
         	long value = next;
 		    next += increment;
 	        return value;

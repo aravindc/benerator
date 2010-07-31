@@ -32,6 +32,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.NumberUtil;
+
 import static org.databene.commons.NumberUtil.*;
 
 /**
@@ -63,6 +65,8 @@ public class ShuffleSequence extends Sequence {
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (increment == null)
     		increment = BigDecimal.valueOf(2);
+    	if (max == null)
+    		max = NumberUtil.maxValue(numberType);
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = new ShuffleLongGenerator(

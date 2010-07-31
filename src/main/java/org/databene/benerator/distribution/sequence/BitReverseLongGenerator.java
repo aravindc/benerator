@@ -34,13 +34,16 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Generates integers reversing the bits of a continuously rising number.<br/>
  * <br/>
  * Created: 13.11.2007 15:42:27
+ * @author Volker Bergmann
  */
 public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
 
-    private BitReverseNaturalNumberGenerator indexGenerator;
+    public static final long MAX_INDEX_RANGE = (1L << 30) - 1;
+    
+	private BitReverseNaturalNumberGenerator indexGenerator;
 
     public BitReverseLongGenerator() {
-        this(Long.MIN_VALUE, Long.MAX_VALUE);
+        this(0, MAX_INDEX_RANGE);
     }
 
     public BitReverseLongGenerator(long min, long max) {
@@ -56,7 +59,7 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
     @Override
 	public void init(GeneratorContext context) {
     	assertNotInitialized();
-        indexGenerator = new BitReverseNaturalNumberGenerator((max - min + precision - 1) / precision);
+        indexGenerator = new BitReverseNaturalNumberGenerator((max - min - 1 + precision) / precision);
         indexGenerator.init(context);
         super.init(context);
     }
