@@ -38,8 +38,8 @@ import java.util.List;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.converter.TimestampFormatter;
 import org.databene.commons.db.DBUtil;
-import org.databene.platform.db.model.DBCatalog;
-import org.databene.platform.db.model.DBTable;
+import org.databene.jdbacl.model.DBCatalog;
+import org.databene.jdbacl.model.DBTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

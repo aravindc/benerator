@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.platform.db.model.DBColumnType;
+import org.databene.jdbacl.model.DBColumnType;
 import org.databene.model.data.PrimitiveType;
 
 /**

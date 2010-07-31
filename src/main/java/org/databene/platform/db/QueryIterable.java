@@ -32,6 +32,7 @@ import org.databene.commons.HeavyweightIterable;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.jdbacl.ResultSetIterator;
 import org.databene.script.ScriptConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

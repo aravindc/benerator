@@ -27,8 +27,6 @@
 package org.databene.platform.db;
 
 import org.databene.platform.db.dialect.OracleDialect;
-import org.databene.platform.db.model.jdbc.JDBCDBImporter;
-import org.databene.platform.db.model.*;
 import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
@@ -36,6 +34,18 @@ import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.db.DBUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.jdbacl.DatabaseUtil;
+import org.databene.jdbacl.model.DBCatalog;
+import org.databene.jdbacl.model.DBColumn;
+import org.databene.jdbacl.model.DBColumnType;
+import org.databene.jdbacl.model.DBConstraint;
+import org.databene.jdbacl.model.DBForeignKeyColumn;
+import org.databene.jdbacl.model.DBForeignKeyConstraint;
+import org.databene.jdbacl.model.DBPrimaryKeyConstraint;
+import org.databene.jdbacl.model.DBSchema;
+import org.databene.jdbacl.model.DBTable;
+import org.databene.jdbacl.model.Database;
+import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
 import org.databene.model.storage.AbstractStorageSystem;
