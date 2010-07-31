@@ -67,6 +67,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.commons.converter.String2NumberConverter;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.DynamicExpression;
@@ -347,12 +348,21 @@ public class DescriptorUtil {
         }
     }
 
-    public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
+    public static <T extends Number> T getNumberDetailOrDefault(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
         try {
             String detailValue = (String) descriptor.getDetailValue(detailName);
             if (detailValue == null)
                 detailValue = (String) descriptor.getDetailDefault(detailName);
             return AnyConverter.convert(detailValue, targetType);
+        } catch (ConversionException e) {
+            throw new ConfigurationError(e);
+        }
+    }
+
+    public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
+        try {
+            String detailValue = (String) descriptor.getDetailValue(detailName);
+            return (detailValue != null ? new String2NumberConverter<T>(targetType).convert(detailValue) : null);
         } catch (ConversionException e) {
             throw new ConfigurationError(e);
         }
