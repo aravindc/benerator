@@ -31,6 +31,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.Period;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
 
 import java.util.Date;
@@ -75,7 +76,7 @@ public class DateGenerator extends GeneratorWrapper<Long, Date> {
     	super(null);
         this.distribution = distribution;
 		this.min = (min != null ? min.getTime() : Long.MIN_VALUE);
-		this.max = (max != null ? max.getTime() : Long.MAX_VALUE);
+		this.max = (max != null ? max.getTime() : TimeUtil.date(TimeUtil.currentYear() + 10, 11, 31).getTime());
 		this.precision = precision;
 		this.unique = unique;
         this.source = distribution.createGenerator(Long.class, this.min, this.max, this.precision, this.unique);
