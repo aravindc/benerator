@@ -8,6 +8,7 @@
     <version>0.6.3</version>
 
     <properties>
+        <jdbacl_version>0.6.3</jdbacl_version>
         <gui_version>0.2.3</gui_version>
         <webdecs_version>0.5.3</webdecs_version>
 	    <commons_version>0.5.3</commons_version>
@@ -58,6 +59,11 @@
     <dependencies>
     
     	<!-- databene dependencies -->
+        <dependency>
+            <groupId>org.databene</groupId>
+            <artifactId>jdbacl</artifactId>
+            <version>${jdbacl_version}</version>
+        </dependency>
         <dependency>
             <groupId>org.databene</groupId>
             <artifactId>databene-webdecs</artifactId>
