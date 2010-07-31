@@ -67,7 +67,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected boolean defaultNull          = true;
     protected char    defaultSeparator     = ',';
     protected String  contextUri           = "./";
-    public    boolean validate             = true;
     public    Long    maxCount             = null;
     public    boolean defaultOneToOne      = true; // TODO v0.7 use 'false' as default
     public    boolean acceptUnknownSimpleTypes = false;
@@ -88,7 +87,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	
 	public BeneratorContext(String contextUri) {
 		this.contextUri = contextUri;
-		validate = !("false".equals(System.getProperty("benerator.validate")));
 		properties = new DefaultContext();
 		push(new DefaultContext(java.lang.System.getenv()));
 		push(new DefaultContext(java.lang.System.getProperties()));
@@ -236,11 +234,11 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 
 	public boolean isValidate() {
-		return validate;
+		return BeneratorOpts.isValidating();
 	}
 
 	public void setValidate(boolean validate) {
-		this.validate = validate;
+		BeneratorOpts.setValidating(validate);
 	}
 	
 	public Long getMaxCount() {
