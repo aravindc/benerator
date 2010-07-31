@@ -57,7 +57,6 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
         this(minLength, maxLength, CollectionUtil.toCharArray(charSet));
     }
 
-    @SuppressWarnings("unchecked")
     public UniqueStringGenerator(int minLength, int maxLength, char ... charSet) {
         this.minLength = minLength;
         this.maxLength = maxLength;
