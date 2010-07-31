@@ -125,7 +125,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		ComponentBuilder generator = createAndInitBuilder(ref);
 		Entity entity = new Entity("Person");
 		generator.buildComponentFor(entity);
-		assertEquals(6, entity.get("ref"));
+		assertEquals("6", entity.get("ref"));
 	}
 
 	// tests that resolve the target type ------------------------------------------------------------------------------
