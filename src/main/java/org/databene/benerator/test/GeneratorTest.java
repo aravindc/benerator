@@ -134,6 +134,13 @@ public abstract class GeneratorTest {
         expectUniqueGenerationsOnce(generator, n);
         return new Helper(generator);
     }
+    
+    protected <T extends Comparable<T>> Helper expectRange(Generator<T> generator, int n, T min, T max) {
+    	expectRangeOnce(generator, n, min, max);
+        generator.reset();
+    	expectRangeOnce(generator, n, min, max);
+        return new Helper(generator);
+    }
 
     protected <T>String format(T product) {
         return ToStringConverter.convert(product, "[null]");
@@ -350,6 +357,15 @@ public abstract class GeneratorTest {
             assertTrue("The generated value '" + format(product) + "' is not unique. Generator is " + generator, 
                     validator.valid(product));
         }
+    }
+
+    protected <T extends Comparable<T>> void expectRangeOnce(Generator<T> generator, int n, T min, T max) {
+	    for (int i = 0; i < n; i++) {
+    		T product = generator.generate();
+    		assertNotNull(product);
+    		assertTrue("Generated value (" + product + ") is less than the configured minimum (" + min + ")",  min.compareTo(product) <= 0);
+    		assertTrue("Generated value (" + product + ") is greater than the configured maximum (" + max + ")",  max.compareTo(product) >= 0);
+    	}
     }
 
 }
