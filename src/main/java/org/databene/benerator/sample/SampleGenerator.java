@@ -32,6 +32,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.commons.ConfigurationError;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -100,8 +101,11 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Adds a value to the sample list */
     @Override
-    public void addValue(E value) {
-        samples.add(value);
+    public <T extends E> void addValue(T value) {
+    	if (unique && this.contains(value))
+    		throw new ConfigurationError("Trying to add a duplicate value (" + value + ") " +
+    				"to unique generator: " + this);
+    	samples.add(value);
     }
 
     public boolean isUnique() {
@@ -111,6 +115,10 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
 	public void setUnique(boolean unique) {
     	this.unique = unique;
     }
+	
+	public <T extends E> boolean contains(E value) {
+		return samples.contains(value);
+	}
 
 	@Override
     public void clear() {
