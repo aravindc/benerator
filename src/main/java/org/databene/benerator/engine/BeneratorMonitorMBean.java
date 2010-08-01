@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 /**
- * TODO Document class.<br/><br/>
+ * MBean interface for monitoring Benerator.<br/><br/>
  * Created: 27.07.2010 21:48:46
  * @since 0.6.3
  * @author Volker Bergmann

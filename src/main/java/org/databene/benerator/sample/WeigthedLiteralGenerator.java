@@ -27,7 +27,8 @@ import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * TODO Document class.<br/><br/>
+ * Generates values defined by a weighted or non-weighted value list literal, like "'A'^3,'B'^2",
+ * supporting weighted random generation and uniqueness.<br/><br/>
  * Created: 28.07.2010 17:56:44
  * @since 0.6.3
  * @author Volker Bergmann

@@ -28,7 +28,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * TODO Document class.<br/><br/>
+ * Wraps a {@link Generator} with a {@link NullableGenerator}.<br/><br/>
  * Created: 22.07.2010 19:14:36
  * @since 0.6.3
  * @author Volker Bergmann

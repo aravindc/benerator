@@ -31,7 +31,7 @@ import org.databene.commons.Converter;
 import org.databene.model.data.TypeDescriptor;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides factory methods for {@link NullableGenerator}s.<br/><br/>
  * Created: 22.07.2010 19:19:04
  * @since 0.6.3
  * @author Volker Bergmann

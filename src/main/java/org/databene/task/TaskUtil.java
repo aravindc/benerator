@@ -22,7 +22,7 @@
 package org.databene.task;
 
 /**
- * TODO Document class.<br/><br/>
+ * Provides utility methods for {@link Task}s.<br/><br/>
  * Created: 08.07.2010 16:59:29
  * @since 0.6.3
  * @author Volker Bergmann

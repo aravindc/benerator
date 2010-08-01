@@ -27,7 +27,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link LiteralSequence}.<br/><br/>
  * Created: 03.06.2010 09:08:56
  * @since 0.6.3
  * @author Volker Bergmann

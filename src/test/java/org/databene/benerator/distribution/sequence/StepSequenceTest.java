@@ -29,9 +29,9 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link StepSequence}.<br/><br/>
  * Created: 20.07.2010 23:30:08
- * @since TODO version
+ * @since 0.6.3
  * @author Volker Bergmann
  */
 public class StepSequenceTest extends GeneratorTest {

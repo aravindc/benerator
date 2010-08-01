@@ -26,7 +26,9 @@ import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 
 /**
- * TODO Document class.<br/><br/>
+ * Sequence implementation that returns the first n values of another Generator (default 1).
+ * When used to create number generators, it creates generators that count incrementally 
+ * from 'min' to min + n - 1.<br/><br/>
  * Created: 25.07.2010 09:55:54
  * @since 0.6.3
  * @author Volker Bergmann

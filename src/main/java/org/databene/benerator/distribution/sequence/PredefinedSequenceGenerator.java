@@ -23,10 +23,11 @@ package org.databene.benerator.distribution.sequence;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.util.ThreadSafeGenerator;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} class for use by the {@link LiteralSequence}.<br/><br/>
  * Created: 03.06.2010 08:48:44
  * @since 0.6.3
  * @author Volker Bergmann

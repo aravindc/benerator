@@ -28,7 +28,7 @@ import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link HeadSequence}.<br/><br/>
  * Created: 25.07.2010 11:19:57
  * @since 0.6.3
  * @author Volker Bergmann
