@@ -46,6 +46,7 @@ import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.City;
 import org.databene.domain.address.CityGenerator;
 import org.databene.domain.address.Country;
+import org.databene.text.NameNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,7 +212,7 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
         if (location && country != null) {
         	try {
 	            Generator<String> city = new ConvertingGenerator<City, String>(
-	            		new CityGenerator(country), new PropertyAccessConverter("name"));
+	            		new CityGenerator(country), new PropertyAccessConverter("name"), new NameNormalizer());
 	            locationBaseGen = new AlternativeGenerator<String>(String.class, 
 	                    			new ConstantGenerator<String>(country.getLocalName()), 
 	                    			city);
