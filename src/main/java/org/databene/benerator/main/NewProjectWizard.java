@@ -65,7 +65,7 @@ public class NewProjectWizard extends JFrame { // TODO rename to NewProjectWizar
 		i18n = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
 		mainPanel = new CreateProjectPanel(i18n);
 		
-		setTitle(i18n.getString("mavenProjectWizardTitle"));
+		setTitle(i18n.getString("newProjectWizardTitle"));
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		contentPane.add(mainPanel, BorderLayout.CENTER);
