@@ -64,7 +64,7 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
     public void check(String dataset) {
         CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
         generator.init(context);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             String name = generator.generate();
             logger.debug(name);
             assertNotNull(name);
