@@ -67,7 +67,6 @@ import org.databene.commons.ArrayUtil;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.db.JDBCDriverInfo;
 import org.databene.commons.ui.FileOperation;
 import org.databene.commons.ui.FileTypeSupport;
 import org.databene.commons.ui.I18NError;
@@ -80,6 +79,7 @@ import org.databene.gui.swing.delegate.PropertyFileField;
 import org.databene.gui.swing.delegate.PropertyPasswordField;
 import org.databene.gui.swing.delegate.PropertyTextField;
 import org.databene.gui.swing.ProgressMonitor;
+import org.databene.jdbacl.JDBCDriverInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -30,7 +30,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.databene.commons.StringUtil;
-import org.databene.commons.db.DBUtil;
+import org.databene.jdbacl.DBUtil;
 import org.databene.platform.db.DatabaseDialect;
 
 /**

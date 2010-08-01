@@ -42,8 +42,8 @@ import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ObservableBean;
-import org.databene.commons.db.JDBCDriverInfo;
 import org.databene.commons.ui.I18NError;
+import org.databene.jdbacl.JDBCDriverInfo;
 
 /**
  * Assembles all data useful for creating benerator archetypes.<br/>
