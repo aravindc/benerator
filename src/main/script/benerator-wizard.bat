@@ -7,11 +7,11 @@ if "%_USE_CLASSPATH%"=="no" goto runNoClasspath
 if not "%CLASSPATH%"=="" goto runWithClasspath
 
 :runNoClasspath
-"%_JAVACMD%" %BENERATOR_OPTS% -classpath "%LOCALCLASSPATH%" org.databene.benerator.main.MavenProjectWizard %*
+"%_JAVACMD%" %BENERATOR_OPTS% -classpath "%LOCALCLASSPATH%" org.databene.benerator.main.NewProjectWizard %*
 goto end
 
 :runWithClasspath
-"%_JAVACMD%" %BENERATOR_OPTS% -classpath "%CLASSPATH%;%LOCALCLASSPATH%" org.databene.benerator.main.MavenProjectWizard %*
+"%_JAVACMD%" %BENERATOR_OPTS% -classpath "%CLASSPATH%;%LOCALCLASSPATH%" org.databene.benerator.main.NewProjectWizard %*
 goto end
 
 :end
