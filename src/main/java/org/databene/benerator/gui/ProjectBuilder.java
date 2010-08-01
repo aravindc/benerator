@@ -281,7 +281,7 @@ public class ProjectBuilder implements Runnable {
 	    	BufferedReader reader = IOUtil.getReaderForURI(descriptorFile.getAbsolutePath());
 			DefaultHTMLTokenizer tokenizer = new DefaultHTMLTokenizer(reader);
 	    	String lineSeparator = setup.getLineSeparator();
-	    	if (lineSeparator == null)
+	    	if (StringUtil.isEmpty(lineSeparator))
 	    		lineSeparator = SystemInfo.getLineSeparator();
 			LFNormalizingStringBuilder writer = new LFNormalizingStringBuilder(lineSeparator);
 	    	while (tokenizer.nextToken() != HTMLTokenizer.END)
