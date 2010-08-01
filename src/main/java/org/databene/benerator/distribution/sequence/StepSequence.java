@@ -35,6 +35,8 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.SkipGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.NumberUtil;
+
 import static org.databene.commons.NumberUtil.*;
 
 /**
@@ -100,10 +102,12 @@ public class StepSequence extends Sequence {
     	if (unique && incrementToUse.doubleValue() == 0)
     		throw new InvalidGeneratorSetupException("Can't generate unique numbers with an increment of 0.");
 		Generator<? extends Number> base;
-		if (BeanUtil.isIntegralNumberType(numberType))
+		if (BeanUtil.isIntegralNumberType(numberType)) {
+			if (max == null)
+				max = NumberUtil.maxValue(numberType);
 	        base = new StepLongGenerator(
 					toLong(min), toLong(max), toLong(incrementToUse), toLong(initial));
-        else
+		} else
 			base = new StepDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(incrementToUse), toDouble(initial));
 		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
