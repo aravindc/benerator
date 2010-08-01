@@ -154,7 +154,7 @@ public class BeneratorGUI {
 				File file = null;
 				try {
 		            file = File.createTempFile("benerator-", ".ben.xml");
-		            StringBuilder builder = createXML();
+		            CharSequence builder = createXML();
 		            IOUtil.writeTextFile(file.getAbsolutePath(), builder.toString());
 		            Benerator.main(new String[] { file.getAbsolutePath() });
 	            } catch (IOException e) {
@@ -165,7 +165,9 @@ public class BeneratorGUI {
 	            }
 	        }
 
-			private StringBuilder createXML() {
+			private CharSequence createXML() {
+				if (text.getText().startsWith("<?xml"))
+					return text.getText();
 		        StringBuilder builder = new StringBuilder("<setup>");
 		        builder.append(text.getText());
 		        builder.append("</setup>");
@@ -178,7 +180,6 @@ public class BeneratorGUI {
 			JOptionPane.showMessageDialog(this, 
 					"Benerator GUI " + Version.VERSION + SystemInfo.getLineSeparator() + 
 					"(c) 2010 by Volker Bergmann");
-
         }
 
 	}
