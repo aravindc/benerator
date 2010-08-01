@@ -31,6 +31,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.primitive.TokenCombiner;
 import org.databene.benerator.primitive.regex.RegexStringGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
@@ -156,10 +157,7 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
 
 	private static void createArtificialNameGenerator(AlternativeGenerator<String> coreGenerator, GeneratorContext context) {
 	    try {
-            Generator<String> artificial = new MessageGenerator("{0}{1}", 
-                    new SequencedCSVSampleGenerator<String>(ORG + "artificial1.csv"),
-                    new SequencedCSVSampleGenerator<String>(ORG + "artificial2.csv")
-                );
+	    	TokenCombiner artificial = new TokenCombiner(ORG + "artificialName.csv", false, '-', Encodings.UTF_8, false);
             artificial.init(context);
 	        coreGenerator.addSource(artificial);
         } catch (Exception e) {
