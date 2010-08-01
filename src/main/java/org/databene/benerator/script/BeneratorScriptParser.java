@@ -411,7 +411,7 @@ public class BeneratorScriptParser {
 		List<CommonTree> childNodes = getChildNodes(node);
     	String className = parseQualifiedNameOfClass(childNodes.get(0));
     	Expression<?>[] params = parseArguments(childNodes.get(1));
-    	return new ParametrizedConstruction<Object>(className, params);
+    	return new ParameterizedConstruction<Object>(className, params);
     }
 
     private static Expression<?> convertBean(CommonTree node) throws ParseException {
@@ -531,16 +531,27 @@ public class BeneratorScriptParser {
     }
 
 	private static Expression<?> convertPlus(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-			    Expression<?>[] summands = { term1, term2 };
-				Assert.isTrue(summands.length > 1, "At least two summands needed");
-                Object result = summands[0].evaluate(context);
-                for (int i = 1; i < summands.length; i++)
-                	result = ArithmeticEngine.defaultInstance().add(result, summands[i].evaluate(context));
-                return result;
-		    }
-		};
+		return new PlusExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+    }
+
+    static final class PlusExpression extends BinaryExpression<Object> {
+	    PlusExpression(Expression<?> term1, Expression<?> term2) {
+		    super(term1, term2);
+	    }
+
+	    public Object evaluate(Context context) {
+	        Expression<?>[] summands = { term1, term2 };
+	    	Assert.isTrue(summands.length > 1, "At least two summands needed");
+	        Object result = summands[0].evaluate(context);
+	        for (int i = 1; i < summands.length; i++)
+	        	result = ArithmeticEngine.defaultInstance().add(result, summands[i].evaluate(context));
+	        return result;
+	    }
+	    
+	    @Override
+	    public String toString() {
+	        return "(" + term1 + " + " + term2 + ")";
+	    }
     }
 
 	private static Expression<?> convertMinus(CommonTree node) throws ParseException {
@@ -627,7 +638,7 @@ public class BeneratorScriptParser {
 		return new EqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
     
-    static class EqualsExpression extends BinaryExpression<Boolean> {
+	static class EqualsExpression extends BinaryExpression<Boolean> {
 
 		public EqualsExpression(Expression<?> term1, Expression<?> term2) {
 	        super(term1, term2);
