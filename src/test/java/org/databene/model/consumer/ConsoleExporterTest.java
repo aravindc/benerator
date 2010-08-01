@@ -35,6 +35,7 @@ import java.util.Date;
 import org.databene.commons.Patterns;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.TimestampFormatter;
+import org.databene.model.data.Entity;
 
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -68,12 +69,18 @@ public class ConsoleExporterTest {
 		check(timestamp, formatter.format(timestamp));
 	}
 	
+	@Test
+	public void testEntity() {
+		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
+		check(entity, "e[i=3, d=5.0, s=sss]");
+	}
+	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(Object in, String expectedOut) {
 		ConsoleExporter exporter = new ConsoleExporter();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		exporter.out = new PrintStream(stream);
+		exporter.setOut(new PrintStream(stream));
 		try {
 			exporter.startConsuming(in);
 			exporter.finishConsuming(in);
