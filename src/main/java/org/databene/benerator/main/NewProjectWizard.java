@@ -51,14 +51,14 @@ import org.databene.commons.ui.I18NSupport;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class MavenProjectWizard extends JFrame { // TODO rename to NewProjectWizard
+public class NewProjectWizard extends JFrame { // TODO rename to NewProjectWizard
 	
-	private static final long serialVersionUID = -5866303491038671990L;
+	private static final long serialVersionUID = -359209516189875124L;
 	
 	I18NSupport i18n;
 	CreateProjectPanel mainPanel;
 
-	public MavenProjectWizard() {
+	public NewProjectWizard() {
 		setIcons("org/databene/benerator/gui/benerator{0}.png", 16, 32, 64, 128);
 		
 		checkLocale();
@@ -99,6 +99,6 @@ public class MavenProjectWizard extends JFrame { // TODO rename to NewProjectWiz
 	
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		new MavenProjectWizard().setVisible(true);
+		new NewProjectWizard().setVisible(true);
 	}
 }
