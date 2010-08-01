@@ -9,6 +9,7 @@ summary
 changes
 -------
 - Removed the restriction on the number of elements that distributions can cache in RAM
+- Renamed class MavenProjectWizard to NewProjectWizard
 
 
 enhancements
@@ -34,6 +35,9 @@ enhancements
 - If the cache size limit is reached (default: 100,000 data sets), Benerator does not cancel with an exception 
   any more, but prints an error message and cuts of remaining data. The cache size can be configured by the VM
   argument -Dbenerator.cacheSize=nnn
+- new BlacklistValidator
+- Command line option --version which prints Benerator and Java version information
+- New generator: TokenCombinator
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
@@ -62,3 +66,4 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 3032990 sub <generate> elements are not reset on new parent
 3034849 <attribute> ignores 'converter' when using 'script'
 3035221 Oracle fails when setting NVARHCHAR2 column to null
+3037947 Wrong handling of zero-based date calculation
