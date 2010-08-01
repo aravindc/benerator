@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.script;
 
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
@@ -38,11 +39,11 @@ import org.databene.commons.Expression;
  * @author Volker Bergmann
  */
 
-public class ParametrizedConstruction<E> extends Construction<E> {
+public class ParameterizedConstruction<E> extends Construction<E> {
 	
 	private Expression<?>[] argumentExpressions;
 
-    public ParametrizedConstruction(String className, Expression<?>[] argumentExpressions) {
+    public ParameterizedConstruction(String className, Expression<?>[] argumentExpressions) {
 	    super(className);
 	    this.argumentExpressions = argumentExpressions;
     }
@@ -63,6 +64,11 @@ public class ParametrizedConstruction<E> extends Construction<E> {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	@Override
+	public String toString() {
+	    return "new " + className + '(' + ArrayFormat.format(", ", argumentExpressions) + ')';
 	}
 	
 }
