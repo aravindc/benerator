@@ -131,7 +131,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     }
 
     /** Adds weighted values to the sample list */
-    public void addSample(E value, double weight) {
+    public <T extends E> void addSample(T value, double weight) {
         addSample(new WeightedSample<E>(value, weight));
     }
 
@@ -144,7 +144,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
 
     /** Adds an unweighted value to the sample list */
     @Override
-    public void addValue(E value) {
+    public <T extends E> void addValue(T value) {
         samples.add(new WeightedSample<E>(value, 1));
     }
 

@@ -49,15 +49,15 @@ public abstract class AbstractSampleGenerator<E> extends ThreadSafeGenerator<E> 
     }
     
     /** Adds values to the sample list */
-    public void setValues(Iterable<E> values) {
+    public <T extends E> void setValues(Iterable<T> values) {
         clear();
         if (values != null)
-            for (E value : values)
+            for (T value : values)
                 addValue(value);
     }
 
     /** Sets the sample list to the specified values */
-    public void setValues(E ... values) {
+    public <T extends E> void setValues(T ... values) {
         clear();
         if (values != null)
             for (E value : values)
@@ -65,21 +65,21 @@ public abstract class AbstractSampleGenerator<E> extends ThreadSafeGenerator<E> 
     }
 
 	/** Adds values to the sample list */
-    public void addValues(E ... values) {
+    public <T extends E> void addValues(T ... values) {
         if (values != null)
-            for (E value : values)
+            for (T value : values)
                 addValue(value);
     }
 
     /** Adds values to the sample list */
-    public void addValues(Collection<E> values) {
+    public <T extends E>void addValues(Collection<T> values) {
         if (values != null)
-            for (E value : values)
+            for (T value : values)
                 addValue(value);
     }
 
     /** Adds a value to the sample list */
-    public abstract void addValue(E value);
+    public abstract <T extends E> void addValue(T value);
 
     /** Removes all values from the sample list */
     public abstract void clear();

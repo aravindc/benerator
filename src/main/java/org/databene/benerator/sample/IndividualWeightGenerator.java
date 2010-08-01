@@ -101,7 +101,7 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
 
     /** Adds an unweighted value to the sample list */
     @Override
-    public void addValue(E value) {
+    public <T extends E> void addValue(T value) {
         samples.add(value);
     }
 
