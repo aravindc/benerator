@@ -87,4 +87,8 @@ public class QNInvocationExpression extends DynamicExpression<Object> {
     	throw new UnsupportedOperationException("Cannot evaluate " + objectOrClassName);
     }
 
+    @Override
+    public String toString() {
+        return ArrayFormat.format(".", qn) + '(' + ArrayFormat.format(argExpressions) + ')';
+    }
 }
