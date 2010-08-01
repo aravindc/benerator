@@ -65,10 +65,17 @@ public abstract class CompositeStringGenerator extends GeneratorWrapper<Object[]
 	}
 	
 	public String generate() {
+		assertInitialized();
 		Object[] parts = source.generate();
-		if (parts == null || parts[0] == null || parts[1] == null || parts[0] == null)
+		if (parts == null)
 			return null;
-	    return parts[0].toString() + parts[1].toString() + parts[2].toString();
+		StringBuilder builder = new StringBuilder();
+		for (Object part : parts) {
+			if (part == null)
+				return null;
+			builder.append(part);
+		}
+		return builder.toString();
     }
 
     protected abstract Generator<?>[] initSources(GeneratorContext context, boolean unique);
