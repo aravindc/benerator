@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.commons.db.hsql.HSQLUtil;
+import org.databene.jdbacl.hsql.HSQLUtil;
 import org.junit.Test;
 
 /**

@@ -31,10 +31,10 @@ import java.util.Date;
 
 import org.databene.commons.ConnectFailedException;
 import org.databene.commons.DatabeneTestUtil;
+import org.databene.commons.JDBCConnectData;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.db.DBUtil;
-import org.databene.commons.db.JDBCConnectData;
+import org.databene.jdbacl.DBUtil;
 import org.databene.platform.db.DatabaseDialect;
 import org.junit.Test;
 

@@ -34,9 +34,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
-import org.databene.commons.db.DBUtil;
-import org.databene.commons.db.hsql.HSQLUtil;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.jdbacl.DBUtil;
+import org.databene.jdbacl.hsql.HSQLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

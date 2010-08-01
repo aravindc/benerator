@@ -32,13 +32,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.databene.commons.HeavyweightTypedIterable;
-import org.databene.commons.db.DBUtil;
+import org.databene.jdbacl.DBUtil;
 import org.databene.model.data.Entity;
 
 import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
-import static org.databene.commons.db.hsql.HSQLUtil.*;
+import static org.databene.jdbacl.hsql.HSQLUtil.*;
 
 /**
  * Tests {@link DBSystem}.<br/>

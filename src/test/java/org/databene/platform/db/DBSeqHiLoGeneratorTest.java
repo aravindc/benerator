@@ -28,7 +28,7 @@ package org.databene.platform.db;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.commons.db.hsql.HSQLUtil;
+import org.databene.jdbacl.hsql.HSQLUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static junit.framework.Assert.*;
-import static org.databene.commons.db.hsql.HSQLUtil.*;
+import static org.databene.jdbacl.hsql.HSQLUtil.*;
 
 /**
  * Tests the DBSeqHiLoGenerator.<br/><br/>

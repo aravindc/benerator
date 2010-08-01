@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.db.hsql.HSQLUtil;
+import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.platform.db.DBSystem;
 import org.junit.Before;
 import org.junit.Test;

@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ArrayElementExtractor;
-import org.databene.commons.db.hsql.HSQLUtil;
+import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.DataModel;
