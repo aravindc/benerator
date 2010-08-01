@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 
@@ -42,26 +43,12 @@ import org.databene.commons.Converter;
 public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
 
     /** The converter to apply to the source's products */
-    protected Converter<S, T> converter;
-
-    public ConvertingGenerator() {
-        this(null, null);
-    }
+    protected Converter<?, ?>[] converters;
 
     /** Initializes all attributes */
-    public ConvertingGenerator(Generator<S> source, Converter<S, T> converter) {
+    public ConvertingGenerator(Generator<S> source, Converter<?, ?>... converters) {
         super(source);
-        this.converter = converter;
-    }
-
-    // config properties -----------------------------------------------------------------------------------------------
-
-    public Converter<S, T> getConverter() {
-        return converter;
-    }
-
-    public void setConverter(Converter<S, T> converter) {
-        this.converter = converter;
+        this.converters = converters;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -70,22 +57,30 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     public void init(GeneratorContext context) {
         if (source == null)
             throw new InvalidGeneratorSetupException("source", "is null");
-        if (converter == null)
-            throw new InvalidGeneratorSetupException("converter", "is null");
+        if (ArrayUtil.isEmpty(converters))
+            throw new InvalidGeneratorSetupException("converters", "is empty");
         super.init(context);
     }
 
+    @SuppressWarnings("unchecked")
     public Class<T> getGeneratedType() {
-        return converter.getTargetType();
+    	if (converters.length > 0)
+    		return (Class<T>) converters[converters.length - 1].getTargetType();
+    	else
+    		return (Class<T>) source.getGeneratedType();
     }
 
     /** @see org.databene.benerator.Generator#generate() */
+    @SuppressWarnings("unchecked")
     public T generate() {
         try {
-            S product = source.generate();
-            return converter.convert(product);
+            Object tmp = source.generate();
+            for (Converter converter : converters)
+            	tmp = converter.convert(tmp);
+            return (T) tmp;
         } catch (ConversionException e) {
             throw new IllegalGeneratorStateException(e);
         }
     }
+    
 }
