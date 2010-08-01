@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.engine.BeneratorOpts;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
@@ -53,7 +54,6 @@ import org.databene.benerator.wrapper.GeneratorProxy;
  */
 public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 
-	public static final int DEFAULT_CACHE_SIZE = 100000;
 	public static final int MIN_BUCKET_SIZE = 10;
 	public static final float DEFAULT_DUPLICATION_QUOTA = 0;
 	
@@ -65,11 +65,11 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	// construction ----------------------------------------------------------------------------------------------------
 
 	public ExpandGeneratorProxy(Generator<E> source, float duplicationQuota) {
-    	this(source, duplicationQuota, DEFAULT_CACHE_SIZE);
+    	this(source, duplicationQuota, BeneratorOpts.getCacheSize());
     }
 	
 	public ExpandGeneratorProxy(Generator<E> source, float duplicationQuota, int cacheSize) {
-    	this(source, duplicationQuota, DEFAULT_CACHE_SIZE, defaultBucketSize(cacheSize));
+    	this(source, duplicationQuota, BeneratorOpts.getCacheSize(), defaultBucketSize(cacheSize));
     }
 
 	public ExpandGeneratorProxy(Generator<E> source, float duplicationQuota, int cacheSize, int bucketSize) {

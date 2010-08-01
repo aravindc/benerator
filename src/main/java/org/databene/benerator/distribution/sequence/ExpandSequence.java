@@ -24,6 +24,8 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.engine.BeneratorOpts;
+
 import static org.databene.commons.NumberUtil.*;
 
 /**
@@ -48,9 +50,9 @@ public class ExpandSequence extends Sequence {
     }
 
     public ExpandSequence(Float duplicationQuota) {
-	    this(ExpandGeneratorProxy.DEFAULT_CACHE_SIZE, 
+	    this(BeneratorOpts.getCacheSize(), 
 	    	 duplicationQuota, 
-	    	 ExpandGeneratorProxy.defaultBucketSize(ExpandGeneratorProxy.DEFAULT_CACHE_SIZE));
+	    	 ExpandGeneratorProxy.defaultBucketSize(BeneratorOpts.getCacheSize()));
     }
 
 	public ExpandSequence(Integer cacheSize, Integer bucketSize) {
@@ -91,14 +93,14 @@ public class ExpandSequence extends Sequence {
     }
 
 	private int cacheSize() {
-		return (cacheSize != null ? cacheSize : ExpandGeneratorProxy.DEFAULT_CACHE_SIZE);
+		return (cacheSize != null ? cacheSize : BeneratorOpts.getCacheSize());
     }
 	
 	private <T extends Number> int cacheSize(T min, T max, T precision) {
 		if (cacheSize != null)
 			return cacheSize;
 		long volume = volume(toLong(min), toLong(max), toLong(precision));
-		return (int) Math.min(ExpandGeneratorProxy.DEFAULT_CACHE_SIZE, volume);
+		return (int) Math.min(BeneratorOpts.getCacheSize(), volume);
 	}
 
 	private static <T extends Number> long volume(long min, long max, long precision) {
