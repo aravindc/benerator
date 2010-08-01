@@ -40,7 +40,6 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.distribution.function.GaussianFunction;
-import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.distribution.sequence.HeadSequence;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
@@ -99,7 +98,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision) {
         for (Sequence sequence : SequenceManager.registeredSequences())
-        	if (!(sequence instanceof HeadSequence) && !(sequence instanceof ExpandSequence /* TODO remove */))
+        	if (!(sequence instanceof HeadSequence))
         		checkNumberGenerator(type, min, max, precision, sequence);
         if (max != null)
 	        for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
