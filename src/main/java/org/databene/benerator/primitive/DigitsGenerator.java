@@ -31,7 +31,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DigitsGenerator extends ThreadSafeGenerator<String> { // TODO support Distribution?
+public class DigitsGenerator extends ThreadSafeGenerator<String> { // TODO v0.6.4 support Distribution?
 
 	private int minLength;
 	private int maxLength;
@@ -106,6 +106,13 @@ public class DigitsGenerator extends ThreadSafeGenerator<String> { // TODO suppo
 		if (prefix.length() == 0)
 			builder.append(RandomUtil.randomDigit(minInitial));
 		for (int i = builder.length(); i < length; i++)
+			builder.append(RandomUtil.randomDigit(0));
+	    return builder.toString();
+    }
+
+	public static String generate(int length) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < length; i++)
 			builder.append(RandomUtil.randomDigit(0));
 	    return builder.toString();
     }
