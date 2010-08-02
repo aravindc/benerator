@@ -95,7 +95,7 @@ public class ArrayGeneratorFactory {
 
     private static Generator<Object[]> createMutatingArrayGenerator(
     		String instanceName, ArrayTypeDescriptor type, BeneratorContext context, Generator<Object[]> generator) {
-	    // TODO v0.6.2 mutate array elements
+	    // TODO v0.6.4 mutate array elements
 	    return generator;
     }
 

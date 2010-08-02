@@ -81,7 +81,7 @@ public class BirthDateGenerator extends GeneratorProxy<Date> {
     public synchronized void init(GeneratorContext context) {
         Calendar min = TimeUtil.calendar(TimeUtil.tomorrow());
         min.add(Calendar.YEAR, - maxAgeYears - 1);
-        Calendar max = TimeUtil.calendar(TimeUtil.yesterday()); // TODO should be today, but there's a bug in DateGenerator
+        Calendar max = TimeUtil.calendar(TimeUtil.yesterday()); // TODO v0.6.4 should be today, but there's a bug in DateGenerator
         max.add(Calendar.YEAR, -minAgeYears);
 		setSource(new DateGenerator(min.getTime(), max.getTime(), Period.DAY.getMillis(), SequenceManager.RANDOM_SEQUENCE));
         super.init(context);
