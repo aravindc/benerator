@@ -28,7 +28,7 @@ package org.databene.domain.address;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,6 @@ public class AddressGenerator extends CompositeGenerator<Address> {
     private Country country;
     private CityGenerator cityGenerator;
     private StreetNameGenerator streetNameGenerator;
-    private RegexStringGenerator localPhoneNumberGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -124,15 +123,11 @@ public class AddressGenerator extends CompositeGenerator<Address> {
         cityGenerator.init(context);
         streetNameGenerator = registerComponent(new StreetNameGenerator(country.getIsoCode()));
         streetNameGenerator.init(context);
-        localPhoneNumberGenerator = registerComponent(new RegexStringGenerator("[1-9]\\d{6}"));
-        localPhoneNumberGenerator.init(context);
     }
 	
     private PhoneNumber generatePhoneNumber(City city) {
-        // TODO this will not work any more for Germany (no property changes after init()): 
-        // int localPhoneNumberLength = 10 - city.getAreaCode().length();
-        // localPhoneNumberGenerator.setPattern("[2-9]\\d{" + (localPhoneNumberLength - 1) + '}'); 
-        String localCode = localPhoneNumberGenerator.generate();
+        int localPhoneNumberLength = 10 - city.getAreaCode().length();
+        String localCode = DigitsGenerator.generate(localPhoneNumberLength);
         return new PhoneNumber(country.getPhoneCode(), city.getAreaCode(), localCode);
     }
 
