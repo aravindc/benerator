@@ -63,7 +63,7 @@ public class WeightedNumbersTest extends GeneratorTest {
 	public void testApply_nonUnique() {
 		Generator<String> generator = intDist.applyTo(new SequenceTestGenerator<String>("X", "A", "B", "C"), false);
 		generator.init(context);
-		expectRelativeWeights(generator, 1000, "X", 0, "A", 3, "B", 2, "C", 1);
+		expectRelativeWeights(generator, 2000, "X", 0, "A", 3, "B", 2, "C", 1);
 	}
 
 }
