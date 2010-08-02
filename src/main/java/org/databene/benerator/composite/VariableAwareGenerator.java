@@ -55,6 +55,7 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 	private OrderedNameMap<ProductWrapper<?>> variableResults;
 	private Context context;
 	private boolean variablesCalculated;
+	private String message;
 	
 	public VariableAwareGenerator(Generator<E> realGenerator, OrderedNameMap<NullableGenerator<?>> variables, Context context) {
         Assert.notNull(realGenerator, "realGenerator");
@@ -95,8 +96,9 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 			for (Map.Entry<String, ProductWrapper<?>> entry : variableResults.entrySet()) {
 				ProductWrapper<?> productWrapper = entry.getValue();
 				if (productWrapper == null) {
-		        	if (logger.isDebugEnabled()) // TODO set message
-		        		logger.debug("Variable no more available: " + entry.getKey());
+					this.message = "Variable no more available: " + entry.getKey();
+		        	if (logger.isDebugEnabled())
+		        		logger.debug(message);
 		            return null;
 				}
 	            context.set(entry.getKey(), productWrapper.product);
@@ -107,8 +109,9 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 				NullableGenerator<?> generator = entry.getValue();
 				ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
 				if (productWrapper == null) {
-		        	if (logger.isDebugEnabled()) // TODO set message
-		        		logger.debug("No more available: " + generator);
+					this.message = "No more available: " + generator;
+		        	if (logger.isDebugEnabled())
+		        		logger.debug(message);
 		            return null;
 				}
 	            context.set(entry.getKey(), productWrapper.product);
@@ -139,6 +142,8 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 	}
 	
 	public String getMessage() {
+		if (message != null)
+			return message;
 	    return (realGenerator instanceof MessageHolder ? ((MessageHolder) realGenerator).getMessage() : null);
 	}
 
