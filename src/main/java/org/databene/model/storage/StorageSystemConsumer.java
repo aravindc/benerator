@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,21 +36,12 @@ import org.databene.model.data.Entity;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class StorageSystemConsumer extends AbstractConsumer<Entity> {
+public abstract class StorageSystemConsumer extends AbstractConsumer<Entity> {
 
-    private StorageSystem system;
-    private boolean insert;
+    protected final StorageSystem system;
 
-    public StorageSystemConsumer(StorageSystem system, boolean insert) {
+    protected StorageSystemConsumer(StorageSystem system) {
         this.system = system;
-        this.insert = insert;
-    }
-
-    public void startConsuming(Entity entity) {
-    	if (insert)
-    		system.store(entity);
-    	else
-    		system.update(entity);
     }
 
     @Override
@@ -67,5 +58,6 @@ public class StorageSystemConsumer extends AbstractConsumer<Entity> {
     public String toString() {
     	return getClass().getSimpleName() + "[" + system + "]";
     }
+
 }
 

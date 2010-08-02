@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,9 +30,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.commons.TypedIterable;
 import org.databene.jdbacl.DBUtil;
+import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 
 import org.junit.Before;
@@ -125,6 +129,39 @@ public class DBSystemTest {
 		} finally {
 			db.dropSequence(seq);
 		}
+	}
+	
+	@Test
+	public void testUpdater() throws Exception {
+		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
+        TypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        Iterator<Entity> iterator = entities.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
+	}
+	
+	@Test
+	public void testInserter() throws Exception {
+        Consumer<Entity> inserter = db.inserter();
+        Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
+        inserter.startConsuming(entity);
+        inserter.finishConsuming(entity);
+        TypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        Iterator<Entity> iterator = entities.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
+	}
+	
+	@Test
+	public void testInserter_table() throws Exception {
+        Consumer<Entity> inserter = db.inserter("TEST");
+        Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
+        inserter.startConsuming(entity);
+        inserter.finishConsuming(entity);
+        TypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        Iterator<Entity> iterator = entities.iterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------

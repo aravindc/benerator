@@ -45,7 +45,7 @@ import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
 import org.databene.model.data.Entity;
 import org.databene.model.storage.StorageSystem;
-import org.databene.model.storage.StorageSystemConsumer;
+import org.databene.model.storage.StorageSystemInserter;
 import org.w3c.dom.Element;
 
 /**
@@ -118,7 +118,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
     	if (bean instanceof Consumer)
     		consumer = (Consumer<?>) bean;
     	else if (bean instanceof StorageSystem)
-    		consumer = new StorageSystemConsumer((StorageSystem) bean, true);
+    		consumer = new StorageSystemInserter((StorageSystem) bean);
     	else
     		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
     	if (bean instanceof ContextAware)

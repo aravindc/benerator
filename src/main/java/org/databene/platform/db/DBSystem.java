@@ -50,7 +50,8 @@ import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
 import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
-import org.databene.model.storage.StorageSystemConsumer;
+import org.databene.model.storage.StorageSystemInserter;
+import org.databene.model.storage.StorageSystemUpdater;
 import org.databene.model.version.VersionNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -338,7 +339,7 @@ public class DBSystem extends AbstractStorageSystem {
     		script = true;
     	}
     	String sql = null;
-    	 // TODO move the case distinction to EntityResultIterable (esp. useful for dynamic queries)
+    	 // TODO v0.6.4 move the case distinction to EntityResultIterable (esp. useful for dynamic queries)
     	if (StringUtil.isEmpty(selector))
     	    sql = "select * from " + type;
     	else if (StringUtil.startsWithIgnoreCase(selector, "select") || StringUtil.startsWithIgnoreCase(selector, "'select"))
@@ -399,11 +400,15 @@ public class DBSystem extends AbstractStorageSystem {
     }
     
     public Consumer<Entity> inserter() {
-    	return new StorageSystemConsumer(this, true);
+    	return new StorageSystemInserter(this);
+    }
+    
+    public Consumer<Entity> inserter(String table) {
+    	return new StorageSystemInserter(this, table);
     }
     
     public Consumer<Entity> updater() {
-    	return new StorageSystemConsumer(this, false);
+    	return new StorageSystemUpdater(this);
     }
     
     // database-specific interface -------------------------------------------------------------------------------------
