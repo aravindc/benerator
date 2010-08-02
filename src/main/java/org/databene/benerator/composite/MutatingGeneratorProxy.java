@@ -116,7 +116,8 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> implements M
                     return null;
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Failure in generation of entity '" + instanceName + "'", e);
+                throw new RuntimeException("Failure in generation of entity '" + instanceName + "', " +
+                		"Failed component builder: " + componentBuilder, e);
             }
         }
     	E result = currentInstance;
