@@ -64,11 +64,11 @@ public class SQLEntityExporter extends TextFileExporter<Entity> {
         this(uri, null);
     }
 
-    public SQLEntityExporter(String uri, String encoding) {
-    	this(uri, encoding, null, null);
+    public SQLEntityExporter(String uri, String dialect) {
+    	this(uri, dialect, null, null);
     }
 
-    public SQLEntityExporter(String uri, String encoding, String lineSeparator, String dialect) { // TODO dialect is more important than encoding, so it should be the 2nd aparameter
+    public SQLEntityExporter(String uri, String dialect, String lineSeparator, String encoding) {
     	super(uri, encoding, lineSeparator);
     	setDialect(dialect);
     }
