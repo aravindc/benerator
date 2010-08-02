@@ -42,9 +42,13 @@ public class EntityRenamer extends ThreadSafeConverter<Entity, Entity> {
     }
 
 	public Entity convert(Entity entity) throws ConversionException {
+		return rename(entity, targetName);
+    }
+
+	public static Entity rename(Entity entity, String targetName) {
 	    Entity result = new Entity(targetName);
 	    result.setComponents(entity.getComponents());
 	    return result;
-    }
-
+	}
+	
 }
