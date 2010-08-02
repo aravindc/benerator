@@ -24,11 +24,12 @@ package org.databene.benerator.engine.statement;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.commons.SystemInfo;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -41,24 +42,28 @@ import org.junit.Test;
 public class BeneratorRootStatementTest extends GeneratorTest {
 
 	@Test
-	public void testGetGenerator() throws Exception {
-		BeneratorRootStatement task = null;
-		String lf = SystemInfo.getLineSeparator();
-		DescriptorRunner runner = new DescriptorRunner("string://<setup>" + lf +
-				"	<generate type='Person' count='3'>" + lf +
-				"		<attribute name='name' constant='Alice'/>" + lf +
-				"	</generate>" + lf +
-				"</setup>");
-		task = runner.parseDescriptorFile();
-		Generator<?> generator = task.getGenerator("Person", runner.getContext());
-		assertEquals(Entity.class, generator.getGeneratedType());
-		assertNotNull(generator);
-		generator.init(context);
-		for (int i = 0; i < 3; i++)
-			checkGeneration(generator);
-		assertUnavailable(generator);
-		generator.close();
+	public void testGetGenerator_simple() throws Exception {
+        check("org/databene/benerator/engine/statement/simple.ben.xml");
 	}
+
+	@Test
+	public void testGetGenerator_include() throws Exception {
+        check("org/databene/benerator/engine/statement/including.ben.xml");
+	}
+
+	private void check(String uri) throws IOException {
+	    BeneratorRootStatement task = null;
+		DescriptorRunner runner = new DescriptorRunner(uri);
+        task = runner.parseDescriptorFile();
+        Generator<?> generator = task.getGenerator("Person", runner.getContext());
+		assertEquals(Entity.class, generator.getGeneratedType());
+        assertNotNull(generator);
+        generator.init(context);
+        for (int i = 0; i < 3; i++)
+        	checkGeneration(generator);
+        assertUnavailable(generator);
+        generator.close();
+    }
 
 	private void checkGeneration(Generator<?> generator) {
 	    Entity entity = (Entity) generator.generate();

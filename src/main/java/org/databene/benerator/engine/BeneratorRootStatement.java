@@ -21,12 +21,16 @@
 
 package org.databene.benerator.engine;
 
+import java.io.IOException;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.statement.GeneratorStatement;
+import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.Visitor;
 import org.databene.commons.expression.ExpressionUtil;
@@ -41,13 +45,18 @@ public class BeneratorRootStatement extends SequentialStatement {
 
     @SuppressWarnings("unchecked")
     public Generator<?> getGenerator(String name, BeneratorContext context) {
+    	GeneratorStatement statement = getGeneratorStatement(name, context);
+    	Generator<?> generator = statement.getTarget().getGenerator();
+		return new NShotGeneratorProxy(generator, statement.generateCount(context));
+	}
+
+    public GeneratorStatement getGeneratorStatement(String name, BeneratorContext context) {
     	BeneratorVisitor visitor = new BeneratorVisitor(name, context);
     	accept(visitor);
     	GeneratorStatement statement = visitor.getResult();
 		if (statement == null)
     		throw new IllegalArgumentException("Generator not found: " + name);
-    	Generator<?> generator = statement.getTarget().getGenerator();
-		return new NShotGeneratorProxy(generator, statement.generateCount(context));
+    	return statement;
 	}
 
 	class BeneratorVisitor implements Visitor<Statement> {
@@ -65,23 +74,35 @@ public class BeneratorRootStatement extends SequentialStatement {
         	return result;
         }
 
-		public void visit(Statement element) {
+		public void visit(Statement statement) {
 			if (result != null)
 				return;
-			if (element instanceof GeneratorStatement) {
-				GeneratorStatement generatorStatement = (GeneratorStatement) element;
+			if (statement instanceof GeneratorStatement) {
+				GeneratorStatement generatorStatement = (GeneratorStatement) statement;
 				GeneratorTask target = generatorStatement.getTarget();
 				if (name.equals(target.getTaskName())) {
 					result = generatorStatement;
 					return;
 				}
-			} else if (element instanceof StatementProxy)
-				visit(((StatementProxy) element).getRealStatement());
-			else if (element instanceof LazyStatement) {
-	            Expression<Statement> targetExpression = ((LazyStatement) element).getTargetExpression();
+			} else if (statement instanceof StatementProxy)
+				visit(((StatementProxy) statement).getRealStatement());
+			else if (statement instanceof LazyStatement) {
+	            Expression<Statement> targetExpression = ((LazyStatement) statement).getTargetExpression();
 	            visit(ExpressionUtil.evaluate(targetExpression, context));
+            } else if (statement instanceof IncludeStatement) {
+                String uri = ((IncludeStatement) statement).getUri().evaluate(context);
+                if (uri != null && uri.toLowerCase().endsWith(".xml")) {
+	                DescriptorRunner descriptorRunner = new DescriptorRunner(context.resolveRelativeUri(uri));
+	            	try {
+		                BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();
+		                result = rootStatement.getGeneratorStatement(name, context);
+		                return;
+	                } catch (IOException e) {
+		                throw new ConfigurationError("error parsing file " + uri, e);
+	                }
+                }
             }
-			element.execute(context);
+			statement.execute(context);
         }
 	}
 	
