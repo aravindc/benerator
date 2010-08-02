@@ -51,10 +51,10 @@ import org.databene.commons.ui.I18NSupport;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public class NewProjectWizard extends JFrame { // TODO rename to NewProjectWizard
+public class NewProjectWizard extends JFrame {
 	
 	private static final long serialVersionUID = -359209516189875124L;
-	
+
 	I18NSupport i18n;
 	CreateProjectPanel mainPanel;
 
