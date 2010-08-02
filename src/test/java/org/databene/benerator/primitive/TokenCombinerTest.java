@@ -27,7 +27,7 @@ import org.databene.commons.validator.UniqueValidator;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link TokenCombiner}.<br/><br/>
  * Created: 01.08.2010 15:10:43
  * @since 0.6.3
  * @author Volker Bergmann
