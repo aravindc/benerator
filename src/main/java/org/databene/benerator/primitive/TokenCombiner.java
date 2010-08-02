@@ -39,7 +39,9 @@ import org.databene.commons.validator.BlacklistValidator;
 import org.databene.document.csv.CSVLineIterator;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} implementation which takes cells from a CSV file as input 
+ * and combines the cells by taking a cell value from a random row for each column
+ * and concatenating them to a string.<br/><br/>
  * Created: 01.08.2010 14:48:50
  * @since 0.6.3
  * @author Volker Bergmann
