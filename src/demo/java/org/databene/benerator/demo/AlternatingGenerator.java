@@ -49,10 +49,4 @@ public class AlternatingGenerator extends SimpleGenerator<Integer> {
 		return value;
 	}
 	
-	public static void main(String[] args) {
-		AlternatingGenerator gen = new AlternatingGenerator();
-		for (int i = 0; i < 10; i++)
-			System.out.println(gen.generate());
-	}
-
 }
