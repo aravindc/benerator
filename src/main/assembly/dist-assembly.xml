@@ -108,20 +108,20 @@
 
     <dependencySets>
         <dependencySet>
-            <scope>runtime</scope>
+			<useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
             <excludes>
-                <exclude>junit:junit</exclude>
-            </excludes>
-        </dependencySet>
-        <dependencySet>
-        	<scope>provided</scope>
-            <outputDirectory>lib</outputDirectory>
-            <unpack>false</unpack>
-            <excludes>
-                <exclude>log4j:log4j</exclude>
+                <exclude>antlr:antlr:jar</exclude>
+                <exclude>org.antlr:stringtemplate:jar</exclude>
+                <exclude>avalon-framework:avalon-framework:jar</exclude>
+                <exclude>commons-logging:commons-logging:jar</exclude>
+                <exclude>log4j:log4j:jar</exclude>
+                <exclude>logkit:logkit:jar</exclude>
+                <exclude>javax.servlet:servlet-api:jar</exclude>
+                <exclude>junit:junit:jar</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
+    
 </assembly>
