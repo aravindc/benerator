@@ -52,7 +52,7 @@ public class ExponentialDensityIntegralTest extends GeneratorTest {
 	public void testCreateDoubleGenerator_notUnique() {
 		Generator<Double> generator = fcn.createGenerator(Double.class, 1., 2., 0.5, false);
 		generator.init(context);
-		int n = 1000;
+		int n = 2000;
 		Map<Double, AtomicInteger> counts = super.countProducts(generator, n);
 		assertEquals(3, counts.size());
 		int lastCount = n + 1;
