@@ -88,8 +88,8 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 		public IPINumberGenerator(CumulativeDistributionFunction fcn, Class<E> targetType, E min, E max, E precision) {
 			super(targetType, min, max, precision);
 			this.fcn = fcn;
-			this.minD = min.doubleValue();
-			this.maxD = max.doubleValue();
+			this.minD = (min != null ? min.doubleValue() : (max != null ? maxD - 9 : 0));
+			this.maxD = (max != null ? max.doubleValue() : (min != null ? minD + 9 : 0));
 			this.precisionD = precision.doubleValue();
 			this.minProb = fcn.cumulativeProbability(minD);
 			this.probScale = fcn.cumulativeProbability(maxD + precisionD) - this.minProb;
