@@ -51,10 +51,8 @@ public class AsNullableGeneratorAdapter<E> implements NullableGenerator<E> {
 
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	wrapper.product = source.generate();
-    	if (wrapper.product == null) {
-    		close();
+    	if (wrapper.product == null)
     		return null;
-    	}
     	return wrapper;
     }
 
