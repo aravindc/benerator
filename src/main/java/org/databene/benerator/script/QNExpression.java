@@ -80,7 +80,7 @@ public class QNExpression extends DynamicExpression<Object> {
     			if (qnLength > 1) {
 	    			return readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
     			} else
-    				throw new UnsupportedOperationException(objectOrClassName + " is not defined");
+    				throw new UnsupportedOperationException("'" + objectOrClassName + "' is not defined");
     		}
     	}
     }
