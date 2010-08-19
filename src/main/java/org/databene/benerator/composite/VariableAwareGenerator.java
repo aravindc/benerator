@@ -76,10 +76,14 @@ public class VariableAwareGenerator<E> implements Generator<E>, MessageHolder {
 		this.variableResults = new OrderedNameMap<ProductWrapper<?>>();
         for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
         	NullableGenerator<?> varGen = entry.getValue();
-        	varGen.init(context);
-        	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
-			variableResults.put(entry.getKey(), result);
-			context.set(entry.getKey(), ProductWrapper.unwrap(result));
+        	try {
+	        	varGen.init(context);
+	        	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
+				variableResults.put(entry.getKey(), result);
+				context.set(entry.getKey(), ProductWrapper.unwrap(result));
+        	} catch (Exception e) {
+        		throw new RuntimeException("Error initializing variable '" + entry.getKey() + "': " + varGen, e);
+        	}
         }
         this.variablesCalculated = true;
         realGenerator.init(context);
