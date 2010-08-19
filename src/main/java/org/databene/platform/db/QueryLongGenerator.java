@@ -26,7 +26,6 @@
 
 package org.databene.platform.db;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.model.storage.StorageSystem;
@@ -44,8 +43,8 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
 	
     private Converter converter;
 
-	public QueryLongGenerator(String selector, StorageSystem source, BeneratorContext context) {
-	    super(selector, source, context);
+	public QueryLongGenerator(String selector, StorageSystem source) {
+	    super(selector, source);
     }
 	
 	@Override
