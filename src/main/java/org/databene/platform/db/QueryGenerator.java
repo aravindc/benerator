@@ -28,11 +28,9 @@ package org.databene.platform.db;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.StringUtil;
-import org.databene.commons.TypedIterable;
 import org.databene.model.storage.StorageSystem;
 
 /**
@@ -49,23 +47,22 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 	private String selector;
 	
     public QueryGenerator(String selector, StorageSystem storage) {
-		this(selector, storage, null);
-	}
-
-    @SuppressWarnings("unchecked")
-    public QueryGenerator(String selector, StorageSystem source, BeneratorContext context) {
-		this.storage = source;
+		this.storage = storage;
 		this.selector = selector;
-		this.source = new IteratingGenerator<E>((TypedIterable<E>) source.query(selector, context));
 	}
 
     @Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
+    	
+    	// check preconditions
     	assertNotInitialized();
 	    if (storage == null)
 	    	throw new InvalidGeneratorSetupException("source is null");
 	    if (StringUtil.isEmpty(selector))
 	    	throw new InvalidGeneratorSetupException("no query defined");
+	    
+	    // initialize
+		this.source = new IteratingGenerator<E>(storage.<E>query(selector, context));
 	    super.init(context);
     }
 
