@@ -38,9 +38,9 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DbUnitEbtityExporterTest {
+public class DbUnitEntityExporterTest {
 
-	private static final String FILENAME = "target/" + DbUnitEbtityExporterTest.class.getName() + ".dbunit.xml";
+	private static final String FILENAME = "target/" + DbUnitEntityExporterTest.class.getName() + ".dbunit.xml";
 	private static final Entity ALICE = new Entity("Person", "name", "Alice", "age", 23);
 	private static final Entity BOB = new Entity("Person", "name", "Bob", "age", 34);
 
