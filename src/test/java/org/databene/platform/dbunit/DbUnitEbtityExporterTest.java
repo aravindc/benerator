@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,6 +59,21 @@ public class DbUnitEbtityExporterTest {
 		assertPerson(children[0], "Alice", 23);
 		assertPerson(children[1], "Bob",   34);
 		FileUtil.deleteIfExists(new File(FILENAME));
+	}
+
+	@Test
+	public void testClosingTwice() throws Exception {
+		DbUnitEntityExporter exporter = new DbUnitEntityExporter(FILENAME);
+		exporter.startConsuming(ALICE);
+		exporter.finishConsuming(ALICE);
+		exporter.close();
+		exporter.close();
+	}
+
+	@Test
+	public void testUnusedClose() throws Exception {
+		DbUnitEntityExporter exporter = new DbUnitEntityExporter(FILENAME);
+		exporter.close();
 	}
 
 	private void assertPerson(Element element, String name, int age) {
