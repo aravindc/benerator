@@ -54,7 +54,7 @@ public class Version {
 	    try {
 	        String version = IOUtil.getContentOfURI("org/databene/benerator/version.txt");
 	        if (version.startsWith("${")) // in Eclipse, the version is not resolved
-	        	version = "0.6.3"; // TODO v0.6.4 resolve version automatically in Eclipse
+	        	version = "0.6.4"; // TODO v0.6.4 resolve version automatically in Eclipse
 			return version;
         } catch (IOException e) {
 	        throw new ConfigurationError("Error reading version info file", e);
