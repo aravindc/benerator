@@ -96,6 +96,7 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> implements M
     
     public synchronized E generate() {
     	
+    	try {
     	currentInstance = source.generate();
         if (currentInstance == null) {
         	message = "Source for entity '" + instanceName + "' is not available any more: " + source;
@@ -107,22 +108,30 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> implements M
         	context.set(instanceName, currentInstance);
         context.set("this", currentInstance);
         
-        for (ComponentBuilder<E> componentBuilder : componentBuilders) {
+        if (buildComponents())
+    		return currentInstance;
+        else
+        	return null;
+    	} finally {
+        	currentInstance = null;
+    	}
+    }
+
+	private boolean buildComponents() {
+	    for (ComponentBuilder<E> componentBuilder : componentBuilders) {
             try {
                 if (!componentBuilder.buildComponentFor(currentInstance)) {
                 	message = "Component generator for entity '" + instanceName + 
                 		"' is not available any more: " + componentBuilder;
                     stateLogger.debug(message);
-                    return null;
+                    return false;
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Failure in generation of entity '" + instanceName + "', " +
                 		"Failed component builder: " + componentBuilder, e);
             }
         }
-    	E result = currentInstance;
-    	currentInstance = null;
-        return result;
+        return true;
     }
 
     @Override
