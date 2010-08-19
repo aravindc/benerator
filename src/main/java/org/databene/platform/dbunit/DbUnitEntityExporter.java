@@ -140,12 +140,13 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
     
     @Override
 	public void flush() {
-       	IOUtil.flush(out);
+    	if (out != null)
+    		IOUtil.flush(out);
     }
 
     @Override
 	public void close() {
-        if (out != null) { 
+        if (handler != null) { 
             try {
             	handler.endElement("", "", "dataset");
 				handler.endDocument();
@@ -154,6 +155,7 @@ public class DbUnitEntityExporter extends AbstractConsumer<Entity> {
 				throw new ConfigurationError("Error closing XML file.", e);
 			} finally {
 				IOUtil.close(out);
+				out = null;
 			}
         }
     }
