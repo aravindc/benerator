@@ -97,6 +97,8 @@ public interface DescriptorConstants {
     static final String ATT_BATCH = "batch";
     static final String ATT_SCHEMA = "schema";
     static final String ATT_TABLE_FILTER = "tableFilter";
+    static final String ATT_INCL_TABLES = "includeTables";
+    static final String ATT_EXCL_TABLES = "excludeTables";
     static final String ATT_TEST = "test";
     static final String ATT_DURATION = "duration";
     static final String ATT_MIN = "min";
