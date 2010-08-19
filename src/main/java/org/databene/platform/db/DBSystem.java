@@ -570,7 +570,7 @@ public class DBSystem extends AbstractStorageSystem {
             if (foreignKeyColumnNames.length == 1) {
                 String fkColumnName = foreignKeyColumnNames[0];
                 DBTable targetTable = constraint.getForeignTable();
-                DBColumn fkColumn = targetTable.getColumn(fkColumnName);
+                DBColumn fkColumn = constraint.getOwner().getColumn(fkColumnName);
                 DBColumnType concreteType = fkColumn.getType();
                 String abstractType = JdbcMetaTypeMapper.abstractType(concreteType, acceptUnknownColumnTypes);
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
