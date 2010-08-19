@@ -47,10 +47,7 @@ public class ScriptableExpression extends DynamicExpression<Object> {
     private ScriptableExpression(String scriptOrText, Expression<?> defaultValueExpression) {
     	this.defaultValueExpression = defaultValueExpression;
     	this.isScript = ScriptUtil.isScript(scriptOrText);
-    	if (isScript)
-    		this.scriptOrText = StringUtil.unescape(scriptOrText);
-    	else
-    		this.scriptOrText = scriptOrText;
+		this.scriptOrText = scriptOrText;
     }
     
     public static Expression<?> createWithDefaultExpression(
@@ -61,8 +58,10 @@ public class ScriptableExpression extends DynamicExpression<Object> {
     public Object evaluate(Context context) {
 		if (StringUtil.isEmpty(scriptOrText))
 			return (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
+		else if (isScript)
+			return StringUtil.unescape(String.valueOf(ScriptUtil.render(scriptOrText, context)));
 		else
-			return ScriptUtil.render(scriptOrText, context);
+			return scriptOrText;
     }
 
 	@Override
