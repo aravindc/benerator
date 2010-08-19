@@ -35,7 +35,7 @@ import org.databene.commons.operation.FirstArgSelector;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class ReferenceDescriptor extends ComponentDescriptor {
+public class ReferenceDescriptor extends ComponentDescriptor { // TODO the class implies a reference to a primary key, but it could be an arbitrary column
 
     private static final String TARGET_TYPE = "targetType";
     
