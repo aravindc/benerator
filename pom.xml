@@ -5,13 +5,13 @@
 
     <groupId>org.databene</groupId>
     <artifactId>databene-benerator</artifactId>
-    <version>0.6.3</version>
+    <version>0.6.4</version>
 
     <properties>
-        <jdbacl_version>0.6.3</jdbacl_version>
-        <gui_version>0.2.3</gui_version>
-        <webdecs_version>0.5.3</webdecs_version>
-	    <commons_version>0.5.3</commons_version>
+        <jdbacl_version>0.6.4</jdbacl_version>
+        <gui_version>0.2.4</gui_version>
+        <webdecs_version>0.5.4</webdecs_version>
+	    <commons_version>0.5.4</commons_version>
     </properties>
 
     <packaging>jar</packaging>
