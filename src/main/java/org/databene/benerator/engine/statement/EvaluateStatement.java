@@ -109,7 +109,7 @@ public class EvaluateStatement implements Statement {
     	this.assertionEx = assertionEx;
     }
 
-	public void execute(BeneratorContext context) {
+	public void execute(BeneratorContext context) { // TODO support StorageSystem.execute()
 		try {
 			String onErrorValue = ExpressionUtil.evaluate(onErrorEx, context);
 			if (onErrorValue == null)
