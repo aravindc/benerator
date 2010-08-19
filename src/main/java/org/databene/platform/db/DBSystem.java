@@ -26,20 +26,23 @@
 
 package org.databene.platform.db;
 
-import org.databene.platform.db.dialect.OracleDialect;
 import org.databene.commons.*;
 import org.databene.commons.bean.ArrayPropertyExtractor;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.jdbacl.ColumnInfo;
 import org.databene.jdbacl.DBUtil;
+import org.databene.jdbacl.DatabaseDialect;
+import org.databene.jdbacl.DatabaseDialectManager;
 import org.databene.jdbacl.DatabaseUtil;
+import org.databene.jdbacl.PooledConnectionHandler;
+import org.databene.jdbacl.dialect.OracleDialect;
 import org.databene.jdbacl.model.DBCatalog;
 import org.databene.jdbacl.model.DBColumn;
 import org.databene.jdbacl.model.DBColumnType;
 import org.databene.jdbacl.model.DBConstraint;
-import org.databene.jdbacl.model.DBForeignKeyColumn;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
 import org.databene.jdbacl.model.DBPrimaryKeyConstraint;
 import org.databene.jdbacl.model.DBSchema;
@@ -102,7 +105,8 @@ public class DBSystem extends AbstractStorageSystem {
     private String password;
     private String driver;
     private String schema;
-    private String tableFilter;
+    private String includeTables;
+    private String excludeTables;
     boolean batch;
     boolean readOnly;
     boolean acceptUnknownColumnTypes;
@@ -134,7 +138,8 @@ public class DBSystem extends AbstractStorageSystem {
         setPassword(password);
         setDriver(driver);
         setSchema(null);
-        setTableFilter(".*");
+        setIncludeTables(".*");
+        setExcludeTables(null);
         setFetchSize(DEFAULT_FETCH_SIZE);
         setBatch(false);
         setReadOnly(false);
@@ -210,12 +215,25 @@ public class DBSystem extends AbstractStorageSystem {
         this.schema = StringUtil.emptyToNull(StringUtil.trim(schema));
     }
     
-    public String getTableFilter() {
-    	return tableFilter;
+    @Deprecated
+	public void setTableFilter(String tableFilter) {
+    	setIncludeTables(tableFilter);
     }
 
-	public void setTableFilter(String tableFilter) {
-    	this.tableFilter = tableFilter;
+	public String getIncludeTables() {
+    	return includeTables;
+    }
+
+	public void setIncludeTables(String includeTables) {
+    	this.includeTables = includeTables;
+    }
+
+	public String getExcludeTables() {
+    	return excludeTables;
+    }
+
+	public void setExcludeTables(String excludeTables) {
+    	this.excludeTables = excludeTables;
     }
 
 	/**
@@ -417,12 +435,16 @@ public class DBSystem extends AbstractStorageSystem {
 		getDialect().createSequence(name, 1, getThreadContext().connection);
     }
 
-    public void dropSequence(String name) throws SQLException {
+    public void dropSequence(String name) {
         execute(getDialect().renderDropSequence(name));
     }
 
-    public void execute(String sql) throws SQLException {
-    	DBUtil.executeUpdate(sql, getThreadContext().connection);
+    public void execute(String sql) {
+    	try {
+	        DBUtil.executeUpdate(sql, getThreadContext().connection);
+        } catch (SQLException e) {
+	        throw new RuntimeException(e);
+        }
     }
     
     public long nextSequenceValue(String sequenceName) {
@@ -443,7 +465,7 @@ public class DBSystem extends AbstractStorageSystem {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			connection = (Connection) Proxy.newProxyInstance(classLoader, 
 					new Class[] { Connection.class, PooledConnection.class }, 
-					new PooledConnectionHandler(this, connection));
+					new PooledConnectionHandler(connection, readOnly));
             connection.setAutoCommit(false);
             return connection;
         } catch (ConnectFailedException e) {
@@ -453,6 +475,10 @@ public class DBSystem extends AbstractStorageSystem {
 		}
 	}
 	
+    public Connection getConnection() {
+        return getThreadContext().connection;
+    }
+    
 	public void invalidate() {
 		typeDescriptors = null;
 		tables = null;
@@ -465,7 +491,12 @@ public class DBSystem extends AbstractStorageSystem {
             this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             getDialect(); // make sure dialect is initialized
-            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, schema, tableFilter, false);
+            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
+            importer.setSchemaName(schema);
+            importer.setIncludeTables(includeTables);
+            importer.setExcludeTables(excludeTables);
+            importer.setImportingIndexes(false);
+            importer.setImportingUKs(false); // TODO set to true
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
             List<DBTable> tables = DatabaseUtil.dependencyOrderedTables(database);
@@ -521,26 +552,26 @@ public class DBSystem extends AbstractStorageSystem {
         
         // process primary keys
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
-        DBColumn[] columns = pkConstraint.getColumns();
-        String[] pkColumnNames = ArrayPropertyExtractor.convert(columns, "name", String.class);
-        if (pkColumnNames.length == 1) { // TODO v0.7 support composite primary keys
-        	String columnName = pkColumnNames[0];
-        	DBColumn column = table.getColumn(columnName);
-			table.getColumn(columnName);
-            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType(), acceptUnknownColumnTypes);
-        	IdDescriptor idDescriptor = new IdDescriptor(columnName, abstractType);
-			complexType.addComponent(idDescriptor);
+        if (pkConstraint != null) {
+	        String[] pkColumnNames = pkConstraint.getColumnNames();
+	        if (pkColumnNames.length == 1) { // TODO v0.7 support composite primary keys
+	        	String columnName = pkColumnNames[0];
+	        	DBColumn column = table.getColumn(columnName);
+				table.getColumn(columnName);
+	            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType(), acceptUnknownColumnTypes);
+	        	IdDescriptor idDescriptor = new IdDescriptor(columnName, abstractType);
+				complexType.addComponent(idDescriptor);
+	        }
         }
 
         // process foreign keys
         for (DBForeignKeyConstraint constraint : table.getForeignKeyConstraints()) {
-            List<DBForeignKeyColumn> foreignKeyColumns = constraint.getForeignKeyColumns();
-            if (foreignKeyColumns.size() == 1) {
-                DBForeignKeyColumn foreignKeyColumn = foreignKeyColumns.get(0);
-                DBColumn targetColumn = foreignKeyColumn.getTargetColumn();
-                DBTable targetTable = targetColumn.getTable();
-                String fkColumnName = foreignKeyColumn.getForeignKeyColumn().getName();
-                DBColumnType concreteType = foreignKeyColumn.getForeignKeyColumn().getType();
+            String[] foreignKeyColumnNames = constraint.getForeignKeyColumnNames();
+            if (foreignKeyColumnNames.length == 1) {
+                String fkColumnName = foreignKeyColumnNames[0];
+                DBTable targetTable = constraint.getForeignTable();
+                DBColumn fkColumn = targetTable.getColumn(fkColumnName);
+                DBColumnType concreteType = fkColumn.getType();
                 String abstractType = JdbcMetaTypeMapper.abstractType(concreteType, acceptUnknownColumnTypes);
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
                         fkColumnName, 
@@ -549,7 +580,7 @@ public class DBSystem extends AbstractStorageSystem {
                 descriptor.getLocalType(false).setSource(id);
                 descriptor.setMinCount(new ConstantExpression<Long>(1L));
                 descriptor.setMaxCount(new ConstantExpression<Long>(1L));
-                boolean nullable = foreignKeyColumn.getForeignKeyColumn().isNullable();
+                boolean nullable = fkColumn.isNullable();
 				descriptor.setNullable(nullable);
                 complexType.setComponent(descriptor); // overwrite possible id descriptor for foreign keys
                 logger.debug("Parsed reference " + table.getName() + '.' + descriptor);
@@ -591,8 +622,7 @@ public class DBSystem extends AbstractStorageSystem {
             descriptor.setNullable(column.getNotNullConstraint() == null);
             List<DBConstraint> ukConstraints = column.getUkConstraints();
             for (DBConstraint constraint : ukConstraints) {
-                if (constraint.getColumns().length == 1) {
-                    assert constraint.getColumns()[0].equals(column); // consistence check
+                if (constraint.getColumnNames().length == 1) {
                     descriptor.setUnique(true);
                 } else {
                     logger.warn("Automated uniqueness assurance on multiple columns is not provided yet: " + constraint);
@@ -704,10 +734,6 @@ public class DBSystem extends AbstractStorageSystem {
             contexts.put(currentThread, context);
         }
         return context;
-    }
-    
-    private Connection getConnection() {
-        return getThreadContext().connection;
     }
     
 	private void persistOrUpdate(Entity entity, boolean insert) {

@@ -55,6 +55,8 @@ public class DefineDatabaseStatement implements Statement {
 	private Expression<String> password;
 	private Expression<String> schema;
 	private Expression<String> tableFilter;
+	private Expression<String>  includeTables;
+	private Expression<String>  excludeTables;
 	private Expression<Boolean> batch;
 	private Expression<Integer> fetchSize;
 	private Expression<Boolean> readOnly;
@@ -62,11 +64,10 @@ public class DefineDatabaseStatement implements Statement {
 	private ResourceManager resourceManager;
 	
 	public DefineDatabaseStatement(Expression<String> id, Expression<String> url, Expression<String> driver, 
-			Expression<String> user, Expression<String> password, 
-			Expression<String> schema, Expression<String> tableFilter, 
-			Expression<Boolean> batch, 
-			Expression<Integer> fetchSize, Expression<Boolean> readOnly, Expression<Boolean> acceptUnknownColumnTypes, 
-			ResourceManager resourceManager) {
+			Expression<String> user, Expression<String> password, Expression<String> schema, 
+			Expression<String> tableFilter, Expression<String> includeTables, Expression<String> excludeTables, 
+			Expression<Boolean> batch, Expression<Integer> fetchSize, Expression<Boolean> readOnly, 
+			Expression<Boolean> acceptUnknownColumnTypes, ResourceManager resourceManager) {
 		this.id = id;
 	    this.url = url;
 	    this.driver = driver;
@@ -74,6 +75,8 @@ public class DefineDatabaseStatement implements Statement {
 	    this.password = password;
 	    this.schema = schema;
 	    this.tableFilter = tableFilter;
+	    this.includeTables = includeTables;
+	    this.excludeTables = excludeTables;
 	    this.batch = batch;
 	    this.fetchSize = fetchSize;
 	    this.readOnly = readOnly;
@@ -92,6 +95,8 @@ public class DefineDatabaseStatement implements Statement {
 	    		ExpressionUtil.evaluate(password, context));
 	    db.setSchema(ExpressionUtil.evaluate(schema, context));
 	    db.setTableFilter(ExpressionUtil.evaluate(tableFilter, context));
+	    db.setIncludeTables(ExpressionUtil.evaluate(includeTables, context));
+	    db.setExcludeTables(ExpressionUtil.evaluate(excludeTables, context));
 	    db.setBatch(ExpressionUtil.evaluate(batch, context));
 	    db.setFetchSize(ExpressionUtil.evaluate(fetchSize, context));
 	    db.setReadOnly(ExpressionUtil.evaluate(readOnly, context));

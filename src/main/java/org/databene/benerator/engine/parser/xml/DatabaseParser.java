@@ -60,13 +60,16 @@ public class DatabaseParser extends AbstractDescriptorParser {
 			Expression<String>  password    = parseScriptableStringAttribute(ATT_PASSWORD, element);
 			Expression<String>  schema      = parseScriptableStringAttribute(ATT_SCHEMA,   element);
 			Expression<String>  tableFilter = parseScriptableStringAttribute(ATT_TABLE_FILTER, element);
+			Expression<String>  includeTables = parseScriptableStringAttribute(ATT_INCL_TABLES, element);
+			Expression<String>  excludeTables = parseScriptableStringAttribute(ATT_EXCL_TABLES, element);
 			Expression<Boolean> batch       = parseBooleanExpressionAttribute(ATT_BATCH, element, false);
 			Expression<Integer> fetchSize   = parseIntAttribute(ATT_FETCH_SIZE, element, 100);
 			Expression<Boolean> readOnly    = parseBooleanExpressionAttribute(ATT_READ_ONLY, element, false);
 			Expression<Boolean> acceptUnknownColumnTypes = new FallbackExpression<Boolean>(
 					parseBooleanExpressionAttribute(ATT_ACC_UNK_COL_TYPES, element), 
 					new GlobalAcceptUnknownSimpleTypeExpression());
-			return new DefineDatabaseStatement(id, url, driver, user, password, schema, tableFilter, 
+			return new DefineDatabaseStatement(id, url, driver, user, password, schema, 
+					tableFilter, includeTables, excludeTables,
 					batch, fetchSize, readOnly, acceptUnknownColumnTypes, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
