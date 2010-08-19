@@ -58,6 +58,7 @@ public class DatabaseIntegrationTest {
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
 		DBSystem db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
+		db.setSchema("PUBLIC");
 		db.execute("drop table referer if exists");
 		db.execute("drop table referee if exists");
 		db.execute("create table referee (id int, primary key (id))");
