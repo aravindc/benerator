@@ -203,6 +203,10 @@ public class ReferenceComponentBuilderFactoryTest {
 		public void flush() {
 		}
 
+		public void execute(String command) {
+			throw new UnsupportedOperationException("query() not implemented");
+		}
+
 		public <T> TypedIterable<T> query(String selector, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
