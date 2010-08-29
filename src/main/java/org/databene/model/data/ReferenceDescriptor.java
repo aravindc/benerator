@@ -52,23 +52,23 @@ public class ReferenceDescriptor extends ComponentDescriptor { // TODO the class
     public ReferenceDescriptor(String name, String typeName, String targetType) {
         super(name, typeName);
         addConstraint(TARGET_TYPE, String.class, null, new FirstArgSelector<String>());
-        setTargetTye(targetType);
+        setTargetType(targetType);
     }
     
     // properties ------------------------------------------------------------------------------------------------------
 
-    public String getTargetTye() {
+    public String getTargetType() {
         return (String) getDetailValue(TARGET_TYPE);
     }
 
-    public void setTargetTye(String targetType) {
+    public void setTargetType(String targetType) {
         setDetailValue(TARGET_TYPE, targetType);
     }
     
     // convenience-with-methods for construction -----------------------------------------------------------------------
     
     public ReferenceDescriptor withTargetTye(String targetType) {
-        setTargetTye(targetType);
+        setTargetType(targetType);
         return this;
     }
 }
