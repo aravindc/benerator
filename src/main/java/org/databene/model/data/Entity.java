@@ -28,6 +28,7 @@ package org.databene.model.data;
 
 import org.databene.commons.Composite;
 import org.databene.commons.CompositeFormatter;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.platform.java.BeanDescriptorProvider;
@@ -132,7 +133,27 @@ public class Entity implements Composite {
 		components.remove(componentName);
     }    
     
-    // java.lang.overrides ---------------------------------------------------------------------------------------------
+    public Object idComponentValues() {
+		ComplexTypeDescriptor entityDescriptor = descriptor;
+		if (entityDescriptor == null)
+			throw new ConfigurationError("Unknown type: " + this);
+		String[] idComponentNames = entityDescriptor.getIdComponentNames();
+		if (idComponentNames.length == 1)
+			return get(idComponentNames[0]);
+		else if (idComponentNames.length == 0)
+			return null;
+		else
+			return componentValues(idComponentNames);
+    }
+
+    public Object componentValues(String[] idComponentNames) {
+    	Object[] result = new Object[idComponentNames.length];
+    	for (int i = 0; i < idComponentNames.length; i++)
+    		result[i] = get(idComponentNames[i]);
+	    return result;
+    }
+
+	// java.lang.overrides ---------------------------------------------------------------------------------------------
 
     @Override
     public boolean equals(Object o) {
