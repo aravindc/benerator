@@ -28,7 +28,7 @@ package org.databene.domain.finance;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
@@ -51,7 +51,7 @@ public class BankAccountGenerator extends CompositeGenerator<BankAccount> {
 		LocaleUtil.getFallbackLocale();
 		this.countryCode = Country.getDefault().getIsoCode();
 		this.bankGenerator = registerComponent(new BankGenerator());
-		this.accountNumberGenerator = registerComponent(new RegexStringGenerator("[0-9]{8}"));
+		this.accountNumberGenerator = registerComponent(new DigitsGenerator(8, 10, 1));
 	}
 	
     @Override
