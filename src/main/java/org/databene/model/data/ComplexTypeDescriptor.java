@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.databene.commons.ArrayBuilder;
 import org.databene.commons.collection.ListBasedSet;
 import org.databene.commons.collection.NamedValueList;
 import org.databene.commons.collection.OrderedNameMap;
@@ -120,6 +121,14 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
 		return components.containsName(componentName);
 	}
 
+    public String[] getIdComponentNames() {
+    	ArrayBuilder<String> builder = new ArrayBuilder<String>(String.class);
+		for (ComponentDescriptor descriptor : getComponents())
+			if (descriptor instanceof IdDescriptor)
+				builder.add(descriptor.getName());
+		return builder.toArray();
+    }
+	
     // variable handling -----------------------------------------------------------------------------------------------
     
     public Collection<InstanceDescriptor> getVariables() {
