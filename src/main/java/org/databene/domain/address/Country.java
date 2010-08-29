@@ -224,6 +224,10 @@ public class Country {
             country = new Country(isoCode, Locale.getDefault().getLanguage(), DEFAULT_PHONE_CODE, DEFAULT_MOBILE_PHONE_PATTERN, null);
         return country;
     }
+    
+    public static Country findByDisplayName() {
+    	return null; // TODO implement
+    }
 
     public static boolean hasInstance(String isoCode) {
         return (instances.get(isoCode.toUpperCase()) != null);
