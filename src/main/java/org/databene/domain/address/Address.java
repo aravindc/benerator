@@ -28,6 +28,7 @@ package org.databene.domain.address;
 
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
+import org.databene.commons.NullSafeComparator;
 
 /**
  * Represents an address with phone numbers.<br/><br/>
@@ -52,7 +53,7 @@ public class Address {
     public PhoneNumber fax;
     
     // TODO v0.7 generate the following attributes
-    public String company;
+    public String organization;
     public String department;
     public String building;
     public String co;
@@ -75,7 +76,15 @@ public class Address {
         this.fax = fax;
     }
 
-    public String getStreet() {
+    public String getOrganization() {
+    	return organization;
+    }
+
+	public void setOrganization(String organization) {
+    	this.organization = organization;
+    }
+
+	public String getStreet() {
         return street;
     }
 
@@ -174,4 +183,62 @@ public class Address {
     		format = AddressFormat.DE;
    		return format.format(this);
     }
+
+	@Override
+    public int hashCode() {
+	    final int prime = 31;
+	    int result = 1; // TODO define HashCodeBuilder
+	    result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
+	    result = prime * result + ((street == null) ? 0 : street.hashCode());
+	    result = prime * result + ((houseNumber == null) ? 0 : houseNumber.hashCode());
+	    result = prime * result + ((poBox == null) ? 0 : poBox.hashCode());
+	    result = prime * result + ((city == null) ? 0 : city.hashCode());
+	    result = prime * result + ((organization == null) ? 0 : organization.hashCode());
+	    result = prime * result + ((building == null) ? 0 : building.hashCode());
+	    result = prime * result + ((co == null) ? 0 : co.hashCode());
+	    result = prime * result + ((department == null) ? 0 : department.hashCode());
+	    result = prime * result + ((fax == null) ? 0 : fax.hashCode());
+	    result = prime * result + ((mobilePhone == null) ? 0 : mobilePhone.hashCode());
+	    result = prime * result + ((officePhone == null) ? 0 : officePhone.hashCode());
+	    result = prime * result + ((privatePhone == null) ? 0 : privatePhone.hashCode());
+	    return result;
+    }
+
+	@Override
+    public boolean equals(Object obj) {
+	    if (this == obj)
+		    return true;
+	    if (obj == null || getClass() != obj.getClass())
+		    return false;
+	    Address that = (Address) obj;
+	    if (!NullSafeComparator.equals(this.postalCode, that.postalCode))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.street, that.street))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.houseNumber, that.houseNumber))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.poBox, that.poBox))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.city, that.city))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.organization, that.organization))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.building, that.building))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.co, that.co))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.department, that.department))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.fax, that.fax))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.mobilePhone, that.mobilePhone))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.officePhone, that.officePhone))
+	    	return false;
+	    if (!NullSafeComparator.equals(this.privatePhone, that.privatePhone))
+	    	return false;
+	    return true;
+    }
+    
+    
 }
