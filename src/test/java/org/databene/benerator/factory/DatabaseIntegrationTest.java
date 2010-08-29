@@ -61,9 +61,9 @@ public class DatabaseIntegrationTest {
 		db.setSchema("PUBLIC");
 		db.execute("drop table referer if exists");
 		db.execute("drop table referee if exists");
-		db.execute("create table referee (id int, primary key (id))");
-		db.execute("insert into referee (id) values (2)");
-		db.execute("insert into referee (id) values (3)");
+		db.execute("create table referee (id int, n int, primary key (id))");
+		db.execute("insert into referee (id, n) values (2, 2)");
+		db.execute("insert into referee (id, n) values (3, 3)");
 		db.execute(
 				"create table referer ( " +
 				"	id int," +
@@ -228,6 +228,19 @@ public class DatabaseIntegrationTest {
 		List<Entity> products = consumer.getProducts();
 		assertEquals(1, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
+	}
+
+	@Test
+	public void testDb_iterate_this() {
+		parseAndExecute(
+			"<iterate type='referee' consumer='cons'>" +
+        	"  <attribute name='n' source='db' " +
+        	"	  selector=\"{{'select n+1 from referee where id = ' + this.id}}\" />" +
+        	"</iterate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(3, products.get(0).get("n"));
+		assertEquals(4, products.get(1).get("n"));
 	}
 
 	// helpers ---------------------------------------------------------------------------------------------------------
