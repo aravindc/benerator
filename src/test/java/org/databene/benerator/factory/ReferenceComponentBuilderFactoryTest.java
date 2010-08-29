@@ -175,7 +175,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		DataModel.getDefaultInstance().clear();
 		ReferenceDescriptor descriptor = new ReferenceDescriptor(refName, "string");
 		descriptor.getLocalType(false).setSource(source);
-		descriptor.setTargetTye(targetType);
+		descriptor.setTargetType(targetType);
 		return descriptor;
 	}
 
