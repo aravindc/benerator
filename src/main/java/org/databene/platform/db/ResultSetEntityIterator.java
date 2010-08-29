@@ -27,18 +27,12 @@
 package org.databene.platform.db;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
-import org.databene.commons.converter.AnyConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.PrimitiveType;
-import org.databene.model.data.SimpleTypeDescriptor;
-import org.databene.platform.java.BeanDescriptorProvider;
 
 /**
  * Iterates a ResultSet returning Entity objects.
@@ -50,14 +44,11 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
 
     private HeavyweightIterator<ResultSet> resultSetIterator;
     
-    private BeanDescriptorProvider beanDescriptorProvider;
-    
     private ComplexTypeDescriptor descriptor;
 
     public ResultSetEntityIterator(HeavyweightIterator<ResultSet> resultSetIterator, ComplexTypeDescriptor descriptor) {
         this.resultSetIterator = resultSetIterator;
         this.descriptor = descriptor;
-        this.beanDescriptorProvider = new BeanDescriptorProvider();
     }
 
     public boolean hasNext() {
@@ -68,27 +59,8 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
         if (!hasNext())
             throw new IllegalStateException("No more row available. Check 'hasNext()' before calling next()!");
         try {
-            Entity entity = new Entity(descriptor);
-            ResultSet resultSet = resultSetIterator.next();
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-                String columnName = metaData.getColumnName(columnIndex);
-                String typeName = null;
-                if (descriptor != null) {
-                    ComponentDescriptor component = descriptor.getComponent(columnName);
-                    if (component != null) {
-	                    SimpleTypeDescriptor type = (SimpleTypeDescriptor) component.getTypeDescriptor();
-	                    PrimitiveType primitiveType = type.getPrimitiveType();
-	                    typeName = (primitiveType != null ? primitiveType.getName() : "string");
-                    } else
-                        typeName = "string";
-                } else
-                    typeName = "string";
-                Object javaValue = javaValue(resultSet, columnIndex, typeName);
-                entity.setComponent(columnName, javaValue);
-            }
-            return entity;
+    	    ResultSet resultSet = resultSetIterator.next();
+            return ResultSet2EntityConverter.convert(resultSet, descriptor);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -101,22 +73,5 @@ public class ResultSetEntityIterator implements HeavyweightIterator<Entity> {
 	public void close() {
 		IOUtil.close(resultSetIterator);
 	}
-
-    // private helpers ----------------------------------------------------------------------------------------
-    
-    // TODO v1.0 perf: use a dedicated converter for each column
-    private Object javaValue(ResultSet resultSet, int columnIndex, String primitiveType) throws SQLException {
-        if ("date".equals(primitiveType))
-            return resultSet.getDate(columnIndex);
-        else if ("timestamp".equals(primitiveType))
-            return resultSet.getTimestamp(columnIndex);
-        else if ("string".equals(primitiveType))
-            return resultSet.getString(columnIndex);
-        // try generic conversion
-        Object driverValue = resultSet.getObject(columnIndex);
-        Class<?> javaType = beanDescriptorProvider.concreteType(primitiveType);
-        Object javaValue = AnyConverter.convert(driverValue, javaType);
-        return javaValue;
-    }
 
 }
