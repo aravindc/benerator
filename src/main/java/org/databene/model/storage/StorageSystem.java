@@ -50,10 +50,10 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     TypedIterable<Entity> queryEntities(String type, String selector, Context context);
     
     /** Queries for entity ids */
-    <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context);
+    <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
 
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
-    <T> TypedIterable<T> query(String selector, Context context);
+    <T> TypedIterable<T> query(String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
     
     /** Persists a new entity. */
     void store(Entity entity);
