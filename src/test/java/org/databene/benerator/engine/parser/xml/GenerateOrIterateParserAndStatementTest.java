@@ -56,7 +56,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		parser = new GenerateOrIterateParser();
 		DataModel.getDefaultInstance().clear();
 	}
-	
+
 	@Test
 	public void testAttributes() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);
@@ -148,7 +148,7 @@ public class GenerateOrIterateParserAndStatementTest extends ParserTest {
 		Statement statement = parse(
 				"<generate name='pName' type='outer' count='3' consumer='cons'>" +
 				"    <attribute name='n' type='int' distribution='step' />" +
-				"    <generate type='inner' count='{pName.n}' consumer='cons'/>" + // TODO v0.6.4 make the brackets unnecessary
+				"    <generate type='inner' count='pName.n' consumer='cons'/>" + 
         		"</generate>");
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true, 1);
 		context.set("cons", consumer);

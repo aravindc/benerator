@@ -23,13 +23,14 @@ package org.databene.benerator.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AbstractComponentBuilder;
 import org.databene.benerator.composite.ArrayElementTypeConverter;
 import org.databene.benerator.composite.BlankArrayGenerator;
 import org.databene.benerator.composite.ComponentBuilder;
-import org.databene.benerator.composite.MutatingGeneratorProxy;
+import org.databene.benerator.composite.SourceAwareGenerator;
 import org.databene.benerator.composite.UniqueArrayGenerator;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
@@ -44,7 +45,6 @@ import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.Mode;
@@ -81,10 +81,9 @@ public class ArrayGeneratorFactory {
         if (generator == null)
             generator = createSyntheticArrayGenerator(instanceName, type, uniqueness, context);
         else
-            generator = createMutatingArrayGenerator(instanceName, type, context, generator);
+            generator = createMutatingArrayGenerator(instanceName, type, uniqueness, generator, context);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = DescriptorUtil.wrapGeneratorWithVariables(type, context, generator);
         generator = DescriptorUtil.wrapWithProxy(generator, type);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -94,12 +93,13 @@ public class ArrayGeneratorFactory {
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<Object[]> createMutatingArrayGenerator(
-    		String instanceName, ArrayTypeDescriptor type, BeneratorContext context, Generator<Object[]> generator) {
-	    // TODO v0.6.4 mutate array elements
-	    return generator;
+    		String instanceName, ArrayTypeDescriptor type, Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
+    	Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
+    	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
+	    return new SourceAwareGenerator<Object[]>(instanceName, generator, variables, componentBuilders, context);
     }
 
-	private static Generator<Object[]> createSourceGenerator(
+    private static Generator<Object[]> createSourceGenerator(
     		ArrayTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         // if no sourceObject is specified, there's nothing to do
         String sourceName = descriptor.getSource();
@@ -173,29 +173,37 @@ public class ArrayGeneratorFactory {
 	    return generator;
     }
 
-	@SuppressWarnings("unchecked")
     private static Generator<Object[]> createSyntheticArrayGenerator(String name, 
             ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
+        List<ComponentBuilder<Object[]>> elementBuilders = 
+        	createSyntheticElementBuilders(arrayType, uniqueness, context);
+        Generator<Object[]> baseGenerator;
+        if (uniqueness.isUnique()) {
+        	NullableGenerator<?>[] sources = new NullableGenerator[elementBuilders.size()];
+        	for (int i = 0; i < sources.length; i++)
+        		sources[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
+        	baseGenerator = new UniqueArrayGenerator(sources);
+        	elementBuilders = null; // element builders are now controlled by the UniqueArrayGenerator
+        } else
+        	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
+        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(arrayType, context);
+		return new SourceAwareGenerator<Object[]>(name, baseGenerator, variables, elementBuilders, context);
+    }
+
+	@SuppressWarnings("unchecked")
+    private static List<ComponentBuilder<Object[]>> createSyntheticElementBuilders(ArrayTypeDescriptor arrayType,
+            Uniqueness uniqueness, BeneratorContext context) {
+	    List<ArrayElementDescriptor> elements = arrayType.getElements();
         List<ComponentBuilder<Object[]>> elementBuilders = new ArrayList<ComponentBuilder<Object[]>>();
-        List<ArrayElementDescriptor> elements = arrayType.getElements();
-        for (int i = 0; i < elements.size(); i++) {
-        	ComponentDescriptor elementDescriptor = elements.get(i);
+		for (int i = 0; i < elements.size(); i++) {
+			ArrayElementDescriptor elementDescriptor = elements.get(i);
             if (!arrayType.equals(elementDescriptor.getTypeDescriptor()) && elementDescriptor.getMode() != Mode.ignored) {
             	ComponentBuilder<Object[]> builder = (ComponentBuilder<Object[]>) 
             		ComponentBuilderFactory.createComponentBuilder(elementDescriptor, uniqueness, context);
 				elementBuilders.add(builder); 
             }
         }
-        if (uniqueness.isUnique()) {
-        	NullableGenerator[] sources = new NullableGenerator[elements.size()];
-        	for (int i = 0; i < sources.length; i++) {
-        		sources[i] = ((AbstractComponentBuilder) elementBuilders.get(i)).getSource();
-        	}
-        	return new UniqueArrayGenerator(sources);
-        } else {
-	    	BlankArrayGenerator source = new BlankArrayGenerator(arrayType.getElementCount());
-			return new MutatingGeneratorProxy<Object[]>(name, source, elementBuilders, context);
-        }
+	    return elementBuilders;
     }
 
     

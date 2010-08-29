@@ -245,6 +245,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
     public void testUniqueArrayGeneration() {
 		ArrayTypeDescriptor arrayTypeDescriptor = new ArrayTypeDescriptor("MyArray");
 		
+		// create descriptor
 		context.set("gen0", new SequenceTestGenerator<Integer>(1, 2));
 		ArrayElementDescriptor e0 = new ArrayElementDescriptor(0, "int");
 		((SimpleTypeDescriptor) e0.getLocalType(false)).setGenerator("gen0");
@@ -258,8 +259,11 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		InstanceDescriptor arrayInstDescriptor = new InstanceDescriptor("array", arrayTypeDescriptor);
 		arrayInstDescriptor.setUnique(true);
 		
+		// create generator
 		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, Uniqueness.NONE, context);
 		generator.init(context);
+		
+		// test generator
 		assertArray(INT13, generator.generate());
 		assertArray(INT14, generator.generate());
 		assertArray(INT23, generator.generate());

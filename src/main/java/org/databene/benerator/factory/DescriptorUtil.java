@@ -35,13 +35,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.composite.VariableAwareGenerator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
@@ -313,17 +313,15 @@ public class DescriptorUtil {
 					new ConstantExpression<Long>(1L));
 	}
 
-    @SuppressWarnings("unchecked")
-    public static <T> Generator<T> wrapGeneratorWithVariables(
-            TypeDescriptor type, BeneratorContext context, Generator<T> generator) {
-        Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
+	public static Map<String, NullableGenerator<?>> parseVariables(TypeDescriptor type, BeneratorContext context) {
+	    Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
         OrderedNameMap<NullableGenerator<?>> varGens = new OrderedNameMap<NullableGenerator<?>>();
         for (InstanceDescriptor variable : variables) {
             Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, Uniqueness.NONE, context);
 			NullableGenerator<?> varGen = NullableGeneratorFactory.injectNulls(gen, variable.getNullQuota());
             varGens.put(variable.getName(), varGen);
         }
-        return new VariableAwareGenerator(generator, varGens, context);
+	    return varGens;
     }
     
 	public static Converter<String, String> createScriptConverter(BeneratorContext context) {

@@ -39,12 +39,13 @@ import org.databene.benerator.*;
 import org.databene.benerator.composite.BlankEntityGenerator;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.ComponentTypeConverter;
-import org.databene.benerator.composite.MutatingGeneratorProxy;
 import org.databene.benerator.composite.SimpleTypeEntityGenerator;
+import org.databene.benerator.composite.SourceAwareGenerator;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
@@ -93,7 +94,6 @@ public class ComplexTypeGeneratorFactory {
             generator = createMutatingEntityGenerator(instanceName, type, uniqueness, context, generator);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = DescriptorUtil.wrapGeneratorWithVariables(type, context, generator);
         generator = DescriptorUtil.wrapWithProxy(generator, type);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
@@ -205,16 +205,34 @@ public class ComplexTypeGeneratorFactory {
 		return createEntitySourceGenerator(complexType, context, sourceName, fileProvider);
 	}
 
-    @SuppressWarnings("unchecked")
     private static Generator<Entity> createSyntheticEntityGenerator(String name, 
             ComplexTypeDescriptor complexType, Uniqueness ownerUniqueness, BeneratorContext context) {
-        List<ComponentBuilder<Entity>> componentBuilders = new ArrayList<ComponentBuilder<Entity>>();
-        if (DescriptorUtil.isWrappedSimpleType(complexType)) {
-    		TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getTypeDescriptor();
-    		Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-    				(SimpleTypeDescriptor) contentType, false, ownerUniqueness, context);
-        	return new SimpleTypeEntityGenerator(generator, complexType);
+        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(complexType, context);
+        
+        Generator<Entity> source;
+        List<ComponentBuilder<Entity>> componentBuilders = null;
+        if (DescriptorUtil.isWrappedSimpleType(complexType))
+    		source = createSimpleTypeEntityGenerator(complexType, ownerUniqueness, context);
+        else {
+        	componentBuilders = createSyntheticComponentBuilders(complexType, ownerUniqueness, context);
+    		source = new BlankEntityGenerator(complexType);
         }
+		return new SourceAwareGenerator<Entity>(name, source, variables, componentBuilders, context);
+    }
+
+	private static Generator<Entity> createSimpleTypeEntityGenerator(ComplexTypeDescriptor complexType,
+            Uniqueness ownerUniqueness, BeneratorContext context) {
+	    TypeDescriptor contentType = complexType.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT).getTypeDescriptor();
+	    Generator<?> generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+	    		(SimpleTypeDescriptor) contentType, false, ownerUniqueness, context);
+	    Generator<Entity> source = new SimpleTypeEntityGenerator(generator, complexType);
+	    return source;
+    }
+
+	@SuppressWarnings("unchecked")
+    private static List<ComponentBuilder<Entity>> createSyntheticComponentBuilders(ComplexTypeDescriptor complexType,
+            Uniqueness ownerUniqueness, BeneratorContext context) {
+	    List<ComponentBuilder<Entity>> componentBuilders = new ArrayList<ComponentBuilder<Entity>>();
         Collection<ComponentDescriptor> components = complexType.getComponents();
         for (ComponentDescriptor component : components) {
             if (!complexType.equals(component.getTypeDescriptor()) && component.getMode() != Mode.ignored) {
@@ -226,26 +244,33 @@ public class ComplexTypeGeneratorFactory {
 				componentBuilders.add(builder); 
             }
         }
-    	BlankEntityGenerator source = new BlankEntityGenerator(complexType);
-		return new MutatingGeneratorProxy<Entity>(name, source, componentBuilders, context);
+	    return componentBuilders;
+    }
+
+    private static Generator<Entity> createMutatingEntityGenerator(String name, ComplexTypeDescriptor descriptor, 
+    		Uniqueness ownerUniqueness, BeneratorContext context, Generator<Entity> source) {
+    	List<ComponentBuilder<Entity>> componentBuilders = 
+    		createMutatingComponentBuilders(descriptor, ownerUniqueness, context);
+        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(descriptor, context);
+        return new SourceAwareGenerator<Entity>(name, source, variables, componentBuilders, context);
     }
 
 	@SuppressWarnings("unchecked")
-    private static Generator<Entity> createMutatingEntityGenerator(String name, ComplexTypeDescriptor descriptor, 
-    		Uniqueness ownerUniqueness, BeneratorContext context, Generator<Entity> generator) {
-    	List<ComponentBuilder<Entity>> componentGenerators = new ArrayList<ComponentBuilder<Entity>>();
+    private static List<ComponentBuilder<Entity>> createMutatingComponentBuilders(ComplexTypeDescriptor descriptor,
+            Uniqueness ownerUniqueness, BeneratorContext context) {
+	    List<ComponentBuilder<Entity>> componentBuilders = new ArrayList<ComponentBuilder<Entity>>();
         Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
         for (ComponentDescriptor component : components)
             if (component.getMode() != Mode.ignored && !ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(component.getName())) {
             	try {
                 	ComponentBuilder<Entity> builder = (ComponentBuilder<Entity>) 
                 		ComponentBuilderFactory.createComponentBuilder(component, ownerUniqueness, context);
-    	            componentGenerators.add(builder);
+    	            componentBuilders.add(builder);
             	} catch (Exception e) {
             		throw new ConfigurationError("Error creating component builder for " + component, e);
             	}
             }
-        return new MutatingGeneratorProxy<Entity>(name, generator, componentGenerators, context);
+	    return componentBuilders;
     }
 	
 	private static Generator<Entity> createEntitySourceGenerator(ComplexTypeDescriptor complexType,

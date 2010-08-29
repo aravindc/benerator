@@ -26,7 +26,7 @@
 
 package org.databene.model.data;
 
-import org.databene.benerator.engine.expression.ScriptableLiteral;
+import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
@@ -241,8 +241,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
             	detail.setValue(new TypeConvertingExpression<Long>((Expression<?>) detailValue, Long.class));
             else if (detailValue == null)
                 detail.setValue(null);
-    	    else if ((detailValue instanceof String) && ((String) detailValue).startsWith("{") && ((String) detailValue).endsWith("}"))
-                detail.setValue(new TypeConvertingExpression<Long>(new ScriptableLiteral((String) detailValue), Long.class));
+    	    else if (detailValue instanceof String)
+                detail.setValue(new TypeConvertingExpression<Long>(new ScriptExpression<Object>((String) detailValue), Long.class));
     	    else
     	    	detail.setValue(new TypeConvertingExpression<Long>(new ConstantExpression<Object>(detailValue), Long.class));
     	} else

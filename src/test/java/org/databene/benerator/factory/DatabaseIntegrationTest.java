@@ -233,9 +233,9 @@ public class DatabaseIntegrationTest {
 	@Test
 	public void testDb_iterate_this() {
 		parseAndExecute(
-			"<iterate type='referee' consumer='cons'>" +
+			"<iterate type='referee' source='db' consumer='cons'>" +
         	"  <attribute name='n' source='db' " +
-        	"	  selector=\"{{'select n+1 from referee where id = ' + this.id}}\" />" +
+        	"	  selector=\"{{'select n+1 from referee where id = ' + this.id}}\" cyclic='true' />" +
         	"</iterate>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(2, products.size());
