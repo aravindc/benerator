@@ -1,7 +1,6 @@
 package shop;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -23,7 +22,7 @@ public class CSVTableExporterDemo {
 
     private static Log logger = LogFactory.getLog(CSVTableExporterDemo.class);
     
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) throws IOException {
     	// first we create a table with some data to export
         DBSystem db = new DBSystem(null, JDBC_URL, JDBC_DRIVER, USER, PASSWORD);
         try {
