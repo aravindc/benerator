@@ -97,21 +97,21 @@ public class MutatingGeneratorProxy<E> extends AbstractGenerator<E> implements M
     public synchronized E generate() {
     	
     	try {
-    	currentInstance = source.generate();
-        if (currentInstance == null) {
-        	message = "Source for entity '" + instanceName + "' is not available any more: " + source;
-            stateLogger.debug(message);
-            return null;
-        }
-        
-        if (instanceName != null)
-        	context.set(instanceName, currentInstance);
-        context.set("this", currentInstance);
-        
-        if (buildComponents())
-    		return currentInstance;
-        else
-        	return null;
+	    	currentInstance = source.generate();
+	        if (currentInstance == null) {
+	        	message = "Source for entity '" + instanceName + "' is not available any more: " + source;
+	            stateLogger.debug(message);
+	            return null;
+	        }
+	        
+	        if (instanceName != null)
+	        	context.set(instanceName, currentInstance);
+	        context.set("this", currentInstance);
+	        
+	        if (buildComponents())
+	    		return currentInstance;
+	        else
+	        	return null;
     	} finally {
         	currentInstance = null;
     	}
