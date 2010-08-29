@@ -346,6 +346,22 @@ public class DBSystem extends AbstractStorageSystem {
         }
     }
 
+	public Entity queryEntityById(String tableName, Object id) {
+        try {
+	        logger.debug("queryEntityById({}, {})", tableName, id);
+	        ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
+	        PreparedStatement query = getThreadContext().getSelectByPKStatement(descriptor);
+	        query.setObject(1, id); // TODO support composite keys
+	        ResultSet resultSet = query.executeQuery();
+	        if (resultSet.next())
+	        	return ResultSet2EntityConverter.convert(resultSet, descriptor);
+	        else
+	        	return null;
+        } catch (SQLException e) {
+	        throw new RuntimeException("Error querying " + tableName, e);
+        }
+    }
+
     @SuppressWarnings("null")
     public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
         if (logger.isDebugEnabled())
@@ -380,8 +396,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public <T> TypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
-        if (logger.isDebugEnabled())
-            logger.debug("getIds(" + tableName + ", " + selector + ")");
+        logger.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script
         boolean script = false;
@@ -777,10 +792,12 @@ public class DBSystem extends AbstractStorageSystem {
         
         public Map<ComplexTypeDescriptor, PreparedStatement> insertStatements;
         public Map<ComplexTypeDescriptor, PreparedStatement> updateStatements;
+        public Map<ComplexTypeDescriptor, PreparedStatement> selectByPKStatements;
         
         public ThreadContext() {
             insertStatements = new OrderedMap<ComplexTypeDescriptor, PreparedStatement>();
             updateStatements = new OrderedMap<ComplexTypeDescriptor, PreparedStatement>();
+            selectByPKStatements = new OrderedMap<ComplexTypeDescriptor, PreparedStatement>();
             connection = createConnection();
         }
         
@@ -810,6 +827,33 @@ public class DBSystem extends AbstractStorageSystem {
 			    entry.setValue(null);
 			}
 		}
+
+        public PreparedStatement getSelectByPKStatement(ComplexTypeDescriptor descriptor) {
+            try {
+                PreparedStatement statement = selectByPKStatements.get(descriptor);
+                if (statement == null)
+                    statement = createSelectByPKStatement(descriptor);
+                else
+                    statement.clearParameters();
+                return statement;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+		private PreparedStatement createSelectByPKStatement(ComplexTypeDescriptor descriptor) throws SQLException {
+	        PreparedStatement statement;
+	        String tableName = descriptor.getName();
+	        DBTable table = tables.get(tableName.toUpperCase());
+	        if (table == null)
+	        	throw new IllegalArgumentException("Table not found: " + tableName);
+	        StringBuilder builder = new StringBuilder("select * from ").append(tableName).append(" where");
+	        for (String idColumnName : descriptor.getIdComponentNames())
+	        	builder.append(' ').append(idColumnName).append("=?");
+	        statement = DBUtil.prepareStatement(connection, builder.toString(), readOnly);
+        	selectByPKStatements.put(descriptor, statement);
+	        return statement;
+        }
 
         public PreparedStatement getStatement(ComplexTypeDescriptor descriptor, boolean insert, List<ColumnInfo> columnInfos) {
             try {
