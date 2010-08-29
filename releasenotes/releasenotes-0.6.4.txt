@@ -1,0 +1,23 @@
+release notes benerator 0.6.4
+=============================
+
+summary
+-------
+
+
+
+changes
+-------
+- Added method to StorageSystem: void execute(String command)
+- change mapping JDBC BIGINT -> Java Long
+
+
+enhancements
+------------
+- <database includeTables="" excludeTables="" />
+- SequenceTableGenerator
+
+
+
+bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
+-------------------------------------------------------------------------------------------------
