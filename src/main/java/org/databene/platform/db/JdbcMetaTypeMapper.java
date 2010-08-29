@@ -48,7 +48,7 @@ public class JdbcMetaTypeMapper {
 
         TYPE_MAP = CollectionUtil.buildMap(
                 // Types.ARRAY is not supported
-                Types.BIGINT, PrimitiveType.BIG_INTEGER,
+                Types.BIGINT, PrimitiveType.LONG,
                 Types.BINARY, PrimitiveType.BINARY,
                 Types.BIT, PrimitiveType.BYTE,
                 Types.BLOB, PrimitiveType.BINARY,
