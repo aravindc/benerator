@@ -197,7 +197,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	// check source
         if (generator == null) {
 	        // check target type
-	        String targetTypeName = descriptor.getTargetTye();
+	        String targetTypeName = descriptor.getTargetType();
 			ComplexTypeDescriptor targetType = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(targetTypeName);
 	        if (targetType == null)
 	            throw new ConfigurationError("Type not defined: " + targetTypeName);
