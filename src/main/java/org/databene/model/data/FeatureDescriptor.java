@@ -1,5 +1,6 @@
 package org.databene.model.data;
 
+import org.databene.commons.Named;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.Operation;
 import org.databene.commons.StringUtil;
@@ -17,7 +18,7 @@ import java.util.List;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class FeatureDescriptor {
+public class FeatureDescriptor implements Named {
 
     public static final String NAME = "name";
 
