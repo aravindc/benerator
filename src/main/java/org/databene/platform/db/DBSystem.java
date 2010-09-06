@@ -42,11 +42,11 @@ import org.databene.jdbacl.dialect.OracleDialect;
 import org.databene.jdbacl.model.DBCatalog;
 import org.databene.jdbacl.model.DBColumn;
 import org.databene.jdbacl.model.DBColumnType;
-import org.databene.jdbacl.model.DBConstraint;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
 import org.databene.jdbacl.model.DBPrimaryKeyConstraint;
 import org.databene.jdbacl.model.DBSchema;
 import org.databene.jdbacl.model.DBTable;
+import org.databene.jdbacl.model.DBUniqueConstraint;
 import org.databene.jdbacl.model.Database;
 import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.model.consumer.Consumer;
@@ -635,8 +635,8 @@ public class DBSystem extends AbstractStorageSystem {
             descriptor.setMinCount(new ConstantExpression<Long>(1L));
             descriptor.setMaxCount(new ConstantExpression<Long>(1L));
             descriptor.setNullable(column.getNotNullConstraint() == null);
-            List<DBConstraint> ukConstraints = column.getUkConstraints();
-            for (DBConstraint constraint : ukConstraints) {
+            List<DBUniqueConstraint> ukConstraints = column.getUkConstraints();
+            for (DBUniqueConstraint constraint : ukConstraints) {
                 if (constraint.getColumnNames().length == 1) {
                     descriptor.setUnique(true);
                 } else {
