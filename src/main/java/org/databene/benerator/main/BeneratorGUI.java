@@ -38,15 +38,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
 
 import org.databene.benerator.Version;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
-import org.databene.gui.os.mac.MacApplicationAdapter;
-
-import com.apple.eawt.Application;
+import org.databene.gui.os.ApplicationUtil;
+import org.databene.gui.os.JavaApplication;
 
 
 /**
@@ -61,36 +59,18 @@ public class BeneratorGUI {
 	static final File BUFFER_FILE = new File(BeneratorGUI.class.getSimpleName() + ".txt");
 	
 	public static void main(String[] args) throws Exception {
-		if (SystemInfo.isMacOsx()) {
-		    prepareMacVM();
-		}
-		new BeneratorGUIFrame().setVisible(true);
+		ApplicationUtil.prepareNativeLAF("Benerator GUI");
+		BeneratorGUIFrame appAndFrame = new BeneratorGUIFrame();
+		ApplicationUtil.addListener(appAndFrame);
+		appAndFrame.setVisible(true);
 	}
 	
-	private static void prepareMacVM() {
-	    System.setProperty("apple.awt.brushMetalLook", "true");
-	    System.setProperty("apple.laf.useScreenMenuBar", "true");
-	    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Benerator GUI");
-	    try {
-	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-    }
-	
-	public static class BeneratorGUIFrame extends JFrame implements org.databene.gui.os.Application {
+	public static class BeneratorGUIFrame extends JFrame implements JavaApplication {
 		
 		JTextArea text;
 		
 		public BeneratorGUIFrame() throws IOException {
 		    super("Benerator GUI");
-		    if (SystemInfo.isMacOsx()) {
-			    // create an instance of the Mac Application class, so i can handle the 
-			    // mac quit event with the Mac ApplicationAdapter
-			    Application macApplication = Application.getApplication();
-			    MacApplicationAdapter macAdapter = new MacApplicationAdapter(this);
-			    macApplication.addApplicationListener(macAdapter);
-		    }
 		    Container contentPane = getContentPane();
 		    text = new JTextArea();
 		    if (BUFFER_FILE.exists())
@@ -104,6 +84,7 @@ public class BeneratorGUI {
 		    	    exit();
 		    	}
 		    });
+			setLocationRelativeTo(null);
 	    }
 
 		private void createMenuBar() {
