@@ -31,6 +31,7 @@ import java.util.Map;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.Person;
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
@@ -110,6 +111,11 @@ public class BeneratorScriptParserTest {
 	@Test
 	public void testStaticInvocation() throws Exception {
 		checkExpression("it works!", getClass().getName() + ".exclamate('it works')");
+	}
+
+	@Test
+	public void testVarargsInvocation() throws Exception {
+		checkExpression("A, B, C", ArrayFormat.class.getName() + ".format('A', 'B', 'C')");
 	}
 	
 	@Test
