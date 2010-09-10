@@ -78,7 +78,7 @@ public class BeanStatement extends SequentialStatement {
 			((ContextAware) bean).setContext(context);
 		if (bean instanceof DescriptorProvider)
 			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
-		if (bean instanceof Closeable)
+		if (bean instanceof Closeable && resourceManager != null)
 			resourceManager.addResource((Closeable) bean);
 		if (bean instanceof Generator)
 			bean = new InitOnceGenerator((Generator) bean, context);
