@@ -24,10 +24,11 @@ package org.databene.benerator.engine.parser.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.ParserFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.commons.Expression;
@@ -46,11 +47,12 @@ import org.w3c.dom.Element;
 public class DescriptorParserUtil {
 
 	public static List<Statement> parseChildren(Element parent, Statement[] parentPath, ResourceManager resourceManager) {
+        BeneratorFactory factory = BeneratorFactory.getInstance();
 		String parentName = parent.getNodeName();
 		ArrayList<Statement> result = new ArrayList<Statement>();
 	    for (Element child : XMLUtil.getChildElements(parent)) {
 			String childName = child.getNodeName();
-            DescriptorParser elementParser = ParserFactory.getParser(childName, parentName);
+			DescriptorParser elementParser = factory.getParser(childName, parentName);
 	    	Statement statement = elementParser.parse(child, parentPath, resourceManager);
 	    	result.add(statement);
 	    }
@@ -62,7 +64,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<?> parseScriptableTextAttribute(String name, Element element) {
-	    return new ScriptableExpression(getAttribute(name, element), null);
+	    return new ScriptableExpression(getRawAttribute(name, element), null);
     }
 
 	public static Expression<String> parseTextElement(Element element) {
@@ -70,13 +72,13 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<String> parseScriptableStringAttribute(String name, Element element) {
-	    String attribute = getAttribute(name, element);
+	    String attribute = getRawAttribute(name, element);
 		return (attribute != null ? new TypeConvertingExpression<String>(
 				new ScriptableExpression(attribute, null), String.class) : null);
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element) {
-	    return new TypedScriptExpression<Integer>(getAttribute(name, element), Integer.class);
+	    return new TypedScriptExpression<Integer>(getRawAttribute(name, element), Integer.class);
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element, int defaultValue) {
@@ -84,7 +86,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element, Expression<Integer> defaultValue) {
-	    String attribute = getAttribute(name, element);
+	    String attribute = getRawAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
@@ -96,7 +98,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Long> parseLongAttribute(String name, Element element, Expression<Long> defaultValue) {
-	    String attribute = getAttribute(name, element);
+	    String attribute = getRawAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
@@ -108,7 +110,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Boolean> parseBooleanExpressionAttribute(String name, Element element, Boolean defaultValue) {
-	    String attribute = getAttribute(name, element);
+	    String attribute = getRawAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return new ConstantExpression<Boolean>(defaultValue);
 	    else
@@ -116,12 +118,20 @@ public class DescriptorParserUtil {
     }
 
 	public static ConstantExpression<String> parseAttribute(String name, Element element) {
-		String attribute = getAttribute(name, element);
+		String attribute = getRawAttribute(name, element);
 		return (attribute != null ? new ConstantExpression<String>(attribute) : null);
     }
 
-	public static String getAttribute(String name, Element element) {
+	public static String getRawAttribute(String name, Element element) {
 	    return StringUtil.emptyToNull(element.getAttribute(name));
     }
 
+	public static Expression<?> parseScriptAttribute(String name, Element element) {
+		String rawAttribute = getRawAttribute(name, element);
+		if (StringUtil.isEmpty(rawAttribute))
+			return null;
+		else
+			return new ScriptExpression<Object>(rawAttribute);
+	}
+	
 }
