@@ -61,7 +61,7 @@ public class BeneratorGUI {
 	public static void main(String[] args) throws Exception {
 		ApplicationUtil.prepareNativeLAF("Benerator GUI");
 		BeneratorGUIFrame appAndFrame = new BeneratorGUIFrame();
-		ApplicationUtil.addListener(appAndFrame);
+		ApplicationUtil.configureApplication(appAndFrame);
 		appAndFrame.setVisible(true);
 	}
 	
