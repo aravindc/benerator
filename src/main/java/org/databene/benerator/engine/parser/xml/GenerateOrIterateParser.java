@@ -27,11 +27,11 @@ import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringA
 import java.util.Map;
 import java.util.Set;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.GeneratorTask;
-import org.databene.benerator.engine.ParserFactory;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
@@ -81,6 +81,8 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
 			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	private Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
+    private BeneratorFactory factory = BeneratorFactory.getInstance();
+
 	
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
@@ -144,7 +146,6 @@ public class GenerateOrIterateParser implements DescriptorParser {
 			logger.info(descriptor.toString());
 		else if (logger.isDebugEnabled())
 			logger.debug(descriptor.toString());
-		
 		boolean isSubCreator = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
@@ -164,7 +165,7 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
-	            DescriptorParser parser = ParserFactory.getParser(childName, element.getNodeName());
+				DescriptorParser parser = factory.getParser(childName, element.getNodeName());
 	            Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);
 				task.addSubStatement(subStatement);
             }

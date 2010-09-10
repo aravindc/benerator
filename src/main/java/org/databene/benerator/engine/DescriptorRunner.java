@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Version;
 import org.databene.benerator.engine.parser.xml.BeneratorEntityResolver;
 import org.databene.commons.IOUtil;
@@ -64,6 +65,7 @@ public class DescriptorRunner implements ResourceManager {
 
 	private BeneratorContext context;
 
+	BeneratorFactory factory = BeneratorFactory.getInstance();
 	DataModel dataModel = DataModel.getDefaultInstance();
 	private List<String> generatedFiles;
 	
@@ -105,7 +107,7 @@ public class DescriptorRunner implements ResourceManager {
     	Statement[] path = new Statement[] { mainTask };
 	    for (Element element : XMLUtil.getChildElements(root)) {
 			String elementName = element.getNodeName();
-            DescriptorParser elementParser = ParserFactory.getParser(elementName, EL_SETUP);
+            DescriptorParser elementParser = factory.getParser(elementName, EL_SETUP);
 			Statement statement = elementParser.parse(element, path, this);
 	    	mainTask.addSubStatement(statement);
 	    }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,13 +24,14 @@ package org.databene.benerator.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.xml.BeanParser;
 import org.databene.benerator.engine.parser.xml.CommentParser;
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
 import org.databene.benerator.engine.parser.xml.DatabaseParser;
 import org.databene.benerator.engine.parser.xml.DefaultComponentParser;
 import org.databene.benerator.engine.parser.xml.EchoParser;
 import org.databene.benerator.engine.parser.xml.EvaluateParser;
+import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
 import org.databene.benerator.engine.parser.xml.IfParser;
 import org.databene.benerator.engine.parser.xml.ImportParser;
 import org.databene.benerator.engine.parser.xml.IncludeParser;
@@ -41,37 +42,50 @@ import org.databene.benerator.engine.parser.xml.WhileParser;
 import org.databene.commons.ConfigurationError;
 
 /**
- * Provides the parsers for a Benerator descriptor file.<br/><br/>
- * Created: 25.10.2009 00:20:33
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 08.09.2010 15:45:25
+ * @since 0.6.4
  * @author Volker Bergmann
  */
-public class ParserFactory {
-	
-	private static List<DescriptorParser> parsers = new ArrayList<DescriptorParser>();
-	
-	static { // TODO v0.7 define extension mechanism (e.g. by PlatformDescriptor?)
-		parsers.add(new DefaultComponentParser());
-		parsers.add(new CommentParser());
-		parsers.add(new BeanParser());
-		parsers.add(new GenerateOrIterateParser());
-		parsers.add(new DatabaseParser());
-		parsers.add(new EchoParser());
-		parsers.add(new EvaluateParser());
-		parsers.add(new ImportParser());
-		parsers.add(new IncludeParser());
-		parsers.add(new PropertyParser());
-		parsers.add(new RunTaskParser());
-		parsers.add(new IfParser());
-		parsers.add(new WhileParser());
-		parsers.add(new WaitParser());
-	}
+public class DefaultBeneratorFactory extends BeneratorFactory {
 
-	public static DescriptorParser getParser(String elementName, String parentName) {
+	protected List<DescriptorParser> parsers;
+	private boolean defaultParsersInitialized;
+
+	public DefaultBeneratorFactory() {
+		this.parsers = new ArrayList<DescriptorParser>();
+		this.defaultParsersInitialized = false;
+    }
+
+	public boolean addParser(DescriptorParser parser) {
+	    return parsers.add(parser);
+    }
+
+	@Override
+    public DescriptorParser getParser(String elementName, String parentName) {
+		if (!defaultParsersInitialized)
+			initDefaultParsers();
 		for (DescriptorParser parser : parsers)
 			if (parser.supports(elementName, parentName))
 				return parser;
 		throw new ConfigurationError("Unknown element: <" + elementName + ">");
+    }
+
+	protected void initDefaultParsers() {
+	    addParser(new DefaultComponentParser());
+		addParser(new CommentParser());
+		addParser(new BeanParser());
+		addParser(new GenerateOrIterateParser());
+		addParser(new DatabaseParser());
+		addParser(new EchoParser());
+		addParser(new EvaluateParser());
+		addParser(new ImportParser());
+		addParser(new IncludeParser());
+		addParser(new PropertyParser());
+		addParser(new RunTaskParser());
+		addParser(new IfParser());
+		addParser(new WhileParser());
+		addParser(new WaitParser());
     }
 
 }
