@@ -30,11 +30,13 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.StringUtil;
+import org.databene.domain.address.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,11 +46,30 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DatasetFactory {
+public class DatasetUtil {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(DatasetFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DatasetUtil.class);
     
+	private static String defaultRegionName;
+	private static Dataset defaultRegion;
+	
     protected static Map<String, Map<String, Dataset>> types = new HashMap<String, Map<String, Dataset>>();
+
+	public static Dataset defaultRegion() {
+		if (defaultRegion == null)
+			defaultRegion = DatasetUtil.getDataset("region", defaultRegionName());
+		return defaultRegion;
+	}
+	
+	public static String defaultRegionName() {
+		if (defaultRegionName == null)
+			defaultRegionName = Country.getDefault().getIsoCode();
+		return defaultRegionName;
+    }
+
+	public static String fallbackRegionName() {
+	    return Country.getFallback().getIsoCode();
+    }
 
     public static Dataset getDataset(String type, String name) {
         Map<String, Dataset> sets = types.get(type);
@@ -78,6 +99,30 @@ public class DatasetFactory {
         return builder.toArray();
     }
     
+	public static void runInRegion(String regionName, Runnable task) {
+	    String realDefaultRegionName = defaultRegionName;
+    	defaultRegionName = regionName;
+    	defaultRegion = null;
+	    try {
+	    	task.run();
+	    } finally {
+	    	defaultRegionName = realDefaultRegionName;
+	    	defaultRegion = null;
+	    }
+    }
+
+	public static <T> T callInRegion(String regionName, Callable<T> task) throws Exception {
+	    String realDefaultRegionName = defaultRegionName;
+    	defaultRegionName = regionName;
+    	defaultRegion = null;
+	    try {
+	    	return task.call();
+	    } finally {
+	    	defaultRegionName = realDefaultRegionName;
+	    	defaultRegion = null;
+	    }
+    }
+
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Dataset getDataset(String type, String name, Map<String, Dataset> sets) {

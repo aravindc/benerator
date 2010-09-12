@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,13 @@
 
 package org.databene.domain.address;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.Encodings;
+import org.databene.dataset.DatasetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates a street name for a region.<br/>
@@ -36,17 +41,46 @@ import org.databene.commons.Encodings;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class StreetNameGenerator extends WeightedDatasetCSVGenerator<String> {
+public class StreetNameGenerator extends GeneratorProxy<String> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(StreetNameGenerator.class);
 
     private static final String REGION = "org/databene/dataset/region";
     private static final String FILENAME_PATTERN = "org/databene/domain/address/street_{0}.csv";
+    
+    private String datasetName;
 
     public StreetNameGenerator() {
-        this(Country.getDefault().getIsoCode());
+    	this(null);
     }
 
     public StreetNameGenerator(String datasetName) {
-        super(FILENAME_PATTERN, datasetName, REGION, Encodings.UTF_8);
+        super(null);
+        this.datasetName = datasetName;
+    }
+
+    @Override
+    public synchronized void init(GeneratorContext context) {
+    	if (datasetName != null) {
+    		source = createSource(datasetName);
+    	} else {
+    		// none was explicitly configured, try default
+			String defaultRegionName = DatasetUtil.defaultRegionName();
+	    	try {
+				source = createSource(defaultRegionName);
+	    	} catch (Exception e) {
+	    		// if the default fails, try the fallback
+	    		String fallbackRegionName = DatasetUtil.fallbackRegionName();
+	    		LOGGER.error("Error creating " + getClass().getSimpleName() + " for dataset '" + defaultRegionName + "'." +
+	    				" Falling back to '" + fallbackRegionName + "'");
+				source = createSource(fallbackRegionName);
+	    	}
+    	}
+        super.init(context);
+    }
+    
+	private static WeightedDatasetCSVGenerator<String> createSource(String datasetName) {
+	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION, Encodings.UTF_8);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,11 +36,15 @@ import java.util.Set;
  * @author Volker Bergmann
  */
 public class Dataset {
-    
+	
+	// attributes ------------------------------------------------------------------------------------------------------
+	
     private String id;
     private String type;
     private String name;
     private Set<Dataset> subSets;
+    
+    // constructor -----------------------------------------------------------------------------------------------------
 
     Dataset(String type, String name) {
         if (type == null)
@@ -52,6 +56,8 @@ public class Dataset {
         this.name = name;
         this.subSets = new HashSet<Dataset>();
     }
+    
+    // interface -------------------------------------------------------------------------------------------------------
     
     public String getType() {
         return type;

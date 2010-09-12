@@ -75,7 +75,7 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
-import org.databene.dataset.DatasetFactory;
+import org.databene.dataset.DatasetUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -373,7 +373,7 @@ public class DescriptorUtil {
 	    String dataset = complexType.getDataset();
 		String nesting = complexType.getNesting();
 		if (dataset != null && nesting != null) {
-		    String[] uris = DatasetFactory.getDataFiles(sourceName, dataset, nesting);
+		    String[] uris = DatasetUtil.getDataFiles(sourceName, dataset, nesting);
             Generator<Entity>[] sources = new Generator[uris.length];
             for (int i = 0; i < uris.length; i++) {
             	TypedIterable<Entity> source = factory.create(uris[i], context);

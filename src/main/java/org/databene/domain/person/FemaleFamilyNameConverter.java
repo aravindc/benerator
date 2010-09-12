@@ -32,7 +32,7 @@ import org.databene.commons.ArrayBuilder;
 import org.databene.commons.ConversionException;
 import org.databene.commons.IOUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
-import org.databene.dataset.DatasetFactory;
+import org.databene.dataset.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class FemaleFamilyNameConverter extends ThreadSafeConverter<String, Strin
 	    ArrayBuilder<String[]> builder = new ArrayBuilder<String[]>(String[].class);
 	    try {
 		    if (datasetName != null) {
-			    String[] dataFiles = DatasetFactory.getDataFiles(
+			    String[] dataFiles = DatasetUtil.getDataFiles(
 			    		"org/databene/domain/person/ffn_{0}.properties", datasetName, "org/databene/dataset/region");
 			    for (String dataFileName : dataFiles) {
 			    	Map<String, String> props = IOUtil.readProperties(dataFileName);

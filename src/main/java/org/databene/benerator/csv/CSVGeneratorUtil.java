@@ -28,7 +28,7 @@ import java.util.List;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.dataset.DatasetFactory;
+import org.databene.dataset.DatasetUtil;
 import org.databene.document.csv.CSVLineIterator;
 
 /**
@@ -46,7 +46,7 @@ public class CSVGeneratorUtil {
         if (nesting == null || datasetName == null)
         	dataFilenames = new String[] { filenamePattern };
         else
-        	dataFilenames = DatasetFactory.getDataFiles(filenamePattern, datasetName, nesting);
+        	dataFilenames = DatasetUtil.getDataFiles(filenamePattern, datasetName, nesting);
         List<WeightedSample<T>> samples = new ArrayList<WeightedSample<T>>();
         for (String dataFilename : dataFilenames)
             parseFile(dataFilename, separator, encoding, converter, samples);

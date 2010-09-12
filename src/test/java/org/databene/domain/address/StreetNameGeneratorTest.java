@@ -27,6 +27,7 @@
 package org.databene.domain.address;
 
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.dataset.DatasetUtil;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -43,11 +44,29 @@ public class StreetNameGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void test() {
+    public void test_DE() {
         StreetNameGenerator generator = new StreetNameGenerator("DE");
         generator.init(context);
-        for (int i = 0; i < 10; i++)
-            assertNotNull(generator.generate());
+        for (int i = 0; i < 10; i++) {
+	        String product = generator.generate();
+	        assertNotNull(product);
+        }
+        generator.close();
+    }
+    
+    @Test
+    public void test_AU() {
+    	DatasetUtil.runInRegion(Country.AUSTRALIA.getIsoCode(), new Runnable() {
+			public void run() {
+		        StreetNameGenerator generator = new StreetNameGenerator();
+		        generator.init(context);
+		        for (int i = 0; i < 10; i++) {
+	                String product = generator.generate();
+	                assertNotNull(product);
+                }
+		        generator.close();
+            }
+    	});
     }
     
 }

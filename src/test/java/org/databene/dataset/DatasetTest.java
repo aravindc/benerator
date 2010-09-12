@@ -51,20 +51,20 @@ public class DatasetTest {
     
     @Test
     public void testAtomicSet() {
-        Dataset set = DatasetFactory.getDataset(REGION, "DE");
+        Dataset set = DatasetUtil.getDataset(REGION, "DE");
         assertEquals("DE", set.getName());
     }
     
     @Test
     public void testNestedSet() {
-        Dataset eu = DatasetFactory.getDataset(REGION, "europe");
+        Dataset eu = DatasetUtil.getDataset(REGION, "europe");
         assertNotNull(eu);
-        Dataset centralEurope = DatasetFactory.getDataset(REGION, "central_europe");
+        Dataset centralEurope = DatasetUtil.getDataset(REGION, "central_europe");
         assertTrue(eu.getSubSets().contains(centralEurope));
         Set<Dataset> atomicSubSets = eu.getAtomicSubSets();
-        assertTrue(atomicSubSets.contains(DatasetFactory.getDataset(REGION, "DE")));
-        assertTrue(atomicSubSets.contains(DatasetFactory.getDataset(REGION, "CH")));
-        String[] dataFiles = DatasetFactory.getDataFiles("org/databene/domain/person/familyName_{0}.csv", "europe", REGION);
+        assertTrue(atomicSubSets.contains(DatasetUtil.getDataset(REGION, "DE")));
+        assertTrue(atomicSubSets.contains(DatasetUtil.getDataset(REGION, "CH")));
+        String[] dataFiles = DatasetUtil.getDataFiles("org/databene/domain/person/familyName_{0}.csv", "europe", REGION);
         logger.debug(ArrayFormat.format(dataFiles));
         assertTrue(ArrayUtil.contains(dataFiles, "org/databene/domain/person/familyName_DE.csv"));
     }
