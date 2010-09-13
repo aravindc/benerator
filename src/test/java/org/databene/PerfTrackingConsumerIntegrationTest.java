@@ -55,7 +55,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 				"<generate type='bla' count='10'>" +
 				"	<consumer class='org.databene.platform.contiperf.PerfTrackingConsumer'>" +
 				"		<property name='target'>" +
-				"			<bean id='c' spec='new org.databene.benerator.test.ConsumerMock(false, 0, 20, 40)' />" +
+				"			<bean id='c' spec='new org.databene.benerator.test.ConsumerMock(false, 0, 50, 100)' />" +
 				"		</property>" +
 				"	</consumer>" +
 				"</generate>");
@@ -69,7 +69,7 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 	public void testScript() throws Exception {
 		TimedGeneratorStatement statement = (TimedGeneratorStatement) parse(
 				"<generate type='bla' count='10'>" +
-				"	<consumer spec='new org.databene.platform.contiperf.PerfTrackingConsumer(new org.databene.benerator.test.ConsumerMock(false, 0, 20, 40))'/>" +
+				"	<consumer spec='new org.databene.platform.contiperf.PerfTrackingConsumer(new org.databene.benerator.test.ConsumerMock(false, 0, 50, 100))'/>" +
 				"</generate>");
 		statement.execute(context);
 		ConsumerMock<?> consumerMock = ConsumerMock.instances.get(0);
@@ -83,8 +83,8 @@ public class PerfTrackingConsumerIntegrationTest extends ParserTest {
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();
 		assertEquals(10, counter.sampleCount());
-		assertTrue("Expected latency greater or equals 20, but measured " + counter.minLatency(), counter.minLatency() >= 20);
-		assertTrue(counter.averageLatency() > 20);
+		assertTrue("Expected latency greater than 29 ms, but measured " + counter.minLatency() + " ms", counter.minLatency() >= 30);
+		assertTrue(counter.averageLatency() > 29);
 		assertTrue(counter.minLatency() < counter.maxLatency());
     }
 	
