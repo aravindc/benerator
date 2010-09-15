@@ -27,7 +27,9 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.EchoStatement;
+import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
+import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -43,10 +45,13 @@ public class EchoParser extends AbstractDescriptorParser {
     }
 
 	public EchoStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+        Expression<String> messageEx;
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
-			return new EchoStatement(parseScriptableTextAttribute(ATT_MESSAGE, element));
-		else
-			return new EchoStatement(parseScriptableElementText(element));
+	        messageEx = parseScriptableStringAttribute(ATT_MESSAGE, element);
+        else
+			messageEx = new StringExpression(parseScriptableElementText(element));
+		Expression<String> typeEx = parseScriptableStringAttribute("type", element);
+		return new EchoStatement(messageEx, typeEx);
     }
 
 }

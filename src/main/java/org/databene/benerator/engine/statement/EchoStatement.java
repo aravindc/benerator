@@ -29,6 +29,8 @@ package org.databene.benerator.engine.statement;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
+import org.databene.commons.SpeechUtil;
+import org.databene.commons.expression.ExpressionUtil;
 
 /**
  * Prints out a message to the console.<br/>
@@ -40,18 +42,25 @@ import org.databene.commons.Expression;
 
 public class EchoStatement implements Statement {
 	
-	private final Expression<?> expression;
+	private final Expression<String> messageEx;
+	private final Expression<String> typeEx;
 
-    public EchoStatement(Expression<?> expression) {
-	    this.expression = expression;
+    public EchoStatement(Expression<String> messageEx, Expression<String> typeEx) {
+	    this.messageEx = messageEx;
+	    this.typeEx = typeEx;
     }
 
 	public Expression<?> getExpression() {
-    	return expression;
+    	return messageEx;
     }
 
 	public void execute(BeneratorContext context) {
-	    System.out.println(expression.evaluate(context));
+		String message = ExpressionUtil.evaluate(messageEx, context);
+		String type = ExpressionUtil.evaluate(typeEx, context);
+		if ("speech".equals(type) && SpeechUtil.speechSupported())
+			SpeechUtil.say(message);
+		else
+			System.out.println(message);
     }
 
 }
