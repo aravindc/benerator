@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.xml.BeanParser;
+import org.databene.benerator.engine.parser.xml.BeepParser;
 import org.databene.benerator.engine.parser.xml.CommentParser;
 import org.databene.benerator.engine.parser.xml.DatabaseParser;
 import org.databene.benerator.engine.parser.xml.DefaultComponentParser;
@@ -86,6 +87,7 @@ public class DefaultBeneratorFactory extends BeneratorFactory {
 		addParser(new IfParser());
 		addParser(new WhileParser());
 		addParser(new WaitParser());
+		addParser(new BeepParser());
     }
 
 }
