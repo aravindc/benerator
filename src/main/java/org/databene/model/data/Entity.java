@@ -49,6 +49,10 @@ public class Entity implements Composite {
     
     // constructors ----------------------------------------------------------------------------------------------------
 
+    public Entity(String name) {
+        this(new ComplexTypeDescriptor(name));
+    }
+
     public Entity(String name, Object ... componentKeyValuePairs) {
         this(new ComplexTypeDescriptor(name), componentKeyValuePairs);
     }
