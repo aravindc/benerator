@@ -162,6 +162,11 @@ public class BeneratorScriptParserTest {
 	public void testStringIndex() throws Exception {
 		checkExpression('e', "'Hello'[1]");
 	}
+
+	@Test
+	public void testStaticCall() throws Exception {
+		checkExpression(1, "Math.abs(-1)");
+	}
 	
 	@Test
 	public void testSubCall() throws Exception {
@@ -537,7 +542,7 @@ public class BeneratorScriptParserTest {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private void checkExpression(Object expected, String script) throws Exception {
-    	checkExpression(expected, script, new DefaultContext());
+    	checkExpression(expected, script, new BeneratorContext());
     }
     
     private void checkExpression(Object expected, String script, Context context) throws Exception {
