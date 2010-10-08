@@ -49,6 +49,25 @@ public class PropertyParserAndStatementTest extends ParserTest {
 	}
 	
 	@Test
+	public void testDefault_undefined() throws Exception {
+		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' default='XYZ' />");
+		Statement statement = new PropertyParser().parse(element, null, null);
+		BeneratorContext context = new BeneratorContext();
+		statement.execute(context);
+		assertEquals("XYZ", context.get("globalProp"));
+	}
+	
+	@Test
+	public void testDefault_predefined() throws Exception {
+		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' default='XYZ' />");
+		Statement statement = new PropertyParser().parse(element, null, null);
+		BeneratorContext context = new BeneratorContext();
+		context.set("globalProp", "ZZZ");
+		statement.execute(context);
+		assertEquals("ZZZ", context.get("globalProp"));
+	}
+	
+	@Test
 	public void testRef() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' ref='setting' />");
 		Statement statement = new PropertyParser().parse(element, null, null);

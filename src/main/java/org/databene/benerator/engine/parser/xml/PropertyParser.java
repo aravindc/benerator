@@ -29,6 +29,7 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.ConfigurationError;
@@ -38,6 +39,7 @@ import org.databene.commons.ParseException;
 import org.databene.commons.expression.CompositeExpression;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
+import org.databene.commons.expression.IsNullExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
@@ -55,8 +57,12 @@ public class PropertyParser extends AbstractDescriptorParser {
 
     public Statement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
 		String propertyName = element.getAttribute(ATT_NAME);
-		Expression<?> valueEx = parseValue(element, resourceManager);
-		return new SetGlobalPropertyStatement(propertyName, valueEx);
+		if (element.hasAttribute(ATT_DEFAULT))
+			return parseDefault(propertyName, element.getAttribute(ATT_DEFAULT));
+		else {
+			Expression<?> valueEx = parseValue(element, resourceManager);
+			return new SetGlobalPropertyStatement(propertyName, valueEx);
+		}
 	}
 
     @SuppressWarnings("unchecked")
@@ -90,6 +96,17 @@ public class PropertyParser extends AbstractDescriptorParser {
 			return new SourceExpression(BeneratorScriptParser.parseBeanSpec(source));
         } catch (ParseException e) {
             throw new ConfigurationError("Error parsing property source expression: " + source, e);
+        }
+    }
+
+    private static Statement parseDefault(String propertyName, String defaultValue) {
+		try {
+			ScriptableExpression valueExpression = new ScriptableExpression(defaultValue, null);
+			SetGlobalPropertyStatement setterStatement = new SetGlobalPropertyStatement(propertyName, valueExpression);
+			Expression<Boolean> condition = new IsNullExpression(new ContextReference(propertyName));
+			return new IfStatement(condition, setterStatement);
+        } catch (ParseException e) {
+            throw new ConfigurationError("Error parsing property default value expression: " + defaultValue, e);
         }
     }
 

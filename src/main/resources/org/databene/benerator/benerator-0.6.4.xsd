@@ -274,10 +274,11 @@
 				<xs:element ref="bean"  minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="idref" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="name"   type="xs:string"/>
-			<xs:attribute name="value"  type="xs:string"/>
-			<xs:attribute name="ref"    type="xs:string"/>
-			<xs:attribute name="source" type="xs:string"/>
+			<xs:attribute name="name"    type="xs:string"/>
+			<xs:attribute name="value"   type="xs:string"/>
+			<xs:attribute name="default" type="xs:string"/>
+			<xs:attribute name="ref"     type="xs:string"/>
+			<xs:attribute name="source"  type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
