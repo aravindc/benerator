@@ -28,6 +28,7 @@ import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IfStatement;
+import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
@@ -77,8 +78,8 @@ public class IfParser implements DescriptorParser {
 			thenStatements = DescriptorParserUtil.parseChildren(thenElement, path, resourceManager);
 		} else
 			thenStatements = DescriptorParserUtil.parseChildren(ifElement, path, resourceManager);
-		ifStatement.setThenStatements(thenStatements);
-		ifStatement.setElseStatements(elseStatements);
+		ifStatement.setThenStatement(new SequentialStatement(thenStatements));
+		ifStatement.setElseStatement(new SequentialStatement(elseStatements));
 		return ifStatement;
     }
 

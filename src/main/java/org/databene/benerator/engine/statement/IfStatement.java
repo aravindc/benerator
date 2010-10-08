@@ -21,8 +21,6 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.util.List;
-
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
@@ -36,33 +34,36 @@ import org.databene.commons.Expression;
  */
 public class IfStatement extends ConditionStatement {
 	
-	private CompositeStatement thenBranch;
-	private CompositeStatement elseBranch;
+	private Statement thenStatement;
+	private Statement elseStatement;
 
 	public IfStatement(Expression<Boolean> condition) {
 	    super(condition);
     }
 
-	public IfStatement(Expression<Boolean> condition, 
-			List<Statement> thenStatements, List<Statement> elseStatements) {
+	public IfStatement(Expression<Boolean> condition, Statement thenStatement) {
+	    this(condition, thenStatement, null);
+    }
+
+	public IfStatement(Expression<Boolean> condition, Statement thenStatement, Statement elseStatement) {
 	    super(condition);
-	    setThenStatements(thenStatements);
-	    setElseStatements(elseStatements);
+	    setThenStatement(thenStatement);
+	    setElseStatement(elseStatement);
     }
 
     public void execute(BeneratorContext context) {
 	    if (condition.evaluate(context))
-	    	thenBranch.execute(context);
-	    else
-	    	elseBranch.execute(context);
+	    	thenStatement.execute(context);
+	    else if (elseStatement != null)
+	    	elseStatement.execute(context);
     }
 
-	public void setThenStatements(List<Statement> thenStatements) {
-	    this.thenBranch = new SequentialStatement(thenStatements);
+	public void setThenStatement(Statement thenStatement) {
+	    this.thenStatement = thenStatement;
     }
 
-	public void setElseStatements(List<Statement> elseStatements) {
-	    this.elseBranch = new SequentialStatement(elseStatements);
+	public void setElseStatement(Statement elseStatement) {
+	    this.elseStatement = elseStatement;
     }
 
 }
