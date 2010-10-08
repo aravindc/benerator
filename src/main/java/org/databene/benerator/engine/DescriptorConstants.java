@@ -78,6 +78,7 @@ public interface DescriptorConstants {
     static final String ATT_SOURCE = "source";
     static final String ATT_REF = "ref";
     static final String ATT_VALUE = "value";
+    static final String ATT_DEFAULT = "default";
     static final String ATT_NAME = "name";
     static final String ATT_ON_ERROR = "onError";
     static final String ATT_CONSUMER = "consumer";
