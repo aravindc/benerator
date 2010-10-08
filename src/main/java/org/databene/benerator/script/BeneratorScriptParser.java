@@ -46,6 +46,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.expression.BinaryExpression;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.ForNameExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.expression.UnaryExpression;
 import org.databene.model.data.PrimitiveType;
