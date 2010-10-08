@@ -43,11 +43,9 @@ import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.bean.DefaultClassProvider;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.expression.BinaryExpression;
 import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.expression.UnaryExpression;
 import org.databene.model.data.PrimitiveType;
@@ -378,13 +376,8 @@ public class BeneratorScriptParser {
 		PrimitiveType primitiveType = PrimitiveType.getInstance(className);
 		if (primitiveType != null)
 			return new ConstantExpression<Class<?>>(primitiveType.getJavaType());
-		else {
-	    	return new DynamicExpression<Class<?>>() {
-				public Class<?> evaluate(Context context) {
-					return DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
-	            }
-	    	};
-		}
+		else
+			return new ForNameExpression(new ConstantExpression<String>(className));
     }
 
     private static Expression<? extends Number> convertIntLiteral(CommonTree node) {
@@ -444,7 +437,6 @@ public class BeneratorScriptParser {
     	Expression<?> object = convertNode(childAt(0, node));
     	String methodMame = (String) convertNode(childAt(1, node)).evaluate(null);
     	Expression<?>[] argsExpressions = parseArguments(childAt(2, node));
-//    	Expression<Expression<?>[]> paramExpression = new ConstantExpression<Expression<?>[]>(params);
     	return new InvocationExpression(object, methodMame, argsExpressions);
     }
 
@@ -531,27 +523,7 @@ public class BeneratorScriptParser {
     }
 
 	private static Expression<?> convertPlus(CommonTree node) throws ParseException {
-		return new PlusExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
-    }
-
-    static final class PlusExpression extends BinaryExpression<Object> {
-	    PlusExpression(Expression<?> term1, Expression<?> term2) {
-		    super(term1, term2);
-	    }
-
-	    public Object evaluate(Context context) {
-	        Expression<?>[] summands = { term1, term2 };
-	    	Assert.isTrue(summands.length > 1, "At least two summands needed");
-	        Object result = summands[0].evaluate(context);
-	        for (int i = 1; i < summands.length; i++)
-	        	result = ArithmeticEngine.defaultInstance().add(result, summands[i].evaluate(context));
-	        return result;
-	    }
-	    
-	    @Override
-	    public String toString() {
-	        return "(" + term1 + " + " + term2 + ")";
-	    }
+		return new SumExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
 	private static Expression<?> convertMinus(CommonTree node) throws ParseException {
@@ -712,8 +684,9 @@ public class BeneratorScriptParser {
 		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
 			public Boolean evaluate(Context context) {
                 boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
-                boolean b2 = AnyConverter.convert(term2.evaluate(context), Boolean.class);
-				return b1 || b2;
+                if (b1)
+                	return true;
+                return AnyConverter.convert(term2.evaluate(context), Boolean.class);
             }
 		};
     }
@@ -732,8 +705,9 @@ public class BeneratorScriptParser {
 
 		public Boolean evaluate(Context context) {
             boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
-            boolean b2 = AnyConverter.convert(term2.evaluate(context), Boolean.class);
-			return b1 && b2;
+            if (!b1)
+            	return false;
+            return AnyConverter.convert(term2.evaluate(context), Boolean.class);
         }
     	
 		@Override
