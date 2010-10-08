@@ -10,6 +10,7 @@ changes
 -------
 - Added method to StorageSystem: void execute(String command)
 - change mapping JDBC BIGINT -> Java Long
+- Introduced shortcut evaluation of && and || in BeneratorScript
 
 
 
@@ -20,6 +21,8 @@ enhancements
 - PostalCodeValidator
 - <echo type="speech">Message</echo>
 - <beep/>
+- NoiseInducer: converter that induces statistical noise on numbers
+- <property name="stage" default="stage" />
 
 
 
