@@ -28,6 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import java.util.Random;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
@@ -64,6 +65,13 @@ public class RandomIntegerGenerator extends AbstractNumberGenerator<Integer> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
+    @Override
+    public void init(GeneratorContext context) {
+    	if (precision == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+        super.init(context);
+    }
+    
     public Integer generate() {
         return generate(min, max, precision);
     }

@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -53,6 +54,8 @@ public class CumulatedDoubleGenerator extends AbstractNumberGenerator<Double> {
     
     @Override
     public void init(GeneratorContext context) {
+    	if (precision == 0.)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
         super.init(context);
         baseGen = new RandomDoubleGenerator(min, max);
         baseGen.init(context);

@@ -29,6 +29,8 @@ package org.databene.benerator.distribution.sequence;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.util.ThreadSafeGenerator;
 
@@ -74,6 +76,13 @@ public class RandomBigDecimalGenerator extends ThreadSafeGenerator<BigDecimal> {
     	return BigDecimal.class;
     }
 
+	@Override
+	public synchronized void init(GeneratorContext context) {
+    	if (BigDecimal.ONE.compareTo(precision) == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+	    super.init(context);
+	}
+	
     public BigDecimal generate() {
         long n = range.divide(precision).longValue();
         BigDecimal i = BigDecimal.valueOf(RandomUtil.randomLong(0, n));

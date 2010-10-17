@@ -28,6 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import java.math.BigInteger;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.util.ThreadSafeGenerator;
@@ -72,6 +73,13 @@ public class RandomBigIntegerGenerator extends ThreadSafeGenerator<BigInteger> {
 	    return BigInteger.class;
     }
 
+    @Override
+    public synchronized void init(GeneratorContext context) {
+    	if (BigInteger.ZERO.compareTo(precision) == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+        super.init(context);
+    }
+    
     public BigInteger generate() {
         return generate(min, max, precision);
     }

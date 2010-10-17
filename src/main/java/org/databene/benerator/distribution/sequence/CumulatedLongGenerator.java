@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 
 /**
@@ -74,6 +75,8 @@ public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
     
     @Override
     public void init(GeneratorContext context) {
+    	if (precision.compareTo(0L) == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
         baseGen = new RandomLongGenerator(0, (max - min) / precision);
         baseGen.init(context);
         super.init(context);

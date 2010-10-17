@@ -62,6 +62,8 @@ public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
 
     @Override
     public void init(GeneratorContext context) {
+    	if (precision == 0L)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
         if (min > max)
             throw new InvalidGeneratorSetupException(
                     new PropertyMessage("min", "greater than max"),
