@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -53,6 +53,7 @@ public class DefineDatabaseStatement implements Statement {
 	private Expression<String> driver;
 	private Expression<String> user;
 	private Expression<String> password;
+	private Expression<String> catalog;
 	private Expression<String> schema;
 	private Expression<String> tableFilter;
 	private Expression<String>  includeTables;
@@ -64,7 +65,7 @@ public class DefineDatabaseStatement implements Statement {
 	private ResourceManager resourceManager;
 	
 	public DefineDatabaseStatement(Expression<String> id, Expression<String> url, Expression<String> driver, 
-			Expression<String> user, Expression<String> password, Expression<String> schema, 
+			Expression<String> user, Expression<String> password, Expression<String> catalog, Expression<String> schema, 
 			Expression<String> tableFilter, Expression<String> includeTables, Expression<String> excludeTables, 
 			Expression<Boolean> batch, Expression<Integer> fetchSize, Expression<Boolean> readOnly, 
 			Expression<Boolean> acceptUnknownColumnTypes, ResourceManager resourceManager) {
@@ -73,6 +74,7 @@ public class DefineDatabaseStatement implements Statement {
 	    this.driver = driver;
 	    this.user = user;
 	    this.password = password;
+	    this.catalog = catalog;
 	    this.schema = schema;
 	    this.tableFilter = tableFilter;
 	    this.includeTables = includeTables;
@@ -84,7 +86,8 @@ public class DefineDatabaseStatement implements Statement {
 	    this.resourceManager = resourceManager;
     }
 
-	public void execute(BeneratorContext context) {
+	@SuppressWarnings("deprecation")
+    public void execute(BeneratorContext context) {
 	    logger.debug("Instantiating database with id '" + id + "'");
 	    String idValue = id.evaluate(context);
 		DBSystem db = new DBSystem(
@@ -93,6 +96,7 @@ public class DefineDatabaseStatement implements Statement {
 	    		ExpressionUtil.evaluate(driver, context), 
 	    		ExpressionUtil.evaluate(user, context), 
 	    		ExpressionUtil.evaluate(password, context));
+	    db.setCatalog(ExpressionUtil.evaluate(catalog, context));
 	    db.setSchema(ExpressionUtil.evaluate(schema, context));
 	    db.setTableFilter(ExpressionUtil.evaluate(tableFilter, context));
 	    db.setIncludeTables(ExpressionUtil.evaluate(includeTables, context));
