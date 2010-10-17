@@ -164,6 +164,14 @@ public class DBSystemTest {
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
 	}
 	
+	@Test
+	public void testTableExists() throws Exception {
+        assertTrue(db.tableExists("TEST"));
+        assertFalse(db.tableExists("TEST_______"));
+        assertFalse(db.tableExists(""));
+        assertFalse(db.tableExists(null));
+	}
+	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
 	private DBSystem db;

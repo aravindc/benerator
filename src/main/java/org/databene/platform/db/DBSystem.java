@@ -38,6 +38,7 @@ import org.databene.jdbacl.DatabaseDialect;
 import org.databene.jdbacl.DatabaseDialectManager;
 import org.databene.jdbacl.DatabaseUtil;
 import org.databene.jdbacl.PooledConnectionHandler;
+import org.databene.jdbacl.ResultSetConverter;
 import org.databene.jdbacl.dialect.OracleDialect;
 import org.databene.jdbacl.model.DBCatalog;
 import org.databene.jdbacl.model.DBColumn;
@@ -104,6 +105,7 @@ public class DBSystem extends AbstractStorageSystem {
     private String user;
     private String password;
     private String driver;
+    private String catalog;
     private String schema;
     private String includeTables;
     private String excludeTables;
@@ -207,7 +209,15 @@ public class DBSystem extends AbstractStorageSystem {
         this.password = StringUtil.emptyToNull(password);
     }
 
-    public String getSchema() {
+    public String getCatalog() {
+    	return catalog;
+    }
+
+	public void setCatalog(String catalog) {
+    	this.catalog = catalog;
+    }
+
+	public String getSchema() {
         return schema;
     }
 
@@ -446,6 +456,12 @@ public class DBSystem extends AbstractStorageSystem {
     
     // database-specific interface -------------------------------------------------------------------------------------
 
+    public boolean tableExists(String tableName) {
+        if (logger.isDebugEnabled())
+            logger.debug("tableExists(" + tableName + ")");
+        return (getTypeDescriptor(tableName) != null);
+    }
+
     public void createSequence(String name) throws SQLException {
 		getDialect().createSequence(name, 1, getThreadContext().connection);
     }
@@ -507,6 +523,7 @@ public class DBSystem extends AbstractStorageSystem {
             //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
             getDialect(); // make sure dialect is initialized
             JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
+            importer.setCatalogName(catalog);
             importer.setSchemaName(schema);
             importer.setIncludeTables(includeTables);
             importer.setExcludeTables(excludeTables);
