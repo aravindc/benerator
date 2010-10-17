@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,44 +48,57 @@ import static junit.framework.Assert.*;
  */
 public class ConsoleExporterTest {
 	
+	private static final String LF = SystemInfo.getLineSeparator();
+
 	@Test
 	public void testSimpleTypes() {
-		check("Test", "Test");
-		check(1, "1");
-		check(1., "1.0");
-		check(true, "true");
+		check("Test" + LF, "Test");
+		check("1" + LF, 1);
+		check("1.0" + LF, 1.);
+		check("true" + LF, true);
 	}
 
 	@Test
 	public void testDate() {
 		Date date = new Date(((60 + 2) * 60 + 3) * 1000);
-		check(date, new SimpleDateFormat("yyyy-MM-dd").format(date));
+		check(new SimpleDateFormat("yyyy-MM-dd").format(date) + LF, date);
 	}
 
 	@Test
 	public void testTimestamp() {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		TimestampFormatter formatter = new TimestampFormatter(Patterns.DEFAULT_DATETIME_SECONDS_PATTERN + '.');
-		check(timestamp, formatter.format(timestamp));
+		check(formatter.format(timestamp) + LF, timestamp);
 	}
 	
 	@Test
 	public void testEntity() {
 		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
-		check(entity, "e[i=3, d=5.0, s=sss]");
+		check("e[i=3, d=5.0, s=sss]" + LF, entity);
+	}
+	
+	@Test
+	public void testLimit() {
+		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
+		check(new ConsoleExporter(1L), "e[i=3, d=5.0, s=sss]" + LF + '.', entity, entity);
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private void check(Object in, String expectedOut) {
-		ConsoleExporter exporter = new ConsoleExporter();
+	private void check(String expectedOut, Object... ins) {
+		check(new ConsoleExporter(), expectedOut, ins);
+	}
+	
+	private void check(ConsoleExporter exporter, String expectedOut, Object... ins) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		exporter.setOut(new PrintStream(stream));
 		try {
-			exporter.startConsuming(in);
-			exporter.finishConsuming(in);
+			for (Object in : ins) {
+				exporter.startConsuming(in);
+				exporter.finishConsuming(in);
+			}
 			exporter.flush();
-			assertEquals(expectedOut + SystemInfo.getLineSeparator(), stream.toString());
+			assertEquals(expectedOut, stream.toString());
 		} finally {
 			exporter.close();
 		}

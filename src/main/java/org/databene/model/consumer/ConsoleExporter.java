@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,9 @@
 package org.databene.model.consumer;
 
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.commons.CompositeFormatter;
 import org.databene.model.data.Entity;
@@ -39,13 +42,21 @@ import org.databene.model.data.Entity;
  */
 public class ConsoleExporter extends FormattingConsumer<Object> {
 	
+	private Long limit;
 	private CompositeFormatter compositeFormatter;
 	private PrintStream out = System.out;
+	private Map<String, AtomicLong> counters;
 	
 	public ConsoleExporter() {
-		compositeFormatter = new CompositeFormatter(true, true);
-		compositeFormatter.setDatePattern(getDatePattern());
-		compositeFormatter.setTimestampPattern(getTimestampPattern());
+		this(null);
+	}
+	
+	public ConsoleExporter(Long limit) {
+		this.limit = limit;
+		this.counters = new HashMap<String, AtomicLong>();
+		this.compositeFormatter = new CompositeFormatter(true, true);
+		this.compositeFormatter.setDatePattern(getDatePattern());
+		this.compositeFormatter.setTimestampPattern(getTimestampPattern());
 	}
 	
 	@Override
@@ -60,15 +71,30 @@ public class ConsoleExporter extends FormattingConsumer<Object> {
 		compositeFormatter.setTimestampPattern(timestampPattern);
 	}
 
+	public void setLimit(Long limit) {
+    	this.limit = limit;
+    }
+
 	public void setOut(PrintStream out) {
 		this.out = out;
 	}
 	
 	public void startConsuming(Object object) {
-		if (object instanceof Entity)
-			out.println(compositeFormatter.render(((Entity) object).type() + '[', (Entity) object, "]"));
-		else
+		if (object instanceof Entity) {
+			String entityType = ((Entity) object).type();
+			AtomicLong counter = counters.get(entityType);
+			if (counter == null) {
+				counter = new AtomicLong(0);
+				counters.put(entityType, counter);
+			}
+			long counterValue = counter.incrementAndGet();
+			if (limit == null || counterValue <= limit)
+				out.println(compositeFormatter.render(entityType + '[', (Entity) object, "]"));
+			else
+				out.print(".");
+		} else {
 			out.println(plainConverter.convert(object));
+		}
     }
 	
 }
