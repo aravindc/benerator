@@ -96,6 +96,7 @@ public interface DescriptorConstants {
     static final String ATT_ACC_UNK_COL_TYPES = "acceptUnknownColumnTypes";
     static final String ATT_FETCH_SIZE = "fetchSize";
     static final String ATT_BATCH = "batch";
+    static final String ATT_CATALOG = "catalog";
     static final String ATT_SCHEMA = "schema";
     static final String ATT_TABLE_FILTER = "tableFilter";
     static final String ATT_INCL_TABLES = "includeTables";
