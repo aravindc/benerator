@@ -115,6 +115,13 @@
             <includes>
                 <include>org.slf4j:slf4j-log4j12:jar</include>
                 <include>log4j:log4j:jar</include>
+                <include>net.sourceforge.jtds:jtds:jar</include>
+                <include>mysql:mysql-connector-java:jar</include>
+                <include>hsqldb:hsqldb:jar</include>
+                <include>com.h2database:h2:jar</include>
+                <include>org.apache.derby:derbyclient:jar</include>
+                <include>postgresql:postgresql:jar</include>
+                <include>net.sf.squirrel-sql.thirdparty-non-maven:jaybird:jar</include>
             </includes>
         </dependencySet>
         <dependencySet>
