@@ -32,14 +32,12 @@ import org.databene.commons.HeavyweightIterable;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.jdbacl.ResultSetIterator;
+import org.databene.jdbacl.QueryIterator;
 import org.databene.script.ScriptConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
 
 /**
@@ -50,7 +48,6 @@ import java.sql.ResultSet;
  */
 public class QueryIterable implements HeavyweightIterable<ResultSet> {
     
-    private static final Logger sqlLogger = LoggerFactory.getLogger("org.databene.SQL"); 
     private static final Logger logger = LoggerFactory.getLogger(QueryIterable.class); 
 
     private final Connection connection;
@@ -82,17 +79,7 @@ public class QueryIterable implements HeavyweightIterable<ResultSet> {
 
     public HeavyweightIterator<ResultSet> iterator() {
         renderedQuery = queryPreprocessor.convert(query).toString();
-        try {
-            if (sqlLogger.isDebugEnabled())
-                sqlLogger.debug(renderedQuery);
-            Statement statement = connection.createStatement(
-            		ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-            statement.setFetchSize(fetchSize);
-            ResultSet resultSet = statement.executeQuery(renderedQuery);
-            return new ResultSetIterator(resultSet, renderedQuery);
-        } catch (SQLException e) {
-            throw new RuntimeException("Error in query: " + renderedQuery, e);
-        }
+        return new QueryIterator(renderedQuery, connection, fetchSize);
     }
     
     @Override
