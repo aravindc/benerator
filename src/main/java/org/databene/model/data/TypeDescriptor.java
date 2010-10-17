@@ -43,6 +43,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     // constraint names
     public static final String VALIDATOR    = "validator";
     public static final String FILTER       = "filter";
+    public static final String CONDITION    = "condition";
 
     // config names
     public static final String GENERATOR    = "generator";
@@ -88,8 +89,8 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 	protected void init() {
 		// constraints
         addConstraint(VALIDATOR, String.class, null, new FirstNonNullSelector<String>()); 
-        // For the sake of performance, retain only the first non-null validator
         addConstraint(FILTER, String.class, null, new FirstNonNullSelector<String>()); 
+        addConstraint(CONDITION, String.class, null, new FirstNonNullSelector<String>()); 
         
         // config
         addConfig(GENERATOR,      String.class,   null);
@@ -135,7 +136,15 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         setDetailValue(FILTER, validator);
     }
 
-    public String getGenerator() {
+    public String getCondition() {
+        return (String) getDetailValue(CONDITION);
+    }
+
+    public void setCondition(String condition) {
+        setDetailValue(CONDITION, condition);
+    }
+
+	public String getGenerator() {
         return (String) getDetailValue(GENERATOR);
     }
 
