@@ -46,6 +46,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ArrayElementBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
+import org.databene.benerator.composite.ConditionalComponentBuilder;
 import org.databene.benerator.composite.DynamicInstanceArrayGenerator;
 import org.databene.benerator.composite.PlainEntityComponentBuilder;
 import org.databene.benerator.distribution.DistributingGenerator;
@@ -53,12 +54,15 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.nullable.ConstantNullableGenerator;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.nullable.NullableScriptGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.Expression;
+import org.databene.commons.StringUtil;
 import org.databene.commons.TypedIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -237,17 +241,27 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // check 'cyclic' config
         generator = DescriptorUtil.wrapWithProxy(generator, typeDescriptor);
-        return wrapWithNullInjector(generator, descriptor);
+        ComponentBuilder<?> builder = wrapWithNullInjector(generator, descriptor);
+        return wrapWithCondition(typeDescriptor.getCondition(), builder);
     }
 
-    static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
+    // non-public helpers ----------------------------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+    static ComponentBuilder<?> wrapWithCondition(String conditionScript, ComponentBuilder<?> builder) {
+    	if (!StringUtil.isEmpty(conditionScript)) {
+		    Expression<Boolean> condition = new ScriptExpression<Boolean>(conditionScript);
+		    return new ConditionalComponentBuilder(builder, condition);
+    	} else
+    		return builder;
+    }
+
+	static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(id, ownerUniqueness, context);
         if (logger.isDebugEnabled())
             logger.debug("Created " + generator);
         return wrapWithNullInjector(generator, id);
     }
-
-    // non-public helpers ----------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
