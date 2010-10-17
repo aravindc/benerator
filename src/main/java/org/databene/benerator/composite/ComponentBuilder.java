@@ -36,9 +36,23 @@ import org.databene.commons.ThreadAware;
  * @author Volker Bergmann
  */
 public interface ComponentBuilder<E> extends ThreadAware {
+	
+	/** Initializes the instance */
 	void init(GeneratorContext context);
+	
+	/** @return the type of the generated components */
 	Class<?> getGeneratedType();
+	
+	/** 
+	 * builds the related component of <code>target</code>
+	 * @return false if no more data was available to build, otherwise true
+	 */
 	boolean buildComponentFor(E target);
-	void close();
+	
+	/** resets the builder */
 	void reset();
+
+	/** closes the builder */
+	void close();
+	
 }
