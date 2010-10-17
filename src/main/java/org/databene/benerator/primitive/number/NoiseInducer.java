@@ -41,9 +41,9 @@ import org.databene.commons.converter.ThreadSafeConverter;
  */
 public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements ContextAware { // TODO test
 	
-	private Number minNoise;
-	private Number maxNoise;
-	private Number noisePrecision;
+	private double minNoise;
+	private double maxNoise;
+	private double noisePrecision;
 	private Distribution noiseDistribution;
 	private boolean relative;
 	
@@ -52,42 +52,42 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	private Generator<Number> noiseGenerator;
 	private Context context;
 
-	protected NoiseInducer() {
-	    this(0, 0);
+	public NoiseInducer() {
+	    this(-0.1, 0.1, 0.001);
     }
 	
-	protected NoiseInducer(Number minNoise, Number maxNoise) {
+	public NoiseInducer(double minNoise, double maxNoise, double noisePrecision) {
 	    super(Number.class, Number.class);
 	    this.minNoise = minNoise;
 	    this.maxNoise = maxNoise;
-	    this.noisePrecision = 1;
+	    this.noisePrecision = noisePrecision;
 	    this.noiseDistribution = SequenceManager.CUMULATED_SEQUENCE;
 	    this.relative = true;
     }
 	
 	// properties ------------------------------------------------------------------------------------------------------
 
-	public Number getMinNoise() {
+	public double getMinNoise() {
     	return minNoise;
     }
 
-	public void setMinNoise(Number minNoise) {
+	public void setMinNoise(double minNoise) {
     	this.minNoise = minNoise;
     }
 
-	public Number getMaxNoise() {
+	public double getMaxNoise() {
     	return maxNoise;
     }
 
-	public void setMaxNoise(Number maxNoise) {
+	public void setMaxNoise(double maxNoise) {
     	this.maxNoise = maxNoise;
     }
 
-	public Number getNoisePrecision() {
+	public double getNoisePrecision() {
     	return noisePrecision;
     }
 
-	public void setPrecision(Number noisePrecision) {
+	public void setNoisePrecision(double noisePrecision) {
     	this.noisePrecision = noisePrecision;
     }
 
