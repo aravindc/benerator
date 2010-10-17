@@ -76,7 +76,7 @@ public class CompanyDomainGenerator extends AbstractGenerator<String> {
     }
 
 	public String generate() {
-		return normalizer.convert(companyNameGenerator.generate()) + '.' + tldGenerator.generate();
+		return normalizer.convert(companyNameGenerator.generate().getShortName()) + '.' + tldGenerator.generate();
 	}
 	
 	private static final class Normalizer extends ThreadSafeConverter<String, String> {

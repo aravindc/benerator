@@ -65,10 +65,10 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
         CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
         generator.init(context);
         for (int i = 0; i < 100; i++) {
-            String name = generator.generate();
-            logger.debug(name);
+            CompanyName name = generator.generate();
+            logger.debug(name.toString());
             assertNotNull(name);
-            assertTrue(name.length() > 1);
+            assertTrue(name.toString().length() > 1);
         }
     }
     

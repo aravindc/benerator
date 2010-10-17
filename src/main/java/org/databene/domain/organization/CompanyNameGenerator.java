@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
+public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
@@ -101,6 +101,10 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
     	this.datasetName = datasetName;
 	}
     
+	public Class<CompanyName> getGeneratedType() {
+	    return CompanyName.class;
+    }
+
     @Override
     public synchronized void init(GeneratorContext context) {
         initLocationGenerator(datasetName, context);
@@ -117,23 +121,24 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
         super.init(context);
     }
 
-	public String generate() {
-        StringBuilder builder = new StringBuilder(core.generate());
+	public CompanyName generate() {
+		CompanyName name = new CompanyName();
+        name.setShortName(core.generate());
         ProductWrapper<String> wrapper = productWrapper.get();
         if (sectorGenerator != null) {
-			String sec = sectorGenerator.generate(wrapper).product;
-	        if (sec != null)
-	            builder.append(' ').append(sec);
+			String sector = sectorGenerator.generate(wrapper).product;
+	        if (sector != null)
+	            name.setSector(sector);
         }
         if (locationGenerator != null) {
         	wrapper = locationGenerator.generate(wrapper);
-        	if (wrapper != null && wrapper.product != null)
-	            builder.append(' ').append(wrapper.product);
+        	if (wrapper != null)
+	            name.setLocation(wrapper.product);
         }
-        if (legalFormGenerator != null) {
-        	builder.append(' ').append(legalFormGenerator.generate());
-        }
-        return builder.toString();
+        if (legalFormGenerator != null)
+        	name.setLegalForm(legalFormGenerator.generate());
+        name.setDatasetName(datasetName);
+        return name;
     }
 
     @Override
@@ -224,10 +229,6 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<String> {
         	locationBaseGen = new ConstantGenerator<String>(null);
         locationGenerator = NullableGeneratorFactory.injectNulls(locationBaseGen, nullQuota);
         locationGenerator.init(context);
-    }
-
-	public Class<String> getGeneratedType() {
-	    return String.class;
     }
 
 }
