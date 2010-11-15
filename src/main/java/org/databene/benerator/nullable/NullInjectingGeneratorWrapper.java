@@ -23,7 +23,9 @@ package org.databene.benerator.nullable;
 
 import java.util.Random;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.wrapper.ProductWrapper;
 
@@ -33,29 +35,30 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class NullInjectingGeneratorProxy<E> extends NullableGeneratorWrapper<E, E> {
+public class NullInjectingGeneratorWrapper<E> extends AbstractNullableGenerator<E> {
 	
+	private Generator<E> source;
 	private float nullQuota;
 	
 	private Random random;
 	boolean closed;
 
-    public NullInjectingGeneratorProxy(NullableGenerator<E> source, double nullQuota) {
-    	super(source);
+    public NullInjectingGeneratorWrapper(Generator<E> source, double nullQuota) {
     	if (nullQuota < 0 || nullQuota > 1)
     		throw new IllegalArgumentException("Illegal null quota: " + nullQuota);
+	    this.source = source;
 	    this.nullQuota = (float) nullQuota;
 		random = new Random();
 		closed = false;
     }
 
     public Class<E> getGeneratedType() {
-    	return realGenerator.getGeneratedType();
+    	return source.getGeneratedType();
     }
 
 	@Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-		realGenerator.init(context);
+    	source.init(context);
     	super.init(context);
     }
 
@@ -71,12 +74,35 @@ public class NullInjectingGeneratorProxy<E> extends NullableGeneratorWrapper<E, 
     		wrapper.product = null;
     		return wrapper;
     	}
-    	return realGenerator.generate(wrapper);
+    	wrapper.product = source.generate();
+    	if (wrapper.product == null) {
+    		close();
+    		return null;
+    	}
+    	return wrapper;
     }
 
+    public void reset() throws IllegalGeneratorStateException {
+    	source.reset();
+    	closed = false;
+    }
+
+    public void close() {
+    	source.close();
+    	closed = true;
+    }
+
+	public boolean isParallelizable() {
+	    return source.isParallelizable();
+    }
+
+	public boolean isThreadSafe() {
+	    return source.isThreadSafe();
+    }
+	
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "[" + nullQuota + ", " + realGenerator + "]";
+	    return getClass().getSimpleName() + "[" + nullQuota + ", " + source + "]";
 	}
     
 }

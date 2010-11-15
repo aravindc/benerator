@@ -48,6 +48,13 @@ public class NullableGeneratorFactory {
 		if (nullQuota == 0.)
 			return wrap(source);
 		else
+			return new NullInjectingGeneratorWrapper<T>(source, nullQuota);
+	}
+
+	public static <T> NullableGenerator<T> injectNulls(NullableGenerator<T> source, double nullQuota) {
+		if (nullQuota == 0.)
+			return source;
+		else
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
 
