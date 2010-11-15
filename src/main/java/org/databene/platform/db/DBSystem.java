@@ -36,7 +36,6 @@ import org.databene.jdbacl.ColumnInfo;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.DatabaseDialect;
 import org.databene.jdbacl.DatabaseDialectManager;
-import org.databene.jdbacl.DatabaseUtil;
 import org.databene.jdbacl.PooledConnectionHandler;
 import org.databene.jdbacl.ResultSetConverter;
 import org.databene.jdbacl.dialect.OracleDialect;
@@ -531,7 +530,7 @@ public class DBSystem extends AbstractStorageSystem {
             importer.setImportingUKs(false); // TODO set to true
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
-            List<DBTable> tables = DatabaseUtil.dependencyOrderedTables(database);
+            List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
             for (DBTable table : tables)
                 parseTable(table);
         } catch (ConnectFailedException e) {
@@ -739,21 +738,18 @@ public class DBSystem extends AbstractStorageSystem {
 
     DBTable getTable(String tableName) {
     	parseMetadataIfNecessary();
-        DBSchema dbSchema = database.getSchema(this.schema);
+        DBSchema dbSchema = database.getCatalog(catalog).getSchema(this.schema);
         if (dbSchema != null) {
             DBTable table = dbSchema.getTable(tableName);
             if (table != null)
                 return table;
         }
         for (DBCatalog catalog : database.getCatalogs()) {
-            DBTable table = catalog.getTable(tableName);
-            if (table != null)
-                return table;
-        }
-        for (DBSchema schema2 : database.getSchemas()) {
-            DBTable table = schema2.getTable(tableName);
-            if (table != null)
-                return table;
+            for (DBSchema schema2 : catalog.getSchemas()) {
+                DBTable table = schema2.getTable(tableName);
+                if (table != null)
+                    return table;
+            }
         }
         throw new ObjectNotFoundException("Table " + tableName);
     }
