@@ -89,8 +89,10 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         // Check for settings that can be handled generically
         NullableGenerator<?> generator;
         generator = createNullableScriptBuilder(descriptor, context);
-        if (generator != null)
-        	return builderFromGenerator(generator, descriptor);
+        if (generator != null) {
+        	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
+			return builderFromGenerator(NullableGeneratorFactory.injectNulls(generator, nullQuota), descriptor);
+        }
         generator = createNullQuotaOneBuilder(descriptor);
         if (generator != null)
         	return builderFromGenerator(generator, descriptor);
@@ -174,6 +176,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     @SuppressWarnings("unchecked")
     private static ComponentBuilder<?> wrapWithNullInjector(Generator<?> source, ComponentDescriptor descriptor) {
+    	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
+    	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
+        return builderFromGenerator(generator, descriptor);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static ComponentBuilder<?> wrapWithNullInjector(NullableGenerator<?> source, ComponentDescriptor descriptor) {
     	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
     	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
         return builderFromGenerator(generator, descriptor);
