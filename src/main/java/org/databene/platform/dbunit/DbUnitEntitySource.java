@@ -48,7 +48,7 @@ public class DbUnitEntitySource extends FileBasedEntitySource {
     
     public HeavyweightIterator<Entity> iterator() {
         try {
-            return new DbUnitEntityIterator(getAbsoluteUri(), context);
+            return new DbUnitEntityIterator(resolveUri(), context);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

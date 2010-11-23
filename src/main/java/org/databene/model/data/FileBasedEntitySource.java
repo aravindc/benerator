@@ -59,7 +59,7 @@ public abstract class FileBasedEntitySource extends AbstractEntitySource impleme
     	this.context = (BeneratorContext) context;
     }
 
-    protected String getAbsoluteUri() {
+    protected String resolveUri() {
     	return context.resolveRelativeUri(uri);
     }
     

@@ -140,7 +140,7 @@ public class FlatFileEntitySource extends FileBasedEntitySource {
     private Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, 
     		String encoding, String lineFilter) {
         PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
-        return new FlatFileLineIterable(getAbsoluteUri(), formats, true, encoding, lineFilter);
+        return new FlatFileLineIterable(resolveUri(), formats, true, encoding, lineFilter);
     }
 
     @SuppressWarnings("unchecked")

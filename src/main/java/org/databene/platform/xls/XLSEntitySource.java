@@ -67,7 +67,7 @@ public class XLSEntitySource extends FileBasedEntitySource {
 
     public HeavyweightIterator<Entity> iterator() {
         try {
-			return new XLSEntityIterator(getAbsoluteUri(), preprocessor);
+			return new XLSEntityIterator(resolveUri(), preprocessor);
 		} catch (IOException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
 		}

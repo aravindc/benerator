@@ -95,7 +95,7 @@ public class CSVEntitySource extends FileBasedEntitySource {
 
 	public HeavyweightIterator<Entity> iterator() {
         try {
-			CSVEntityIterator iterator = new CSVEntityIterator(getAbsoluteUri(), entityDescriptor, preprocessor, separator, encoding);
+			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityDescriptor, preprocessor, separator, encoding);
 			return iterator;
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
