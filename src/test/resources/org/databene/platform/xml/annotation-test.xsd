@@ -24,7 +24,7 @@
 
 	<xs:element name="complex-type" type="person">
 		<xs:annotation>
-			<xs:appinfo><ben:type source="org/databene/platform/xml/person.csv"/></xs:appinfo>
+			<xs:appinfo><ben:type source="person.csv"/></xs:appinfo>
 		</xs:annotation>
 	</xs:element>
 

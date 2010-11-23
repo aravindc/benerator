@@ -114,7 +114,7 @@ public class XMLSchemaDescriptorProviderTest {
         // check complex-type
         ComplexTypeDescriptor complexType = (ComplexTypeDescriptor) provider.getTypeDescriptor("complex-type");
         assertNotNull(complexType);
-        assertEquals("org/databene/platform/xml/person.csv", complexType.getSource());
+        assertEquals("person.csv", complexType.getSource());
         
         XMLFileGenerator g = new XMLFileGenerator(ANNOTATION_TEST_FILE, "root", "target/test{0}.xml");
         g.init(new BeneratorContext());
