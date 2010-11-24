@@ -29,6 +29,7 @@ package org.databene.domain.address;
 import org.databene.commons.Escalator;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.NullSafeComparator;
+import org.databene.commons.bean.HashCodeBuilder;
 
 /**
  * Represents an address with phone numbers.<br/><br/>
@@ -186,22 +187,10 @@ public class Address {
 
 	@Override
     public int hashCode() {
-	    final int prime = 31;
-	    int result = 1; // TODO define HashCodeBuilder
-	    result = prime * result + ((postalCode == null) ? 0 : postalCode.hashCode());
-	    result = prime * result + ((street == null) ? 0 : street.hashCode());
-	    result = prime * result + ((houseNumber == null) ? 0 : houseNumber.hashCode());
-	    result = prime * result + ((poBox == null) ? 0 : poBox.hashCode());
-	    result = prime * result + ((city == null) ? 0 : city.hashCode());
-	    result = prime * result + ((organization == null) ? 0 : organization.hashCode());
-	    result = prime * result + ((building == null) ? 0 : building.hashCode());
-	    result = prime * result + ((co == null) ? 0 : co.hashCode());
-	    result = prime * result + ((department == null) ? 0 : department.hashCode());
-	    result = prime * result + ((fax == null) ? 0 : fax.hashCode());
-	    result = prime * result + ((mobilePhone == null) ? 0 : mobilePhone.hashCode());
-	    result = prime * result + ((officePhone == null) ? 0 : officePhone.hashCode());
-	    result = prime * result + ((privatePhone == null) ? 0 : privatePhone.hashCode());
-	    return result;
+		return HashCodeBuilder.hashCode(
+				postalCode, street, houseNumber, poBox, city, 
+				organization, building, co, department, 
+				mobilePhone, officePhone, privatePhone);
     }
 
 	@Override
