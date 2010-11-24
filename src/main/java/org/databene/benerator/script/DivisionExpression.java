@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -28,35 +23,27 @@ package org.databene.benerator.script;
 
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
-import org.databene.commons.accessor.FeatureAccessor;
-import org.databene.commons.expression.DynamicExpression;
+import org.databene.commons.expression.BinaryExpression;
 
 /**
- * Evaluates an attribute of an object or class.<br/>
- * <br/>
- * Created at 08.10.2009 10:20:10
- * @since 0.6.0
+ * {@link Expression} that performs a division.<br/><br/>
+ * Created: 24.11.2010 14:09:31
+ * @since 0.6.4
  * @author Volker Bergmann
  */
-
-public class FieldExpression extends DynamicExpression<Object> {
+public class DivisionExpression extends BinaryExpression<Object> {
 	
-	private Expression<?> targetEx;
-	private String featureName;
+	public DivisionExpression(Expression<?> term1, Expression<?> term2) {
+		super(term1, term2);
+	}
 
-    public FieldExpression(Expression<?> targetEx, String featureName) {
-    	this.targetEx = targetEx;
-    	this.featureName = featureName;
-    }
+	public Object evaluate(Context context) {
+	    return ArithmeticEngine.defaultInstance().divide(term1.evaluate(context), term2.evaluate(context));
+	}
 
-    public Object evaluate(Context context) {
-	    Object target = targetEx.evaluate(context);
-	    return FeatureAccessor.getValue(target, featureName);
-    }
-
-    @Override
-    public String toString() {
-    	return targetEx + "." + featureName;
-    }
-    
+	@Override
+	public String toString() {
+		return "(" + term1 + " / " + term2 + ")";
+	}
+	
 }

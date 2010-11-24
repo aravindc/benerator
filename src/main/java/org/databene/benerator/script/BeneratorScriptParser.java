@@ -29,7 +29,6 @@ package org.databene.benerator.script;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -38,17 +37,12 @@ import org.antlr.runtime.tree.CommonTree;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Assert;
-import org.databene.commons.BeanUtil;
-import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
-import org.databene.commons.converter.AnyConverter;
-import org.databene.commons.expression.BinaryExpression;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.ForNameExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
-import org.databene.commons.expression.UnaryExpression;
 import org.databene.model.data.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class BeneratorScriptParser {
-
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeneratorScriptParser.class);
 	private static final Expression<?>[] EMPTY_ARGUMENT_LIST = {};
 
@@ -231,7 +225,6 @@ public class BeneratorScriptParser {
     	}
     }
 
-	@SuppressWarnings("unchecked")
     private static WeightedSample<?> convertWeightedLiteral(CommonTree node) throws ParseException {
 		if (node.getType() == BeneratorLexer.CARET) {
 			Expression<?> value = convertNode(childAt(0, node));
@@ -240,9 +233,9 @@ public class BeneratorScriptParser {
 				weight = new TypeConvertingExpression<Double>(convertNode(childAt(1, node)), Double.class);
 			else
 				weight = new ConstantExpression<Double>(1.);
-			return new WeightedSample(value.evaluate(null), weight.evaluate(null));
+			return new WeightedSample<Object>(value.evaluate(null), weight.evaluate(null));
 		} else
-			return new WeightedSample(convertNode(node).evaluate(null), 1.); 
+			return new WeightedSample<Object>(convertNode(node).evaluate(null), 1.); 
 	}
 
     private static WeightedTransition[] convertTransitionList(CommonTree node) throws ParseException {
@@ -442,33 +435,14 @@ public class BeneratorScriptParser {
     }
 
     private static Expression<?> convertIndex(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-	            Object container = term1.evaluate(context);
-	            Object indexObject = term2.evaluate(context);
-	            if (container instanceof List) {
-					int index = AnyConverter.convert(indexObject, Integer.class);
-	            	return ((List<?>) container).get(index);
-	            } else if (container.getClass().isArray()) {
-					int index = AnyConverter.convert(indexObject, Integer.class);
-	            	return ((Object[]) container)[index];
-	            } else if (container instanceof String) {
-					int index = AnyConverter.convert(indexObject, Integer.class);
-	            	return ((String) container).charAt(index);
-	            } else if (container instanceof Map) {
-	            	return ((Map<?,?>) container).get(indexObject);
-	            } else
-	            	throw new IllegalArgumentException("Cannot do index-based access on " 
-	            			+ BeanUtil.simpleClassName(container));
-            }
-		};
+		return new IndexExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<?> convertField(CommonTree node) throws ParseException {
     	return new FieldExpression(convertNode(childAt(0, node)), convertIdentifier(childAt(1, node)).evaluate(null));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Expression<?> convertCast(CommonTree node) throws ParseException {
     	Class<?> targetType = (Class<?>) convertNode(childAt(0, node)).evaluate(null);
 		Expression<?> sourceExpression = convertNode(childAt(1, node));
@@ -476,28 +450,15 @@ public class BeneratorScriptParser {
     }
 
     private static Expression<?> convertNegation(CommonTree node) throws ParseException {
-		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
-			// TODO v0.6.4 convert anonymous classes to inner/top level classes with custom toString() methods
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().negate(term.evaluate(context));
-            }
-		};
+		return new NegationExpression(convertNode(childAt(0, node)));
     }
 
     private static Expression<?> convertLogicalComplement(CommonTree node) throws ParseException {
-		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().logicalComplement(term.evaluate(context));
-            }
-		};
+		return new LogicalComplementExpression(convertNode(childAt(0, node)));
     }
 
     private static Expression<?> convertBitwiseComplement(CommonTree node) throws ParseException {
-		return new UnaryExpression<Object>(convertNode(childAt(0, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().bitwiseComplement(term.evaluate(context));
-            }
-		};
+		return new BitwiseComplementExpression(convertNode(childAt(0, node)));
     }
 
 	private static String parseQualifiedNameOfClass(CommonTree node) {
@@ -528,168 +489,71 @@ public class BeneratorScriptParser {
     }
 
 	private static Expression<?> convertMinus(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-			    return ArithmeticEngine.defaultInstance().subtract(term1.evaluate(context), term2.evaluate(context));
-		    }
-		};
+		return new SubtractionExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
 	private static Expression<?> convertStar(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-			    return ArithmeticEngine.defaultInstance().multiply(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new MultiplicationExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<?> convertSlash(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-			    return ArithmeticEngine.defaultInstance().divide(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new DivisionExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertPercent(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().mod(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new ModuloExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertShiftLeft(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().shiftLeft(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new LeftShiftExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertShiftRight(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().shiftRight(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new RightShiftExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertShiftRight2(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().shiftRightUnsigned(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new UnsignedRightShiftExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertAnd(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().bitwiseAnd(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new BitwiseAndExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertInclusiveOr(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().bitwiseOr(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new BitwiseOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Object> convertExclusiveOr(CommonTree node) throws ParseException {
-		return new BinaryExpression<Object>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Object evaluate(Context context) {
-				return ArithmeticEngine.defaultInstance().bitwiseExclusiveOr(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new BitwiseExclusiveOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Boolean> convertEquals(CommonTree node) throws ParseException {
 		return new EqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
     
-	static class EqualsExpression extends BinaryExpression<Boolean> {
-
-		public EqualsExpression(Expression<?> term1, Expression<?> term2) {
-	        super(term1, term2);
-        }
-
-		public Boolean evaluate(Context context) {
-	        return ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
-        }
-    	
-		@Override
-		public String toString() {
-		    return "(" + term1 + " == " + term2 + ")";
-		}
-    }
-
     private static Expression<Boolean> convertNotEquals(CommonTree node) throws ParseException {
 		return new NotEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
     
-    static class NotEqualsExpression extends BinaryExpression<Boolean> {
-
-		public NotEqualsExpression(Expression<?> term1, Expression<?> term2) {
-	        super(term1, term2);
-        }
-
-		public Boolean evaluate(Context context) {
-	        return !ArithmeticEngine.defaultInstance().equals(term1.evaluate(context), term2.evaluate(context));
-        }
-    	
-		@Override
-		public String toString() {
-		    return "(" + term1 + " != " + term2 + ")";
-		}
-		
-    }
-
     private static Expression<Boolean> convertLess(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                return ArithmeticEngine.defaultInstance().less(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new LessExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Boolean> convertLessOrEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                return ArithmeticEngine.defaultInstance().lessOrEquals(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new LessOrEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Boolean> convertGreater(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                return ArithmeticEngine.defaultInstance().greater(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new GreaterExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Boolean> convertGreaterOrEquals(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                ArithmeticEngine engine = ArithmeticEngine.defaultInstance();
-				return engine.greaterOrEquals(term1.evaluate(context), term2.evaluate(context));
-            }
-		};
+		return new GreaterOrEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Boolean> convertConditionalOr(CommonTree node) throws ParseException {
-		return new BinaryExpression<Boolean>(convertNode(childAt(0, node)), convertNode(childAt(1, node))) {
-			public Boolean evaluate(Context context) {
-                boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
-                if (b1)
-                	return true;
-                return AnyConverter.convert(term2.evaluate(context), Boolean.class);
-            }
-		};
+		return new ConditionalOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
     private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws ParseException {
@@ -698,27 +562,7 @@ public class BeneratorScriptParser {
 				convertNode(childAt(1, node)));
     }
     
-    static class ConditionalAndExpression extends BinaryExpression<Boolean> {
-
-		public ConditionalAndExpression(Expression<?> term1, Expression<?> term2) {
-	        super(term1, term2);
-        }
-
-		public Boolean evaluate(Context context) {
-            boolean b1 = AnyConverter.convert(term1.evaluate(context), Boolean.class);
-            if (!b1)
-            	return false;
-            return AnyConverter.convert(term2.evaluate(context), Boolean.class);
-        }
-    	
-		@Override
-		public String toString() {
-		    return "(" + term1 + " && " + term2 + ")";
-		}
-		
-    }
-
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Expression<?> convertConditionalExpression(CommonTree node) throws ParseException {
 		return new ConditionalExpression(
 				convertNode(childAt(0, node)),  // condition
