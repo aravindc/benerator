@@ -431,7 +431,7 @@ public class DBSystem extends AbstractStorageSystem {
         return query(query, context);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T> HeavyweightTypedIterable<T> query(String query, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("query(" + query + ")");
@@ -527,7 +527,7 @@ public class DBSystem extends AbstractStorageSystem {
             importer.setIncludeTables(includeTables);
             importer.setExcludeTables(excludeTables);
             importer.setImportingIndexes(false);
-            importer.setImportingUKs(false); // TODO set to true
+            importer.setImportingUKs(true);
             importer.setFaultTolerant(true);
             database = importer.importDatabase();
             List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
