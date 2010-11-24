@@ -81,12 +81,11 @@ public class DateTimeGeneratorTest extends GeneratorClassTest {
         		TimeUtil.time(hour, minute, second, millisecond));
         Date minDate = TimeUtil.date(minYear, 7, 6, hour, minute, second, millisecond);
         Date maxDate = TimeUtil.date(maxYear, 8, 8, hour, minute, second, millisecond);
-        generator.setDatePrecision("0000-00-01");
         generator.setDateDistribution(SequenceManager.STEP_SEQUENCE);
         generator.init(context);
         for (int i = 0; i < 34; i++) {
             Date date = generator.generate();
-            assertNotNull("Generator unavailable after " + i  + " generations", date);
+            assertNotNull("Generator unavailable after " + i + " generations", date);
             assertFalse("Generated date " + date + " is before min date: " + minDate, date.before(minDate));
             assertFalse(date.after(maxDate));
             Calendar cal = new GregorianCalendar();

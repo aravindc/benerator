@@ -36,9 +36,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.CompositeGenerator;
-import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.converter.DateString2DurationConverter;
 
 /**
  * Creates DateTimes with separate date and time distribution characteristics.<br/><br/>
@@ -48,14 +46,12 @@ import org.databene.commons.converter.DateString2DurationConverter;
  */
 public class DateTimeGenerator extends CompositeGenerator<Date> {
     
-    private DateString2DurationConverter dateConverter;
-
-    private Generator<Long> dateGenerator;
+    private DayGenerator dateGenerator;
     private Generator<Long> timeOffsetGenerator;
     
-    long minDate;
-    long maxDate;
-    long datePrecision = Period.DAY.getMillis();
+    Date minDate;
+    Date maxDate;
+    String datePrecision;
     Distribution dateDistribution;
     
     long minTime;
@@ -73,7 +69,6 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
 
     public DateTimeGenerator(Date minDate, Date maxDate, Time minTime, Time maxTime) {
     	super(Date.class);
-        this.dateConverter = registerComponent(new DateString2DurationConverter());
         setMinDate(minDate);
         setMaxDate(maxDate);
         setMinTime(minTime);
@@ -87,15 +82,15 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     // properties ------------------------------------------------------------------------------------------------------
 
     public void setMinDate(Date minDate) {
-        this.minDate = minDate.getTime();
+        this.minDate = minDate;
     }
     
     public void setMaxDate(Date maxDate) {
-        this.maxDate = maxDate.getTime();
+        this.maxDate = maxDate;
     }
-    
+
     public void setDatePrecision(String datePrecision) {
-        this.datePrecision = dateConverter.convert(datePrecision);
+    	this.datePrecision = datePrecision;
     }
     
     public void setDateDistribution(Distribution distribution) {
@@ -123,8 +118,9 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-    	this.dateGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
-    			Long.class, minDate, maxDate, datePrecision, dateDistribution, false));
+    	this.dateGenerator = registerComponent(
+    			new DayGenerator(minDate, maxDate, dateDistribution, false));
+    	dateGenerator.setPrecision(datePrecision);
     	this.dateGenerator.init(context);
     	this.timeOffsetGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, false));
@@ -134,10 +130,10 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
 
     public Date generate() {
     	assertInitialized();
-    	Long dateGeneration = dateGenerator.generate();
+    	Date dateGeneration = dateGenerator.generate();
     	Long timeOffsetGeneration = timeOffsetGenerator.generate();
     	if (dateGeneration!= null && timeOffsetGeneration != null)
-    		return new Date(dateGeneration + timeOffsetGeneration);
+    		return new Date(dateGeneration.getTime() + timeOffsetGeneration);
     	else
     		return null;
     }

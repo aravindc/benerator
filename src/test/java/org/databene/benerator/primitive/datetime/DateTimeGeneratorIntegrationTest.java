@@ -53,8 +53,8 @@ public class DateTimeGeneratorIntegrationTest {
 		Element element = XMLUtil.parseStringAsElement(
 			"<bean id='" + beanId + "' class='" + DateTimeGenerator.class.getName() + "'>" +
 			"  <property name='minDate'          value='2008-09-01'/>" +
-			"  <property name='maxDate'          value='2008-09-03'/>" +
-			"  <property name='datePrecision'    value='00-00-01'  />" +
+			"  <property name='maxDate'          value='2008-09-05'/>" +
+			"  <property name='datePrecision'    value='00-00-02'  />" +
 			"  <property name='dateDistribution' value='step'      />" +
 			"  <property name='minTime'          value='08:00:00'  />" +
 			"  <property name='maxTime'          value='16:00:00'  />" +
@@ -68,9 +68,8 @@ public class DateTimeGeneratorIntegrationTest {
 		DateTimeGenerator generator = (DateTimeGenerator) GeneratorUtil.unwrap((Generator<?>) context.get(beanId));
 		
 		// check generator configuration
-		assertEquals(TimeUtil.millis(2008, 8, 1,  0, 0, 0), generator.minDate);
-		assertEquals(TimeUtil.millis(2008, 8, 3,  0, 0, 0), generator.maxDate);
-		assertEquals(24 * 3600 * 1000, generator.datePrecision);
+		assertEquals(TimeUtil.date(2008, 8, 1,  0, 0, 0, 0), generator.minDate);
+		assertEquals(TimeUtil.date(2008, 8, 5,  0, 0, 0, 0), generator.maxDate);
 		assertEquals(SequenceManager.STEP_SEQUENCE, generator.dateDistribution);
 		assertEquals( 8 * 3600 * 1000, generator.minTime);
 		assertEquals(16 * 3600 * 1000, generator.maxTime);
@@ -79,8 +78,8 @@ public class DateTimeGeneratorIntegrationTest {
 		
 		// check generation
 		assertEquals(TimeUtil.date(2008, 8, 1, 8, 0, 0, 0), generator.generate());
-		assertEquals(TimeUtil.date(2008, 8, 2, 8, 0, 1, 0), generator.generate());
-		assertEquals(TimeUtil.date(2008, 8, 3, 8, 0, 2, 0), generator.generate());
+		assertEquals(TimeUtil.date(2008, 8, 3, 8, 0, 1, 0), generator.generate());
+		assertEquals(TimeUtil.date(2008, 8, 5, 8, 0, 2, 0), generator.generate());
 		assertNull(generator.generate());
 	}
 	
