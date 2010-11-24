@@ -84,7 +84,6 @@ public class BeanDescriptorProvider implements DescriptorProvider {
                 "char", Character.class,
             
                 "date", java.util.Date.class,
-                // TODO v0.6.4 "duration" type?
                 "timestamp", java.sql.Timestamp.class,
 
                 "string", String.class,
