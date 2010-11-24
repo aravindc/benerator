@@ -225,10 +225,6 @@ public class Country {
         return country;
     }
     
-    public static Country findByDisplayName() {
-    	return null; // TODO implement
-    }
-
     public static boolean hasInstance(String isoCode) {
         return (instances.get(isoCode.toUpperCase()) != null);
     }
