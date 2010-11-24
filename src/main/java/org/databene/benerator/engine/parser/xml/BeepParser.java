@@ -27,9 +27,9 @@ import org.databene.benerator.engine.statement.BeepStatement;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses a &lt;beep/&gt; descriptor.<br/><br/>
  * Created: 14.09.2010 14:35:23
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class BeepParser extends AbstractDescriptorParser {

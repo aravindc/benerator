@@ -25,7 +25,7 @@ import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Evaluates an XML DOM element's 'onError' attribute.<br/><br/>
  * Created: 11.09.2010 07:29:08
  * @since 0.6.4
  * @author Volker Bergmann

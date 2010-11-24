@@ -34,7 +34,7 @@ import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.script.ScriptUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Uses a database table to fetch and increment values like a database sequence.<br/><br/>
  * Created: 09.08.2010 14:44:06
  * @since 0.6.4
  * @author Volker Bergmann

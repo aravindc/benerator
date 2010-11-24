@@ -34,12 +34,13 @@ import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Converter} implementation that transforms numbers 
+ * inducing relative or absolute numerical noise based on a {@link Distribution}.<br/><br/>
  * Created: 06.10.2010 17:14:46
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements ContextAware { // TODO test
+public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements ContextAware {
 	
 	private double minNoise;
 	private double maxNoise;

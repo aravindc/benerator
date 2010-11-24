@@ -31,13 +31,14 @@ import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 import org.databene.commons.ThreadUtil;
+import org.databene.model.data.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * Assembles several {@link ComponentBuilder}s and applies them to an {@link Entity}.<br/><br/>
  * Created: 29.08.2010 10:01:08
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class AllComponentsBuilder<E> implements MessageHolder, Closeable, Resettable, ThreadAware {

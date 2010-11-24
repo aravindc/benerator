@@ -30,12 +30,13 @@ import javax.validation.ConstraintValidatorContext;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
 import org.databene.commons.IOUtil;
+import org.databene.commons.Validator;
 import org.databene.commons.validator.bean.AbstractConstraintValidator;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Validator} that verifies postal codes.<br/><br/>
  * Created: 28.08.2010 15:27:35
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class PostalCodeValidator extends AbstractConstraintValidator<PostalCode, String> {

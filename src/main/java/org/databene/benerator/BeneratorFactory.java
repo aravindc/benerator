@@ -27,9 +27,10 @@ import org.databene.commons.BeanUtil;
 import org.databene.commons.StringUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract factory class for extending Benerator.<br/><br/>
  * Created: 08.09.2010 15:43:11
- * @since TODO version
+ * @see DefaultBeneratorFactory
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public abstract class BeneratorFactory {

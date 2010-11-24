@@ -43,7 +43,7 @@ import org.databene.benerator.engine.parser.xml.WhileParser;
 import org.databene.commons.ConfigurationError;
 
 /**
- * TODO Document class.<br/><br/>
+ * Default implementation of the abstract {@link BeneratorFactory} class.<br/><br/>
  * Created: 08.09.2010 15:45:25
  * @since 0.6.4
  * @author Volker Bergmann

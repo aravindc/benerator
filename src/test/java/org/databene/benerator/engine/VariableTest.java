@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests &lt;variable&gt; support in Benerator descriptor files.<br/><br/>
  * Created: 10.08.2010 07:06:46
  * @since 0.6.4
  * @author Volker Bergmann

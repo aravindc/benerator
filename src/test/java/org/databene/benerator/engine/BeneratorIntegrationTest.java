@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parent class for Benerator integration tests.<br/><br/>
  * Created: 10.08.2010 07:07:42
  * @since 0.6.4
  * @author Volker Bergmann

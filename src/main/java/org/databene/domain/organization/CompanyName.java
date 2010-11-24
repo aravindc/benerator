@@ -22,9 +22,10 @@
 package org.databene.domain.organization;
 
 /**
- * TODO Document class.<br/><br/>
+ * Assembles the parts of a company name, providing access to full name, short name and name parts 
+ * like core name (which is the shortName), sector, location and legal form.<br/><br/>
  * Created: 10.10.2010 17:28:01
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class CompanyName {
@@ -33,6 +34,7 @@ public class CompanyName {
 	private String sector;
 	private String location;
 	private String legalForm;
+	
     private String datasetName;
     
 	public String getShortName() {

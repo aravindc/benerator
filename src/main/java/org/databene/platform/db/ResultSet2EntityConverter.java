@@ -34,9 +34,9 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.java.BeanDescriptorProvider;
 
 /**
- * TODO Document class.<br/><br/>
+ * Converts a SQL {@link ResultSet} to a Benerator {@link Entity}.<br/><br/>
  * Created: 24.08.2010 12:29:56
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class ResultSet2EntityConverter {

@@ -36,9 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} proxy that combines a 'source' entity generator 
+ * with variable support and ComponentBuilders.<br/><br/>
  * Created: 29.08.2010 09:59:03
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements MessageHolder {

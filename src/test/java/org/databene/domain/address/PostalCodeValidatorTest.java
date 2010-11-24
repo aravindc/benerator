@@ -26,9 +26,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link PostalCodeValidator}.<br/><br/>
  * Created: 28.08.2010 15:43:51
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class PostalCodeValidatorTest {

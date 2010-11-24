@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Statement} implementation that does not do anything, sometimes useful for testing.<br/><br/>
  * Created: 10.09.2010 18:59:49
  * @since 0.6.4
  * @author Volker Bergmann
