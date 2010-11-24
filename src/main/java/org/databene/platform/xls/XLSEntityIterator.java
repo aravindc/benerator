@@ -154,7 +154,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	    private Entity next;
 		
 		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
-	        super(new XLSLineIterator(sheet, preprocessor), null);
+	        super(new XLSLineIterator(sheet, true, preprocessor), null);
 	        this.defaultProviderId = defaultProviderId;
 	        init(complexTypeName);
         }
