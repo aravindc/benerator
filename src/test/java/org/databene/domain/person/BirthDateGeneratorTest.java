@@ -26,7 +26,7 @@ public class BirthDateGeneratorTest extends GeneratorClassTest {
         Date now = new Date();
         BirthDateGenerator generator = new BirthDateGenerator(3, 80);
         generator.init(context);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             Date birtDate = generator.generate();
             int age = TimeUtil.yearsBetween(birtDate, now);
             assertTrue("Generated birthdate is to new: " + birtDate, age >= 3);
