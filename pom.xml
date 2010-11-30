@@ -9,6 +9,7 @@
 
     <properties>
         <jdbacl_version>0.6.4</jdbacl_version>
+	    <dbsanity_version>0.4</dbsanity_version>
         <gui_version>0.2.4</gui_version>
         <webdecs_version>0.5.4</webdecs_version>
 	    <commons_version>0.5.4</commons_version>
@@ -59,6 +60,11 @@
     <dependencies>
     
     	<!-- databene dependencies -->
+        <dependency>
+            <groupId>org.databene</groupId>
+            <artifactId>dbsanity</artifactId>
+            <version>${dbsanity_version}</version>
+        </dependency>
         <dependency>
             <groupId>org.databene</groupId>
             <artifactId>jdbacl</artifactId>
