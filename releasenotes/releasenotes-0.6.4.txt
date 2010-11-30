@@ -18,6 +18,8 @@ changes
 
 enhancements
 ------------
+- DB Sanity support
+- supporting lazy loading of database meta data
 - <database includeTables="" excludeTables="" />
 - SequenceTableGenerator
 - PostalCodeValidator
@@ -32,10 +34,11 @@ enhancements
 - new method DBSystem.tableExists(tableName)
 - improved recognition of invalid sequence configuration
 - Introduced DayGenerator for 'day' date generation
+- 
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
 - missing slf4j binding in generated projects
 - DB drivers are missing in the distribution
-- DateTimeGenerator now respects daylight savings times
+- DateTimeGenerator does not respect daylight savings times
