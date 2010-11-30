@@ -92,6 +92,7 @@ public class NewProjectWizard extends JFrame {
 	}
 
 	private void checkLocale() {
+		// TODO use system property user.language?
 		String localeCode = System.getProperty(Benerator.LOCALE_VM_PARAM);
 		if (!StringUtil.isEmpty(localeCode))
 			Locale.setDefault(new Locale(localeCode));

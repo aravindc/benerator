@@ -176,7 +176,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	public String getMessage() {
 		if (message != null)
 			return message;
-	    return (source instanceof MessageHolder ? ((MessageHolder) source).getMessage() : null); // TODO the AllComponentsBuilder might have a message too
+	    return (source instanceof MessageHolder ? ((MessageHolder) source).getMessage() : null); // TODO v0.6.4 the AllComponentsBuilder might have a message too
 	}
 
 	// java.lang.Object overrides --------------------------------------------------------------------------------------

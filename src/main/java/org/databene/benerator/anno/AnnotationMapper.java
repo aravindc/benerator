@@ -96,15 +96,17 @@ public class AnnotationMapper {
 	
 	// utility methods -------------------------------------------------------------------------------------------------
 	
-	@SuppressWarnings("unchecked")
-    public static Generator<Object[]> createMethodParamGenerator(Method testMethod) { // TODO v0.6.4 wrap functionality with a class MethodArgsGenerator and support/test it in Descriptor files (combined with Invoker)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Generator<Object[]> createMethodParamGenerator(Method testMethod) {
+    	// TODO v0.6.4 wrap functionality with a class MethodArgsGenerator and support/test it in Descriptor files (combined with Invoker)
 		try {
 			Generator<Object[]> generator = null;
 			BeneratorContext context = new BeneratorContext();
 	
 			// Evaluate @Generator and @Source annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
-			Source sourceAnno = testMethod.getAnnotation(Source.class); // TODO v0.6.4 these annotations should be mapped to the array instance descriptor
+			Source sourceAnno = testMethod.getAnnotation(Source.class);
+			// TODO v0.6.4 these annotations should be mapped to the array instance descriptor
 			if (generatorAnno != null || sourceAnno != null) {
 				String methodName = testMethod.getName();
 				ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);

@@ -31,7 +31,9 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DigitsGenerator extends ThreadSafeGenerator<String> { // TODO v0.6.4 support Distribution?
+public class DigitsGenerator extends ThreadSafeGenerator<String> {
+	
+	// TODO v0.6.4 support length and digit distribution?
 
 	private int minLength;
 	private int maxLength;

@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class OnErrorAttributeExpression extends ErrorHandlerExpression { // TODO is parent class obsolete?
+public class OnErrorAttributeExpression extends ErrorHandlerExpression { // TODO v0.6.4 is parent class obsolete?
 	
     public OnErrorAttributeExpression(String category, Element element) {
     	super(category, DescriptorParserUtil.parseScriptableStringAttribute("onError", element));
