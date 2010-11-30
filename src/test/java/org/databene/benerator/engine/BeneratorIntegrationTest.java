@@ -21,7 +21,7 @@
 
 package org.databene.benerator.engine;
 
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
+import org.databene.benerator.BeneratorFactory;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Before;
 import org.w3c.dom.Element;
@@ -44,7 +44,7 @@ public abstract class BeneratorIntegrationTest {
 	protected void parseAndExecute(String xml) {
 	    Element element = XMLUtil.parseStringAsElement(xml);
 		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		GenerateOrIterateParser parser = new GenerateOrIterateParser();
+		DescriptorParser parser = BeneratorFactory.getInstance().getParser(element.getNodeName(), "setup");
 		Statement statement = parser.parse(element, new Statement[0], resourceManager);
 		statement.execute(context);
     }
