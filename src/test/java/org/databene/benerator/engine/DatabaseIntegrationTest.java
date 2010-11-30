@@ -19,7 +19,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.factory;
+package org.databene.benerator.engine;
 
 import static org.junit.Assert.*;
 
