@@ -110,6 +110,7 @@ public class DBSystem extends AbstractStorageSystem {
     private String excludeTables;
     boolean batch;
     boolean readOnly;
+    boolean lazy;
     boolean acceptUnknownColumnTypes;
     
     private int fetchSize;
@@ -144,6 +145,7 @@ public class DBSystem extends AbstractStorageSystem {
         setFetchSize(DEFAULT_FETCH_SIZE);
         setBatch(false);
         setReadOnly(false);
+        setLazy(true);
         setDynamicQuerySupported(true);
         this.typeDescriptors = null;
         this.contexts = new HashMap<Thread, ThreadContext>();
@@ -281,6 +283,14 @@ public class DBSystem extends AbstractStorageSystem {
 		this.readOnly = readOnly;
 	}
 
+    public boolean isLazy() {
+		return lazy;
+	}
+
+	public void setLazy(boolean lazy) {
+		this.lazy = lazy;
+	}
+
 	public void setDynamicQuerySupported(boolean dynamicQuerySupported) {
     	this.dynamicQuerySupported = dynamicQuerySupported;
     }
@@ -360,7 +370,7 @@ public class DBSystem extends AbstractStorageSystem {
 	        logger.debug("queryEntityById({}, {})", tableName, id);
 	        ComplexTypeDescriptor descriptor = (ComplexTypeDescriptor) getTypeDescriptor(tableName);
 	        PreparedStatement query = getThreadContext().getSelectByPKStatement(descriptor);
-	        query.setObject(1, id); // TODO support composite keys
+	        query.setObject(1, id); // TODO v1.0 support composite keys
 	        ResultSet resultSet = query.executeQuery();
 	        if (resultSet.next())
 	        	return ResultSet2EntityConverter.convert(resultSet, descriptor);
@@ -529,10 +539,12 @@ public class DBSystem extends AbstractStorageSystem {
             importer.setImportingIndexes(false);
             importer.setImportingUKs(true);
             importer.setFaultTolerant(true);
+            importer.setLazy(lazy);
             database = importer.importDatabase();
+            logger.info("Ordering tables by dependency");
             List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
             for (DBTable table : tables)
-                parseTable(table);
+                parseTable(table); // TODO support lazy parsing
         } catch (ConnectFailedException e) {
 			throw new ConfigurationError("Database not available. ", e);
         } catch (ImportFailedException e) {
@@ -579,8 +591,16 @@ public class DBSystem extends AbstractStorageSystem {
         if (logger.isDebugEnabled())
             logger.debug("Parsing table " + table);
         String tableName = table.getName();
-        ComplexTypeDescriptor complexType = new ComplexTypeDescriptor(tableName);
-        
+        tables.put(tableName.toUpperCase(), table);
+        ComplexTypeDescriptor complexType;
+        if (lazy) 
+        	complexType = new LazyTableComplexTypeDescriptor(table, this);
+        else
+        	complexType = mapTableToComplexTypeDescriptor(table, new ComplexTypeDescriptor(tableName));
+        typeDescriptors.put(tableName, complexType);
+    }
+
+	public ComplexTypeDescriptor mapTableToComplexTypeDescriptor(DBTable table, ComplexTypeDescriptor complexType) {
         // process primary keys
         DBPrimaryKeyConstraint pkConstraint = table.getPrimaryKeyConstraint();
         if (pkConstraint != null) {
@@ -601,7 +621,7 @@ public class DBSystem extends AbstractStorageSystem {
             if (foreignKeyColumnNames.length == 1) {
                 String fkColumnName = foreignKeyColumnNames[0];
                 DBTable targetTable = constraint.getForeignTable();
-                DBColumn fkColumn = constraint.getOwner().getColumn(fkColumnName);
+                DBColumn fkColumn = constraint.getTable().getColumn(fkColumnName);
                 DBColumnType concreteType = fkColumn.getType();
                 String abstractType = JdbcMetaTypeMapper.abstractType(concreteType, acceptUnknownColumnTypes);
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
@@ -663,32 +683,9 @@ public class DBSystem extends AbstractStorageSystem {
             logger.debug("parsed attribute " + columnId + ": " + descriptor);
             complexType.addComponent(descriptor);
         }
+		return complexType;
+	}
 
-        typeDescriptors.put(complexType.getName(), complexType);
-        tables.put(table.getName().toUpperCase(), table);
-    }
-
-    /*
-    private int getColumnIndex(String tableName, String columnName) {
-        tableName = tableName.toLowerCase();
-        columnName = columnName.toLowerCase();
-        Map<String, Integer> columnIndexes = tableColumnIndexes.get(tableName);
-        if (columnIndexes == null) {
-            columnIndexes = new HashMap<String, Integer>();
-            tableColumnIndexes.put(tableName, columnIndexes);
-        }
-        Integer index = columnIndexes.get(columnName);
-        if (index == null) {
-            String[] columnNames = StringUtil.toLowerCase(getColumnNames(tableName));
-            index = ArrayUtil.indexOf(columnName, columnNames) + 1;
-            if (index == 0)
-                throw new IllegalArgumentException("Column not found: " + columnName);
-            columnIndexes.put(columnName, index);
-        }
-        return index;
-    }
-*/
-    
     List<ColumnInfo> getWriteColumnInfos(Entity entity, boolean insert) {
         String tableName = entity.type();
         DBTable table = getTable(tableName);

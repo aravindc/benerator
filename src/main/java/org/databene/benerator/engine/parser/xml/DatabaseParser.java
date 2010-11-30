@@ -58,7 +58,7 @@ public class DatabaseParser extends AbstractDescriptorParser {
 			Expression<String>  driver      = parseScriptableStringAttribute(ATT_DRIVER,   element);
 			Expression<String>  user        = parseScriptableStringAttribute(ATT_USER,     element);
 			Expression<String>  password    = parseScriptableStringAttribute(ATT_PASSWORD, element);
-			Expression<String>  catalog      = parseScriptableStringAttribute(ATT_CATALOG,   element);
+			Expression<String>  catalog     = parseScriptableStringAttribute(ATT_CATALOG,   element);
 			Expression<String>  schema      = parseScriptableStringAttribute(ATT_SCHEMA,   element);
 			Expression<String>  tableFilter = parseScriptableStringAttribute(ATT_TABLE_FILTER, element);
 			Expression<String>  includeTables = parseScriptableStringAttribute(ATT_INCL_TABLES, element);
@@ -66,12 +66,13 @@ public class DatabaseParser extends AbstractDescriptorParser {
 			Expression<Boolean> batch       = parseBooleanExpressionAttribute(ATT_BATCH, element, false);
 			Expression<Integer> fetchSize   = parseIntAttribute(ATT_FETCH_SIZE, element, 100);
 			Expression<Boolean> readOnly    = parseBooleanExpressionAttribute(ATT_READ_ONLY, element, false);
+			Expression<Boolean> lazy        = parseBooleanExpressionAttribute(ATT_LAZY, element, true);
 			Expression<Boolean> acceptUnknownColumnTypes = new FallbackExpression<Boolean>(
 					parseBooleanExpressionAttribute(ATT_ACC_UNK_COL_TYPES, element), 
 					new GlobalAcceptUnknownSimpleTypeExpression());
 			return new DefineDatabaseStatement(id, url, driver, user, password, catalog, schema, 
 					tableFilter, includeTables, excludeTables,
-					batch, fetchSize, readOnly, acceptUnknownColumnTypes, resourceManager);
+					batch, fetchSize, readOnly, lazy, acceptUnknownColumnTypes, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}

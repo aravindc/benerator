@@ -61,13 +61,14 @@ public class DefineDatabaseStatement implements Statement {
 	private Expression<Boolean> batch;
 	private Expression<Integer> fetchSize;
 	private Expression<Boolean> readOnly;
+	private Expression<Boolean> lazy;
 	private Expression<Boolean> acceptUnknownColumnTypes;
 	private ResourceManager resourceManager;
 	
 	public DefineDatabaseStatement(Expression<String> id, Expression<String> url, Expression<String> driver, 
 			Expression<String> user, Expression<String> password, Expression<String> catalog, Expression<String> schema, 
 			Expression<String> tableFilter, Expression<String> includeTables, Expression<String> excludeTables, 
-			Expression<Boolean> batch, Expression<Integer> fetchSize, Expression<Boolean> readOnly, 
+			Expression<Boolean> batch, Expression<Integer> fetchSize, Expression<Boolean> readOnly, Expression<Boolean> lazy,
 			Expression<Boolean> acceptUnknownColumnTypes, ResourceManager resourceManager) {
 		this.id = id;
 	    this.url = url;
@@ -82,6 +83,7 @@ public class DefineDatabaseStatement implements Statement {
 	    this.batch = batch;
 	    this.fetchSize = fetchSize;
 	    this.readOnly = readOnly;
+	    this.lazy = lazy;
 	    this.acceptUnknownColumnTypes = acceptUnknownColumnTypes;
 	    this.resourceManager = resourceManager;
     }
@@ -104,9 +106,11 @@ public class DefineDatabaseStatement implements Statement {
 	    db.setBatch(ExpressionUtil.evaluate(batch, context));
 	    db.setFetchSize(ExpressionUtil.evaluate(fetchSize, context));
 	    db.setReadOnly(ExpressionUtil.evaluate(readOnly, context));
+	    Boolean isLazy = ExpressionUtil.evaluate(lazy, context);
+		db.setLazy(isLazy);
 	    db.setAcceptUnknownColumnTypes(ExpressionUtil.evaluate(acceptUnknownColumnTypes, context));
 	    context.set(idValue, db);
-	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate());
+	    DataModel.getDefaultInstance().addDescriptorProvider(db, context.isValidate() && !isLazy);
 	    resourceManager.addResource(db);
     }
 
