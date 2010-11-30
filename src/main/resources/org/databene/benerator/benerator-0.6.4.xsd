@@ -78,6 +78,7 @@
 			<xs:element ref="while"             minOccurs="0" />
 			<xs:element ref="wait"              minOccurs="0" />
 			<xs:element ref="beep"              minOccurs="0" />
+			<xs:element ref="dbsanity"          minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -154,6 +155,49 @@
 	<!-- Emit a beep. -->
 	<xs:element name="beep" />
 	
+	<xs:element name="dbsanity">
+		<xs:complexType>
+			<xs:attribute name="environment" type="xs:string" use="required"/>
+			<xs:attribute name="in"          type="xs:string"/>
+			<xs:attribute name="out"         type="xs:string"/>
+			<xs:attribute name="tables"      type="xs:NMTOKENS"/>
+			<xs:attribute name="clean"       type="xs:boolean"/>
+			<xs:attribute name="skin"        type="dbsanity-skin"/>
+			<xs:attribute name="locale"      type="xs:string"/>
+			<xs:attribute name="mode"        type="dbsanity-mode"/>
+			<xs:attribute name="onError"     type="errorhandler-type"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="dbsanity-skin">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="online"/>
+					<xs:enumeration value="offline"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="script-expression-type"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+
+	<xs:simpleType name="dbsanity-mode">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="default"/>
+					<xs:enumeration value="silent"/>
+					<xs:enumeration value="verbose"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="script-expression-type"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+
 	<!-- Instantiates a JavaBean of the given class.
     	 If the 'id' is set, the bean is put into the context with that name.
     	 If the JavaBean itself has a property named 'id', this one is set to the value specified here. -->
@@ -192,6 +236,7 @@
 			<xs:attribute name="batch"         type="xs:string"/>
             <xs:attribute name="fetchSize"     type="xs:string"/>
             <xs:attribute name="readOnly"      type="xs:string"/>
+            <xs:attribute name="lazy"          type="xs:string"/>
             <xs:attribute name="acceptUnknownColumnTypes" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
