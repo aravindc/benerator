@@ -34,8 +34,10 @@ import org.databene.benerator.engine.expression.TypedScriptExpression;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.ConvertingExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.text.SplitStringConverter;
 import org.w3c.dom.Element;
 
 /**
@@ -75,6 +77,15 @@ public class DescriptorParserUtil {
 	    String attribute = getRawAttribute(name, element);
 		return (attribute != null ? new TypeConvertingExpression<String>(
 				new ScriptableExpression(attribute, null), String.class) : null);
+    }
+
+	public static Expression<String[]> parseScriptableStringArrayAttribute(String name, Element element) {
+	    String attribute = getRawAttribute(name, element);
+		if (attribute == null)
+			return null;
+		Expression<String> rawEx = new TypeConvertingExpression<String>(
+				new ScriptableExpression(attribute, null), String.class);
+		return new ConvertingExpression<String, String[]>(rawEx, new SplitStringConverter(','));
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element) {
