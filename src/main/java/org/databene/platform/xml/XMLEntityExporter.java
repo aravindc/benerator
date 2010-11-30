@@ -189,10 +189,11 @@ public class XMLEntityExporter extends AbstractConsumer<Entity> implements FileE
 			SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
 			handler = tf.newTransformerHandler();
 			
-			Transformer serializer = handler.getTransformer();
-			serializer.setOutputProperty(OutputKeys.ENCODING, encoding);
-			serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-			
+			Transformer transformer = handler.getTransformer();
+			transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}" + "indent-amount", "2"); 
+
         	out = new FileOutputStream(uri);
 			handler.setResult(new StreamResult(out));
 			handler.startDocument();
