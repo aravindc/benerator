@@ -41,6 +41,8 @@ import org.databene.domain.address.Country;
  * @author Volker Bergmann
  */
 public class EMailAddressGenerator extends EMailAddressBuilder implements Generator<String> { 
+	
+	// TODO support unique address generation
 
 	private PersonGenerator personGenerator;
 	
