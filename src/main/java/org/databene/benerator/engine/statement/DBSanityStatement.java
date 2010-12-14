@@ -77,7 +77,7 @@ public class DBSanityStatement implements Statement {
 			String in = ExpressionUtil.evaluate(inEx, context);
 			String inFolderName = (in != null ? in : "dbsanity");
 			File inFolder = new File(context.resolveRelativeUri(inFolderName));
-			dbSanity.setCheckDefinitionFolder(inFolder);
+			dbSanity.setCheckDefinitionFile(inFolder);
 
 			String out = ExpressionUtil.evaluate(outEx, context);
 			String outFolderName = (out != null ? out : "dbsanity-report");
