@@ -25,19 +25,13 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
 import org.databene.benerator.test.ConsumerMock;
-import org.databene.commons.xml.XMLUtil;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Integration test for Benerator's database support.<br/><br/>
@@ -45,14 +39,12 @@ import org.w3c.dom.Element;
  * @since 0.6.2
  * @author Volker Bergmann
  */
-public class DatabaseIntegrationTest {
+public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
-	private BeneratorContext context;
 	private ConsumerMock<Entity> consumer;
 	
 	@Before
 	public void setUp() throws Exception {
-		context = new BeneratorContext();
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
@@ -242,15 +234,5 @@ public class DatabaseIntegrationTest {
 		assertEquals(3, products.get(0).get("n"));
 		assertEquals(4, products.get(1).get("n"));
 	}
-
-	// helpers ---------------------------------------------------------------------------------------------------------
-
-	private void parseAndExecute(String xml) {
-	    Element element = XMLUtil.parseStringAsElement(xml);
-		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		GenerateOrIterateParser parser = new GenerateOrIterateParser();
-		Statement statement = parser.parse(element, new Statement[0], resourceManager);
-		statement.execute(context);
-    }
 	
 }

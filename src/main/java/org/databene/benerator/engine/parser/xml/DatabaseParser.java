@@ -25,7 +25,6 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.DefineDatabaseStatement;
 import org.databene.commons.ConfigurationError;
@@ -42,7 +41,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DatabaseParser extends AbstractDescriptorParser {
+public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 	
 	// TODO v1.0 define parser extension mechanism and move DatabaseParser and DefineDatabaseStatement to DB package?
 	
@@ -50,8 +49,9 @@ public class DatabaseParser extends AbstractDescriptorParser {
 	    super(EL_DATABASE);
     }
 
+	@Override
 	@SuppressWarnings("unchecked")
-    public DefineDatabaseStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+    public DefineDatabaseStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		try {
 			Expression<String>  id          = parseAttribute(ATT_ID, element);
 			Expression<String>  url         = parseScriptableStringAttribute(ATT_URL,      element);
@@ -72,7 +72,7 @@ public class DatabaseParser extends AbstractDescriptorParser {
 					new GlobalAcceptUnknownSimpleTypeExpression());
 			return new DefineDatabaseStatement(id, url, driver, user, password, catalog, schema, 
 					tableFilter, includeTables, excludeTables,
-					batch, fetchSize, readOnly, lazy, acceptUnknownColumnTypes, resourceManager);
+					batch, fetchSize, readOnly, lazy, acceptUnknownColumnTypes, context.getResourceManager());
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}

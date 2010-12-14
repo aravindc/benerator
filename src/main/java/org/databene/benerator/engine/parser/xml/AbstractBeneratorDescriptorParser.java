@@ -21,17 +21,12 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import java.util.Map;
-import java.util.Set;
-
-import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
-import org.databene.commons.Assert;
-import org.databene.commons.ConfigurationError;
-import org.databene.commons.xml.XMLUtil;
+import org.databene.webdecs.xml.AbstractXMLElementParser;
+import org.databene.webdecs.xml.ParsingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -42,29 +37,23 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class AbstractDescriptorParser implements DescriptorParser {
+public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLElementParser<Statement> {
 	
-	protected Logger logger = LoggerFactory.getLogger(AbstractDescriptorParser.class);
+	protected Logger logger = LoggerFactory.getLogger(AbstractBeneratorDescriptorParser.class);
 
-	private String elementName;
-	private String parentName;
-	
-	public AbstractDescriptorParser(String elementName) {
-	    this(elementName, null);
+	public AbstractBeneratorDescriptorParser(String elementName, Class<?>... supportedParentTypes) {
+		super(elementName, supportedParentTypes);
     }
 
-	public AbstractDescriptorParser(String elementName, String parentName) {
-		Assert.notNull(elementName, "elementName");
-	    this.elementName = elementName;
-	    this.parentName = parentName;
-    }
-
-	public boolean supports(String elementName, String parentName) {
-		return this.elementName.equals(elementName) 
-			&& (this.parentName == null || this.parentName.equals(parentName));
+	public final Statement parse(Element element, Statement[] parentPath, ParsingContext<Statement> context) {
+		return parse(element, parentPath, (BeneratorParsingContext) context);
 	}
+
+	public abstract Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context);
 	
 	public static boolean containsLoop(Statement[] parentPath) {
+		if (parentPath == null)
+			return false;
 		for (Statement statement : parentPath)
 			if (isLoop(statement))
 				return true;
@@ -78,17 +67,12 @@ public abstract class AbstractDescriptorParser implements DescriptorParser {
     }
 	
 	public static boolean containsGeneratorStatement(Statement[] parentPath) {
+		if (parentPath == null)
+			return false;
 		for (Statement statement : parentPath)
 			if (statement instanceof GeneratorStatement)
 				return true;
 		return false;
-    }
-
-	protected static void checkAttributes(Element element, Set<String> supportedAttributes) {
-	    for (Map.Entry<String, String> attribute : XMLUtil.getAttributes(element).entrySet()) {
-	        if (!supportedAttributes.contains(attribute.getKey()))
-				throw new ConfigurationError("Not a supported import attribute: " + attribute.getKey());
-        }
     }
 
 }

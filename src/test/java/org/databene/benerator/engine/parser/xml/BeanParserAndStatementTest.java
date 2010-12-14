@@ -24,12 +24,9 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.parser.xml.BeanParser;
-import org.databene.benerator.engine.statement.BeanStatement;
-import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the {@link BeanParser}.<br/><br/>
@@ -37,7 +34,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeanParserAndStatementTest {
+public class BeanParserAndStatementTest extends BeneratorIntegrationTest {
 
 	@Test
     public void testParseBeanClass() throws Exception {
@@ -61,15 +58,4 @@ public class BeanParserAndStatementTest {
 		assertNotNull(((BeanMock) bean).getContext());
 	}
 	
-	// test helpers ----------------------------------------------------------------------------------------------------
-
-	private BeneratorContext parseAndExecute(String xml) {
-	    Element element = XMLUtil.parseStringAsElement(xml);
-        BeanParser parser = new BeanParser();
-		BeanStatement statement = parser.parse(element, null, new ResourceManagerSupport());
-		BeneratorContext context = new BeneratorContext();
-		statement.execute(context);
-	    return context;
-    }
-
 }

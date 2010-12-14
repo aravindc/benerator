@@ -25,15 +25,10 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
-import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the definition of custom weight functions.<br/><br/>
@@ -41,7 +36,7 @@ import org.w3c.dom.Element;
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class CustomWeightFunctionIntegrationTest {
+public class CustomWeightFunctionIntegrationTest extends BeneratorIntegrationTest {
 
 	String xml = 
 		"<generate type='entity' count='1000' consumer='cons'>" +
@@ -51,10 +46,9 @@ public class CustomWeightFunctionIntegrationTest {
 	
 	@Test
 	public void test() {
-		BeneratorContext context = new BeneratorContext();
 		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
-		parseAndExecute(xml, context);
+		parseAndExecute(xml);
 		List<Entity> products = consumer.getProducts();
 		assertEquals(1000, products.size());
 		int a = 0, b = 0, c = 0;
@@ -71,13 +65,5 @@ public class CustomWeightFunctionIntegrationTest {
 		assertTrue(b > c);
 	}
 	
-	private void parseAndExecute(String xml, BeneratorContext context) {
-	    Element element = XMLUtil.parseStringAsElement(xml);
-		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		GenerateOrIterateParser parser = new GenerateOrIterateParser();
-		Statement statement = parser.parse(element, new Statement[0], resourceManager);
-		statement.execute(context);
-    }
-
 }
 

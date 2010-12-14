@@ -24,11 +24,11 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.assertEquals;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.ConfigurationError;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.platform.db.DBSystem;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -38,19 +38,11 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ExecuteParserAndStatementTest extends ParserTest {
+public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 
-	@Override
-	@Before
-	public void setUp() {
-	    super.setUp();
-		parser = new EvaluateParser();
-	}
-	
 	@Test
 	public void testBeanInvocation() throws Exception {
 		Statement statement = parse("<execute>bean.invoke(2)</execute>");
-		BeneratorContext context = new BeneratorContext();
 		BeanMock bean = new BeanMock();
 		context.set("bean", bean);
 		statement.execute(context);
@@ -60,7 +52,6 @@ public class ExecuteParserAndStatementTest extends ParserTest {
 
 	@Test
 	public void testSimpleTypeVariableDefinition() throws Exception {
-		BeneratorContext context = new BeneratorContext();
 		Statement statement = parse("<execute>x = 3</execute>");
 		statement.execute(context);
 		assertEquals(3, context.get("x"));
@@ -68,7 +59,6 @@ public class ExecuteParserAndStatementTest extends ParserTest {
 	
 	@Test
 	public void testSimpleTypeVariableAccess() throws Exception {
-		BeneratorContext context = new BeneratorContext();
 		context.set("x", 3);
 		Statement statement = parse("<execute>x = x + 2</execute>");
 		statement.execute(context);

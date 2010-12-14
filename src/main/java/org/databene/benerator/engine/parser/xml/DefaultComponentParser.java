@@ -24,8 +24,6 @@ package org.databene.benerator.engine.parser.xml;
 import java.util.Collection;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.CollectionUtil;
@@ -41,15 +39,16 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DefaultComponentParser implements DescriptorParser {
+public class DefaultComponentParser extends AbstractBeneratorDescriptorParser {
 
 	static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet("attribute", "part", "id", "reference");
 
-	public boolean supports(String elementName, String parentName) {
-	    return EL_DEFAULT_COMPONENTS.equals(elementName);
-    }
+	public DefaultComponentParser() {
+		super(EL_DEFAULT_COMPONENTS);
+	}
 
-	public XMLDefaultComponentsStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public XMLDefaultComponentsStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		return new XMLDefaultComponentsStatement(element);
 	}
 

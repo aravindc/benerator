@@ -23,10 +23,10 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.*;
 
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.commons.ConfigurationError;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -35,18 +35,11 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class IncludeParserAndStatementTest extends ParserTest {
+public class IncludeParserAndStatementTest extends BeneratorIntegrationTest {
 	
 	private static final String DESC_URI = "org/databene/benerator/engine/parser/xml/included.ben.xml";
 	private static final String PROP_URI = "org/databene/benerator/engine/parser/xml/included.properties";
 
-	@Override
-    @Before
-	public void setUp() {
-		super.setUp();
-		parser = new IncludeParser();
-	}
-	
 	@Test
 	public void testIncludePropertiesFile() throws Exception {
 		Statement statement = parse("<include uri='" + PROP_URI + "' />");

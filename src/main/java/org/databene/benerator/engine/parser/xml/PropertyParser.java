@@ -49,23 +49,24 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PropertyParser extends AbstractDescriptorParser {
+public class PropertyParser extends AbstractBeneratorDescriptorParser {
 
 	public PropertyParser() {
 	    super(DescriptorConstants.EL_PROPERTY);
     }
 
-    public Statement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+    @Override
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		String propertyName = element.getAttribute(ATT_NAME);
 		if (element.hasAttribute(ATT_DEFAULT))
 			return parseDefault(propertyName, element.getAttribute(ATT_DEFAULT));
 		else {
-			Expression<?> valueEx = parseValue(element, resourceManager);
+			Expression<?> valueEx = parseValue(element, context.getResourceManager());
 			return new SetGlobalPropertyStatement(propertyName, valueEx);
 		}
 	}
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Expression<?> parseValue(Element element, ResourceManager resourceManager) {
 		if (element.hasAttribute(ATT_VALUE))
 			return new ScriptableExpression(element.getAttribute(ATT_VALUE), null);
@@ -90,7 +91,7 @@ public class PropertyParser extends AbstractDescriptorParser {
 	    }
 	}
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Expression<?> parseSource(String source) {
 		try {
 			return new SourceExpression(BeneratorScriptParser.parseBeanSpec(source));

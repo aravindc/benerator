@@ -26,7 +26,6 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import java.util.Locale;
 
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.BeneratorLocaleExpression;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
@@ -46,13 +45,14 @@ import org.w3c.dom.Element;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class DBSanityParser extends AbstractDescriptorParser {
+public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser {
 	
-	public DBSanityParser() {
-	    super("dbsanity", "setup");
+	public DbSanity4BeneratorParser() {
+	    super("dbsanity");
     }
 
-	public DBSanityStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public DBSanityStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
         Expression<String> envEx = parseScriptableStringAttribute("environment", element);
         if (envEx == null)
         	throw new ConfigurationError("no environment specified in <dbsanity> element");

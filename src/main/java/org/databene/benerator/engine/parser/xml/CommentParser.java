@@ -22,7 +22,6 @@
 package org.databene.benerator.engine.parser.xml;
 
 import org.databene.benerator.engine.DescriptorConstants;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.CommentStatement;
 import org.databene.commons.xml.XMLUtil;
@@ -34,13 +33,14 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class CommentParser extends AbstractDescriptorParser {
+public class CommentParser extends AbstractBeneratorDescriptorParser {
 
 	public CommentParser() {
 	    super(DescriptorConstants.EL_COMMENT);
     }
 
-	public CommentStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public CommentStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 	    return new CommentStatement(XMLUtil.getText(element).trim());
     }
 

@@ -30,11 +30,8 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 import java.util.List;
 import java.util.Set;
 
-import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.WhileStatement;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
@@ -48,25 +45,29 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class WhileParser implements DescriptorParser {
+public class WhileParser extends AbstractBeneratorDescriptorParser {
 
 	private static final Set<String> LEGAL_PARENTS = CollectionUtil.toSet(
 			EL_SETUP, EL_IF, EL_WHILE);
 
-	public Statement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	public WhileParser() {
+		super(EL_WHILE);
+	}
+
+    public boolean supports(String elementName, String parentName) {
+	    return (EL_WHILE.equals(elementName) && LEGAL_PARENTS.contains(parentName));
+    }
+
+	@Override
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, element);
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 
 					XMLUtil.format(element));
 		WhileStatement whileStatement = new WhileStatement(condition);
-		Statement[] path = ArrayUtil.append(parentPath, whileStatement);
-		List<Statement> subStatements = DescriptorParserUtil.parseChildren(element, path, resourceManager);
+		List<Statement> subStatements = context.parseChildElementsOf(element, whileStatement, parentPath);
 		whileStatement.setSubStatements(subStatements);
 	    return whileStatement;
-    }
-
-    public boolean supports(String elementName, String parentName) {
-	    return (EL_WHILE.equals(elementName) && LEGAL_PARENTS.contains(parentName));
     }
 
 }

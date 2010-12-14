@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import java.util.Set;
 
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ArrayBuilder;
@@ -38,7 +37,7 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ImportParser extends AbstractDescriptorParser {
+public class ImportParser extends AbstractBeneratorDescriptorParser {
 	
 	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(ATT_CLASS, ATT_DEFAULTS, ATT_DOMAINS, ATT_PLATFORMS);
 
@@ -46,7 +45,8 @@ public class ImportParser extends AbstractDescriptorParser {
 	    super(EL_IMPORT);
     }
 
-	public ImportStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public ImportStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		
 		checkAttributes(element, SUPPORTED_ATTRIBUTES);
 		

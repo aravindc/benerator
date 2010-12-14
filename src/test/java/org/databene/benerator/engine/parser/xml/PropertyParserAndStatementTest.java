@@ -24,12 +24,11 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the {@link PropertyParser}.<br/><br/>
@@ -37,30 +36,23 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PropertyParserAndStatementTest extends ParserTest {
+public class PropertyParserAndStatementTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testValue() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' value='XYZ' />");
-		Statement statement = new PropertyParser().parse(element, null, null);
-		BeneratorContext context = new BeneratorContext();
-		statement.execute(context);
+		parseAndExecute("<property name='globalProp' value='XYZ' />");
 		assertEquals("XYZ", context.get("globalProp"));
 	}
 	
 	@Test
 	public void testDefault_undefined() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' default='XYZ' />");
-		Statement statement = new PropertyParser().parse(element, null, null);
-		BeneratorContext context = new BeneratorContext();
-		statement.execute(context);
+		parseAndExecute("<property name='globalProp' default='XYZ' />");
 		assertEquals("XYZ", context.get("globalProp"));
 	}
 	
 	@Test
 	public void testDefault_predefined() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' default='XYZ' />");
-		Statement statement = new PropertyParser().parse(element, null, null);
+		Statement statement = parse("<property name='globalProp' default='XYZ' />");
 		BeneratorContext context = new BeneratorContext();
 		context.set("globalProp", "ZZZ");
 		statement.execute(context);
@@ -69,43 +61,34 @@ public class PropertyParserAndStatementTest extends ParserTest {
 	
 	@Test
 	public void testRef() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' ref='setting' />");
-		Statement statement = new PropertyParser().parse(element, null, null);
-		BeneratorContext context = new BeneratorContext();
 		context.set("setting", "cfg");
-		statement.execute(context);
+		parseAndExecute("<property name='globalProp' ref='setting' />");
 		assertEquals("cfg", context.get("globalProp"));
 	}
 	
 	@Test
 	public void testSource() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' source='myGen' />");
-		Statement statement = new PropertyParser().parse(element, null, null);
-		BeneratorContext context = new BeneratorContext();
 		context.set("myGen", new ConstantGenerator<String>("myProd"));
-		statement.execute(context);
+		parseAndExecute("<property name='globalProp' source='myGen' />");
 		assertEquals("myProd", context.get("globalProp"));
 	}
 	
 	@Test
 	public void testNestedBean() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp'><bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(123)'/></property>");
-		Statement statement = new PropertyParser().parse(element, null, null);
-		BeneratorContext context = new BeneratorContext();
-		statement.execute(context);
+		parseAndExecute(
+			"<property name='globalProp'>" +
+			"	<bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(123)'/>" +
+			"</property>");
 		assertEquals(123, ((BeanMock) context.get("globalProp")).lastValue);
 	}
 	
 	@Test
 	public void testNestedBeanArray() throws Exception {
-		Element element = XMLUtil.parseStringAsElement(
+		parseAndExecute(
 				"<property name='globalProp'>" +
 				"	<bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(1)'/>" +
 				"	<bean spec='new org.databene.benerator.engine.parser.xml.BeanMock(2)'/>" +
 				"</property>");
-		Statement statement = new PropertyParser().parse(element, null, null);
-		BeneratorContext context = new BeneratorContext();
-		statement.execute(context);
 		Object[] beans = (Object[]) context.get("globalProp");
 		assertEquals(2, beans.length);
 		assertEquals(1, ((BeanMock) beans[0]).lastValue);
@@ -114,16 +97,13 @@ public class PropertyParserAndStatementTest extends ParserTest {
 	
 	@Test(expected = ConfigurationError.class)
 	public void testInvalid() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='globalProp' xyz='XYZ' />");
-		new PropertyParser().parse(element, null, null);
+		parseAndExecute("<property name='globalProp' xyz='XYZ' />");
 	}
 	
 	@Test
 	public void testBeneratorProperty() throws Exception {
-		Element element = XMLUtil.parseStringAsElement("<property name='benerator.defaultPageSize' value='123' />");
-		Statement statement = new PropertyParser().parse(element, null, null);
 		assertTrue(context.getDefaultPageSize() != 123);
-		statement.execute(context);
+		parseAndExecute("<property name='benerator.defaultPageSize' value='123' />");
 		assertEquals(123, context.getDefaultPageSize());
 	}
 	

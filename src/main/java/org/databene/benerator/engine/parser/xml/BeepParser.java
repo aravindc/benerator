@@ -21,7 +21,6 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeepStatement;
 import org.w3c.dom.Element;
@@ -32,13 +31,14 @@ import org.w3c.dom.Element;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class BeepParser extends AbstractDescriptorParser {
+public class BeepParser extends AbstractBeneratorDescriptorParser {
 
 	public BeepParser() {
 	    super("beep");
     }
 
-	public BeepStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public BeepStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
         return new BeepStatement();
     }
 

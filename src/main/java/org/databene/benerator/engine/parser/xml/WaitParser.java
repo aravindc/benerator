@@ -26,7 +26,6 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.WaitStatement;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
@@ -43,13 +42,14 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class WaitParser extends AbstractDescriptorParser {
+public class WaitParser extends AbstractBeneratorDescriptorParser {
 
 	public WaitParser() {
 	    super(EL_WAIT);
     }
 
-	public Statement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		// check for constant value
 		Expression<Long> duration  = parseLongAttribute(ATT_DURATION, element, null);
 		if (duration != null)

@@ -34,6 +34,7 @@ import java.util.List;
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Version;
 import org.databene.benerator.engine.parser.xml.BeneratorEntityResolver;
+import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.xml.XMLUtil;
@@ -43,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import static org.databene.benerator.engine.DescriptorConstants.*;
 
 /**
  * Parses and executes a benerator descriptor file.<br/>
@@ -101,20 +101,12 @@ public class DescriptorRunner implements ResourceManager {
 	    BeneratorEntityResolver entityResolver = (context.isValidate() ? new BeneratorEntityResolver() : null);
 		Document document = XMLUtil.parse(uri, entityResolver, Version.XML_HTTP_SYSTEM_ID);
 	    Element root = document.getDocumentElement();
-	    XMLUtil.mapAttributesToProperties(root, context, true, new XMLNameNormalizer());
-	    BeneratorRootStatement mainTask = new BeneratorRootStatement();
-	    // process sub elements
-    	Statement[] path = new Statement[] { mainTask };
-	    for (Element element : XMLUtil.getChildElements(root)) {
-			String elementName = element.getNodeName();
-            DescriptorParser elementParser = factory.getParser(elementName, EL_SETUP);
-			Statement statement = elementParser.parse(element, path, this);
-	    	mainTask.addSubStatement(statement);
-	    }
+	    BeneratorParsingContext parsingContext = factory.createParsingContext(resourceManager);
+	    BeneratorRootStatement statement = (BeneratorRootStatement) parsingContext.parseElement(root, null);
 		// prepare system
 		generatedFiles = new ArrayList<String>();
 		context.setContextUri(IOUtil.getContextUri(uri));
-	    return mainTask;
+	    return statement;
     }
 	
 	public void execute(BeneratorRootStatement rootStatement) {

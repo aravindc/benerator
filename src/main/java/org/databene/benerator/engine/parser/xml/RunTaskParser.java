@@ -24,7 +24,6 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
@@ -44,7 +43,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class RunTaskParser extends AbstractDescriptorParser {
+public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 	
 	private static final DefaultPageSizeExpression DEFAULT_PAGE_SIZE = new DefaultPageSizeExpression();
 
@@ -52,11 +51,12 @@ public class RunTaskParser extends AbstractDescriptorParser {
 	    super(EL_RUN_TASK);
     }
 
-    @SuppressWarnings("unchecked")
-    public RunTaskStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+    @Override
+	@SuppressWarnings("unchecked")
+    public RunTaskStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		try {
 		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(
-		    		element, resourceManager);
+		    		element, context.getResourceManager());
 			Expression<Long> count          = parseLongAttribute(ATT_COUNT, element, 1);
 			Expression<Long> pageSize       = parseLongAttribute(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
 			Expression<Integer> threads     = parseIntAttribute(ATT_THREADS, element, 1);

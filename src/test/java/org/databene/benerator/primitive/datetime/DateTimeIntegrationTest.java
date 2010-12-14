@@ -27,16 +27,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.xml.XMLUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the correct interaction of XML parser, 
@@ -45,18 +40,16 @@ import org.w3c.dom.Element;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class DateTimeIntegrationTest {
+public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 
 	private static final Date MIN_DATE = TimeUtil.date(2008, 8, 29);
 	private static final Date MAX_DATE = TimeUtil.date(2008, 9,  3);
 	private static final int INDIVIDUAL_DATE_COUNT = 4;
 	
-	private BeneratorContext context;
 	private ConsumerMock<Object[]> consumer;
 	
 	@Before
 	public void setUp() {
-		context = new BeneratorContext();
 		consumer = new ConsumerMock<Object[]>(true);
 		context.set("cons", consumer);
 	}
@@ -134,16 +127,5 @@ public class DateTimeIntegrationTest {
 		}
 		assertTrue(usedDates.size() > 10);
 	}
-
-	
-	
-	// helpers ---------------------------------------------------------------------------------------------------------
-
-	private void parseAndExecute(String xml) {
-	    Element element = XMLUtil.parseStringAsElement(xml);
-		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		Statement statement = new GenerateOrIterateParser().parse(element, new Statement[0], resourceManager);
-		statement.execute(context);
-    }
 	
 }

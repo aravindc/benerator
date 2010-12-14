@@ -24,11 +24,9 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.assertEquals;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.EchoStatement;
-import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 /**
  * Tests the {@link EchoParser}.<br/><br/>
@@ -36,19 +34,17 @@ import org.w3c.dom.Document;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class EchoParserTest {
+public class EchoParserTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testMessageAttribute() throws Exception {
-		Document doc = XMLUtil.parse("string://<echo message='Hello' />");
-		EchoStatement statement = new EchoParser().parse(doc.getDocumentElement(), null, new ResourceManagerSupport());
+		EchoStatement statement = (EchoStatement) parse("<echo message='Hello' />");
 		assertEquals("Hello", statement.getExpression().evaluate(new BeneratorContext()));
 	}
 	
 	@Test
 	public void testElementText() throws Exception {
-		Document doc = XMLUtil.parse("string://<echo>Hello</echo>");
-		EchoStatement statement = new EchoParser().parse(doc.getDocumentElement(), null, new ResourceManagerSupport());
+		EchoStatement statement = (EchoStatement) parse("<echo>Hello</echo>");
 		assertEquals("Hello", statement.getExpression().evaluate(new BeneratorContext()));
 	}
 	

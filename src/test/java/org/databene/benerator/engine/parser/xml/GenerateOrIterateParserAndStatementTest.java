@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.primitive.IncrementGenerator;
@@ -34,11 +35,9 @@ import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.iterator.IteratorTestCase;
 import org.databene.jdbacl.hsql.HSQLUtil;
-import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.platform.db.DBSystem;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -47,16 +46,8 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class GenerateOrIterateParserAndStatementTest extends ParserTest {
+public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegrationTest {
 	
-	@Override
-	@Before
-	public void setUp() {
-	    super.setUp();
-		parser = new GenerateOrIterateParser();
-		DataModel.getDefaultInstance().clear();
-	}
-
 	@Test
 	public void testAttributes() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);

@@ -27,10 +27,8 @@ import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringA
 import java.util.Map;
 import java.util.Set;
 
-import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.DescriptorParser;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
@@ -46,7 +44,6 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeneratorScriptParser;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -75,29 +72,35 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class GenerateOrIterateParser implements DescriptorParser {
+public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GenerateOrIterateParser.class);
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
 			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	private Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
-    private BeneratorFactory factory = BeneratorFactory.getInstance();
 
-	
+
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
-	public boolean supports(String elementName, String parentName) {
-	    return EL_GENERATE.equals(elementName) || EL_ITERATE.equals(elementName);
+	public GenerateOrIterateParser() {
+		super("");
+	}
+
+	@Override
+	public boolean supports(Element element, Statement[] parentPath) {
+		String name = element.getNodeName();
+	    return EL_GENERATE.equals(name) || EL_ITERATE.equals(name);
     }
 	
+	@Override
 	public Statement parse(final Element element, final Statement[] parentPath, 
-			final ResourceManager resourceManager) {
-		final boolean looped = AbstractDescriptorParser.containsLoop(parentPath);
-		final boolean nested = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
+			final BeneratorParsingContext pContext) {
+		final boolean looped = AbstractBeneratorDescriptorParser.containsLoop(parentPath);
+		final boolean nested = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
 		Expression<Statement> expression = new DynamicExpression<Statement>() {
 			public Statement evaluate(Context context) {
 				return parseGenerate(
-						element, parentPath, resourceManager, (BeneratorContext) context, !looped, nested);
+						element, parentPath, pContext, (BeneratorContext) context, !looped, nested);
             }
 		};
 		Statement statement = new LazyStatement(expression);
@@ -118,8 +121,9 @@ public class GenerateOrIterateParser implements DescriptorParser {
 	}
 	
     @SuppressWarnings("unchecked")
-    public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath,
-    		ResourceManager resourceManager, BeneratorContext context, boolean infoLog, boolean nested) {
+    public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath, 
+    		BeneratorParsingContext parsingContext, 
+    		BeneratorContext context, boolean infoLog, boolean nested) {
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 		
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
@@ -132,28 +136,30 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
 		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
 				null, countGenerator, pageSize, pager, threads, errorHandler, infoLog, nested);
-		GeneratorTask task = parseTask(element, parentPath, creator, descriptor, resourceManager, context, infoLog);
+		GeneratorTask task = parseTask(element, parentPath, creator, parsingContext, descriptor, 
+				context, infoLog);
 		creator.setTask(task);
 		return creator;
 	}
 
-	@SuppressWarnings("unchecked")
-    private GeneratorTask parseTask(Element element, Statement[] parentPath, GenerateOrIterateStatement statement, 
-    		InstanceDescriptor descriptor, ResourceManager resourceManager, BeneratorContext context, 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    private GeneratorTask parseTask(Element element, Statement[] parentPath, 
+    		GenerateOrIterateStatement statement, BeneratorParsingContext parsingContext, 
+    		InstanceDescriptor descriptor, BeneratorContext context, 
     		boolean infoLog) {
 		descriptor.setNullable(false);
 		if (infoLog)
 			logger.info(descriptor.toString());
 		else if (logger.isDebugEnabled())
 			logger.debug(descriptor.toString());
-		boolean isSubCreator = AbstractDescriptorParser.containsGeneratorStatement(parentPath);
+		boolean isSubCreator = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
 		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
-		Expression consumer = parseConsumers(element, consumerExpected, resourceManager);
+		Expression consumer = parseConsumers(element, consumerExpected, parsingContext.getResourceManager());
 		
 		String taskName = descriptor.getName();
 		if (taskName == null)
@@ -165,8 +171,9 @@ public class GenerateOrIterateParser implements DescriptorParser {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
-				DescriptorParser parser = factory.getParser(childName, element.getNodeName());
-	            Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);
+				BeneratorParsingContext subContext = parsingContext.createSubContext(task);
+				Statement subStatement = subContext.parseChildElement(child, statement, parentPath); // TODO use task as ResourceManager
+	            //Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);
 				task.addSubStatement(subStatement);
             }
 		}

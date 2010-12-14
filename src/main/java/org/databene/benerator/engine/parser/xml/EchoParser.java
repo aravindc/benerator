@@ -24,7 +24,6 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.EchoStatement;
 import org.databene.commons.Expression;
@@ -38,13 +37,14 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class EchoParser extends AbstractDescriptorParser {
+public class EchoParser extends AbstractBeneratorDescriptorParser {
 
 	public EchoParser() {
 	    super(EL_ECHO);
     }
 
-	public EchoStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public EchoStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
         Expression<String> messageEx;
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
 	        messageEx = parseScriptableStringAttribute(ATT_MESSAGE, element);

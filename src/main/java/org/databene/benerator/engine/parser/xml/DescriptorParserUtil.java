@@ -21,13 +21,6 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.databene.benerator.BeneratorFactory;
-import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.TypedScriptExpression;
@@ -48,19 +41,6 @@ import org.w3c.dom.Element;
  */
 public class DescriptorParserUtil {
 
-	public static List<Statement> parseChildren(Element parent, Statement[] parentPath, ResourceManager resourceManager) {
-        BeneratorFactory factory = BeneratorFactory.getInstance();
-		String parentName = parent.getNodeName();
-		ArrayList<Statement> result = new ArrayList<Statement>();
-	    for (Element child : XMLUtil.getChildElements(parent)) {
-			String childName = child.getNodeName();
-			DescriptorParser elementParser = factory.getParser(childName, parentName);
-	    	Statement statement = elementParser.parse(child, parentPath, resourceManager);
-	    	result.add(statement);
-	    }
-	    return result;
-	}
-	
 	public static Expression<?> parseScriptableElementText(Element element) {
 	    return new ScriptableExpression(XMLUtil.getText(element), null);
     }

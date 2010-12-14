@@ -23,8 +23,7 @@ package org.databene;
 
 import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
-import org.databene.benerator.engine.parser.xml.ParserTest;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
@@ -41,14 +40,8 @@ import org.junit.Test;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class PerfTrackingConsumerIntegrationTest extends ParserTest {
+public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTest {
 
-	@Override
-	public void setUp() {
-	    super.setUp();
-	    this.parser = new GenerateOrIterateParser();
-	}
-	
 	@Test
 	public void testNesting() throws Exception {
 		TimedGeneratorStatement statement = (TimedGeneratorStatement) parse(

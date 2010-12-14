@@ -24,15 +24,12 @@ package org.databene.benerator.engine.parser.xml;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.RunTaskStatement;
-import org.databene.commons.xml.XMLUtil;
 import org.databene.task.PageListenerMock;
 import org.databene.task.TaskMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Parses an XML &lt;run-task&gt; element in a Benerator descriptor file.<br/><br/>
@@ -40,7 +37,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class RunTaskParserAndStatementTest {
+public class RunTaskParserAndStatementTest extends BeneratorIntegrationTest {
 
 	@Before
 	public void setUp() {
@@ -54,9 +51,7 @@ public class RunTaskParserAndStatementTest {
         		"      pager='new org.databene.task.PageListenerMock(1)'>" +
         		"  <property name='intProp' value='42' />" +
         		"</run-task>";
-        Element element = XMLUtil.parseStringAsElement(xml);
-		BeneratorContext context = new BeneratorContext();
-        RunTaskStatement statement = new RunTaskParser().parse(element, new Statement[0], new ResourceManagerSupport());
+        RunTaskStatement statement = (RunTaskStatement) parse(xml);
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));
@@ -71,9 +66,7 @@ public class RunTaskParserAndStatementTest {
         		"      pager='new org.databene.task.PageListenerMock(1)'>" +
         		"  <property name='intProp' value='42' />" +
         		"</run-task>";
-        Element element = XMLUtil.parseStringAsElement(xml);
-		BeneratorContext context = new BeneratorContext();
-        RunTaskStatement statement = new RunTaskParser().parse(element, new Statement[0], new ResourceManagerSupport());
+        RunTaskStatement statement = (RunTaskStatement) parse(xml);
 		assertEquals(5L, statement.getCount().evaluate(context).longValue());
 		assertEquals(2L, statement.getPageSize().evaluate(context).longValue());
 		assertEquals(new PageListenerMock(1), statement.getPager().evaluate(context));

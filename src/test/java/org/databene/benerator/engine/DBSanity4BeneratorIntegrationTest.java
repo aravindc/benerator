@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,15 +21,28 @@
 
 package org.databene.benerator.engine;
 
-import org.w3c.dom.Element;
+import org.databene.platform.db.DBSystem;
+import org.junit.Test;
 
 /**
- * Parent interface for all parsers of descriptor file elements.<br/><br/>
- * Created: 25.10.2009 00:15:01
- * @since 0.6.0
+ * Tests the DB Sanity integration.<br/><br/>
+ * Created: 29.11.2010 16:04:18
+ * @since 0.6.4
  * @author Volker Bergmann
  */
-public interface DescriptorParser {
-	boolean supports(String elementName, String parentName);
-	Statement parse(Element element, Statement[] parentPath, ResourceManager resourceManager);
+public class DBSanity4BeneratorIntegrationTest extends BeneratorIntegrationTest {
+
+	private static final String ENVIRONMENT = "DBSanityIntegrationTest";
+	private static String XML = "<dbsanity environment='" + ENVIRONMENT + "' />";
+	
+	@Test
+	public void testSuccess() {
+		context.setContextUri("target/test-classes/org/databene/benerator/engine");
+		DBSystem db = new DBSystem("db", "jdbc:hsqldb:mem:DBSanityIntegrationTest", "org.hsqldb.jdbcDriver", "sa", null);
+		db.execute("create table table1 (id int)");
+		db.execute("insert into table1 (id) values (1)");
+		context.set("db", db);
+		parseAndExecute(XML);
+	}
+	
 }

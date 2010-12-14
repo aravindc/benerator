@@ -25,8 +25,6 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.DescriptorConstants;
-import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
@@ -41,14 +39,21 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class EvaluateParser implements DescriptorParser {
+public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 
-	public boolean supports(String elementName, String parentName) {
-	    return DescriptorConstants.EL_EVALUATE.equals(elementName) 
-	    	|| DescriptorConstants.EL_EXECUTE.equals(elementName);
+	public EvaluateParser() {
+		super("");
+	}
+
+	@Override
+	public boolean supports(Element element, Statement[] parentPath) {
+		String name = element.getNodeName();
+	    return DescriptorConstants.EL_EVALUATE.equals(name) 
+	    	|| DescriptorConstants.EL_EXECUTE.equals(name);
     }
 
-	public EvaluateStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		Expression<String> text         = new TypeConvertingExpression<String>(parseScriptableElementText(element), String.class);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);

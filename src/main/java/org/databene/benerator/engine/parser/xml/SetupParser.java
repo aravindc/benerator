@@ -19,30 +19,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.benerator.engine.parser.xml;
 
-import org.databene.platform.db.DBSystem;
-import org.junit.Test;
+import static org.databene.benerator.engine.DescriptorConstants.EL_SETUP;
+
+import java.util.List;
+
+import org.databene.benerator.engine.BeneratorRootStatement;
+import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.XMLNameNormalizer;
+import org.databene.commons.xml.XMLUtil;
+import org.w3c.dom.Element;
 
 /**
- * Tests the DB Sanity integration.<br/><br/>
- * Created: 29.11.2010 16:04:18
- * @since 0.6.4
+ * TODO Document class.<br/><br/>
+ * Created: 14.12.2010 19:48:00
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class DBSanityIntegrationTest extends BeneratorIntegrationTest {
+public class SetupParser extends AbstractBeneratorDescriptorParser {
 
-	private static final String ENVIRONMENT = "DBSanityIntegrationTest";
-	private static String XML = "<dbsanity environment='" + ENVIRONMENT + "' />";
-	
-	@Test
-	public void testSuccess() {
-		context.setContextUri("target/test-classes/org/databene/benerator/engine");
-		DBSystem db = new DBSystem("db", "jdbc:hsqldb:mem:DBSanityIntegrationTest", "org.hsqldb.jdbcDriver", "sa", null);
-		db.execute("create table table1 (id int)");
-		db.execute("insert into table1 (id) values (1)");
-		context.set("db", db);
-		parseAndExecute(XML);
+	public SetupParser() {
+		super(EL_SETUP);
 	}
-	
+
+	@Override
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	    XMLUtil.mapAttributesToProperties(element, context, true, new XMLNameNormalizer());
+	    BeneratorRootStatement rootStatement = new BeneratorRootStatement();
+	    List<Statement> subStatements = context.parseChildElementsOf(element, rootStatement, parentPath);
+	    	rootStatement.setSubStatements(subStatements);
+	    return rootStatement;
+	}
+
 }

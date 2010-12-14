@@ -23,12 +23,9 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.assertEquals;
 
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.WhileStatement;
-import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the {@link WhileParser} and the {@link WhileStatement}.<br/><br/>
@@ -36,31 +33,25 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class WhileParserAndStatementTest {
+public class WhileParserAndStatementTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testNoLoop() throws Exception {
-		Element element = XMLUtil.parseStringAsElement(
+		context.set("count", 0);
+		parseAndExecute(
 				"<while test='2==3'>" +
 				"	<evaluate id='count'>count + 1</evaluate>" +
 				"</while>");
-		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
-		context.set("count", 0);
-		Statement statement = new WhileParser().parse(element, null, null);
-		statement.execute(context);
 		assertEquals(0, context.get("count"));
 	}
 	
 	@Test
 	public void testThreeLoops() throws Exception {
-		Element element = XMLUtil.parseStringAsElement(
+		context.set("count", 0);
+		parseAndExecute(
 				"<while test='count &lt; 3'>" +
 				"	<execute>count = count + 1</execute>" +
 				"</while>");
-		BeneratorContext context = new BeneratorContext(); // this first for setting the default script engine to benerator script
-		context.set("count", 0);
-		Statement statement = new WhileParser().parse(element, null, null);
-		statement.execute(context);
 		assertEquals(3, context.get("count"));
 	}
 	

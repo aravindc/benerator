@@ -24,12 +24,9 @@ package org.databene.benerator.engine.parser.xml;
 import java.util.List;
 import java.util.Set;
 
-import org.databene.benerator.engine.DescriptorParser;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
@@ -48,14 +45,17 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class IfParser implements DescriptorParser {
+public class IfParser extends AbstractBeneratorDescriptorParser {
 	
-	private static final Set<String> LEGAL_PARENTS = CollectionUtil.toSet(
-			EL_SETUP, EL_IF, EL_WHILE);
 	private static final Set<String> STRICT_CHILDREN = CollectionUtil.toSet(
 			EL_THEN, EL_ELSE, EL_COMMENT);
 
-	public Statement parse(Element ifElement, Statement[] parentPath, ResourceManager resourceManager) {
+	public IfParser() {
+		super("if");
+	}
+
+	@Override
+	public Statement parse(Element ifElement, Statement[] parentPath, BeneratorParsingContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, ifElement);
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'if' statement is missing or empty", 
@@ -65,26 +65,22 @@ public class IfParser implements DescriptorParser {
 		List<Statement> thenStatements = null;
 		List<Statement> elseStatements = null;
 		IfStatement ifStatement = new IfStatement(condition);
-		Statement[] path = ArrayUtil.append(parentPath, ifStatement);
+		Statement[] ifPath = context.createCurrentElementPath(parentPath, ifStatement);
 		if (elseElement != null) {
 			// if there is an 'else' element, there must be an 'if' element too
 			if (thenElement == null)
 				throw new ParseException("'else' without 'then'", XMLUtil.format(ifElement));
-			thenStatements = DescriptorParserUtil.parseChildren(thenElement, path, resourceManager);
-			elseStatements = DescriptorParserUtil.parseChildren(elseElement, path, resourceManager);
+			thenStatements = context.parseChildElementsOf(thenElement, ifStatement, ifPath);
+			elseStatements = context.parseChildElementsOf(elseElement, ifStatement, ifPath);
 			// check that no elements conflict with 'then' and 'else'
 			assertThenElseChildren(ifElement);
 		} else if (thenElement != null) {
-			thenStatements = DescriptorParserUtil.parseChildren(thenElement, path, resourceManager);
+			thenStatements = context.parseChildElementsOf(thenElement, ifStatement, ifPath);
 		} else
-			thenStatements = DescriptorParserUtil.parseChildren(ifElement, path, resourceManager);
+			thenStatements = context.parseChildElementsOf(ifElement, ifStatement, ifPath);
 		ifStatement.setThenStatement(new SequentialStatement(thenStatements));
 		ifStatement.setElseStatement(new SequentialStatement(elseStatements));
 		return ifStatement;
-    }
-
-    public boolean supports(String elementName, String parentName) {
-	    return (EL_IF.equals(elementName) && LEGAL_PARENTS.contains(parentName));
     }
 
 	private static void assertThenElseChildren(Element ifElement) {

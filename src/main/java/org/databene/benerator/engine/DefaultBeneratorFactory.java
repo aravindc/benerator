@@ -21,27 +21,8 @@
 
 package org.databene.benerator.engine;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.databene.benerator.BeneratorFactory;
-import org.databene.benerator.engine.parser.xml.BeanParser;
-import org.databene.benerator.engine.parser.xml.BeepParser;
-import org.databene.benerator.engine.parser.xml.CommentParser;
-import org.databene.benerator.engine.parser.xml.DBSanityParser;
-import org.databene.benerator.engine.parser.xml.DatabaseParser;
-import org.databene.benerator.engine.parser.xml.DefaultComponentParser;
-import org.databene.benerator.engine.parser.xml.EchoParser;
-import org.databene.benerator.engine.parser.xml.EvaluateParser;
-import org.databene.benerator.engine.parser.xml.GenerateOrIterateParser;
-import org.databene.benerator.engine.parser.xml.IfParser;
-import org.databene.benerator.engine.parser.xml.ImportParser;
-import org.databene.benerator.engine.parser.xml.IncludeParser;
-import org.databene.benerator.engine.parser.xml.PropertyParser;
-import org.databene.benerator.engine.parser.xml.RunTaskParser;
-import org.databene.benerator.engine.parser.xml.WaitParser;
-import org.databene.benerator.engine.parser.xml.WhileParser;
-import org.databene.commons.ConfigurationError;
+import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
 
 /**
  * Default implementation of the abstract {@link BeneratorFactory} class.<br/><br/>
@@ -51,45 +32,9 @@ import org.databene.commons.ConfigurationError;
  */
 public class DefaultBeneratorFactory extends BeneratorFactory {
 
-	protected List<DescriptorParser> parsers;
-	private boolean defaultParsersInitialized;
-
-	public DefaultBeneratorFactory() {
-		this.parsers = new ArrayList<DescriptorParser>();
-		this.defaultParsersInitialized = false;
-    }
-
-	public boolean addParser(DescriptorParser parser) {
-	    return parsers.add(parser);
-    }
-
 	@Override
-    public DescriptorParser getParser(String elementName, String parentName) {
-		if (!defaultParsersInitialized)
-			initDefaultParsers();
-		for (DescriptorParser parser : parsers)
-			if (parser.supports(elementName, parentName))
-				return parser;
-		throw new ConfigurationError("Unknown element: <" + elementName + ">");
-    }
-
-	protected void initDefaultParsers() {
-	    addParser(new DefaultComponentParser());
-		addParser(new CommentParser());
-		addParser(new BeanParser());
-		addParser(new GenerateOrIterateParser());
-		addParser(new DatabaseParser());
-		addParser(new EchoParser());
-		addParser(new EvaluateParser());
-		addParser(new ImportParser());
-		addParser(new IncludeParser());
-		addParser(new PropertyParser());
-		addParser(new RunTaskParser());
-		addParser(new IfParser());
-		addParser(new WhileParser());
-		addParser(new WaitParser());
-		addParser(new BeepParser());
-		addParser(new DBSanityParser());
+    public BeneratorParsingContext createParsingContext(ResourceManager resourceManager) {
+		return new BeneratorParsingContext(resourceManager);
     }
 
 }

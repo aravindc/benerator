@@ -25,16 +25,11 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.ResourceManagerSupport;
-import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.parser.xml.BeanParser;
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 /**
  * Tests the correct interaction of XML parser, 
@@ -43,14 +38,13 @@ import org.w3c.dom.Element;
  * @since 0.6.1
  * @author Volker Bergmann
  */
-public class DateTimeGeneratorIntegrationTest {
+public class DateTimeGeneratorIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void test() {
 		// create DateTimeGenerator from XML descriptor
-		BeneratorContext context = new BeneratorContext();
 		String beanId = "datetime_gen";
-		Element element = XMLUtil.parseStringAsElement(
+		String xml =
 			"<bean id='" + beanId + "' class='" + DateTimeGenerator.class.getName() + "'>" +
 			"  <property name='minDate'          value='2008-09-01'/>" +
 			"  <property name='maxDate'          value='2008-09-05'/>" +
@@ -60,10 +54,8 @@ public class DateTimeGeneratorIntegrationTest {
 			"  <property name='maxTime'          value='16:00:00'  />" +
 			"  <property name='timePrecision'    value='00:00:01'  />" +
 			"  <property name='timeDistribution' value='step'      />" +
-			"</bean>"
-		);
-		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		BeanStatement statement = new BeanParser().parse(element, new Statement[0], resourceManager);
+			"</bean>";
+		BeanStatement statement = (BeanStatement) parse(xml);
 		statement.execute(context);
 		DateTimeGenerator generator = (DateTimeGenerator) GeneratorUtil.unwrap((Generator<?>) context.get(beanId));
 		

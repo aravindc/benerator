@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class BeanParser extends AbstractDescriptorParser {
+public class BeanParser extends AbstractBeneratorDescriptorParser {
 	
 	private static final Logger logger =  LoggerFactory.getLogger(BeanParser.class);
 	
@@ -54,9 +54,11 @@ public class BeanParser extends AbstractDescriptorParser {
 	    super(EL_BEAN);
     }
 
-	public BeanStatement parse(Element element, Statement[] parentPath, ResourceManager resourceManager) {
+	@Override
+	public BeanStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
 		try {
 			String id = element.getAttribute(ATT_ID);
+			ResourceManager resourceManager = context.getResourceManager();
 			Expression<?> bean = parseBeanExpression(element, resourceManager);
 			return new BeanStatement(id, bean, resourceManager);
 		} catch (ConversionException e) {
@@ -64,7 +66,7 @@ public class BeanParser extends AbstractDescriptorParser {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Expression<?> parseBeanExpression(Element element, ResourceManager resourceManager) {
 		String id = element.getAttribute(ATT_ID);
         Expression<?> instantiation;
