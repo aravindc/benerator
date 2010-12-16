@@ -65,19 +65,19 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 		List<Statement> thenStatements = null;
 		List<Statement> elseStatements = null;
 		IfStatement ifStatement = new IfStatement(condition);
-		Statement[] ifPath = context.createCurrentElementPath(parentPath, ifStatement);
+		Statement[] ifPath = context.createSubPath(parentPath, ifStatement);
 		if (elseElement != null) {
 			// if there is an 'else' element, there must be an 'if' element too
 			if (thenElement == null)
 				throw new ParseException("'else' without 'then'", XMLUtil.format(ifElement));
-			thenStatements = context.parseChildElementsOf(thenElement, ifStatement, ifPath);
-			elseStatements = context.parseChildElementsOf(elseElement, ifStatement, ifPath);
+			thenStatements = context.parseChildElementsOf(thenElement, ifPath);
+			elseStatements = context.parseChildElementsOf(elseElement, ifPath);
 			// check that no elements conflict with 'then' and 'else'
 			assertThenElseChildren(ifElement);
 		} else if (thenElement != null) {
-			thenStatements = context.parseChildElementsOf(thenElement, ifStatement, ifPath);
+			thenStatements = context.parseChildElementsOf(thenElement, ifPath);
 		} else
-			thenStatements = context.parseChildElementsOf(ifElement, ifStatement, ifPath);
+			thenStatements = context.parseChildElementsOf(ifElement, ifPath);
 		ifStatement.setThenStatement(new SequentialStatement(thenStatements));
 		ifStatement.setElseStatement(new SequentialStatement(elseStatements));
 		return ifStatement;

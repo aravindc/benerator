@@ -52,6 +52,8 @@ public class BeneratorParsingContext extends ParsingContext<Statement> {
 		factory.addParser(new PropertyParser());
 		factory.addParser(new RunTaskParser());
 		factory.addParser(new SetupParser());
+		factory.addParser(new TranscodingTaskParser());
+		factory.addParser(new TranscodeParser());
 		factory.addParser(new WaitParser());
 		factory.addParser(new WhileParser());
 	}

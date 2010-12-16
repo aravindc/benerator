@@ -65,7 +65,7 @@ public class WhileParser extends AbstractBeneratorDescriptorParser {
 			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 
 					XMLUtil.format(element));
 		WhileStatement whileStatement = new WhileStatement(condition);
-		List<Statement> subStatements = context.parseChildElementsOf(element, whileStatement, parentPath);
+		List<Statement> subStatements = context.parseChildElementsOf(element, context.createSubPath(parentPath, whileStatement));
 		whileStatement.setSubStatements(subStatements);
 	    return whileStatement;
     }

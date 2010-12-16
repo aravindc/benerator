@@ -172,7 +172,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
 				BeneratorParsingContext subContext = parsingContext.createSubContext(task);
-				Statement subStatement = subContext.parseChildElement(child, statement, parentPath); // TODO use task as ResourceManager
+				Statement[] subPath = parsingContext.createSubPath(parentPath, statement);
+				Statement subStatement = subContext.parseChildElement(child, subPath);
 	            //Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);
 				task.addSubStatement(subStatement);
             }
