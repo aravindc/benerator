@@ -96,8 +96,8 @@ public class GeneratorFactoryUtil {
      * @param context the {@link BeneratorContext}
      * @return a distribution that reflects the descriptor setup, null if distribution info is not found nor required.
      */
-    @SuppressWarnings("unchecked")
-    public static Distribution getDistribution(String spec, Uniqueness uniqueness, boolean required, BeneratorContext context) {
+    @SuppressWarnings("rawtypes")
+	public static Distribution getDistribution(String spec, Uniqueness uniqueness, boolean required, BeneratorContext context) {
         
         // handle absence of distribution spec
         if (StringUtil.isEmpty(spec)) {

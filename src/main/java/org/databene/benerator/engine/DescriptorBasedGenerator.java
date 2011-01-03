@@ -34,7 +34,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
  */
 public class DescriptorBasedGenerator extends GeneratorProxy<Object> {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public DescriptorBasedGenerator(String uri, String generatorName, BeneratorContext context) throws IOException {
 		DescriptorRunner descriptorRunner = new DescriptorRunner(uri);
 		BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();

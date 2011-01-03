@@ -98,14 +98,13 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked")
     @Override
     public boolean equals(Object other) {
 	    if (this == other)
 		    return true;
 	    if (other == null || getClass() != other.getClass())
 		    return false;
-	    GeneratorWrapper that = (GeneratorWrapper) other;
+	    GeneratorWrapper<?,?> that = (GeneratorWrapper<?,?>) other;
 	    return NullSafeComparator.equals(this.source, that.source);
     }
     

@@ -58,7 +58,7 @@ public class NullableGeneratorFactory {
 			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static NullableGenerator<?> createConvertingGenerator(TypeDescriptor descriptor,
             NullableGenerator<?> generator, BeneratorContext context) {
         Converter<?, ?> converter = DescriptorUtil.getConverter(descriptor, context);

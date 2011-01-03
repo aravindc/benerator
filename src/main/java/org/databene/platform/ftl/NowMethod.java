@@ -43,7 +43,7 @@ import freemarker.template.TemplateModel;
 
 public class NowMethod implements TemplateMethodModel {
     
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
     public TemplateModel exec(List args) {
 		return new SimpleDate(new Date(System.currentTimeMillis()));
 	}

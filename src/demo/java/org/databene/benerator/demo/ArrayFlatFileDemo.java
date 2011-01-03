@@ -93,7 +93,7 @@ public class ArrayFlatFileDemo {
             super(Object.class, false, createSources());
         }
 
-        @SuppressWarnings({ "unchecked", "cast" })
+        @SuppressWarnings({ "unchecked", "cast", "rawtypes" })
         private static Generator<Object>[] createSources() {
             Generator<Date> dateGenerator = GeneratorFactory.getDateGenerator( // transaction date
                     TimeUtil.date(2004, 0, 1), TimeUtil.date(2006, 11, 31), Period.DAY.getMillis(),

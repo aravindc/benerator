@@ -62,7 +62,7 @@ public class BeanStatement extends SequentialStatement {
         this.resourceManager = resourceManager;
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void execute(BeneratorContext context) {
 		// invoke constructor
@@ -81,7 +81,7 @@ public class BeanStatement extends SequentialStatement {
 		if (bean instanceof Closeable && resourceManager != null)
 			resourceManager.addResource((Closeable) bean);
 		if (bean instanceof Generator)
-			bean = new InitOnceGenerator((Generator) bean, context);
+			bean = new InitOnceGenerator((Generator<?>) bean, context);
 		context.set(id, bean);
     }
 

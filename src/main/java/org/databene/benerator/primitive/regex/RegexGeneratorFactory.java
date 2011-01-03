@@ -108,23 +108,23 @@ public class RegexGeneratorFactory {
             throw new UnsupportedOperationException("Unsupported regex part type: " + object.getClass().getName());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<String> createFromSequence(Sequence sequence, int min, int max, int quantityLimit, boolean unique) {
     	Object[] factors = sequence.getFactors();
-    	Generator[] components = createComponents(factors, quantityLimit, unique);
+		Generator[] components = createComponents(factors, quantityLimit, unique);
     	Generator<String[]> partGenerator = new CompositeArrayGenerator<String>(String.class, unique, components);
     	return new ConcatenatingGenerator(partGenerator);
     }
 
-    @SuppressWarnings("unchecked")
-    private static Generator[] createComponents(Object[] factors, int quantityLimit, boolean unique) {
-	    Generator[] components = new Generator[factors.length];
+    @SuppressWarnings("rawtypes")
+	private static Generator[] createComponents(Object[] factors, int quantityLimit, boolean unique) {
+	    Generator<?>[] components = new Generator<?>[factors.length];
     	for (int i = 0; i < factors.length; i++)
     		components[i] = createFromObject(factors[i], quantityLimit, unique);
 	    return components;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<String> createFromChoice(
             Choice choice, int min, int max, int quantityLimit, boolean unique) {
     	Object[] alternatives = choice.getAlternatives();
@@ -138,7 +138,7 @@ public class RegexGeneratorFactory {
             return repeater(new AlternativeGenerator<String>(String.class, altGens), min, max);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<String> createUniqueFromChoice(Choice choice, int min, int max, int quantityLimit) {
         Generator[] sources = new Generator[max - min + 1];
         for (int length = min; length <= max; length++) {
@@ -163,7 +163,7 @@ public class RegexGeneratorFactory {
                 min, max);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<String> createFromUniqueGroup(Group group, int min, int max, int quantityLimit) {
         Generator[] sources = new Generator[max - min + 1];
         for (int length = min; length <= max; length++) {
@@ -186,8 +186,8 @@ public class RegexGeneratorFactory {
 		return repeater(atomGenerator, min, max);
     }
     
-    @SuppressWarnings("unchecked")
-    private static Generator<String> createCharSetGenerator(CharSet charSet, int min, int max, boolean unique) {
+    @SuppressWarnings("rawtypes")
+	private static Generator<String> createCharSetGenerator(CharSet charSet, int min, int max, boolean unique) {
         if (unique) {
             return new UniqueStringGenerator(min, max, charSet.getSet());
         } else {

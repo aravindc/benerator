@@ -44,8 +44,8 @@ public class UniqueCompositeStringGeneratorTest extends GeneratorTest {
     @SuppressWarnings("unchecked")
     public void testConstant() {
         Generator<String> generator = new UniqueCompositeStringGenerator(
-                new ConstantGenerator("0"),
-                new ConstantGenerator("1"));
+                new ConstantGenerator<String>("0"),
+                new ConstantGenerator<String>("1"));
         generator.init(context);
         expectUniqueFromSet(generator,  "01").withCeasedAvailability();
     }
@@ -54,8 +54,8 @@ public class UniqueCompositeStringGeneratorTest extends GeneratorTest {
     @SuppressWarnings("unchecked")
     public void testVariable() {
         Generator<String> generator = new UniqueCompositeStringGenerator(
-                new SequenceTestGenerator("A", "B", "C"),
-                new SequenceTestGenerator("0", "1"));
+                new SequenceTestGenerator<String>("A", "B", "C"),
+                new SequenceTestGenerator<String>("0", "1"));
         generator.init(context);
         expectUniqueFromSet(generator, "A0", "B0", "C0", "A1", "B1", "C1").withCeasedAvailability();
     }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Eric Chaves & Volker Bergmann. All rights reserved.
+  * (c) Copyright 2009-2010 by Eric Chaves & Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -78,7 +78,7 @@ public class CPFGenerator extends ThreadSafeGenerator<String> {
     private void addDigit(ArrayList<Integer> digits){
     	int sum=0;
     	for (int i=0, j=digits.size()+1; i < digits.size(); i++,j-- )
-    		sum += (int)digits.get(i) * j;
+    		sum += digits.get(i) * j;
     	digits.add((sum % 11 < 2) ? 0: 11-(sum % 11));
     }
     

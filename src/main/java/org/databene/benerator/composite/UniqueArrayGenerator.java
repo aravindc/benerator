@@ -97,7 +97,8 @@ public class UniqueArrayGenerator extends CompositeGenerator<Object[]> {
 
 	@SuppressWarnings("unchecked")
     private ProductWrapper<?> generateAt(int index) {
-	    ProductWrapper wrapper = threadLocalWrapper.get();
+	    @SuppressWarnings("rawtypes")
+		ProductWrapper wrapper = threadLocalWrapper.get();
 	    wrapper = sources[index].generate(wrapper);
 	    return wrapper;
     }

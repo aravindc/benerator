@@ -38,7 +38,7 @@ import java.util.HashMap;
  * Created: 29.08.2007 18:12:58
  * @author Volker Bergmann
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public class Entity2MapConverter extends ThreadSafeConverter<Entity, Map> {
 
 	public Entity2MapConverter() {

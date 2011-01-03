@@ -37,7 +37,7 @@ import org.databene.commons.converter.AnyConverter;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ValueMapper implements Converter {
 
 	private Map mappings;

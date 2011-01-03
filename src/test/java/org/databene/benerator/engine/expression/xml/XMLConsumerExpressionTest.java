@@ -39,8 +39,8 @@ import org.w3c.dom.Document;
  */
 public class XMLConsumerExpressionTest {
 	
-	@SuppressWarnings("unchecked")
-    @Test
+    @SuppressWarnings("rawtypes")
+	@Test
 	public void testInlineConsumerClass() throws Exception {
 		Document doc = XMLUtil.parseString("<generate " +
 				"consumer='org.databene.benerator.factory.ConsumerMock'/>");
@@ -51,8 +51,8 @@ public class XMLConsumerExpressionTest {
 		assertNotNull("Context not set", consumerMock.context);
 	}
 	
-	@SuppressWarnings("unchecked")
-    @Test
+    @SuppressWarnings("rawtypes")
+	@Test
 	public void testInlineConsumerSpec() throws Exception {
 		Document doc = XMLUtil.parseString("<generate " +
 				"consumer='new org.databene.benerator.factory.ConsumerMock(2)'/>");
@@ -64,8 +64,8 @@ public class XMLConsumerExpressionTest {
 		assertEquals(2, consumerMock.id);
 	}
 	
-	@SuppressWarnings("unchecked")
-    @Test
+    @SuppressWarnings("rawtypes")
+	@Test
 	public void testConsumerBean() throws Exception {
 		Document doc = XMLUtil.parseString("<generate>" +
 				"    <consumer spec='new org.databene.benerator.factory.ConsumerMock()'/>" +

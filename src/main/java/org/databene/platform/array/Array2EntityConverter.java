@@ -51,12 +51,12 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
     
     private String[] featureNames;
     
-    @SuppressWarnings("unchecked")
-    private Converter[] converters;
+    @SuppressWarnings("rawtypes")
+	private Converter[] converters;
     
     Escalator escalator = new LoggerEscalator();
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Array2EntityConverter(ComplexTypeDescriptor descriptor, String[] featureNames, boolean stringSource) {
     	super(Object[].class, Entity.class);
         this.descriptor = descriptor;

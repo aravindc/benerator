@@ -156,7 +156,7 @@ public class ArrayGeneratorFactory {
 		return createEntitySourceArrayGenerator(descriptor, context, sourceName, factory);
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<Object[]> createSourceGeneratorFromObject(ArrayTypeDescriptor descriptor,
             BeneratorContext context, Generator<Object[]> generator, Object sourceObject) {
 	    if (sourceObject instanceof StorageSystem) {

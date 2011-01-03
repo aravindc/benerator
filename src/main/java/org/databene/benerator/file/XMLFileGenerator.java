@@ -42,7 +42,6 @@ import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.SimpleGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.MessageConverter;
@@ -68,7 +67,6 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
     private Generator<?> contentGenerator;
     private DataModel dataModel;
     
-    @SuppressWarnings("unchecked")
     public XMLFileGenerator(String schemaUri, String root, String filenamePattern, String... propertiesFiles) throws IOException {
         this.encoding = SystemInfo.getFileEncoding();
         this.dataModel = DataModel.getDefaultInstance();
@@ -84,7 +82,7 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
         // set up file name generator
         this.fileNameGenerator = new ConvertingGenerator<Long, String>(
                 new IncrementGenerator(), 
-                (Converter) new MessageConverter(filenamePattern, Locale.US));
+                new MessageConverter(filenamePattern, Locale.US));
         // parse properties files
         for (String propertiesFile : propertiesFiles)
             IncludeStatement.importProperties(propertiesFile, context);

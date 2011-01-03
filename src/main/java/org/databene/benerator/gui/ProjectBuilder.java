@@ -452,7 +452,6 @@ public class ProjectBuilder implements Runnable {
 		return db;
     }
 	
-	@SuppressWarnings("unchecked")
     private static void generateTable(InstanceDescriptor descriptor, LFNormalizingStringBuilder writer) {
         ComplexTypeDescriptor type = (ComplexTypeDescriptor) descriptor.getTypeDescriptor();
         Map<String, String> attributes = new OrderedMap<String, String>();
@@ -460,7 +459,7 @@ public class ProjectBuilder implements Runnable {
             Object value = detail.getValue();
             if (value != null && !NullSafeComparator.equals(value, detail.getDefault())) {
             	if (value instanceof Expression)
-            		value = ((Expression) value).evaluate(null);
+            		value = ((Expression<?>) value).evaluate(null);
                 attributes.put(detail.getName(), toStringConverter.convert(value));
             }
         }

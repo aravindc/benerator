@@ -68,7 +68,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         this(url, SystemInfo.getFileEncoding());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public WeightedCSVSampleGenerator(String url, String encoding) {
         this(url, encoding, new NoOpConverter());
     }

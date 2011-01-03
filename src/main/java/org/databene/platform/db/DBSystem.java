@@ -526,30 +526,15 @@ public class DBSystem extends AbstractStorageSystem {
 	
 	public void parseMetaData() {
         logger.debug("parsing metadata...");
-        try {
-            this.tables = new HashMap<String, DBTable>();
-            this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
-            //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
-            getDialect(); // make sure dialect is initialized
-            JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
-            importer.setCatalogName(catalog);
-            importer.setSchemaName(schema);
-            importer.setIncludeTables(includeTables);
-            importer.setExcludeTables(excludeTables);
-            importer.setImportingIndexes(false);
-            importer.setImportingUKs(true);
-            importer.setFaultTolerant(true);
-            importer.setLazy(lazy);
-            database = importer.importDatabase();
-            logger.info("Ordering tables by dependency");
-            List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
-            for (DBTable table : tables)
-                parseTable(table); // TODO support lazy parsing
-        } catch (ConnectFailedException e) {
-			throw new ConfigurationError("Database not available. ", e);
-        } catch (ImportFailedException e) {
-            throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
-        }
+        this.tables = new HashMap<String, DBTable>();
+        this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
+        //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
+        getDialect(); // make sure dialect is initialized
+        database = getDbMetaData();
+        logger.info("Ordering tables by dependency");
+        List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
+        for (DBTable table : tables)
+            parseTable(table); // TODO support lazy parsing
     }
 	
     public DatabaseDialect getDialect() {
@@ -568,6 +553,12 @@ public class DBSystem extends AbstractStorageSystem {
     	return getDialect().getSystem();
     }
     
+	public Database getDbMetaData() {
+		if (database == null)
+			fetchDbMetaData();
+        return database;
+	}
+
 	// java.lang.Object overrides ------------------------------------------------------------------
 	
     @Override
@@ -576,6 +567,25 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     // private helpers ------------------------------------------------------------------------------
+
+	private void fetchDbMetaData() {
+		try {
+		    JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
+		    importer.setCatalogName(catalog);
+		    importer.setSchemaName(schema);
+		    importer.setIncludeTables(includeTables);
+		    importer.setExcludeTables(excludeTables);
+		    importer.setImportingIndexes(false);
+		    importer.setImportingUKs(true);
+		    importer.setFaultTolerant(true);
+		    importer.setLazy(lazy);
+		    database = importer.importDatabase();
+		} catch (ConnectFailedException e) {
+			throw new ConfigurationError("Database not available. ", e);
+		} catch (ImportFailedException e) {
+		    throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
+		}
+	}
 
 	private QueryIterable createQuery(String query, Context context, Connection connection) {
 	    return new QueryIterable(connection, query, fetchSize, (dynamicQuerySupported ? context : null));

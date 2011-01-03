@@ -49,23 +49,23 @@ public class CollectionGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testElements() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
         source.init(context);
-        CollectionGenerator<List, Integer> generator 
+		CollectionGenerator<List, Integer> generator 
         	= new CollectionGenerator<List, Integer>(List.class, source, 1, 5, SequenceManager.RANDOM_SEQUENCE);
         generator.init(context);
         List<Integer> list = generator.generate();
         checkEqualDistribution(list, 0., CollectionUtil.toSet(1));
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+	@Test
     public void testSize() {
         Generator<Integer> source = new ConstantTestGenerator<Integer>(1);
         source.init(context);
-        CollectionGenerator<List, Integer> generator 
+		CollectionGenerator<List, Integer> generator 
         	= new CollectionGenerator<List, Integer>(List.class, source, 0, 3, SequenceManager.RANDOM_SEQUENCE);
         generator.init(context);
         ObjectCounter<Integer> counter = new ObjectCounter<Integer>(4);

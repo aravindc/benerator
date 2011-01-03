@@ -41,7 +41,8 @@ import org.databene.model.storage.StorageSystem;
 @SuppressWarnings("unchecked")
 public class QueryLongGenerator extends QueryGenerator<Long> {
 	
-    private Converter converter;
+    @SuppressWarnings("rawtypes")
+	private Converter converter;
 
 	public QueryLongGenerator(String selector, StorageSystem source) {
 	    super(selector, source);

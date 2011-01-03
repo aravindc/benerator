@@ -95,7 +95,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
         context.set("this", currentInstance);
     }
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private void initVariables(GeneratorContext context) {
 	    this.variableResults = new OrderedNameMap<ProductWrapper<?>>();
         for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
@@ -112,7 +112,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     }
 
 	@Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public E generate() {
 		if (!firstGeneration)
 			fetchNextSourceInstance(context);

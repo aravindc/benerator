@@ -40,11 +40,11 @@ import org.junit.Test;
  */
 public abstract class GeneratorClassTest extends GeneratorTest {
 
-    @SuppressWarnings("unchecked")
-    protected Class<? extends Generator> generatorClass;
+    @SuppressWarnings("rawtypes")
+	protected Class<? extends Generator> generatorClass;
 
-    @SuppressWarnings("unchecked")
-    public GeneratorClassTest(Class<? extends Generator> generatorClass) {
+    @SuppressWarnings("rawtypes")
+	public GeneratorClassTest(Class<? extends Generator> generatorClass) {
         this.generatorClass = generatorClass;
     }
 

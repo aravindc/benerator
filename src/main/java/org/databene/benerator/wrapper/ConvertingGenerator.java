@@ -71,7 +71,7 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     }
 
     /** @see org.databene.benerator.Generator#generate() */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public T generate() {
         try {
             Object tmp = source.generate();

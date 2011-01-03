@@ -57,12 +57,12 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
         this(filenamePattern, ',', datasetName, nesting, SystemInfo.getFileEncoding());
     }
 
-    @SuppressWarnings({ "unchecked", "cast" })
+    @SuppressWarnings({ "unchecked", "cast", "rawtypes" })
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, String encoding) {
         this(filenamePattern, separator, datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }
 
-    @SuppressWarnings({ "cast", "unchecked" })
+    @SuppressWarnings({ "cast", "unchecked", "rawtypes" })
     public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting, String encoding) {
         this(filenamePattern, ',', datasetName, nesting, encoding, (Converter<String, E>) new NoOpConverter());
     }

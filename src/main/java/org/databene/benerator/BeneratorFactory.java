@@ -39,7 +39,7 @@ public abstract class BeneratorFactory {
 	public static final String BENERATOR_FACTORY_PROPERTY = "benerator.factory";
 	
     public abstract BeneratorParsingContext createParsingContext(ResourceManager resourceManager);
-	
+    
 	private static BeneratorFactory instance;
 
 	public static final BeneratorFactory getInstance() {

@@ -41,7 +41,6 @@ import org.databene.commons.converter.AnyConverter;
  * @author Volker Bergmann
  */
 
-@SuppressWarnings("unchecked")
 public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition> {
 	
 	private Class<E> stateType;
@@ -65,7 +64,7 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
     }
 
     public void addTransition(E from, E to, double weight) {
-    	((StateGenerator) source).addTransition(from, to, weight);
+    	((StateGenerator<E>) source).addTransition(from, to, weight);
     }
     
     // Generator interface implementation ------------------------------------------------------------------------------

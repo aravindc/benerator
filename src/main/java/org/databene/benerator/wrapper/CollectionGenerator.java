@@ -40,7 +40,7 @@ import java.util.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class CollectionGenerator<C extends Collection, I> extends CardinalGenerator<I, C> {
 
     /** The collection type to create */

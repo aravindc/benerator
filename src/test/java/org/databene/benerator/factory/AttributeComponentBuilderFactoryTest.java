@@ -77,13 +77,13 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 
 	// script ----------------------------------------------------------------------------------------------------------
 	
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testScriptAttribute() {
 		PartDescriptor name = new PartDescriptor("name");
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("'OK'");
-		ComponentBuilder builder = createComponentBuilder(name);
+		ComponentBuilder<?> builder = createComponentBuilder(name);
 		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		ProductWrapper<String> wrapper = new ProductWrapper<String>();
@@ -91,7 +91,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			assertEquals("OK", helper.generate(wrapper).product);
 	}
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testNullScriptAttribute() {
 		PartDescriptor name = new PartDescriptor("name");
@@ -105,7 +105,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			assertEquals(null, helper.generate(wrapper).product);
 	}
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testScriptWithConverterAttribute() {
 		PartDescriptor name = new PartDescriptor("name");
@@ -120,7 +120,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			assertEquals("ABC", helper.generate(wrapper).product);
 	}
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testEnumNameScriptAttribute() {
 		PartDescriptor part = new PartDescriptor("name");
@@ -138,7 +138,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 
 	// constant --------------------------------------------------------------------------------------------------------
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testEmptyConstantAttribute() {
 		PartDescriptor name = new PartDescriptor("name");
@@ -154,7 +154,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 
 	// values ----------------------------------------------------------------------------------------------------------
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testMultiValuesAttribute() {
 		String componentName = "name";
@@ -170,7 +170,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testSingleValuesAttribute() {
 		String componentName = "name";
@@ -184,7 +184,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			assertEquals("A", helper.generate(new ProductWrapper<String>()).product);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testEmptyValuesAttribute() {
 		String componentName = "name";
@@ -200,7 +200,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	
 	// pattern ---------------------------------------------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testPatternAttribute() {
 		String componentName = "name";
@@ -218,7 +218,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		expectGenerations(helper, 20, new StringValidator(charValidator, 2, 4));
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testEmptyPatternAttribute() {
 		String componentName = "name";
@@ -281,7 +281,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	// nullQuota == 1 evaluation ---------------------------------------------------------------------------------------
 	
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testNullQuotaOneReference() {
 		String componentName = "id";
 		ReferenceDescriptor reference = (ReferenceDescriptor) new ReferenceDescriptor(componentName).withNullQuota(1);
@@ -292,7 +292,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testNullQuotaOneAttribute() {
 		String componentName = "part";
 		PartDescriptor attribute = (PartDescriptor) new PartDescriptor(componentName).withNullQuota(1);
@@ -309,7 +309,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	 * <id name="id" strategy="uuid"/>
 	 */
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testUuid() {
 		String componentName = "id";
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "string");
@@ -326,7 +326,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	 * <id name="id" strategy="increment"/>
 	 */
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testIncrementIdWithoutType() {
 		String componentName = "id";
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "long");
@@ -343,7 +343,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	 * <id name="id"/>
 	 */
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testDefaultIdGeneration() {
 		String componentName = "id";
 		IdDescriptor id = new IdDescriptor(componentName);
@@ -359,7 +359,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	 * <id name="id" type="byte" strategy="increment"/>
 	 */
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void testIncrementByteId() {
 		String componentName = "id";
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "byte");
@@ -372,7 +372,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	}
 	
 	@Test
-    @SuppressWarnings({ "cast", "unchecked" })
+    @SuppressWarnings({ "cast", "unchecked", "rawtypes" })
     public void testAlternative() {
     	AlternativeGroupDescriptor alternativeType = new AlternativeGroupDescriptor(null);
     	SimpleTypeDescriptor typeA = (SimpleTypeDescriptor) new SimpleTypeDescriptor("A", "string").withValues("'1'");
@@ -387,7 +387,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		builder.buildComponentFor(entity);
     }
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
 	public void testMap() {
 		String componentName = "flag";
@@ -408,6 +408,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
     
     // test date and time generation -----------------------------------------------------------------------------------
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testDateMinMax() {
 		String componentName = "part";
@@ -723,10 +724,12 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	@SuppressWarnings("unchecked")
 	public static final class ComponentBuilderGenerator<E> extends AbstractNullableGenerator<E> {
 		
-        private ComponentBuilder builder;
+        @SuppressWarnings("rawtypes")
+		private ComponentBuilder builder;
 		private String componentName;
 
-        public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
+        @SuppressWarnings("rawtypes")
+		public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
 			this.builder = builder;
 			this.componentName = componentName;
 		}
@@ -767,7 +770,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
@@ -775,7 +778,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		expectGeneratedSequence(helper, products).withCeasedAvailability();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private <T> void expectUniqueSet(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
 		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());

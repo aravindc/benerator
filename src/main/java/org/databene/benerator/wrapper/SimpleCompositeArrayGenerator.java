@@ -43,7 +43,8 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public SimpleCompositeArrayGenerator() {
+    @SuppressWarnings("unchecked")
+	public SimpleCompositeArrayGenerator() {
         super();
     }
 

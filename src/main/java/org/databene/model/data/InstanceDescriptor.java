@@ -186,7 +186,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
 
     @SuppressWarnings("unchecked")
     public Expression<Long> getCount() {
-        return (Expression) getDetailValue(COUNT);
+        return (Expression<Long>) getDetailValue(COUNT);
     }
     
     public void setCount(Expression<Long> count) {

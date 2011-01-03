@@ -61,7 +61,7 @@ public class AddingConsumer extends AbstractConsumer<Object> {
 		this.accessor = (feature != null ? new FeatureAccessor<Object, Number>(feature, true) : null);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void setType(String typeName) {
 		if (StringUtil.isEmpty(typeName))
 			typeName = "double";

@@ -94,7 +94,6 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		assertNull(generator.generate());
 	}
 	
-	@SuppressWarnings("unchecked")
     @Test
 	public void testXlsDataset() {
 		ArrayTypeDescriptor descriptor = createPersonDescriptor();
@@ -102,7 +101,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.SIMPLE, context);
-		Generator<String> g = new ConvertingGenerator<Object[], String>(generator, new ArrayElementExtractor(String.class, 0));
+		Generator<String> g = new ConvertingGenerator<Object[], String>(generator, new ArrayElementExtractor<String>(String.class, 0));
 		generator.init(context);
 		expectGeneratedSet(g, "de", "at", "ch");
 		assertNull(generator.generate());
@@ -119,7 +118,6 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		assertNull(generator.generate());
 	}
 	
-	@SuppressWarnings("unchecked")
     @Test
 	public void testCsvDataset() {
 		ArrayTypeDescriptor descriptor = createPersonDescriptor();
@@ -127,7 +125,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setNesting("org/databene/benerator/factory/testnesting");
 		descriptor.setDataset("DACH");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.SIMPLE, context);
-		Generator<String> g = new ConvertingGenerator<Object[], String>(generator, new ArrayElementExtractor(String.class, 0));
+		Generator<String> g = new ConvertingGenerator<Object[], String>(generator, new ArrayElementExtractor<String>(String.class, 0));
 		generator.init(context);
 		expectGeneratedSet(g, "de", "at", "ch");
 		assertNull(generator.generate());

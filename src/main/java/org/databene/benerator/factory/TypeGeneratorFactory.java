@@ -88,7 +88,7 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected static Generator<?> createValidatingGenerator(
             TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
         Validator<?> validator = DescriptorUtil.getValidator(descriptor, context);
@@ -97,7 +97,7 @@ public class TypeGeneratorFactory {
         return generator;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator generator, BeneratorContext context) {
         Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
         if (converter != null) {
@@ -121,7 +121,7 @@ public class TypeGeneratorFactory {
 		return generator;
 	}
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static Generator<?> createMappingGenerator(
             SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getMap() == null)
@@ -131,7 +131,7 @@ public class TypeGeneratorFactory {
         return new ConvertingGenerator(generator, mapper);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static Generator<?> createTypeConvertingGenerator(
             SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
@@ -140,7 +140,7 @@ public class TypeGeneratorFactory {
     	return (converter != null ? new ConvertingGenerator(generator, converter) : generator);
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Converter<?, ?> createConverter(SimpleTypeDescriptor descriptor, Class<?> sourceType) {
 	    PrimitiveType primitiveType = descriptor.getPrimitiveType();
         Class<?> targetType = primitiveType.getJavaType();

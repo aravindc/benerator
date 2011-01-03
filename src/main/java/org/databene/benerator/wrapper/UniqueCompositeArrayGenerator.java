@@ -54,7 +54,8 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public UniqueCompositeArrayGenerator() {
+	@SuppressWarnings("unchecked")
+	public UniqueCompositeArrayGenerator() {
         super();
     }
 

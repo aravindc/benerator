@@ -43,7 +43,7 @@ import org.databene.commons.expression.ExpressionUtil;
  */
 public class BeneratorRootStatement extends SequentialStatement {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<?> getGenerator(String name, BeneratorContext context) {
     	GeneratorStatement statement = getGeneratorStatement(name, context);
     	Generator<?> generator = statement.getTarget().getGenerator();

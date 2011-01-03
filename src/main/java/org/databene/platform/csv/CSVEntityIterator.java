@@ -128,7 +128,7 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 
     // private helpers -------------------------------------------------------------------------------------------------
     
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void init(String uri, Converter<String, ?> preprocessor,
 			char separator, String encoding) throws FileNotFoundException {
 		try {

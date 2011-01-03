@@ -63,7 +63,6 @@ public class MultiThreadedTaskRunner implements TaskRunner {
 	    this.tracker = tracker;
     }
 
-	@SuppressWarnings("unchecked")
     public long run(Long maxInvocationCount) {
         AtomicLong counter = new AtomicLong();
         int maxLoopsPerPage = (int)((maxInvocationCount + threadCount - 1) / threadCount);
@@ -86,7 +85,7 @@ public class MultiThreadedTaskRunner implements TaskRunner {
                                 "it must either be used in a single thread or be parallelizable.");
                 }
 				if (tracker != null)
-					task = (Task) ((StateTrackingTaskProxy) task).clone();
+					task = ((StateTrackingTaskProxy<?>) task).clone();
                 TaskRunnable runner = new TaskRunnable(loopSize, counter, latch, !threadSafe);
 				executorService.execute(runner);
             } else

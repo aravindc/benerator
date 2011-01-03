@@ -68,7 +68,7 @@ public class AttachedWeightSampleGeneratorTest extends GeneratorTest {
         for (int i = 0; i < n; i++) {
             sampleCount[g.generate()] ++;
         }
-        List<WeightedSample<Integer>> samples2 = g.getSamples();
+        List<WeightedSample<? extends Integer>> samples2 = g.getSamples();
         for (int i = 0; i < sampleCount.length; i++) {
             int count = sampleCount[i];
             double measuredProbability = (float)count / n;

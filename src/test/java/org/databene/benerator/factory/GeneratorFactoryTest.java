@@ -278,7 +278,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     // formatting generators -------------------------------------------------------------------------------------------
 
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testGetConvertingGenerator() {
         Generator<Double> source = new RandomDoubleGenerator(0, 9);
         NumberFormat format = DecimalFormat.getInstance();
@@ -316,7 +316,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         for (Sequence sequence : SequenceManager.registeredSequences()) {
         	if (sequence instanceof HeadSequence)
         		continue;
-            Generator<List> generator = GeneratorFactory.getCollectionGenerator(
+            Generator<List<?>> generator = GeneratorFactory.getCollectionGenerator(
                     List.class, source, 0, 5, sequence);
             initAndUseGenerator(generator);
         }
@@ -329,7 +329,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         int minSize = 0;
         int maxSize = 5;
         for (WeightFunction distributionFunction : getDistributionFunctions(minSize, maxSize)) {
-            Generator<List> generator = GeneratorFactory.getCollectionGenerator(
+            Generator<List<?>> generator = GeneratorFactory.getCollectionGenerator(
                     List.class, source, minSize, maxSize, distributionFunction);
             initAndUseGenerator(generator);
         }
@@ -360,7 +360,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testGetHeterogenousArrayGenerator() {
         List<String> salutations = Arrays.asList("Hello", "Hi");
         AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);

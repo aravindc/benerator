@@ -93,8 +93,7 @@ public abstract class NullableGeneratorTest {
         return new Helper(generator);
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T> Helper expectGenerations(NullableGenerator<T> generator, int n, Validator ... validators) {
+    protected <T> Helper expectGenerations(NullableGenerator<T> generator, int n, Validator<T> ... validators) {
         expectGenerationsOnce(generator, n, validators);
         generator.reset();
         expectGenerationsOnce(generator, n, validators);
@@ -284,9 +283,8 @@ public abstract class NullableGeneratorTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private <T>void expectUniqueProductsOnce(NullableGenerator<T> generator, int n) {
-        UniqueValidator validator = new UniqueValidator();
+        UniqueValidator<T> validator = new UniqueValidator<T>();
         for (int i = 0; i < n; i++) {
         	T product = generateBy(generator);
             assertNotNull("Generator is not available: " + generator, product);
@@ -295,23 +293,21 @@ public abstract class NullableGeneratorTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> void expectGenerationsOnce(NullableGenerator<T> generator, int n, Validator ... validators) {
+    private <T> void expectGenerationsOnce(NullableGenerator<T> generator, int n, Validator<T> ... validators) {
         for (int i = 0; i < n; i++) {
         	T product = generateBy(generator);
             assertNotNull("Generator has gone unavailable before creating the required number of products ",
                     product);
             logger.debug("created " + format(product));
-            for (Validator validator : validators) {
+            for (Validator<T> validator : validators) {
                 assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator,
                         validator.valid(product));
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> void expectUniqueGenerationsOnce(NullableGenerator<T> generator, int n, Validator ... validators) {
-        UniqueValidator validator = new UniqueValidator();
+    private <T> void expectUniqueGenerationsOnce(NullableGenerator<T> generator, int n, Validator<T> ... validators) {
+        UniqueValidator<T> validator = new UniqueValidator<T>();
         for (int i = 0; i < n; i++) {
         	T product = generateBy(generator);
             assertNotNull("Generator has gone unavailable before creating the required number of products ",

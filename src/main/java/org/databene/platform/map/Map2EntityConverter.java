@@ -39,7 +39,7 @@ import java.util.Set;
  * Created: 29.08.2007 18:44:41
  * @author Volker Bergmann
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class Map2EntityConverter extends ThreadSafeConverter<Map, Entity> {
 
     private ComplexTypeDescriptor descriptor;
@@ -49,7 +49,7 @@ public class Map2EntityConverter extends ThreadSafeConverter<Map, Entity> {
         this.descriptor = descriptor;
     }
 
-    public Entity convert(Map map) {
+	public Entity convert(Map map) {
         Entity entity = new Entity(descriptor);
         for (Map.Entry entry : ((Set<Map.Entry>) map.entrySet()))
             entity.setComponent((String) entry.getKey(), entry.getValue());

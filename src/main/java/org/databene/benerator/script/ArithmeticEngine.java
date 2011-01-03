@@ -241,7 +241,7 @@ public class ArithmeticEngine {
 	    			BeanUtil.simpleClassName(divisor) + " (" + divisor + ") is not supported");
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean less(Object part1, Object part2) {
     	// null handling
     	if (part2 == null || part1 == null)
@@ -257,7 +257,7 @@ public class ArithmeticEngine {
 	    			BeanUtil.simpleClassName(part1) + " with " + BeanUtil.simpleClassName(part2));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean lessOrEquals(Object part1, Object part2) {
     	// null handling
     	if (part2 == null || part1 == null)
@@ -273,7 +273,7 @@ public class ArithmeticEngine {
 	    			BeanUtil.simpleClassName(part1) + " with " + BeanUtil.simpleClassName(part2));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean equals(Object part1, Object part2) {
     	// null handling
     	if (part2 == null && part1 == null)

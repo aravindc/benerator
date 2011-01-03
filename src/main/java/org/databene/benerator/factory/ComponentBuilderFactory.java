@@ -153,7 +153,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	    return new ConstantNullableGenerator<Object>(null, generatedType); 
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static ComponentBuilder<?> createAlternativeGroupBuilder(
 			AlternativeGroupDescriptor type, Uniqueness ownerUniqueness, BeneratorContext context) {
     	int i = 0;
@@ -174,21 +174,20 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         return wrapWithNullInjector(generator, part);
     }
 
-    @SuppressWarnings("unchecked")
     private static ComponentBuilder<?> wrapWithNullInjector(Generator<?> source, ComponentDescriptor descriptor) {
     	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
-    	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
+    	NullableGenerator<?> generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
         return builderFromGenerator(generator, descriptor);
     }
-
+/*
     @SuppressWarnings("unchecked")
     private static ComponentBuilder<?> wrapWithNullInjector(NullableGenerator<?> source, ComponentDescriptor descriptor) {
     	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
     	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
         return builderFromGenerator(generator, descriptor);
     }
-
-	@SuppressWarnings("unchecked")
+*/
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     static ComponentBuilder<?> createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
         boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
         Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
@@ -256,7 +255,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
     // non-public helpers ----------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static ComponentBuilder<?> wrapWithCondition(String conditionScript, ComponentBuilder<?> builder) {
     	if (!StringUtil.isEmpty(conditionScript)) {
 		    Expression<Boolean> condition = new ScriptExpression<Boolean>(conditionScript);

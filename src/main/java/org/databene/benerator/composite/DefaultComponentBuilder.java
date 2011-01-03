@@ -49,9 +49,9 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 		this.mutator = mutator;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public boolean buildComponentFor(E target) {
-		ProductWrapper wrapper = source.generate((ProductWrapper) productWrapper.get());
+		ProductWrapper<?> wrapper = source.generate((ProductWrapper) productWrapper.get());
 		if (wrapper == null)
 			return false;
 		mutator.setValue(target, wrapper.product);

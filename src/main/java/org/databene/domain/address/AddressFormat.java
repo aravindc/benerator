@@ -68,7 +68,7 @@ public class AddressFormat {
 		script = SCRIPT_FACTORY.parseText(pattern);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static AddressFormat getInstance(String country) {
 		if (instances.size() == 0) {
 			try {

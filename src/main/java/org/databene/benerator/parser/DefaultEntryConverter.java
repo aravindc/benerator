@@ -44,7 +44,7 @@ import org.databene.commons.mutator.AnyMutator;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DefaultEntryConverter extends AbstractConverter<Map.Entry, Map.Entry> {
     
     private BeneratorContext context;

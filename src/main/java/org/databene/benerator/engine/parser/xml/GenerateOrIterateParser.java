@@ -213,9 +213,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				Object attributeValue = attribute.getValue();
 				if (instance.supportsDetail(attributeName))
 					instance.setDetailValue(attributeName, attributeValue);
-				else if (localType != null)
+				else
 					localType.setDetailValue(attributeName, attributeValue);
-				// else we expect different types
 			}
 		}
 		

@@ -85,7 +85,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     //@SuppressWarnings("unchecked")
     //private static final FeatureWeight EMPTY_WEIGHT = new FeatureWeight(null);
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<?> createSimpleTypeGenerator(
 			SimpleTypeDescriptor descriptor, boolean nullable, Uniqueness uniqueness,
 			BeneratorContext context) {
@@ -146,7 +146,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         }
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     protected static Generator<?> createConstantGenerator(
     		SimpleTypeDescriptor descriptor, BeneratorContext context) {
         Generator<?> generator = null;
@@ -169,7 +169,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		return generator;
 	}
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<?> createSourceAttributeGenerator(
     		SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         String source = descriptor.getSource();
@@ -206,22 +206,22 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     	return generator;
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<?> createSourceGeneratorFromObject(SimpleTypeDescriptor descriptor,
             BeneratorContext context, Object sourceObject) {
-		Generator generator;
+		Generator<?> generator;
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
 	        String selector = descriptor.getSelector();
 	        generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof Generator) {
-	        generator = (Generator) sourceObject;
+	        generator = (Generator<?>) sourceObject;
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    return generator;
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<?> createSimpleTypeCSVSourceGenerator(
 			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
 		Generator<?> generator;
@@ -284,7 +284,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             return null;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<?> createUnionTypeGenerator(
             UnionSimpleTypeDescriptor descriptor, BeneratorContext context) {
         int n = descriptor.getAlternatives().size();
@@ -303,7 +303,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         		DescriptorUtil.getMinLength(descriptor), DescriptorUtil.getMaxLength(descriptor));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<Timestamp> createTimestampGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Generator<Date> source = createDateGenerator(descriptor, uniqueness, context);
         Converter<Date, Timestamp> converter = (Converter) new AnyConverter<Timestamp>(Timestamp.class);

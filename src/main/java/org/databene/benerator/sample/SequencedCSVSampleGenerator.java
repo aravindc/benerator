@@ -69,7 +69,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         this((String)null);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public SequencedCSVSampleGenerator(String uri) {
         this(uri, new NoOpConverter());
     }

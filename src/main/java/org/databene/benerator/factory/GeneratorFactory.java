@@ -122,11 +122,11 @@ public class GeneratorFactory {
     @SuppressWarnings("unchecked")
 	public static <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
-	    WeightedSample<?>[] samples = BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
+	    WeightedSample<T>[] samples = (WeightedSample<T>[]) BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
 	    if (distribution == null && !unique && weightsUsed(samples)) {
-	    	AttachedWeightSampleGenerator generator = new AttachedWeightSampleGenerator(targetType);
+	    	AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(targetType);
 	    	for (int i = 0; i < samples.length; i++) {
-	    		WeightedSample<?> sample = samples[i];
+	    		WeightedSample<T> sample = samples[i];
 	    		if (sample.getValue() == null)
 	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
 	    		generator.addSample(sample);
@@ -140,10 +140,10 @@ public class GeneratorFactory {
 	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
 	    		values[i] = value;
 	    	}
-	        IteratingGenerator source = new IteratingGenerator(new ArrayIterable(values, String.class));
+	        IteratingGenerator<String> source = new IteratingGenerator<String>(new ArrayIterable<String>(values, String.class));
 	        if (distribution == null)
 	        	distribution = SequenceManager.RANDOM_SEQUENCE;
-	        Generator gen = GeneratorFactory.getConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	        Generator<T> gen = GeneratorFactory.getConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
 	    	return distribution.applyTo(gen, unique);
 	    }
     }
@@ -163,7 +163,7 @@ public class GeneratorFactory {
      * @param converter the converter to use for representing the file entries
      * @return a Generator that creates instances of the parameterized type T.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T> Generator<T> getSampleGenerator(String uri, String encoding, Converter<String, T> converter) {
         if (converter == null)
             converter = new NoOpConverter();
@@ -369,7 +369,7 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      * @see java.text.MessageFormat
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<String> getMessageGenerator(
             String pattern, int minLength, int maxLength, Generator ... sources) {
         Generator<String> generator = new ConvertingGenerator<Object[], String>(

@@ -114,7 +114,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
         return false;
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public TaskResult execute(Context ctx, ErrorHandler errorHandler) {
     	if (!generatorInitialized.get())
     		initGenerator(context);
@@ -127,7 +127,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 	        }
 	        BeneratorMonitor.INSTANCE.countGenerations(1);
 	        // consume data object
-        	Consumer consumer = getConsumer();
+			Consumer consumer = getConsumer();
         	if (consumer != null)
         		consumer.startConsuming(data);
         	// generate and consume sub data objects

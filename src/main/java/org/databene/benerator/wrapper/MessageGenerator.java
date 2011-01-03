@@ -70,8 +70,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     }
 
     /** Initializes Generator */
-    @SuppressWarnings("unchecked")
-    public MessageGenerator(String pattern, int minLength, int maxLength, Generator ... sources) {
+    public MessageGenerator(String pattern, int minLength, int maxLength, Generator<?> ... sources) {
         super(new StringLengthValidator());
         this.pattern = pattern;
         this.minLength = minLength;
@@ -112,7 +111,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     }
 
     /** Sets the source generators */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setSources(Generator[] sources) {
         this.helper.setSources(sources);
     }

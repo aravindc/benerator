@@ -700,8 +700,6 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         descriptor.setCount(new ConstantExpression<Long>(1L));
         if ("prohibited".equals(attributeElement.getAttribute("use")))
             descriptor.setMode(Mode.ignored);
-        if (descriptor == null) 
-                throw new ConfigurationError("Unable to parse attribute " + name);
         owner.addComponent(descriptor);
         return descriptor;
     }

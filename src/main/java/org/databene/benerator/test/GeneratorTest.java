@@ -117,11 +117,11 @@ public abstract class GeneratorTest {
         return new Helper(generator);
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T> Helper expectGenerations(Generator<T> generator, int n, Validator ... validators) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	protected <T> Helper expectGenerations(Generator<T> generator, int n, Validator ... validators) {
         expectGenerationsOnce(generator, n, validators);
         generator.reset();
-        for (Validator validator : validators)
+        for (Validator<?> validator : validators)
         	if (validator instanceof Resettable)
         		((Resettable) validator).reset();
         expectGenerationsOnce(generator, n, validators);
@@ -319,9 +319,8 @@ public abstract class GeneratorTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private <T>void expectUniqueProductsOnce(Generator<T> generator, int n) {
-        UniqueValidator validator = new UniqueValidator();
+        UniqueValidator<T> validator = new UniqueValidator<T>();
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
             assertNotNull("Generator is not available: " + generator, product);
@@ -330,15 +329,14 @@ public abstract class GeneratorTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
+    private <T> void expectGenerationsOnce(Generator<T> generator, int n, Validator<T> ... validators) {
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
             assertNotNull("Generator has gone unavailable before creating the required number of products, " +
             		"required " + n + " but was " + i,
                     product);
             logger.debug("created " + format(product));
-            for (Validator validator : validators) {
+            for (Validator<T> validator : validators) {
                 assertTrue("The generated value '" + format(product) + "' is not valid according to " + validator +
                 		", failed after " + i + " generations",
                         validator.valid(product));
@@ -346,9 +344,8 @@ public abstract class GeneratorTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> void expectUniqueGenerationsOnce(Generator<T> generator, int n, Validator ... validators) {
-        UniqueValidator validator = new UniqueValidator();
+    private <T> void expectUniqueGenerationsOnce(Generator<T> generator, int n, Validator<T> ... validators) {
+        UniqueValidator<T> validator = new UniqueValidator<T>();
         for (int i = 0; i < n; i++) {
         	T product = generator.generate();
             assertNotNull("Generator has gone unavailable before creating the required number of products ",

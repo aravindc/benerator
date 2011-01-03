@@ -45,8 +45,8 @@ import freemarker.template.TemplateModel;
  */
 public class DateSumMethod implements TemplateMethodModel {
     
-	@SuppressWarnings("unchecked")
-    public TemplateModel exec(List args) {
+    @SuppressWarnings("rawtypes")
+	public TemplateModel exec(List args) {
 		long sum = 0;
 		for (Object arg : args) {
 			arg = LiteralParser.parse((String) arg);

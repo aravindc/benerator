@@ -298,39 +298,38 @@ public class DescriptorUtilTest {
 	// helpers ---------------------------------------------------------------------------------------------------------
 
 	@SuppressWarnings("unchecked")
-	private void checkGetConverter(String contextKey, Converter contextValue, String converterSpec, int expectedValue) {
+	private void checkGetConverter(String contextKey, Converter<Integer, ?> contextValue, String converterSpec, int expectedValue) {
 		BeneratorContext context = new BeneratorContext(null);
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setConverter(converterSpec);
-		Converter converter = DescriptorUtil.getConverter(descriptor, context);
+		Converter<Integer, ?> converter = DescriptorUtil.getConverter(descriptor, context);
 		assertNotNull(converter);
 		assertEquals(expectedValue, converter.convert(1));
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void checkGetValidator(String contextKey, Validator contextValue, String validatorSpec, Integer validValue) {
+	private void checkGetValidator(String contextKey, Validator<Integer> contextValue, String validatorSpec, Integer validValue) {
 		BeneratorContext context = new BeneratorContext(null);
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setValidator(validatorSpec);
-		Validator validator = DescriptorUtil.getValidator(descriptor, context);
+		Validator<Integer> validator = DescriptorUtil.getValidator(descriptor, context);
 		assertNotNull(validator);
 		if (validValue != null)
 			assertEquals(true, validator.valid(validValue));
 	}
 	
-	@SuppressWarnings("unchecked")
 	private void checkGetGeneratorByName(
-			String contextKey, Generator contextValue, String generatorSpec, int expectedValue) {
+			String contextKey, Generator<?> contextValue, String generatorSpec, int expectedValue) {
 		BeneratorContext context = new BeneratorContext(null);
 		if (contextKey != null)
 			context.set(contextKey, contextValue);
 		TypeDescriptor descriptor = new SimpleTypeDescriptor("x");
 		descriptor.setGenerator(generatorSpec);
-		Generator generator = DescriptorUtil.getGeneratorByName(descriptor, context);
+		Generator<?> generator = DescriptorUtil.getGeneratorByName(descriptor, context);
 		assertNotNull(generator);
 		assertEquals(expectedValue, generator.generate());
 	}

@@ -49,7 +49,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
 	// TODO v0.7 possibly this class and WeightedSample are obsolete (replaceable by MappedSampleGenerator)
 	
     /** Keeps the Sample information */
-    List<WeightedSample<E>> samples = new ArrayList<WeightedSample<E>>();
+    List<WeightedSample<? extends E>> samples = new ArrayList<WeightedSample<? extends E>>();
     
     private IndividualWeight<E> individualWeight;
 
@@ -112,14 +112,14 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     // samples property ------------------------------------------------------------------------------------------------
 
     /** returns the sample list */
-    public List<WeightedSample<E>> getSamples() {
+    public List<WeightedSample<? extends E>> getSamples() {
         return samples;
     }
 
     /** Sets the sample list to the specified weighted values */
-    public void setSamples(WeightedSample<E> ... samples) {
+    public void setSamples(WeightedSample<? extends E> ... samples) {
         this.samples.clear();
-        for (WeightedSample<E> sample : samples)
+        for (WeightedSample<? extends E> sample : samples)
             this.samples.add(sample);
     }
 
@@ -136,7 +136,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     }
 
     /** Adds a weighted value to the sample list */
-    public void addSample(WeightedSample<E> sample) {
+    public void addSample(WeightedSample<? extends E> sample) {
         samples.add(sample);
     }
 
@@ -178,7 +178,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         if (samples.size() == 0)
             return null;
         int index = indexGenerator.generate().intValue();
-        WeightedSample<E> sample = samples.get(index);
+        WeightedSample<? extends E> sample = samples.get(index);
         return sample.getValue();
     }
 
@@ -199,11 +199,11 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     /** normalizes the sample weights to a sum of 1 */
     private void normalize() {
     	if (individualWeight != null) {
-            for (WeightedSample<E> sample : samples)
+            for (WeightedSample<? extends E> sample : samples)
                 sample.setWeight(individualWeight.weight(sample.getValue()));
     	}
         double totalWeight = totalWeight();
-        for (WeightedSample<E> sample : samples) {
+        for (WeightedSample<? extends E> sample : samples) {
             if (totalWeight == 0) {
                 sample.setWeight(1. / samples.size());
             } else {
@@ -215,7 +215,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     /** Calculates the total weight of all samples */
     private double totalWeight() {
         double total = 0;
-        for (WeightedSample<E> sample : samples)
+        for (WeightedSample<? extends E> sample : samples)
             total += sample.getWeight();
         return total;
     }

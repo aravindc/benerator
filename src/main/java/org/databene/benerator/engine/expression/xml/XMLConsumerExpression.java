@@ -94,7 +94,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 				String ref = parseStringAttribute(consumerElement, ATT_REF, context);
 				bean = beneratorContext.get(ref);
 			} else if (consumerElement.hasAttribute(ATT_CLASS) || consumerElement.hasAttribute(ATT_SPEC)) {
-				Expression beanExpr = BeanParser.parseBeanExpression(consumerElement, resourceManager);
+				Expression<?> beanExpr = BeanParser.parseBeanExpression(consumerElement, resourceManager);
 				bean = beanExpr.evaluate(context);
 			} else
 				throw new UnsupportedOperationException(
@@ -111,7 +111,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 		return consumerChain;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static void addConsumer(Object bean, BeneratorContext context, ConsumerChain<?> chain) {
     	Consumer consumer;
     	// check consumer type

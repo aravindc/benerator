@@ -42,7 +42,7 @@ import org.databene.benerator.Generator;
 
 public class WrapperFactory {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T extends Number> Generator<T> wrapNumberGenerator(
     		Class<T> numberType, Generator<? extends Number> source, T min, T precision) {
     	if (numberType.equals(source.getGeneratedType()))

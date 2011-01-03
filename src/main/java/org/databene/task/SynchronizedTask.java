@@ -32,7 +32,7 @@ import org.databene.commons.ErrorHandler;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SynchronizedTask extends TaskProxy {
 
 	public SynchronizedTask(Task realTask) {

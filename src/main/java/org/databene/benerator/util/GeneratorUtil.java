@@ -102,11 +102,10 @@ public class GeneratorUtil {
 	    	resettable.reset();
     }
 
-	@SuppressWarnings("unchecked")
     public static Generator<?> unwrap(Generator<?> generator) {
 		Generator<?> result = generator;
 		while (result instanceof GeneratorWrapper)
-			result = ((GeneratorWrapper) result).getSource();
+			result = ((GeneratorWrapper<?,?>) result).getSource();
 		return result;
 	}
 	

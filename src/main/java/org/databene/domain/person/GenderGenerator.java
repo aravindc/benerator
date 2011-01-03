@@ -83,8 +83,8 @@ public class GenderGenerator extends GeneratorProxy<Gender> {
 	@SuppressWarnings("unchecked")
     private void initSource() {
 	    source = GeneratorFactory.getWeightedSampleGenerator(
-	    		new WeightedSample(Gender.FEMALE, femaleQuota),
-	    		new WeightedSample(Gender.MALE, 1 - femaleQuota)
+	    		new WeightedSample<Gender>(Gender.FEMALE, femaleQuota),
+	    		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
 	    );
     }
     

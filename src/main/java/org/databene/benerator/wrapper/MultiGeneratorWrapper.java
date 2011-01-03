@@ -50,8 +50,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     protected Generator<? extends S>[] sources;
     protected List<Generator<? extends S>> availableSources;
     
-    @SuppressWarnings("unchecked")
-    public MultiGeneratorWrapper(Generator ... sources) {
+    public MultiGeneratorWrapper(Generator<? extends S> ... sources) {
         setSources(sources);
     }
 

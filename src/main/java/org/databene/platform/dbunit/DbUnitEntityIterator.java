@@ -33,7 +33,6 @@ import org.databene.script.ScriptUtil;
 import org.databene.commons.Context;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.ArrayFormat;
-import org.databene.commons.ArrayUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -202,25 +201,9 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
             this.columnNames = columns;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        public String getColumn(int i) {
-            return columnNames[i];
-        }
-
         @Override
         public String toString() {
             return name + '[' + ArrayFormat.format(columnNames) + ']';
-        }
-
-        public int getColumnIndex(String columnName) {
-            return ArrayUtil.indexOf(columnName, columnNames);
         }
 
         public String[] getColumnNames() {

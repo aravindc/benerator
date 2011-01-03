@@ -50,7 +50,7 @@ public abstract class CompositeStatement implements Statement, Element<Statement
 		this.subStatements = subStatements;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public void accept(Visitor<Statement> visitor) {
 		visitor.visit(this);
 	    for (Statement subStatement : subStatements)

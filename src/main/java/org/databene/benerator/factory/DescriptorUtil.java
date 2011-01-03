@@ -115,7 +115,6 @@ public class DescriptorUtil {
 				&& ComplexTypeDescriptor.__SIMPLE_CONTENT.equals(components.get(0).getName()));
 	}
 
-    @SuppressWarnings("unchecked")
 	public static Generator<?> getGeneratorByName(TypeDescriptor descriptor, BeneratorContext context) {
     	try {
 	        Generator<?> generator = null;
@@ -124,7 +123,7 @@ public class DescriptorUtil {
 	        	if (generatorSpec.startsWith("{") && generatorSpec.endsWith("}"))
 	        		generatorSpec = generatorSpec.substring(1, generatorSpec.length() - 1);
 	        	Expression<?> beanCreator = BeneratorScriptParser.parseBeanSpec(generatorSpec);
-				generator = (Generator) beanCreator.evaluate(context);
+				generator = (Generator<?>) beanCreator.evaluate(context);
 	            mapDetailsToBeanProperties(descriptor, generator, context);
 	        }
 	        return generator;
@@ -133,7 +132,7 @@ public class DescriptorUtil {
     	}
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Validator getValidator(TypeDescriptor descriptor, BeneratorContext context) {
 		try {
 	        String validatorSpec = descriptor.getValidator();
@@ -145,7 +144,7 @@ public class DescriptorUtil {
 			Object[] beans = ExpressionUtil.evaluateAll(beanExpressions, context);
 	        for (Object bean : beans) {
 	        	// check validator type
-	        	Validator<?> validator;
+	        	Validator validator;
 	        	if (bean instanceof Validator)
 	        		validator = (Validator<?>) bean;
 	        	else if (bean instanceof ConstraintValidator)
@@ -167,7 +166,7 @@ public class DescriptorUtil {
         }
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Converter getConverter(TypeDescriptor descriptor, BeneratorContext context) {
         String converterSpec = descriptor.getConverter();
         try {
@@ -366,7 +365,7 @@ public class DescriptorUtil {
         }
     }
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<Entity> createRawEntitySourceGenerator(TypeDescriptor complexType,
             BeneratorContext context, String sourceName, SourceFactory factory) {
 	    Generator<Entity> generator;

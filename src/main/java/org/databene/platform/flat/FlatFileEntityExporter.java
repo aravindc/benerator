@@ -70,7 +70,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setColumns(String columnFormatList) {
         if (columnFormatList == null) {
             converters = null;

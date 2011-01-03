@@ -110,8 +110,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		executorService.shutdownNow();
 	}
 	
-	@SuppressWarnings("unchecked")
-    public Class forName(String className) {
+    public Class<?> forName(String className) {
 		return classCache.forName(className);
 	}
 	

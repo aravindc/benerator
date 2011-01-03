@@ -67,13 +67,12 @@ public class CityManager {
     	}
     }
 
-	@SuppressWarnings("unchecked")
     private static void parseStateFile(Country country) {
 		try {
 			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
 					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
 							"State", ',', Encodings.UTF_8),
-					new Entity2BeanConverter(State.class));
+					new Entity2BeanConverter<State>(State.class));
 			while (iterator.hasNext()) {
 				State state = iterator.next();
 				country.addState(state);
