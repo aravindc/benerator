@@ -92,7 +92,7 @@ public class DBSanityStatement implements Statement {
 				dbSanity.setSkin(skin);
 			
 			String[] tables = ExpressionUtil.evaluate(tablesEx, context);
-			// TODO make use of 'tables' filter
+			dbSanity.setTables(tables);
 			
 			Locale locale = ExpressionUtil.evaluate(localeEx, context);
 			if (locale != null)
