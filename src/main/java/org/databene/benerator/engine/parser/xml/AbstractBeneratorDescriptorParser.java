@@ -21,10 +21,16 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import static org.databene.benerator.engine.DescriptorConstants.ATT_ON_ERROR;
+import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.parseScriptableStringAttribute;
+
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.statement.GeneratorStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
+import org.databene.commons.ErrorHandler;
+import org.databene.commons.Expression;
 import org.databene.webdecs.xml.AbstractXMLElementParser;
 import org.databene.webdecs.xml.ParsingContext;
 import org.slf4j.Logger;
@@ -73,6 +79,10 @@ public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLEleme
 			if (statement instanceof GeneratorStatement)
 				return true;
 		return false;
+    }
+
+	protected Expression<ErrorHandler> parseOnErrorAttribute(Element element, String id) {
+	    return new ErrorHandlerExpression(id, parseScriptableStringAttribute(ATT_ON_ERROR, element));
     }
 
 }

@@ -32,8 +32,6 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.expression.ErrorHandlerExpression;
-import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
@@ -131,9 +129,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));
 		
-		String name = element.getAttribute(ATT_NAME);
-		StringScriptExpression levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
-		Expression<ErrorHandler> errorHandler = new ErrorHandlerExpression(name, levelExpr);
+		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
 				null, countGenerator, pageSize, pager, threads, errorHandler, infoLog, nested);
 		GeneratorTask task = parseTask(element, parentPath, creator, parsingContext, descriptor, 
@@ -149,9 +145,9 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     		boolean infoLog) {
 		descriptor.setNullable(false);
 		if (infoLog)
-			logger.info(descriptor.toString());
-		else if (logger.isDebugEnabled())
-			logger.debug(descriptor.toString());
+			logger.info("{}", descriptor);
+		else
+			logger.debug("{}", descriptor);
 		boolean isSubCreator = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator

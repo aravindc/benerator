@@ -21,15 +21,12 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import static org.databene.benerator.engine.DescriptorConstants.ATT_ON_ERROR;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import java.util.Locale;
 
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.BeneratorLocaleExpression;
-import org.databene.benerator.engine.expression.ErrorHandlerExpression;
-import org.databene.benerator.engine.expression.StringScriptExpression;
 import org.databene.benerator.engine.statement.DBSanityStatement;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
@@ -65,8 +62,7 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
 		Expression<String> modeNameEx = parseScriptableStringAttribute("mode", element); // verbose, quiet or default
 		Expression<ExecutionMode> modeEx = new ConvertingExpression<String, ExecutionMode>(
 				modeNameEx, new String2EnumConverter<ExecutionMode>(ExecutionMode.class));
-		Expression<String> levelExpr = new StringScriptExpression(element.getAttribute(ATT_ON_ERROR));
-		Expression<ErrorHandler> errHandlerEx = new ErrorHandlerExpression("dbsanity", levelExpr);
+		Expression<ErrorHandler> errHandlerEx = parseOnErrorAttribute(element, "dbsanity");
 		return new DBSanityStatement(envEx, inEx, outEx, tablesEx, cleanEx, skinEx, localeEx, modeEx, errHandlerEx);
     }
 

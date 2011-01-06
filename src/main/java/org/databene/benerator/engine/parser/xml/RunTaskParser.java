@@ -25,7 +25,6 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.expression.ErrorHandlerExpression;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.statement.RunTaskStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -62,7 +61,7 @@ public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 			Expression<Integer> threads     = parseIntAttribute(ATT_THREADS, element, 1);
 			Expression<PageListener> pager  = parsePager(element);
 		    Expression<Boolean> stats       = parseBooleanExpressionAttribute(ATT_STATS, element, false);
-			Expression<ErrorHandler> errorHandler = parseErrorHandler(element);
+			Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_ID));
 			boolean infoLog = containsLoop(parentPath);
 			return new RunTaskStatement(taskProvider, count, pageSize, pager, threads, 
 					stats, errorHandler, infoLog);
@@ -70,12 +69,6 @@ public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 			throw new ConfigurationError(e);
         }
 	}
-
-    private Expression<ErrorHandler> parseErrorHandler(Element element) {
-    	String id = element.getAttribute(ATT_ID);
-		Expression<String> level = parseScriptableStringAttribute(ATT_ON_ERROR, element);
-		return new ErrorHandlerExpression(id, level);
-    }
 
 	@SuppressWarnings("unchecked")
     private Expression<PageListener> parsePager(Element element) {
