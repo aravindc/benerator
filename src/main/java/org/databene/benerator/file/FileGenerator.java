@@ -32,7 +32,7 @@ import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 
 /**
- * Generates files and/or directories out of a directory.<br/><br/>
+ * Generates {@link File} objects which represent files and/or directories in a parent directory.<br/><br/>
  * Created: 24.02.2010 10:47:44
  * @since 0.6.0
  * @author Volker Bergmann
