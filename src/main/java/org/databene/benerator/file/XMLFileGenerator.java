@@ -74,7 +74,7 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
         this.filenamePattern = filenamePattern;
         
         // create context
-        BeneratorContext context = new BeneratorContext(IOUtil.getContextUri(schemaUri));
+        BeneratorContext context = new BeneratorContext(IOUtil.getParentUri(schemaUri));
 
         // parse schema
         XMLSchemaDescriptorProvider xsdProvider = new XMLSchemaDescriptorProvider(schemaUri, context);
