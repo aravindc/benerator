@@ -29,8 +29,8 @@ package org.databene.task;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.task.AbstractTask;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple implementation of a Task that is single-threaded and does nothing but finding itself special
@@ -41,7 +41,7 @@ import org.apache.commons.logging.Log;
  */
 public class SpecialTask extends AbstractTask {
 
-    private static final Log logger = LogFactory.getLog(SpecialTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpecialTask.class);
     
 	public TaskResult execute(Context context, ErrorHandler errorHandler) {
         logger.info("I'm special");

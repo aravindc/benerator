@@ -28,8 +28,6 @@ package shop;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.main.Benerator;
 import org.databene.benerator.parser.DefaultEntryConverter;
@@ -37,6 +35,8 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.Validator;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class ShopDBTest extends TestCase {
     
     private static final String BENERATOR_FILE = "demo/shop/shop.ben.xml";
 
-    private static final Log logger = LogFactory.getLog(ShopDBTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShopDBTest.class);
 /*
     public void testDB2() throws IOException, InterruptedException {
         checkGeneration("db2");
@@ -135,6 +135,6 @@ public class ShopDBTest extends TestCase {
         Process process = Runtime.getRuntime().exec(command);
         IOUtil.transfer(process.getInputStream(), System.out);
         process.waitFor();
-        logger.debug(process.exitValue());
+        logger.debug(String.valueOf(process.exitValue()));
     }
 }

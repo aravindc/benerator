@@ -30,8 +30,8 @@ import org.databene.commons.IOUtil;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple {@link Consumer} proxy implementation that logs an entity before it is forwarded to the target consumer.<br/>
@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class MyProxy extends AbstractConsumer<Entity> {
 
-    private static Log logger = LogFactory.getLog(MyProxy.class);
+    private static Logger logger = LoggerFactory.getLogger(MyProxy.class);
 
     private Consumer<Entity> target;
 
@@ -65,13 +65,13 @@ public class MyProxy extends AbstractConsumer<Entity> {
     // Consumer interface ----------------------------------------------------------------------------------------------
 
     public void startConsuming(Entity object) {
-        logger.info(object);
+        logger.info(object.toString());
         target.startConsuming(object);
     }
 
     @Override
     public void finishConsuming(Entity object) {
-        logger.info(object);
+        logger.info(object.toString());
         target.finishConsuming(object);
     }
     @Override

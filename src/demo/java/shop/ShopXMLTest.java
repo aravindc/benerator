@@ -28,8 +28,6 @@ package shop;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
@@ -48,6 +46,8 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.xml.XMLSchemaDescriptorProvider;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests processing of the shop.xsd file.<br/>
@@ -57,10 +57,10 @@ import org.junit.Test;
  */
 public class ShopXMLTest {
     
-    private static final Log logger = LogFactory.getLog(ShopXMLTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShopXMLTest.class);
     
     String schemaUri = "demo/shop/shop.xsd";
-    String contextUri = IOUtil.getContextUri(schemaUri);
+    String contextUri = IOUtil.getParentUri(schemaUri);
     
     @Test
     public void test() {
@@ -75,7 +75,7 @@ public class ShopXMLTest {
         logger.debug("Supported types:");
         logger.debug("----------------");
         for (TypeDescriptor descriptor : provider.getTypeDescriptors())
-            logger.debug(descriptor);
+            logger.debug(descriptor.toString());
         
         checkSimpleType("category-id", provider, new CategoryIdValidator());
         checkSimpleType("string30", provider, new StringLengthValidator(30));
@@ -106,7 +106,7 @@ public class ShopXMLTest {
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++) {
             T object = generator.generate();
-            logger.debug(object);
+            logger.debug(object.toString());
             assertTrue("Invalid object: " + object, validator.valid(object));
         }
     }
@@ -122,7 +122,7 @@ public class ShopXMLTest {
         for (int i = 0; i < 10; i++) {
             Entity entity = generator.generate();
             if (entity != null) {
-	            logger.debug(entity);
+	            logger.debug(entity.toString());
 	            assertTrue("Invalid entity: " + entity, validator.valid(entity));
             }
         }

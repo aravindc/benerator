@@ -3,8 +3,6 @@ package shop;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.TypedIterable;
@@ -12,6 +10,8 @@ import org.databene.model.data.Entity;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.csv.CSVEntityExporter;
 import org.databene.platform.db.DBSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CSVTableExporterDemo {
     
@@ -20,7 +20,7 @@ public class CSVTableExporterDemo {
     private static final String USER = "sa";
     private static final String PASSWORD = null;
 
-    private static Log logger = LogFactory.getLog(CSVTableExporterDemo.class);
+    private static Logger logger = LoggerFactory.getLogger(CSVTableExporterDemo.class);
     
     public static void main(String[] args) throws IOException {
     	// first we create a table with some data to export
