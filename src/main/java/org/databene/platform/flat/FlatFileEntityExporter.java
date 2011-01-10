@@ -120,6 +120,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
                 }
                 assert pos.getIndex() == rbIndex;
                 FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(columnName, width, alignment, padChar);
+                // TODO large numbers may be formatted as 000000012E+1
                 this.converters[i] = new ConverterChain<Entity, String>(
                     new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())),
                     plainConverter,
