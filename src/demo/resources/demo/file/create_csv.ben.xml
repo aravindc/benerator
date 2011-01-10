@@ -17,7 +17,7 @@
     <echo>Generated data:</echo> 
     <if test="org.databene.commons.SystemInfo.isWindows()">
         <then>
-            <execute type="shell">type export.csv</execute>
+            <execute type="shell">cmd /C type export.csv</execute>
         </then>
         <else>
             <execute type="shell">cat export.csv</execute>
