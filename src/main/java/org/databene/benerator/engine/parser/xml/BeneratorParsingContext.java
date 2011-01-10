@@ -36,6 +36,7 @@ public class BeneratorParsingContext extends ParsingContext<Statement> {
 	ResourceManager resourceManager;
 
 	public BeneratorParsingContext(ResourceManager resourceManager) {
+		super(Statement.class);
 		this.resourceManager = resourceManager;
 		factory.addParser(new BeanParser());
 		factory.addParser(new BeepParser());
