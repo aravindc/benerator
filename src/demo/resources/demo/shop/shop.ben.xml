@@ -46,7 +46,7 @@
 	</if>
 
 	<comment>import stage and database specific properties</comment>
-	<include uri="{ftl:${database}/shop.${database}.properties}" />
+	<include uri="{ftl:${database}/shop.${database}.properties}" /> <!-- ftl: is the prefix used for scripting with FreeMarker Template Language -->
 	<include uri="{ftl:shop.${stage}.properties}" />
 
 	<comment>log the settings to the console</comment>
