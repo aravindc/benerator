@@ -35,6 +35,7 @@ import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
+import org.databene.commons.SystemInfo;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.DataModel;
@@ -74,7 +75,7 @@ public class DescriptorRunner implements ResourceManager {
 	// constructor -----------------------------------------------------------------------------------------------------
 	
 	public DescriptorRunner(String uri) {
-		this(uri, new BeneratorContext(uri));
+		this(uri, new BeneratorContext(SystemInfo.getCurrentDir()));
 	}
 	
 	public DescriptorRunner(String uri, BeneratorContext context) {
@@ -102,7 +103,7 @@ public class DescriptorRunner implements ResourceManager {
 	    BeneratorRootStatement statement = (BeneratorRootStatement) parsingContext.parseElement(root, null);
 		// prepare system
 		generatedFiles = new ArrayList<String>();
-		context.setContextUri(IOUtil.getContextUri(uri));
+		context.setContextUri(IOUtil.getParentUri(uri));
 	    return statement;
     }
 	
