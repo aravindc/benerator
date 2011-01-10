@@ -33,7 +33,9 @@ import org.xml.sax.InputSource;
  * Created: 12.03.2010 12:24:46
  * @since 0.6.0
  * @author Volker Bergmann
+ * @deprecated Schema validation of descriptor files has been disabled
  */
+@Deprecated
 public class BeneratorEntityResolver implements EntityResolver {
 
 	public InputSource resolveEntity(String publicId, String systemId) throws IOException {
