@@ -28,8 +28,12 @@ package org.databene.benerator;
 
 import java.io.IOException;
 
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
+import org.databene.commons.xml.XMLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Provides information about the Benerator version.<br/>
@@ -41,7 +45,12 @@ import org.databene.commons.IOUtil;
 
 public class Version {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Version.class);
+	
+	private static final String VERSION_FILE_URI = "org/databene/benerator/version.txt";
+
 	public static final String VERSION = readVersion();
+	
 	public static final String XML_PUBLIC_ID = "http://databene.org/benerator/" + VERSION;
 	public static final String XML_HTTP_SYSTEM_ID = "http://databene.org/benerator-" + VERSION + ".xsd";
 	public static final String XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + VERSION + ".xsd";
@@ -51,14 +60,20 @@ public class Version {
 	}
 
 	private static String readVersion() {
+        String version = "<unknown version>";
 	    try {
-	        String version = IOUtil.getContentOfURI("org/databene/benerator/version.txt");
-	        if (version.startsWith("${")) // in Eclipse, the version is not resolved
-	        	version = "0.6.4"; // TODO v0.6.4 resolve version automatically in Eclipse
-			return version;
+	        if (IOUtil.isURIAvailable(VERSION_FILE_URI))
+	        	version = IOUtil.getContentOfURI(VERSION_FILE_URI);                         // This works in Maven, but...
+	        if (version.startsWith("${") || version.startsWith("<unknown")) {               // ...in Eclipse no filtering is applied,...
+	        	LOGGER.warn("Version number file could not be found, falling back to POM"); // ...so we fetch it directly from the POM!
+	    		Document doc = XMLUtil.parse("pom.xml");
+	    		Element versionElement = XMLUtil.getChildElement(doc.getDocumentElement(), false, true, "version");
+	    		version = versionElement.getTextContent();
+	        }
         } catch (IOException e) {
-	        throw new ConfigurationError("Error reading version info file", e);
+	        LOGGER.error("Error reading version info file", e);
         }
+		return version;
     }
 	
 }
