@@ -58,10 +58,10 @@ public class TranscodingIntegrationTest {
 		// check states
 		iterable = t.queryEntities("state", null, context);
 		iterator = iterable.iterator();
-		assertNextState(1, 1, "California", iterator);
-		assertNextState(2, 1, "Florida", iterator);
-		assertNextState(3, 2, "Bayern", iterator);
-		assertNextState(4, 2, "Hamburg", iterator);
+		assertNextState(3, 1, "California", iterator);
+		assertNextState(4, 1, "Florida", iterator);
+		assertNextState(5, 2, "Bayern", iterator);
+		assertNextState(6, 2, "Hamburg", iterator);
 		assertFalse(iterator.hasNext());
 		((Closeable) iterator).close();
 	}
