@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -100,6 +100,14 @@ public class ComplexTypeGeneratorFactory {
         return generator;
     }
     
+    public static Generator<Entity> createMutatingEntityGenerator(String name, ComplexTypeDescriptor descriptor, 
+    		Uniqueness ownerUniqueness, BeneratorContext context, Generator<Entity> source) {
+    	List<ComponentBuilder<Entity>> componentBuilders = 
+    		createMutatingComponentBuilders(descriptor, ownerUniqueness, context);
+        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(descriptor, context);
+        return new SourceAwareGenerator<Entity>(name, source, variables, componentBuilders, context);
+    }
+
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Generator<Entity> createSourceGenerator(ComplexTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
@@ -109,7 +117,7 @@ public class ComplexTypeGeneratorFactory {
             return null;
         Object sourceObject = null;
         if (ScriptUtil.isScript(sourceSpec)) {
-        	Object tmp = ScriptUtil.render(sourceSpec, context); // TODO When to resolve scripts?
+        	Object tmp = ScriptUtil.evaluate(sourceSpec, context); // TODO When to resolve scripts?
         	if (tmp != null && tmp instanceof String) {
         		sourceSpec = (String) tmp;
         		sourceObject = context.get(sourceSpec);
@@ -247,16 +255,8 @@ public class ComplexTypeGeneratorFactory {
 	    return componentBuilders;
     }
 
-    private static Generator<Entity> createMutatingEntityGenerator(String name, ComplexTypeDescriptor descriptor, 
-    		Uniqueness ownerUniqueness, BeneratorContext context, Generator<Entity> source) {
-    	List<ComponentBuilder<Entity>> componentBuilders = 
-    		createMutatingComponentBuilders(descriptor, ownerUniqueness, context);
-        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(descriptor, context);
-        return new SourceAwareGenerator<Entity>(name, source, variables, componentBuilders, context);
-    }
-
 	@SuppressWarnings("unchecked")
-    private static List<ComponentBuilder<Entity>> createMutatingComponentBuilders(ComplexTypeDescriptor descriptor,
+	public static List<ComponentBuilder<Entity>> createMutatingComponentBuilders(ComplexTypeDescriptor descriptor,
             Uniqueness ownerUniqueness, BeneratorContext context) {
 	    List<ComponentBuilder<Entity>> componentBuilders = new ArrayList<ComponentBuilder<Entity>>();
         Collection<ComponentDescriptor> components = descriptor.getDeclaredComponents();
