@@ -120,6 +120,7 @@
                 <xs:element ref="variable"  minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 			<xs:attribute name="source"   type="xs:string"/>
+			<xs:attribute name="selector" type="xs:string"/>
 			<xs:attribute name="target"   type="xs:string"/>
 			<xs:attribute name="pageSize" type="xs:string"/>
 		</xs:complexType>
