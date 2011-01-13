@@ -27,6 +27,7 @@ import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ThreadSafeConverter;
+import org.databene.script.ScriptUtil;
 
 /**
  * Parses a string and interprets it as a {@link Distribution} spec, 
@@ -43,10 +44,16 @@ public class String2DistributionConverter extends ThreadSafeConverter<String, Di
 	    super(String.class, Distribution.class);
     }
 
-	public Distribution convert(String sourceValue) throws ConversionException {
-		Distribution result = SequenceManager.getRegisteredSequence(sourceValue, false);
-		if (result == null)
-			result = (Distribution) context.get(sourceValue);
+	public Distribution convert(String stringOrScript) throws ConversionException {
+		Object sourceValue = ScriptUtil.parseUnspecificText(stringOrScript).evaluate(context);
+		Distribution result;
+		if (sourceValue instanceof String) {
+			String spec = (String) sourceValue;
+			result = SequenceManager.getRegisteredSequence(spec, false);
+			if (result == null)
+				result = (Distribution) context.get(spec);
+		} else
+			result = (Distribution) sourceValue;
 	    return result;
     }
 
