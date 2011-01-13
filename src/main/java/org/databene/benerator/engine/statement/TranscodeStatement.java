@@ -65,17 +65,19 @@ public class TranscodeStatement implements Statement {
 	
 	TypeExpression typeExpression;
 	Expression<DBSystem> sourceEx;
+	Expression<String> selectorEx;
 	Expression<DBSystem> targetEx;
 	Expression<Long> pageSizeEx;
 	Expression<ErrorHandler> errorHandlerEx;
 	TranscodingTaskStatement parent;
 
 	public TranscodeStatement(TypeExpression typeExpression, TranscodingTaskStatement parent,
-            Expression<DBSystem> sourceEx, Expression<DBSystem> targetEx, 
+            Expression<DBSystem> sourceEx, Expression<String> selectorEx, Expression<DBSystem> targetEx, 
             Expression<Long> pageSizeEx, Expression<ErrorHandler> errorHandlerEx) {
 	    this.typeExpression = typeExpression;
 	    this.parent = parent;
 	    this.sourceEx = sourceEx;
+	    this.selectorEx = selectorEx;
 	    this.targetEx = targetEx;
 	    this.pageSizeEx = pageSizeEx;
 	    this.errorHandlerEx = errorHandlerEx;
@@ -101,7 +103,7 @@ public class TranscodeStatement implements Statement {
 		String tableName = type.getName();
 		
 		// iterate rows
-		String selector = null; // TODO support selector
+		String selector = ExpressionUtil.evaluate(selectorEx, context);
 		TypedIterable<Entity> iterable = source.queryEntities(tableName, selector, context);
 		Generator<Entity> generator = new IteratingGenerator<Entity>(iterable);
 		//Generator<Entity> mutGen = ComplexTypeGeneratorFactory.createMutatingEntityGenerator(tableName, type, Uniqueness.NONE, context, generator);
