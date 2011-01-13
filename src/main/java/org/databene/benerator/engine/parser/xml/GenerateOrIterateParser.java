@@ -89,7 +89,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	
 	@Override
 	public Statement parse(final Element element, final Statement[] parentPath, 
-			final BeneratorParsingContext pContext) {
+			final BeneratorParseContext pContext) {
 		final boolean looped = AbstractBeneratorDescriptorParser.containsLoop(parentPath);
 		final boolean nested = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
 		Expression<Statement> expression = new DynamicExpression<Statement>() {
@@ -117,7 +117,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	
     @SuppressWarnings("unchecked")
     public GenerateOrIterateStatement parseGenerate(Element element, Statement[] parentPath, 
-    		BeneratorParsingContext parsingContext, 
+    		BeneratorParseContext parsingContext, 
     		BeneratorContext context, boolean infoLog, boolean nested) {
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 		
@@ -137,7 +137,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private GeneratorTask parseTask(Element element, Statement[] parentPath, 
-    		GenerateOrIterateStatement statement, BeneratorParsingContext parsingContext, 
+    		GenerateOrIterateStatement statement, BeneratorParseContext parsingContext, 
     		InstanceDescriptor descriptor, BeneratorContext context, 
     		boolean infoLog) {
 		descriptor.setNullable(false);
@@ -164,7 +164,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
-				BeneratorParsingContext subContext = parsingContext.createSubContext(task);
+				BeneratorParseContext subContext = parsingContext.createSubContext(task);
 				Statement[] subPath = parsingContext.createSubPath(parentPath, statement);
 				Statement subStatement = subContext.parseChildElement(child, subPath);
 	            //Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);

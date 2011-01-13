@@ -43,7 +43,7 @@ public class ErrorParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public ErrorStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public ErrorStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         Expression<String> messageEx = new StringExpression(parseScriptableElementText(element));
 		Expression<Integer> codeEx = parseIntAttribute("type", element);
 		return new ErrorStatement(messageEx, codeEx);

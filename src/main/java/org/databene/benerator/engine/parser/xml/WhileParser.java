@@ -59,7 +59,7 @@ public class WhileParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, element);
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 

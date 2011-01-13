@@ -56,7 +56,7 @@ public class PropertyParser extends AbstractBeneratorDescriptorParser {
     }
 
     @Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		String propertyName = element.getAttribute(ATT_NAME);
 		if (element.hasAttribute(ATT_DEFAULT))
 			return parseDefault(propertyName, element.getAttribute(ATT_DEFAULT));

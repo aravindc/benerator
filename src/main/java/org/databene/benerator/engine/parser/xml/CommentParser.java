@@ -40,7 +40,7 @@ public class CommentParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public CommentStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public CommentStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 	    return new CommentStatement(XMLUtil.getText(element).trim());
     }
 

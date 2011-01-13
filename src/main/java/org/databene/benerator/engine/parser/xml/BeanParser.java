@@ -55,7 +55,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public BeanStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public BeanStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		try {
 			String id = element.getAttribute(ATT_ID);
 			ResourceManager resourceManager = context.getResourceManager();

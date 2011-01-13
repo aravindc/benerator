@@ -34,7 +34,7 @@ import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.webdecs.xml.AbstractXMLElementParser;
-import org.databene.webdecs.xml.ParsingContext;
+import org.databene.webdecs.xml.ParseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -53,11 +53,11 @@ public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLEleme
 		super(elementName, supportedParentTypes);
     }
 
-	public final Statement parse(Element element, Statement[] parentPath, ParsingContext<Statement> context) {
-		return parse(element, parentPath, (BeneratorParsingContext) context);
+	public final Statement parse(Element element, Statement[] parentPath, ParseContext<Statement> context) {
+		return parse(element, parentPath, (BeneratorParseContext) context);
 	}
 
-	public abstract Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context);
+	public abstract Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context);
 	
 	public static boolean containsLoop(Statement[] parentPath) {
 		if (parentPath == null)

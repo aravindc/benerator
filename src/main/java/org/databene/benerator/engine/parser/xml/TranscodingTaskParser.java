@@ -43,7 +43,7 @@ public class TranscodingTaskParser extends AbstractTranscodeParser {
     }
 
     @Override
-    public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext parsingContext) {
+    public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext parsingContext) {
     	Expression<ErrorHandler> errorHandlerExpression = parseOnErrorAttribute(element, "transcodingTask");
 		TranscodingTaskStatement statement = new TranscodingTaskStatement(
 				parseDefaultSource(element), 

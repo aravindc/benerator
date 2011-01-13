@@ -62,7 +62,7 @@ public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 
 	@Override
 	@SuppressWarnings("unchecked")
-    public DefineDatabaseStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+    public DefineDatabaseStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		checkAttributeSupport(XMLUtil.getAttributes(element));
 		try {
 			Expression<String>  id            = parseAttribute(ATT_ID, element);

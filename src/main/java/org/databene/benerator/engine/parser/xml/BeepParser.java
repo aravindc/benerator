@@ -38,7 +38,7 @@ public class BeepParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public BeepStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public BeepStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         return new BeepStatement();
     }
 

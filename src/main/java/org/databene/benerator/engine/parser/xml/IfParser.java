@@ -55,7 +55,7 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	@Override
-	public Statement parse(Element ifElement, Statement[] parentPath, BeneratorParsingContext context) {
+	public Statement parse(Element ifElement, Statement[] parentPath, BeneratorParseContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, ifElement);
 		if (ExpressionUtil.isNull(condition))
 			throw new ParseException("'test' attribute of 'if' statement is missing or empty", 

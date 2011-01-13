@@ -49,7 +49,7 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
     }
 
 	@Override
-	public DBSanityStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public DBSanityStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         Expression<String> envEx = parseScriptableStringAttribute("environment", element);
         if (envEx == null)
         	throw new ConfigurationError("no environment specified in <dbsanity> element");

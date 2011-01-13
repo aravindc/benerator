@@ -48,7 +48,7 @@ public class IncludeParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public IncludeStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public IncludeStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		checkAttributes(element, SUPPORTED_ATTRIBUTES);
         String uriAttr = element.getAttribute(DescriptorConstants.ATT_URI);
 		Expression<String> uriEx = new StringExpression(new ScriptableExpression(uriAttr, null));

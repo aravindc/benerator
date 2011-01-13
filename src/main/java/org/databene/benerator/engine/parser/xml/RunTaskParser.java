@@ -52,7 +52,7 @@ public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 
     @Override
 	@SuppressWarnings("unchecked")
-    public RunTaskStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+    public RunTaskStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		try {
 		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(
 		    		element, context.getResourceManager());

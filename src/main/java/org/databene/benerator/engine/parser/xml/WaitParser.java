@@ -49,7 +49,7 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		// check for constant value
 		Expression<Long> duration  = parseLongAttribute(ATT_DURATION, element, null);
 		if (duration != null)

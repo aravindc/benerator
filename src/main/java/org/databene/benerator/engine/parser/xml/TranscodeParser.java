@@ -52,16 +52,21 @@ public class TranscodeParser extends AbstractTranscodeParser {
     }
 
     @Override
-    public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+    public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		String table = getRawAttribute("table", element);
 		TranscodingTaskStatement parent = (TranscodingTaskStatement) ArrayUtil.lastElement(parentPath);
-		Expression<DBSystem> sourceEx = parseSource(element, parent);
-		Expression<DBSystem> targetEx = parseTarget(element, parent);
-		Expression<Long> pageSizeEx = parsePageSize(element, parent);
+		Expression<DBSystem> sourceEx   = parseSource(element, parent);
+		Expression<String>   selectorEx = parseSelector(element, parent);
+		Expression<DBSystem> targetEx   = parseTarget(element, parent);
+		Expression<Long>     pageSizeEx = parsePageSize(element, parent);
 	    Expression<ErrorHandler> errorHandlerEx = parseOnErrorAttribute(element, table);
 	    return new TranscodeStatement(new TypeExpression(element), 
-	    		parent, sourceEx, targetEx, pageSizeEx, errorHandlerEx);
+	    		parent, sourceEx, selectorEx, targetEx, pageSizeEx, errorHandlerEx);
     }
+
+	private Expression<String> parseSelector(Element element, TranscodingTaskStatement parent) {
+		return parseScriptableStringAttribute("selector", element);
+	}
 
 	@SuppressWarnings("unchecked")
     private Expression<Long> parsePageSize(Element element, Statement parent) {

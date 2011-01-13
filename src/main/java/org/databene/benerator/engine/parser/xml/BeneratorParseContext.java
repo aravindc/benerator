@@ -24,20 +24,20 @@ package org.databene.benerator.engine.parser.xml;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
-import org.databene.webdecs.xml.ParsingContext;
+import org.databene.webdecs.xml.ParseContext;
 
 /**
- * {@link ParsingContext} implementation for Benerator. It defines parsers for all the descriptor XML elements.<br/><br/>
+ * {@link ParseContext} implementation for Benerator. It defines parsers for all the descriptor XML elements.<br/><br/>
  * Created: 14.12.2010 16:29:38
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class BeneratorParsingContext extends ParsingContext<Statement> { // TODO rename to ...ParseContext
+public class BeneratorParseContext extends ParseContext<Statement> {
 
 	BeneratorContext context;
 	ResourceManager resourceManager;
 
-	public BeneratorParsingContext(ResourceManager resourceManager) {
+	public BeneratorParseContext(ResourceManager resourceManager) {
 		super(Statement.class);
 		this.resourceManager = resourceManager;
 		factory.addParser(new BeanParser());
@@ -66,8 +66,8 @@ public class BeneratorParsingContext extends ParsingContext<Statement> { // TODO
 		return resourceManager;
 	}
 
-	public BeneratorParsingContext createSubContext(ResourceManager resourceManager) {
-		return new BeneratorParsingContext(resourceManager);
+	public BeneratorParseContext createSubContext(ResourceManager resourceManager) {
+		return new BeneratorParseContext(resourceManager);
 	}
 
 	public BeneratorContext getContext() {

@@ -45,7 +45,7 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 	    XMLUtil.mapAttributesToProperties(element, context, true, new XMLNameNormalizer());
 	    BeneratorRootStatement rootStatement = new BeneratorRootStatement();
 	    Statement[] currentPath = context.createSubPath(parentPath, rootStatement);

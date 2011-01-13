@@ -46,7 +46,7 @@ public class ImportParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public ImportStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public ImportStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		
 		checkAttributes(element, SUPPORTED_ATTRIBUTES);
 		

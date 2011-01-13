@@ -44,7 +44,7 @@ public class EchoParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public EchoStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public EchoStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         Expression<String> messageEx;
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
 	        messageEx = parseScriptableStringAttribute(ATT_MESSAGE, element);

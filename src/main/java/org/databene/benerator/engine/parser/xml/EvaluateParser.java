@@ -53,7 +53,7 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		Expression<String> text         = new TypeConvertingExpression<String>(parseScriptableElementText(element), String.class);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);
