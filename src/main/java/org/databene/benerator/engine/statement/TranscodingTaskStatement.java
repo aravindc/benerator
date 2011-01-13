@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,9 +36,10 @@ import org.databene.jdbacl.model.Database;
 import org.databene.platform.db.DBSystem;
 
 /**
- * TODO Document class.<br/><br/>
+ * Groups {@link TranscodeStatement}s and provides common features like 
+ * {@link IdentityProvider} and {@link KeyMapper} objects.<br/><br/>
  * Created: 10.09.2010 18:25:18
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class TranscodingTaskStatement extends SequentialStatement {
@@ -46,13 +47,13 @@ public class TranscodingTaskStatement extends SequentialStatement {
     Expression<DBSystem> sourceEx; 
     Expression<DBSystem> targetEx;
     Expression<String> identityEx;
-	Expression<Integer> pageSizeEx;
+	Expression<Long> pageSizeEx;
     Expression<ErrorHandler> errorHandlerExpression;
     IdentityProvider identityProvider;
     KeyMapper mapper;
     
 	public TranscodingTaskStatement(Expression<DBSystem> sourceEx, Expression<DBSystem> targetEx, Expression<String> identityEx, 
-    		Expression<Integer> pageSizeEx, Expression<ErrorHandler> errorHandlerExpression) {
+    		Expression<Long> pageSizeEx, Expression<ErrorHandler> errorHandlerExpression) {
 	    this.sourceEx = sourceEx;
 	    this.targetEx = targetEx;
 	    this.identityEx = identityEx;
@@ -69,7 +70,7 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	    return targetEx;
     }
 
-    public Expression<Integer> getPageSizeEx() {
+    public Expression<Long> getPageSizeEx() {
 	    return pageSizeEx;
     }
 
@@ -110,6 +111,10 @@ public class TranscodingTaskStatement extends SequentialStatement {
 		if (target == null)
 			throw new ConfigurationError("No 'target' database defined in <transcodingTask>");
 		return target;
+	}
+
+	public boolean needsNkMapping(String tableName) {
+		return true; // TODO return false whenever possible in this task
 	}
 	
 }
