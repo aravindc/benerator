@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.main;
 
+import org.databene.benerator.BeneratorError;
 import org.databene.benerator.Version;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.commons.ArrayUtil;
@@ -59,19 +60,33 @@ public class Benerator {
 	// methods ---------------------------------------------------------------------------------------------------------
 
 	public static void main(String[] args) throws IOException {
-		if (ArrayUtil.contains(args, "--version")) {
-			// print version info and exit
-			InfoPrinter console = new ConsoleInfoPrinter();
-			printVersionInfo(console);
-			System.exit(0);
-		} else {
-			// p
+		if (ArrayUtil.contains(args, "--version"))
+			printVersionInfoAndExit();
+		else
+			runFromCommandLine(args);
+	}
+
+	private static void runFromCommandLine(String[] args) throws IOException {
+		try {
 			InfoPrinter printer = new LoggingInfoPrinter(LogCategories.CONFIG);
 			String filename = (args.length > 0 ? args[0] : "benerator.xml");
-			printer.printLines("Running file " + filename);
-			checkSystem(printer);
-			new DescriptorRunner(filename).run();
+			runFile(filename, printer);
+		} catch (BeneratorError e) {
+			logger.error(e.getMessage(), e);
+			System.exit(e.getCode());
 		}
+	}
+
+	public static void runFile(String filename, InfoPrinter printer) throws IOException {
+		printer.printLines("Running file " + filename);
+		checkSystem(printer);
+		new DescriptorRunner(filename).run();
+	}
+
+	private static void printVersionInfoAndExit() {
+		InfoPrinter console = new ConsoleInfoPrinter();
+		printVersionInfo(console);
+		System.exit(0);
 	}
 
 	private static void checkSystem(InfoPrinter printer) {
