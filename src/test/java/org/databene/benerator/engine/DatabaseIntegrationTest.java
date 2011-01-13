@@ -85,7 +85,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.setDefaultOneToOne(true);
 		parseAndExecute(
 				"<generate type='referer' consumer='cons'>" +
-	        	"  <reference name='referee_id' nullable='false' />" +
+	        	"  <reference name='referee_id' nullable='false' source='db' />" +
 	        	"</generate>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(2, products.size());
@@ -100,7 +100,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.setDefaultOneToOne(false);
 		parseAndExecute(
 				"<generate type='referer' count='3' consumer='cons'>" +
-	        	"  <reference name='referee_id' nullable='false' />" +
+	        	"  <reference name='referee_id' nullable='false' source='db' />" +
 	        	"</generate>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(3, products.size());
