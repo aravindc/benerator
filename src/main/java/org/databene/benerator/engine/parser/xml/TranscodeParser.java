@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,16 +21,21 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.TranscodeStatement;
 import org.databene.benerator.engine.statement.TranscodingTaskStatement;
+import org.databene.benerator.factory.DescriptorUtil;
 
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FallbackExpression;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
 import org.databene.platform.db.DBSystem;
 import org.w3c.dom.Element;
 
@@ -52,16 +57,17 @@ public class TranscodeParser extends AbstractTranscodeParser {
 		TranscodingTaskStatement parent = (TranscodingTaskStatement) ArrayUtil.lastElement(parentPath);
 		Expression<DBSystem> sourceEx = parseSource(element, parent);
 		Expression<DBSystem> targetEx = parseTarget(element, parent);
-		Expression<Integer> pageSizeEx = parsePageSize(element, parent);
+		Expression<Long> pageSizeEx = parsePageSize(element, parent);
 	    Expression<ErrorHandler> errorHandlerEx = parseOnErrorAttribute(element, table);
-	    return new TranscodeStatement(table, parent, sourceEx, targetEx, pageSizeEx, errorHandlerEx);
+	    return new TranscodeStatement(new TypeExpression(element), 
+	    		parent, sourceEx, targetEx, pageSizeEx, errorHandlerEx);
     }
 
 	@SuppressWarnings("unchecked")
-    private Expression<Integer> parsePageSize(Element element, Statement parent) {
-	    Expression<Integer> result = super.parsePageSize(element);
+    private Expression<Long> parsePageSize(Element element, Statement parent) {
+	    Expression<Long> result = super.parsePageSize(element);
 	    if (parent instanceof TranscodingTaskStatement)
-			result = new FallbackExpression<Integer>(result, ((TranscodingTaskStatement) parent).getPageSizeEx());
+			result = new FallbackExpression<Long>(result, ((TranscodingTaskStatement) parent).getPageSizeEx());
 	    return result;
     }
 
@@ -80,5 +86,28 @@ public class TranscodeParser extends AbstractTranscodeParser {
 			result = new FallbackExpression<DBSystem>(result, ((TranscodingTaskStatement) parent).getTargetEx());
 	    return result;
     }
+
+	public class TypeExpression implements Expression<ComplexTypeDescriptor> {
+
+		private Element element;
+		private String tableName;
+
+		public TypeExpression(Element element) {
+			this.element = element;
+			this.tableName = getRawAttribute("table", element);
+		}
+
+		public ComplexTypeDescriptor evaluate(Context context) {
+		    ComplexTypeDescriptor parent = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(tableName);
+		    ComplexTypeDescriptor type = new ComplexTypeDescriptor(tableName, parent);
+		    DescriptorUtil.parseComponentConfig(element, type, (BeneratorContext) context);
+		    return type;
+		}
+
+		public boolean isConstant() {
+			return true;
+		}
+
+	}
 
 }
