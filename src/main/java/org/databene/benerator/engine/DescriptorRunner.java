@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -36,6 +36,7 @@ import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.DataModel;
@@ -82,6 +83,7 @@ public class DescriptorRunner implements ResourceManager {
 		this.uri = uri;
 		this.context = context;
 		this.generatedFiles = new ArrayList<String>();
+		ConverterManager.getInstance().setContext(context);
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
@@ -91,9 +93,18 @@ public class DescriptorRunner implements ResourceManager {
 	}
 
     public void run() throws IOException {
-    	Runtime.getRuntime().addShutdownHook(new BeneratorShutdownHook(this));
-		BeneratorRootStatement rootStatement = parseDescriptorFile();			
-		execute(rootStatement);
+    	Runtime runtime = Runtime.getRuntime();
+		BeneratorShutdownHook hook = new BeneratorShutdownHook(this);
+		runtime.addShutdownHook(hook);
+		try {
+			runWithoutShutdownHook();
+		} finally {
+			runtime.removeShutdownHook(hook);
+		}
+	}
+
+	public void runWithoutShutdownHook() throws IOException {
+		execute(parseDescriptorFile());
 	}
 
 	public BeneratorRootStatement parseDescriptorFile() throws IOException {
