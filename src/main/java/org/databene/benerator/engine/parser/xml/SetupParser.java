@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,12 +29,13 @@ import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.XMLNameNormalizer;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.webdecs.xml.XMLElementParser;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link XMLElementParser} implementation for parsing a Benerator descriptor file's root XML element.<br/><br/>
  * Created: 14.12.2010 19:48:00
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class SetupParser extends AbstractBeneratorDescriptorParser {
