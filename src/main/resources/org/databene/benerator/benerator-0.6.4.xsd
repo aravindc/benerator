@@ -74,6 +74,7 @@
 			<xs:element ref="execute"           minOccurs="0" />
 			<xs:element ref="evaluate"          minOccurs="0" />
 			<xs:element ref="echo"              minOccurs="0" />
+			<xs:element ref="error"             minOccurs="0" />
 			<xs:element ref="if"                minOccurs="0" />
 			<xs:element ref="while"             minOccurs="0" />
 			<xs:element ref="wait"              minOccurs="0" />
@@ -95,6 +96,35 @@
 		</xs:complexType>
 	</xs:element>
 	
+	<!-- Transcoding features. -->
+	<xs:element name="transcodingTask">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="transcode"  minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="identity"      type="xs:string"/>
+			<xs:attribute name="defaultSource" type="xs:string"/>
+			<xs:attribute name="target"        type="xs:string"/>
+			<xs:attribute name="pageSize"      type="xs:string"/>
+			<xs:attribute name="onError"       type="errorhandler-type"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="transcode">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="comment"   minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="id"        minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="attribute" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="reference" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="variable"  minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="source"   type="xs:string"/>
+			<xs:attribute name="target"   type="xs:string"/>
+			<xs:attribute name="pageSize" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
 	<!-- Includes a properties file. -->
 	<xs:element name="include">
 		<xs:complexType>
@@ -136,6 +166,18 @@
 			<xs:simpleContent>
 				<xs:extension base="xs:string">
 					<xs:attribute name="message" type="xs:string" />
+					<xs:attribute name="type" type="xs:string" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Outputs a message to the console. -->
+	<xs:element name="error">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="xs:string" />
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
@@ -224,6 +266,7 @@
 	<xs:element name="database">
 		<xs:complexType>
 			<xs:attribute name="id"            type="xs:string" use="required"/>
+			<xs:attribute name="environment"   type="xs:string"/>
 			<xs:attribute name="url"           type="xs:string"/>
 			<xs:attribute name="driver"        type="xs:string"/>
 			<xs:attribute name="user"          type="xs:string"/>
@@ -237,6 +280,7 @@
             <xs:attribute name="fetchSize"     type="xs:string"/>
             <xs:attribute name="readOnly"      type="xs:string"/>
             <xs:attribute name="lazy"          type="xs:string"/>
+            <xs:attribute name="metaCache"     type="xs:string"/>
             <xs:attribute name="acceptUnknownColumnTypes" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
