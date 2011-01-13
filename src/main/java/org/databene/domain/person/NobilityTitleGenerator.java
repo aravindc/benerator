@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,7 @@ package org.databene.domain.person;
 
 import java.util.Locale;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.LocalCSVGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
@@ -42,6 +43,8 @@ public class NobilityTitleGenerator extends GeneratorProxy<String> {
 	
 	private final static String BASE_NAME = "org/databene/domain/person/nobTitle_";
 	
+	private Gender gender;
+	private Locale locale;
 	private float nobleQuota = 0.005f;
 
     public NobilityTitleGenerator() {
@@ -49,7 +52,23 @@ public class NobilityTitleGenerator extends GeneratorProxy<String> {
     }
 
     public NobilityTitleGenerator(Gender gender, Locale locale) {
-        super(createCSVGenerator(gender, locale));
+        super(null);
+        this.gender = gender;
+        this.locale = locale;
+    }
+    
+    // properties ------------------------------------------------------------------------------------------------------
+    
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+	
+	public Locale getLocale() {
+		return locale;
+	}
+	
+    public void setLocale(Locale locale) {
+    	this.locale = locale;
     }
     
     public double getNobleQuota() {
@@ -60,6 +79,8 @@ public class NobilityTitleGenerator extends GeneratorProxy<String> {
 	    this.nobleQuota = (float) nobleQuota;
     }
 
+    // Generator interface implementation ------------------------------------------------------------------------------
+    
     @Override
     public String generate() {
         if (RandomUtil.randomProbability() < getNobleQuota())
@@ -67,6 +88,14 @@ public class NobilityTitleGenerator extends GeneratorProxy<String> {
         else
         	return "";
     }
+    
+    @Override
+    public synchronized void init(GeneratorContext context) {
+    	setSource(createCSVGenerator(gender, locale));
+    	super.init(context);
+    }
+    
+    // helper methods --------------------------------------------------------------------------------------------------
 
 	private static LocalCSVGenerator<String> createCSVGenerator(Gender gender, Locale locale) {
 	    return new LocalCSVGenerator<String>(baseName(gender), locale, ".csv", Encodings.UTF_8);
