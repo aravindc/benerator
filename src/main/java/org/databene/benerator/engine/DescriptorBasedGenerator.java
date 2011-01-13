@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.commons.converter.ConverterManager;
 
 /**
  * Provides easy programmatic access to generators defined in an XML descriptor file.<br/><br/>
@@ -36,6 +37,7 @@ public class DescriptorBasedGenerator extends GeneratorProxy<Object> {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public DescriptorBasedGenerator(String uri, String generatorName, BeneratorContext context) throws IOException {
+		ConverterManager.getInstance().setContext(context);
 		DescriptorRunner descriptorRunner = new DescriptorRunner(uri);
 		BeneratorRootStatement rootStatement = descriptorRunner.parseDescriptorFile();
 		super.setSource((Generator) rootStatement.getGenerator(generatorName, context));
