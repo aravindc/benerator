@@ -85,7 +85,7 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
                 new MessageConverter(filenamePattern, Locale.US));
         // parse properties files
         for (String propertiesFile : propertiesFiles)
-            IncludeStatement.importProperties(propertiesFile, context);
+            IncludeStatement.includeProperties(propertiesFile, context);
 
         // set up content generator
         TypeDescriptor rootDescriptor = DataModel.getDefaultInstance().getTypeDescriptor(root);
