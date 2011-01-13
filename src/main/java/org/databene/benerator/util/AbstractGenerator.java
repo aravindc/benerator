@@ -74,7 +74,7 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
     	if (state == GeneratorState.CREATED)
     		throw new IllegalGeneratorStateException("Generator was not initialized: " + this);
     	if (state == GeneratorState.CLOSED)
-    		throw new IllegalGeneratorStateException("Generator is already closed: " + this);
+    		throw new IllegalGeneratorStateException("Generator has already been closed: " + this);
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
