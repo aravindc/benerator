@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,11 +21,19 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.io.Closeable;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import org.databene.benerator.Generator;
+import org.databene.benerator.composite.ComponentAndVariableSupport;
+import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.parser.xml.TranscodeParser.TypeExpression;
+import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
+import org.databene.benerator.factory.DescriptorUtil;
+import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -40,6 +48,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ReferenceDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,17 +63,17 @@ public class TranscodeStatement implements Statement {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TranscodeStatement.class);
 	
-	String tableName;
+	TypeExpression typeExpression;
 	Expression<DBSystem> sourceEx;
 	Expression<DBSystem> targetEx;
-	Expression<Integer> pageSizeEx;
+	Expression<Long> pageSizeEx;
 	Expression<ErrorHandler> errorHandlerEx;
 	TranscodingTaskStatement parent;
 
-	public TranscodeStatement(String tableName, TranscodingTaskStatement parent,
+	public TranscodeStatement(TypeExpression typeExpression, TranscodingTaskStatement parent,
             Expression<DBSystem> sourceEx, Expression<DBSystem> targetEx, 
-            Expression<Integer> pageSizeEx, Expression<ErrorHandler> errorHandlerEx) {
-	    this.tableName = tableName;
+            Expression<Long> pageSizeEx, Expression<ErrorHandler> errorHandlerEx) {
+	    this.typeExpression = typeExpression;
 	    this.parent = parent;
 	    this.sourceEx = sourceEx;
 	    this.targetEx = targetEx;
@@ -75,28 +84,40 @@ public class TranscodeStatement implements Statement {
     public void execute(BeneratorContext context) {
 		DBSystem source = sourceEx.evaluate(context);
 		DBSystem target = targetEx.evaluate(context);
-		Integer pageSize = ExpressionUtil.evaluate(pageSizeEx, context);
+		Long pageSize = ExpressionUtil.evaluate(pageSizeEx, context);
 		if (pageSize == null)
-			pageSize = 1;
-		IdentityModel identity = parent.getIdentityProvider().getIdentity(tableName);
-		transcode(identity, source, target, pageSize, context);
+			pageSize = 1L;
+		transcode(source, target, pageSize, context);
     }
 
-    public void transcode(IdentityModel identity, DBSystem source, DBSystem target, int pageSize, Context context) {
-		LOGGER.info("Starting transcoding of " + tableName + " from " + source.getId() + " to " + target.getId());
+    public void transcode(DBSystem source, DBSystem target, long pageSize, Context ctx) {
+    	BeneratorContext context = (BeneratorContext) ctx;
+    	ComplexTypeDescriptor type = typeExpression.evaluate(context);
+		IdentityModel identity = parent.getIdentityProvider().getIdentity(type.getName());
+		LOGGER.info("Starting transcoding of " + type.getName() + " from " + source.getId() + " to " + target.getId());
 		long rowCount = 0;
 		KeyMapper mapper = parent.getKeyMapper();
 		mapper.registerSource(source.getId(), source.getConnection());
+		String tableName = type.getName();
 		
 		// iterate rows
-		String selector = null;
+		String selector = null; // TODO support selector
 		TypedIterable<Entity> iterable = source.queryEntities(tableName, selector, context);
-		Iterator<Entity> iterator = iterable.iterator();
-	    while (iterator.hasNext()) {
-	    	Entity entity = iterator.next();
+		Generator<Entity> generator = new IteratingGenerator<Entity>(iterable);
+		//Generator<Entity> mutGen = ComplexTypeGeneratorFactory.createMutatingEntityGenerator(tableName, type, Uniqueness.NONE, context, generator);
+		generator.init(context);
+    	List<ComponentBuilder<Entity>> componentBuilders = 
+    		ComplexTypeGeneratorFactory.createMutatingComponentBuilders(type, Uniqueness.NONE, context);
+        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
+        ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(variables, componentBuilders, context);
+		Entity entity;
+	    while ((entity = generator.generate()) != null) {
 	    	Object sourcePK = entity.idComponentValues();
-			String nk = mapper.getNaturalKey(source.getId(), identity, sourcePK);
-			// TODO create new PK
+	    	boolean mapNk = parent.needsNkMapping(tableName);
+	    	String nk = null;
+	    	if (mapNk)
+	    		nk = mapper.getNaturalKey(source.getId(), identity, sourcePK);
+			cavs.apply(entity);
 	    	Object targetPK = entity.idComponentValues();
 			transcodeForeignKeys(entity, source, context);
 			mapper.store(source.getId(), identity, nk, sourcePK, targetPK);
@@ -106,7 +127,7 @@ public class TranscodeStatement implements Statement {
 	        if (rowCount % pageSize == 0)
 	        	target.flush();
 	    }
-		IOUtil.close((Closeable) iterator);
+		IOUtil.close(generator);
     	target.flush();
 		LOGGER.info("Finished transcoding " + source.countEntities(tableName) + " rows of table " + tableName);
     }
@@ -122,7 +143,7 @@ public class TranscodeStatement implements Statement {
 					IdentityProvider identityProvider = parent.getIdentityProvider();
 					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTable);
 					if (sourceIdentity == null)
-						throw new ConfigurationError("No identity defined for table " + tableName);
+						throw new ConfigurationError("No identity defined for table " + refereeTable);
 					KeyMapper mapper = parent.getKeyMapper();
 					String sourceRefNK = mapper.getNaturalKey(source.getId(), sourceIdentity, sourceRef);
 					Object targetRef = mapper.getTargetPK(sourceIdentity, sourceRefNK);
