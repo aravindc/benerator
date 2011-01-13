@@ -82,7 +82,7 @@ public class ModelParser {
         if ("part".equals(name) || EL_ATTRIBUTE.equals(name))
             return parsePart(element, owner, false, component);
         else if (EL_ID.equals(name))
-            return parseId(element, component);
+            return parseId(element, owner, component);
         else if (EL_REFERENCE.equals(name))
             return parseReference(element, owner, component);
         else
@@ -235,7 +235,7 @@ public class ModelParser {
         throw new IllegalArgumentException(message);
     }
     
-    private IdDescriptor parseId(Element element, ComponentDescriptor descriptor) {
+    private IdDescriptor parseId(Element element, ComplexTypeDescriptor owner, ComponentDescriptor descriptor) {
         assertElementName(element, "id");
         IdDescriptor result;
         if (descriptor instanceof IdDescriptor)
@@ -244,7 +244,15 @@ public class ModelParser {
             result = new IdDescriptor(descriptor.getName(), descriptor.getType());
         else
             result = new IdDescriptor(element.getAttribute("name"), element.getAttribute("type"));
-        return mapInstanceDetails(element, false, result);
+        result = mapInstanceDetails(element, false, result);
+        if (owner != null) {
+            ComponentDescriptor parentComponent = owner.getComponent(result.getName());
+            if (parentComponent != null) {
+                TypeDescriptor parentType = parentComponent.getTypeDescriptor();
+                result.getLocalType(false).setParent(parentType);
+            }
+        }
+        return result;
     }
 
     private ReferenceDescriptor parseReference(Element element, ComplexTypeDescriptor owner, ComponentDescriptor component) {
