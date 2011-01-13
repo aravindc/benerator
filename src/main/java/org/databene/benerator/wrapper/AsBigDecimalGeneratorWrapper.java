@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,7 +42,7 @@ import org.databene.commons.MathUtil;
 
 public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWrapper<E, BigDecimal> {
 
-	private MathContext mathContext;
+	private int fractionDigits;
 	
     public AsBigDecimalGeneratorWrapper(Generator<E> source) {
 	    this(source, null, null);
@@ -50,16 +50,14 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 
     public AsBigDecimalGeneratorWrapper(Generator<E> source, BigDecimal min, BigDecimal precision) {
 	    super(source);
-	    int mcPrecision;
 	    if (precision != null) {
-	    	mcPrecision = MathUtil.fractionDigits(precision.doubleValue());
+	    	this.fractionDigits = MathUtil.fractionDigits(precision.doubleValue());
 	    	if (min != null)
-	    		mcPrecision = Math.min(mcPrecision, MathUtil.fractionDigits(min.doubleValue()));
+	    		this.fractionDigits = Math.max(this.fractionDigits, MathUtil.fractionDigits(min.doubleValue()));
 	    } else if (min != null)
-	    	mcPrecision = MathUtil.fractionDigits(min.doubleValue());
+	    	this.fractionDigits = MathUtil.fractionDigits(min.doubleValue());
 	    else
-	    	mcPrecision = 0;
-	    mathContext = new MathContext(mcPrecision);
+	    	this.fractionDigits = 0;
     }
 
 	public Class<BigDecimal> getGeneratedType() {
@@ -68,7 +66,11 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 
     public BigDecimal generate() {
 	    E feed = source.generate();
-	    return (feed != null ? new BigDecimal(feed.doubleValue(), mathContext) : null);
+	    if (feed == null)
+	    	return null;
+	    double d = feed.doubleValue();
+		MathContext mathcontext = new MathContext(MathUtil.prefixDigits(d) + fractionDigits);
+		return new BigDecimal(d, mathcontext);
     }
 
 }
