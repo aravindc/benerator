@@ -113,8 +113,6 @@
             <unpack>false</unpack>
             <scope>provided</scope>
             <includes>
-                <include>org.slf4j:slf4j-log4j12:jar</include>
-                <include>log4j:log4j:jar</include>
                 <include>net.sourceforge.jtds:jtds:jar</include>
                 <include>mysql:mysql-connector-java:jar</include>
                 <include>hsqldb:hsqldb:jar</include>
@@ -133,7 +131,6 @@
                 <exclude>org.antlr:stringtemplate:jar</exclude>
                 <exclude>avalon-framework:avalon-framework:jar</exclude>
                 <exclude>commons-logging:commons-logging:jar</exclude>
-                <exclude>log4j:log4j:jar</exclude>
                 <exclude>logkit:logkit:jar</exclude>
                 <exclude>javax.servlet:servlet-api:jar</exclude>
                 <exclude>junit:junit:jar</exclude>
