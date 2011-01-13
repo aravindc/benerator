@@ -37,7 +37,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.parser.xml.BeanParser;
-import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
+import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.benerator.engine.parser.xml.IncludeParser;
 import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.engine.statement.IncludeStatement;
@@ -265,7 +265,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                IncludeStatement statement = new IncludeParser().parse(child, null, new BeneratorParsingContext(this));
+                IncludeStatement statement = new IncludeParser().parse(child, null, new BeneratorParseContext(this));
                 statement.execute(context);
             } else if ("bean".equals(childName)) {
                 Expression<?> beanExpression = BeanParser.parseBeanExpression(child, resourceManager);
