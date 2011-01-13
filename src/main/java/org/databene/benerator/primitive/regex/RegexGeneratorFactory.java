@@ -34,7 +34,6 @@ import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
-import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.primitive.ConcatenatingGenerator;
 import org.databene.benerator.primitive.UniqueStringGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
@@ -131,7 +130,7 @@ public class RegexGeneratorFactory {
     	Generator[] altGens = createComponents(alternatives, quantityLimit, unique);
         if (unique) {
             if (min == 1 && max == 1)
-                return new UniqueAlternativeGenerator<String>(String.class, altGens);
+                return new AlternativeGenerator<String>(String.class, altGens);
             else
                 return createUniqueFromChoice(choice, min, max, quantityLimit);
         } else
@@ -146,11 +145,11 @@ public class RegexGeneratorFactory {
             Object[] alternatives = choice.getAlternatives();
             for (int j = 0; j < length; j++) {
 				Generator<String>[] altGens = createComponents(alternatives, quantityLimit, true);
-                subGens[j] = new UniqueAlternativeGenerator<String>(String.class, altGens);
+                subGens[j] = new AlternativeGenerator<String>(String.class, altGens);
             }
             sources[length - min] = new UniqueCompositeStringGenerator(subGens);
         }
-        return new UniqueAlternativeGenerator<String>(String.class, sources);
+        return new AlternativeGenerator<String>(String.class, sources);
     }
 
 	private static Generator<String> createFromGroup(
@@ -173,7 +172,7 @@ public class RegexGeneratorFactory {
             }
             sources[length - min] = new UniqueCompositeStringGenerator(subGens);
         }
-        return new UniqueAlternativeGenerator<String>(String.class, sources);
+        return new AlternativeGenerator<String>(String.class, sources);
     }
 
     private static Generator<String> createFromCharacter(char c, int min, int max, boolean unique) {
