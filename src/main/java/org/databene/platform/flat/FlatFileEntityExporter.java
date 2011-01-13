@@ -66,6 +66,7 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
         super(uri, encoding, null);
         this.uri = uri;
         setColumns(columnFormatList);
+        setDecimalPattern("0.##");
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -120,15 +121,13 @@ public class FlatFileEntityExporter extends TextFileExporter<Entity> {
                 }
                 assert pos.getIndex() == rbIndex;
                 FlatFileColumnDescriptor descriptor = new FlatFileColumnDescriptor(columnName, width, alignment, padChar);
-                // TODO large numbers may be formatted as 000000012E+1
-                this.converters[i] = new ConverterChain<Entity, String>(
-                    new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())),
-                    plainConverter,
-                    new FormatFormatConverter(String.class, 
-                        new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar),
-                        true
-                    )
-                );
+                PadFormat format = new PadFormat(descriptor.getWidth(), minFractionDigits, maxFractionDigits, descriptor.getAlignment(), padChar);
+                ConverterChain<Entity, String> chain = new ConverterChain<Entity, String>();
+                chain.addComponent(new AccessingConverter<Entity, Object>(Entity.class, Object.class, new ComponentAccessor(descriptor.getName())));
+                if (format.getMinimumFractionDigits() == 0)
+                	chain.addComponent(plainConverter);
+				chain.addComponent(new FormatFormatConverter(String.class, format, true));
+                this.converters[i] = chain;
             }
         } catch (ParseException e) {
             throw new ConfigurationError("Invalid column definition: " + columnFormatList, e);
