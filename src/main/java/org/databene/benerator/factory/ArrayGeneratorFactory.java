@@ -95,7 +95,7 @@ public class ArrayGeneratorFactory {
     private static Generator<Object[]> createMutatingArrayGenerator(
     		String instanceName, ArrayTypeDescriptor type, Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
     	Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
-    	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
+    	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO v0.6.x mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
 	    return new SourceAwareGenerator<Object[]>(instanceName, generator, variables, componentBuilders, context);
     }
 
