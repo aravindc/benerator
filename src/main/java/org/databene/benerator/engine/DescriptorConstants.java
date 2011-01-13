@@ -55,6 +55,7 @@ public interface DescriptorConstants {
     static final String EL_EXECUTE = "execute";
     static final String EL_DATABASE = "database";
     static final String EL_ECHO = "echo";
+    static final String EL_ERROR = "error";
     static final String EL_IMPORT = "import";
     static final String EL_INCLUDE = "include";
     static final String EL_PROPERTY = "property";
@@ -97,8 +98,10 @@ public interface DescriptorConstants {
     static final String ATT_ACC_UNK_COL_TYPES = "acceptUnknownColumnTypes";
     static final String ATT_FETCH_SIZE = "fetchSize";
     static final String ATT_BATCH = "batch";
+    static final String ATT_META_CACHE = "metaCache";
     static final String ATT_CATALOG = "catalog";
     static final String ATT_SCHEMA = "schema";
+    static final String ATT_ENVIRONMENT = "environment";
     static final String ATT_TABLE_FILTER = "tableFilter";
     static final String ATT_INCL_TABLES = "includeTables";
     static final String ATT_EXCL_TABLES = "excludeTables";
