@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,6 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.junit.Assert.assertEquals;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.statement.EchoStatement;
 import org.junit.Test;
@@ -39,13 +38,13 @@ public class EchoParserTest extends BeneratorIntegrationTest {
 	@Test
 	public void testMessageAttribute() throws Exception {
 		EchoStatement statement = (EchoStatement) parse("<echo message='Hello' />");
-		assertEquals("Hello", statement.getExpression().evaluate(new BeneratorContext()));
+		assertEquals("Hello", statement.getExpression().evaluate(context));
 	}
 	
 	@Test
 	public void testElementText() throws Exception {
 		EchoStatement statement = (EchoStatement) parse("<echo>Hello</echo>");
-		assertEquals("Hello", statement.getExpression().evaluate(new BeneratorContext()));
+		assertEquals("Hello", statement.getExpression().evaluate(context));
 	}
 	
 }
