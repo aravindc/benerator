@@ -31,9 +31,9 @@ import org.databene.platform.db.DBSystem;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses Benerator's &lt;transcode&gt; XML descriptor element.<br/><br/>
  * Created: 10.09.2010 18:14:53
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class TranscodingTaskParser extends AbstractTranscodeParser {
@@ -44,7 +44,7 @@ public class TranscodingTaskParser extends AbstractTranscodeParser {
 
     @Override
     public Statement parse(Element element, Statement[] parentPath, BeneratorParsingContext parsingContext) {
-    	Expression<ErrorHandler> errorHandlerExpression = parseOnErrorAttribute(element, "transcode");
+    	Expression<ErrorHandler> errorHandlerExpression = parseOnErrorAttribute(element, "transcodingTask");
 		TranscodingTaskStatement statement = new TranscodingTaskStatement(
 				parseDefaultSource(element), 
 				parseTarget(element), 
