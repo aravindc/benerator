@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,18 +21,20 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.webdecs.xml.ParsingContext;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link ParsingContext} implementation for Benerator. It defines parsers for all the descriptor XML elements.<br/><br/>
  * Created: 14.12.2010 16:29:38
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
-public class BeneratorParsingContext extends ParsingContext<Statement> {
+public class BeneratorParsingContext extends ParsingContext<Statement> { // TODO rename to ...ParseContext
 
+	BeneratorContext context;
 	ResourceManager resourceManager;
 
 	public BeneratorParsingContext(ResourceManager resourceManager) {
@@ -45,6 +47,7 @@ public class BeneratorParsingContext extends ParsingContext<Statement> {
 		factory.addParser(new DbSanity4BeneratorParser());
 		factory.addParser(new DefaultComponentParser());
 		factory.addParser(new EchoParser());
+		factory.addParser(new ErrorParser());
 		factory.addParser(new EvaluateParser());
 		factory.addParser(new GenerateOrIterateParser());
 		factory.addParser(new IfParser());
@@ -53,8 +56,8 @@ public class BeneratorParsingContext extends ParsingContext<Statement> {
 		factory.addParser(new PropertyParser());
 		factory.addParser(new RunTaskParser());
 		factory.addParser(new SetupParser());
-		factory.addParser(new TranscodingTaskParser());
 		factory.addParser(new TranscodeParser());
+		factory.addParser(new TranscodingTaskParser());
 		factory.addParser(new WaitParser());
 		factory.addParser(new WhileParser());
 	}
@@ -65,6 +68,10 @@ public class BeneratorParsingContext extends ParsingContext<Statement> {
 
 	public BeneratorParsingContext createSubContext(ResourceManager resourceManager) {
 		return new BeneratorParsingContext(resourceManager);
+	}
+
+	public BeneratorContext getContext() {
+		return context;
 	}
 	
 }
