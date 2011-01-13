@@ -23,7 +23,7 @@ package org.databene.benerator;
 
 import org.databene.benerator.engine.DefaultBeneratorFactory;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
+import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.StringUtil;
 
@@ -38,7 +38,7 @@ public abstract class BeneratorFactory {
 
 	public static final String BENERATOR_FACTORY_PROPERTY = "benerator.factory";
 	
-    public abstract BeneratorParsingContext createParsingContext(ResourceManager resourceManager);
+    public abstract BeneratorParseContext createParsingContext(ResourceManager resourceManager);
     
 	private static BeneratorFactory instance;
 

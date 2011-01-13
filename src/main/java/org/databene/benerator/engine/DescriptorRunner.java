@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.BeneratorFactory;
-import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
+import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.IOUtil;
 import org.databene.commons.RoundedNumberFormat;
 import org.databene.commons.SystemInfo;
@@ -110,7 +110,7 @@ public class DescriptorRunner implements ResourceManager {
 	public BeneratorRootStatement parseDescriptorFile() throws IOException {
 		Document document = XMLUtil.parse(uri);
 	    Element root = document.getDocumentElement();
-	    BeneratorParsingContext parsingContext = factory.createParsingContext(resourceManager);
+	    BeneratorParseContext parsingContext = factory.createParsingContext(resourceManager);
 	    BeneratorRootStatement statement = (BeneratorRootStatement) parsingContext.parseElement(root, null);
 		// prepare system
 		generatedFiles = new ArrayList<String>();

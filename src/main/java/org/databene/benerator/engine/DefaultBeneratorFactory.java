@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.BeneratorFactory;
-import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
+import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 
 /**
  * Default implementation of the abstract {@link BeneratorFactory} class.<br/><br/>
@@ -33,8 +33,8 @@ import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
 public class DefaultBeneratorFactory extends BeneratorFactory {
 
 	@Override
-    public BeneratorParsingContext createParsingContext(ResourceManager resourceManager) {
-		return new BeneratorParsingContext(resourceManager);
+    public BeneratorParseContext createParsingContext(ResourceManager resourceManager) {
+		return new BeneratorParseContext(resourceManager);
     }
 
 }
