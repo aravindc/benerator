@@ -57,11 +57,15 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     /** The URI to read the samples from */
     protected String uri;
     
+    protected char separator;
+    
     private String encoding;
 
     /** The converter to create instances from the CSV cell strings */
     private Converter<String, E> converter;
-
+    
+    
+    
     // constructors ----------------------------------------------------------------------------------------------------
 
     public WeightedCSVSampleGenerator(String url) {
@@ -77,10 +81,41 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         this.source = new AttachedWeightSampleGenerator<E>();
         this.converter = converter;
         this.encoding = encoding;
+        this.separator = ',';
         if (uri != null && uri.trim().length() > 0)
             this.uri = uri;
     }
+    
+    
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
+	public String getUri() {
+		return uri;
+	}
+	
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	public char getSeparator() {
+		return separator;
+	}
+	
+	public void setSeparator(char separator) {
+		this.separator = separator;
+	}
+	
+	public String getEncoding() {
+		return encoding;
+	}
+	
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+	
+	
+	
     // generator interface ---------------------------------------------------------------------------------------------
 
     @Override
@@ -91,7 +126,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     @Override
     public void init(GeneratorContext context) {
-        List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, ',', encoding, converter);
+        List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, separator, encoding, converter);
         ((AttachedWeightSampleGenerator<E>) source).setSamples(CollectionUtil.toArray(samples));
     	super.init(context);
     }

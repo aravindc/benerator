@@ -28,6 +28,7 @@ package org.databene.benerator.csv;
 
 import java.util.List;
 
+import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
@@ -47,9 +48,12 @@ import org.databene.dataset.Dataset;
  */
 public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     
-    private String filenamePattern;
-    private String datasetName;
-    private String nesting;
+    protected String filenamePattern;
+    protected String datasetName;
+    protected String nesting;
+    protected String encoding;
+    protected char separator;
+    protected Converter<String, E> converter;
 
     // constructors ----------------------------------------------------------------------------------------------------
     
@@ -70,18 +74,51 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, 
     		String encoding, Converter<String, E> converter) {
         super(new AttachedWeightSampleGenerator<E>());
-        List<WeightedSample<E>> samples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, 
-        		filenamePattern, encoding, converter);
-		((AttachedWeightSampleGenerator<E>)source).setSamples(samples);
-        this.nesting = nesting;
         this.filenamePattern = filenamePattern;
+        this.separator = separator;
         this.datasetName = datasetName;
+        this.nesting = nesting;
+        this.encoding = encoding;
+        this.converter = converter;
     }
     
+    
+    
+    // properties ------------------------------------------------------------------------------------------------------
+    
+	public void setFilenamePattern(String filenamePattern) {
+		this.filenamePattern = filenamePattern;
+	}
+	
+	public String getFilenamePattern() {
+		return filenamePattern;
+	}
+	
 	public String getDataset() {
 		return datasetName;
 	}
-
+	
+	public void setDataset(String datasetName) {
+		this.datasetName = datasetName;
+	}
+	
+	public String getNesting() {
+		return nesting;
+	}
+	
+	public void setNesting(String nesting) {
+		this.nesting = nesting;
+	}
+	
+	
+	@Override
+	public synchronized void init(GeneratorContext context) {
+        List<WeightedSample<E>> samples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, 
+        		filenamePattern, encoding, converter);
+		((AttachedWeightSampleGenerator<E>)source).setSamples(samples);
+		super.init(context);
+	}
+	
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override

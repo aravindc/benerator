@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,12 +51,26 @@ public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> 
     }
 
     public DepartmentNameGenerator(Locale locale) {
-        super(LocaleUtil.availableLocaleUrl(FILENAME_PREFIX, locale, ".csv"), Encodings.UTF_8);
+        super(uriForLocale(locale), Encodings.UTF_8);
     }
+    
+    // properties ------------------------------------------------------------------------------------------------------
 
+    public void setLocale(Locale locale) {
+    	setUri(uriForLocale(locale));
+    }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
+    
     @Override
     public Class<String> getGeneratedType() {
         return String.class;
     }
+    
+    // helpers ---------------------------------------------------------------------------------------------------------
+
+	private static String uriForLocale(Locale locale) {
+		return LocaleUtil.availableLocaleUrl(FILENAME_PREFIX, locale, ".csv");
+	}
     
 }
