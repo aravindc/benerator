@@ -51,7 +51,6 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
@@ -311,7 +310,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     }
 
     private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-        Date min = parseDate(descriptor, MIN, TimeUtil.date(1970, 0, 1));
+        Date min = parseDate(descriptor, MIN, null);
         Date max = parseDate(descriptor, MAX, null);
         long precision = parseDatePrecision(descriptor);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
