@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,9 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 
 /**
- * TODO Document class.<br/><br/>
+ * Lazily initialized {@link ComplexTypeDescriptor} that reads its components from a database table.<br/><br/>
  * Created: 30.11.2010 19:23:33
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class LazyTableComplexTypeDescriptor extends ComplexTypeDescriptor {
