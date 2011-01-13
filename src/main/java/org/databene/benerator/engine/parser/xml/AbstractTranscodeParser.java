@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,10 @@ import org.databene.text.SplitStringConverter;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parent class for parsers that read parsing related XML elements. 
+ * It provides functionality for parsing <code>source</code>, 
+ * <code>target</code> and <code>irrelevantColumns</code>, 
+ * <code>pageSize</code> and <code>onError</code>.<br/><br/>
  * Created: 11.09.2010 07:12:55
  * @since 0.6.4
  * @author Volker Bergmann
@@ -40,11 +43,6 @@ public abstract class AbstractTranscodeParser extends AbstractBeneratorDescripto
 
 	public AbstractTranscodeParser(String elementName, Class<?>... supportedParentTypes) {
 	    super(elementName, supportedParentTypes);
-    }
-
-	@SuppressWarnings("unchecked")
-    protected Expression<Integer> parsePageSize(Element element) {
-	    return (Expression<Integer>) parseScriptAttribute("pageSize", element);
     }
 
 	@SuppressWarnings("unchecked")
