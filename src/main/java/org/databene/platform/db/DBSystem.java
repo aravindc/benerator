@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,11 +43,13 @@ import org.databene.jdbacl.model.DBCatalog;
 import org.databene.jdbacl.model.DBColumn;
 import org.databene.jdbacl.model.DBColumnType;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
+import org.databene.jdbacl.model.DBMetaDataImporter;
 import org.databene.jdbacl.model.DBPrimaryKeyConstraint;
 import org.databene.jdbacl.model.DBSchema;
 import org.databene.jdbacl.model.DBTable;
 import org.databene.jdbacl.model.DBUniqueConstraint;
 import org.databene.jdbacl.model.Database;
+import org.databene.jdbacl.model.buffer.BufferedDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
@@ -65,6 +67,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -85,11 +88,13 @@ import javax.sql.PooledConnection;
  * @author Volker Bergmann
  */
 public class DBSystem extends AbstractStorageSystem {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(DBSystem.class);
     
     private static final int DEFAULT_FETCH_SIZE = 100;
 
 	private static final VersionNumber MIN_ORACLE_VERSION = new VersionNumber("10.2.0.4");
-
+	
 	// constants -------------------------------------------------------------------------------------------------------
     
     protected static final ArrayPropertyExtractor<String> nameExtractor
@@ -100,6 +105,7 @@ public class DBSystem extends AbstractStorageSystem {
     // attributes ------------------------------------------------------------------------------------------------------
     
     private String id;
+    private String environment;
     private String url;
     private String user;
     private String password;
@@ -108,6 +114,7 @@ public class DBSystem extends AbstractStorageSystem {
     private String schema;
     private String includeTables;
     private String excludeTables;
+    boolean metaDataCache;
     boolean batch;
     boolean readOnly;
     boolean lazy;
@@ -129,20 +136,28 @@ public class DBSystem extends AbstractStorageSystem {
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public DBSystem() {
-        this(null, null, null, null, null);
-    }
-
     public DBSystem(String id, String url, String driver, String user, String password) {
+    	this();
         setId(id);
         setUrl(url);
         setUser(user);
         setPassword(password);
         setDriver(driver);
+        checkOracleDriverVersion(driver);
+    }
+
+    public DBSystem(String id, String environment) {
+    	this();
+    	setId(id);
+        setEnvironment(environment);
+    }
+
+	private DBSystem() {
         setSchema(null);
         setIncludeTables(".*");
         setExcludeTables(null);
         setFetchSize(DEFAULT_FETCH_SIZE);
+        setMetaDataCache(false);
         setBatch(false);
         setReadOnly(false);
         setLazy(true);
@@ -151,21 +166,6 @@ public class DBSystem extends AbstractStorageSystem {
         this.contexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
         this.connectedBefore = false;
-        if (driver != null && driver.contains("oracle")) {
-        	Connection connection = null;
-    		try {
-				connection = getConnection();
-				DatabaseMetaData metaData = connection.getMetaData();
-				VersionNumber driverVersion = new VersionNumber(metaData.getDriverVersion());
-				if (driverVersion.compareTo(MIN_ORACLE_VERSION) < 0)
-					logger.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
-							"You can use that driver for accessing an Oracle 9 server as well.");
-			} catch (SQLException e) {
-				throw new ConfigurationError(e);
-			} finally {
-				close();
-			}
-        }
     }
 
 	// properties ------------------------------------------------------------------------------------------------------
@@ -177,6 +177,30 @@ public class DBSystem extends AbstractStorageSystem {
     public void setId(String id) {
         this.id = id;
     }
+
+	public String getEnvironment() {
+		return (environment != null ? environment : user);
+	}
+
+    private void setEnvironment(String environment) {
+    	if (StringUtil.isEmpty(environment)) {
+    		this.environment = null;
+    		return;
+    	}
+    	LOGGER.debug("setting environment '{}'", environment);
+		try {
+			JDBCConnectData connectData = DBUtil.getConnectData(environment);
+			this.environment = environment;
+			this.url = connectData.url;
+			this.driver = connectData.driver;
+			this.catalog = connectData.catalog;
+			this.schema = connectData.schema;
+			this.user = connectData.user;
+			this.password = connectData.password;
+		} catch (IOException e) {
+			throw new ConfigurationError("Failed to read settings for environment " + environment);
+		}
+	}
 
     public String getDriver() {
         return driver;
@@ -247,30 +271,26 @@ public class DBSystem extends AbstractStorageSystem {
     	this.excludeTables = excludeTables;
     }
 
-	/**
-     * @return the batch
-     */
+	public boolean isMetaDataCache() {
+		return metaDataCache;
+	}
+	
+	public void setMetaDataCache(boolean metaDataCache) {
+		this.metaDataCache = metaDataCache;
+	}
+	
     public boolean isBatch() {
         return batch;
     }
 
-    /**
-     * @param batch the batch to set
-     */
     public void setBatch(boolean batch) {
         this.batch = batch;
     }
 
-    /**
-     * @return the fetchSize
-     */
     public int getFetchSize() {
         return fetchSize;
     }
 
-    /**
-     * @param fetchSize the fetchSize to set
-     */
     public void setFetchSize(int fetchSize) {
         this.fetchSize = fetchSize;
     }
@@ -525,13 +545,15 @@ public class DBSystem extends AbstractStorageSystem {
 	} 
 	
 	public void parseMetaData() {
-        logger.debug("parsing metadata...");
         this.tables = new HashMap<String, DBTable>();
         this.typeDescriptors = new OrderedNameMap<TypeDescriptor>();
         //this.tableColumnIndexes = new HashMap<String, Map<String, Integer>>();
         getDialect(); // make sure dialect is initialized
         database = getDbMetaData();
-        logger.info("Ordering tables by dependency");
+        if (lazy)
+        	logger.info("Ordering tables by dependency");
+        else
+        	logger.info("Fetching table details and ordering tables by dependency");
         List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
         for (DBTable table : tables)
             parseTable(table); // TODO support lazy parsing
@@ -568,23 +590,48 @@ public class DBSystem extends AbstractStorageSystem {
 
     // private helpers ------------------------------------------------------------------------------
 
+	private void checkOracleDriverVersion(String driver) {
+		if (driver != null && driver.contains("oracle")) {
+        	Connection connection = null;
+    		try {
+				connection = getConnection();
+				DatabaseMetaData metaData = connection.getMetaData();
+				VersionNumber driverVersion = new VersionNumber(metaData.getDriverVersion());
+				if (driverVersion.compareTo(MIN_ORACLE_VERSION) < 0)
+					logger.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
+							"You can use that driver for accessing an Oracle 9 server as well.");
+			} catch (SQLException e) {
+				throw new ConfigurationError(e);
+			} finally {
+				close();
+			}
+        }
+	}
+
 	private void fetchDbMetaData() {
 		try {
-		    JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
-		    importer.setCatalogName(catalog);
-		    importer.setSchemaName(schema);
-		    importer.setIncludeTables(includeTables);
-		    importer.setExcludeTables(excludeTables);
-		    importer.setImportingIndexes(false);
-		    importer.setImportingUKs(true);
-		    importer.setFaultTolerant(true);
-		    importer.setLazy(lazy);
+		    DBMetaDataImporter importer = createJDBCImporter();
+		    if (metaDataCache)
+		    	importer = new BufferedDBImporter(importer, getEnvironment());
 		    database = importer.importDatabase();
 		} catch (ConnectFailedException e) {
 			throw new ConfigurationError("Database not available. ", e);
 		} catch (ImportFailedException e) {
 		    throw new ConfigurationError("Unexpected failure of database meta data import. ", e);
 		}
+	}
+
+	private JDBCDBImporter createJDBCImporter() throws ConnectFailedException {
+		JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
+		importer.setCatalogName(catalog);
+		importer.setSchemaName(schema);
+		importer.setIncludeTables(includeTables);
+		importer.setExcludeTables(excludeTables);
+		importer.setImportingIndexes(false);
+		importer.setImportingUKs(true);
+		importer.setFaultTolerant(true);
+		importer.setLazy(lazy);
+		return importer;
 	}
 
 	private QueryIterable createQuery(String query, Context context, Connection connection) {
@@ -621,7 +668,7 @@ public class DBSystem extends AbstractStorageSystem {
 				table.getColumn(columnName);
 	            String abstractType = JdbcMetaTypeMapper.abstractType(column.getType(), acceptUnknownColumnTypes);
 	        	IdDescriptor idDescriptor = new IdDescriptor(columnName, abstractType);
-				complexType.addComponent(idDescriptor);
+				complexType.setComponent(idDescriptor);
 	        }
         }
 
@@ -716,7 +763,7 @@ public class DBSystem extends AbstractStorageSystem {
 				if (primitiveType == null) {
 					if (!acceptUnknownColumnTypes)
 						throw new ConfigurationError("Column type of " + entityDescriptor.getName() + "." + 
-							dbCompDescriptor.getName() + "unknown: " + type.getName());
+							dbCompDescriptor.getName() + " unknown: " + type.getName());
 					else if (entity.get(type.getName()) instanceof String)
 						primitiveType = PrimitiveType.STRING;
 					else
