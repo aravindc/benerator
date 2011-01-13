@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,7 +34,8 @@ import org.databene.dbsanity.DbSanity;
 import org.databene.dbsanity.ExecutionMode;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Statement} implementation that performs DB Sanity checks 
+ * and raises an error in case of check violations.<br/><br/>
  * Created: 29.11.2010 11:15:48
  * @since 0.6.4
  * @author Volker Bergmann
