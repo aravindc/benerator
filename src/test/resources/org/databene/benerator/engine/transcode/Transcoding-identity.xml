@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dbsanity>
+	<identity table="COUNTRY" type="unique-key" columns="NAME" />
+	<identity table="STATE"   type="unique-key" columns="NAME" />
+</dbsanity>
