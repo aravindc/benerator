@@ -92,7 +92,8 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		push(new DefaultContext(java.lang.System.getProperties()));
 		push(properties);
 		push(new CaseInsensitiveContext(true));
-		set("benerator", this);
+		set("benerator", this); // TODO v0.7 remove
+		set("context", this);
 		classCache = new ClassCache();
 	}
 	
