@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,15 +24,20 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.DefineDatabaseStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.FallbackExpression;
+import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -43,6 +48,12 @@ import org.w3c.dom.Element;
  */
 public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 	
+	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(
+			ATT_ID, ATT_ENVIRONMENT, ATT_URL, ATT_DRIVER, ATT_USER, ATT_PASSWORD, ATT_CATALOG, ATT_SCHEMA, 
+			ATT_TABLE_FILTER, ATT_INCL_TABLES, ATT_EXCL_TABLES, ATT_META_CACHE, ATT_BATCH, ATT_FETCH_SIZE, 
+			ATT_READ_ONLY, ATT_LAZY, ATT_ACC_UNK_COL_TYPES);
+
+
 	// TODO v1.0 define parser extension mechanism and move DatabaseParser and DefineDatabaseStatement to DB package?
 	
 	public DatabaseParser() {
@@ -52,31 +63,40 @@ public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 	@Override
 	@SuppressWarnings("unchecked")
     public DefineDatabaseStatement parse(Element element, Statement[] parentPath, BeneratorParsingContext context) {
+		checkAttributeSupport(XMLUtil.getAttributes(element));
 		try {
-			Expression<String>  id          = parseAttribute(ATT_ID, element);
-			Expression<String>  url         = parseScriptableStringAttribute(ATT_URL,      element);
-			Expression<String>  driver      = parseScriptableStringAttribute(ATT_DRIVER,   element);
-			Expression<String>  user        = parseScriptableStringAttribute(ATT_USER,     element);
-			Expression<String>  password    = parseScriptableStringAttribute(ATT_PASSWORD, element);
-			Expression<String>  catalog     = parseScriptableStringAttribute(ATT_CATALOG,   element);
-			Expression<String>  schema      = parseScriptableStringAttribute(ATT_SCHEMA,   element);
-			Expression<String>  tableFilter = parseScriptableStringAttribute(ATT_TABLE_FILTER, element);
-			Expression<String>  includeTables = parseScriptableStringAttribute(ATT_INCL_TABLES, element);
-			Expression<String>  excludeTables = parseScriptableStringAttribute(ATT_EXCL_TABLES, element);
-			Expression<Boolean> batch       = parseBooleanExpressionAttribute(ATT_BATCH, element, false);
-			Expression<Integer> fetchSize   = parseIntAttribute(ATT_FETCH_SIZE, element, 100);
-			Expression<Boolean> readOnly    = parseBooleanExpressionAttribute(ATT_READ_ONLY, element, false);
-			Expression<Boolean> lazy        = parseBooleanExpressionAttribute(ATT_LAZY, element, true);
+			Expression<String>  id            = parseAttribute(ATT_ID, element);
+			Expression<String>  environment   = parseScriptableStringAttribute(ATT_ENVIRONMENT,  element);
+			Expression<String>  url           = parseScriptableStringAttribute(ATT_URL,          element);
+			Expression<String>  driver        = parseScriptableStringAttribute(ATT_DRIVER,       element);
+			Expression<String>  user          = parseScriptableStringAttribute(ATT_USER,         element);
+			Expression<String>  password      = parseScriptableStringAttribute(ATT_PASSWORD,     element);
+			Expression<String>  catalog       = parseScriptableStringAttribute(ATT_CATALOG,      element);
+			Expression<String>  schema        = parseScriptableStringAttribute(ATT_SCHEMA,       element);
+			Expression<String>  tableFilter   = parseScriptableStringAttribute(ATT_TABLE_FILTER, element);
+			Expression<String>  includeTables = parseScriptableStringAttribute(ATT_INCL_TABLES,  element);
+			Expression<String>  excludeTables = parseScriptableStringAttribute(ATT_EXCL_TABLES,  element);
+			Expression<Boolean> metaCache     = parseBooleanExpressionAttribute(ATT_META_CACHE,  element, false);
+			Expression<Boolean> batch         = parseBooleanExpressionAttribute(ATT_BATCH,       element, false);
+			Expression<Integer> fetchSize     = parseIntAttribute(ATT_FETCH_SIZE,                element, 100);
+			Expression<Boolean> readOnly      = parseBooleanExpressionAttribute(ATT_READ_ONLY,   element, false);
+			Expression<Boolean> lazy          = parseBooleanExpressionAttribute(ATT_LAZY,        element, true);
 			Expression<Boolean> acceptUnknownColumnTypes = new FallbackExpression<Boolean>(
 					parseBooleanExpressionAttribute(ATT_ACC_UNK_COL_TYPES, element), 
 					new GlobalAcceptUnknownSimpleTypeExpression());
-			return new DefineDatabaseStatement(id, url, driver, user, password, catalog, schema, 
-					tableFilter, includeTables, excludeTables,
+			return new DefineDatabaseStatement(id, environment, url, driver, user, password, catalog, schema, 
+					metaCache, tableFilter, includeTables, excludeTables,
 					batch, fetchSize, readOnly, lazy, acceptUnknownColumnTypes, context.getResourceManager());
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
 		}
     }
+
+	private void checkAttributeSupport(Map<String, String> attributes) {
+		for (String name : attributes.keySet())
+			if (!SUPPORTED_ATTRIBUTES.contains(name))
+				throw new ConfigurationError("Not a supported attribute of <database>: " + name);
+	}
 
 	static class GlobalAcceptUnknownSimpleTypeExpression extends DynamicExpression<Boolean> {
 		public Boolean evaluate(Context context) {
