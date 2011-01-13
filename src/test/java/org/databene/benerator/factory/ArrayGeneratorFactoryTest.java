@@ -218,7 +218,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		}
 	}
 
-	/** TODO v0.6.4 implement array mutation
+	/** TODO v0.6.x implement array mutation
 	@Test
 	public void testMutatingGeneration() {
 		Object[] MUTATED_ALICE = new Object[] { "Alice", 24 };

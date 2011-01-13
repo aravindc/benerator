@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,11 +24,13 @@ package org.databene.platform.flat;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
 
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.Encodings;
 import org.databene.commons.FileUtil;
-import org.databene.commons.ReaderLineIterator;
+import org.databene.commons.IOUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
@@ -43,27 +45,41 @@ public class FlatFileEntityExporterTest {
 	private static final String ENCODING = Encodings.UTF_8;
 
 	@Test
-	public void testMultiThreaded() throws Exception {
-		File file = File.createTempFile(getClass().getSimpleName(), ".flat", new File("target"));
+	public void testFormat() throws Exception {
+		File file = tempFile();
 		String uri = file.getAbsolutePath();
-		FlatFileEntityExporter exporter = new FlatFileEntityExporter(uri, ENCODING, "name[10],age[3r0]");
+		FlatFileEntityExporter exporter = new FlatFileEntityExporter(uri, ENCODING, "left[10],right[10.2r0]");
 		try {
-			Entity entity = new Entity("Person", "name", "Alice", "age", 23);
-			exporter.startConsuming(entity);
-			exporter.finishConsuming(entity);
+			consumeEntity(exporter, 12, 34);       // int
+			consumeEntity(exporter, 56, 9876543L); // long
+			consumeEntity(exporter, 78, 9876543.); // round double
+			consumeEntity(exporter, 90, 1.5);      // double
 		} finally {
 			exporter.close();
 		}
 		assertTrue(file.exists());
-		ReaderLineIterator iterator = new ReaderLineIterator(new FileReader(file));
-		try {
-			assertTrue(iterator.hasNext());
-			String line = iterator.next();
-			assertEquals("Alice     023", line);
-		} finally {
-			iterator.close();
-		}
+		String[] actualLines = IOUtil.readTextLines(file.getAbsolutePath(), true);
+		String[] expectedLines = new String [] {
+				"12        0000034.00",
+				"56        9876543.00",
+				"78        9876543.00",
+				"90        0000001.50"
+		};
+		String message = "Expected [" + ArrayFormat.format(expectedLines) + "], but found [" + ArrayFormat.format(actualLines) + "]";
+		assertTrue(message, Arrays.equals(expectedLines, actualLines));
 		FileUtil.deleteIfExists(file);
+	}
+
+	private void consumeEntity(FlatFileEntityExporter exporter, Number left, Number right) {
+		Entity entity = new Entity("row", "left", left, "right", right);
+		exporter.startConsuming(entity);
+		exporter.finishConsuming(entity);
+	}
+
+	private File tempFile() throws IOException {
+		File file = File.createTempFile(getClass().getSimpleName(), ".flat", new File("target"));
+		FileUtil.deleteIfExists(file);
+		return file;
 	}
 	
 }

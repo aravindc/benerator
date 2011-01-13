@@ -54,7 +54,7 @@ public class ConsoleExporterTest {
 	public void testSimpleTypes() {
 		check("Test" + LF, "Test");
 		check("1" + LF, 1);
-		check("1.0" + LF, 1.);
+		check("1" + LF, 1.);
 		check("true" + LF, true);
 	}
 
@@ -74,13 +74,13 @@ public class ConsoleExporterTest {
 	@Test
 	public void testEntity() {
 		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
-		check("e[i=3, d=5.0, s=sss]" + LF, entity);
+		check("e[i=3, d=5, s=sss]" + LF, entity);
 	}
 	
 	@Test
 	public void testLimit() {
 		Entity entity = new Entity("e", "i", 3, "d", 5., "s", "sss");
-		check(new ConsoleExporter(1L), "e[i=3, d=5.0, s=sss]" + LF + '.', entity, entity);
+		check(new ConsoleExporter(1L), "e[i=3, d=5, s=sss]" + LF + '.', entity, entity);
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
