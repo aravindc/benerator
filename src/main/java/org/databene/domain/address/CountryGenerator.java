@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,9 +32,12 @@ import org.databene.benerator.sample.AttachedWeightSampleGenerator;
  * Generates a random country.<br/>
  * <br/>
  * Created: 11.06.2006 08:15:51
+ * @author Volker Bergmann
  */
 public class CountryGenerator extends AttachedWeightSampleGenerator<Country> {
 
+	// TODO support dataSet
+	
     public CountryGenerator() {
         super(Country.class, Country.getInstances());
     }
@@ -43,4 +46,5 @@ public class CountryGenerator extends AttachedWeightSampleGenerator<Country> {
     public String toString() {
         return getClass().getSimpleName();
     }
+    
 }
