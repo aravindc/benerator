@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -71,11 +71,11 @@ public class IncludeStatement implements Statement {
 		String lcUri = uri.toLowerCase();
         try {
 			if (lcUri.endsWith(".properties"))
-	            importProperties(uri, context);
+	            includeProperties(uri, context);
 			else if (lcUri.endsWith(".ben.xml") || lcUri.endsWith("benerator.xml"))
-				importDescriptor(uri, context);
+				includeDescriptor(uri, context);
 			else if (lcUri.endsWith(".xsd"))
-				importXmlSchema(uri, context);
+				includeXmlSchema(uri, context);
 			else
 				throw new ConfigurationError("Not a supported import file type: " + uri);
         } catch (IOException e) {
@@ -83,21 +83,21 @@ public class IncludeStatement implements Statement {
         }
 	}
 
-	public static void importProperties(String uri, BeneratorContext context) throws IOException {
+	public static void includeProperties(String uri, BeneratorContext context) throws IOException {
         logger.debug("Including properties file: " + uri);
         ScriptConverter preprocessor = new ScriptConverter(context);
         DefaultEntryConverter converter = new DefaultEntryConverter(preprocessor, context, true);
         IOUtil.readProperties(uri, converter);
     }
 
-	public static void importXmlSchema(String uri, BeneratorContext context) {
+	public static void includeXmlSchema(String uri, BeneratorContext context) {
         logger.debug("Including XML Schema: " + uri);
         new XMLSchemaDescriptorProvider(uri, context);
     }
 
-    private static void importDescriptor(String uri, BeneratorContext context) throws IOException {
+    private static void includeDescriptor(String uri, BeneratorContext context) throws IOException {
         logger.debug("Including Benerator descriptor file: " + uri);
-		new DescriptorRunner(uri, context).run();
+		new DescriptorRunner(uri, context).runWithoutShutdownHook();
     }
 
 }
