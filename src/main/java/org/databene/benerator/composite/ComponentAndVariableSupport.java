@@ -49,7 +49,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
     // TODO split off VariableSupport
 	private Map<String, NullableGenerator<?>> variables;
 	private OrderedNameMap<ProductWrapper<?>> variableResults;
-	private AllComponentsBuilder<E> allComponentsBuilder;
+	private ComponentBuilderSupport<E> allComponentsBuilder;
 	private GeneratorContext context;
 	private boolean firstRun;
 	private String message;
@@ -57,7 +57,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	public ComponentAndVariableSupport(Map<String, NullableGenerator<?>> variables, List<ComponentBuilder<E>> componentBuilders, 
 			GeneratorContext context) {
 		this.variables = variables;
-		this.allComponentsBuilder = new AllComponentsBuilder<E>(componentBuilders);
+		this.allComponentsBuilder = new ComponentBuilderSupport<E>(componentBuilders);
 		this.context = context;
 	}
 	

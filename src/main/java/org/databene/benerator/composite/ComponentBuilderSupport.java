@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class AllComponentsBuilder<E> implements MessageHolder, Closeable, Resettable, ThreadAware { // TODO rename to ComponentSupport
+public class ComponentBuilderSupport<E> implements MessageHolder, Closeable, Resettable, ThreadAware {
 
     private static final Logger stateLogger = LoggerFactory.getLogger("org.databene.benerator.STATE");
 
@@ -54,7 +54,7 @@ public class AllComponentsBuilder<E> implements MessageHolder, Closeable, Resett
     /**
      * @param componentBuilders Generators that generate values for the entities' components
      */
-    public AllComponentsBuilder(List<ComponentBuilder<E>> componentBuilders) {
+    public ComponentBuilderSupport(List<ComponentBuilder<E>> componentBuilders) {
         this.componentBuilders = (componentBuilders != null ? componentBuilders : new ArrayList<ComponentBuilder<E>>());
     }
 
