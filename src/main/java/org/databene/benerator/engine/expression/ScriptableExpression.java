@@ -58,9 +58,13 @@ public class ScriptableExpression extends DynamicExpression<Object> {
     public Object evaluate(Context context) {
 		if (StringUtil.isEmpty(scriptOrText))
 			return (defaultValueExpression != null ? defaultValueExpression.evaluate(context) : null);
-		else if (isScript)
-			return StringUtil.unescape(String.valueOf(ScriptUtil.render(scriptOrText, context)));
-		else
+		else if (isScript) {
+			Object rawValue = ScriptUtil.evaluate(scriptOrText, context);
+			if (rawValue instanceof String)
+				return StringUtil.unescape((String) rawValue);
+			else
+				return rawValue;
+		} else
 			return scriptOrText;
     }
 
