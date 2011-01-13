@@ -35,7 +35,10 @@ enhancements
 - new method DBSystem.tableExists(tableName)
 - improved recognition of invalid sequence configuration
 - Introduced DayGenerator for date generation of 'day' granularity
-- database meta data buffering
+- database meta data buffering <dbsystem ... metaCache="true" />
+- supporting central database definitions with 'environment' names, e.g. <dbsystem id="db" environment="myhsql" />
+- Checking if a setting has been defined: <if test="!context.contains('environment')">
+- explicit error generation and process exit value determination, e.g. <error code=-123>No environment specified</error>
 
 
 
@@ -44,4 +47,10 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - missing slf4j binding in generated projects
 - DB drivers are missing in the distribution
 - DateTimeGenerator does not respect daylight savings times
-- Fixed bugs in the demo folders
+- bugs in the demo folders
+- time generation part of DateTimeGenerator
+- shutdown hook handling
+- decimal number formatting in FlatFileEntityExporter
+- big_decimal generation in sequences
+- Script-based Distribution support in properties
+- Wrong distribution assembly: duplicate jar and test source
