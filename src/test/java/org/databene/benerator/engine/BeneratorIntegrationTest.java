@@ -22,7 +22,7 @@
 package org.databene.benerator.engine;
 
 import org.databene.benerator.BeneratorFactory;
-import org.databene.benerator.engine.parser.xml.BeneratorParsingContext;
+import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Before;
 import org.w3c.dom.Element;
@@ -51,7 +51,7 @@ public abstract class BeneratorIntegrationTest {
 	public Statement parse(String xml) {
 		Element element = XMLUtil.parseStringAsElement(xml);
 		ResourceManagerSupport resourceManager = new ResourceManagerSupport();
-		BeneratorParsingContext parsingContext = BeneratorFactory.getInstance().createParsingContext(resourceManager);
+		BeneratorParseContext parsingContext = BeneratorFactory.getInstance().createParsingContext(resourceManager);
 		Statement statement = parsingContext.parseElement(element, null);
 		return statement;
 	}
