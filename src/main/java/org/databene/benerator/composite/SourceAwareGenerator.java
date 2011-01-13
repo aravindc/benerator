@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,10 +28,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.MessageHolder;
-import org.databene.commons.ThreadUtil;
-import org.databene.commons.collection.OrderedNameMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,12 +46,10 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     
     private String instanceName;
     private E currentInstance;
-	private Map<String, NullableGenerator<?>> variables;
-	private OrderedNameMap<ProductWrapper<?>> variableResults;
-	private AllComponentsBuilder<E> allComponentsBuilder;
 	private GeneratorContext context;
 	private boolean firstGeneration;
 	private String message;
+	private ComponentAndVariableSupport<E> support;
 	
 	/**
      * @param source another Generator of entities that serves as Entity builder. 
@@ -66,8 +61,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 			GeneratorContext context) {
         super(source);
         this.instanceName = instanceName;
-		this.variables = variables;
-		this.allComponentsBuilder = new AllComponentsBuilder<E>(componentBuilders);
+        this.support = new ComponentAndVariableSupport<E>(variables, componentBuilders, context);
 		this.context = context;
 	}
 	
@@ -77,9 +71,8 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     public void init(GeneratorContext context) {
         source.init(context);
     	fetchNextSourceInstance(context);
-		initVariables(context);
         this.firstGeneration = true;
-        allComponentsBuilder.init(context);
+        support.init(context);
 		super.init(context);
 	}
 
@@ -95,60 +88,16 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
         context.set("this", currentInstance);
     }
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private void initVariables(GeneratorContext context) {
-	    this.variableResults = new OrderedNameMap<ProductWrapper<?>>();
-        for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
-        	NullableGenerator<?> varGen = entry.getValue();
-        	try {
-	        	varGen.init(context);
-	        	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
-				variableResults.put(entry.getKey(), result);
-				context.set(entry.getKey(), ProductWrapper.unwrap(result));
-        	} catch (Exception e) {
-        		throw new RuntimeException("Error initializing variable '" + entry.getKey() + "': " + varGen, e);
-        	}
-        }
-    }
-
 	@Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public E generate() {
 		if (!firstGeneration)
 			fetchNextSourceInstance(context);
+		firstGeneration = false;
 		if (currentInstance == null)
 			return null;
-		
-		// calculate variables
-		if (firstGeneration) {
-			for (Map.Entry<String, ProductWrapper<?>> entry : variableResults.entrySet()) {
-				ProductWrapper<?> productWrapper = entry.getValue();
-				if (productWrapper == null) {
-					this.message = "Variable no more available: " + entry.getKey();
-		        	if (logger.isDebugEnabled())
-		        		logger.debug(message);
-		            return null;
-				}
-	            context.set(entry.getKey(), productWrapper.product);
-	        }
-			firstGeneration = false;
-		} else {
-			for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
-				NullableGenerator<?> generator = entry.getValue();
-				ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
-				if (productWrapper == null) {
-					this.message = "No more available: " + generator;
-		        	if (logger.isDebugEnabled())
-		        		logger.debug(message);
-		            return null;
-				}
-	            context.set(entry.getKey(), productWrapper.product);
-	        }
-		}
-
-        if (!allComponentsBuilder.buildComponents(currentInstance))
-        	currentInstance = null;
-        else
+		if (!support.apply(currentInstance))
+			currentInstance = null;
+        if (currentInstance != null)
         	logger.debug("Generated {}", currentInstance);
         return currentInstance;
 	}
@@ -158,44 +107,40 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 		super.reset();
 		firstGeneration = true;
 		fetchNextSourceInstance(context);
-		for (NullableGenerator<?> variable : variables.values())
-			variable.reset();
-		allComponentsBuilder.reset();
+		support.reset();
 	}
 
 	@Override
     public void close() {
-		for (NullableGenerator<?> variable : variables.values())
-			variable.close();
-		allComponentsBuilder.close();
+		support.close();
 		super.close();
-        for (String variableName : variables.keySet())
-            context.remove(variableName);
 	}
 	
 	public String getMessage() {
 		if (message != null)
 			return message;
-	    return (source instanceof MessageHolder ? ((MessageHolder) source).getMessage() : null); // TODO v0.6.4 the AllComponentsBuilder might have a message too
+	    if (source instanceof MessageHolder && ((MessageHolder) source).getMessage() != null)
+	    	return ((MessageHolder) source).getMessage();
+	    return support.getMessage();
 	}
-
+	
+	
+	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
 	
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "[\n"
-	        + (variables.size() > 0 ? "    variables" + variables + "\n" : "")
-	        + "    " + source + "\n" + "]";
+	    return getClass().getSimpleName() + "[" + source + "]";
 	}
 
 	@Override
     public boolean isParallelizable() {
-	    return source.isParallelizable() && ThreadUtil.allParallelizable(variables.values());
+	    return source.isParallelizable() && support.isParallelizable();
     }
 
 	@Override
     public boolean isThreadSafe() {
-	    return source.isThreadSafe() && ThreadUtil.allThreadSafe(variables.values());
+	    return source.isThreadSafe() && support.isThreadSafe();
     }
 
 }
