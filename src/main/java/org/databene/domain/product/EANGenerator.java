@@ -28,13 +28,13 @@ package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.benerator.wrapper.UniqueAlternativeGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 
 /**
  * Generates EAN8 and EAN13 codes at the configured ratio.<br/>
  * <br/>
  * Created: 30.07.2007 21:23:44
+ * @author Volker Bergmann
  */
 public class EANGenerator extends GeneratorProxy<String> {
 
@@ -70,14 +70,9 @@ public class EANGenerator extends GeneratorProxy<String> {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-        if (unique)
-            setSource(new UniqueAlternativeGenerator<String>(String.class,
-                    new EAN8Generator(true),
-                    new EAN13Generator(true)));
-        else
-            setSource(new AlternativeGenerator<String>(String.class,
-                    new EAN8Generator(false),
-                    new EAN13Generator(false)));
+        setSource(new AlternativeGenerator<String>(String.class,
+                new EAN8Generator(unique),
+                new EAN13Generator(unique)));
         super.init(context);
     }
 
