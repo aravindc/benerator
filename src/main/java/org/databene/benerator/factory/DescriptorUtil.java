@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,12 +39,16 @@ import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 
+import static org.databene.benerator.engine.DescriptorConstants.COMPONENT_TYPES;
+import static org.databene.benerator.engine.DescriptorConstants.EL_VALUE;
+import static org.databene.benerator.engine.DescriptorConstants.EL_VARIABLE;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
@@ -75,7 +79,9 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
+import org.databene.commons.xml.XMLUtil;
 import org.databene.dataset.DatasetUtil;
+import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -86,6 +92,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
+import org.w3c.dom.Element;
 
 /**
  * Utility class for parsing and combining descriptor settings.<br/>
@@ -386,6 +393,23 @@ public class DescriptorUtil {
 		}
 		return generator;
     }
+
+	public static void parseComponentConfig(Element element, TypeDescriptor type, BeneratorContext context) {
+		// parse child elements
+		ModelParser parser = new ModelParser(context);
+		int valueCount = 0;
+		for (Element child : XMLUtil.getChildElements(element)) {
+			String childType = XMLUtil.localName(child);
+			if (EL_VARIABLE.equals(childType)) {
+				parser.parseVariable(child, (VariableHolder) type);
+			} else if (COMPONENT_TYPES.contains(childType)) {
+				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) type);
+				((ComplexTypeDescriptor) type).addComponent(component);
+			} else if (EL_VALUE.equals(childType)) {
+				parser.parseSimpleTypeArrayElement(child, (ArrayTypeDescriptor) type, valueCount++);
+			}
+		}
+	}
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
