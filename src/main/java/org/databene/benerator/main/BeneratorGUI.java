@@ -39,12 +39,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
+import org.databene.benerator.BeneratorError;
 import org.databene.benerator.Version;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.gui.os.ApplicationUtil;
 import org.databene.gui.os.JavaApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -55,6 +59,8 @@ import org.databene.gui.os.JavaApplication;
  */
 @SuppressWarnings("serial")
 public class BeneratorGUI {
+	
+	protected static final Logger LOGGER = LoggerFactory.getLogger(BeneratorGUI.class);
 	
 	static final File BUFFER_FILE = new File(BeneratorGUI.class.getSimpleName() + ".txt");
 	
@@ -137,9 +143,12 @@ public class BeneratorGUI {
 		            file = File.createTempFile("benerator-", ".ben.xml");
 		            CharSequence builder = createXML();
 		            IOUtil.writeTextFile(file.getAbsolutePath(), builder.toString());
-		            Benerator.main(new String[] { file.getAbsolutePath() });
-	            } catch (IOException e) {
-		            throw new RuntimeException(e);
+		            Benerator.runFile(file.getAbsolutePath(), new ConsoleInfoPrinter());
+	            } catch (BeneratorError e) {
+	        		System.err.println("Error: " + e.getMessage());
+	            	LOGGER.error(e.getMessage());
+	            } catch (Exception e) {
+		            e.printStackTrace();
 	            } finally {
 	            	if (file != null)
 	            		FileUtil.deleteIfExists(file);
