@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,15 +32,14 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
+import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
-import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
@@ -52,13 +51,11 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
-import org.databene.model.data.VariableHolder;
 import org.databene.task.PageListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +122,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 		
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
-		Expression<Long> pageSize = DescriptorParserUtil.parseLongAttribute(ATT_PAGESIZE, element, new DefaultPageSizeExpression());
+		Expression<Long> pageSize = parsePageSize(element);
 		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));
 		
@@ -214,20 +211,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			}
 		}
 		
-		// parse child elements
-		ModelParser parser = new ModelParser(context);
-		int valueCount = 0;
-		for (Element child : XMLUtil.getChildElements(element)) {
-			String childType = XMLUtil.localName(child);
-			if (EL_VARIABLE.equals(childType)) {
-				parser.parseVariable(child, (VariableHolder) localType);
-			} else if (COMPONENT_TYPES.contains(childType)) {
-				ComponentDescriptor component = parser.parseSimpleTypeComponent(child, (ComplexTypeDescriptor) localType);
-				((ComplexTypeDescriptor) instance.getTypeDescriptor()).addComponent(component);
-			} else if (EL_VALUE.equals(childType)) {
-				parser.parseSimpleTypeArrayElement(child, (ArrayTypeDescriptor) localType, valueCount++);
-			}
-		}
+		DescriptorUtil.parseComponentConfig(element, instance.getLocalType(), context);
 		return instance;
 	}
 
