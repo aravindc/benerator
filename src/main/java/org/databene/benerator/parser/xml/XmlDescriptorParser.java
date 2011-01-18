@@ -115,7 +115,7 @@ public class XmlDescriptorParser {
         if (value == null || "script".equals(name))
             return value;
 		else
-			return ScriptUtil.render(value, context);
+			return ScriptUtil.evaluate(value, context);
     }
 
 }
