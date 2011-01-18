@@ -26,10 +26,15 @@
 
 package org.databene.domain.address;
 
+import java.util.Stack;
+
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
+import org.databene.commons.StringUtil;
 import org.databene.dataset.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,25 +70,31 @@ public class StreetNameGenerator extends GeneratorProxy<String> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-    	if (datasetName != null) {
-    		source = createSource(datasetName);
-    	} else {
-    		// none was explicitly configured, try default
-			String defaultRegionName = DatasetUtil.defaultRegionName();
-	    	try {
-				source = createSource(defaultRegionName);
-	    	} catch (Exception e) {
-	    		// if the default fails, try the fallback
-	    		String fallbackRegionName = DatasetUtil.fallbackRegionName();
-	    		LOGGER.error("Error creating " + getClass().getSimpleName() + " for dataset '" + defaultRegionName + "'." +
-	    				" Falling back to '" + fallbackRegionName + "'");
-				source = createSource(fallbackRegionName);
-	    	}
-    	}
-        super.init(context);
+    	Stack<String> datasetOptions = new Stack<String>();
+    	datasetOptions.push(DatasetUtil.fallbackRegionName());
+    	datasetOptions.push(DatasetUtil.defaultRegionName());
+    	if (!StringUtil.isEmpty(datasetName))
+    		datasetOptions.push(datasetName);
+    	init(datasetOptions, context);
     }
+
+	private void init(Stack<String> datasetOptions, GeneratorContext context) {
+		String currentOption = datasetOptions.pop();
+    	try {
+			source = createSource(currentOption);
+	        super.init(context);
+    	} catch (Exception e) {
+    		// if the call fails, try another option
+    		if (datasetOptions.isEmpty())
+        		throw new ConfigurationError(getClass().getSimpleName() + " could not be initialized");
+    		String nextOption = datasetOptions.peek();
+    		LOGGER.error("Error initializing " + getClass().getSimpleName() + " with dataset '" + currentOption + "': " + 
+    				e.getMessage() + ". Falling back to '" + nextOption + "'");
+			init(datasetOptions, context);
+    	}
+	}
     
-	private static WeightedDatasetCSVGenerator<String> createSource(String datasetName) {
+	private static Generator<String> createSource(String datasetName) {
 	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION, Encodings.UTF_8);
     }
 
