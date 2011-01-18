@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,7 +25,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
-import org.databene.contiperf.log.EmptyExecutionLogger;
+import org.databene.contiperf.report.EmptyReportModule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +39,7 @@ import org.junit.Test;
  */
 public class AddressGeneratorPerfTest {
 	
-	@Rule public ContiPerfRule rule = new ContiPerfRule(new EmptyExecutionLogger());
+	@Rule public ContiPerfRule rule = new ContiPerfRule(new EmptyReportModule());
 
 	private AddressGenerator generatorDE;
 	

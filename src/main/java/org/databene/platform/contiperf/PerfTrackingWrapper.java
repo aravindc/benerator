@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,11 +23,11 @@ package org.databene.platform.contiperf;
 
 import java.io.Closeable;
 
-import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
 import org.databene.contiperf.PerformanceRequirement;
 import org.databene.contiperf.PerformanceTracker;
-import org.databene.contiperf.log.ConsoleExecutionLogger;
+import org.databene.contiperf.report.ConsoleReportModule;
+import org.databene.contiperf.report.ReportContext;
 
 /**
  * Common parent class for Benerator runners that support performance tracking.<br/><br/>
@@ -39,7 +39,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 
 	private PerformanceTracker tracker;
 	private PerformanceRequirement requirement;
-	private ExecutionLogger executionLogger;
+	private ReportContext context;
 
 	protected abstract Invoker getInvoker();
 
@@ -50,7 +50,8 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	public PerfTrackingWrapper(PerformanceTracker tracker) {
 	    this.tracker = tracker;
 	    this.requirement = new PerformanceRequirement();
-	    this.executionLogger = new ConsoleExecutionLogger();
+	    this.context = new BeneratorCpfReportContext();
+	    context.addReportModule(new ConsoleReportModule());
     }
 	
 	public void setMax(int max) {
@@ -61,8 +62,8 @@ public abstract class PerfTrackingWrapper implements Closeable {
 		requirement.setPercentiles(percentilesSpec);
 	}
 	
-	public void setExecutionLogger(ExecutionLogger executionLogger) {
-		this.executionLogger = executionLogger;
+	public void setContext(ReportContext context) {
+		this.context = context;
 	}
 	
 	public PerformanceTracker getTracker() {
@@ -70,7 +71,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 			// the tracker is initialized lazily for allowing the class to be first constructed in a simple way 
 			// and then be configured by calling the property setters.
 			Invoker invoker = getInvoker();
-			tracker = new PerformanceTracker(invoker, requirement, executionLogger);
+			tracker = new PerformanceTracker(invoker, requirement, context);
 		}
 		return tracker;
 	}
