@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,6 +51,7 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
+import org.databene.commons.StringUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
@@ -176,11 +177,16 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             return null;
         String lcn = source.toLowerCase();
         String selector = descriptor.getSelector();
+        String subSelector = descriptor.getSubSelector();
         Generator<?> generator;
         if (context.get(source) != null) {
             Object sourceObject = context.get(source);
             if (sourceObject instanceof StorageSystem)
-                generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, context));
+            	if (!StringUtil.isEmpty(subSelector)) {
+            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(subSelector, context));
+                    generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
+            	} else
+            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
             else
@@ -212,7 +218,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
 	        String selector = descriptor.getSelector();
-	        generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), selector, context));
+	        String subSelector = descriptor.getSubSelector();
+	        if (!StringUtil.isEmpty(subSelector)) {
+	        	generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), subSelector, context));
+		        generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
+	        } else
+		        generator = new IteratingGenerator(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof Generator) {
 	        generator = (Generator<?>) sourceObject;
 	    } else

@@ -602,6 +602,7 @@
         <xs:attribute name="separator"    type="xs:string"/>
 		<xs:attribute name="encoding"     type="xs:string"/>
 		<xs:attribute name="selector"     type="xs:string"/>
+		<xs:attribute name="subSelector"  type="xs:string"/>
 		<xs:attribute name="dataset"      type="xs:string"/>
 		<xs:attribute name="nesting"      type="xs:string"/>
 		<xs:attribute name="locale"       type="xs:string"/>

@@ -37,6 +37,8 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DynamicCountGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
+import org.databene.benerator.wrapper.CyclicGeneratorProxy;
+import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -166,5 +168,9 @@ public class GeneratorFactoryUtil {
 					ExpressionUtil.constant(false), fallBackToMin);
     	}
     }
+
+	public static <T> Generator<T> createCyclicHeadGenerator(Generator<T> source) {
+		return new CyclicGeneratorProxy<T>(new NShotGeneratorProxy<T>(source, 1));
+	}
 
 }

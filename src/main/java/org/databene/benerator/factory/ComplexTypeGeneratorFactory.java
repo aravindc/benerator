@@ -167,7 +167,11 @@ public class ComplexTypeGeneratorFactory {
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
 	        String selector = descriptor.getSelector();
-	        generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
+	        String subSelector = descriptor.getSubSelector();
+	        if (!StringUtil.isEmpty(subSelector))
+	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), subSelector, context)));
+	        else 
+	        	generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof EntitySource) {
 	        generator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
 	    } else if (sourceObject instanceof Generator) {

@@ -41,14 +41,17 @@ import org.junit.Test;
  */
 public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 
+	private DBSystem db; 
 	private ConsumerMock<Entity> consumer;
+	
+	
 	
 	@Before
 	public void setUp() throws Exception {
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
-		DBSystem db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
+		db = new DBSystem("db", dbUrl, HSQLUtil.DRIVER, 
 				HSQLUtil.DEFAULT_USER, HSQLUtil.DEFAULT_PASSWORD);
 		db.setSchema("PUBLIC");
 		db.execute("drop table referer if exists");
@@ -206,6 +209,22 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		List<Entity> products = consumer.getProducts();
 		assertEquals(1, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
+	}
+
+	@Test
+	public void testDbRef_explicit_subSelector() {
+		context.set("key", 2);
+		parseAndExecute(
+			"<generate type='referer' consumer='cons' count='3'>" +
+        	"  <reference name='referee_id' source='db' " +
+        	"	  subSelector='{ftl:select id from referee order by id}' " +
+        	"     nullable='false'/>" +
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		assertEquals(2, products.get(0).get("referee_id"));
+		assertEquals(2, products.get(1).get("referee_id"));
+		assertEquals(2, products.get(2).get("referee_id"));
 	}
 
 	@Test

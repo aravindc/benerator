@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -63,7 +63,6 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
-import org.databene.commons.TypedIterable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,14 +178,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	NullableGenerator<?> generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
         return builderFromGenerator(generator, descriptor);
     }
-/*
-    @SuppressWarnings("unchecked")
-    private static ComponentBuilder<?> wrapWithNullInjector(NullableGenerator<?> source, ComponentDescriptor descriptor) {
-    	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
-    	NullableGenerator generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
-        return builderFromGenerator(generator, descriptor);
-    }
-*/
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     static ComponentBuilder<?> createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
         boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
@@ -222,21 +214,25 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	        if (sourceObject instanceof StorageSystem) {
 	            StorageSystem sourceSystem = (StorageSystem) sourceObject;
 	            String selector = typeDescriptor.getSelector();
-	            if (selector != null && selector.startsWith("select")) {
-	            	generator = new IteratingGenerator(sourceSystem.query(selector, context));
+	            String subSelector = typeDescriptor.getSubSelector();
+	            boolean subSelect = !StringUtil.isEmpty(subSelector);
+				String selectorToUse = (subSelect ? subSelector : selector);
+	            if (selectorToUse != null && selectorToUse.startsWith("select")) {
+	            	generator = new IteratingGenerator(sourceSystem.query(selectorToUse, context));
 	            } else {
-		            TypedIterable<Object> entityIds = sourceSystem.queryEntityIds(targetTypeName, selector, context);
-		            generator = new IteratingGenerator<Object>(entityIds);
-		            if (selector == null && distribution == null)
+		            generator = new IteratingGenerator<Object>(sourceSystem.<Object>queryEntityIds(targetTypeName, selectorToUse, context));
+		            if (selectorToUse == null && distribution == null)
 		            	if (context.isDefaultOneToOne())
 		            		distribution = new ExpandSequence();
 		            	else
 		            		distribution = SequenceManager.RANDOM_SEQUENCE;
 	            }
-	            	
+	            if (subSelect)
+	            	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
 	        } else
 	        	throw new ConfigurationError("Not a supported source type: " + sourceName);
         }
+        
         
         // apply distribution if necessary
         if (distribution != null)

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -43,6 +43,7 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
+import org.databene.commons.StringUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -162,7 +163,11 @@ public class ArrayGeneratorFactory {
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
 	        String selector = descriptor.getSelector();
-	        generator = new IteratingGenerator(storage.query(selector, context));
+	        String subSelector = descriptor.getSubSelector();
+	        if (!StringUtil.isEmpty(subSelector))
+	        	generator = new IteratingGenerator(storage.query(selector, context));
+	        else
+	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
 	    } else if (sourceObject instanceof EntitySource) {
 	        IteratingGenerator<Entity> entityGenerator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
 			generator = new ConvertingGenerator<Entity, Object[]>(entityGenerator, new Entity2ArrayConverter());

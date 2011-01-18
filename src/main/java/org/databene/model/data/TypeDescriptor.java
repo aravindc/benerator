@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -53,6 +53,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public static final String SOURCE       = "source";
     public static final String SELECTOR     = "selector";
+    public static final String SUB_SELECTOR = "subSelector";
     public static final String ENCODING     = "encoding";
     public static final String SEPARATOR    = "separator";
     
@@ -99,6 +100,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(SCRIPT,         String.class,   null);
         addConfig(SOURCE,         String.class,   null);
         addConfig(SELECTOR,       String.class,   null);
+        addConfig(SUB_SELECTOR,   String.class,   null);
         addConfig(SEPARATOR,      String.class,   null);
         addConfig(ENCODING,       String.class,   null);
         addConfig(CYCLIC,         Boolean.class,  null);
@@ -190,6 +192,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setSelector(String selector) {
         setDetailValue(SELECTOR, selector);
+    }
+
+    public String getSubSelector() {
+        return (String) getDetailValue(SUB_SELECTOR);
+    }
+
+    public void setSubSelector(String selector) {
+        setDetailValue(SUB_SELECTOR, selector);
     }
 
     public String getSeparator() {
