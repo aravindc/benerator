@@ -192,7 +192,8 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
 				sectorGenerator = NullableGeneratorFactory.injectNulls(source, 0.7);
         		sectorGenerator.init(context);
         	} catch (Exception e) {
-        		logger.info("Cannot create sector generator: " + e.getMessage());
+        		logger.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
+        		initSectorGenerator("US", context);
         	}
         }
     }
@@ -204,7 +205,8 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
         				datasetName, REGION, Encodings.UTF_8);
         		legalFormGenerator.init(context);
         	} catch (Exception e) {
-        		logger.info("Cannot create legal form generator: " + e.getMessage());
+        		logger.error("Cannot create legal form generator: " + e.getMessage() + ". Falling back to US. ");
+        		initLegalFormGenerator("US", context);
         	}
         }
     }
