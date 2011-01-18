@@ -28,7 +28,6 @@ import java.math.BigDecimal;
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.sample.ConstantGenerator;
 import org.junit.Test;
 
 /**
