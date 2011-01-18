@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorState;
 
 /**
  * Generator proxy that 'loops' through a source Generator,
@@ -39,25 +40,13 @@ import org.databene.benerator.Generator;
  */
 public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
 	
-	private boolean closed;
-	
     public CyclicGeneratorProxy(Generator<E> source) {
         super(source);
-        this.closed = false;
     }
-/*
-    @Override
-    public boolean available() {
-    	if (source == null || closed)
-    		return false;
-        if (!source.isAvailable())
-            reset();
-        return source.isAvailable(); // return false only if the source is not available after reset()
-    }
-*/
+
     @Override
     public E generate() {
-    	if (source == null || closed)
+    	if (source == null || state == GeneratorState.CLOSED)
     		return null;
     	E generation = source.generate();
         if (generation == null) {
@@ -65,18 +54,6 @@ public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
             generation = source.generate();
         }
         return generation;
-    }
-    
-    @Override
-    public void reset() {
-        if (source != null)
-        	super.reset();
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        closed = true;
     }
     
 }
