@@ -165,9 +165,9 @@ public class ArrayGeneratorFactory {
 	        String selector = descriptor.getSelector();
 	        String subSelector = descriptor.getSubSelector();
 	        if (!StringUtil.isEmpty(subSelector))
-	        	generator = new IteratingGenerator(storage.query(selector, context));
+	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(new IteratingGenerator(storage.query(subSelector, context)));
 	        else
-	        	generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
+	        	generator = new IteratingGenerator(storage.query(selector, context));
 	    } else if (sourceObject instanceof EntitySource) {
 	        IteratingGenerator<Entity> entityGenerator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
 			generator = new ConvertingGenerator<Entity, Object[]>(entityGenerator, new Entity2ArrayConverter());
