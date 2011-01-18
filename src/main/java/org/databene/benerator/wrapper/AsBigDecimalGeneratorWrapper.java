@@ -69,7 +69,8 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 	    if (feed == null)
 	    	return null;
 	    double d = feed.doubleValue();
-		MathContext mathcontext = new MathContext(MathUtil.prefixDigits(d) + fractionDigits);
+		int prefixDigits = (Math.floor(d) == 0. ? 0 : MathUtil.prefixDigits(d));
+		MathContext mathcontext = new MathContext(prefixDigits + fractionDigits);
 		return new BigDecimal(d, mathcontext);
     }
 
