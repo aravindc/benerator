@@ -8,7 +8,7 @@ summary
 
 changes
 -------
-- Added method to StorageSystem: void execute(String command)
+- Added method to StorageSystem interface: void execute(String command)
 - changed mapping JDBC BIGINT -> Java Long
 - Introduced shortcut evaluation of && and || in BeneratorScript
 - CompanyNameGenerator now generates CompanyName object with property-based access to name details 
@@ -30,7 +30,7 @@ enhancements
 - <property name="stage" default="stage" />
 - introduced 'catalog' attribute in <database>
 - recognition of a database user's default catalog and schema
-- <attribute ... condition="this.name != null" />
+- conditional evaluation of a descriptor: <attribute ... condition="this.name != null" />
 - ConsoleExporter can be limited to display only the first n entities of each type fully and to emit only dots later
 - new method DBSystem.tableExists(tableName)
 - improved recognition of invalid sequence configuration
@@ -45,7 +45,6 @@ enhancements
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
 - missing slf4j binding in generated projects
-- DB drivers are missing in the distribution
 - DateTimeGenerator does not respect daylight savings times
 - bugs in the demo folders
 - time generation part of DateTimeGenerator
@@ -53,4 +52,7 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - decimal number formatting in FlatFileEntityExporter
 - big_decimal generation in sequences
 - Script-based Distribution support in properties
-- Wrong distribution assembly: duplicate jar and test source
+- Wrong distribution assembly:
+  - missing database drivers 
+  - duplicate jar and test source
+  - superfluous __MACOSX artifacts

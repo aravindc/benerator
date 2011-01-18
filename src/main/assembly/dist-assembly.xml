@@ -13,6 +13,9 @@
             <includes>
                 <include>license.txt</include>
             </includes>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>/</directory>
@@ -20,6 +23,9 @@
             <includes>
                 <include>releasenotes*.txt</include>
             </includes>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <!-- script files -->
         <fileSet>
@@ -31,6 +37,7 @@
             <excludes>
                 <exclude>benerator_common.bat</exclude>
                 <exclude>benerator_common.sh</exclude>
+            	<exclude>__MACOSX</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -39,11 +46,17 @@
             <includes>
                 <include>log4j.xml</include>
             </includes>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <!-- main -->
         <fileSet>
             <directory>src/main/java</directory>
             <outputDirectory>src</outputDirectory>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/main/resources</directory>
@@ -56,29 +69,47 @@
                 <include>*.bat</include>
                 <include>*.sh</include>
             </includes>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <!-- tests -->
         <fileSet>
             <directory>src/test/java</directory>
             <outputDirectory>test</outputDirectory>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/test/resources</directory>
             <outputDirectory>test</outputDirectory>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <!-- demo -->
         <fileSet>
             <directory>src/demo/java</directory>
             <outputDirectory>demo</outputDirectory>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>src/demo/resources</directory>
             <outputDirectory>/</outputDirectory>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
         <!-- doc -->
         <fileSet>
             <directory>target/site/apidocs</directory>
             <outputDirectory>doc/api</outputDirectory>
+            <excludes>
+            	<exclude>__MACOSX</exclude>
+            </excludes>
         </fileSet>
 	    <fileSet>
 			<directory>target</directory>
@@ -88,6 +119,7 @@
 			</includes>
 			<excludes>
 				<exclude>*-sources.jar</exclude>
+            	<exclude>__MACOSX</exclude>
 			</excludes>
 	    </fileSet>
     </fileSets>
