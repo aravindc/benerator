@@ -24,6 +24,8 @@ package org.databene.benerator.engine;
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.xml.XMLUtil;
+import org.databene.model.data.DataModel;
+import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Element;
 
@@ -38,8 +40,14 @@ public abstract class BeneratorIntegrationTest {
 	protected BeneratorContext context;
 
 	@Before
-	public void setUpContext() throws Exception {
+	public void setUpEnvironment() throws Exception {
+		DataModel.getDefaultInstance().clear();
 		context = new BeneratorContext();
+	}
+
+	@After
+	public void tearDown() {
+		DataModel.getDefaultInstance().clear();
 	}
 
 	protected BeneratorContext parseAndExecute(String xml) {
