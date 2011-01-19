@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,11 @@
 
 package org.databene.benerator.factory;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.test.GeneratorTest;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 
@@ -42,10 +45,10 @@ import static junit.framework.Assert.*;
  * @author Volker Bergmann
  */
 
-public class GeneratorFactoryUtilTest {
-
+public class GeneratorFactoryUtilTest extends GeneratorTest {
+	
 	@Test
-	public void testGetDistributionDefault() {
+	public void testGetDistribution_default() {
 		SimpleTypeDescriptor descriptor = new SimpleTypeDescriptor("myType");
 		BeneratorContext context = new BeneratorContext(null);
 		assertNull(GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.NONE, false, context));
@@ -53,4 +56,36 @@ public class GeneratorFactoryUtilTest {
 				GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), Uniqueness.SIMPLE, true, context));
 	}
 
+	@Test
+	public void testGetCountGenerator_default() {
+		InstanceDescriptor descriptor = new InstanceDescriptor("inst");
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		countGenerator.init(context);
+		assertNull(countGenerator.generate());
+	}
+	
+	@Test
+	public void testGetCountGenerator_distributed() {
+		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(2).withMaxCount(4);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		countGenerator.init(context);
+		expectGeneratedSet(countGenerator, 100, 2L, 3L, 4L).withContinuedAvailability();
+	}
+	
+	@Test
+	public void testGetCountGenerator_minMax() {
+		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(2).withMaxCount(3);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		countGenerator.init(context);
+		expectGeneratedSet(countGenerator, 20, 2L, 3L).withContinuedAvailability();
+	}
+	
+	@Test
+	public void testGetCountGenerator_min() {
+		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(6);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		countGenerator.init(context);
+		assertNull(countGenerator.generate());
+	}
+	
 }

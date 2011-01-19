@@ -50,25 +50,25 @@ public class InstanceGeneratorFactoryTest extends GeneratorTest {
 	 */
 	@Test
 	public void testUniqueRandom() {
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "int").withMin("1").withMax("3").withDistribution("random");
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor(null, "long").withMin("1").withMax("3").withDistribution("random");
 		InstanceDescriptor instance = new InstanceDescriptor("n", type).withUnique(true);
-		Generator<Integer> generator = createInstanceGenerator(instance);
+		Generator<Long> generator = createInstanceGenerator(instance);
 		generator.init(context);
-		expectGeneratedSet(generator, 1, 2, 3).withCeasedAvailability();
+		expectGeneratedSet(generator, 1L, 2L, 3L).withCeasedAvailability();
 	}
 	
 	@Test
 	public void testDefaultId() {
-		IdDescriptor descriptor = new IdDescriptor("id", "int");
-		Generator<Integer> generator = createInstanceGenerator(descriptor);
+		IdDescriptor descriptor = new IdDescriptor("id", "long");
+		Generator<Long> generator = createInstanceGenerator(descriptor);
 		generator.init(context);
-		expectGeneratedSet(generator, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10).withContinuedAvailability();
+		expectGeneratedSet(generator, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L).withContinuedAvailability();
 	}
 	
 	@SuppressWarnings("unchecked")
-    private Generator<Integer> createInstanceGenerator(InstanceDescriptor instance) {
+    private Generator<Long> createInstanceGenerator(InstanceDescriptor instance) {
 		BeneratorContext context = new BeneratorContext();
-		return (Generator<Integer>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, Uniqueness.NONE, context);
+		return (Generator<Long>) InstanceGeneratorFactory.createSingleInstanceGenerator(instance, Uniqueness.NONE, context);
 	}
 
 }

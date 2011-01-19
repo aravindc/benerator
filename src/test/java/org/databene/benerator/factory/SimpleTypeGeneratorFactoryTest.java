@@ -70,7 +70,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("string");
 		type.setValues("'A','B','C'");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
-		expectGeneratedSet(generator, "A", "B", "C").withContinuedAvailability();
+		expectGeneratedSet(generator, 100, "A", "B", "C").withContinuedAvailability();
 	}
 	
 	@Test
@@ -137,11 +137,11 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testScriptedWgtCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
-		type.setSource(SCRIPTED_NAMES_WGT_CSV);
+		type.setSource(SCRIPTED_NAMES_WGT_CSV); // contains an entry with {some_user},1 - all others have weight 0
 		BeneratorContext context = new BeneratorContext(".");
-		context.set("some_user", "the_user");
+		context.set("some_user", "the_user"); // {some_user} is assigned the value 'the_user'
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE, context);
-		expectGeneratedSet(generator, "Alice", "the_user", "Otto").withContinuedAvailability();
+		expectGeneratedSet(generator, 100, "the_user").withContinuedAvailability(); // {some_user} has been replaced with 'the_user', all other weight are 0
 		Map<String, AtomicInteger> counts = countProducts(generator, 300);
 		assertEquals(1, counts.size());
 		assertEquals(300, counts.get("the_user").intValue());
@@ -153,7 +153,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setSource(NAME_CSV);
 		type.setDetailValue("distribution", "weighted");
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
-		expectGeneratedSet(generator, "Alice", "Otto").withContinuedAvailability();
+		expectGeneratedSet(generator, 100, "Alice", "Otto").withContinuedAvailability();
 		ObjectCounter<String> counter = new ObjectCounter<String>(2);
 		int n = 1000;
 		for (int i = 0; i < n; i++)

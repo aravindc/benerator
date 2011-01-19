@@ -115,7 +115,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setDetailValue("distribution", "weighted[age]");
 		Generator<Entity> generator = createGenerator(type);
 		generator.init(context);
-		expectGeneratedSet(generator, alice, otto).withContinuedAvailability();
+		expectGeneratedSet(generator, 20, alice, otto).withContinuedAvailability();
 		ObjectCounter<Entity> counter = new ObjectCounter<Entity>(2);
 		int n = 1000;
 		for (int i = 0; i < n; i++)
