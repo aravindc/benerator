@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,11 +55,12 @@ public class GenerateOrIterateStatementTest {
 		
 		GeneratorTask task = new GenerateAndConsumeTask("myTask", entityGenerator, null, false, new BeneratorContext());
 		
-		Generator<Long> count = new ConstantGenerator<Long>(INVOCATION_COUNT);
+		Generator<Long> countGenerator = new ConstantGenerator<Long>(INVOCATION_COUNT);
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
 		Expression<Integer> threads = new ConstantExpression<Integer>(THREAD_COUNT);
+		Expression<Long> minCount = new ConstantExpression<Long>(INVOCATION_COUNT);
 		ConstantExpression<ErrorHandler> errorHandler = new ConstantExpression<ErrorHandler>(ErrorHandler.getDefault());
-		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(task, count, pageSize, null, threads, errorHandler, true, false);
+		GenerateOrIterateStatement statement = new GenerateOrIterateStatement(task, countGenerator, minCount, pageSize, null, threads, errorHandler, true, false);
 		statement.execute(new BeneratorContext());
 		
 		assertEquals(INVOCATION_COUNT, entityGenerator.invocationCount);
