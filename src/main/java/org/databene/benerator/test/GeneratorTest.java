@@ -30,6 +30,7 @@ import org.junit.Before;
 import static junit.framework.Assert.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Collection;
@@ -96,10 +97,15 @@ public abstract class GeneratorTest {
         return new Helper(generator);
     }
 
-    protected <T> Helper expectGeneratedSet(Generator<T> generator, T ... products) {
-        expectGeneratedSetOnce(generator, products);
+    protected <T> Helper expectGeneratedSet(Generator<T> generator, T ... products) { // TODO what's the difference to expectUniqueFromSet()?
+        expectGeneratedSet(generator, products.length, products);
+        return new Helper(generator);
+    }
+
+    protected <T> Helper expectGeneratedSet(Generator<T> generator, int invocations, T ... products) {
+        expectGeneratedSetOnce(generator, invocations, products);
         generator.reset();
-        expectGeneratedSetOnce(generator, products);
+        expectGeneratedSetOnce(generator, invocations, products);
         return new Helper(generator);
     }
 
@@ -293,16 +299,19 @@ public abstract class GeneratorTest {
         }
     }
 
-    private <T>void expectGeneratedSetOnce(Generator<T> generator, T... products) {
-        Set<T> expectedSet = CollectionUtil.toSet(products);
-        for (int i = 0; i < products.length; i++) {
+    private <T>void expectGeneratedSetOnce(Generator<T> generator, int invocations, T... expectedProduct) {
+        Set<T> expectedSet = CollectionUtil.toSet(expectedProduct);
+        Set<T> observedSet = new HashSet<T>(expectedProduct.length);
+        for (int i = 0; i < invocations; i++) {
         	T generation = generator.generate();
             assertNotNull("Generator has gone unavailable. " +
-            		"Generated only " + i + " of " + products.length + " expected values", generation);
+            		"Generated only " + i + " of " + expectedProduct.length + " expected values", generation);
             logger.debug("created " + format(generation));
             assertTrue("The generated value '" + format(generation) + "' was not in the expected set: " + expectedSet,
                     expectedSet.contains(generation));
+            observedSet.add(generation);
         }
+        assertEquals(expectedSet, observedSet);
     }
 
     private <T>void expectUniqueFromSetOnce(Generator<T> generator, T... products) {
