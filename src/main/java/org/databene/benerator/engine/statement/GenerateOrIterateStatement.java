@@ -52,6 +52,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 
 	protected GeneratorTask task;
 	protected Generator<Long> countGenerator;
+	protected Expression<Long> minCount;
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
 	protected Expression<PageListener> pageListener;
@@ -60,11 +61,12 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected boolean nested;
 	protected boolean initialized;
 	
-	public GenerateOrIterateStatement(GeneratorTask task,
-			Generator<Long> countGenerator, Expression<Long> pageSize, Expression<PageListener> pageListener, 
-			Expression<Integer> threads, Expression<ErrorHandler> errorHandler, boolean infoLog, boolean nested) {
+	public GenerateOrIterateStatement(GeneratorTask task, Generator<Long> countGenerator, Expression<Long> minCount, 
+			Expression<Long> pageSize, Expression<PageListener> pageListener, Expression<Integer> threads, 
+			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean nested) {
 	    this.task = task;
 	    this.countGenerator = countGenerator;
+	    this.minCount = minCount;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
 	    this.pageListener = pageListener;
@@ -86,6 +88,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
 			taskToUse = new SynchronizedTask(taskToUse);
 	    this.tracker = PagedTaskRunner.execute(taskToUse, context, 
 	    		generateCount(context), 
+	    		minCount.evaluate(context),
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context),
 	    		threadCount,

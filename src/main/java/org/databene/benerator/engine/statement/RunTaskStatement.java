@@ -83,9 +83,11 @@ public class RunTaskStatement extends AbstractStatement {
     }
 
 	public void execute(BeneratorContext context) {
-	    PagedTaskRunner.execute(
+	    Long invocations = count.evaluate(context);
+		PagedTaskRunner.execute(
 	    		getTask(context), context, 
-	    		count.evaluate(context), 
+	    		invocations,
+	    		invocations,
 	    		getPageListeners(context), 
 	    		pageSize.evaluate(context), 
 	    		threads.evaluate(context),
