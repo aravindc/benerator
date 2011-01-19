@@ -112,6 +112,11 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         return threadCount;
     }
     
+	public long run(Long requestedInvocations, Long minInvocations) {
+		run(requestedInvocations);
+        return checkCount(minInvocations);
+    }
+
 	public long run(Long invocationCount) {
     	if (invocationCount != null && invocationCount == 0)
     		return 0;
@@ -149,20 +154,20 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         } while (workPending(invocationCount));
         if (logger.isDebugEnabled())
             logger.debug("PagedTask " + getTaskName() + " finished");
-        return checkCount(invocationCount);
-    }
-
+        return actualCount.get();
+	}
+	
 	public String getTaskName() {
     	return target.getTaskName();
     }
     
-    public static PerformanceTracker execute(Task task, Context context, Long invocations,
+    public static PerformanceTracker execute(Task task, Context context, Long requestedInvocations, Long minInvocations,
             List<PageListener> pageListeners, long pageSize, int threadCount, boolean stats,
             ExecutorService executorService, ErrorHandler errorHandler, boolean infoLog) {
-		logExecutionInfo(task, invocations, pageSize, threadCount, infoLog);
+		logExecutionInfo(task, requestedInvocations, minInvocations, pageSize, threadCount, infoLog);
 		PagedTaskRunner pagedTask = new PagedTaskRunner(task, pageListeners, 
 				pageSize, threadCount, stats, ExpressionUtil.constant(executorService), context, errorHandler);
-		pagedTask.run(invocations);
+		pagedTask.run(requestedInvocations, minInvocations);
 		return pagedTask.tracker;
 	}
 
@@ -192,22 +197,24 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         		listener.pageFinished();
     }
 
-	private static void logExecutionInfo(Task task, Long invocations, long pageSize, int threadCount, 
+	private static void logExecutionInfo(Task task, Long minInvocations, Long maxInvocations, long pageSize, int threadCount, 
 			boolean infoLog) {
 	    if (infoLog) {
 			if (logger.isInfoEnabled()) {
-				String invocationInfo = executionInfo(task, invocations, pageSize, threadCount);
+				String invocationInfo = executionInfo(task, minInvocations, maxInvocations, pageSize, threadCount);
 				logger.info(invocationInfo);
 			}
 		} else if (logger.isDebugEnabled()) {
-			String invocationInfo = executionInfo(task, invocations, pageSize, threadCount);
+			String invocationInfo = executionInfo(task, minInvocations, maxInvocations, pageSize, threadCount);
 			logger.debug(invocationInfo);
 		}
     }
 
-	private static String executionInfo(Task task, Long invocations, long pageSize, int threadCount) {
-	    String invocationInfo = (invocations == null ? "as long as available" :
-	         (invocations > 1 ? invocations + " times" : ""));
+	private static String executionInfo(Task task, Long minInvocations, Long maxInvocations, long pageSize, int threadCount) {
+	    String invocationInfo = (maxInvocations == null ? "as long as available" :
+	         (maxInvocations > 1 ? maxInvocations + " times" : ""));
+	    if (minInvocations != null && minInvocations > 0)
+	    	invocationInfo += " requiring at least " + minInvocations + " generations";
 	    if (invocationInfo.length() > 0)
 	    	invocationInfo += " with page size " + pageSize + " in " 
 	    		+ (threadCount > 1 ? threadCount + " threads" : "a single thread");
@@ -218,11 +225,10 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         this.exception = e;
     }
 
-	private long checkCount(Long invocationCount) {
+	private long checkCount(Long minInvocations) {
 	    long countValue = actualCount.get();
-        long minCount = (invocationCount != null ? invocationCount : 0);
-		if (countValue < minCount)
-        	throw new TaskUnavailableException(target, minCount, countValue);
+		if (minInvocations != null && countValue < minInvocations)
+        	throw new TaskUnavailableException(target, minInvocations, countValue);
 		if (tracker != null)
 			tracker.getCounter().printSummary(new PrintWriter(System.out), 90, 95);
 		return countValue;

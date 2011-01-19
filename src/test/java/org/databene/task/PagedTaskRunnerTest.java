@@ -100,7 +100,7 @@ public class PagedTaskRunnerTest {
 	public void testMinCount() {
         CountTask countTask = new CountTask(1);
         PagedTaskRunner pagedTask = new PagedTaskRunner(countTask, null, 2, 2, false, executors, context, errHandler);
-        pagedTask.run(2L);
+        pagedTask.run(2L, 2L);
 	}
 
 	// helpers ---------------------------------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ public class PagedTaskRunnerTest {
         };
         PagedTaskRunner pagedTask = new PagedTaskRunner(task, 
         		null, pageSize, threads, false, executors, context, errHandler);
-        pagedTask.run(totalInvocations);
+        pagedTask.run(totalInvocations, totalInvocations);
         assertEquals("Unexpected instanceCount,", expectedInstanceCount, ParallelizableCounterTask.instanceCount.get());
     }
 
@@ -124,7 +124,7 @@ public class PagedTaskRunnerTest {
         CountTask countTask = new CountTask();
         PagedTaskRunner pagedTask = new PagedTaskRunner(countTask, null, pageSize, threads, false, executors, 
         		context, errHandler);
-        pagedTask.run(totalInvocations);
+        pagedTask.run(totalInvocations, totalInvocations);
         assertEquals("Unexpected runCount,", expectedRunCount, countTask.runCount);
         assertEquals("Unexpected pageCount,", expectedPageCount, countTask.pageCount);
         assertEquals("Unexpected closeCount,", 0, countTask.closeCount);
