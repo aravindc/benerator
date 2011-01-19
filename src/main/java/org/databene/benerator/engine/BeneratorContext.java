@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -124,19 +124,24 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 
 	public void importDefaults() {
+		// import frequently used Benerator packages
+		importPackage("org.databene.benerator.primitive");
 		importPackage("org.databene.benerator.primitive.datetime");
 		importPackage("org.databene.benerator.distribution.sequence");
 		importPackage("org.databene.benerator.distribution.function");
 		importPackage("org.databene.benerator.sample");
-		importPackage("org.databene.benerator.primitive");
 		importPackage("org.databene.benerator.composite");
+		importPackage("org.databene.benerator.wrapper");
+		// import ConsoleExporter and LoggingConsumer
+		importPackage("org.databene.model.consumer");
+		// import converters and validators from commons
+		importPackage("org.databene.commons.converter");
+		importPackage("org.databene.commons.validator");
+		// import standard platforms
 		importPackage("org.databene.platform.flat");
 		importPackage("org.databene.platform.csv");
 		importPackage("org.databene.platform.dbunit");
 		importPackage("org.databene.platform.xls");
-		importPackage("org.databene.model.consumer");
-		importPackage("org.databene.benerator.wrapper");
-		importPackage("org.databene.commons.converter");
 	}
 
 	// properties ------------------------------------------------------------------------------------------------------
