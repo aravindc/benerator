@@ -551,9 +551,9 @@ public class DBSystem extends AbstractStorageSystem {
         getDialect(); // make sure dialect is initialized
         database = getDbMetaData();
         if (lazy)
-        	logger.info("Ordering tables by dependency");
-        else
         	logger.info("Fetching table details and ordering tables by dependency");
+        else
+        	logger.info("Ordering tables by dependency");
         List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
         for (DBTable table : tables)
             parseTable(table); // TODO support lazy parsing
