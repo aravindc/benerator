@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.engine.statement;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.DataModel;
@@ -73,6 +74,8 @@ public class DefineDatabaseStatement implements Statement {
 			Expression<String> tableFilter, Expression<String> includeTables, Expression<String> excludeTables, 
 			Expression<Boolean> batch, Expression<Integer> fetchSize, Expression<Boolean> readOnly, Expression<Boolean> lazy,
 			Expression<Boolean> acceptUnknownColumnTypes, ResourceManager resourceManager) {
+		if (id == null)
+			throw new ConfigurationError("No database id defined");
 		this.id = id;
 		this.environment = environment;
 	    this.url = url;
