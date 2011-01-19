@@ -44,14 +44,22 @@ enhancements
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
-- missing slf4j binding in generated projects
+- 3089196: The POM for xerces:XercesImpl:jar:2.9.1 is missing
+- 3089078: Generated projects do not have an SLF4J binding
+- 3089073: Bug in Timestamp format for second resolution
+- 3157407: 'dataset' is not applied to StreetNameGenerator
+- 3108933: nullQuota is not applied when using a script
+- 3075892: Initialization fails with PostgreSQL
+- 3075401: boolean value generation problem in postgresql 8.4
+- NullPointerException on empty catalog name (PostgreSQL)
 - DateTimeGenerator does not respect daylight savings times
 - bugs in the demo folders
-- time generation part of DateTimeGenerator
+- time generation offset of DateTimeGenerator
 - shutdown hook handling
 - decimal number formatting in FlatFileEntityExporter
 - big_decimal generation in sequences
 - Script-based Distribution support in properties
+- bug in evaluating minCount after task execution
 - Wrong distribution assembly:
   - missing database drivers 
   - duplicate jar and test source
