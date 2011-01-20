@@ -144,7 +144,7 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	
 	@SuppressWarnings("unchecked")
     private void initialize(Number sourceValue) {
-	    this.numberType = sourceValue.getClass();
+	    this.numberType = (relative ? Double.class : sourceValue.getClass());
 	    Converter<Number, ? extends Number> converter = ConverterManager.getInstance().createConverter(Number.class, numberType);
 	    arithmetic = new ArithmeticEngine();
 	    noiseGenerator = GeneratorFactory.getNumberGenerator(
