@@ -29,6 +29,7 @@ import java.util.Iterator;
 import org.databene.commons.TypedIterable;
 import org.databene.model.data.Entity;
 import org.databene.platform.db.DBSystem;
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -37,16 +38,31 @@ import org.junit.Test;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class TranscodingIntegrationTest {
+public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 
-	private static final String DESCRIPTOR_FILE_NAME = "src/test/resources/org/databene/benerator/engine/transcode/TranscodingIntegrationTest.ben.xml";
+	private static final String PARENT_FOLDER = "src/test/resources/org/databene/benerator/engine/transcode";
+	private static final String DESCRIPTOR1_FILE_NAME = PARENT_FOLDER + "/transcode_to_empty_target.ben.xml";
+	private static final String DESCRIPTOR2_FILE_NAME = PARENT_FOLDER + "/transcode_to_target_with_countries.ben.xml";
+	
+	@After
+	public void clearDB() {
+		DBSystem s = (DBSystem) context.get("s");
+		s.execute("drop table state");
+		s.execute("drop table country");
+		DBSystem t = (DBSystem) context.get("t");
+		t.execute("drop table state");
+		t.execute("drop table country");
+	}
+	
+	
+	
+	// tests -----------------------------------------------------------------------------------------------------------
 	
 	@Test
-	public void testSimpleCase() throws Exception {
+	public void testEmptyTarget() throws Exception {
 		// run descriptor file
-		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR_FILE_NAME);
+		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR1_FILE_NAME, context);
 		runner.run();
-		BeneratorContext context = runner.getContext();
 		DBSystem t = (DBSystem) context.get("t");
 		// check countries
 		TypedIterable<Entity> iterable = t.queryEntities("country", null, context);
@@ -65,6 +81,34 @@ public class TranscodingIntegrationTest {
 		assertFalse(iterator.hasNext());
 		((Closeable) iterator).close();
 	}
+
+	@Test
+	public void testTargetWithCountries() throws Exception {
+		// run descriptor file
+		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR2_FILE_NAME, context);
+		runner.run();
+		DBSystem t = (DBSystem) context.get("t");
+		// check countries
+		TypedIterable<Entity> iterable = t.queryEntities("country", null, context);
+		Iterator<Entity> iterator = iterable.iterator();
+		assertNextCountry(1000, "United States", iterator);
+		assertNextCountry(2000, "Germany", iterator);
+		assertFalse(iterator.hasNext());
+		((Closeable) iterator).close();
+		// check states
+		iterable = t.queryEntities("state", null, context);
+		iterator = iterable.iterator();
+		assertNextState(1, 1000, "California", iterator);
+		assertNextState(2, 1000, "Florida", iterator);
+		assertNextState(3, 2000, "Bayern", iterator);
+		assertNextState(4, 2000, "Hamburg", iterator);
+		assertFalse(iterator.hasNext());
+		((Closeable) iterator).close();
+	}
+	
+	
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void assertNextCountry(int id, String name, Iterator<Entity> iterator) {
 		assertTrue(iterator.hasNext());
