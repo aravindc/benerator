@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.databene.commons.ArrayBuilder;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.collection.ListBasedSet;
 import org.databene.commons.collection.NamedValueList;
 import org.databene.commons.collection.OrderedNameMap;
@@ -127,6 +128,10 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
 			if (descriptor instanceof IdDescriptor)
 				builder.add(descriptor.getName());
 		return builder.toArray();
+    }
+	
+    public List<ReferenceDescriptor> getReferenceComponents() {
+    	return CollectionUtil.extractItemsOfType(ReferenceDescriptor.class, getComponents());
     }
 	
     // variable handling -----------------------------------------------------------------------------------------------
