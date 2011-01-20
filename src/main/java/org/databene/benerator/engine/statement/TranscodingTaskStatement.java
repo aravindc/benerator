@@ -22,17 +22,24 @@
 package org.databene.benerator.engine.statement;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.dbsanity.parser.TestSuiteParser;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
 import org.databene.jdbacl.identity.mem.MemKeyMapper;
 import org.databene.jdbacl.model.Database;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ReferenceDescriptor;
 import org.databene.platform.db.DBSystem;
 
 /**
@@ -51,14 +58,15 @@ public class TranscodingTaskStatement extends SequentialStatement {
     Expression<ErrorHandler> errorHandlerExpression;
     IdentityProvider identityProvider;
     KeyMapper mapper;
+	Map<String, Boolean> tableNkRequirements = OrderedNameMap.createCaseIgnorantMap();
     
 	public TranscodingTaskStatement(Expression<DBSystem> sourceEx, Expression<DBSystem> targetEx, Expression<String> identityEx, 
     		Expression<Long> pageSizeEx, Expression<ErrorHandler> errorHandlerExpression) {
-	    this.sourceEx = sourceEx;
-	    this.targetEx = targetEx;
-	    this.identityEx = identityEx;
-	    this.pageSizeEx = pageSizeEx;
-	    this.errorHandlerExpression = errorHandlerExpression;
+	    this.sourceEx = cache(sourceEx);
+	    this.targetEx = cache(targetEx);
+	    this.identityEx = cache(identityEx);
+	    this.pageSizeEx = cache(pageSizeEx);
+	    this.errorHandlerExpression = cache(errorHandlerExpression);
 		this.identityProvider = new IdentityProvider();
     }
 
@@ -88,6 +96,42 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	
 	@Override
 	public void execute(BeneratorContext context) {
+		readIdentityDefinition(context);
+		checkPrecoditions(context);
+		super.execute(context);
+	}
+	
+	private void checkPrecoditions(BeneratorContext context) {
+		DBSystem target = targetEx.evaluate(context);
+		List<TranscodeStatement> transcodes = CollectionUtil.extractItemsOfType(TranscodeStatement.class, subStatements);
+		for (TranscodeStatement transcode : transcodes) {
+			ComplexTypeDescriptor type = transcode.getType(context);
+			String tableName = type.getName();
+			// require that the target table is empty
+			if (target.countEntities(tableName) > 0)
+				throw new ConfigurationError("Error transcoding table '" + tableName + "' to " + target + ": target table is not empty");
+			// items to be transcoded do not need NK definition
+			tableNkRequirements.put(tableName, false);
+			for (ReferenceDescriptor ref : type.getReferenceComponents()) {
+				String targetTable = ref.getTargetType();
+				if (!tableNkRequirements.containsKey(targetTable))
+					tableNkRequirements.put(targetTable, true);
+			}
+		}
+		// check that each table for which an identity definition is required has one
+		for (Entry<String, Boolean> req : tableNkRequirements.entrySet()) {
+			String tableName = req.getKey();
+			Boolean required = req.getValue();
+			if (required && identityProvider.getIdentity(tableName, false) == null)
+				throw new ConfigurationError("For transcoding, an identity definition of table " + tableName + " is required");
+		}
+	}
+	
+	
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
+
+	private void readIdentityDefinition(BeneratorContext context) {
 		try {
 			// check identity definition
 			String identityUri = ExpressionUtil.evaluate(identityEx, context);
@@ -99,11 +143,9 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			mapper = new MemKeyMapper(null, null, target.getConnection(), target.getId(), identityProvider);
 			File reportFolder = new File("dbsanity-report");
 			new TestSuiteParser().parseHierarchy(new File(idFile), reportFolder, reportFolder, new File("temp"), database, mapper, identityProvider);
-			
 		} catch (Exception e) {
 			throw new ConfigurationError("Error setting up transcoding task", e);
 		}
-		super.execute(context);
 	}
 
 	private DBSystem getTarget(BeneratorContext context) {
@@ -114,7 +156,10 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	}
 
 	public boolean needsNkMapping(String tableName) {
-		return true; // TODO return false whenever possible in this task
+		Boolean required = tableNkRequirements.get(tableName);
+		if (required == null)
+			throw new RuntimeException("Assertion failed: Not clear if an identity definition is necessary for table " + tableName);
+		return required;
 	}
 	
 }

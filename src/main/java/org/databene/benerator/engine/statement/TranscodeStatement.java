@@ -44,6 +44,7 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
+import org.databene.jdbacl.identity.NoIdentity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -59,11 +60,11 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class TranscodeStatement implements Statement {
+public class TranscodeStatement extends AbstractStatement {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TranscodeStatement.class);
 	
-	TypeExpression typeExpression;
+	Expression<ComplexTypeDescriptor> typeExpression;
 	Expression<DBSystem> sourceEx;
 	Expression<String> selectorEx;
 	Expression<DBSystem> targetEx;
@@ -74,7 +75,7 @@ public class TranscodeStatement implements Statement {
 	public TranscodeStatement(TypeExpression typeExpression, TranscodingTaskStatement parent,
             Expression<DBSystem> sourceEx, Expression<String> selectorEx, Expression<DBSystem> targetEx, 
             Expression<Long> pageSizeEx, Expression<ErrorHandler> errorHandlerEx) {
-	    this.typeExpression = typeExpression;
+	    this.typeExpression = cache(typeExpression);
 	    this.parent = parent;
 	    this.sourceEx = sourceEx;
 	    this.selectorEx = selectorEx;
@@ -83,7 +84,7 @@ public class TranscodeStatement implements Statement {
 	    this.errorHandlerEx = errorHandlerEx;
     }
 
-    public void execute(BeneratorContext context) {
+	public void execute(BeneratorContext context) {
 		DBSystem source = sourceEx.evaluate(context);
 		DBSystem target = targetEx.evaluate(context);
 		Long pageSize = ExpressionUtil.evaluate(pageSizeEx, context);
@@ -91,8 +92,14 @@ public class TranscodeStatement implements Statement {
 			pageSize = 1L;
 		transcode(source, target, pageSize, context);
     }
+    
+    public ComplexTypeDescriptor getType(BeneratorContext context) {
+    	return typeExpression.evaluate(context);
+    }
+    
+    // helper methods --------------------------------------------------------------------------------------------------
 
-    public void transcode(DBSystem source, DBSystem target, long pageSize, Context ctx) {
+    private void transcode(DBSystem source, DBSystem target, long pageSize, Context ctx) {
     	BeneratorContext context = (BeneratorContext) ctx;
     	ComplexTypeDescriptor type = typeExpression.evaluate(context);
 		IdentityModel identity = parent.getIdentityProvider().getIdentity(type.getName());
@@ -143,12 +150,23 @@ public class TranscodeStatement implements Statement {
 				Object sourceRef = entity.get(fk.getName());
 				if (sourceRef != null) {
 					IdentityProvider identityProvider = parent.getIdentityProvider();
-					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTable);
-					if (sourceIdentity == null)
+					IdentityModel sourceIdentity = identityProvider.getIdentity(refereeTable, false);
+					if (sourceIdentity == null) {
+						sourceIdentity = new NoIdentity(source.getDbMetaData().getTable(refereeTable));
+						identityProvider.registerIdentity(sourceIdentity, refereeTable);
+					}
+						
+					boolean needsNkMapping = parent.needsNkMapping(refereeTable);
+					if (sourceIdentity instanceof NoIdentity && needsNkMapping)
 						throw new ConfigurationError("No identity defined for table " + refereeTable);
 					KeyMapper mapper = parent.getKeyMapper();
-					String sourceRefNK = mapper.getNaturalKey(source.getId(), sourceIdentity, sourceRef);
-					Object targetRef = mapper.getTargetPK(sourceIdentity, sourceRefNK);
+					Object targetRef;
+					if (needsNkMapping) {
+						String sourceRefNK = mapper.getNaturalKey(source.getId(), sourceIdentity, sourceRef);
+						targetRef = mapper.getTargetPK(sourceIdentity, sourceRefNK);
+					} else {
+						targetRef = mapper.getTargetPK(source.getId(), sourceIdentity, sourceRef);
+					}
 					if (targetRef == null) {
 						String message = "No mapping found for " + source.getId() + '.' + refereeTable + "#" + sourceRef + 
 								" referred in " + entity.type() + "(" + fk.getName() + "). " +
@@ -161,11 +179,6 @@ public class TranscodeStatement implements Statement {
 		}
 	}
 
-	private ErrorHandler getErrorHandler(Context context) {
-		ErrorHandler result = ExpressionUtil.evaluate(errorHandlerEx, context);
-		return (result != null ? result : ErrorHandler.getDefault());
-	}
-	
 	/*
 	@Override
     public void merge(DBSystem source, DBSystem target, int pageSize, KeyMapper mapper, Context context) {
