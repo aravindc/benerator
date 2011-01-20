@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,10 +50,14 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	private String query;
 	private IncrementorStrategy incrementorStrategy;
 
-    public SequenceTableGenerator(String table, String column, DBSystem db) {
-	    this(table, column, db, null);
+    public SequenceTableGenerator() {
+    	this(null, null, null);
     }
-
+    
+    public SequenceTableGenerator(String table, String column, DBSystem db) {
+    	this(table, column, db, null);
+    }
+    
     public SequenceTableGenerator(String table, String column, DBSystem db, String selector) {
     	this.table = table;
 	    this.column = column;
@@ -68,6 +72,10 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	public void setColumn(String column) {
     	this.column = column;
     }
+	
+	public void setDb(DBSystem db) {
+		this.db = db;
+	}
 
 	public void setSelector(String selector) {
 	    this.selector = selector;
