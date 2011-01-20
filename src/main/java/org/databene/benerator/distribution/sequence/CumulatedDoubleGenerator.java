@@ -57,7 +57,7 @@ public class CumulatedDoubleGenerator extends AbstractNumberGenerator<Double> {
     	if (precision == 0.)
     		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
         super.init(context);
-        baseGen = new RandomDoubleGenerator(min, max);
+        baseGen = new RandomDoubleGenerator(min, max, precision);
         baseGen.init(context);
     }
 
