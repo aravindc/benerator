@@ -39,6 +39,10 @@ enhancements
 - supporting central database definitions with 'environment' names, e.g. <dbsystem id="db" environment="myhsql" />
 - Checking if a setting has been defined: <if test="!context.contains('environment')">
 - explicit error generation and process exit value determination, e.g. <error code=-123>No environment specified</error>
+- new Converters:
+  - Char2StringConverter
+  - EscapingConverter
+  - Number2CharConverter
 
 
 
@@ -60,6 +64,7 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - big_decimal generation in sequences
 - Script-based Distribution support in properties
 - bug in evaluating minCount after task execution
+- precision support in 'cumulated' sequence
 - Wrong distribution assembly:
   - missing database drivers 
   - duplicate jar and test source
