@@ -34,7 +34,7 @@ import org.databene.commons.Visitor;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class CompositeStatement implements Statement, Element<Statement> {
+public abstract class CompositeStatement extends AbstractStatement implements Element<Statement> {
 	
 	protected List<Statement> subStatements = new ArrayList<Statement>();
 
