@@ -556,7 +556,7 @@ public class DBSystem extends AbstractStorageSystem {
         	logger.info("Ordering tables by dependency");
         List<DBTable> tables = DBUtil.dependencyOrderedTables(database);
         for (DBTable table : tables)
-            parseTable(table); // TODO support lazy parsing
+            parseTable(table);
     }
 	
     public DatabaseDialect getDialect() {
