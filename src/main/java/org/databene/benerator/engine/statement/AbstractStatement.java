@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,6 +22,7 @@
 package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -37,7 +38,7 @@ public abstract class AbstractStatement implements Statement {
 
     private Expression<ErrorHandler> errorHandler;
 
-    // constructor -----------------------------------------------------------------------------------------------------
+    // constructors ----------------------------------------------------------------------------------------------------
 
     protected AbstractStatement() {
         this(null);
@@ -55,6 +56,8 @@ public abstract class AbstractStatement implements Statement {
 		return errorHandler.evaluate(context);
 	}
     
+    // helpers ---------------------------------------------------------------------------------------------------------
+    
     protected void handleError(String message, Context context) {
     	getErrorHandler(context).handleError(message);
     }
@@ -63,6 +66,10 @@ public abstract class AbstractStatement implements Statement {
     	getErrorHandler(context).handleError(message, t);
     }
     
+    protected static <T> Expression<T> cache(Expression<T> expression) {
+		return new CachedExpression<T>(expression);
+	}
+
     @Override
     public String toString() {
         return getClass().getSimpleName();
