@@ -44,6 +44,7 @@ import org.databene.benerator.main.DBSnapshotTool;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
+import org.databene.commons.Encodings;
 import org.databene.commons.Expression;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
@@ -262,7 +263,7 @@ public class ProjectBuilder implements Runnable {
 		    String content = IOUtil.getContentOfURI(file.getAbsolutePath());
 		    content = resolveVariables(content);
 		    file.delete();
-		    IOUtil.writeTextFile(file.getAbsolutePath(), content, setup.getEncoding());
+		    IOUtil.writeTextFile(file.getAbsolutePath(), content, getXMLEncoding());
 		    return file;
 		} catch (IOException e) {
 			throw new I18NError("ErrorCreatingFile", e, file);
@@ -270,6 +271,11 @@ public class ProjectBuilder implements Runnable {
 			advanceMonitor();
 		}
     }
+
+	private String getXMLEncoding() {
+		String configuredEncoding = setup.getEncoding();
+		return (StringUtil.isEmpty(configuredEncoding) ? Encodings.UTF_8 : configuredEncoding);
+	}
 
 	private String resolveVariables(String content) {
 	    return replaceVariables(content);
@@ -544,6 +550,10 @@ public class ProjectBuilder implements Runnable {
 			String varString = toStringConverter.convert(varValue);
 			text = text.replace(template, varString);
 		}
+		text = text.replace("\n        defaultEncoding=\"\"", "");
+		text = text.replace("\n        defaultDataset=\"\"", "");
+		text = text.replace("\n        defaultLocale=\"\"", "");
+		text = text.replace("\n        defaultLineSeparator=\"\"", "");
 		return text;
 	}
 
