@@ -125,17 +125,18 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 
 	public void importDefaults() {
 		// import frequently used Benerator packages
+		importPackage("org.databene.benerator.consumer");
 		importPackage("org.databene.benerator.primitive");
 		importPackage("org.databene.benerator.primitive.datetime");
 		importPackage("org.databene.benerator.distribution.sequence");
 		importPackage("org.databene.benerator.distribution.function");
+		importPackage("org.databene.benerator.distribution.cumulative");
 		importPackage("org.databene.benerator.sample");
-		importPackage("org.databene.benerator.composite");
-		importPackage("org.databene.benerator.wrapper");
 		// import ConsoleExporter and LoggingConsumer
 		importPackage("org.databene.model.consumer");
-		// import converters and validators from commons
+		// import formats, converters and validators from commons
 		importPackage("org.databene.commons.converter");
+		importPackage("org.databene.commons.format");
 		importPackage("org.databene.commons.validator");
 		// import standard platforms
 		importPackage("org.databene.platform.flat");
