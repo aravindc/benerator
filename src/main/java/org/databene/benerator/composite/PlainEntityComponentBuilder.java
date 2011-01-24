@@ -55,7 +55,7 @@ public class PlainEntityComponentBuilder extends DefaultComponentBuilder<Entity>
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '{' + getName() + ',' + source + '}';
+		return getClass().getSimpleName() + '{' + getName() + ", " + source + '}';
 	}
 	
 	private static class Mutator_ implements Mutator {
