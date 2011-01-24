@@ -6,7 +6,7 @@ create table COUNTRY (
 
 create table STATE (
   ID               int         not null,
-  COUNTRY_FK       int         not null,
+  COUNTRY_FK       int,
   NAME             varchar(30) not null,
   constraint STATE_PK primary key (ID),
   constraint STATE_COUNTRY_FK foreign key (COUNTRY_FK) references COUNTRY (ID)

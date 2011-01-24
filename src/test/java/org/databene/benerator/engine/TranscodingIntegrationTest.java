@@ -43,6 +43,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	private static final String PARENT_FOLDER = "src/test/resources/org/databene/benerator/engine/transcode";
 	private static final String DESCRIPTOR1_FILE_NAME = PARENT_FOLDER + "/transcode_to_empty_target.ben.xml";
 	private static final String DESCRIPTOR2_FILE_NAME = PARENT_FOLDER + "/transcode_to_target_with_countries.ben.xml";
+	private static final String DESCRIPTOR3_FILE_NAME = PARENT_FOLDER + "/transcode_partially.ben.xml";
 	
 	@After
 	public void clearDB() {
@@ -106,6 +107,28 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		((Closeable) iterator).close();
 	}
 	
+	@Test
+	public void testPartialTranscode() throws Exception {
+		// run descriptor file
+		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR3_FILE_NAME, context);
+		runner.run();
+		DBSystem t = (DBSystem) context.get("t");
+		// check countries
+		TypedIterable<Entity> iterable = t.queryEntities("country", null, context);
+		Iterator<Entity> iterator = iterable.iterator();
+		assertNextCountry(1, "Germany", iterator);
+		assertFalse(iterator.hasNext());
+		((Closeable) iterator).close();
+		// check states
+		iterable = t.queryEntities("state", null, context);
+		iterator = iterable.iterator();
+		assertNextState(2, 1, "Bayern", iterator);
+		assertNextState(3, 1, "Hamburg", iterator);
+		assertNextState(4, null, "No State", iterator); // checking transcoding of 'null' refs
+		assertFalse(iterator.hasNext());
+		((Closeable) iterator).close();
+	}
+
 	
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
@@ -115,7 +138,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(new Entity("COUNTRY", "ID", id, "NAME", name), iterator.next());
 	}
 	
-	private void assertNextState(int id, int countryId, String name, Iterator<Entity> iterator) {
+	private void assertNextState(int id, Integer countryId, String name, Iterator<Entity> iterator) {
 		assertTrue(iterator.hasNext());
 		assertEquals(new Entity("STATE", "ID", id, "COUNTRY_FK", countryId, "NAME", name), iterator.next());
 	}
