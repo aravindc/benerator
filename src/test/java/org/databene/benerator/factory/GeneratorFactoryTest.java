@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -45,7 +45,6 @@ import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.primitive.regex.RegexStringGeneratorFactoryTest;
 import org.databene.benerator.Generator;
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
 import org.slf4j.Logger;
@@ -146,9 +145,10 @@ public class GeneratorFactoryTest extends GeneratorTest {
         initAndUseGenerator(generator);
     }
 
-    @Test(expected = InvalidGeneratorSetupException.class)
     public void testGetEmptySampleGenerator() {
-        GeneratorFactory.getSampleGenerator().init(context);
+        Generator<Object> generator = GeneratorFactory.getSampleGenerator();
+		generator.init(context);
+		assertNull(generator.generate());
     }
 
     // date source --------------------------------------------------------------------------------------------------

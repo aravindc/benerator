@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,8 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -53,6 +55,8 @@ import java.util.List;
  * @see AttachedWeightSampleGenerator
  */
 public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(WeightedCSVSampleGenerator.class);
 
     /** The URI to read the samples from */
     protected String uri;
@@ -124,10 +128,17 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         return source.generate();
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void init(GeneratorContext context) {
         List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, separator, encoding, converter);
-        ((AttachedWeightSampleGenerator<E>) source).setSamples(CollectionUtil.toArray(samples));
+        AttachedWeightSampleGenerator<E> awSource = (AttachedWeightSampleGenerator<E>) source;
+        if (samples.size() > 0) {
+        	awSource.setSamples(CollectionUtil.toArray(samples));
+        } else {
+        	awSource.setSamples(new WeightedSample[0]);
+        	LOGGER.warn("CSV file is empty: {}", uri);
+        }
     	super.init(context);
     }
 

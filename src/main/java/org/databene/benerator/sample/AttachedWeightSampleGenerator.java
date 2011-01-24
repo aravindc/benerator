@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
@@ -158,17 +157,19 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     @SuppressWarnings("unchecked")
     @Override
     public Class<E> getGeneratedType() {
+    	if (samples.size() == 0)
+    		return (Class<E>) String.class;
         return (Class<E>) samples.get(0).getClass();
     }
 
     /** Initializes all attributes */
     @Override
     public void init(GeneratorContext context) {
-        if (samples.size() == 0)
-        	throw new InvalidGeneratorSetupException("No samples");
         normalize();
-        indexGenerator.setMax((long) (samples.size() - 1));
-        indexGenerator.init(context);
+        if (samples.size() > 0) {
+	        indexGenerator.setMax((long) (samples.size() - 1));
+	        indexGenerator.init(context);
+        }
         super.init(context);
     }
 
