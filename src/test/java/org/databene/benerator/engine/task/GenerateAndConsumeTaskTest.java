@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,11 @@
 
 package org.databene.benerator.engine.task;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.consumer.ListConsumer;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
@@ -39,7 +39,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.TypedIterable;
 import org.databene.commons.expression.ConstantExpression;
-import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
 import org.databene.task.Task;
@@ -71,7 +70,7 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 		BeneratorContext context = new BeneratorContext();
 		GeneratorTask task = new GenerateAndConsumeTask("tn", generator, consumerExpr, false, context);
 		checkIteration(task, consumer);
-		consumer.list.clear();
+		consumer.clear();
 		task.prepare(context);
 		checkIteration(task, consumer);
 		task.close();
@@ -87,17 +86,10 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 	    executeStepAndAssertAvailability(task, context);
 	    executeStepAndAssertUnavailability(task, context);
 		// check output
-		assertEquals(2, consumer.list.size());
-		assertEquals(ALICE, consumer.list.get(0));
-		assertEquals(BOB, consumer.list.get(1));
+		assertEquals(2, consumer.getConsumedData().size());
+		assertEquals(ALICE, consumer.getConsumedData().get(0));
+		assertEquals(BOB, consumer.getConsumedData().get(1));
     }
-	
-	static class ListConsumer extends AbstractConsumer<Entity> {
-		List<Entity> list = new ArrayList<Entity>();
-		public void startConsuming(Entity object) {
-	        list.add(object);
-        }
-	}
 	
 	static class AB implements TypedIterable<Entity> {
 		private static final List<Entity> ab = CollectionUtil.toList(ALICE, BOB);
