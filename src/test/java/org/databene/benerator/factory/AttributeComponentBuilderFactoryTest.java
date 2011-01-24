@@ -66,6 +66,7 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	// TODO v1.0 define tests for all syntax paths
 	
 	private static final String NAMES_CSV = "org/databene/benerator/factory/names.csv";
+	private static final String EMPTY_WGT_CSV = "org/databene/benerator/factory/empty.csv";
 
 /*
     private static Log logger = LogFactory.getLog(ComponentBuilderFactory.class);
@@ -262,6 +263,15 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 		name.getLocalType().setDistribution("random");
 		name.setUnique(true);
 		expectUniqueSet(name, "Alice", "Bob", "Charly");
+	}
+
+	@Test
+	public void testCSVStringAttributeEmptyWeighted() {
+		PartDescriptor name = createCSVStringAttributeDescriptor(EMPTY_WGT_CSV, ",");
+		ComponentBuilder<Entity> builder = createComponentBuilder(name);
+		builder.init(context);
+    	Entity entity = new Entity("E");
+		assertFalse(builder.buildComponentFor(entity));
 	}
 
 	private PartDescriptor createCSVStringAttributeDescriptor() {
