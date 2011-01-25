@@ -59,7 +59,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 		try {
 			String id = element.getAttribute(ATT_ID);
 			ResourceManager resourceManager = context.getResourceManager();
-			Expression<?> bean = parseBeanExpression(element, resourceManager);
+			Expression<?> bean = parseBeanExpression(element);
 			return new BeanStatement(id, bean, resourceManager);
 		} catch (ConversionException e) {
 			throw new ConfigurationError(e);
@@ -67,7 +67,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Expression<?> parseBeanExpression(Element element, ResourceManager resourceManager) {
+    public static Expression<?> parseBeanExpression(Element element) {
 		String id = element.getAttribute(ATT_ID);
         Expression<?> instantiation;
         String beanSpec = element.getAttribute(ATT_SPEC);
@@ -84,20 +84,20 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
         } else
         	throw new ConfigurationError("Syntax error in definition of bean " + id);
         Element[] propertyElements = XMLUtil.getChildElements(element, false, EL_PROPERTY);
-		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements, resourceManager);
+		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements);
         return new BeanConstruction(instantiation, propertyInitializers);
     }
 
-	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements, ResourceManager resourceManager) {
+	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements) {
 		Assignment[] assignments = new Assignment[propertyElements.length];
         for (int i = 0; i < propertyElements.length; i++)
-        	assignments[i] = parseProperty(propertyElements[i], resourceManager);
+        	assignments[i] = parseProperty(propertyElements[i]);
         return assignments;
     }
 
-	private static Assignment parseProperty(Element propertyElement, ResourceManager resourceManager) {
+	private static Assignment parseProperty(Element propertyElement) {
 	    String propertyName = propertyElement.getAttribute("name");
-	    Expression<?> value = PropertyParser.parseValue(propertyElement, resourceManager);
+	    Expression<?> value = PropertyParser.parseValue(propertyElement);
 	    return new Assignment(propertyName, value);
     }
 

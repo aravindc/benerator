@@ -54,8 +54,7 @@ public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 	@SuppressWarnings("unchecked")
     public RunTaskStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		try {
-		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(
-		    		element, context.getResourceManager());
+		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(element);
 			Expression<Long> count          = parseLongAttribute(ATT_COUNT, element, 1);
 			Expression<Long> pageSize       = parseLongAttribute(ATT_PAGESIZE, element, DEFAULT_PAGE_SIZE);
 			Expression<Integer> threads     = parseIntAttribute(ATT_THREADS, element, 1);

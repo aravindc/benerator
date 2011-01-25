@@ -94,7 +94,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 				String ref = parseStringAttribute(consumerElement, ATT_REF, context);
 				bean = beneratorContext.get(ref);
 			} else if (consumerElement.hasAttribute(ATT_CLASS) || consumerElement.hasAttribute(ATT_SPEC)) {
-				Expression<?> beanExpr = BeanParser.parseBeanExpression(consumerElement, resourceManager);
+				Expression<?> beanExpr = BeanParser.parseBeanExpression(consumerElement);
 				bean = beanExpr.evaluate(context);
 			} else
 				throw new UnsupportedOperationException(
@@ -107,7 +107,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 			escalator.escalate("No consumers defined for " + entityName, this, null);
 		}
 		for (Consumer<Entity> consumer : consumerChain.getComponents())
-			resourceManager.addResource(consumer);
+			resourceManager.addResource(consumer); // TODO v0.7 add only local consumers
 		return consumerChain;
 	}
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,7 +25,6 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DescriptorConstants;
-import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableExpression;
 import org.databene.benerator.engine.expression.context.ContextReference;
@@ -61,13 +60,13 @@ public class PropertyParser extends AbstractBeneratorDescriptorParser {
 		if (element.hasAttribute(ATT_DEFAULT))
 			return parseDefault(propertyName, element.getAttribute(ATT_DEFAULT));
 		else {
-			Expression<?> valueEx = parseValue(element, context.getResourceManager());
+			Expression<?> valueEx = parseValue(element);
 			return new SetGlobalPropertyStatement(propertyName, valueEx);
 		}
 	}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Expression<?> parseValue(Element element, ResourceManager resourceManager) {
+    public static Expression<?> parseValue(Element element) {
 		if (element.hasAttribute(ATT_VALUE))
 			return new ScriptableExpression(element.getAttribute(ATT_VALUE), null);
 		else if (element.hasAttribute(ATT_REF))
@@ -78,7 +77,7 @@ public class PropertyParser extends AbstractBeneratorDescriptorParser {
 	        Element[] childElements = XMLUtil.getChildElements(element);
 	        Expression[] subExpressions = new Expression[childElements.length];
 	        for (int j = 0; j < childElements.length; j++)
-	        	subExpressions[j] = BeanParser.parseBeanExpression(childElements[j], resourceManager);
+	        	subExpressions[j] = BeanParser.parseBeanExpression(childElements[j]);
 	        switch (subExpressions.length) {
 		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
 		        case 1: return subExpressions[0];
