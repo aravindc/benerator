@@ -44,10 +44,11 @@ enhancements
   - EscapingConverter
   - Number2CharConverter
 - Added org.databene.commons.format.* to default imports
-- Automatic recognition of absolute Windows(TM) paths
+- Automatic recognition of absolute Windows(TM) paths and Unix user home paths
 - new consumers:
   - BadDataConsumer
   - ListConsumer
+- Supporting pageSize == 0 (for sub <generation>s without own page /transaction handling)
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
