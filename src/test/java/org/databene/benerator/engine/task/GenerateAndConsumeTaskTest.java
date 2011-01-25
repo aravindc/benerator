@@ -32,7 +32,6 @@ import java.util.List;
 import org.databene.benerator.Generator;
 import org.databene.benerator.consumer.ListConsumer;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.CollectionUtil;
@@ -68,7 +67,8 @@ public class GenerateAndConsumeTaskTest extends AbstractTaskTest {
 		final ListConsumer consumer = new ListConsumer();
 		Expression<Consumer<?>> consumerExpr = new ConstantExpression<Consumer<?>>(consumer);
 		BeneratorContext context = new BeneratorContext();
-		GeneratorTask task = new GenerateAndConsumeTask("tn", generator, consumerExpr, false, context);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask("tn", generator, context);
+		task.setConsumer(consumerExpr);
 		checkIteration(task, consumer);
 		consumer.clear();
 		task.prepare(context);

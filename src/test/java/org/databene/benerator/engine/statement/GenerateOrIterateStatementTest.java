@@ -53,7 +53,7 @@ public class GenerateOrIterateStatementTest {
 	public void testThreadCount() {
 		EntityGeneratorMock entityGenerator = new EntityGeneratorMock();
 		
-		GeneratorTask task = new GenerateAndConsumeTask("myTask", entityGenerator, null, false, new BeneratorContext());
+		GeneratorTask task = new GenerateAndConsumeTask("myTask", entityGenerator, new BeneratorContext());
 		
 		Generator<Long> countGenerator = new ConstantGenerator<Long>(INVOCATION_COUNT);
 		Expression<Long> pageSize = new ConstantExpression<Long>(300L);
