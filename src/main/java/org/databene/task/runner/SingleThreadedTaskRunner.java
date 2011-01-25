@@ -36,10 +36,12 @@ public class SingleThreadedTaskRunner implements TaskRunner {
 	
 	private Task target;
 	private ErrorHandler errorHandler;
+	private boolean finishPages;
 	private Context context;
 
-	public SingleThreadedTaskRunner(Task target, Context context, ErrorHandler errorHandler) {
+	public SingleThreadedTaskRunner(Task target, boolean finishPages, Context context, ErrorHandler errorHandler) {
 	    this.target = target;
+	    this.finishPages = finishPages;
 	    this.context = context;
 	    this.errorHandler = errorHandler;
     }
@@ -48,7 +50,8 @@ public class SingleThreadedTaskRunner implements TaskRunner {
 		try {
 			return runWithoutPage(target, invocationCount, context, errorHandler);
 		} finally {
-        	target.pageFinished();
+			if (finishPages)
+				target.pageFinished();
 		}
     }
 
