@@ -268,7 +268,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
                 IncludeStatement statement = new IncludeParser().parse(child, null, new BeneratorParseContext(this));
                 statement.execute(context);
             } else if ("bean".equals(childName)) {
-                Expression<?> beanExpression = BeanParser.parseBeanExpression(child, resourceManager);
+                Expression<?> beanExpression = BeanParser.parseBeanExpression(child);
                 String id = child.getAttribute("id");
 				new BeanStatement(id, beanExpression, this).execute(context);
                 beanExpression.evaluate(context);
@@ -540,7 +540,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element info : infos) {
             String childName = XMLUtil.localName(info);
             if ("bean".equals(childName))
-                BeanParser.parseBeanExpression(info, resourceManager);
+                BeanParser.parseBeanExpression(info);
             else if ("variable".equals(childName))
                 parser.parseVariable(info, (ComplexTypeDescriptor) descriptor);
             else if (ATTRIBUTE.equals(childName))
