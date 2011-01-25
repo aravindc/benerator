@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -58,28 +58,36 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
 
 	private String taskName;
     private Generator<?> generator;
-    private boolean isSubCreator;
+    //private boolean isSubCreator;
     private Expression<Consumer<?>> consumerExpr;
     private List<Statement> subStatements;
-    private ResourceManager resourceManager = new ResourceManagerSupport();
+    private ResourceManager resourceManager;
     private volatile AtomicBoolean generatorInitialized;
     private BeneratorContext context;
 
     private Consumer<?> consumer;
     
     public GenerateAndConsumeTask(String taskName, Generator<?> generator, 
-    		Expression<Consumer<?>> consumerExpr, boolean isSubCreator, BeneratorContext context) {
+    		/*boolean isSubCreator,*/ BeneratorContext context) {
+        this.resourceManager = new ResourceManagerSupport();
+    	this.subStatements = new ArrayList<Statement>();
+        this.generatorInitialized = new AtomicBoolean(false);
     	this.taskName = taskName;
     	Assert.notNull(generator, "generator");
         this.generator = generator;
-        this.consumerExpr = consumerExpr;
-    	this.subStatements = new ArrayList<Statement>();
-        this.isSubCreator = isSubCreator;
-        this.generatorInitialized = new AtomicBoolean(false);
+        //this.isSubCreator = isSubCreator;
         this.context = context;
     }
 
     // interface -------------------------------------------------------------------------------------------------------
+
+    public ResourceManager getResourceManager() {
+		return resourceManager;
+	}
+
+	public void setConsumer(Expression<Consumer<?>> consumerExpr) {
+        this.consumerExpr = consumerExpr;
+	}
     
     public void addSubStatement(Statement statement) {
     	this.subStatements.add(statement);
@@ -150,13 +158,13 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     }
 
     public void pageFinished() {
-        if (!isSubCreator && consumer != null)
+        if (/*!isSubCreator &&*/ consumer != null)
             consumer.flush();
     }
     
     public void close() {
-        resourceManager.close();
-        closeSubTasks();
+        resourceManager.close(); // TODO v0.7 close only local consumers
+        closeSubStatements();
     }
 
     // ResourceManager interface ---------------------------------------------------------------------------------------
@@ -205,16 +213,16 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
         	subStatement.execute(context);
     }
     
-    private void closeSubTasks() {
+    private void closeSubStatements() {
 	    for (Statement subStatement : subStatements)
-	    	closeSubTask(subStatement);
+	    	closeSubStatement(subStatement);
     }
     
-    protected void closeSubTask(Statement subStatement) {
+    protected void closeSubStatement(Statement subStatement) {
     	while (subStatement instanceof LazyStatement)
     		subStatement = ((LazyStatement) subStatement).getTarget(context);
         if (subStatement instanceof Closeable)
         	IOUtil.close((Closeable) subStatement);
     }
-    
+
 }
