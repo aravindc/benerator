@@ -138,7 +138,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private GeneratorTask parseTask(Element element, Statement[] parentPath, 
-    		GenerateOrIterateStatement statement, BeneratorParseContext parsingContext, 
+    		GenerateOrIterateStatement statement, BeneratorParseContext parseContext, 
     		InstanceDescriptor descriptor, BeneratorContext context, 
     		boolean infoLog) {
 		descriptor.setNullable(false);
@@ -151,24 +151,24 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// create generator
 		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		
-		// parse consumers
-		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
-		Expression consumer = parseConsumers(element, consumerExpected, parsingContext.getResourceManager());
-		
 		String taskName = descriptor.getName();
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, consumer, isSubCreator, context);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, isSubCreator, context);
 
+		// parse consumers
+		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
+		Expression consumer = parseConsumers(element, consumerExpected, task.getResourceManager());
+		// TODO v0.7 have collection of consumers and manage each one independently
+		task.setConsumer(consumer);
+		
 		// handle sub-<generate/>
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
 			if (!PART_NAMES.contains(childName)) {
-				BeneratorParseContext subContext = parsingContext.createSubContext(task);
-				Statement[] subPath = parsingContext.createSubPath(parentPath, statement);
-				Statement subStatement = subContext.parseChildElement(child, subPath);
-	            //Statement subStatement = parser.parse(child, ArrayUtil.append(parentPath, statement), task);
+				Statement[] subPath = parseContext.createSubPath(parentPath, statement);
+				Statement subStatement = parseContext.parseChildElement(child, subPath);
 				task.addSubStatement(subStatement);
             }
 		}
