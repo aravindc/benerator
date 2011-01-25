@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import org.databene.benerator.engine.GeneratorTask;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.IOUtil;
 import org.databene.contiperf.PerformanceTracker;
 import org.databene.task.PageListener;
 import org.databene.task.SynchronizedTask;
@@ -55,23 +57,24 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	protected Expression<Long> minCount;
 	protected Expression<Long> pageSize;
 	protected Expression<Integer> threads;
-	protected Expression<PageListener> pageListener;
+	protected Expression<PageListener> pageListenerEx;
+	protected PageListener pageListener;
 	protected PerformanceTracker tracker;
 	protected boolean infoLog;
-	protected boolean nested;
+	protected boolean isSubCreator;
 	protected boolean initialized;
 	
 	public GenerateOrIterateStatement(GeneratorTask task, Generator<Long> countGenerator, Expression<Long> minCount, 
-			Expression<Long> pageSize, Expression<PageListener> pageListener, Expression<Integer> threads, 
-			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean nested) {
+			Expression<Long> pageSize, Expression<PageListener> pageListenerEx, Expression<Integer> threads, 
+			Expression<ErrorHandler> errorHandler, boolean infoLog, boolean isSubCreator) {
 	    this.task = task;
 	    this.countGenerator = countGenerator;
 	    this.minCount = minCount;
 	    this.pageSize = pageSize;
 	    this.threads = threads;
-	    this.pageListener = pageListener;
+	    this.pageListenerEx = pageListenerEx;
 	    this.infoLog = infoLog;
-	    this.nested = nested;
+	    this.isSubCreator = isSubCreator;
 	    this.initialized = false;
     }
 
@@ -89,14 +92,14 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	    this.tracker = PagedTaskRunner.execute(taskToUse, context, 
 	    		generateCount(context), 
 	    		minCount.evaluate(context),
-	    		getPageListeners(context), 
+	    		evaluatePageListeners(context), 
 	    		pageSize.evaluate(context),
 	    		threadCount,
 	    		false, 
 	    		context.getExecutorService(),
 	    		getErrorHandler(context),
 	    		infoLog);
-	    if (!nested)
+	    if (!isSubCreator)
 	    	close();
     }
 
@@ -112,6 +115,8 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	public void close() {
 	    task.close();
 	    countGenerator.close();
+	    if (pageListener instanceof Closeable)
+	    	IOUtil.close((Closeable) pageListener);
     }
 
 	public Long generateCount(GeneratorContext context) {
@@ -138,15 +143,15 @@ public class GenerateOrIterateStatement extends AbstractStatement
 	}
 
 	// private helper --------------------------------------------------------------------------------------------------
-	
-	private List<PageListener> getPageListeners(Context context) {
+
+	private List<PageListener> evaluatePageListeners(Context context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();
 		if (pageListener != null) {
-	        PageListener listener = pageListener.evaluate(context);
-	        if (listener != null)
-	        	listeners.add(listener);
+	        pageListener = pageListenerEx.evaluate(context);
+	        if (pageListener != null)
+	        	listeners.add(pageListener);
         }
-		listeners.add(this);
+		//listeners.add(this);
 	    return listeners;
     }
 
