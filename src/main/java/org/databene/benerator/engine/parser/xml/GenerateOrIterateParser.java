@@ -146,7 +146,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			logger.info("{}", descriptor);
 		else
 			logger.debug("{}", descriptor);
-		boolean isSubCreator = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
+		//boolean isSubCreator = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);
 		
 		// create generator
 		Generator<?> generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
@@ -155,7 +155,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		if (taskName == null)
 			taskName = descriptor.getLocalType().getSource();
 		
-		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, isSubCreator, context);
+		GenerateAndConsumeTask task = new GenerateAndConsumeTask(taskName, generator, /*isSubCreator,*/ context);
 
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
