@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -122,7 +122,8 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
     		return 0;
     	this.actualCount.set(0);
     	if (invocationCount != null) {
-	    	queuedPages.set((invocationCount + pageSize - 1) / pageSize);
+    		if (pageSize > 0)
+    			queuedPages.set((invocationCount + pageSize - 1) / pageSize);
 	    	queuedInvocations.set(invocationCount);
     	}
         this.exception = null;
@@ -131,20 +132,26 @@ public class PagedTaskRunner implements TaskRunner, Thread.UncaughtExceptionHand
         int currentPageNo = 0;
         TaskRunner pageRunner;
         if (threadCount == 1)
-        	pageRunner = new SingleThreadedTaskRunner(target, context, errorHandler);
+        	pageRunner = new SingleThreadedTaskRunner(target, (pageSize > 0), context, errorHandler);
         else
         	pageRunner = new MultiThreadedTaskRunner(target, threadCount, context, executor.evaluate(context), 
-        			errorHandler, tracker);
+        			errorHandler, tracker); // TODO v1.0 avoid pageFinished when pageSize == 0
         do {
         	try {
-	            pageStarting(currentPageNo);
-	            long currentPageSize = (invocationCount == null ? pageSize : Math.min(pageSize, queuedInvocations.get()));
+        		if (pageSize > 0)
+        			pageStarting(currentPageNo);
+	            long currentPageSize;
+	            if (pageSize > 0)
+	            	currentPageSize = (invocationCount == null ? pageSize : Math.min(pageSize, queuedInvocations.get()));
+	            else
+	            	currentPageSize = (invocationCount == null ? 1 : Math.min(invocationCount, queuedInvocations.get()));
 	            queuedInvocations.addAndGet(- currentPageSize);
 	            long localCount = pageRunner.run(currentPageSize);
 	            actualCount.addAndGet(localCount);
 	            if (invocationCount != null)
 	            	queuedPages.decrementAndGet();
-	            pageFinished(currentPageNo, context);
+        		if (pageSize > 0)
+        			pageFinished(currentPageNo, context);
 	            if (exception != null)
 	                throw new RuntimeException(exception);
 	            currentPageNo++;
