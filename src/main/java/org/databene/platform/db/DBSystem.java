@@ -49,7 +49,7 @@ import org.databene.jdbacl.model.DBSchema;
 import org.databene.jdbacl.model.DBTable;
 import org.databene.jdbacl.model.DBUniqueConstraint;
 import org.databene.jdbacl.model.Database;
-import org.databene.jdbacl.model.buffer.BufferedDBImporter;
+import org.databene.jdbacl.model.cache.CachingDBImporter;
 import org.databene.jdbacl.model.jdbc.JDBCDBImporter;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.*;
@@ -67,6 +67,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
@@ -542,6 +543,17 @@ public class DBSystem extends AbstractStorageSystem {
 	public void invalidate() {
 		typeDescriptors = null;
 		tables = null;
+		if (environment != null) {
+			File bufferFile = CachingDBImporter.getCacheFile(environment);
+			if (bufferFile.exists()) {
+				if (!bufferFile.delete() && metaDataCache) {
+					LOGGER.error("Deleting " + bufferFile + " failed");
+					metaDataCache = false;
+				} else
+					LOGGER.info("Deleted meta data cache file: " + bufferFile);
+
+			}
+		}
 	} 
 	
 	public void parseMetaData() {
@@ -612,7 +624,7 @@ public class DBSystem extends AbstractStorageSystem {
 		try {
 		    DBMetaDataImporter importer = createJDBCImporter();
 		    if (metaDataCache)
-		    	importer = new BufferedDBImporter(importer, getEnvironment());
+		    	importer = new CachingDBImporter(importer, getEnvironment());
 		    database = importer.importDatabase();
 		} catch (ConnectFailedException e) {
 			throw new ConfigurationError("Database not available. ", e);
