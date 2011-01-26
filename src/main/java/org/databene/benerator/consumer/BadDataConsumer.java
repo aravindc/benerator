@@ -25,9 +25,10 @@ import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerProxy;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Consumer} proxy that forwards data to 'real consumer' and if the real consumer 
+ * raises an error, forwards the data to a 'bad data consumer'.<br/><br/>
  * Created: 23.01.2011 08:04:17
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 @SuppressWarnings({"rawtypes", "unchecked"})

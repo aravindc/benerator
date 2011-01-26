@@ -25,12 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.model.consumer.AbstractConsumer;
+import org.databene.model.consumer.Consumer;
 
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Consumer} implementation that stores all consumed objects in a {@link List}.<br/><br/>
  * Created: 23.01.2011 08:17:14
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 @SuppressWarnings({"rawtypes", "unchecked"})

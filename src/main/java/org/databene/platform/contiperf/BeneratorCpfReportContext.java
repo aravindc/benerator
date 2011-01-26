@@ -26,9 +26,9 @@ package org.databene.platform.contiperf;
 //import org.databene.contiperf.report.ReportContext;
 
 /**
- * TODO Document class.<br/><br/>
+ * ContiPerf ReportContext implementation for Benerator.<br/><br/>
  * Created: 17.01.2011 13:49:10
- * @since TODO version
+ * @since 0.6.5
  * @author Volker Bergmann
  */
 public class BeneratorCpfReportContext /* TODO v0.6.5 ContiPerf 2 */ /*extends ReportContext*/ {

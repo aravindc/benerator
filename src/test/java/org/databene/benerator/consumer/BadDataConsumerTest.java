@@ -28,9 +28,9 @@ import org.databene.model.consumer.Consumer;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link BadDataConsumer}.<br/><br/>
  * Created: 23.01.2011 08:15:24
- * @since TODO version
+ * @since 0.6.4
  * @author Volker Bergmann
  */
 public class BadDataConsumerTest {
