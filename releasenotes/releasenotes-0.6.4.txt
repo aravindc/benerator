@@ -49,6 +49,8 @@ enhancements
   - BadDataConsumer
   - ListConsumer
 - Supporting pageSize == 0 (for sub <generation>s without own page /transaction handling)
+- Supporting standard Java command line params in Project Wizard, e.g. -Duser.language=en -Duser.region=US
+
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
