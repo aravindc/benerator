@@ -21,9 +21,9 @@
 
 package org.databene.platform.contiperf;
 
-import org.databene.contiperf.Config;
-import org.databene.contiperf.PerfTestFailure;
-import org.databene.contiperf.report.ReportContext;
+//import org.databene.contiperf.Config;
+//import org.databene.contiperf.PerfTestFailure;
+//import org.databene.contiperf.report.ReportContext;
 
 /**
  * TODO Document class.<br/><br/>
@@ -31,11 +31,11 @@ import org.databene.contiperf.report.ReportContext;
  * @since TODO version
  * @author Volker Bergmann
  */
-public class BeneratorCpfReportContext extends ReportContext {
-
+public class BeneratorCpfReportContext /* TODO v0.6.5 ContiPerf 2 */ /*extends ReportContext*/ {
+/*
 	public BeneratorCpfReportContext() {
 		super(Config.instance().getReportFolder(), PerfTestFailure.class);
 		
 	}
-
+*/
 }

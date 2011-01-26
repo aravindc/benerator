@@ -25,7 +25,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.Required;
 import org.databene.contiperf.junit.ContiPerfRule;
-import org.databene.contiperf.report.EmptyReportModule;
+import org.databene.contiperf.log.EmptyExecutionLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -39,7 +39,7 @@ import org.junit.Test;
  */
 public class AddressGeneratorPerfTest {
 	
-	@Rule public ContiPerfRule rule = new ContiPerfRule(new EmptyReportModule());
+	@Rule public ContiPerfRule rule = new ContiPerfRule(new EmptyExecutionLogger()); // TODO v0.6.5 ContiPerf 2
 
 	private AddressGenerator generatorDE;
 	

@@ -23,11 +23,13 @@ package org.databene.platform.contiperf;
 
 import java.io.Closeable;
 
+import org.databene.contiperf.ExecutionLogger;
 import org.databene.contiperf.Invoker;
 import org.databene.contiperf.PerformanceRequirement;
 import org.databene.contiperf.PerformanceTracker;
-import org.databene.contiperf.report.ConsoleReportModule;
-import org.databene.contiperf.report.ReportContext;
+//import org.databene.contiperf.report.ConsoleReportModule;
+//import org.databene.contiperf.report.ReportContext;
+import org.databene.contiperf.log.ConsoleExecutionLogger;
 
 /**
  * Common parent class for Benerator runners that support performance tracking.<br/><br/>
@@ -36,7 +38,49 @@ import org.databene.contiperf.report.ReportContext;
  * @author Volker Bergmann
  */
 public abstract class PerfTrackingWrapper implements Closeable {
+	private PerformanceTracker tracker;
+	private PerformanceRequirement requirement;
+	private ExecutionLogger executionLogger;
 
+	protected abstract Invoker getInvoker();
+
+	public PerfTrackingWrapper() {
+	    this(null); // allow for lazy PerfromanceTracker initialization
+    }
+	
+	public PerfTrackingWrapper(PerformanceTracker tracker) {
+	    this.tracker = tracker;
+	    this.requirement = new PerformanceRequirement();
+	    this.executionLogger = new ConsoleExecutionLogger();
+    }
+	
+	public void setMax(int max) {
+		requirement.setMax(max);
+	}
+
+	public void setPercentiles(String percentilesSpec) {
+		requirement.setPercentiles(percentilesSpec);
+	}
+	
+	public void setExecutionLogger(ExecutionLogger executionLogger) {
+		this.executionLogger = executionLogger;
+	}
+	
+	public PerformanceTracker getTracker() {
+		if (tracker == null) {
+			// the tracker is initialized lazily for allowing the class to be first constructed in a simple way 
+			// and then be configured by calling the property setters.
+			Invoker invoker = getInvoker();
+			tracker = new PerformanceTracker(invoker, requirement, executionLogger);
+		}
+		return tracker;
+	}
+
+    public void close() {
+	    tracker.stop();
+    }
+	
+/* TODO v0.6.5 Use ContiPerf 2 and replace class body with the following code
 	private PerformanceTracker tracker;
 	private PerformanceRequirement requirement;
 	private ReportContext context;
@@ -79,5 +123,5 @@ public abstract class PerfTrackingWrapper implements Closeable {
     public void close() {
 	    tracker.stop();
     }
-	
+*/	
 }
