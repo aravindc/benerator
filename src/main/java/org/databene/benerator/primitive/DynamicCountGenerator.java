@@ -34,16 +34,16 @@ import org.databene.commons.Expression;
  */
 public class DynamicCountGenerator extends DynamicLongGenerator {
 	
-	private boolean fallBackToMin;
+	private boolean resetToMin;
 
     public DynamicCountGenerator() {
         super();
     }
 
     public DynamicCountGenerator(Expression<Long> min, Expression<Long> max, Expression<Long> precision, 
-    		Expression<? extends Distribution> distribution, Expression<Boolean> unique, boolean fallBackToMin) {
+    		Expression<? extends Distribution> distribution, Expression<Boolean> unique, boolean resetToMin) {
         super(min, max, precision, distribution, unique);
-        this.fallBackToMin = fallBackToMin;
+        this.resetToMin = resetToMin;
     }
     
 	@Override
@@ -51,7 +51,7 @@ public class DynamicCountGenerator extends DynamicLongGenerator {
 		if (maxValue != null)
 		    super.resetMembers(minValue, maxValue);
 		else {
-			Long constant = (fallBackToMin ? minValue : null);
+			Long constant = (resetToMin ? minValue : null);
 			source = GeneratorFactory.getConstantGenerator(constant);
 	        source.init(context);
 		}
