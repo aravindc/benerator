@@ -277,15 +277,19 @@ public class DescriptorUtil {
         return result;
 	}
 
-    @SuppressWarnings("unchecked")
     public static Expression<Long> getMinCount(InstanceDescriptor descriptor) {
+    	return getMinCount(descriptor, 1);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static Expression<Long> getMinCount(InstanceDescriptor descriptor, long defaultMin) {
     	Expression<Long> result = null;
 		if (descriptor.getCount() != null)
 			result = descriptor.getCount();
 		else if (descriptor.getMinCount() != null)
         	result = descriptor.getMinCount();
 		else
-			result = new ConstantExpression<Long>(1L);
+			result = new ConstantExpression<Long>(defaultMin);
 		Expression<Long> globalMaxCount = getGlobalMaxCount();
 		if (!ExpressionUtil.isNull(globalMaxCount))
 			result = new MinExpression<Long>(result, globalMaxCount);
