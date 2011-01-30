@@ -37,26 +37,30 @@ public class HeadSequence extends Sequence {
 	
 	private static final StepSequence STEP_SEQ = new StepSequence();
 
-	long n;
+	long size;
 	
 	public HeadSequence() {
 	    this(1);
     }
 
-	public HeadSequence(long n) {
+	public HeadSequence(long size) {
 	    super("head");
-	    this.n = n;
+	    this.size = size;
     }
 
+	public void setSize(long n) {
+		this.size = n;
+	}
+	
 	@Override
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-	    return new NShotGeneratorProxy<T>(source, n);
+	    return new NShotGeneratorProxy<T>(source, size);
 	}
 	
     public <T extends Number> Generator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	Generator<T> source = STEP_SEQ.createGenerator(numberType, min, max, precision, unique);
-		return new NShotGeneratorProxy<T>(source, n);
+		return new NShotGeneratorProxy<T>(source, size);
 	}
 
 }
