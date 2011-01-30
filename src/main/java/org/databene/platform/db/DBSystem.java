@@ -413,7 +413,7 @@ public class DBSystem extends AbstractStorageSystem {
     		script = true;
     	}
     	String sql = null;
-    	 // TODO v0.6.4 move the case distinction to EntityResultIterable (esp. useful for dynamic queries)
+    	 // TODO v0.6.5 move the case distinction to EntityResultIterable (esp. useful for dynamic queries)
     	if (StringUtil.isEmpty(selector))
     	    sql = "select * from " + type;
     	else if (StringUtil.startsWithIgnoreCase(selector, "select") || StringUtil.startsWithIgnoreCase(selector, "'select"))
@@ -500,9 +500,11 @@ public class DBSystem extends AbstractStorageSystem {
         execute(getDialect().renderDropSequence(name));
     }
 
-    public void execute(String sql) {
+    @Override
+	public Object execute(String sql) {
     	try {
 	        DBUtil.executeUpdate(sql, getThreadContext().connection);
+	        return null;
         } catch (SQLException e) {
 	        throw new RuntimeException(e);
         }
