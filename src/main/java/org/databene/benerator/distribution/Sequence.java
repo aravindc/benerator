@@ -38,7 +38,7 @@ import org.databene.commons.ConfigurationError;
  */
 public abstract class Sequence implements Distribution {
 	
-    private String name;
+    private String name; // TODO v0.7 remove 'name' property
     
     protected Sequence(String name) {
         this.name = name;
