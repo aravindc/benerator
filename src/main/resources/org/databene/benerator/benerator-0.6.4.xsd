@@ -204,7 +204,6 @@
 			<xs:attribute name="in"          type="xs:string"/>
 			<xs:attribute name="out"         type="xs:string"/>
 			<xs:attribute name="tables"      type="xs:NMTOKENS"/>
-			<xs:attribute name="clean"       type="xs:boolean"/>
 			<xs:attribute name="skin"        type="dbsanity-skin"/>
 			<xs:attribute name="locale"      type="xs:string"/>
 			<xs:attribute name="mode"        type="dbsanity-mode"/>
