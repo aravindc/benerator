@@ -62,7 +62,7 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     void update(Entity entity);
     
     /** Executes a command on the storage system */
-    void execute(String command);
+    Object execute(String command);
     
     /** Assures that all data that has been {@link #store(Entity)}d, is send to the target system. */
     void flush();
