@@ -34,9 +34,12 @@ import org.databene.commons.Expression;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.dbsanity.parser.TestSuiteParser;
+import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
 import org.databene.jdbacl.identity.KeyMapper;
+import org.databene.jdbacl.identity.NoIdentity;
 import org.databene.jdbacl.identity.mem.MemKeyMapper;
+import org.databene.jdbacl.model.DBTable;
 import org.databene.jdbacl.model.Database;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
@@ -96,12 +99,14 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	
 	@Override
 	public void execute(BeneratorContext context) {
-		readIdentityDefinition(context);
+		DBSystem target = getTarget(context);
+		mapper = new MemKeyMapper(null, null, target.getConnection(), target.getId(), identityProvider);
 		checkPrecoditions(context);
 		super.execute(context);
 	}
 	
 	private void checkPrecoditions(BeneratorContext context) {
+		boolean identitiesRequired = false;
 		DBSystem target = targetEx.evaluate(context);
 		List<TranscodeStatement> transcodes = CollectionUtil.extractItemsOfType(TranscodeStatement.class, subStatements);
 		for (TranscodeStatement transcode : transcodes) {
@@ -114,16 +119,27 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			tableNkRequirements.put(tableName, false);
 			for (ReferenceDescriptor ref : type.getReferenceComponents()) {
 				String targetTable = ref.getTargetType();
-				if (!tableNkRequirements.containsKey(targetTable))
+				if (!tableNkRequirements.containsKey(targetTable)) {
 					tableNkRequirements.put(targetTable, true);
+					identitiesRequired = true;
+				}
 			}
 		}
 		// check that each table for which an identity definition is required has one
+		if (identitiesRequired)
+			readIdentityDefinition(context);
 		for (Entry<String, Boolean> req : tableNkRequirements.entrySet()) {
 			String tableName = req.getKey();
 			Boolean required = req.getValue();
-			if (required && identityProvider.getIdentity(tableName, false) == null)
-				throw new ConfigurationError("For transcoding, an identity definition of table " + tableName + " is required");
+			IdentityModel identity = identityProvider.getIdentity(tableName, false);
+			if (identity == null) {
+				if (required)
+					throw new ConfigurationError("For transcoding, an identity definition of table " + tableName + " is required");
+				else {
+					DBTable table = target.getDbMetaData().getTable(tableName);
+					identityProvider.registerIdentity(new NoIdentity(table), tableName);
+				}
+			}
 		}
 	}
 	
@@ -140,7 +156,6 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			String idFile = context.resolveRelativeUri(identityUri);
 			DBSystem target = getTarget(context);
 			Database database = target.getDbMetaData();
-			mapper = new MemKeyMapper(null, null, target.getConnection(), target.getId(), identityProvider);
 			File reportFolder = new File("dbsanity-report");
 			new TestSuiteParser().parseHierarchy(new File(idFile), reportFolder, reportFolder, new File("temp"), database, mapper, identityProvider);
 		} catch (Exception e) {

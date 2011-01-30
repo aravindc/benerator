@@ -102,7 +102,7 @@ public class TranscodeStatement extends AbstractStatement {
     private void transcode(DBSystem source, DBSystem target, long pageSize, Context ctx) {
     	BeneratorContext context = (BeneratorContext) ctx;
     	ComplexTypeDescriptor type = typeExpression.evaluate(context);
-		IdentityModel identity = parent.getIdentityProvider().getIdentity(type.getName());
+		IdentityModel identity = parent.getIdentityProvider().getIdentity(type.getName(), false);
 		LOGGER.info("Starting transcoding of " + type.getName() + " from " + source.getId() + " to " + target.getId());
 		long rowCount = 0;
 		KeyMapper mapper = parent.getKeyMapper();
