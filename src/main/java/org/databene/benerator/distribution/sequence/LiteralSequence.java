@@ -25,6 +25,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.commons.StringUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
@@ -38,12 +39,22 @@ public class LiteralSequence extends Sequence {
 	
 	private Number[] numbers;
 
-	protected LiteralSequence(String spec) {
-	    super("literal");
-	    this.numbers = parseSpec(spec);
+	protected LiteralSequence() {
+	    this(null);
     }
 
+	protected LiteralSequence(String spec) {
+	    super("literal");
+    	setSpec(spec);
+    }
+
+	private void setSpec(String spec) {
+		this.numbers = parseSpec(spec);
+	}
+
 	private static Number[] parseSpec(String spec) {
+		if (StringUtil.isEmpty(spec))
+			return new Number[0];
 	    WeightedSample<?>[] samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
 	    Number[] result = new Number[samples.length];
 	    for (int i = 0; i < samples.length; i++)
