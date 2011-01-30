@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -51,7 +51,7 @@ public class StepSequence extends Sequence {
 
     private static final String NAME = "step";
 
-    private BigDecimal increment;
+    private BigDecimal delta;
 	private BigDecimal initial;
 	private BigDecimal limit;
 	
@@ -60,27 +60,31 @@ public class StepSequence extends Sequence {
     }
 	
 	/**
-	 * @param increment the increment to choose for created generators. 
+	 * @param delta the increment to choose for created generators. 
 	 * 		When using null, the precision parameter will be used to set the increment 
 	 * 		in {@link #createGenerator(Class, Number, Number, Number, boolean)}
 	 */
-	public StepSequence(BigDecimal increment) {
-	    this(increment, null);
+	public StepSequence(BigDecimal delta) {
+	    this(delta, null);
     }
 	
-	public StepSequence(BigDecimal increment, BigDecimal initial) {
-	    this(increment, initial, null);
+	public StepSequence(BigDecimal delta, BigDecimal initial) {
+	    this(delta, initial, null);
     }
 	
-	public StepSequence(BigDecimal increment, BigDecimal initial, BigDecimal limit) {
+	public StepSequence(BigDecimal delta, BigDecimal initial, BigDecimal limit) {
 	    super(NAME);
-	    this.increment = increment;
+	    this.delta = delta;
 	    this.initial = initial;
 	    this.limit = limit;
     }
 	
-	public BigDecimal getIncrement() {
-    	return increment;
+	public void setDelta(BigDecimal delta) {
+		this.delta = delta;
+	}
+	
+	public BigDecimal getDelta() {
+    	return delta;
     }
 
 	public BigDecimal getInitial() {
@@ -89,10 +93,10 @@ public class StepSequence extends Sequence {
 
 	@Override
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
-		if (increment != null && increment.longValue() < 0)
+		if (delta != null && delta.longValue() < 0)
 			return super.applyTo(source, unique);
 		else
-			return new SkipGeneratorProxy<T>(source, toLong(increment), toLong(increment), 
+			return new SkipGeneratorProxy<T>(source, toLong(delta), toLong(delta), 
 					SequenceManager.RANDOM_SEQUENCE, toLong(limit));
 	}
 	
@@ -114,7 +118,7 @@ public class StepSequence extends Sequence {
 	}
 
 	private <T extends Number> Number incrementToUse(T precision) {
-	    return (increment != null ? increment : (precision != null ? precision : 1));
+	    return (delta != null ? delta : (precision != null ? precision : 1));
     }
 
 	@Override
