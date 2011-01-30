@@ -56,14 +56,13 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
         Expression<String> inEx = parseScriptableStringAttribute("in", element);
 		Expression<String> outEx = parseScriptableStringAttribute("out", element);
         Expression<String[]> tablesEx = parseScriptableStringArrayAttribute("tables", element);
-		Expression<Boolean> cleanEx = parseBooleanExpressionAttribute("clean", element, false);
 		Expression<String> skinEx = parseScriptableStringAttribute("skin", element); // online or offline
 		Expression<Locale> localeEx = new BeneratorLocaleExpression(parseScriptableStringAttribute("locale", element)); // 2-letter-ISO code
 		Expression<String> modeNameEx = parseScriptableStringAttribute("mode", element); // verbose, quiet or default
 		Expression<ExecutionMode> modeEx = new ConvertingExpression<String, ExecutionMode>(
 				modeNameEx, new String2EnumConverter<ExecutionMode>(ExecutionMode.class));
 		Expression<ErrorHandler> errHandlerEx = parseOnErrorAttribute(element, "dbsanity");
-		return new DBSanityStatement(envEx, inEx, outEx, tablesEx, cleanEx, skinEx, localeEx, modeEx, errHandlerEx);
+		return new DBSanityStatement(envEx, inEx, outEx, tablesEx, skinEx, localeEx, modeEx, errHandlerEx);
     }
 
 }
