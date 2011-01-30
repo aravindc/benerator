@@ -21,7 +21,6 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.webdecs.xml.ParseContext;
@@ -34,7 +33,6 @@ import org.databene.webdecs.xml.ParseContext;
  */
 public class BeneratorParseContext extends ParseContext<Statement> {
 
-	BeneratorContext context;
 	ResourceManager resourceManager;
 
 	public BeneratorParseContext(ResourceManager resourceManager) {
@@ -70,8 +68,4 @@ public class BeneratorParseContext extends ParseContext<Statement> {
 		return new BeneratorParseContext(resourceManager);
 	}
 
-	public BeneratorContext getContext() {
-		return context;
-	}
-	
 }
