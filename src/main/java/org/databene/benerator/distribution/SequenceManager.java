@@ -21,6 +21,7 @@
 
 package org.databene.benerator.distribution;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +53,8 @@ public class SequenceManager {
     public static final Sequence SHUFFLE_SEQUENCE     = register(new ShuffleSequence());
     public static final Sequence CUMULATED_SEQUENCE   = register(new CumulatedSequence());
     public static final Sequence RANDOM_WALK_SEQUENCE = register(new RandomWalkSequence());
-    public static final Sequence STEP_SEQUENCE        = register(new StepSequence());
+    public static final Sequence STEP_SEQUENCE        = register(new StepSequence(), "step");
+    public static final Sequence INCREMENT_SEQUENCE   = register(new StepSequence(BigDecimal.ONE), "increment");
     public static final Sequence WEDGE_SEQUENCE       = register(new WedgeSequence());
     public static final Sequence BIT_REVERSE_SEQUENCE = register(new BitReverseSequence());
     public static final Sequence EXPAND_SEQUENCE      = register(new ExpandSequence());
@@ -70,7 +72,11 @@ public class SequenceManager {
     }
 
     public synchronized static Sequence register(Sequence sequence) {
-    	instances.put(sequence.getName(), sequence);
+    	return register(sequence, sequence.getName());
+    }
+
+    public synchronized static Sequence register(Sequence sequence, String name) {
+    	instances.put(name, sequence);
 	    return sequence;
     }
 
