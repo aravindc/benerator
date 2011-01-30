@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,8 +22,15 @@
 package org.databene.benerator.engine.statement;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.commons.Context;
 import org.databene.commons.Encodings;
+import org.databene.commons.Expression;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.TypedIterable;
+import org.databene.commons.expression.ExpressionUtil;
+import org.databene.model.data.Entity;
+import org.databene.model.data.TypeDescriptor;
+import org.databene.model.storage.AbstractStorageSystem;
 import org.junit.Test;
 
 import static org.databene.commons.expression.ExpressionUtil.*;
@@ -91,4 +98,73 @@ public class EvaluateStatementTest {
 			assertEquals(42, context.get("result"));
 	}
 	
+	@Test
+	public void testStorageSystem() {
+		StSys stSys = new StSys();
+		Expression<StSys> stSysEx = ExpressionUtil.constant(stSys);
+		EvaluateStatement stmt = new EvaluateStatement(
+				constant("message"),
+				constant("HelloHi"),
+				null,
+				null,
+				stSysEx,
+				constant("fatal"),
+				constant(Encodings.UTF_8),
+				constant(false),
+				null);
+			BeneratorContext context = new BeneratorContext();
+			stmt.execute(context);
+			assertEquals("HelloHi", stSys.execInfo);
+	}
+
+	public class StSys extends AbstractStorageSystem {
+
+		protected String execInfo;
+
+		public TypeDescriptor[] getTypeDescriptors() {
+			return new TypeDescriptor[0];
+		}
+
+		public TypeDescriptor getTypeDescriptor(String typeName) {
+			return null;
+		}
+
+		public String getId() {
+			return "id";
+		}
+
+		public TypedIterable<Entity> queryEntities(String type,
+				String selector, Context context) {
+			return null;
+		}
+
+		public <T> TypedIterable<T> queryEntityIds(String entityName,
+				String selector, Context context) {
+			return null;
+		}
+
+		public <T> TypedIterable<T> query(String selector, Context context) {
+			return null;
+		}
+
+		public void store(Entity entity) {
+		}
+
+		public void update(Entity entity) {
+		}
+
+		@Override
+		public Object execute(String command) {
+			this.execInfo = command;
+			return command;
+		}
+
+		public void flush() {
+		}
+
+		public void close() {
+		}
+
+	}
+
 }
