@@ -53,6 +53,7 @@ import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.jdbacl.DBUtil;
+import org.databene.model.storage.StorageSystem;
 import org.databene.platform.db.DBSystem;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -109,7 +110,7 @@ public class EvaluateStatement implements Statement {
     	this.assertionEx = assertionEx;
     }
 
-	public void execute(BeneratorContext context) { // TODO v0.6.4 support StorageSystem.execute()
+	public void execute(BeneratorContext context) {
 		try {
 			String onErrorValue = ExpressionUtil.evaluate(onErrorEx, context);
 			if (onErrorValue == null)
@@ -136,7 +137,8 @@ public class EvaluateStatement implements Statement {
 			Object targetObject = ExpressionUtil.evaluate(targetObjectEx, context);
 			if (typeValue == null && targetObject instanceof DBSystem)
 				typeValue = "sql";
-			
+			if (typeValue == null && targetObject instanceof StorageSystem)
+				typeValue = "execute";
             String textValue = ExpressionUtil.evaluate(textEx, context);
             String encoding = ExpressionUtil.evaluate(encodingEx, context);
 
@@ -147,6 +149,8 @@ public class EvaluateStatement implements Statement {
 						textValue, optimizeEx.evaluate(context));
             } else if (SHELL.equals(typeValue)) {
 				result = runShell(uriValue, textValue, onErrorValue);
+            } else if ("execute".equals(typeValue)) {
+		        result = ((StorageSystem) targetObject).execute(textValue);
             } else {
             	if (typeValue == null) 
             		typeValue = context.getDefaultScript();
