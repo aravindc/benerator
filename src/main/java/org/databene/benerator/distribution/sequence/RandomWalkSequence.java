@@ -51,6 +51,9 @@ import static org.databene.commons.NumberUtil.*;
 
 public class RandomWalkSequence extends Sequence {
 	
+	private static final BigDecimal ONE = BigDecimal.ONE;
+	private static final BigDecimal MINUS_ONE = BigDecimal.ZERO.subtract(ONE);
+
 	private static final boolean DEFAULT_BUFFERED = false;
 	
 	private BigDecimal initial;
@@ -61,7 +64,7 @@ public class RandomWalkSequence extends Sequence {
 	// constructors ----------------------------------------------------------------------------------------------------
 
     public RandomWalkSequence() {
-	    this(BigDecimal.ONE, BigDecimal.ONE);
+	    this(MINUS_ONE, ONE);
     }
 
     public RandomWalkSequence(BigDecimal minStep, BigDecimal maxStep) {
@@ -80,6 +83,20 @@ public class RandomWalkSequence extends Sequence {
 	    this.buffered = buffered;
     }
     
+	public void setMinStep(BigDecimal minStep) {
+		this.minStep = minStep;
+	}
+	
+	public void setMaxStep(BigDecimal maxStep) {
+		this.maxStep = maxStep;
+	}
+
+	public void setInitial(BigDecimal initial) {
+		this.initial = initial;
+	}
+	
+	
+	
     // Distribution interface implementation ---------------------------------------------------------------------------
 
     public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
