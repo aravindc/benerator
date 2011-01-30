@@ -41,10 +41,19 @@ public class WeightedNumbers<E> extends Sequence {
 
 	private WeightedSample<?>[] samples;
 	
+    public WeightedNumbers() {
+    	this(null);
+    }
+
     public WeightedNumbers(String spec) {
     	super(WeightedNumbers.class.getSimpleName());
-	    samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
+    	if (spec != null)
+    		setSpec(spec);
     }
+
+	public void setSpec(String spec) {
+		samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
+	}
 
 	public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
             boolean unique) {
