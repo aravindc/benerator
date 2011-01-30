@@ -128,7 +128,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		
 		Expression<ErrorHandler> errorHandler = parseOnErrorAttribute(element, element.getAttribute(ATT_NAME));
 		GenerateOrIterateStatement creator = new GenerateOrIterateStatement(
-				null, countGenerator, DescriptorUtil.getMinCount(descriptor), 
+				null, countGenerator, DescriptorUtil.getMinCount(descriptor, 0), 
 				pageSize, pager, threads, errorHandler, infoLog, nested);
 		GeneratorTask task = parseTask(element, parentPath, creator, parsingContext, descriptor, 
 				context, infoLog);
