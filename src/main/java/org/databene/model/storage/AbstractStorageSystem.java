@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,4 +39,9 @@ package org.databene.model.storage;
  * @author Volker Bergmann
  */
 public abstract class AbstractStorageSystem implements StorageSystem {
+	
+	public Object execute(String command) {
+		return null;
+	}
+	
 }
