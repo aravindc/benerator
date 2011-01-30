@@ -1,3 +1,17 @@
+create table ROLE (
+  ID     int         not null,
+  NAME   varchar(30) not null,
+  constraint ROLE_PK primary key (ID)
+);
+
+create table USER (
+  ID            int         not null,
+  ROLE_FK       int			not null,
+  NAME          varchar(30) not null,
+  constraint USER_PK primary key (ID),
+  constraint ROLE_USER_FK foreign key (ROLE_FK) references ROLE (ID)
+);
+
 create table COUNTRY (
   ID     int         not null,
   NAME   varchar(30) not null,

@@ -7,8 +7,8 @@
 
   	<database id="t" url="jdbc:hsqldb:mem:t" driver="org.hsqldb.jdbcDriver" schema="PUBLIC" user="sa" />
 
-	<execute uri="createCountryAndStateTables.sql" target="s" />
-	<execute uri="createCountryAndStateTables.sql" target="t" />
+	<execute uri="createTables.sql" target="s" />
+	<execute uri="createTables.sql" target="t" />
 	
 	<execute target="s">
 		insert into COUNTRY values (10, 'United States');

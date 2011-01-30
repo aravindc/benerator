@@ -48,9 +48,13 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	@After
 	public void clearDB() {
 		DBSystem s = (DBSystem) context.get("s");
+		s.execute("drop table user");
+		s.execute("drop table role");
 		s.execute("drop table state");
 		s.execute("drop table country");
 		DBSystem t = (DBSystem) context.get("t");
+		t.execute("drop table user");
+		t.execute("drop table role");
 		t.execute("drop table state");
 		t.execute("drop table country");
 	}
