@@ -67,9 +67,13 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     // constructors ----------------------------------------------------------------------------------------------------
 
     public CSVEntityExporter() {
-        this(DEFAULT_URI, (String) null);
+        this(DEFAULT_URI);
     }
     
+    public CSVEntityExporter(String uri) {
+        this(uri, (String) null);
+    }
+
     public CSVEntityExporter(String uri, String columnsSpec) {
         this(uri, columnsSpec, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
     }
