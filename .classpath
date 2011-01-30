@@ -26,7 +26,6 @@
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.5.8/slf4j-log4j12-1.5.8.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdecs"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/contiperf"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gui"/>
 	<classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar"/>
@@ -34,6 +33,7 @@
 	<classpathentry kind="var" path="M2_REPO/net/sf/squirrel-sql/thirdparty-non-maven/jaybird/2.1.6/jaybird-2.1.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/oracle/ojdbc/1.4/ojdbc-1.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jdbacl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dbsanity"/>
+	<classpathentry kind="lib" path="/Users/volker/.m2/repository/org/databene/dbsanity/0.6/dbsanity-0.6.jar"/>
+	<classpathentry kind="lib" path="/Users/volker/.m2/repository/org/databene/contiperf/1.07/contiperf-1.07.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
