@@ -22,6 +22,9 @@
 package org.databene.benerator.engine;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.statement.GeneratorStatement;
@@ -30,6 +33,7 @@ import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.Visitor;
@@ -43,7 +47,20 @@ import org.databene.commons.expression.ExpressionUtil;
  */
 public class BeneratorRootStatement extends SequentialStatement {
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+	Map<String, String> attributes;
+	
+    public BeneratorRootStatement(Map<String, String> attributes) {
+    	this.attributes = new HashMap<String, String>(attributes);
+	}
+
+    @Override
+    public void execute(BeneratorContext context) {
+    	for (Entry<String, String> attribute : attributes.entrySet())
+    		BeanUtil.setPropertyValue(context, attribute.getKey(), attribute.getValue(), true, true);
+    	super.execute(context);
+    }
+    
+	@SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<?> getGenerator(String name, BeneratorContext context) {
     	GeneratorStatement statement = getGeneratorStatement(name, context);
     	Generator<?> generator = statement.getTarget().getGenerator();
