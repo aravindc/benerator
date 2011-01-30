@@ -96,8 +96,8 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
         for (ComponentDescriptor ccd : components.values())
         	result.add(ccd.getName(), ccd);
         if (getParent() != null) {
-            NamedValueList<ComponentDescriptor> parentComponents = ((ComplexTypeDescriptor) getParent()).components;
-			for (ComponentDescriptor pcd : parentComponents.values()) {
+            List<ComponentDescriptor> parentComponents = ((ComplexTypeDescriptor) getParent()).getComponents();
+			for (ComponentDescriptor pcd : parentComponents) {
                 String name = pcd.getName();
 				if (!components.containsName(name)) {
 	                ComponentDescriptor ccd = components.someValueOfName(name);
