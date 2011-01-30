@@ -146,10 +146,14 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     	return (generator != null ? createNullGenerator(descriptor) : null);
 	}
 
-	private static NullableGenerator<Object> createNullGenerator(ComponentDescriptor descriptor) {
-		Class<Object> generatedType = Object.class; 
-		 // TODO v0.6.4 find out expected Java type or change global type handling to interpret generatedType==null as null-value-generator
-	    return new ConstantNullableGenerator<Object>(null, generatedType); 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static NullableGenerator<?> createNullGenerator(ComponentDescriptor descriptor) {
+		Class<?> generatedType = String.class;
+		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
+		if (typeDescriptor instanceof SimpleTypeDescriptor) {
+			generatedType = ((SimpleTypeDescriptor) typeDescriptor).getPrimitiveType().getJavaType();
+		}
+	    return new ConstantNullableGenerator(null, generatedType); 
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
