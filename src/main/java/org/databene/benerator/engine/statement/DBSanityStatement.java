@@ -46,21 +46,19 @@ public class DBSanityStatement implements Statement {
 	Expression<String> inEx;
 	Expression<String> outEx;
 	Expression<String[]> tablesEx;
-	Expression<Boolean> cleanEx;
 	Expression<String> skinEx;
 	Expression<Locale> localeEx;
 	Expression<ExecutionMode> modeEx;
 	Expression<ErrorHandler> errHandlerEx;
 
 	public DBSanityStatement(Expression<String> envEx, Expression<String> inEx, 
-			Expression<String> outEx, Expression<String[]> tablesEx, Expression<Boolean> cleanEx,
+			Expression<String> outEx, Expression<String[]> tablesEx, 
 			Expression<String> skinEx, Expression<Locale> localeEx,
 			Expression<ExecutionMode> modeEx, Expression<ErrorHandler> errHandlerEx) {
 		this.envEx = envEx;
 		this.inEx = inEx;
 		this.outEx = outEx;
 		this.tablesEx = tablesEx;
-		this.cleanEx = cleanEx;
 		this.skinEx = skinEx;
 		this.localeEx = localeEx;
 		this.modeEx = modeEx;
@@ -85,8 +83,7 @@ public class DBSanityStatement implements Statement {
 			File outFolder = new File(context.resolveRelativeUri(outFolderName));
 			dbSanity.setReportFolder(outFolder);
 
-			boolean clear = ExpressionUtil.evaluate(cleanEx, context);
-			dbSanity.setClearBefore(clear);
+			dbSanity.setClearBefore(true);
 			
 			String skin = ExpressionUtil.evaluate(skinEx, context);
 			if (skin != null)
