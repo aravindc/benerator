@@ -202,7 +202,7 @@ public class ReferenceComponentBuilderFactoryTest {
 		public void flush() {
 		}
 
-		public void execute(String command) {
+		public Object execute(String command) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
