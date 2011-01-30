@@ -21,13 +21,18 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import static org.databene.benerator.engine.DescriptorConstants.EL_SETUP;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.XMLNameNormalizer;
+import org.databene.commons.CollectionUtil;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.webdecs.xml.XMLElementParser;
 import org.w3c.dom.Element;
@@ -39,6 +44,26 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class SetupParser extends AbstractBeneratorDescriptorParser {
+	
+	private static final Set<String> BENERATOR_PROPERTIES = CollectionUtil.toSet(
+			ATT_DEFAULT_SCRIPT,
+			ATT_DEFAULT_NULL,
+			ATT_DEFAULT_ENCODING,
+			ATT_DEFAULT_LINE_SEPARATOR,
+			ATT_DEFAULT_TIME_ZONE,
+			ATT_DEFAULT_LOCALE,
+			ATT_DEFAULT_DATASET,
+			ATT_DEFAULT_PAGE_SIZE,
+			ATT_DEFAULT_SEPARATOR,
+			ATT_DEFAULT_ONE_TO_ONE,
+			ATT_DEFAULT_ERR_HANDLER,
+			ATT_MAX_COUNT,
+			ATT_ACCEPT_UNKNOWN_SIMPLE_TYPES
+		);
+
+	private static final Set<String> XML_ATTRIBUTES = CollectionUtil.toSet(
+		"xmlns"
+	);
 
 	public SetupParser() {
 		super(EL_SETUP);
@@ -46,12 +71,26 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 
 	@Override
 	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-	    XMLUtil.mapAttributesToProperties(element, context, true, new XMLNameNormalizer());
-	    BeneratorRootStatement rootStatement = new BeneratorRootStatement();
+		Map<String, String> attributes = XMLUtil.getAttributes(element);
+		Iterator<Entry<String, String>> iterator = attributes.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, String> attribute = iterator.next();
+			if (!BENERATOR_PROPERTIES.contains(attribute.getKey())) {
+				if (isStandardXmlRootAttribute(attribute.getKey()))
+					iterator.remove();
+				else
+					throw new ConfigurationError("Not a supported attribute in <" + EL_SETUP + ">: " + attribute.getKey());
+			}
+		}
+	    BeneratorRootStatement rootStatement = new BeneratorRootStatement(attributes);
 	    Statement[] currentPath = context.createSubPath(parentPath, rootStatement);
 		List<Statement> subStatements = context.parseChildElementsOf(element, currentPath);
 	    rootStatement.setSubStatements(subStatements);
 	    return rootStatement;
+	}
+
+	private boolean isStandardXmlRootAttribute(String key) {
+		return XML_ATTRIBUTES.contains(key) || key.contains(":");
 	}
 
 }
