@@ -14,22 +14,27 @@
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-benerator</artifactId>
-			<version>0.6.3</version>
+			<version>0.6.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-webdecs</artifactId>
-			<version>0.5.3</version>
+			<version>0.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-commons</artifactId>
-			<version>0.5.3</version>
+			<version>0.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>contiperf</artifactId>
-			<version>1.06</version>
+			<version>1.07</version>
+		</dependency>
+		<dependency>
+			<groupId>org.databene</groupId>
+			<artifactId>dbsanity</artifactId>
+			<version>0.6</version>
 		</dependency>
 	</dependencies>
 
@@ -50,7 +55,7 @@
             <plugin>
                 <groupId>org.databene</groupId>
                 <artifactId>maven-benerator-plugin</artifactId>
-                <version>0.6.3</version>
+                <version>0.6.4</version>
                 <configuration>
                     <descriptor>benerator.xml</descriptor>
                     <encoding>${setup.encoding}</encoding>
