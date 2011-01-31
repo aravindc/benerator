@@ -30,7 +30,7 @@
     <echo>Generated data:</echo> 
     <if test="org.databene.commons.SystemInfo.isWindows()">
         <then>
-            <execute type="shell">type transactions.flat</execute>
+            <execute type="shell">cmd /C type transactions.flat</execute>
         </then>
         <else>
             <execute type="shell">cat transactions.flat</execute>

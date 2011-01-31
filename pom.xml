@@ -9,7 +9,7 @@
 
     <properties>
         <jdbacl_version>0.6.5</jdbacl_version>
-	    <dbsanity_version>0.6</dbsanity_version>
+	    <dbsanity_version>0.6.1</dbsanity_version>
 	    <contiperf_version>1.07</contiperf_version>
         <gui_version>0.2.5</gui_version>
         <webdecs_version>0.5.5</webdecs_version>
