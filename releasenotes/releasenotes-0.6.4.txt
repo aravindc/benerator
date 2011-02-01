@@ -3,7 +3,9 @@ release notes benerator 0.6.4
 
 summary
 -------
-
+Release 0.6.4 adds a transcoding feature, improved performance of database meta data handling, 
+integration of DB Sanity and quite a list of small enhancements and extensions. In addition it 
+fixes quite a number of bugs.
 
 
 changes
