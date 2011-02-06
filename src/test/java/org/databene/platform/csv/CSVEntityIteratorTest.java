@@ -47,21 +47,32 @@ public class CSVEntityIteratorTest {
     // test methods ----------------------------------------------------------------------------------------------------
 
     @Test
-    public void test() throws Exception {
+    public void testWithHeader() throws Exception {
     	CSVEntityIterator iterator = new CSVEntityIterator(URI, "Person", ',');
-        checkIteration(iterator);
+        checkIteration(iterator, "name", "age", false);
+    }
+
+    @Test
+    public void testWithoutHeader() throws Exception {
+    	CSVEntityIterator iterator = new CSVEntityIterator(URI, "Person", ',');
+    	iterator.setColumns(new String[] { "c1", "c2" });
+        checkIteration(iterator, "c1", "c2", true);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void checkIteration(Iterator<Entity> iterator) {
+    private void checkIteration(Iterator<Entity> iterator, String header1, String header2, boolean expectHeaderRow) {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        if (expectHeaderRow) {
+	        assertTrue(iterator.hasNext());
+	        assertEquals(new Entity(descriptor, header1, "name", header2, "age"), iterator.next());
+        }
         assertTrue(iterator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), iterator.next());
+        assertEquals(new Entity(descriptor, header1, "Alice", header2, "23"), iterator.next());
         assertTrue(iterator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Bob", "age", "34"), iterator.next());
+        assertEquals(new Entity(descriptor, header1, "Bob", header2, "34"), iterator.next());
         assertTrue(iterator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), iterator.next());
+        assertEquals(new Entity(descriptor, header1, "Charly", header2, "45"), iterator.next());
         assertFalse(iterator.hasNext());
     }
     

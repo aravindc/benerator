@@ -23,9 +23,11 @@ package org.databene.platform.csv;
 
 import java.io.FileNotFoundException;
 
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -43,6 +45,7 @@ public class CSVEntitySource extends FileBasedEntitySource {
     private Converter<String, ?> preprocessor;
 
     private ComplexTypeDescriptor entityDescriptor;
+	private String[] columns;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -91,11 +94,21 @@ public class CSVEntitySource extends FileBasedEntitySource {
         this.entityDescriptor = new ComplexTypeDescriptor(entityName);
     }
 
+	public void setColumns(String[] columns) {
+		if (ArrayUtil.isEmpty(columns))
+			this.columns = null;
+		else {
+	        this.columns = columns;
+	        StringUtil.trimAll(this.columns);
+		}
+    }
+
     // EntitySource interface ------------------------------------------------------------------------------------------
 
 	public HeavyweightIterator<Entity> iterator() {
         try {
 			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityDescriptor, preprocessor, separator, encoding);
+			iterator.setColumns(columns);
 			return iterator;
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);

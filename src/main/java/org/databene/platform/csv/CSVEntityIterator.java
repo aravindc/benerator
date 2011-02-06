@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,11 +30,13 @@ import org.databene.platform.array.Array2EntityConverter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Patterns;
+import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
@@ -48,7 +50,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Iterates Entities in a CSV file.<br/>
+ * Iterates Entities in a CSV file.
+ * When the property 'columns' is set, the CSV file is assumed to have no header row.<br/>
  * <br/>
  * Created: 07.04.2008 09:49:08
  * @since 0.5.1
@@ -59,9 +62,12 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     private String uri;
     private char   separator;
     private String encoding;
+    private String[] columns;
+    Converter<String, ?> preprocessor;
 
     private HeavyweightIterator<Entity> source;
     
+    private boolean initialized;
     private ComplexTypeDescriptor entityDescriptor;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -83,11 +89,25 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     }
 
     public CSVEntityIterator(String uri, ComplexTypeDescriptor descriptor, Converter<String, ?> preprocessor, char separator, String encoding) throws FileNotFoundException {
+    	if (!IOUtil.isURIAvailable(uri))
+    		throw new FileNotFoundException("URI not found: " + uri);
         this.uri = uri;
+        this.preprocessor = preprocessor;
         this.separator = separator;
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
-        init(uri, preprocessor, separator, encoding);
+        this.initialized = false;
+    }
+    
+    // properties ------------------------------------------------------------------------------------------------------
+    
+	public void setColumns(String[] columns) {
+		if (ArrayUtil.isEmpty(columns))
+			this.columns = null;
+		else {
+	        this.columns = columns;
+	        StringUtil.trimAll(this.columns);
+		}
     }
 
     // HeavyweightIterator interface -----------------------------------------------------------------------------------
@@ -97,10 +117,18 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 	}
 
     public boolean hasNext() {
+    	assureInitialized();
         return source.hasNext();
     }
     
-    public Entity next() {
+    private void assureInitialized() {
+    	if (!initialized) {
+    		init();
+    		initialized = true;
+    	}
+	}
+
+	public Entity next() {
     	if (!source.hasNext())
     		throw new IllegalStateException("No more entity to fetch, check hasNext() before calling next()");
         return source.next();
@@ -129,21 +157,19 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     // private helpers -------------------------------------------------------------------------------------------------
     
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void init(String uri, Converter<String, ?> preprocessor,
-			char separator, String encoding) throws FileNotFoundException {
+	private void init() {
 		try {
-        	String[] featureNames;
 			Iterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
-			if (cellIterator.hasNext())
-				featureNames = cellIterator.next();
-			else
-				throw new ConfigurationError("empty CSV file");
+			if (ArrayUtil.isEmpty(columns)) {
+				if (cellIterator.hasNext())
+					columns = cellIterator.next();
+				else
+					throw new ConfigurationError("empty CSV file");
+			}
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
-	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames, true);
+	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, columns, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
 	        this.source = new ConvertingIterator<String[], Entity>(cellIterator, converter);
-		} catch (FileNotFoundException e) {
-			throw e;
 		} catch (IOException e) {
 			throw new RuntimeException("Error in processing " + uri, e);
 		}

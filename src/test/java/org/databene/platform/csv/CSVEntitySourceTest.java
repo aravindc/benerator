@@ -50,27 +50,40 @@ public class CSVEntitySourceTest {
     public void testSingleRun() {
     	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
     	source.setContext(new BeneratorContext());
-        checkIteration(source.iterator());
+        checkIteration(source.iterator(), "name", "age", false);
     }
 
     @Test
     public void testReset() {
     	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
     	source.setContext(new BeneratorContext());
-        checkIteration(source.iterator());
-        checkIteration(source.iterator());
+        checkIteration(source.iterator(), "name", "age", false);
+        checkIteration(source.iterator(), "name", "age", false);
+    }
+
+    @Test
+    public void testWithoutHeaders() {
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
+    	source.setColumns(new String[] { "c1", "c2" });
+    	source.setContext(new BeneratorContext());
+        checkIteration(source.iterator(), "c1", "c2", true);
+        checkIteration(source.iterator(), "c1", "c2", true);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void checkIteration(Iterator<Entity> iterator) {
+    private void checkIteration(Iterator<Entity> iterator, String col1, String col2, boolean headersExpected) {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
+        if (headersExpected) {
+            assertTrue(iterator.hasNext());
+            assertEquals(new Entity(descriptor, col1, "name", col2, "age"), iterator.next());
+        }
         assertTrue(iterator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Alice", "age", "23"), iterator.next());
+        assertEquals(new Entity(descriptor, col1, "Alice",  col2, "23"), iterator.next());
         assertTrue(iterator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Bob", "age", "34"), iterator.next());
+        assertEquals(new Entity(descriptor, col1, "Bob",    col2, "34"), iterator.next());
         assertTrue(iterator.hasNext());
-        assertEquals(new Entity(descriptor, "name", "Charly", "age", "45"), iterator.next());
+        assertEquals(new Entity(descriptor, col1, "Charly", col2, "45"), iterator.next());
         assertFalse(iterator.hasNext());
     }
     
