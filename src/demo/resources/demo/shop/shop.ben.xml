@@ -31,6 +31,7 @@
 			platforms = "db"/>
 
 	<comment>setting default values</comment>
+	<property name="dbCatalog"  value="" />
 	<property name="dbSchema"   value="" />
 	<property name="dbPassword" value="" />
 	<property name="dbBatch"    value="false" />
@@ -59,7 +60,7 @@
 	<echo message="{ftl:JDBC URL: ${dbUrl}}" />
 
     <comment>define a database that will be referred by the id 'db' later</comment>
-    <database id="db" url="{dbUrl}" driver="{dbDriver}" schema="{dbSchema}"
+    <database id="db" url="{dbUrl}" driver="{dbDriver}" catalog="{dbCatalog}" schema="{dbSchema}"
         user="{dbUser}" password="{dbPassword}" batch="{dbBatch}" />
 
 	<comment>drop the current tables/sequences if they exist and recreate them</comment>
