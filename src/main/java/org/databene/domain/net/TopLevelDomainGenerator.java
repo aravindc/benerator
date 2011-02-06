@@ -39,7 +39,7 @@ import org.databene.commons.Encodings;
 public class TopLevelDomainGenerator extends WeightedCSVSampleGenerator<String> {
 
 	public TopLevelDomainGenerator() {
-		super("org/databene/domain/net/tld.csv", Encodings.UTF_8);
+		super("/org/databene/domain/net/tld.csv", Encodings.UTF_8);
 	}
 	
 	@Override

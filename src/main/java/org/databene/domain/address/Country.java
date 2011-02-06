@@ -88,7 +88,7 @@ public class Country {
 
     private void importStates() {
         this.states = new OrderedNameMap<State>();
-        String filename = "org/databene/domain/address/state_" + isoCode + ".csv";
+        String filename = "/org/databene/domain/address/state_" + isoCode + ".csv";
         if (!IOUtil.isURIAvailable(filename)) {
         	logger.debug("No states defined for " + this);
         	return;
@@ -273,7 +273,7 @@ public class Country {
 
 	private static final String DEFAULT_MOBILE_PHONE_PATTERN = "[1-9][0-9][0-9]";
 
-    private static String FILE_NAME = "org/databene/domain/address/country.csv";
+    private static String FILE_NAME = "/org/databene/domain/address/country.csv";
 
     private static Map<String, Country> instances = new HashMap<String, Country>(250);
 

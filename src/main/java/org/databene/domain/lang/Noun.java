@@ -105,7 +105,7 @@ public class Noun {
 	public static Collection<Noun> getInstances(Locale locale) throws IOException {
 		Language language = Language.getInstance(locale);
 		Set<Noun> nouns = new HashSet<Noun>(500);
-		String url = LocaleUtil.availableLocaleUrl("org/databene/domain/lang/noun", locale, ".csv");
+		String url = LocaleUtil.availableLocaleUrl("/org/databene/domain/lang/noun", locale, ".csv");
 		CSVLineIterator iterator = new CSVLineIterator(url, ',', true);
 		while (iterator.hasNext()) {
 			String[] line = iterator.next();

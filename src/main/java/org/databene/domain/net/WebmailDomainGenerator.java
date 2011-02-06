@@ -39,7 +39,7 @@ import org.databene.commons.Encodings;
 public class WebmailDomainGenerator extends WeightedCSVSampleGenerator<String> {
 
 	public WebmailDomainGenerator() {
-		super("org/databene/domain/net/webmailDomain.csv", Encodings.UTF_8);
+		super("/org/databene/domain/net/webmailDomain.csv", Encodings.UTF_8);
 	}
 	
 	@Override

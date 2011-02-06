@@ -44,7 +44,7 @@ import org.databene.commons.LocaleUtil;
 
 public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> { 
 	
-    private static final String FILENAME_PREFIX = "org/databene/domain/organization/department";
+    private static final String FILENAME_PREFIX = "/org/databene/domain/organization/department";
 
     public DepartmentNameGenerator() {
         this(Locale.getDefault());

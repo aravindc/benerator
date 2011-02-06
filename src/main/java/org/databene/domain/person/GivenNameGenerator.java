@@ -18,8 +18,8 @@ public class GivenNameGenerator extends WeightedDatasetCSVGenerator<String> {
 
     public GivenNameGenerator(String datasetName, Gender gender) {
         this(datasetName, 
-            "org/databene/dataset/region", 
-            "org/databene/domain/person/givenName", 
+            "/org/databene/dataset/region", 
+            "/org/databene/domain/person/givenName", 
             gender);
     }
 

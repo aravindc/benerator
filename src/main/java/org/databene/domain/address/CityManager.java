@@ -52,7 +52,7 @@ public class CityManager {
     private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
 
     public static void readCities(Country country) {
-        String filename = "org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
+        String filename = "/org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
         readCities(country, filename, new HashMap<String, String>());
     }
 
@@ -70,7 +70,7 @@ public class CityManager {
     private static void parseStateFile(Country country) {
 		try {
 			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
-					new CSVEntityIterator("org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
+					new CSVEntityIterator("/org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
 							"State", ',', Encodings.UTF_8),
 					new Entity2BeanConverter<State>(State.class));
 			while (iterator.hasNext()) {

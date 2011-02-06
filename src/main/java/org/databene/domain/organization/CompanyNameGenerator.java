@@ -60,9 +60,9 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
-    private static final String ORG = "org/databene/domain/organization/";
-    private static final String PERS = "org/databene/domain/person/";
-    private static final String REGION  = "org/databene/dataset/region";
+    private static final String ORG = "/org/databene/domain/organization/";
+    private static final String PERS = "/org/databene/domain/person/";
+    private static final String REGION  = "/org/databene/dataset/region";
     
     private String datasetName;
     private boolean sector;

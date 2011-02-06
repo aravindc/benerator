@@ -51,7 +51,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreetNameGenerator.class);
 
     private static final String REGION = "org/databene/dataset/region";
-    private static final String FILENAME_PATTERN = "org/databene/domain/address/street_{0}.csv";
+    private static final String FILENAME_PATTERN = "/org/databene/domain/address/street_{0}.csv";
     
     private String datasetName;
 

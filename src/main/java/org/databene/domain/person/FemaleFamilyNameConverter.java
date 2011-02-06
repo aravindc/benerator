@@ -59,7 +59,7 @@ public class FemaleFamilyNameConverter extends ThreadSafeConverter<String, Strin
 	    try {
 		    if (datasetName != null) {
 			    String[] dataFiles = DatasetUtil.getDataFiles(
-			    		"org/databene/domain/person/ffn_{0}.properties", datasetName, "org/databene/dataset/region");
+			    		"/org/databene/domain/person/ffn_{0}.properties", datasetName, "org/databene/dataset/region");
 			    for (String dataFileName : dataFiles) {
 			    	Map<String, String> props = IOUtil.readProperties(dataFileName);
 			    	for (Map.Entry<String, String> entry : props.entrySet())

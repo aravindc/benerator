@@ -41,7 +41,7 @@ import org.databene.commons.Encodings;
  */
 public class NobilityTitleGenerator extends GeneratorProxy<String> {
 	
-	private final static String BASE_NAME = "org/databene/domain/person/nobTitle_";
+	private final static String BASE_NAME = "/org/databene/domain/person/nobTitle_";
 	
 	private Gender gender;
 	private Locale locale;

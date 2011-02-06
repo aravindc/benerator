@@ -46,8 +46,8 @@ public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> {
 
     public FamilyNameGenerator(String datasetName) {
         this(datasetName, 
-                "org/databene/dataset/region", 
-                "org/databene/domain/person/familyName_{0}.csv");
+                "/org/databene/dataset/region", 
+                "/org/databene/domain/person/familyName_{0}.csv");
     }
 
     public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {

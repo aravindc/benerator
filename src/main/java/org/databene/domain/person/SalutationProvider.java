@@ -39,7 +39,7 @@ import java.util.Locale;
  */
 public class SalutationProvider {
 
-    private static final String BASE_NAME = "org/databene/domain/person/salutation";
+    private static final String BASE_NAME = "/org/databene/domain/person/salutation";
 
     private PropertyResourceBundleConverter converter;
 

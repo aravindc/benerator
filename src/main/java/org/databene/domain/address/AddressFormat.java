@@ -49,7 +49,7 @@ import org.databene.script.freemarker.FreeMarkerScriptFactory;
  */
 public class AddressFormat {
 	
-	private static final String CONFIG_FILE = "org/databene/domain/address/addressFormat.properties";
+	private static final String CONFIG_FILE = "/org/databene/domain/address/addressFormat.properties";
 
 	static final Map<String, AddressFormat> instances = new HashMap<String, AddressFormat>();
 	

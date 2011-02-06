@@ -36,7 +36,7 @@ import org.databene.commons.Encodings;
  */
 public class CNPJGenerator extends WeightedCSVSampleGenerator<String>{
 
-    private static final String LOCAL = "org/databene/domain/br/cnpj_sufix.csv";
+    private static final String LOCAL = "/org/databene/domain/br/cnpj_sufix.csv";
 	
     /** flag indicating should return CPF in numeric or formatted form. Defaults to true */
 	private boolean formatted;

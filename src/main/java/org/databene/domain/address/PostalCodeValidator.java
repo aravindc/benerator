@@ -58,7 +58,7 @@ public class PostalCodeValidator extends AbstractConstraintValidator<PostalCode,
 
 	private void setCountry(String countryCode) {
 		try {
-	        Map<String, String> formats = IOUtil.readProperties("org/databene/domain/address/postalCodeFormat.properties", Encodings.UTF_8);
+	        Map<String, String> formats = IOUtil.readProperties("/org/databene/domain/address/postalCodeFormat.properties", Encodings.UTF_8);
 	        pattern = Pattern.compile(formats.get(countryCode));
         } catch (IOException e) {
 	        throw new ConfigurationError("Error initializing " + getClass().getSimpleName() + 
