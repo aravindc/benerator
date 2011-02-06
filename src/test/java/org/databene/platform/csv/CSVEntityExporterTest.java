@@ -102,6 +102,30 @@ public class CSVEntityExporterTest {
 	}
 
 	@Test
+	public void testEndWithNewLine() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), "name");
+			exporter.setEndWithNewLine(true);
+			cosumeAndClose(exporter);
+			assertEquals("name\r\nAlice\r\nBob\r\n", getContent(customFile));
+		} finally {
+			customFile.delete();
+		}
+	}
+
+	@Test
+	public void testHeadless() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), "name");
+			exporter.setHeadless(true);
+			cosumeAndClose(exporter);
+			assertEquals("Alice\r\nBob", getContent(customFile));
+		} finally {
+			customFile.delete();
+		}
+	}
+
+	@Test
 	public void testColumnsByDescriptor() throws Exception {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), descriptor);
