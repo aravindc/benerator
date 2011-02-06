@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,10 +59,16 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     private static final char   DEFAULT_SEPARATOR = ',';
     private static final String DEFAULT_URI       = "export.csv";
 
-    // attributes ------------------------------------------------------------------------------------------------------
+    // configuration attributes ----------------------------------------------------------------------------------------
 
     private String[] columns;
+    private boolean headless;
+    private boolean endWithNewLine;
     private char separator;
+
+    // state attributes ------------------------------------------------------------------------------------------------
+
+    private boolean lfRequired;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -98,9 +104,12 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
         Collection<ComponentDescriptor> componentDescriptors = descriptor.getComponents();
         List<String> componentNames = BeanUtil.extractProperties(componentDescriptors, "name");
         this.columns = CollectionUtil.toArray(componentNames, String.class);
+        this.endWithNewLine = false;
         this.separator = separator;
     }
 
+    
+    
     // properties ------------------------------------------------------------------------------------------------------
 
 	public void setColumns(String[] columns) {
@@ -115,18 +124,33 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     public void setSeparator(char separator) {
         this.separator = separator;
     }
+    
+	public boolean isHeadless() {
+		return headless;
+	}
+	
+	public void setHeadless(boolean headless) {
+		this.headless = headless;
+	}
 
+	public boolean isEndWithNewLine() {
+		return endWithNewLine;
+	}
+
+	public void setEndWithNewLine(boolean endWithNewLine) {
+		this.endWithNewLine = endWithNewLine;
+	}
+	
     // Callback methods for parent class functionality -----------------------------------------------------------------
 
     @Override
 	protected void startConsumingImpl(Entity entity) {
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
-        if (ArrayUtil.isEmpty(columns)) {
-        	columns = CollectionUtil.toArray(entity.getComponents().keySet());
-        	printHeaderRow();
-        }
-        printer.println();
+        if (lfRequired)
+        	printer.println();
+        else
+        	lfRequired = true;
         for (int i = 0; i < columns.length; i++) {
             if (i > 0)
                 printer.print(separator);
@@ -140,23 +164,33 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 
     @Override
 	protected void postInitPrinter(Entity entity) {
-    	if (entity != null) {
-			if (columns == null)
-				columns = CollectionUtil.toArray(entity.getComponents().keySet());
-	    	if (!append)
-		        printHeaderRow();
-    	}
+    	// determine columns from entity, if they have not been predefined
+    	if (columns == null && entity != null)
+			columns = CollectionUtil.toArray(entity.getComponents().keySet());
+    	lfRequired = false;
+    	if (!headless)
+    		printHeaderRow();
+    }
+    
+    @Override
+    public void close() {
+    	if (endWithNewLine)
+    		printer.println();
+    	super.close();
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
 
 	private void printHeaderRow() {
 		if (columns != null) {
+			if (append)
+				printer.println();
 		    for (int i = 0; i < columns.length; i++) {
 		        if (i > 0)
 		            printer.print(separator);
 		        printer.print(columns[i]);
 		    }
+	   		lfRequired = true;
 		}
     }
 	
