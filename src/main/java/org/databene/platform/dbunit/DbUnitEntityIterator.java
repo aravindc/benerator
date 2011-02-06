@@ -157,7 +157,7 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
             NodeList rows = tableNode.getElementsByTagName("row");
             for (int rownum = 0; rownum < rows.getLength(); rownum++) {
                 Element row = (Element) rows.item(rownum);
-                NodeList cellNodes = row.getElementsByTagName("value");
+                NodeList cellNodes = row.getElementsByTagName("*");
                 String[] values = new String[cellNodes.getLength()];
                 for (int cellnum = 0; cellnum < cellNodes.getLength(); cellnum++) {
                     Element cell = (Element) cellNodes.item(cellnum);
