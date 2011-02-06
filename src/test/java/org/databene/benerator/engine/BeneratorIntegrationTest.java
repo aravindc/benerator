@@ -21,8 +21,11 @@
 
 package org.databene.benerator.engine;
 
+import java.io.IOException;
+
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
+import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
 import org.junit.After;
@@ -49,6 +52,11 @@ public abstract class BeneratorIntegrationTest {
 	public void tearDown() {
 		DataModel.getDefaultInstance().clear();
 	}
+
+	protected BeneratorContext parseAndExecuteFile(String filename) throws IOException {
+		String xml = IOUtil.getContentOfURI(filename);
+		return parseAndExecute(xml);
+    }
 
 	protected BeneratorContext parseAndExecute(String xml) {
 	    Statement statement = parse(xml);
