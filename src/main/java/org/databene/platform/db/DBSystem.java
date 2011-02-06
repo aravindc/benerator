@@ -111,8 +111,8 @@ public class DBSystem extends AbstractStorageSystem {
     private String user;
     private String password;
     private String driver;
-    private String catalog;
-    private String schema;
+    private String catalogName;
+    private String schemaName;
     private String includeTables;
     private String excludeTables;
     boolean metaDataCache;
@@ -194,8 +194,8 @@ public class DBSystem extends AbstractStorageSystem {
 			this.environment = environment;
 			this.url = connectData.url;
 			this.driver = connectData.driver;
-			this.catalog = connectData.catalog;
-			this.schema = connectData.schema;
+			this.catalogName = connectData.catalog;
+			this.schemaName = connectData.schema;
 			this.user = connectData.user;
 			this.password = connectData.password;
 		} catch (IOException e) {
@@ -236,19 +236,19 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     public String getCatalog() {
-    	return catalog;
+    	return catalogName;
     }
 
 	public void setCatalog(String catalog) {
-    	this.catalog = catalog;
+    	this.catalogName = catalog;
     }
 
 	public String getSchema() {
-        return schema;
+        return schemaName;
     }
 
     public void setSchema(String schema) {
-        this.schema = StringUtil.emptyToNull(StringUtil.trim(schema));
+        this.schemaName = StringUtil.emptyToNull(StringUtil.trim(schema));
     }
     
     @Deprecated
@@ -637,8 +637,8 @@ public class DBSystem extends AbstractStorageSystem {
 
 	private JDBCDBImporter createJDBCImporter() throws ConnectFailedException {
 		JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
-		importer.setCatalogName(catalog);
-		importer.setSchemaName(schema);
+		importer.setCatalogName(catalogName);
+		importer.setSchemaName(schemaName);
 		importer.setIncludeTables(includeTables);
 		importer.setExcludeTables(excludeTables);
 		importer.setImportingIndexes(false);
@@ -806,23 +806,45 @@ public class DBSystem extends AbstractStorageSystem {
 
     DBTable getTable(String tableName) {
     	parseMetadataIfNecessary();
-        DBSchema dbSchema = database.getCatalog(catalog).getSchema(this.schema);
+        DBTable table = findTableInConfiguredCatalogAndSchema(tableName);
+        if (table != null)
+            return table;
+        table = findAnyTableOfName(tableName);
+        if (table != null) {
+           	LOGGER.warn("Table '" + tableName + "' not found " +
+           			"in the expected catalog '" + catalogName + "' and schema '" + schemaName + "'. " +
+   					"I have taken it from catalog '" + table.getCatalog() + "' and schema '" + table.getSchema() + "' instead. " +
+   					"You better make sure this is right and fix the configuration");
+            return table;
+        }
+        throw new ObjectNotFoundException("Table " + tableName);
+    }
+
+    private DBTable findAnyTableOfName(String tableName) {
+        for (DBCatalog catalog : database.getCatalogs()) {
+            for (DBSchema schema : catalog.getSchemas()) {
+                DBTable table = schema.getTable(tableName);
+                if (table != null)
+                    return table;
+            }
+        }
+        return null;
+	}
+
+	private DBTable findTableInConfiguredCatalogAndSchema(String tableName) {
+        DBCatalog catalog = database.getCatalog(catalogName);
+        if (catalog == null)
+        	throw new ConfigurationError("Catalog '" + catalogName + "' not found in database '" + id + "'");
+		DBSchema dbSchema = catalog.getSchema(schemaName);
         if (dbSchema != null) {
             DBTable table = dbSchema.getTable(tableName);
             if (table != null)
                 return table;
         }
-        for (DBCatalog catalog : database.getCatalogs()) {
-            for (DBSchema schema2 : catalog.getSchemas()) {
-                DBTable table = schema2.getTable(tableName);
-                if (table != null)
-                    return table;
-            }
-        }
-        throw new ObjectNotFoundException("Table " + tableName);
-    }
+        return null;
+	}
 
-    private synchronized ThreadContext getThreadContext() {
+	private synchronized ThreadContext getThreadContext() {
         Thread currentThread = Thread.currentThread();
         ThreadContext context = contexts.get(currentThread);
         if (context == null) {
