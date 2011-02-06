@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-		targetNamespace="http://databene.org/benerator/0.6.3"
-		xmlns="http://databene.org/benerator/0.6.3"
+		targetNamespace="http://databene.org/benerator/0.6.4"
+		xmlns="http://databene.org/benerator/0.6.4"
 		elementFormDefault="qualified">
 		
 	<xs:annotation>
