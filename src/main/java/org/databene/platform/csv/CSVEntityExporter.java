@@ -167,8 +167,6 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     	// determine columns from entity, if they have not been predefined
     	if (columns == null && entity != null)
 			columns = CollectionUtil.toArray(entity.getComponents().keySet());
-    	lfRequired = false;
-    	if (!headless)
     		printHeaderRow();
     }
     
@@ -182,8 +180,8 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     // private helpers -------------------------------------------------------------------------------------------------
 
 	private void printHeaderRow() {
-		if (columns != null) {
-			if (append)
+    	if (!wasAppended && !headless && columns != null) {
+			if (wasAppended && !endWithNewLine)
 				printer.println();
 		    for (int i = 0; i < columns.length; i++) {
 		        if (i > 0)
@@ -191,6 +189,8 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 		        printer.print(columns[i]);
 		    }
 	   		lfRequired = true;
+		} else {
+			lfRequired = (wasAppended && !endWithNewLine);
 		}
     }
 	

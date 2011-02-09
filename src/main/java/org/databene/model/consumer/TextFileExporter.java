@@ -54,6 +54,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     protected String encoding;
     protected String lineSeparator;
     protected boolean append;
+    protected boolean wasAppended;
 
     protected PrintWriter printer;
 
@@ -177,6 +178,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     protected void initPrinter(E data) throws IOException {
         if (uri == null)
             throw new ConfigurationError("Property 'uri' not set on bean " + getClass().getName());
+        wasAppended = (append && IOUtil.isURIAvailable(uri));
         printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator, true);
         postInitPrinter(data);
     }

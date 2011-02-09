@@ -126,6 +126,21 @@ public class CSVEntityExporterTest {
 	}
 
 	@Test
+	public void testAppend() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), "name");
+			exporter.setAppend(true);
+			cosumeAndClose(exporter);
+			CSVEntityExporter exporter2 = new CSVEntityExporter(customFile.getAbsolutePath(), "name");
+			exporter2.setAppend(true);
+			cosumeAndClose(exporter2);
+			assertEquals("name\r\nAlice\r\nBob\r\nAlice\r\nBob", getContent(customFile));
+		} finally {
+			customFile.delete();
+		}
+	}
+
+	@Test
 	public void testColumnsByDescriptor() throws Exception {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), descriptor);
