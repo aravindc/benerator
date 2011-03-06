@@ -101,7 +101,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
      * This method is called after writing the last data entry and before closing the underlying printer.
      * Overwrite this method in child classes e.g. for writing a file footer.
      */
-    private void preClosePrinter() {
+    protected void preClosePrinter() {
     	// overwrite this in child classes, e.g. for writing a file footer
     }
 
