@@ -8,12 +8,12 @@
     <version>0.6.5</version>
 
     <properties>
-        <jdbacl_version>0.6.6</jdbacl_version>
-	    <dbsanity_version>0.6.1</dbsanity_version>
-	    <contiperf_version>1.07</contiperf_version>
-        <gui_version>0.2.5</gui_version>
-        <webdecs_version>0.5.6</webdecs_version>
-	    <commons_version>0.5.5</commons_version>
+    	<jdbacl_version>0.6.7</jdbacl_version>
+    	<dbsanity_version>0.6.2</dbsanity_version>
+    	<contiperf_version>1.07</contiperf_version>
+    	<gui_version>0.2.6</gui_version>
+    	<webdecs_version>0.5.7</webdecs_version>
+    	<commons_version>0.5.6</commons_version>
     </properties>
 
     <packaging>jar</packaging>
