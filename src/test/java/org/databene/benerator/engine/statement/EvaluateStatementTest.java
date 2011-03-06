@@ -47,6 +47,7 @@ public class EvaluateStatementTest {
 	@Test
 	public void testInlineJavaScript() {
 		EvaluateStatement stmt = new EvaluateStatement(
+			true,
 			constant("message"),
 			constant("'Hello World'"),
 			null,
@@ -64,6 +65,7 @@ public class EvaluateStatementTest {
 	@Test
 	public void testUriMapping() {
 		EvaluateStatement stmt = new EvaluateStatement(
+			true,
 			constant("message"),
 			null,
 			constant("/org/databene/benerator/engine/statement/HelloWorld.js"),
@@ -84,6 +86,7 @@ public class EvaluateStatementTest {
 		if (SystemInfo.isWindows())
 			cmd = "cmd.exe /C " + cmd;
 		EvaluateStatement stmt = new EvaluateStatement(
+				true,
 				constant("result"),
 				constant(cmd),
 				null,
@@ -103,6 +106,7 @@ public class EvaluateStatementTest {
 		StSys stSys = new StSys();
 		Expression<StSys> stSysEx = ExpressionUtil.constant(stSys);
 		EvaluateStatement stmt = new EvaluateStatement(
+				true,
 				constant("message"),
 				constant("HelloHi"),
 				null,

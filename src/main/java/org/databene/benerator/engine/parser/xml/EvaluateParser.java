@@ -54,6 +54,7 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 
 	@Override
 	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+		boolean evaluate = DescriptorConstants.EL_EVALUATE.equals(element.getNodeName());
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		Expression<String> text         = new TypeConvertingExpression<String>(parseScriptableElementText(element), String.class);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);
@@ -63,7 +64,7 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 		Expression<String> encoding     = parseScriptableStringAttribute(ATT_ENCODING, element);
 		Expression<Boolean> optimize    = parseBooleanExpressionAttribute(ATT_OPTIMIZE, element, false);
 		Expression<?> assertion         = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT));
-		return new EvaluateStatement(id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
+		return new EvaluateStatement(evaluate, id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
 	}
 
 }

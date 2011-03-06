@@ -85,6 +85,7 @@ public class EvaluateStatement implements Statement {
 		}
 	}
 	
+	boolean evaluate;
 	Expression<String> idEx;
 	Expression<String> textEx;
 	Expression<String> uriEx;
@@ -95,10 +96,11 @@ public class EvaluateStatement implements Statement {
     Expression<Boolean> optimizeEx;
     Expression<?> assertionEx;
 
-    public EvaluateStatement(Expression<String> idEx, Expression<String> textEx, 
+    public EvaluateStatement(boolean evaluate, Expression<String> idEx, Expression<String> textEx, 
     		Expression<String> uriEx, Expression<String> typeEx, Expression<?> targetObjectEx,
     		Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
             Expression<?> assertionEx) {
+    	this.evaluate = evaluate;
     	this.idEx = idEx;
     	this.textEx = textEx;
     	this.uriEx = uriEx;
@@ -241,7 +243,8 @@ public class EvaluateStatement implements Statement {
             	result = DBUtil.runScript(text, connection, optimize, errorHandler);
             else
             	result = DBUtil.runScript(uri, encoding, connection, optimize, errorHandler);
-            db.invalidate(); // possibly we changed the database structure
+            if (!evaluate)
+            	db.invalidate(); // possibly we changed the database structure
             connection.commit();
 		} catch (Exception sqle) { 
             if (connection != null) {
