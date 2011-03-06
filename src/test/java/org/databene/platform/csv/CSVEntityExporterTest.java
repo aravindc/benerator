@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -85,6 +85,24 @@ public class CSVEntityExporterTest {
 			exporter.close();
 			assertTrue(DEFAULT_FILE.exists());
 			assertEquals(0, DEFAULT_FILE.length());
+		} finally {
+			DEFAULT_FILE.delete();
+		}
+	}
+	
+	/**
+	 * Tests a bug
+	 */
+	@Test
+	public void testEmptyFileWithEndWithNewLine() throws Exception {
+		if (DEFAULT_FILE.exists())
+			DEFAULT_FILE.delete();
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter();
+			exporter.setEndWithNewLine(true);
+			exporter.close();
+			assertTrue(DEFAULT_FILE.exists());
+			assertEquals("\r\n".length(), DEFAULT_FILE.length());
 		} finally {
 			DEFAULT_FILE.delete();
 		}

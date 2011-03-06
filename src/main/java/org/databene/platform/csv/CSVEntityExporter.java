@@ -171,11 +171,12 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
     
     @Override
-    public void close() {
+    protected void preClosePrinter() {
     	if (endWithNewLine)
     		printer.println();
-    	super.close();
     }
+
+    
     
     // private helpers -------------------------------------------------------------------------------------------------
 
