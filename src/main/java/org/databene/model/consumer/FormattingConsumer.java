@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.model.consumer;
 
+import org.databene.commons.Capitalization;
 import org.databene.commons.converter.ToStringConverter;
 
 /**
@@ -54,6 +55,14 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 		plainConverter.setDatePattern(datePattern);
 	}
 
+	public Capitalization getDateCapitalization() {
+		return plainConverter.getDateCapitalization();
+	}
+
+	public void setDateCapitalization(Capitalization dateCapitalization) {
+		plainConverter.setDateCapitalization(dateCapitalization);
+	}
+
 	public String getDateTimePattern() {
 		return plainConverter.getDateTimePattern();
 	}	
@@ -70,6 +79,14 @@ public abstract class FormattingConsumer<E> extends AbstractConsumer<E> {
 		plainConverter.setTimestampPattern(timestampPattern);
 	}
 	
+	public Capitalization getTimestampCapitalization() {
+		return plainConverter.getTimestampCapitalization();
+	}
+
+	public void setTimestampCapitalization(Capitalization timestampCapitalization) {
+		plainConverter.setTimestampCapitalization(timestampCapitalization);
+	}
+
 	public String getDecimalPattern() {
 		return plainConverter.getDecimalPattern();
 	}
