@@ -153,7 +153,8 @@ public class PersonGenerator extends CompositeGenerator<Person> {
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
-				logger.error("Cannot generate addresses for " + datasetName + ", falling back to " + fallBackCountry);
+				logger.error("Error initializing " + getClass().getSimpleName(), e);
+				logger.error("Cannot generate persons for " + datasetName + ", falling back to " + fallBackCountry);
 				this.datasetName = fallBackCountry.getIsoCode();
 				initMembers(context);
 			} else
