@@ -134,8 +134,8 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         return (String) getDetailValue(FILTER);
     }
 
-    public void setFilter(String validator) {
-        setDetailValue(FILTER, validator);
+    public void setFilter(String filter) {
+        setDetailValue(FILTER, filter);
     }
 
     public String getCondition() {
