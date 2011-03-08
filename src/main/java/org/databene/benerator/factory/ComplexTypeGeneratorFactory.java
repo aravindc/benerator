@@ -144,7 +144,7 @@ public class ComplexTypeGeneratorFactory {
 		        	sourceObject = BeneratorScriptParser.parseBeanSpec(sourceSpec).evaluate(context);
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 	        	} catch (Exception e) {
-	        		throw new UnsupportedOperationException("Unknown source type: " + sourceSpec);
+	        		throw new UnsupportedOperationException("Error resolving source: " + sourceSpec, e);
 	        	}
 	        }
         }
