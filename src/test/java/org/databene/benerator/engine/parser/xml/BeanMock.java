@@ -21,8 +21,8 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import org.databene.benerator.util.ContextHolder;
 import org.databene.commons.Context;
+import org.databene.commons.context.ContextHolder;
 
 /**
  * JavaBean Mock class for testing.<br/><br/>
