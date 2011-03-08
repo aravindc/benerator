@@ -16,3 +16,4 @@ enhancements
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
 - Generation of Turkish names fails
+- Using deprecated property Address.zipCode in AddressFormat
