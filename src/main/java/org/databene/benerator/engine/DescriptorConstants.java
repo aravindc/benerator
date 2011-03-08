@@ -69,6 +69,7 @@ public interface DescriptorConstants {
     static final String EL_EVALUATE = "evaluate";
     static final String EL_EXECUTE = "execute";
     static final String EL_DATABASE = "database";
+    static final String EL_STORE = "store";
     static final String EL_ECHO = "echo";
     static final String EL_ERROR = "error";
     static final String EL_IMPORT = "import";
