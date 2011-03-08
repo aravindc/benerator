@@ -21,6 +21,7 @@
 
 package org.databene.platform.store; // TODO better platform name?
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.databene.benerator.engine.expression.ScriptExpression;
@@ -123,6 +124,10 @@ public class EntityStore extends AbstractStorageSystem {
 			typeMap.put(entityType, idMap);
 		}
 		return idMap;
+	}
+
+	public Collection<Entity> getEntities(String entityType) {
+		return typeMap.get(entityType).values();
 	}
 
 }
