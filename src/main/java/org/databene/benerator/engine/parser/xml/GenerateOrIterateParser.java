@@ -72,8 +72,9 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	private static final Logger logger = LoggerFactory.getLogger(GenerateOrIterateParser.class);
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
 			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
-	private Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
+	private static final Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
 
+	DataModel dataModel = DataModel.getDefaultInstance();
 
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
@@ -188,7 +189,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				|| XMLUtil.getChildElements(element, false, EL_VALUE).length > 0)
 			localType = new ArrayTypeDescriptor(element.getAttribute(ATT_NAME));
 		else {
-			TypeDescriptor parentType = DataModel.getDefaultInstance().getTypeDescriptor(type);
+			TypeDescriptor parentType = dataModel.getTypeDescriptor(type);
 			if (parentType != null) {
 				type = parentType.getName(); // take over capitalization of the parent
 				localType = new ComplexTypeDescriptor(parentType.getName(), (ComplexTypeDescriptor) parentType);
