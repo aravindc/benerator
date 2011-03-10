@@ -57,8 +57,8 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
         this(minLength, maxLength, CollectionUtil.toCharArray(charSet));
     }
 
-    @SuppressWarnings("unchecked")
 	public UniqueStringGenerator(int minLength, int maxLength, char ... charSet) {
+    	super(String.class);
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.charSet = charSet;
@@ -83,10 +83,6 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
-
-    public Class<String> getGeneratedType() {
-        return String.class;
-    }
 
     @Override
     @SuppressWarnings("unchecked")
