@@ -74,8 +74,9 @@ public class DistributionDemo {
             super.paint(g);
             g.drawString(title, 0, 10);
             for (int i = 0; i < N; i++) {
-                int y = generator.generate();
-                g.fillRect(i, 16 + N - y, 2, 2);
+                Integer y = generator.generate();
+                if (y != null)
+                	g.fillRect(i, 16 + N - y, 2, 2);
             }
         }
 
