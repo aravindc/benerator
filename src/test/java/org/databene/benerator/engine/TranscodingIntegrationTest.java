@@ -44,6 +44,7 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 	private static final String DESCRIPTOR1_FILE_NAME = PARENT_FOLDER + "/transcode_to_empty_target.ben.xml";
 	private static final String DESCRIPTOR2_FILE_NAME = PARENT_FOLDER + "/transcode_to_target_with_countries.ben.xml";
 	private static final String DESCRIPTOR3_FILE_NAME = PARENT_FOLDER + "/transcode_partially.ben.xml";
+	private static final String DESCRIPTOR4_FILE_NAME = PARENT_FOLDER + "/transcode_partially_to_non_empty_target.ben.xml";
 	
 	@After
 	public void clearDB() {
@@ -129,6 +130,30 @@ public class TranscodingIntegrationTest extends BeneratorIntegrationTest {
 		assertNextState(2, 1, "Bayern", iterator);
 		assertNextState(3, 1, "Hamburg", iterator);
 		assertNextState(4, null, "No State", iterator); // checking transcoding of 'null' refs
+		assertFalse(iterator.hasNext());
+		((Closeable) iterator).close();
+	}
+
+	@Test
+	public void testPartialTranscodeToNonEmptyTarget() throws Exception {
+		// run descriptor file
+		DescriptorRunner runner = new DescriptorRunner(DESCRIPTOR4_FILE_NAME, context);
+		runner.run();
+		DBSystem t = (DBSystem) context.get("t");
+		// check countries
+		TypedIterable<Entity> iterable = t.queryEntities("country", null, context);
+		Iterator<Entity> iterator = iterable.iterator();
+		assertNextCountry(1, "Germany", iterator);
+		assertNextCountry(10, "United States", iterator);
+		assertFalse(iterator.hasNext());
+		((Closeable) iterator).close();
+		// check states
+		iterable = t.queryEntities("state", null, context);
+		iterator = iterable.iterator();
+		assertNextState(2, 1, "Bayern", iterator);
+		assertNextState(3, 1, "Hamburg", iterator);
+		assertNextState(110, 10, "California", iterator);
+		assertNextState(120, 10, "Florida", iterator);
 		assertFalse(iterator.hasNext());
 		((Closeable) iterator).close();
 	}

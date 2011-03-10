@@ -112,9 +112,6 @@ public class TranscodingTaskStatement extends SequentialStatement {
 		for (TranscodeStatement transcode : transcodes) {
 			ComplexTypeDescriptor type = transcode.getType(context);
 			String tableName = type.getName();
-			// require that the target table is empty
-			if (target.countEntities(tableName) > 0)
-				throw new ConfigurationError("Error transcoding table '" + tableName + "' to " + target + ": target table is not empty");
 			// items to be transcoded do not need NK definition
 			tableNkRequirements.put(tableName, false);
 			for (ReferenceDescriptor ref : type.getReferenceComponents()) {

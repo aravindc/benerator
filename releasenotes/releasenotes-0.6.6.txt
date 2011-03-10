@@ -12,9 +12,10 @@ enhancements
 - endWithNewLine property lets CSVEntityExporter-generated files optionally end with a 'new line'
 - new in-memory storage system: <store>
 - Added family names for Ireland and New Zealand
-- PersonGenerator can now be applied to regions like 'europe', not only countries. 
+- PersonGenerator and AddressGenerator can now be applied to regions like 'europe', not only countries. 
   For a single country, specify its two-letter-iso-code
 - Added demos
+- Supporting transcoding to non-empty tables as long as transcoded data is not yet present in the target system
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
