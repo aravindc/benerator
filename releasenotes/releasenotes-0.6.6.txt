@@ -11,9 +11,14 @@ enhancements
 - CSVEntityExporter, FlatFileEntityExporter and ScriptedEntityExporter support dateCapitalization and timestampCapitalization
 - endWithNewLine property lets CSVEntityExporter-generated files optionally end with a 'new line'
 - new in-memory storage system: <store>
+- Added family names for Ireland and New Zealand
+- PersonGenerator can now be applied to regions like 'europe', not only countries. 
+  For a single country, specify its two-letter-iso-code
+- Added demos
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
 - Generation of Turkish names fails
 - Using deprecated property Address.zipCode in AddressFormat
+- FemaleFamilyNameConverter can be applied to Composite datasets
