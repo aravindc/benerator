@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,8 +35,6 @@ import org.databene.commons.ArrayFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
-
 /**
  * Creates arrays of unique combinations of the output of other generators.
  * Each array element is filled from an own generator,
@@ -54,25 +52,16 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked")
-	public UniqueCompositeArrayGenerator() {
-        super();
-    }
-
     /**
      * Initializes the generator to an array of source generators
      */
-    public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
-        super(sources);
+    @SuppressWarnings("unchecked")
+	public UniqueCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
+        super(ArrayUtil.arrayType(componentType), sources);
         this.componentType = componentType;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    public Class<S[]> getGeneratedType() {
-        return (Class<S[]>) Array.newInstance(componentType, 0).getClass();
-    }
 
     @Override
     public void init(GeneratorContext context) {

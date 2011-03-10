@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
+import org.databene.commons.ArrayUtil;
 
 import java.lang.reflect.Array;
 
@@ -43,23 +44,14 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-	public SimpleCompositeArrayGenerator() {
-        super();
-    }
-
     /** Initializes the generator to an array of source generators */
-    public SimpleCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
-        super(sources);
+    @SuppressWarnings("unchecked")
+	public SimpleCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
+        super(ArrayUtil.arrayType(componentType), sources);
         this.componentType = componentType;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    public Class<S[]> getGeneratedType() {
-        return (Class<S[]>) Array.newInstance(componentType, 0).getClass();
-    }
 
     /** @see org.databene.benerator.Generator#generate() */
     @SuppressWarnings("unchecked")

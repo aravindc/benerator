@@ -39,8 +39,6 @@ import org.databene.benerator.util.GeneratorUtil;
  */
 public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
-    private Class<E> targetType;
-
     // constructors ----------------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
@@ -55,15 +53,10 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
 	/** Initializes the generator to a collection of source generators */
     public AlternativeGenerator(Class<E> targetType, Generator<E>... sources) {
-        super(sources);
-        this.targetType = targetType;
+        super(targetType, sources);
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
-
-    public Class<E> getGeneratedType() {
-        return targetType;
-    }
 
     /** @see org.databene.benerator.Generator#generate() */
     public E generate() {

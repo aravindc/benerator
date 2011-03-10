@@ -47,10 +47,12 @@ import org.databene.commons.CollectionUtil;
  */
 public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
+	protected Class<P> generatedType;
     protected Generator<? extends S>[] sources;
     protected List<Generator<? extends S>> availableSources;
     
-    public MultiGeneratorWrapper(Generator<? extends S> ... sources) {
+    public MultiGeneratorWrapper(Class<P> generatedType, Generator<? extends S> ... sources) {
+    	this.generatedType = generatedType;
         setSources(sources);
     }
 
@@ -79,6 +81,10 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
+	public Class<P> getGeneratedType() {
+		return generatedType;
+	}
+	
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
