@@ -45,6 +45,7 @@ import static org.databene.benerator.engine.DescriptorConstants.EL_VARIABLE;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
@@ -80,7 +81,6 @@ import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
 import org.databene.commons.validator.bean.BeanConstraintValidator;
 import org.databene.commons.xml.XMLUtil;
-import org.databene.dataset.DatasetUtil;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;

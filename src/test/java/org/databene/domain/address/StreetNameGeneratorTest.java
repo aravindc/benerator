@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,8 @@
 
 package org.databene.domain.address;
 
+import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.test.GeneratorClassTest;
-import org.databene.dataset.DatasetUtil;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;

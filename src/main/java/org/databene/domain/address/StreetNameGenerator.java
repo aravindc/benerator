@@ -31,11 +31,11 @@ import java.util.Stack;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
 import org.databene.commons.StringUtil;
-import org.databene.dataset.DatasetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
