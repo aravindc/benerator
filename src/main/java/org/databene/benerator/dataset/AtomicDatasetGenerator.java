@@ -53,4 +53,15 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Data
 		return new ProductFromDataset<E>(generate(), nesting, dataset);
 	}
 
+	public E generateForDataset(String requestedDataset) {
+		if (!dataset.equals(requestedDataset))
+			throw new IllegalArgumentException("Requested dataset " + requestedDataset + ", but supporting only dataset " + this.dataset);
+		return generate();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + nesting + ":" + dataset + "]";
+	}
+	
 }
