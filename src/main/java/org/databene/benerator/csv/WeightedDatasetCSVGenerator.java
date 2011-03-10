@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,13 +29,21 @@ package org.databene.benerator.csv;
 import java.util.List;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.dataset.AtomicDatasetGenerator;
+import org.databene.benerator.dataset.CompositeDatasetGenerator;
+import org.databene.benerator.dataset.Dataset;
+import org.databene.benerator.dataset.DatasetBasedGenerator;
+import org.databene.benerator.dataset.DatasetUtil;
+import org.databene.benerator.dataset.ProductFromDataset;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.commons.Assert;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
+import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.dataset.Dataset;
 
 /**
  * Generates data from a csv file set that is organized as {@link Dataset}.
@@ -46,7 +54,7 @@ import org.databene.dataset.Dataset;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
+public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy<E> implements DatasetBasedGenerator<E> {
     
     protected String filenamePattern;
     protected String datasetName;
@@ -54,7 +62,9 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
     protected String encoding;
     protected char separator;
     protected Converter<String, E> converter;
-
+    
+    
+    
     // constructors ----------------------------------------------------------------------------------------------------
     
     public WeightedDatasetCSVGenerator(String filenamePattern, String datasetName, String nesting) {
@@ -73,7 +83,7 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
 
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, 
     		String encoding, Converter<String, E> converter) {
-        super(new AttachedWeightSampleGenerator<E>());
+        super(new CompositeDatasetGenerator<E>(nesting, datasetName));
         this.filenamePattern = filenamePattern;
         this.separator = separator;
         this.datasetName = datasetName;
@@ -110,20 +120,81 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy <E> {
 		this.nesting = nesting;
 	}
 	
+	public ProductFromDataset<E> generateWithDatasetInfo() {
+		return getSource().generateWithDatasetInfo();
+	}
+    
+	public E generateForDataset(String requestedDataset) {
+		DatasetBasedGenerator<E> sourceGen = getSource();
+		if (sourceGen instanceof CompositeDatasetGenerator)
+			return ((CompositeDatasetGenerator<E>) sourceGen).generateForDataset(requestedDataset);
+		else {
+			Assert.equals(requestedDataset, sourceGen.getDataset(), 
+					"Wrong dataset, expected " + requestedDataset + ", found " + sourceGen.getDataset());
+			return sourceGen.generate();
+		}
+	}
+    
+
+	
+	@Override
+	public DatasetBasedGenerator<E> getSource() {
+		return (DatasetBasedGenerator<E>) super.getSource();
+	}
+	
+	// Generator interface implementation ------------------------------------------------------------------------------
 	
 	@Override
 	public synchronized void init(GeneratorContext context) {
-        List<WeightedSample<E>> samples = CSVGeneratorUtil.parseDatasetFiles(datasetName, separator, nesting, 
-        		filenamePattern, encoding, converter);
-		((AttachedWeightSampleGenerator<E>)source).setSamples(samples);
+		Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
+		setSource(createDatasetGenerator(dataset, true));
 		super.init(context);
 	}
 	
-    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    private DatasetBasedGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
+    	if (dataset.isAtomic())
+    		return createAtomicDatasetGenerator(dataset, required);
+    	else 
+    		return createCompositeDatasetGenerator(dataset, required);
+	}
+
+	private CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required) {
+		CompositeDatasetGenerator<E> generator = new CompositeDatasetGenerator<E>(nesting, dataset.getName());
+		for (Dataset subSet : dataset.getSubSets()) {
+			DatasetBasedGenerator<E> subGenerator = createDatasetGenerator(subSet, false);
+			if (subGenerator != null)
+				generator.addSubDataset(subGenerator, 1.); // TODO support individual weights
+		}
+		if (generator.getSource().getSources().length > 0)
+			return generator;
+		if (required)
+			throw new ConfigurationError("No samples defined for composite dataset: " + dataset.getName());
+		else
+			return null;
+	}
+
+	private AtomicDatasetGenerator<E> createAtomicDatasetGenerator(Dataset dataset, boolean required) {
+		String filename = DatasetUtil.filenameOfDataset(dataset.getName(), filenamePattern);
+		if (IOUtil.isURIAvailable(filename)) {
+			List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(filename, separator, encoding, converter);
+			AttachedWeightSampleGenerator<E> generator = new AttachedWeightSampleGenerator<E>();
+			generator.setSamples(samples);
+			if (samples.size() > 0)
+				return new AtomicDatasetGenerator<E>(generator, filename, dataset.getName());
+		}
+		if (required)
+			throw new ConfigurationError("File not found: " + filename);
+		else
+			return null;
+	}
+
+	
+	
+	// java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + filenamePattern + ',' + nesting + ':' + datasetName + ']';
     }
-    
+
 }
