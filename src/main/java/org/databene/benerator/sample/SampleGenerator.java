@@ -125,6 +125,10 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     	this.samples.clear();
     }
     
+    public int getVariety() {
+    	return samples.size();
+    }
+    
     // Generator implementation ----------------------------------------------------------------------------------------
 
 	/** Initializes all attributes */
