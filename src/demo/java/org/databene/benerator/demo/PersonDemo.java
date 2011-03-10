@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.demo;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.domain.address.Country;
 import org.databene.domain.person.PersonGenerator;
 
 import java.util.Locale;
@@ -38,9 +37,9 @@ import java.util.Locale;
  */
 public class PersonDemo {
     public static void main(String[] args) {
-        PersonGenerator generator = new PersonGenerator(Country.US, Locale.US);
+        PersonGenerator generator = new PersonGenerator("world", Locale.ENGLISH);
         generator.init(new BeneratorContext());
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 100; i++)
             System.out.println(generator.generate());
         generator.close();
     }
