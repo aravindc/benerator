@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.dataset;
+package org.databene.benerator.dataset;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -81,14 +81,14 @@ public class DatasetUtil {
     public static String[] getDataFiles(String filenamePattern, String datasetName, String nesting) {
         Dataset dataset = getDataset(nesting, datasetName);
         ArrayBuilder<String> builder = new ArrayBuilder<String>(String.class);
-        if (dataset.getAtomicSubSets().size() == 0) {
-            String filename = MessageFormat.format(filenamePattern, datasetName);
+        if (dataset.allAtomicSubSets().size() == 0) {
+            String filename = filenameOfDataset(datasetName, filenamePattern);
             if (IOUtil.isURIAvailable(filename))
                 builder.add(filename);
             else
                 throw new ConfigurationError("File not found: " + filename);
         } else {
-            for (Dataset atomicSet : dataset.getAtomicSubSets()) {
+            for (Dataset atomicSet : dataset.allAtomicSubSets()) {
                 String filename = MessageFormat.format(filenamePattern, atomicSet);
 	            if (IOUtil.isURIAvailable(filename))
 	                builder.add(filename);
@@ -98,6 +98,10 @@ public class DatasetUtil {
         }
         return builder.toArray();
     }
+
+	public static String filenameOfDataset(String datasetName, String filenamePattern) {
+		return MessageFormat.format(filenamePattern, datasetName);
+	}
     
 	public static void runInRegion(String regionName, Runnable task) {
 	    String realDefaultRegionName = defaultRegionName;
@@ -122,7 +126,7 @@ public class DatasetUtil {
 	    	defaultRegion = null;
 	    }
     }
-
+	
     // private helpers -------------------------------------------------------------------------------------------------
 
     private static Dataset getDataset(String type, String name, Map<String, Dataset> sets) {

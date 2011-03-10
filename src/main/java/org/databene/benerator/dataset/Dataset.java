@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.dataset;
+package org.databene.benerator.dataset;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,13 +75,17 @@ public class Dataset {
         return subSets;
     }
     
-    public Set<Dataset> getAtomicSubSets() {
+    public boolean isAtomic() {
+    	return subSets.isEmpty();
+    }
+    
+    public Set<Dataset> allAtomicSubSets() {
         Set<Dataset> atomicSubSets = new HashSet<Dataset>();
-        for (Dataset set : subSets) {
-            if (set.getSubSets().size() == 0)
-                atomicSubSets.add(set);
+        for (Dataset subSet : subSets) {
+            if (subSet.getSubSets().size() == 0)
+                atomicSubSets.add(subSet);
             else
-                atomicSubSets.addAll(set.getAtomicSubSets());
+                atomicSubSets.addAll(subSet.allAtomicSubSets());
         }
         return atomicSubSets;
     }
