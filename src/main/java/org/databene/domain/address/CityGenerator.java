@@ -26,7 +26,10 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.Generator;
+import org.databene.benerator.dataset.AbstractDatasetGenerator;
+import org.databene.benerator.dataset.Dataset;
+import org.databene.benerator.sample.SampleGenerator;
 
 /**
  * Generates {@link City} objects.<br/>
@@ -34,15 +37,23 @@ import org.databene.benerator.sample.AttachedWeightSampleGenerator;
  * Created: 14.10.2007 21:24:25
  * @author Volker Bergmann
  */
-public class CityGenerator extends AttachedWeightSampleGenerator<City> {
+public class CityGenerator extends AbstractDatasetGenerator<City> {
 
-	// TODO support dataSet
+	private static final String REGION = "/org/databene/dataset/region";
 	
-    public CityGenerator(Country country) {
-    	country.checkCities();
+    public CityGenerator(String dataset) {
+    	super(REGION, dataset);
+    }
+
+	@Override
+	protected Generator<City> createGeneratorForAtomicDataset(Dataset dataset) {
+		SampleGenerator<City> generator = new SampleGenerator<City>(City.class);
+		Country country = Country.getInstance(dataset.getName());
+		country.checkCities();
         for (State state : country.getStates())
             for (City city : state.getCities())
-                addValue(city);
-    }
+                generator.addValue(city);
+        return (generator.getVariety() > 0 ? generator : null);
+	}
 
 }

@@ -29,6 +29,7 @@ package org.databene.domain.organization;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.primitive.TokenCombiner;
@@ -107,7 +108,13 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-        initLocationGenerator(datasetName, context);
+        try {
+			initLocationGenerator(datasetName, context);
+		} catch (Exception e) {
+			String fallbackDataset = DatasetUtil.fallbackRegionName();
+			logger.warn("Error initializing location generator for dataset " + datasetName + ", falling back to " + fallbackDataset);
+			initLocationGenerator(fallbackDataset, context);
+		}
         initLegalFormGenerator(datasetName, context);
         initSectorGenerator(datasetName, context);
 
@@ -219,7 +226,7 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
         if (location && country != null) {
         	try {
 	            Generator<String> city = new ConvertingGenerator<City, String>(
-	            		new CityGenerator(country), new PropertyAccessConverter("name"), new NameNormalizer());
+	            		new CityGenerator(country.getIsoCode()), new PropertyAccessConverter("name"), new NameNormalizer());
 	            locationBaseGen = new AlternativeGenerator<String>(String.class, 
 	                    			new ConstantGenerator<String>(country.getLocalName()), 
 	                    			city);

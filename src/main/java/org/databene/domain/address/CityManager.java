@@ -49,11 +49,14 @@ import java.io.FileWriter;
  */
 public class CityManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(CityManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CityManager.class);
 
     public static void readCities(Country country) {
         String filename = "/org/databene/domain/address/city_" + country.getIsoCode() + ".csv";
-        readCities(country, filename, new HashMap<String, String>());
+        if (IOUtil.isURIAvailable(filename))
+            readCities(country, filename, new HashMap<String, String>());
+        else
+        	LOGGER.warn("File not found: " + filename);
     }
 
     public static void readCities(Country country, String filename, Map<String, String> defaults) {
@@ -61,7 +64,7 @@ public class CityManager {
 	    	parseStateFile(country);
 	        int warnCount = parseCityFile(country, filename, defaults);
 	        if (warnCount > 0)
-	            logger.warn(warnCount + " warnings");
+	            LOGGER.warn(warnCount + " warnings");
     	} catch (IOException e) {
     		throw new ConfigurationError("Error reading cities file: " + filename, e);
     	}
@@ -78,7 +81,7 @@ public class CityManager {
 				country.addState(state);
 			}
 		} catch (FileNotFoundException e) {
-			logger.warn("No state definition file found:");
+			LOGGER.warn("No state definition file found: " + e.getMessage());
 		}
 	}
 
@@ -90,16 +93,16 @@ public class CityManager {
             String[] cells = iterator.next();
             if (cells.length == 0)
                 continue;
-            if (logger.isDebugEnabled())
-                logger.debug(ArrayFormat.format(";", cells));
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(ArrayFormat.format(";", cells));
             if (cells.length == 1)
                 continue;
             Map<String, String> instance = new HashMap<String, String>();
             for (int i = 0; i < cells.length; i++) {
                 instance.put(header[i], cells[i]);
             }
-            if (logger.isDebugEnabled())
-                logger.debug(instance.toString());
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug(instance.toString());
 
             // create/setup state
             String stateId = instance.get("state");
@@ -135,7 +138,7 @@ public class CityManager {
                 String areaCode = getValue(instance, "areaCode", defaults);
                 if (StringUtil.isEmpty(areaCode)) {
                     warnCount++;
-                    logger.warn("areaCode is not provided for city: '" + cityId);
+                    LOGGER.warn("areaCode is not provided for city: '" + cityId);
                 }
                 city = new CityHelper(state, cityId, new String[] { postalCode }, areaCode);
                 if (!StringUtil.isEmpty(lang))

@@ -45,7 +45,7 @@ public class AddressGeneratorPerfTest {
 	
 	@Before
 	public void setUp() {
-		generatorDE = new AddressGenerator(Country.GERMANY);
+		generatorDE = new AddressGenerator(Country.GERMANY.getIsoCode());
 		generatorDE.init(new BeneratorContext());
 	}
 	

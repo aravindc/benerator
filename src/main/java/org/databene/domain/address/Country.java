@@ -192,7 +192,7 @@ public class Country {
 
     private Generator<City> getCityGenerator() {
     	if (cityGenerator == null) {
-    		cityGenerator = new CityGenerator(this);
+    		cityGenerator = new CityGenerator(this.getIsoCode());
     		cityGenerator.init(null);
     	}
 	    return cityGenerator;

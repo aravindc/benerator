@@ -26,7 +26,10 @@
 
 package org.databene.domain.address;
 
-import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.Generator;
+import org.databene.benerator.dataset.AbstractDatasetGenerator;
+import org.databene.benerator.dataset.Dataset;
+import org.databene.benerator.sample.ConstantGenerator;
 
 /**
  * Generates a random country.<br/>
@@ -34,17 +37,31 @@ import org.databene.benerator.sample.AttachedWeightSampleGenerator;
  * Created: 11.06.2006 08:15:51
  * @author Volker Bergmann
  */
-public class CountryGenerator extends AttachedWeightSampleGenerator<Country> {
+public class CountryGenerator extends AbstractDatasetGenerator<Country> {
 
-	// TODO support dataSet
+	private static final String REGION = "/org/databene/dataset/region";
 	
-    public CountryGenerator() {
-        super(Country.class, Country.getInstances());
+	// Constructors ----------------------------------------------------------------------------------------------------
+	
+	public CountryGenerator() {
+		this("world");
+	}
+	
+	public CountryGenerator(String datasetName) {
+        super(REGION, datasetName);
+    }
+	
+	@Override
+	protected Generator<Country> createGeneratorForAtomicDataset(Dataset dataset) {
+		Country country = Country.getInstance(dataset.getName(), false);
+		return (country != null ? new ConstantGenerator<Country>(country) : null);
+	}
+
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
+    
+	@Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + getDataset() + "]";
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-    
 }

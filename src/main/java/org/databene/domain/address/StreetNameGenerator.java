@@ -31,7 +31,9 @@ import java.util.Stack;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.dataset.DatasetUtil;
+import org.databene.benerator.dataset.ProductFromDataset;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
@@ -46,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class StreetNameGenerator extends GeneratorProxy<String> {
+public class StreetNameGenerator extends GeneratorProxy<String> implements DatasetBasedGenerator<String> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreetNameGenerator.class);
 
@@ -66,6 +68,24 @@ public class StreetNameGenerator extends GeneratorProxy<String> {
     
 	public void setDataset(String datasetName) {
 		this.datasetName = datasetName;
+	}
+
+	// DatasetBasedGenerator interface implementation ------------------------------------------------------------------
+	
+	public String getNesting() {
+		return REGION;
+	}
+
+	public String getDataset() {
+		return datasetName;
+	}
+
+	public ProductFromDataset<String> generateWithDatasetInfo() {
+		return getSource().generateWithDatasetInfo();
+	}
+
+	public String generateForDataset(String dataset) {
+		return getSource().generateForDataset(dataset);
 	}
 
     @Override
@@ -94,6 +114,11 @@ public class StreetNameGenerator extends GeneratorProxy<String> {
     	}
 	}
     
+	@Override
+	public WeightedDatasetCSVGenerator<String> getSource() {
+		return (WeightedDatasetCSVGenerator<String>) super.getSource();
+	}
+	
 	private static Generator<String> createSource(String datasetName) {
 	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION, Encodings.UTF_8);
     }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,38 +42,30 @@ import org.slf4j.LoggerFactory;
  */
 public class AddressGenerator extends CompositeGenerator<Address> {
 	
-	private static Logger logger = LoggerFactory.getLogger(AddressGenerator.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(AddressGenerator.class);
 
-    private Country country;
+    private String dataset;
+    private CountryGenerator countryGenerator;
     private CityGenerator cityGenerator;
     private StreetNameGenerator streetNameGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
     public AddressGenerator() {
-        this(Country.getDefault());
+        this(Country.getDefault().getIsoCode());
     }
 
-    public AddressGenerator(Country country) {
+    public AddressGenerator(String dataset) {
     	super(Address.class);
-        setCountry(country);
+        setDataset(dataset);
     }
 
     public void setCountry(Country country) {
-    	this.country = country;
+    	setDataset(country.getIsoCode());
     }
     
 	public void setDataset(String dataset) {
-		try {
-			setCountry(Country.getInstance(dataset));
-		} catch (RuntimeException e) {
-			Country fallBackCountry = Country.getFallback();
-			if (!fallBackCountry.equals(country)) {
-				logger.error("Cannot generate addresses for " + country + ", falling back to " + fallBackCountry);
-				setCountry(fallBackCountry);
-			} else
-				throw e;
-		}
+		this.dataset = dataset;
 	}
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -84,9 +76,10 @@ public class AddressGenerator extends CompositeGenerator<Address> {
 		try {
 	        initMembers(context);
 		} catch (RuntimeException e) {
+			LOGGER.error("", e);
 			Country fallBackCountry = Country.getFallback();
-			if (!fallBackCountry.equals(country)) {
-				logger.error("Cannot generate addresses for " + country + ", falling back to " + fallBackCountry);
+			if (!fallBackCountry.getIsoCode().equals(this.dataset)) {
+				LOGGER.error("Cannot generate addresses for " + dataset + ", falling back to " + fallBackCountry);
 				setCountry(fallBackCountry);
 				initMembers(context);
 			} else
@@ -98,7 +91,8 @@ public class AddressGenerator extends CompositeGenerator<Address> {
     public Address generate() throws IllegalGeneratorStateException {
     	assertInitialized();
         City city = cityGenerator.generate();
-        Street street = new Street(city, streetNameGenerator.generate());
+        Country country = city.getCountry();
+        Street street = new Street(city, streetNameGenerator.generateForDataset(country.getIsoCode()));
         String[] data = street.generateHouseNumberWithZipCode(); // TODO v0.7 make street name generator fit the locale
         String houseNumber = data[0];
         String zipCode = data[1];
@@ -113,22 +107,24 @@ public class AddressGenerator extends CompositeGenerator<Address> {
 
     @Override
 	public String toString() {
-        return getClass().getSimpleName() + '[' + country + ']';
+        return getClass().getSimpleName() + '[' + dataset + ']';
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
 
 	private void initMembers(GeneratorContext context) {
-	    cityGenerator = registerComponent(new CityGenerator(country));
+	    countryGenerator = registerComponent(new CountryGenerator(dataset));
+	    countryGenerator.init(context);
+	    cityGenerator = registerComponent(new CityGenerator(dataset));
         cityGenerator.init(context);
-        streetNameGenerator = registerComponent(new StreetNameGenerator(country.getIsoCode()));
+        streetNameGenerator = registerComponent(new StreetNameGenerator(dataset));
         streetNameGenerator.init(context);
     }
 	
     private PhoneNumber generatePhoneNumber(City city) {
         int localPhoneNumberLength = 10 - city.getAreaCode().length();
         String localCode = DigitsGenerator.generate(localPhoneNumberLength);
-        return new PhoneNumber(country.getPhoneCode(), city.getAreaCode(), localCode);
+        return new PhoneNumber(city.getCountry().getPhoneCode(), city.getAreaCode(), localCode);
     }
 
 }

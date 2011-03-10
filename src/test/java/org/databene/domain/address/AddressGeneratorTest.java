@@ -101,7 +101,7 @@ public class AddressGeneratorTest extends GeneratorClassTest {
     // helper ----------------------------------------------------------------------------------------------------------
 
     private void check(Country country, boolean supported) {
-        AddressGenerator generator = new AddressGenerator(country);
+        AddressGenerator generator = new AddressGenerator(country.getIsoCode());
         generator.init(context);
         for (int i = 0; i < 100; i++) {
             Address address = generator.generate();

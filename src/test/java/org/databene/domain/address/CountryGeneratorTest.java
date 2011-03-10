@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,8 +46,11 @@ public class CountryGeneratorTest extends GeneratorClassTest {
     public void test() {
         CountryGenerator generator = new CountryGenerator();
         generator.init(context);
-        for (int i = 0; i < 1; i++)
-            assertNotNull(generator.generate());
+        for (int i = 0; i < 100; i++) {
+            Country country = generator.generate();
+			assertNotNull(country);
+			assertNotNull(Country.getInstance(country.getIsoCode()));
+        }
     }
     
 }
