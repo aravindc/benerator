@@ -28,18 +28,13 @@ package org.databene.benerator.csv;
 
 import java.util.List;
 
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.Generator;
+import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.AtomicDatasetGenerator;
-import org.databene.benerator.dataset.CompositeDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
-import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.dataset.DatasetUtil;
-import org.databene.benerator.dataset.ProductFromDataset;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
-import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.Assert;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
@@ -54,11 +49,9 @@ import org.databene.commons.converter.NoOpConverter;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy<E> implements DatasetBasedGenerator<E> {
+public class WeightedDatasetCSVGenerator<E> extends AbstractDatasetGenerator<E> {
     
     protected String filenamePattern;
-    protected String datasetName;
-    protected String nesting;
     protected String encoding;
     protected char separator;
     protected Converter<String, E> converter;
@@ -83,11 +76,9 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy<E> implements
 
     public WeightedDatasetCSVGenerator(String filenamePattern, char separator, String datasetName, String nesting, 
     		String encoding, Converter<String, E> converter) {
-        super(new CompositeDatasetGenerator<E>(nesting, datasetName));
+        super(nesting, datasetName);
         this.filenamePattern = filenamePattern;
         this.separator = separator;
-        this.datasetName = datasetName;
-        this.nesting = nesting;
         this.encoding = encoding;
         this.converter = converter;
     }
@@ -104,76 +95,8 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy<E> implements
 		return filenamePattern;
 	}
 	
-	public String getDataset() {
-		return datasetName;
-	}
-	
-	public void setDataset(String datasetName) {
-		this.datasetName = datasetName;
-	}
-	
-	public String getNesting() {
-		return nesting;
-	}
-	
-	public void setNesting(String nesting) {
-		this.nesting = nesting;
-	}
-	
-	public ProductFromDataset<E> generateWithDatasetInfo() {
-		return getSource().generateWithDatasetInfo();
-	}
-    
-	public E generateForDataset(String requestedDataset) {
-		DatasetBasedGenerator<E> sourceGen = getSource();
-		if (sourceGen instanceof CompositeDatasetGenerator)
-			return ((CompositeDatasetGenerator<E>) sourceGen).generateForDataset(requestedDataset);
-		else {
-			Assert.equals(requestedDataset, sourceGen.getDataset(), 
-					"Wrong dataset, expected " + requestedDataset + ", found " + sourceGen.getDataset());
-			return sourceGen.generate();
-		}
-	}
-    
-
-	
 	@Override
-	public DatasetBasedGenerator<E> getSource() {
-		return (DatasetBasedGenerator<E>) super.getSource();
-	}
-	
-	// Generator interface implementation ------------------------------------------------------------------------------
-	
-	@Override
-	public synchronized void init(GeneratorContext context) {
-		Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
-		setSource(createDatasetGenerator(dataset, true));
-		super.init(context);
-	}
-	
-    private DatasetBasedGenerator<E> createDatasetGenerator(Dataset dataset, boolean required) {
-    	if (dataset.isAtomic())
-    		return createAtomicDatasetGenerator(dataset, required);
-    	else 
-    		return createCompositeDatasetGenerator(dataset, required);
-	}
-
-	private CompositeDatasetGenerator<E> createCompositeDatasetGenerator(Dataset dataset, boolean required) {
-		CompositeDatasetGenerator<E> generator = new CompositeDatasetGenerator<E>(nesting, dataset.getName());
-		for (Dataset subSet : dataset.getSubSets()) {
-			DatasetBasedGenerator<E> subGenerator = createDatasetGenerator(subSet, false);
-			if (subGenerator != null)
-				generator.addSubDataset(subGenerator, 1.); // TODO support individual weights
-		}
-		if (generator.getSource().getSources().length > 0)
-			return generator;
-		if (required)
-			throw new ConfigurationError("No samples defined for composite dataset: " + dataset.getName());
-		else
-			return null;
-	}
-
-	private AtomicDatasetGenerator<E> createAtomicDatasetGenerator(Dataset dataset, boolean required) {
+	protected Generator<E> createGeneratorForAtomicDataset(Dataset dataset) {
 		String filename = DatasetUtil.filenameOfDataset(dataset.getName(), filenamePattern);
 		if (IOUtil.isURIAvailable(filename)) {
 			List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(filename, separator, encoding, converter);
@@ -182,10 +105,7 @@ public class WeightedDatasetCSVGenerator<E> extends GeneratorProxy<E> implements
 			if (samples.size() > 0)
 				return new AtomicDatasetGenerator<E>(generator, filename, dataset.getName());
 		}
-		if (required)
-			throw new ConfigurationError("File not found: " + filename);
-		else
-			return null;
+		return null;
 	}
 
 	
