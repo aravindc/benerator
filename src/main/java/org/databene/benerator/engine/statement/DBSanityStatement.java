@@ -43,6 +43,7 @@ import org.databene.dbsanity.ExecutionMode;
 public class DBSanityStatement implements Statement {
 	
 	Expression<String> envEx;
+	// TODO support app version
 	Expression<String> inEx;
 	Expression<String> outEx;
 	Expression<String[]> tablesEx;
