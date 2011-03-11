@@ -36,7 +36,7 @@ import org.databene.commons.VMInfo;
 import org.databene.commons.log.LoggingInfoPrinter;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.commons.ui.InfoPrinter;
-import org.databene.model.version.VersionNumber;
+import org.databene.commons.version.VersionNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,8 +100,8 @@ public class Benerator {
 				System.out.println("Please check the manual for Java setup on Mac OS X.");
 			System.exit(-1);
 		}
-		VersionNumber javaVersion = new VersionNumber(VMInfo.getJavaVersion());
-		if (javaVersion.compareTo(new VersionNumber("1.6")) < 0)
+		VersionNumber javaVersion = VersionNumber.valueOf(VMInfo.getJavaVersion());
+		if (javaVersion.compareTo(VersionNumber.valueOf("1.6")) < 0)
 			logger.warn("benerator is written for and tested under Java 6 - " +
 					"you managed to set up JSR 226, but may face other problems.");
 	}

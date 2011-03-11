@@ -32,6 +32,7 @@ import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.version.VersionNumber;
 import org.databene.jdbacl.ColumnInfo;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.DatabaseDialect;
@@ -57,7 +58,6 @@ import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemInserter;
 import org.databene.model.storage.StorageSystemUpdater;
-import org.databene.model.version.VersionNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +94,7 @@ public class DBSystem extends AbstractStorageSystem {
     
     private static final int DEFAULT_FETCH_SIZE = 100;
 
-	private static final VersionNumber MIN_ORACLE_VERSION = new VersionNumber("10.2.0.4");
+	private static final VersionNumber MIN_ORACLE_VERSION = VersionNumber.valueOf("10.2.0.4");
 	
 	// constants -------------------------------------------------------------------------------------------------------
     
@@ -610,7 +610,7 @@ public class DBSystem extends AbstractStorageSystem {
     		try {
 				connection = getConnection();
 				DatabaseMetaData metaData = connection.getMetaData();
-				VersionNumber driverVersion = new VersionNumber(metaData.getDriverVersion());
+				VersionNumber driverVersion = VersionNumber.valueOf(metaData.getDriverVersion());
 				if (driverVersion.compareTo(MIN_ORACLE_VERSION) < 0)
 					logger.warn("Your Oracle driver has a bug in metadata support. Please update to 10.2.0.4 or newer. " +
 							"You can use that driver for accessing an Oracle 9 server as well.");
