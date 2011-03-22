@@ -19,7 +19,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.store; // TODO better platform name?
+package org.databene.platform.memstore; // TODO better platform name?
 
 import java.util.Collection;
 import java.util.Map;
@@ -47,13 +47,13 @@ import org.databene.script.ScriptUtil;
  * @since TODO version
  * @author Volker Bergmann
  */
-public class EntityStore extends AbstractStorageSystem {
+public class MemStore extends AbstractStorageSystem {
 
 	private final String id;
 	private OrderedNameMap<ComplexTypeDescriptor> types;
 	private Map<String, Map<Object, Entity>> typeMap;
 	
-	public EntityStore(String id) {
+	public MemStore(String id) {
 		this.types = OrderedNameMap.createCaseInsensitiveMap();
 		typeMap = OrderedNameMap.createCaseInsensitiveMap();
 		this.id = id;

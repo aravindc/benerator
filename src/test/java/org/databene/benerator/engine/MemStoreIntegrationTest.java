@@ -31,7 +31,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.model.data.IdDescriptor;
-import org.databene.platform.store.EntityStore;
+import org.databene.platform.memstore.MemStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,10 +41,10 @@ import org.junit.Test;
  * @since TODO version
  * @author Volker Bergmann
  */
-public class StoreIntegrationTest extends BeneratorIntegrationTest {
+public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 
-	private EntityStore src; 
-	private EntityStore dst; 
+	private MemStore src; 
+	private MemStore dst; 
 	private ConsumerMock<Entity> consumer;
 	
 	@Before
@@ -53,7 +53,7 @@ public class StoreIntegrationTest extends BeneratorIntegrationTest {
 		context.set("cons", consumer);
 
 		// create source store and prefill it
-		src = new EntityStore("src");
+		src = new MemStore("src");
 		context.set("src", src);
 		ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("product");
 		descriptor.addComponent(new IdDescriptor("id", "int"));
@@ -62,7 +62,7 @@ public class StoreIntegrationTest extends BeneratorIntegrationTest {
 		DataModel.getDefaultInstance().addDescriptorProvider(src);
 
 		// create dest store
-		dst = new EntityStore("dst");
+		dst = new MemStore("dst");
 		context.set("dst", dst);
 	}
 

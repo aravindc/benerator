@@ -19,50 +19,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine.parser.xml;
+package org.databene.benerator.engine.statement;
 
-import static org.databene.benerator.engine.DescriptorConstants.*;
-import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
-
-import java.util.Map;
-
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.statement.StoreStatement;
 import org.databene.commons.ConfigurationError;
-import org.databene.commons.ConversionException;
-import org.databene.commons.StringUtil;
-import org.databene.commons.xml.XMLUtil;
-import org.w3c.dom.Element;
+import org.databene.model.data.DataModel;
+import org.databene.platform.memstore.MemStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO Document class.<br/><br/>
- * Created: 08.03.2011 13:28:55
+ * Created: 08.03.2011 13:30:45
  * @since TODO version
  * @author Volker Bergmann
  */
-public class StoreParser extends AbstractBeneratorDescriptorParser {
+public class MemStoreStatement implements Statement {
 	
-	public StoreParser() {
-	    super(EL_STORE);
+	private static Logger logger = LoggerFactory.getLogger(DefineDatabaseStatement.class);
+	
+	private String id;
+	ResourceManager resourceManager;
+	
+	public MemStoreStatement(String id, ResourceManager resourceManager) {
+		if (id == null)
+			throw new ConfigurationError("No store id defined");
+		this.id = id;
+		this.resourceManager = resourceManager;
     }
 
-	@Override
-    public StoreStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-		checkAttributeSupport(XMLUtil.getAttributes(element));
-		try {
-			String id = getRawAttribute(ATT_ID, element);
-			return new StoreStatement(id, context.getResourceManager());
-		} catch (ConversionException e) {
-			throw new ConfigurationError(e);
-		}
+    public void execute(BeneratorContext context) {
+	    logger.debug("Instantiating store with id '" + id + "'");
+		MemStore store = new MemStore(id);
+	    // register this object on all relevant managers and in the context
+	    context.set(id, store);
+	    DataModel.getDefaultInstance().addDescriptorProvider(store);
+	    resourceManager.addResource(store);
     }
-
-	private void checkAttributeSupport(Map<String, String> attributes) {
-		if (StringUtil.isEmpty(attributes.get(ATT_ID)))
-			throw new ConfigurationError("No id specified for <store>");
-		for (String key : attributes.keySet())
-			if (!"id".equals(key))
-				throw new ConfigurationError("Not a supported attribute of <store>: " + key);
-	}
 
 }
