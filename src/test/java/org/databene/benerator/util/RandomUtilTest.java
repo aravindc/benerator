@@ -26,8 +26,11 @@
 
 package org.databene.benerator.util;
 
+import static org.junit.Assert.*;
+
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.measure.count.ObjectCounter;
 import org.junit.Test;
 
 import java.util.List;
@@ -57,6 +60,28 @@ public class RandomUtilTest extends GeneratorTest {
         testEqualDistribution(-1L, -1L, 0.1, 3000);
         testEqualDistribution(-1L,  1L, 0.1, 3000);
     }
+	
+	@Test
+	public void testRandomFromLiteral() {
+		ObjectCounter<Object> counter = new ObjectCounter<Object>(2);
+		int n = 1000;
+		for (int i = 0; i < n; i++)
+			counter.count(RandomUtil.randomFromWeightLiteral("'A'^2,'B'^1"));
+		assertEquals(2, counter.getCounts().size());
+		assertEquals(n / 3. * 2., counter.getCount("A"), Math.sqrt(n));
+		assertEquals(n / 3., counter.getCount("B"), Math.sqrt(n));
+	}
+	
+	@Test
+	public void testRandomFromLiteral_empty() {
+		assertNull(RandomUtil.randomFromWeightLiteral(null));
+		assertNull(RandomUtil.randomFromWeightLiteral(""));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testRandomFromLiteral_negativeWeight() {
+		RandomUtil.randomFromWeightLiteral("1^-1,2^-2");
+	}
 	
     // implementation --------------------------------------------------------------------------------------------------
 

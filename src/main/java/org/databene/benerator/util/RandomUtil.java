@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,14 @@
 
 package org.databene.benerator.util;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import org.databene.benerator.sample.WeightedSample;
+import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.commons.StringUtil;
 
 /**
  * Provides utility functions for generating numbers in an interval.<br/>
@@ -98,6 +103,39 @@ public class RandomUtil {
 
 	public static Date randomDate(Date min, Date max) {
 		return new Date(randomLong(min.getTime(), max.getTime()));
+	}
+	
+	public static Object randomFromWeightLiteral(String literal) {
+		if (StringUtil.isEmpty(literal))
+			return null;
+	    WeightedSample<?>[] samples = BeneratorScriptParser.parseWeightedLiteralList(literal);
+        int sampleCount = samples.length;
+        if (sampleCount == 1)
+        	return samples[0];
+        
+        // normalize weights
+        float[] probSum = new float[sampleCount];
+        double sum = 0;
+        for (int i = 0; i < sampleCount; i++) {
+            double weight = samples[i].getWeight();
+			if (weight < 0)
+                throw new IllegalArgumentException("Negative weight in literal: " + literal);
+            sum += weight;
+            probSum[i] = (float) sum;
+        }
+        if (sum == 0)
+        	return samples[randomInt(0, sampleCount)]; // for unweighted values, use simple random
+        for (int i = 0; i < sampleCount; i++)
+            probSum[i] /= (float) sum;
+        
+        // choose an item
+        float probability = randomProbability();
+        int i = Arrays.binarySearch(probSum, probability);
+        if (i < 0)
+            i = - i - 1;
+        if (i >= probSum.length)
+            i = probSum.length - 1;
+        return samples[i].getValue();
 	}
 	
 }

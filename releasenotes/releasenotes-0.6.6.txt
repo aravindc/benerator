@@ -16,6 +16,8 @@ enhancements
   For a single country, specify its two-letter-iso-code
 - Added demos
 - Supporting transcoding to non-empty tables as long as transcoded data is not yet present in the target system
+- New method TimeUtil.endOfMonth()
+- RandomUtil.randomFromWeightLiteral(this.weights)
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
