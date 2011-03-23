@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
@@ -47,33 +48,105 @@ public class Version {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Version.class);
 	
-	private static final String VERSION_FILE_URI = "org/databene/benerator/version.txt";
+	private static final String VERSION_FILE_URI = "org/databene/benerator/version.properties";
 
-	public static final String VERSION = readVersion();
+	private static final Version INSTANCE = readVersion();
+	public static final String VERSION = INSTANCE.beneratorVersion;
 	
 	public static final String XML_PUBLIC_ID = "http://databene.org/benerator/" + VERSION;
 	public static final String XML_HTTP_SYSTEM_ID = "http://databene.org/benerator-" + VERSION + ".xsd";
 	public static final String XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + VERSION + ".xsd";
 
 	public static void main(String[] args) {
-		System.out.println(VERSION);
+		System.out.println("Benerator " + VERSION + " uses");
+		System.out.println("- DB Sanity " + INSTANCE.getDbsanityVersion());
+		System.out.println("- ContiPerf " + INSTANCE.getContiperfVersion());
+		System.out.println("- jdbacl " + INSTANCE.getJdbaclVersion());
+		System.out.println("- gui " + INSTANCE.getGuiVersion());
+		System.out.println("- webdecs " + INSTANCE.getWebdecsVersion());
+		System.out.println("- commons " + INSTANCE.getCommonsVersion());
+	}
+	
+	public static Version instance() {
+		return INSTANCE;
 	}
 
-	private static String readVersion() {
-        String version = "<unknown version>";
+	private String commonsVersion;
+	private String webdecsVersion;
+	private String guiVersion;
+	private String contiperfVersion;
+	private String jdbaclVersion;
+	private String dbsanityVersion;
+	private String beneratorVersion;
+
+	public String getCommonsVersion() {
+		return commonsVersion;
+	}
+
+	public String getWebdecsVersion() {
+		return webdecsVersion;
+	}
+
+	public String getGuiVersion() {
+		return guiVersion;
+	}
+
+	public String getContiperfVersion() {
+		return contiperfVersion;
+	}
+
+	public String getJdbaclVersion() {
+		return jdbaclVersion;
+	}
+
+	public String getDbsanityVersion() {
+		return dbsanityVersion;
+	}
+
+	public String getBeneratorVersion() {
+		return beneratorVersion;
+	}
+
+	private static Version readVersion() {
+		Version version = new Version();
+		version.beneratorVersion = "<unknown version>";
 	    try {
-	        if (IOUtil.isURIAvailable(VERSION_FILE_URI))
-	        	version = IOUtil.getContentOfURI(VERSION_FILE_URI);                         // This works in Maven, but...
-	        if (version.startsWith("${") || version.startsWith("<unknown")) {               // ...in Eclipse no filtering is applied,...
+	        if (IOUtil.isURIAvailable(VERSION_FILE_URI)) {			// This works in Maven, but...
+	    		Map<String, String> properties = IOUtil.readProperties(VERSION_FILE_URI);
+	        	version.beneratorVersion = properties.get("benerator_version");								
+	        	version.dbsanityVersion  = properties.get("dbsanity_version");								
+	        	version.jdbaclVersion    = properties.get("jdbacl_version");								
+	        	version.contiperfVersion = properties.get("contiperf_version");								
+	        	version.guiVersion       = properties.get("gui_version");								
+	        	version.webdecsVersion   = properties.get("webdecs_version");								
+	        	version.commonsVersion   = properties.get("commons_version");								
+	        }
+	        if (version.beneratorVersion.startsWith("${") || version.beneratorVersion.startsWith("<unknown")) { // ...in Eclipse no filtering is applied,...
 	        	LOGGER.warn("Version number file could not be found, falling back to POM"); // ...so we fetch it directly from the POM!
 	    		Document doc = XMLUtil.parse("pom.xml");
 	    		Element versionElement = XMLUtil.getChildElement(doc.getDocumentElement(), false, true, "version");
-	    		version = versionElement.getTextContent();
+	    		Element propsElement = XMLUtil.getChildElement(doc.getDocumentElement(), false, true, "properties");
+	    		version.beneratorVersion = versionElement.getTextContent();
+	    		version.dbsanityVersion  = property(propsElement, "dbsanity_version");
+	    		version.jdbaclVersion    = property(propsElement, "jdbacl_version");
+	    		version.contiperfVersion = property(propsElement, "contiperf_version");
+	    		version.guiVersion       = property(propsElement, "gui_version");
+	    		version.webdecsVersion   = property(propsElement, "webdecs_version");
+	    		version.commonsVersion   = property(propsElement, "commons_version");
 	        }
         } catch (IOException e) {
 	        LOGGER.error("Error reading version info file", e);
         }
 		return version;
     }
+	
+	private static String property(Element parent, String name) {
+		return XMLUtil.getChildElement(parent, false, true, name).getTextContent();
+	}
+	
+	@Override
+	public String toString() {
+		return beneratorVersion;
+	}
 	
 }
