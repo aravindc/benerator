@@ -15,32 +15,32 @@
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-benerator</artifactId>
-			<version>0.6.5</version>
+			<version>${version.beneratorVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>dbsanity</artifactId>
-			<version>0.6.1</version>
+			<version>${version.dbsanityVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>jdbacl</artifactId>
-			<version>0.6.6</version>
+			<version>${version.jdbaclVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-webdecs</artifactId>
-			<version>0.5.6</version>
+			<version>${version.webdecsVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-commons</artifactId>
-			<version>0.5.5</version>
+			<version>${version.commonsVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>contiperf</artifactId>
-			<version>1.07</version>
+			<version>${version.contiperfVersion}</version>
 		</dependency>
 	</dependencies>
 
@@ -61,7 +61,7 @@
             <plugin>
                 <groupId>org.databene</groupId>
                 <artifactId>maven-benerator-plugin</artifactId>
-                <version>0.6.5</version>
+                <version>${version.beneratorVersion}</version>
                 <configuration>
                     <encoding>${setup.encoding}</encoding>
                     

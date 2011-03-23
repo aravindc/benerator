@@ -38,6 +38,7 @@ import java.util.Set;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.databene.benerator.Version;
 import org.databene.benerator.archetype.FolderLayout;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.main.DBSnapshotTool;
@@ -539,10 +540,11 @@ public class ProjectBuilder implements Runnable {
 		int varStart;
 		Context context = new DefaultContext();
 		context.set("setup", setup);
-		while ((varStart = text.indexOf("${setup.")) >= 0) {
+		context.set("version", Version.instance());
+		while ((varStart = text.indexOf("${")) >= 0) {
 			int varEnd = text.indexOf("}", varStart);
 			if (varEnd < 0)
-				throw new ConfigurationError("'${setup.' without '}'");
+				throw new ConfigurationError("'${' without '}'");
 			String template = text.substring(varStart, varEnd + 1);
 			String path = template.substring(2, template.length() - 1).trim();
 			GraphAccessor accessor = new GraphAccessor(path);
