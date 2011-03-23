@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRReaderStream;
+import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
@@ -98,13 +99,16 @@ public class BeneratorScriptParser {
 	        BeneratorParser.expression_return r = parser.expression();
 	        if (parser.getNumberOfSyntaxErrors() > 0)
 	        	throw new ParseException("Illegal regex", text, -1, -1);
-	        if (r != null) {
+	        CommonToken stop = (CommonToken) r.stop;
+	        if (stop.getStopIndex() < text.length() - 1)
+	        	throw new ParseException("Syntax error after " + stop.getText(), text);
+//	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
 	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
 	            return convertNode(tree);
-	        } else
-	        	return null;
+//	        } else
+//	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
         		throw mapToParseException((RecognitionException) e.getCause(), text);

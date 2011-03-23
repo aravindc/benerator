@@ -26,3 +26,4 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - Generation of Turkish names fails
 - Using deprecated property Address.zipCode in AddressFormat
 - FemaleFamilyNameConverter can be applied to Composite datasets
+- Some BeneratorScript syntax errors are ignored and lead to wrong results
