@@ -33,6 +33,7 @@ import java.util.List;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.ParserRuleReturnScope;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
 import org.databene.benerator.sample.WeightedSample;
@@ -69,8 +70,7 @@ public class BeneratorScriptParser {
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.weightedLiteralList_return r = parser.weightedLiteralList();
-	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal weightedLiteralList", text, -1, -1);
+	        checkForSyntaxErrors(text, "weightedLiteralList", parser, r);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -97,18 +97,11 @@ public class BeneratorScriptParser {
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.expression_return r = parser.expression();
-	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex", text, -1, -1);
-	        CommonToken stop = (CommonToken) r.stop;
-	        if (stop.getStopIndex() < text.length() - 1)
-	        	throw new ParseException("Syntax error after " + stop.getText(), text);
-//	        if (r != null) {
+	        checkForSyntaxErrors(text, "expression", parser, r);
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
 	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
 	            return convertNode(tree);
-//	        } else
-//	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
         		throw mapToParseException((RecognitionException) e.getCause(), text);
@@ -120,15 +113,14 @@ public class BeneratorScriptParser {
         	throw mapToParseException(e, text);
         }
     }
-	
+
     public static WeightedTransition[] parseTransitionList(String text) throws ParseException {
         if (StringUtil.isEmpty(text))
             return null;
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.transitionList_return r = parser.transitionList();
-	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex", text, -1, -1);
+	        checkForSyntaxErrors(text, "transitionList", parser, r);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -155,8 +147,7 @@ public class BeneratorScriptParser {
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpecList_return r = parser.beanSpecList();
-	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex", text, -1, -1);
+	        checkForSyntaxErrors(text, "beanSpecList", parser, r);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -182,8 +173,7 @@ public class BeneratorScriptParser {
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpec_return r = parser.beanSpec();
-	        if (parser.getNumberOfSyntaxErrors() > 0)
-	        	throw new ParseException("Illegal regex", text, -1, -1);
+	        checkForSyntaxErrors(text, "beanSpec", parser, r);
 	        if (r != null) {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
@@ -205,6 +195,15 @@ public class BeneratorScriptParser {
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 
+	private static void checkForSyntaxErrors(String text, String type,
+			BeneratorParser parser, ParserRuleReturnScope r) {
+		if (parser.getNumberOfSyntaxErrors() > 0)
+			throw new ParseException("Illegal " + type, text, -1, -1);
+		CommonToken stop = (CommonToken) r.stop;
+		if (stop.getStopIndex() < StringUtil.trimRight(text).length() - 1)
+			throw new ParseException("Syntax error after " + stop.getText(), text);
+	}
+	
     private static BeneratorParser parser(String text) throws IOException {
 	    BeneratorLexer lex = new BeneratorLexer(new ANTLRReaderStream(new StringReader(text)));
 	    CommonTokenStream tokens = new CommonTokenStream(lex);

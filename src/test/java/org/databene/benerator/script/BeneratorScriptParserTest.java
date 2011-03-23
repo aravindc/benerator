@@ -527,6 +527,13 @@ public class BeneratorScriptParserTest {
 	
 	// syntax error tests ----------------------------------------------------------------------------------------------
 	
+	@Test
+	public void testTrailingWhiteSpace() throws Exception {
+		Expression<?> expression = BeneratorScriptParser.parseExpression("   3   ");
+	    BeneratorContext context = new BeneratorContext();
+	    expression.evaluate(context);
+	}
+
 	@Test(expected = ParseException.class)
 	public void testMissingRHS() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("3 + ");
