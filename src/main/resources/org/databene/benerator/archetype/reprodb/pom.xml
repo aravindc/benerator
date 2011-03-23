@@ -14,32 +14,32 @@
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-benerator</artifactId>
-			<version>${version.beneratorVersion}</version>
+			<version>${version.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>dbsanity</artifactId>
-			<version>${version.dbsanityVersion}</version>
+			<version>${version.dependencies.dbsanity}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>jdbacl</artifactId>
-			<version>${version.jdbaclVersion}</version>
+			<version>${version.dependencies.jdbacl}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-webdecs</artifactId>
-			<version>${version.webdecsVersion}</version>
+			<version>${version.dependencies.webdecs}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-commons</artifactId>
-			<version>${version.commonsVersion}</version>
+			<version>${version.dependencies.commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>contiperf</artifactId>
-			<version>${version.contiperfVersion}</version>
+			<version>1.07</version>
 		</dependency>
 	</dependencies>
 
@@ -60,7 +60,7 @@
             <plugin>
                 <groupId>org.databene</groupId>
                 <artifactId>maven-benerator-plugin</artifactId>
-                <version>${version.beneratorVersion}</version>
+                <version>${version.version}</version>
                 <configuration>
                     <descriptor>benerator.xml</descriptor>
                     <encoding>${setup.encoding}</encoding>

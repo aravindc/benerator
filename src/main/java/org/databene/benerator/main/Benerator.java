@@ -27,7 +27,6 @@
 package org.databene.benerator.main;
 
 import org.databene.benerator.BeneratorError;
-import org.databene.benerator.Version;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.LogCategories;
@@ -36,6 +35,7 @@ import org.databene.commons.VMInfo;
 import org.databene.commons.log.LoggingInfoPrinter;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.commons.ui.InfoPrinter;
+import org.databene.commons.version.VersionInfo;
 import org.databene.commons.version.VersionNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +60,7 @@ public class Benerator {
 	// methods ---------------------------------------------------------------------------------------------------------
 
 	public static void main(String[] args) throws IOException {
+		VersionInfo.getInfo("benerator").verifyDependencies();
 		if (ArrayUtil.contains(args, "--version"))
 			printVersionInfoAndExit();
 		else
@@ -108,7 +109,7 @@ public class Benerator {
 
 	private static void printVersionInfo(InfoPrinter printer) {
 		printer.printLines(
-			"Benerator " + Version.VERSION,
+			"Benerator " + VersionInfo.getInfo("benerator"),
 			"Java version " + VMInfo.getJavaVersion(),
 			"JVM " + VMInfo.getJavaVmName() + " " + VMInfo.getJavaVmVersion() + " (" + VMInfo.getJavaVmVendor() + ")",
 			"OS " + SystemInfo.getOsName() + " " + SystemInfo.getOsVersion() + " (" + SystemInfo.getOsArchitecture() + ")"

@@ -38,7 +38,6 @@ import java.util.Set;
 
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.databene.benerator.Version;
 import org.databene.benerator.archetype.FolderLayout;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.main.DBSnapshotTool;
@@ -60,6 +59,7 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.maven.MavenUtil;
 import org.databene.commons.ui.I18NError;
 import org.databene.commons.ui.ProgressMonitor;
+import org.databene.commons.version.VersionInfo;
 import org.databene.html.DefaultHTMLTokenizer;
 import org.databene.html.HTMLTokenizer;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -537,11 +537,11 @@ public class ProjectBuilder implements Runnable {
 	}
 
 	private String replaceVariables(String text) {
-		int varStart;
+		int varStart = 0;
 		Context context = new DefaultContext();
 		context.set("setup", setup);
-		context.set("version", Version.instance());
-		while ((varStart = text.indexOf("${")) >= 0) {
+		context.set("version", VersionInfo.getInfo("benerator"));
+		while ((varStart = text.indexOf("${", varStart)) >= 0) {
 			int varEnd = text.indexOf("}", varStart);
 			if (varEnd < 0)
 				throw new ConfigurationError("'${' without '}'");
@@ -550,7 +550,9 @@ public class ProjectBuilder implements Runnable {
 			GraphAccessor accessor = new GraphAccessor(path);
 			Object varValue = accessor.getValue(context);
 			String varString = toStringConverter.convert(varValue);
-			text = text.replace(template, varString);
+			if (!StringUtil.isEmpty(varString))
+				text = text.replace(template, varString);
+			varStart = varEnd;
 		}
 		text = text.replace("\n        defaultEncoding=\"\"", "");
 		text = text.replace("\n        defaultDataset=\"\"", "");

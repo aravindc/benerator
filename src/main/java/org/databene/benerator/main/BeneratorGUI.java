@@ -40,11 +40,11 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
 import org.databene.benerator.BeneratorError;
-import org.databene.benerator.Version;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.ui.ConsoleInfoPrinter;
+import org.databene.commons.version.VersionInfo;
 import org.databene.gui.os.ApplicationUtil;
 import org.databene.gui.os.JavaApplication;
 import org.slf4j.Logger;
@@ -168,8 +168,8 @@ public class BeneratorGUI {
 
 		public void about() {
 			JOptionPane.showMessageDialog(this, 
-					"Benerator GUI " + Version.VERSION + SystemInfo.getLineSeparator() + 
-					"(c) 2010 by Volker Bergmann");
+					"Benerator GUI " + VersionInfo.getInfo("benerator").getVersion() + SystemInfo.getLineSeparator() + 
+					"(c) 2011 by Volker Bergmann");
         }
 
 	}

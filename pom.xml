@@ -9,8 +9,7 @@
 
     <properties>
     	<jdbacl_version>0.6.8</jdbacl_version>
-    	<dbsanity_version>0.7</dbsanity_version>
-    	<contiperf_version>1.07</contiperf_version>
+    	<dbsanity_version>0.7.1</dbsanity_version>
     	<gui_version>0.2.8</gui_version>
     	<webdecs_version>0.5.8</webdecs_version>
     	<commons_version>0.5.8</commons_version>
@@ -89,7 +88,7 @@
         <dependency>
             <groupId>org.databene</groupId>
 		    <artifactId>contiperf</artifactId>
-		    <version>${contiperf_version}</version>
+		    <version>1.07</version>
         </dependency>
         
         <dependency>
@@ -216,7 +215,7 @@
                 </includes>
                 <excludes>
                     <exclude>log4j.xml</exclude>
-                    <exclude>**/version.txt</exclude>
+                    <exclude>**/version.properties</exclude>
                 </excludes>
             </resource>
 
@@ -224,7 +223,7 @@
                 <filtering>true</filtering>
                 <directory>${basedir}/src/main/resources</directory>
                 <includes>
-                    <include>**/version.txt</include>
+                    <include>**/version.properties</include>
                 </includes>
             </resource>
 

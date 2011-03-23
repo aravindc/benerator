@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.databene.benerator.Version;
+import org.databene.benerator.BeneratorFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Filter;
 import org.databene.commons.IOUtil;
@@ -139,11 +139,11 @@ public class Archetype implements Serializable {
     }
 
 	private void copySchemaTo(File targetFolder) throws IOException, FileNotFoundException {
-	    URL schemaUrl = getClass().getClassLoader().getResource(Version.XML_SCHEMA_PATH);
+	    URL schemaUrl = getClass().getClassLoader().getResource(BeneratorFactory.XML_SCHEMA_PATH);
 	    if (schemaUrl == null)
-	    	throw new FileNotFoundException("File not found: " + Version.XML_SCHEMA_PATH);
+	    	throw new FileNotFoundException("File not found: " + BeneratorFactory.XML_SCHEMA_PATH);
 		InputStream in = schemaUrl.openStream();
-		File file = new File(targetFolder, Version.XML_SCHEMA_PATH.substring(Version.XML_SCHEMA_PATH.lastIndexOf('/')));
+		File file = new File(targetFolder, BeneratorFactory.XML_SCHEMA_PATH.substring(BeneratorFactory.XML_SCHEMA_PATH.lastIndexOf('/')));
 		OutputStream out = new FileOutputStream(file);
 		IOUtil.transfer(in, out);
 		in.close();

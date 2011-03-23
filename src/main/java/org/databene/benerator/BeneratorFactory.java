@@ -26,6 +26,7 @@ import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.StringUtil;
+import org.databene.commons.version.VersionInfo;
 
 /**
  * Abstract factory class for extending Benerator.<br/><br/>
@@ -37,6 +38,8 @@ import org.databene.commons.StringUtil;
 public abstract class BeneratorFactory {
 
 	public static final String BENERATOR_FACTORY_PROPERTY = "benerator.factory";
+
+	public static final String XML_SCHEMA_PATH = "org/databene/benerator/benerator-" + VersionInfo.getInfo("benerator").getVersion() + ".xsd";
 	
     public abstract BeneratorParseContext createParsingContext(ResourceManager resourceManager);
     

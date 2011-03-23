@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<setup	xmlns="http://databene.org/benerator/${version.beneratorVersion}"
+<setup	xmlns="http://databene.org/benerator/${version.version}"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://databene.org/benerator/${version.beneratorVersion} benerator-${version.beneratorVersion}.xsd">
+		xsi:schemaLocation="http://databene.org/benerator/${version.version} benerator-${version.version}.xsd">
 		
 	<import defaults="true"/>
 	
