@@ -8,6 +8,7 @@
     <version>0.6.6</version>
 
     <properties>
+    	<build_number>${buildNumber}</build_number>
     	<jdbacl_version>0.6.8</jdbacl_version>
     	<dbsanity_version>0.7.1</dbsanity_version>
     	<gui_version>0.2.8</gui_version>
@@ -298,6 +299,28 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>        
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<format>{0,number}</format>
+					<items>
+						<item>buildNumber0</item>
+					</items>
+					<revisionOnScmFailure>x</revisionOnScmFailure>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 
@@ -368,7 +391,8 @@
 	</distributionManagement>
   
 	<scm>
-		<url>https://benerator.svn.sourceforge.net/svnroot/benerator</url>
+		<url>https://benerator.svn.sourceforge.net/svnroot/benerator/trunk</url>
+		<developerConnection>scm:svn:https://benerator.svn.sourceforge.net/svnroot/benerator/trunk</developerConnection>
 	</scm>
 
 </project>
