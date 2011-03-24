@@ -59,7 +59,7 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
 		Expression<Long> min  = parseLongAttribute(ATT_MIN, element, null);
 		Expression<Long> max  = parseLongAttribute(ATT_MAX, element, null);
 		Expression<Long> precision  = parseLongAttribute(ATT_PRECISION, element, null);
-		String distSpec  = getRawAttribute(ATT_DISTRIBUTION, element);
+		String distSpec  = getAttribute(ATT_DISTRIBUTION, element);
 		Expression<Distribution> distribution 
 			= GeneratorFactoryUtil.getDistributionExpression(distSpec, Uniqueness.NONE, false);
 		Generator<Long> durationGenerator = new DynamicLongGenerator(min, max, precision, 

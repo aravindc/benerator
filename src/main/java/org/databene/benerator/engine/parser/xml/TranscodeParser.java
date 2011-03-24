@@ -53,7 +53,7 @@ public class TranscodeParser extends AbstractTranscodeParser {
 
     @Override
     public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-		String table = getRawAttribute("table", element);
+		String table = getAttribute("table", element);
 		TranscodingTaskStatement parent = (TranscodingTaskStatement) ArrayUtil.lastElement(parentPath);
 		Expression<DBSystem> sourceEx   = parseSource(element, parent);
 		Expression<String>   selectorEx = parseSelector(element, parent);
@@ -99,7 +99,7 @@ public class TranscodeParser extends AbstractTranscodeParser {
 
 		public TypeExpression(Element element) {
 			this.element = element;
-			this.tableName = getRawAttribute("table", element);
+			this.tableName = getAttribute("table", element);
 		}
 
 		public ComplexTypeDescriptor evaluate(Context context) {

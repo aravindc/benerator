@@ -41,26 +41,34 @@ import org.w3c.dom.Element;
  */
 public class DescriptorParserUtil {
 
+	// direct data retrieval -------------------------------------------------------------------------------------------
+	
+	public static String getAttribute(String name, Element element) {
+	    return StringUtil.emptyToNull(element.getAttribute(name));
+    }
+
+	public static String getElementText(Element element) {
+	    return XMLUtil.getText(element);
+    }
+
+	// creating expressions for data retrieval -------------------------------------------------------------------------
+	
 	public static Expression<?> parseScriptableElementText(Element element) {
 	    return new ScriptableExpression(XMLUtil.getText(element), null);
     }
 
 	public static Expression<?> parseScriptableTextAttribute(String name, Element element) {
-	    return new ScriptableExpression(getRawAttribute(name, element), null);
-    }
-
-	public static Expression<String> parseTextElement(Element element) {
-		return new ConstantExpression<String>(XMLUtil.getText(element));
+	    return new ScriptableExpression(getAttribute(name, element), null);
     }
 
 	public static Expression<String> parseScriptableStringAttribute(String name, Element element) {
-	    String attribute = getRawAttribute(name, element);
+	    String attribute = getAttribute(name, element);
 		return (attribute != null ? new TypeConvertingExpression<String>(
 				new ScriptableExpression(attribute, null), String.class) : null);
     }
 
 	public static Expression<String[]> parseScriptableStringArrayAttribute(String name, Element element) {
-	    String attribute = getRawAttribute(name, element);
+	    String attribute = getAttribute(name, element);
 		if (attribute == null)
 			return null;
 		Expression<String> rawEx = new TypeConvertingExpression<String>(
@@ -69,7 +77,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element) {
-	    return new TypedScriptExpression<Integer>(getRawAttribute(name, element), Integer.class);
+	    return new TypedScriptExpression<Integer>(getAttribute(name, element), Integer.class);
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element, int defaultValue) {
@@ -77,7 +85,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Integer> parseIntAttribute(String name, Element element, Expression<Integer> defaultValue) {
-	    String attribute = getRawAttribute(name, element);
+	    String attribute = getAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
@@ -89,7 +97,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Long> parseLongAttribute(String name, Element element, Expression<Long> defaultValue) {
-	    String attribute = getRawAttribute(name, element);
+	    String attribute = getAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return defaultValue;
 	    else
@@ -101,7 +109,7 @@ public class DescriptorParserUtil {
     }
 
 	public static Expression<Boolean> parseBooleanExpressionAttribute(String name, Element element, Boolean defaultValue) {
-	    String attribute = getRawAttribute(name, element);
+	    String attribute = getAttribute(name, element);
 	    if (StringUtil.isEmpty(attribute))
 	    	return new ConstantExpression<Boolean>(defaultValue);
 	    else
@@ -109,16 +117,12 @@ public class DescriptorParserUtil {
     }
 
 	public static ConstantExpression<String> parseAttribute(String name, Element element) {
-		String attribute = getRawAttribute(name, element);
+		String attribute = getAttribute(name, element);
 		return (attribute != null ? new ConstantExpression<String>(attribute) : null);
     }
 
-	public static String getRawAttribute(String name, Element element) {
-	    return StringUtil.emptyToNull(element.getAttribute(name));
-    }
-
 	public static Expression<?> parseScriptAttribute(String name, Element element) {
-		String rawAttribute = getRawAttribute(name, element);
+		String rawAttribute = getAttribute(name, element);
 		if (StringUtil.isEmpty(rawAttribute))
 			return null;
 		else
