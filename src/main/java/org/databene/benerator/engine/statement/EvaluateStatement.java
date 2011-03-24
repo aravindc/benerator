@@ -87,7 +87,7 @@ public class EvaluateStatement implements Statement {
 	
 	boolean evaluate;
 	Expression<String> idEx;
-	Expression<String> textEx;
+	String text;
 	Expression<String> uriEx;
 	Expression<String> typeEx;
 	Expression<?> targetObjectEx;
@@ -96,13 +96,13 @@ public class EvaluateStatement implements Statement {
     Expression<Boolean> optimizeEx;
     Expression<?> assertionEx;
 
-    public EvaluateStatement(boolean evaluate, Expression<String> idEx, Expression<String> textEx, 
+    public EvaluateStatement(boolean evaluate, Expression<String> idEx, String text, 
     		Expression<String> uriEx, Expression<String> typeEx, Expression<?> targetObjectEx,
     		Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
             Expression<?> assertionEx) {
     	this.evaluate = evaluate;
     	this.idEx = idEx;
-    	this.textEx = textEx;
+    	this.text = text;
     	this.uriEx = uriEx;
     	this.typeEx = typeEx;
     	this.targetObjectEx = targetObjectEx;
@@ -110,6 +110,10 @@ public class EvaluateStatement implements Statement {
     	this.encodingEx = encodingEx;
     	this.optimizeEx = optimizeEx;
     	this.assertionEx = assertionEx;
+    }
+    
+    public String getText() {
+    	return text;
     }
 
 	public void execute(BeneratorContext context) {
@@ -141,24 +145,23 @@ public class EvaluateStatement implements Statement {
 				typeValue = "sql";
 			if (typeValue == null && targetObject instanceof StorageSystem)
 				typeValue = "execute";
-            String textValue = ExpressionUtil.evaluate(textEx, context);
             String encoding = ExpressionUtil.evaluate(encodingEx, context);
 
 			// run
 			Object result = null;
 			if ("sql".equals(typeValue)) {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
-						textValue, optimizeEx.evaluate(context));
+	            		text, optimizeEx.evaluate(context));
             } else if (SHELL.equals(typeValue)) {
-				result = runShell(uriValue, textValue, onErrorValue);
+				result = runShell(uriValue, text, onErrorValue);
             } else if ("execute".equals(typeValue)) {
-		        result = ((StorageSystem) targetObject).execute(textValue);
+		        result = ((StorageSystem) targetObject).execute(text);
             } else {
             	if (typeValue == null) 
             		typeValue = context.getDefaultScript();
 				if (!StringUtil.isEmpty(uriValue))
-					textValue = IOUtil.getContentOfURI(uriValue);
-				result = runScript(textValue, typeValue, onErrorValue, context);
+					text = IOUtil.getContentOfURI(uriValue);
+				result = runScript(text, typeValue, onErrorValue, context);
 			}
 			context.set("result", result);
 			Object assertionValue = ExpressionUtil.evaluate(assertionEx, context);

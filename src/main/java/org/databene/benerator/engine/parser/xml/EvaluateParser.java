@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
-import org.databene.commons.expression.TypeConvertingExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -56,7 +55,7 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		boolean evaluate = DescriptorConstants.EL_EVALUATE.equals(element.getNodeName());
 		Expression<String> id           = parseAttribute(ATT_ID, element);
-		Expression<String> text         = new TypeConvertingExpression<String>(parseScriptableElementText(element), String.class);
+		String text                     = getElementText(element);
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);
 		Expression<String> type         = parseAttribute(ATT_TYPE, element);
 		Expression<?> targetObject      = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));

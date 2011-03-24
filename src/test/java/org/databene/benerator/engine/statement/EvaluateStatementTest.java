@@ -49,7 +49,7 @@ public class EvaluateStatementTest {
 		EvaluateStatement stmt = new EvaluateStatement(
 			true,
 			constant("message"),
-			constant("'Hello World'"),
+			"'Hello World'",
 			null,
 			null,
 			null,
@@ -88,7 +88,7 @@ public class EvaluateStatementTest {
 		EvaluateStatement stmt = new EvaluateStatement(
 				true,
 				constant("result"),
-				constant(cmd),
+				cmd,
 				null,
 				constant("shell"),
 				null,
@@ -108,7 +108,7 @@ public class EvaluateStatementTest {
 		EvaluateStatement stmt = new EvaluateStatement(
 				true,
 				constant("message"),
-				constant("HelloHi"),
+				"HelloHi",
 				null,
 				null,
 				stSysEx,
