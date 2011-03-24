@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,8 +40,8 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Assert;
 import org.databene.commons.Expression;
-import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.ForNameExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
@@ -64,7 +64,7 @@ public class BeneratorScriptParser {
 
     // interface -------------------------------------------------------------------------------------------------------
 
-    public static WeightedSample<?>[] parseWeightedLiteralList(String text) throws ParseException {
+    public static WeightedSample<?>[] parseWeightedLiteralList(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return new WeightedSample[0];
         try {
@@ -80,18 +80,18 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause(), text);
+        		throw mapToSyntaxError((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in weightedLiteralList parsing", e);
         } catch (RecognitionException e) {
         	e.printStackTrace();
-        	throw mapToParseException(e, text);
+        	throw mapToSyntaxError(e, text);
         }
     }
 	
-    public static Expression<?> parseExpression(String text) throws ParseException {
+    public static Expression<?> parseExpression(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -104,17 +104,17 @@ public class BeneratorScriptParser {
 	            return convertNode(tree);
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause(), text);
+        		throw mapToSyntaxError((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
-        	throw mapToParseException(e, text);
+        	throw mapToSyntaxError(e, text);
         }
     }
 
-    public static WeightedTransition[] parseTransitionList(String text) throws ParseException {
+    public static WeightedTransition[] parseTransitionList(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -130,18 +130,18 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause(), text);
+        		throw mapToSyntaxError((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
         	e.printStackTrace();
-        	throw mapToParseException(e, text);
+        	throw mapToSyntaxError(e, text);
         }
     }
 	
-    public static Expression<?>[] parseBeanSpecList(String text) throws ParseException {
+    public static Expression<?>[] parseBeanSpecList(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -157,17 +157,17 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause(), text);
+        		throw mapToSyntaxError((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
-        	throw mapToParseException(e, text);
+        	throw mapToSyntaxError(e, text);
         }
     }
 	
-	public static Expression<?> parseBeanSpec(String text) throws ParseException {
+	public static Expression<?> parseBeanSpec(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return null;
         try {
@@ -183,13 +183,13 @@ public class BeneratorScriptParser {
 	        	return null;
         } catch (RuntimeException e) {
         	if (e.getCause() instanceof RecognitionException)
-        		throw mapToParseException((RecognitionException) e.getCause(), text);
+        		throw mapToSyntaxError((RecognitionException) e.getCause(), text);
         	else
         		throw e;
         } catch (IOException e) {
         	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
         } catch (RecognitionException e) {
-        	throw mapToParseException(e, text);
+        	throw mapToSyntaxError(e, text);
         }
     }
 	
@@ -198,10 +198,10 @@ public class BeneratorScriptParser {
 	private static void checkForSyntaxErrors(String text, String type,
 			BeneratorParser parser, ParserRuleReturnScope r) {
 		if (parser.getNumberOfSyntaxErrors() > 0)
-			throw new ParseException("Illegal " + type, text, -1, -1);
+			throw new SyntaxError("Illegal " + type, text, -1, -1);
 		CommonToken stop = (CommonToken) r.stop;
 		if (stop.getStopIndex() < StringUtil.trimRight(text).length() - 1)
-			throw new ParseException("Syntax error after " + stop.getText(), text);
+			throw new SyntaxError("Syntax error after " + stop.getText(), text);
 	}
 	
     private static BeneratorParser parser(String text) throws IOException {
@@ -211,12 +211,12 @@ public class BeneratorScriptParser {
 	    return parser;
     }
 	
-    private static ParseException mapToParseException(RecognitionException cause, String text) {
-    	return new ParseException("Error parsing Benerator Script expression", cause, 
+    private static SyntaxError mapToSyntaxError(RecognitionException cause, String text) {
+    	return new SyntaxError("Error parsing Benerator Script expression", cause, 
     			text, cause.line, cause.charPositionInLine);
     }
 
-    private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws ParseException {
+    private static WeightedSample<?>[] convertWeightedLiteralList(CommonTree node) throws SyntaxError {
     	if (!node.isNil())
     		return new WeightedSample[] { convertWeightedLiteral(node) };
     	else {
@@ -228,7 +228,7 @@ public class BeneratorScriptParser {
     	}
     }
 
-    private static WeightedSample<?> convertWeightedLiteral(CommonTree node) throws ParseException {
+    private static WeightedSample<?> convertWeightedLiteral(CommonTree node) throws SyntaxError {
 		if (node.getType() == BeneratorLexer.CARET) {
 			Expression<?> value = convertNode(childAt(0, node));
 			Expression<Double> weight = null;
@@ -241,7 +241,7 @@ public class BeneratorScriptParser {
 			return new WeightedSample<Object>(convertNode(node).evaluate(null), 1.); 
 	}
 
-    private static WeightedTransition[] convertTransitionList(CommonTree node) throws ParseException {
+    private static WeightedTransition[] convertTransitionList(CommonTree node) throws SyntaxError {
     	if (node.getType() == BeneratorLexer.ARROW)
     		return new WeightedTransition[] { convertTransition(node) };
     	else if (node.isNil()) {
@@ -251,11 +251,11 @@ public class BeneratorScriptParser {
 		    	transitions[i] = convertTransition(childAt(i, node));
 		    return transitions;
     	} else
-    		throw new ParseException("Unexpected token in transition list: ", node.getToken().getText(), 
+    		throw new SyntaxError("Unexpected token in transition list: ", node.getToken().getText(), 
     				node.getLine(), node.getCharPositionInLine());
     }
 
-	private static WeightedTransition convertTransition(CommonTree node) throws ParseException {
+	private static WeightedTransition convertTransition(CommonTree node) throws SyntaxError {
 		Assert.isTrue(node.getType() == BeneratorLexer.ARROW, "expected transition, found: " + node.getToken());
 		Expression<?> from = convertNode(childAt(0, node));
 		Expression<?> to = convertNode(childAt(1, node));
@@ -267,7 +267,7 @@ public class BeneratorScriptParser {
 		return new WeightedTransition(from.evaluate(null), to.evaluate(null), weight.evaluate(null));
 	}
 
-    private static Expression<?>[] convertBeanSpecList(CommonTree node) throws ParseException {
+    private static Expression<?>[] convertBeanSpecList(CommonTree node) throws SyntaxError {
     	if (node.getType() == BeneratorLexer.BEANSPEC)
     		return new Expression<?>[] { convertBeanSpec(node) };
     	else if (node.isNil()) {
@@ -277,10 +277,10 @@ public class BeneratorScriptParser {
 		    	specs[i] = convertBeanSpec(childAt(i, node));
 		    return specs;
     	} else
-    		throw new ParseException("Unexpected token", node.getToken().getText(), node.getLine(), node.getCharPositionInLine());
+    		throw new SyntaxError("Unexpected token", node.getToken().getText(), node.getLine(), node.getCharPositionInLine());
     }
 
-	private static Expression<?> convertBeanSpec(CommonTree node) throws ParseException {
+	private static Expression<?> convertBeanSpec(CommonTree node) throws SyntaxError {
 		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
 		node = childAt(0, node);
 		if (node.getType() == BeneratorLexer.QUALIFIEDNAME)
@@ -293,7 +293,7 @@ public class BeneratorScriptParser {
 			return convertNode(node);
 	}
 
-	private static Expression<?> convertNode(CommonTree node) throws ParseException {
+	private static Expression<?> convertNode(CommonTree node) throws SyntaxError {
     	switch (node.getType()) {
 			case BeneratorLexer.NULL: return new ConstantExpression<Object>(null);
 			case BeneratorLexer.BOOLEANLITERAL: return convertBooleanLiteral(node);
@@ -334,7 +334,7 @@ public class BeneratorScriptParser {
 			case BeneratorLexer.BARBAR: return convertConditionalOr(node);
 			case BeneratorLexer.QUES: return convertConditionalExpression(node);
 			case BeneratorLexer.EQ: return convertAssignment(node);
-			default: throw new ParseException("Unknown token type", String.valueOf(node.getType()), 
+			default: throw new SyntaxError("Unknown token type", String.valueOf(node.getType()), 
 					node.getLine(), node.getCharPositionInLine());
     	}
     }
@@ -397,21 +397,21 @@ public class BeneratorScriptParser {
 		return new ConstantExpression<Double>(Double.parseDouble(node.getText()));
     }
 
-    private static Expression<?> convertCreator(CommonTree node) throws ParseException {
+    private static Expression<?> convertCreator(CommonTree node) throws SyntaxError {
 		List<CommonTree> childNodes = getChildNodes(node);
     	String className = parseQualifiedNameOfClass(childNodes.get(0));
     	Expression<?>[] params = parseArguments(childNodes.get(1));
     	return new ParameterizedConstruction<Object>(className, params);
     }
 
-    private static Expression<?> convertBean(CommonTree node) throws ParseException {
+    private static Expression<?> convertBean(CommonTree node) throws SyntaxError {
 		List<CommonTree> childNodes = getChildNodes(node);
     	String className = parseQualifiedNameOfClass(childNodes.get(0));
     	Assignment[] props = parseFieldAssignments(childNodes, 1);
     	return new BeanConstruction<Object>(className, props);
     }
 
-    private static Assignment[] parseFieldAssignments(List<CommonTree> nodes, int firstIndex) throws ParseException {
+    private static Assignment[] parseFieldAssignments(List<CommonTree> nodes, int firstIndex) throws SyntaxError {
     	Assignment[] assignments = new Assignment[nodes.size() - firstIndex];
     	for (int i = firstIndex; i < nodes.size(); i++) {
     		CommonTree assignmentNode = nodes.get(i);
@@ -424,43 +424,43 @@ public class BeneratorScriptParser {
 		return assignments;
     }
 
-	private static Expression<?> convertInvocation(CommonTree node) throws ParseException {
+	private static Expression<?> convertInvocation(CommonTree node) throws SyntaxError {
     	String[] qn = convertQualifiedNameToStringArray(childAt(0, node));
     	Expression<?>[] argExpressions = parseArguments(childAt(1, node));
     	return new QNInvocationExpression(qn, argExpressions);
     }
 
-    private static Expression<?> convertSubInvocation(CommonTree node) throws ParseException {
+    private static Expression<?> convertSubInvocation(CommonTree node) throws SyntaxError {
     	Expression<?> object = convertNode(childAt(0, node));
     	String methodMame = (String) convertNode(childAt(1, node)).evaluate(null);
     	Expression<?>[] argsExpressions = parseArguments(childAt(2, node));
     	return new InvocationExpression(object, methodMame, argsExpressions);
     }
 
-    private static Expression<?> convertIndex(CommonTree node) throws ParseException {
+    private static Expression<?> convertIndex(CommonTree node) throws SyntaxError {
 		return new IndexExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<?> convertField(CommonTree node) throws ParseException {
+    private static Expression<?> convertField(CommonTree node) throws SyntaxError {
     	return new FieldExpression(convertNode(childAt(0, node)), convertIdentifier(childAt(1, node)).evaluate(null));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Expression<?> convertCast(CommonTree node) throws ParseException {
+    private static Expression<?> convertCast(CommonTree node) throws SyntaxError {
     	Class<?> targetType = (Class<?>) convertNode(childAt(0, node)).evaluate(null);
 		Expression<?> sourceExpression = convertNode(childAt(1, node));
 		return new TypeConvertingExpression(sourceExpression, targetType);
     }
 
-    private static Expression<?> convertNegation(CommonTree node) throws ParseException {
+    private static Expression<?> convertNegation(CommonTree node) throws SyntaxError {
 		return new NegationExpression(convertNode(childAt(0, node)));
     }
 
-    private static Expression<?> convertLogicalComplement(CommonTree node) throws ParseException {
+    private static Expression<?> convertLogicalComplement(CommonTree node) throws SyntaxError {
 		return new LogicalComplementExpression(convertNode(childAt(0, node)));
     }
 
-    private static Expression<?> convertBitwiseComplement(CommonTree node) throws ParseException {
+    private static Expression<?> convertBitwiseComplement(CommonTree node) throws SyntaxError {
 		return new BitwiseComplementExpression(convertNode(childAt(0, node)));
     }
 
@@ -475,7 +475,7 @@ public class BeneratorScriptParser {
 		return className.toString();
     }
 
-    private static Expression<?>[] parseArguments(CommonTree node) throws ParseException {
+    private static Expression<?>[] parseArguments(CommonTree node) throws SyntaxError {
 		List<CommonTree> childNodes = getChildNodes(node);
 		if (childNodes == null)
 			return EMPTY_ARGUMENT_LIST;
@@ -487,93 +487,93 @@ public class BeneratorScriptParser {
 		return result;
     }
 
-	private static Expression<?> convertPlus(CommonTree node) throws ParseException {
+	private static Expression<?> convertPlus(CommonTree node) throws SyntaxError {
 		return new SumExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-	private static Expression<?> convertMinus(CommonTree node) throws ParseException {
+	private static Expression<?> convertMinus(CommonTree node) throws SyntaxError {
 		return new SubtractionExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-	private static Expression<?> convertStar(CommonTree node) throws ParseException {
+	private static Expression<?> convertStar(CommonTree node) throws SyntaxError {
 		return new MultiplicationExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<?> convertSlash(CommonTree node) throws ParseException {
+    private static Expression<?> convertSlash(CommonTree node) throws SyntaxError {
 		return new DivisionExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertPercent(CommonTree node) throws ParseException {
+    private static Expression<Object> convertPercent(CommonTree node) throws SyntaxError {
 		return new ModuloExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertShiftLeft(CommonTree node) throws ParseException {
+    private static Expression<Object> convertShiftLeft(CommonTree node) throws SyntaxError {
 		return new LeftShiftExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertShiftRight(CommonTree node) throws ParseException {
+    private static Expression<Object> convertShiftRight(CommonTree node) throws SyntaxError {
 		return new RightShiftExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertShiftRight2(CommonTree node) throws ParseException {
+    private static Expression<Object> convertShiftRight2(CommonTree node) throws SyntaxError {
 		return new UnsignedRightShiftExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertAnd(CommonTree node) throws ParseException {
+    private static Expression<Object> convertAnd(CommonTree node) throws SyntaxError {
 		return new BitwiseAndExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertInclusiveOr(CommonTree node) throws ParseException {
+    private static Expression<Object> convertInclusiveOr(CommonTree node) throws SyntaxError {
 		return new BitwiseOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Object> convertExclusiveOr(CommonTree node) throws ParseException {
+    private static Expression<Object> convertExclusiveOr(CommonTree node) throws SyntaxError {
 		return new BitwiseExclusiveOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertEquals(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertEquals(CommonTree node) throws SyntaxError {
 		return new EqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
     
-    private static Expression<Boolean> convertNotEquals(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertNotEquals(CommonTree node) throws SyntaxError {
 		return new NotEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
     
-    private static Expression<Boolean> convertLess(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertLess(CommonTree node) throws SyntaxError {
 		return new LessExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertLessOrEquals(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertLessOrEquals(CommonTree node) throws SyntaxError {
 		return new LessOrEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertGreater(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertGreater(CommonTree node) throws SyntaxError {
 		return new GreaterExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertGreaterOrEquals(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertGreaterOrEquals(CommonTree node) throws SyntaxError {
 		return new GreaterOrEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertConditionalOr(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertConditionalOr(CommonTree node) throws SyntaxError {
 		return new ConditionalOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws ParseException {
+    private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws SyntaxError {
 		return new ConditionalAndExpression(
 				convertNode(childAt(0, node)), 
 				convertNode(childAt(1, node)));
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Expression<?> convertConditionalExpression(CommonTree node) throws ParseException {
+    private static Expression<?> convertConditionalExpression(CommonTree node) throws SyntaxError {
 		return new ConditionalExpression(
 				convertNode(childAt(0, node)),  // condition
 				convertNode(childAt(1, node)),  // true alternative 
 				convertNode(childAt(2, node))); // false alternative
     }
     
-	private static Expression<?> convertAssignment(CommonTree node) throws ParseException {
+	private static Expression<?> convertAssignment(CommonTree node) throws SyntaxError {
 		return new AssignmentExpression(
 				convertQualifiedNameToStringArray(childAt(0, node)),
 				convertNode(childAt(1, node)));

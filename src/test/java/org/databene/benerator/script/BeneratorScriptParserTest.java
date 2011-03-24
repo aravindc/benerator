@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,7 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
-import org.databene.commons.ParseException;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.Expression;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.context.DefaultContext;
@@ -534,42 +534,42 @@ public class BeneratorScriptParserTest {
 	    expression.evaluate(context);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testMissingRHS() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("3 + ");
 	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testMissingLHS() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("/ 2");
 	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testMissingOperator() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("'A' 'B'");
 	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testInvalidChoiceCondition() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("1 = 3 ? 'A' : 'B'");
 	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testChoiceWithMissingFalseAlternative() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("1 == 3 ? 'A'");
 	    BeneratorContext context = new BeneratorContext();
 	    expression.evaluate(context);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testChoiceWithMissingTrueAlternative() throws Exception {
 		Expression<?> expression = BeneratorScriptParser.parseExpression("1 == 1 ? : 'B'");
 	    BeneratorContext context = new BeneratorContext();
