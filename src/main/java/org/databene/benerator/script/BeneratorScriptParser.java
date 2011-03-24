@@ -200,8 +200,12 @@ public class BeneratorScriptParser {
 		if (parser.getNumberOfSyntaxErrors() > 0)
 			throw new SyntaxError("Illegal " + type, text, -1, -1);
 		CommonToken stop = (CommonToken) r.stop;
-		if (stop.getStopIndex() < StringUtil.trimRight(text).length() - 1)
-			throw new SyntaxError("Syntax error after " + stop.getText(), text);
+		if (stop.getStopIndex() < StringUtil.trimRight(text).length() - 1) {
+			if (stop.getStopIndex() == 0)
+				throw new SyntaxError("Syntax error after " + stop.getText(), text);
+			else
+				throw new SyntaxError("Syntax error at the beginning ", text);
+		}
 	}
 	
     private static BeneratorParser parser(String text) throws IOException {
