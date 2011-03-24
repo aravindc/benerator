@@ -108,8 +108,9 @@ public class Benerator {
 	}
 
 	private static void printVersionInfo(InfoPrinter printer) {
+		VersionInfo version = VersionInfo.getInfo("benerator");
 		printer.printLines(
-			"Benerator " + VersionInfo.getInfo("benerator"),
+			"Benerator " + version.getVersion() + " build " + version.getBuildNumber(),
 			"Java version " + VMInfo.getJavaVersion(),
 			"JVM " + VMInfo.getJavaVmName() + " " + VMInfo.getJavaVmVersion() + " (" + VMInfo.getJavaVmVendor() + ")",
 			"OS " + SystemInfo.getOsName() + " " + SystemInfo.getOsVersion() + " (" + SystemInfo.getOsArchitecture() + ")"
