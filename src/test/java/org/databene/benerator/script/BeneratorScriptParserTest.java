@@ -92,6 +92,7 @@ public class BeneratorScriptParserTest {
 	@Test
 	public void testStringLiteral() throws Exception {
 		checkExpression("Test", "'Test'");
+		checkExpression("'Test'", "'\\'Test\\''");
 		checkExpression("\r\n", "'\\r\\n'");
 		checkExpression("col='value'", "'col=\\'value\\''");
 		checkExpression("", "''");
