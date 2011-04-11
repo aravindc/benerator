@@ -37,7 +37,6 @@ import org.databene.jdbacl.ColumnInfo;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.DatabaseDialect;
 import org.databene.jdbacl.DatabaseDialectManager;
-import org.databene.jdbacl.PooledConnectionHandler;
 import org.databene.jdbacl.ResultSetConverter;
 import org.databene.jdbacl.dialect.OracleDialect;
 import org.databene.jdbacl.model.DBCatalog;
@@ -67,9 +66,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -78,8 +77,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Types;
-
-import javax.sql.PooledConnection;
 
 /**
  * RDBMS implementation of the {@link StorageSystem} interface.<br/>
@@ -134,6 +131,7 @@ public class DBSystem extends AbstractStorageSystem {
     private boolean dynamicQuerySupported;
     
 	private boolean connectedBefore;
+	private AtomicInteger invalidationCount;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -167,6 +165,7 @@ public class DBSystem extends AbstractStorageSystem {
         this.contexts = new HashMap<Thread, ThreadContext>();
         this.driverTypeMapper = driverTypeMapper();
         this.connectedBefore = false;
+        this.invalidationCount = new AtomicInteger();
     }
 
 	// properties ------------------------------------------------------------------------------------------------------
@@ -520,15 +519,11 @@ public class DBSystem extends AbstractStorageSystem {
     
     public Connection createConnection() {
 		try {
-            Connection connection = DBUtil.connect(url, driver, user, password);
+            Connection connection = DBUtil.connect(url, driver, user, password, readOnly);
             if (!connectedBefore) {
             	DBUtil.logMetaData(connection);
             	connectedBefore = true;
             }
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			connection = (Connection) Proxy.newProxyInstance(classLoader, 
-					new Class[] { Connection.class, PooledConnection.class }, 
-					new PooledConnectionHandler(connection, readOnly));
             connection.setAutoCommit(false);
             return connection;
         } catch (ConnectFailedException e) {
@@ -537,7 +532,7 @@ public class DBSystem extends AbstractStorageSystem {
 			throw new ConfigurationError("Turning off auto-commit failed", e);
 		}
 	}
-	
+
     public Connection getConnection() {
         return getThreadContext().connection;
     }
@@ -545,6 +540,7 @@ public class DBSystem extends AbstractStorageSystem {
 	public void invalidate() {
 		typeDescriptors = null;
 		tables = null;
+		invalidationCount.incrementAndGet();
 		if (environment != null) {
 			File bufferFile = CachingDBImporter.getCacheFile(environment);
 			if (bufferFile.exists()) {
@@ -557,6 +553,10 @@ public class DBSystem extends AbstractStorageSystem {
 			}
 		}
 	} 
+	
+	public int invalidationCount() {
+		return invalidationCount.get();
+	}
 	
 	public void parseMetaData() {
         this.tables = new HashMap<String, DBTable>();
