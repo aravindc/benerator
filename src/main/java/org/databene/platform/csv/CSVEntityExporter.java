@@ -148,7 +148,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
         if (logger.isDebugEnabled())
             logger.debug("exporting " + entity);
         if (lfRequired)
-        	printer.println();
+        	println();
         else
         	lfRequired = true;
         for (int i = 0; i < columns.length; i++) {
@@ -173,17 +173,17 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     @Override
     protected void preClosePrinter() {
     	if (endWithNewLine)
-    		printer.println();
+    		println();
     }
 
     
     
-    // private helpers -------------------------------------------------------------------------------------------------
+	// private helpers -------------------------------------------------------------------------------------------------
 
 	private void printHeaderRow() {
     	if (!wasAppended && !headless && columns != null) {
 			if (wasAppended && !endWithNewLine)
-				printer.println();
+				println();
 		    for (int i = 0; i < columns.length; i++) {
 		        if (i > 0)
 		            printer.print(separator);
@@ -194,5 +194,6 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 			lfRequired = (wasAppended && !endWithNewLine);
 		}
     }
+	
 	
 }

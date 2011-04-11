@@ -94,7 +94,7 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
      */
     protected void startConsumingImpl(E data) {
     	printer.print(plainConverter.convert(data));
-    	printer.print(lineSeparator);
+    	println();
     }
 
     /**
@@ -182,6 +182,10 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
         printer = IOUtil.getPrinterForURI(uri, encoding, append, lineSeparator, true);
         postInitPrinter(data);
     }
+
+    protected void println() {
+    	printer.print(lineSeparator);
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
