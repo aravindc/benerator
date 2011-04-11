@@ -32,6 +32,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.expression.CachedExpression;
 import org.databene.benerator.engine.expression.xml.XMLConsumerExpression;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
@@ -177,7 +178,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     }
 
 	private Expression<Consumer<?>> parseConsumers(Element entityElement, boolean consumersExpected, ResourceManager resourceManager) {
-		return new XMLConsumerExpression(entityElement, consumersExpected, resourceManager);
+		return new CachedExpression<Consumer<?>>(new XMLConsumerExpression(entityElement, consumersExpected, resourceManager));
 	}
 
 	private InstanceDescriptor mapDescriptorElement(Element element, BeneratorContext context) {
