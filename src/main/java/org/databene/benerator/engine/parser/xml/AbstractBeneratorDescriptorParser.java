@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,9 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.ATT_ON_ERROR;
 import static org.databene.benerator.engine.DescriptorConstants.ATT_PAGESIZE;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.parseScriptableStringAttribute;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ErrorHandlerExpression;
@@ -50,7 +53,11 @@ public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLEleme
 	protected Logger logger = LoggerFactory.getLogger(AbstractBeneratorDescriptorParser.class);
 
 	public AbstractBeneratorDescriptorParser(String elementName, Class<?>... supportedParentTypes) {
-		super(elementName, supportedParentTypes);
+		this(elementName, new HashSet<String>(), supportedParentTypes);
+    }
+
+	public AbstractBeneratorDescriptorParser(String elementName, Set<String> supportedAttributes, Class<?>... supportedParentTypes) {
+		super(elementName, supportedAttributes, supportedParentTypes);
     }
 
 	public final Statement parse(Element element, Statement[] parentPath, ParseContext<Statement> context) {
