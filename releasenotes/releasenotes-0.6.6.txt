@@ -20,6 +20,9 @@ enhancements
 - RandomUtil.randomFromWeightLiteral(this.weights)
 - generic version configuration and dependency verification
 - Benerator now provides its build number
+- <execute invalidate='false' />
+- new property in Benerator MBean: ConnectionCount
+- improved read-only database checking
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
