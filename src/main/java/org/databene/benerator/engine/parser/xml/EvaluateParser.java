@@ -24,10 +24,13 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
+import java.util.Set;
+
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
 import org.w3c.dom.Element;
@@ -39,9 +42,12 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class EvaluateParser extends AbstractBeneratorDescriptorParser {
+	
+	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(
+			ATT_ID, ATT_URI, ATT_TYPE, ATT_TARGET, ATT_ON_ERROR, ATT_ENCODING, ATT_OPTIMIZE, ATT_INVALIDATE, ATT_ASSERT);
 
 	public EvaluateParser() {
-		super("");
+		super("", SUPPORTED_ATTRIBUTES);
 	}
 
 	@Override
@@ -53,6 +59,7 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 
 	@Override
 	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+		checkAttributeSupport(element);
 		boolean evaluate = DescriptorConstants.EL_EVALUATE.equals(element.getNodeName());
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		String text                     = getElementText(element);
@@ -62,8 +69,9 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 		Expression<String> onError      = parseScriptableStringAttribute(ATT_ON_ERROR, element);
 		Expression<String> encoding     = parseScriptableStringAttribute(ATT_ENCODING, element);
 		Expression<Boolean> optimize    = parseBooleanExpressionAttribute(ATT_OPTIMIZE, element, false);
+		Expression<Boolean> invalidate  = parseBooleanExpressionAttribute(ATT_INVALIDATE, element, null);
 		Expression<?> assertion         = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT));
-		return new EvaluateStatement(evaluate, id, text, uri, type, targetObject, onError, encoding, optimize, assertion);
+		return new EvaluateStatement(evaluate, id, text, uri, type, targetObject, onError, encoding, optimize, invalidate, assertion);
 	}
 
 }

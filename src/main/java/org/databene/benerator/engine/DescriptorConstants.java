@@ -106,6 +106,7 @@ public interface DescriptorConstants {
     static final String ATT_ASSERT = "assert";
     static final String ATT_TYPE = "type";
     static final String ATT_OPTIMIZE = "optimize";
+    static final String ATT_INVALIDATE = "invalidate";
     static final String ATT_ENCODING = "encoding";
     static final String ATT_TARGET = "target";
     static final String ATT_URI = "uri";

@@ -56,6 +56,7 @@ public class EvaluateStatementTest {
 			constant("fatal"),
 			constant(Encodings.UTF_8),
 			constant(false),
+			null,
 			null);
 		BeneratorContext context = new BeneratorContext();
 		stmt.execute(context);
@@ -74,6 +75,7 @@ public class EvaluateStatementTest {
 			constant("fatal"),
 			constant(Encodings.UTF_8),
 			constant(false),
+			null,
 			null);
 		BeneratorContext context = new BeneratorContext();
 		stmt.execute(context);
@@ -95,6 +97,7 @@ public class EvaluateStatementTest {
 				constant("fatal"),
 				constant(Encodings.UTF_8),
 				constant(false),
+				null,
 				null);
 			BeneratorContext context = new BeneratorContext();
 			stmt.execute(context);
@@ -115,6 +118,7 @@ public class EvaluateStatementTest {
 				constant("fatal"),
 				constant(Encodings.UTF_8),
 				constant(false),
+				null,
 				null);
 			BeneratorContext context = new BeneratorContext();
 			stmt.execute(context);

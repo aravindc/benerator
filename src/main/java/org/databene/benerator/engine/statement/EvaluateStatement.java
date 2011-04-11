@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -94,12 +94,13 @@ public class EvaluateStatement implements Statement {
 	Expression<String> onErrorEx;
 	Expression<String> encodingEx;
     Expression<Boolean> optimizeEx;
+    Expression<Boolean> invalidateEx;
     Expression<?> assertionEx;
 
     public EvaluateStatement(boolean evaluate, Expression<String> idEx, String text, 
     		Expression<String> uriEx, Expression<String> typeEx, Expression<?> targetObjectEx,
     		Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
-            Expression<?> assertionEx) {
+            Expression<Boolean> invalidateEx, Expression<?> assertionEx) {
     	this.evaluate = evaluate;
     	this.idEx = idEx;
     	this.text = text;
@@ -109,6 +110,7 @@ public class EvaluateStatement implements Statement {
     	this.onErrorEx = onErrorEx;
     	this.encodingEx = encodingEx;
     	this.optimizeEx = optimizeEx;
+    	this.invalidateEx = invalidateEx;
     	this.assertionEx = assertionEx;
     }
     
@@ -151,7 +153,7 @@ public class EvaluateStatement implements Statement {
 			Object result = null;
 			if ("sql".equals(typeValue)) {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
-	            		text, optimizeEx.evaluate(context));
+	            		text, optimizeEx.evaluate(context), invalidateEx.evaluate(context));
             } else if (SHELL.equals(typeValue)) {
 				result = runShell(uriValue, text, onErrorValue);
             } else if ("execute".equals(typeValue)) {
@@ -226,7 +228,7 @@ public class EvaluateStatement implements Statement {
 	}
 
 	private Object runSql(String uri, Object targetObject, String onError,
-			String encoding, String text, boolean optimize) {
+			String encoding, String text, boolean optimize, Boolean invalidate) {
 		if (targetObject == null)
 			throw new ConfigurationError("Please specify the 'target' database to execute the SQL script");
 		Assert.instanceOf(targetObject, DBSystem.class, "target");
@@ -246,7 +248,7 @@ public class EvaluateStatement implements Statement {
             	result = DBUtil.runScript(text, connection, optimize, errorHandler);
             else
             	result = DBUtil.runScript(uri, encoding, connection, optimize, errorHandler);
-            if (!evaluate)
+            if (!evaluate && !Boolean.FALSE.equals(invalidate))
             	db.invalidate(); // possibly we changed the database structure
             connection.commit();
 		} catch (Exception sqle) { 

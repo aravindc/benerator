@@ -87,4 +87,25 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 		}
 	}
 
+	@Test
+	public void testDbInvalidation() throws Exception {
+		String url = HSQLUtil.getInMemoryURL("benerator");
+		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
+		BeneratorContext context = new BeneratorContext();
+		context.set("db", db);
+		assertEquals(0, db.invalidationCount());
+		try {
+			db.execute("create table epast_test (id int)");
+			Statement statement = parse("<execute target='db'>select * from epast_test where 1 = 0</execute>");
+			statement.execute(context);
+			assertEquals(1, db.invalidationCount());
+			Statement statement2 = parse("<execute target='db' invalidate='false'>select * from epast_test where 1 = 0</execute>");
+			statement2.execute(context);
+			assertEquals(1, db.invalidationCount());
+		} finally {
+			db.execute("drop table epast_test");
+			db.close();
+		}
+	}
+
 }
