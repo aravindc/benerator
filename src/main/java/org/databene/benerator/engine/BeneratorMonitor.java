@@ -26,6 +26,8 @@ import java.lang.management.ManagementFactory;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.databene.jdbacl.DBUtil;
+
 /**
  * MBean implementation for monitoring Benerator.<br/><br/>
  * Created: 27.07.2010 21:15:28
@@ -74,6 +76,10 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
     	this.totalGenerationCount = totalGenerationCount;
     }
 
+	public int getConnectionCount() {
+		return DBUtil.getConnectionCount();
+	}
+	
 	class ControlThread extends Thread {
 		@Override
 		public void run() {
@@ -96,5 +102,5 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
 			latestGenerationCount = currentGenerationCount;
         }
 	}
-	
+
 }
