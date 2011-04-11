@@ -21,32 +21,32 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import static org.databene.benerator.engine.DescriptorConstants.*;
-import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
+import static org.junit.Assert.*;
 
-import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.statement.ErrorStatement;
 import org.databene.commons.Expression;
-import org.databene.commons.expression.StringExpression;
+import org.databene.commons.context.DefaultContext;
+import org.databene.commons.xml.XMLUtil;
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * Parses Benerator's &lt;error&gt; descriptor XML element and maps it to an {@link ErrorStatement}.<br/><br/>
- * Created: 12.01.2011 09:03:58
- * @since 0.6.4
+ * TODO Document class.<br/><br/>
+ * Created: 11.04.2011 13:10:30
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class ErrorParser extends AbstractBeneratorDescriptorParser {
+public class DescriptorParserUtilTest {
 
-	public ErrorParser() {
-	    super(EL_ERROR);
-    }
-
-	@Override
-	public ErrorStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-        Expression<String> messageEx = new StringExpression(parseScriptableElementText(element, true));
-		Expression<Integer> codeEx = parseIntAttribute("type", element);
-		return new ErrorStatement(messageEx, codeEx);
-    }
-
+	@Test
+	public void testParseScriptableElementText() {
+		Element element = XMLUtil.parseStringAsElement("<text>'\\'Test\\''</text>");
+		
+		Expression<String> asIsExpression = DescriptorParserUtil.parseScriptableElementText(element, false);
+		System.out.println(asIsExpression);
+		assertEquals("'\\'Test\\''", asIsExpression.evaluate(new DefaultContext()));
+		
+		Expression<String> unescapingExpression = DescriptorParserUtil.parseScriptableElementText(element, true);
+		System.out.println(unescapingExpression);
+		assertEquals("''Test''", unescapingExpression.evaluate(new DefaultContext()));
+	}
 }

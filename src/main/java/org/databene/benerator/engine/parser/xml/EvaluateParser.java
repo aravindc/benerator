@@ -33,6 +33,7 @@ import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FeatureAccessExpression;
+import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -62,8 +63,8 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 		checkAttributeSupport(element);
 		boolean evaluate = DescriptorConstants.EL_EVALUATE.equals(element.getNodeName());
 		Expression<String> id           = parseAttribute(ATT_ID, element);
-		String text                     = getElementText(element);
-		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI,  element);
+		Expression<String> text         = new StringExpression(parseScriptableElementText(element, false));
+		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI, element);
 		Expression<String> type         = parseAttribute(ATT_TYPE, element);
 		Expression<?> targetObject      = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));
 		Expression<String> onError      = parseScriptableStringAttribute(ATT_ON_ERROR, element);

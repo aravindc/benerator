@@ -68,7 +68,7 @@ public class PropertyParser extends AbstractBeneratorDescriptorParser {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Expression<?> parseValue(Element element) {
 		if (element.hasAttribute(ATT_VALUE))
-			return new ScriptableExpression(element.getAttribute(ATT_VALUE), null);
+			return DescriptorParserUtil.parseScriptableStringAttribute(ATT_VALUE, element);
 		else if (element.hasAttribute(ATT_REF))
 			return new ContextReference(element.getAttribute(ATT_REF));
 		else if (element.hasAttribute(ATT_SOURCE))

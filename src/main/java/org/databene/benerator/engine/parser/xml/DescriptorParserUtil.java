@@ -28,7 +28,9 @@ import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.expression.ConvertingExpression;
+import org.databene.commons.expression.StringExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
+import org.databene.commons.expression.UnescapeExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.text.SplitStringConverter;
 import org.w3c.dom.Element;
@@ -53,18 +55,25 @@ public class DescriptorParserUtil {
 
 	// creating expressions for data retrieval -------------------------------------------------------------------------
 	
-	public static Expression<?> parseScriptableElementText(Element element) {
-	    return new ScriptableExpression(XMLUtil.getText(element), null);
-    }
-
-	public static Expression<?> parseScriptableTextAttribute(String name, Element element) {
-	    return new ScriptableExpression(getAttribute(name, element), null);
+	public static Expression<String> parseScriptableElementText(Element element, boolean unescape) {
+		Expression<String> result = new StringExpression(new ScriptableExpression(XMLUtil.getText(element), null));
+		if (unescape)
+			result = new UnescapeExpression(result);
+		return result;
     }
 
 	public static Expression<String> parseScriptableStringAttribute(String name, Element element) {
+	    return parseScriptableStringAttribute(name, element, true);
+    }
+
+	public static Expression<String> parseScriptableStringAttribute(String name, Element element, boolean unescape) {
 	    String attribute = getAttribute(name, element);
-		return (attribute != null ? new TypeConvertingExpression<String>(
-				new ScriptableExpression(attribute, null), String.class) : null);
+	    if (attribute == null)
+	    	return null;
+	    Expression<String> result = new StringExpression(new ScriptableExpression(attribute, null));
+		if (unescape)
+			result = new UnescapeExpression(result);
+	    return result;
     }
 
 	public static Expression<String[]> parseScriptableStringArrayAttribute(String name, Element element) {

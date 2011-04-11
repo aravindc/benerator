@@ -87,7 +87,7 @@ public class EvaluateStatement implements Statement {
 	
 	boolean evaluate;
 	Expression<String> idEx;
-	String text;
+	Expression<String> textEx;
 	Expression<String> uriEx;
 	Expression<String> typeEx;
 	Expression<?> targetObjectEx;
@@ -97,13 +97,13 @@ public class EvaluateStatement implements Statement {
     Expression<Boolean> invalidateEx;
     Expression<?> assertionEx;
 
-    public EvaluateStatement(boolean evaluate, Expression<String> idEx, String text, 
+    public EvaluateStatement(boolean evaluate, Expression<String> idEx, Expression<String> textEx, 
     		Expression<String> uriEx, Expression<String> typeEx, Expression<?> targetObjectEx,
     		Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
             Expression<Boolean> invalidateEx, Expression<?> assertionEx) {
     	this.evaluate = evaluate;
     	this.idEx = idEx;
-    	this.text = text;
+    	this.textEx = textEx;
     	this.uriEx = uriEx;
     	this.typeEx = typeEx;
     	this.targetObjectEx = targetObjectEx;
@@ -114,8 +114,8 @@ public class EvaluateStatement implements Statement {
     	this.assertionEx = assertionEx;
     }
     
-    public String getText() {
-    	return text;
+    public Expression<String> getTextEx() {
+    	return textEx;
     }
 
 	public void execute(BeneratorContext context) {
@@ -151,6 +151,7 @@ public class EvaluateStatement implements Statement {
 
 			// run
 			Object result = null;
+			String text = ExpressionUtil.evaluate(textEx, context);
 			if ("sql".equals(typeValue)) {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
 	            		text, optimizeEx.evaluate(context), invalidateEx.evaluate(context));
@@ -243,14 +244,13 @@ public class EvaluateStatement implements Statement {
         Object result = null;
 		ErrorHandler errorHandler = new ErrorHandler(LogCategories.SQL, Level.valueOf(onError));
         try {
-            connection = db.createConnection();
+            connection = db.getConnection();
             if (text != null)
             	result = DBUtil.runScript(text, connection, optimize, errorHandler);
             else
             	result = DBUtil.runScript(uri, encoding, connection, optimize, errorHandler);
             if (!evaluate && !Boolean.FALSE.equals(invalidate))
             	db.invalidate(); // possibly we changed the database structure
-            connection.commit();
 		} catch (Exception sqle) { 
             if (connection != null) {
             	try {
@@ -260,8 +260,6 @@ public class EvaluateStatement implements Statement {
                 }
             }
             errorHandler.handleError("Error in SQL script execution", sqle);
-		} finally {
-            DBUtil.close(connection);
         }
 		return result;
 	}

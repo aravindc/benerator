@@ -62,7 +62,7 @@ public class ScriptableExpression extends DynamicExpression<Object> {
 		else if (isScript)
 			result = ScriptUtil.evaluate(scriptOrText, context);
 		else
-			result = StringUtil.unescape(scriptOrText);
+			result = scriptOrText;
 		return result;
     }
 

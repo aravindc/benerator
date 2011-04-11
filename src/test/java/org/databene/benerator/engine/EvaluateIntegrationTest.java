@@ -43,7 +43,7 @@ public class EvaluateIntegrationTest extends BeneratorIntegrationTest {
 	@Test
 	public void testBeneratorScriptStringLiteralWithQuotes() {
 		EvaluateStatement statement = (EvaluateStatement) parse("<evaluate id='result'>'\\'TEST\\''</evaluate>");
-		assertEquals("'\\'TEST\\''", statement.getText());
+		assertEquals("'\\'TEST\\''", statement.getTextEx().evaluate(context));
 		statement.execute(context);
 		assertEquals("'TEST'", context.get("result"));
 	}

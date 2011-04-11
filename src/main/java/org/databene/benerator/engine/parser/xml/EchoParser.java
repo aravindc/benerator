@@ -28,7 +28,6 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.EchoStatement;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
-import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
 
 /**
@@ -49,7 +48,7 @@ public class EchoParser extends AbstractBeneratorDescriptorParser {
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
 	        messageEx = parseScriptableStringAttribute(ATT_MESSAGE, element);
         else
-			messageEx = new StringExpression(parseScriptableElementText(element));
+			messageEx = parseScriptableElementText(element, true);
 		Expression<String> typeEx = parseScriptableStringAttribute("type", element);
 		return new EchoStatement(messageEx, typeEx);
     }

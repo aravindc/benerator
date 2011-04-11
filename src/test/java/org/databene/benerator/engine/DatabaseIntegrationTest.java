@@ -74,6 +74,13 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	// test methods ----------------------------------------------------------------------------------------------------
 
 	@Test
+	public void testScriptResolution() {
+		context.set("tblName", "referee");
+		parseAndExecute("<evaluate id='refCount' target='db'>{'select count(*) from ' + tblName}</evaluate>");
+		assertEquals(2, ((Number) context.get("refCount")).intValue());
+	}
+
+	@Test
 	public void testDbRef_default_nullable() {
 		parseAndExecute("<generate type='referer' count='3' consumer='cons'/>");
 		List<Entity> products = consumer.getProducts();
