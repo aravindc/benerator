@@ -46,7 +46,6 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
     
     private String instanceName;
     private E currentInstance;
-	private GeneratorContext context;
 	private boolean firstGeneration;
 	private String message;
 	private ComponentAndVariableSupport<E> support;
