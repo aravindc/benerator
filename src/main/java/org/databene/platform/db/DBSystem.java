@@ -132,7 +132,8 @@ public class DBSystem extends AbstractStorageSystem {
     
 	private boolean connectedBefore;
 	private AtomicInteger invalidationCount;
-    
+	private DBMetaDataImporter importer;
+	
     // constructors ----------------------------------------------------------------------------------------------------
 
     public DBSystem(String id, String url, String driver, String user, String password) {
@@ -383,6 +384,7 @@ public class DBSystem extends AbstractStorageSystem {
             iterator.next().close();
             iterator.remove();
         }
+        IOUtil.close(importer);
     }
 
 	public Entity queryEntityById(String tableName, Object id) {
@@ -502,7 +504,7 @@ public class DBSystem extends AbstractStorageSystem {
     @Override
 	public Object execute(String sql) {
     	try {
-	        DBUtil.executeUpdate(sql, getThreadContext().connection);
+	        DBUtil.executeUpdate(sql, getConnection());
 	        return null;
         } catch (SQLException e) {
 	        throw new RuntimeException(e);
@@ -624,7 +626,7 @@ public class DBSystem extends AbstractStorageSystem {
 
 	private void fetchDbMetaData() {
 		try {
-		    DBMetaDataImporter importer = createJDBCImporter();
+		    importer = createJDBCImporter();
 		    if (metaDataCache)
 		    	importer = new CachingDBImporter(importer, getEnvironment());
 		    database = importer.importDatabase();
