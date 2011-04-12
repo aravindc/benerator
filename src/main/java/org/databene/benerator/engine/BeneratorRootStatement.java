@@ -118,8 +118,8 @@ public class BeneratorRootStatement extends SequentialStatement {
 		                throw new ConfigurationError("error parsing file " + uri, e);
 	                }
                 }
-            }
-			statement.execute(context);
+            } else if (!(statement instanceof BeneratorRootStatement))
+            	statement.execute(context);
         }
 	}
 	
