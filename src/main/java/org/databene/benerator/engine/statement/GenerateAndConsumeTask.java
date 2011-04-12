@@ -163,6 +163,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     }
     
     public void close() {
+    	generator.close();
         resourceManager.close(); // TODO v0.7 close only local consumers
         closeSubStatements();
     }
