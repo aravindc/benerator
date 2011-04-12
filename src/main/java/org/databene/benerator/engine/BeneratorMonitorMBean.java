@@ -30,5 +30,6 @@ package org.databene.benerator.engine;
 public interface BeneratorMonitorMBean {
 	long getTotalGenerationCount();
 	long getCurrentThroughput();
-	int getConnectionCount();
+	int getOpenConnectionCount();
+	int getOpenResultSetCount();
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -76,10 +76,14 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
     	this.totalGenerationCount = totalGenerationCount;
     }
 
-	public int getConnectionCount() {
-		return DBUtil.getConnectionCount();
+	public int getOpenConnectionCount() {
+		return DBUtil.getOpenConnectionCount();
 	}
 	
+	public int getOpenResultSetCount() {
+		return DBUtil.getOpenResultSetCount();
+	}
+
 	class ControlThread extends Thread {
 		@Override
 		public void run() {
