@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import org.databene.benerator.test.ConsumerMock;
+import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
@@ -44,10 +45,10 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	private DBSystem db; 
 	private ConsumerMock<Entity> consumer;
 	
-	
-	
 	@Before
 	public void setUp() throws Exception {
+		DBUtil.resetOpenConnectionCount();
+		DBUtil.resetOpenResultSetCount();
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
@@ -78,6 +79,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		context.set("tblName", "referee");
 		parseAndExecute("<evaluate id='refCount' target='db'>{'select count(*) from ' + tblName}</evaluate>");
 		assertEquals(2, ((Number) context.get("refCount")).intValue());
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -88,6 +90,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		for (Entity product : products) {
 			assertNull(product.get("referee_id"));
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -103,6 +106,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			int ref = (Integer) product.get("referee_id");
 			assertTrue(ref == 2 || ref == 3);
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -118,10 +122,11 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			int ref = (Integer) product.get("referee_id");
 			assertTrue(ref == 2 || ref == 3);
 		}
+		closeAndCheckCleanup();
 	}
 
 	
-	/** Test for bug #3025805 */
+	// Test for bug #3025805 
 	@Test
 	public void testDbRef_distribution() {
 		parseAndExecute(
@@ -134,6 +139,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			int ref = (Integer) product.get("referee_id");
 			assertTrue(ref == 2 || ref == 3);
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -147,6 +153,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		for (Entity product : products) {
 			assertEquals(1, product.get("referee_id"));
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -160,6 +167,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		for (Entity product : products) {
 			assertEquals(1, product.get("referee_id"));
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -174,6 +182,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		for (Entity product : products) {
 			assertEquals(2, product.get("referee_id"));
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -188,6 +197,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		for (Entity product : products) {
 			assertEquals(2, product.get("referee_id"));
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -202,6 +212,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		for (Entity product : products) {
 			assertEquals(3, product.get("referee_id"));
 		}
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -216,6 +227,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		List<Entity> products = consumer.getProducts();
 		assertEquals(1, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -232,6 +244,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(2, products.get(0).get("referee_id"));
 		assertEquals(2, products.get(1).get("referee_id"));
 		assertEquals(2, products.get(2).get("referee_id"));
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -246,6 +259,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		List<Entity> products = consumer.getProducts();
 		assertEquals(1, products.size());
 		assertEquals(2, products.get(0).get("referee_id"));
+		closeAndCheckCleanup();
 	}
 
 	@Test
@@ -259,6 +273,14 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(2, products.size());
 		assertEquals(3, products.get(0).get("n"));
 		assertEquals(4, products.get(1).get("n"));
+		closeAndCheckCleanup();
 	}
 	
+	private void closeAndCheckCleanup() {
+		context.close();
+		db.close();
+		assertEquals("There are unclosed connections. ", 0, DBUtil.getOpenConnectionCount());
+		assertEquals("There are unclosed result sets. ", 0, DBUtil.getOpenResultSetCount());
+	}
+
 }
