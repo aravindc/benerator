@@ -33,3 +33,4 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - FemaleFamilyNameConverter can be applied to Composite datasets
 - Some BeneratorScript syntax errors are ignored and lead to wrong results
 - #3240662: <evaluate> does not unescape BeneratorScript expressions correctly
+- resource leak in database access
