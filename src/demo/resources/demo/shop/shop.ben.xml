@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <setup 
-	xmlns="http://databene.org/benerator/0.6.4"
+	xmlns="http://databene.org/benerator/0.6.6"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://databene.org/benerator/0.6.4 http://databene.org/benerator-0.6.4.xsd">
+	xsi:schemaLocation="http://databene.org/benerator/0.6.6 http://databene.org/benerator-0.6.6.xsd">
 
 	<comment>
 		 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,12 +30,6 @@
 			domains   = "person,net,product"
 			platforms = "db"/>
 
-	<comment>setting default values</comment>
-	<property name="dbCatalog"  value="" />
-	<property name="dbSchema"   value="" />
-	<property name="dbPassword" value="" />
-	<property name="dbBatch"    value="false" />
-	
 	<if test="benerator.get('stage') == null">
 		<comment>no stage specified, using 'development'</comment>
 		<execute>stage = 'development'</execute>
@@ -46,6 +40,12 @@
 		<execute>database = 'hsqlmem'</execute>
 	</if>
 
+	<comment>setting default values</comment>
+	<property name="dbCatalog"  default="" />
+	<property name="dbSchema"   default="" />
+	<property name="dbPassword" default="" />
+	<property name="dbBatch"    default="false" />
+	
 	<comment>import stage and database specific properties</comment>
 	<include uri="{ftl:${database}/shop.${database}.properties}" /> <!-- ftl: is the prefix used for scripting with FreeMarker Template Language -->
 	<include uri="{ftl:shop.${stage}.properties}" />
