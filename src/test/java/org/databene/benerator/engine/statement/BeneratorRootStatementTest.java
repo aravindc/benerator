@@ -52,10 +52,10 @@ public class BeneratorRootStatementTest extends GeneratorTest {
 	}
 
 	private void check(String uri) throws IOException {
-	    BeneratorRootStatement task = null;
+	    BeneratorRootStatement statement = null;
 		DescriptorRunner runner = new DescriptorRunner(uri);
-        task = runner.parseDescriptorFile();
-        Generator<?> generator = task.getGenerator("Person", runner.getContext());
+        statement = runner.parseDescriptorFile();
+        Generator<?> generator = statement.getGenerator("Person", runner.getContext());
 		assertEquals(Entity.class, generator.getGeneratedType());
         assertNotNull(generator);
         generator.init(context);
