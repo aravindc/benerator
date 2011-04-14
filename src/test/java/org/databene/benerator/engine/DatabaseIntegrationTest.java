@@ -279,8 +279,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	private void closeAndCheckCleanup() {
 		context.close();
 		db.close();
-		assertEquals("There are unclosed connections. ", 0, DBUtil.getOpenConnectionCount());
-		assertEquals("There are unclosed result sets. ", 0, DBUtil.getOpenResultSetCount());
+		DBUtil.assertAllDbResourcesClosed();
 	}
 
 }
