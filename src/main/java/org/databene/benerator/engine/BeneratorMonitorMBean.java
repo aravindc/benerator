@@ -32,4 +32,6 @@ public interface BeneratorMonitorMBean {
 	long getCurrentThroughput();
 	int getOpenConnectionCount();
 	int getOpenResultSetCount();
+	int getOpenStatementCount();
+	int getOpenPreparedStatementCount();
 }

@@ -84,6 +84,14 @@ public class BeneratorMonitor implements BeneratorMonitorMBean {
 		return DBUtil.getOpenResultSetCount();
 	}
 
+	public int getOpenStatementCount() {
+		return DBUtil.getOpenStatementCount();
+	}
+
+	public int getOpenPreparedStatementCount() {
+		return DBUtil.getOpenPreparedStatementCount();
+	}
+
 	class ControlThread extends Thread {
 		@Override
 		public void run() {
