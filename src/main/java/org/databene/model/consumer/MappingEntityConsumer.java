@@ -51,6 +51,7 @@ public class MappingEntityConsumer extends ConsumerProxy<Entity> {
 		this.mapper.setMappings(mappingSpec);
 	}
 	
+	@Override
 	public void startConsuming(Entity input) {
 		Entity output = mapper.convert(input);
 		stack.push(output);

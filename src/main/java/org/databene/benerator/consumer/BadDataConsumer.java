@@ -41,6 +41,7 @@ public class BadDataConsumer extends ConsumerProxy {
 		this.badDataTarget = badDataTarget;
 	}
 
+	@Override
 	public void startConsuming(Object object) {
 		try {
 			target.startConsuming(object);
