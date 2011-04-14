@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,10 +35,18 @@ public abstract class ConsumerProxy<E> implements Consumer<E> {
 	    this.target = target;
     }
 
+	public Consumer<E> getTarget() {
+		return target;
+	}
+
 	public void setTarget(Consumer<E> target) {
     	this.target = target;
     }
 
+	public void startConsuming(E object) {
+		target.startConsuming(object);
+	}
+	
 	public void finishConsuming(E object) {
 	    target.finishConsuming(object);
     }
