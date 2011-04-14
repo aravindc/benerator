@@ -73,7 +73,7 @@ public class Benerator {
 			InfoPrinter printer = new LoggingInfoPrinter(LogCategories.CONFIG);
 			String filename = (args.length > 0 ? args[0] : "benerator.xml");
 			runFile(filename, printer);
-	    	DBUtil.assertAllDbResourcesClosed();
+	    	DBUtil.assertAllDbResourcesClosed(false);
 		} catch (BeneratorError e) {
 			logger.error(e.getMessage(), e);
 			System.exit(e.getCode());
