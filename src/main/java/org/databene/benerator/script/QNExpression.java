@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -85,10 +85,26 @@ public class QNExpression extends DynamicExpression<Object> {
     	}
     }
     
+	public BeanSpec resolve(Context context) {
+        String qn = ArrayFormat.format(".", qnParts);
+        if (context.contains(qn)) {
+        	return BeanSpec.createReference(context.get(qn));
+        } else {
+    		try {
+    			Class<?> bean = DefaultClassProvider.resolveByObjectOrDefaultInstance(qn, context);
+				return BeanSpec.createConstruction(bean);
+    		} catch (ConfigurationError e) {
+    			LOGGER.debug("Class not found: " + qn);
+    	    	Object bean = readField(qnParts, qnParts.length - 1, ArrayUtil.lastElement(qnParts), context);
+				return BeanSpec.createReference(bean);
+    		}
+        }
+	}
+    
     @Override
     public String toString() {
         return ArrayFormat.format(".", qnParts);
     }
-    
+
 }
 

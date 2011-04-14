@@ -36,6 +36,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.ParserRuleReturnScope;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.CommonTree;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.Assert;
@@ -144,6 +145,13 @@ public class BeneratorScriptParser {
     public static Expression<?>[] parseBeanSpecList(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return null;
+        CommonTree tree = parseBeanSpecListAsTree(text);
+        return convertBeanSpecList(tree);
+    }
+	
+    public static CommonTree parseBeanSpecListAsTree(String text) throws SyntaxError {
+        if (StringUtil.isEmpty(text))
+            return null;
         try {
         	BeneratorParser parser = parser(text);
 	        BeneratorParser.beanSpecList_return r = parser.beanSpecList();
@@ -152,7 +160,7 @@ public class BeneratorScriptParser {
 	        	CommonTree tree = (CommonTree) r.getTree();
 	        	if (LOGGER.isDebugEnabled())
 	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
-	            return convertBeanSpecList(tree);
+	            return tree;
 	        } else
 	        	return null;
         } catch (RuntimeException e) {
@@ -167,6 +175,13 @@ public class BeneratorScriptParser {
         }
     }
 	
+	public static BeanSpec[] resolveBeanSpecList(String text, BeneratorContext context) {
+        if (StringUtil.isEmpty(text))
+            return null;
+        CommonTree tree = parseBeanSpecListAsTree(text);
+        return resolveBeanSpecList(tree, context);
+	}
+
 	public static Expression<?> parseBeanSpec(String text) throws SyntaxError {
         if (StringUtil.isEmpty(text))
             return null;
@@ -179,6 +194,32 @@ public class BeneratorScriptParser {
 	        	if (LOGGER.isDebugEnabled())
 	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
 	        	return convertBeanSpec(tree);
+	        } else
+	        	return null;
+        } catch (RuntimeException e) {
+        	if (e.getCause() instanceof RecognitionException)
+        		throw mapToSyntaxError((RecognitionException) e.getCause(), text);
+        	else
+        		throw e;
+        } catch (IOException e) {
+        	throw new IllegalStateException("Encountered illegal state in regex parsing", e);
+        } catch (RecognitionException e) {
+        	throw mapToSyntaxError(e, text);
+        }
+    }
+	
+	public static BeanSpec resolveBeanSpec(String text, BeneratorContext context) throws SyntaxError {
+        if (StringUtil.isEmpty(text))
+            return null;
+        try {
+        	BeneratorParser parser = parser(text);
+	        BeneratorParser.beanSpec_return r = parser.beanSpec();
+	        checkForSyntaxErrors(text, "beanSpec", parser, r);
+	        if (r != null) {
+	        	CommonTree tree = (CommonTree) r.getTree();
+	        	if (LOGGER.isDebugEnabled())
+	        		LOGGER.debug("parsed " + text + " to " + tree.toStringTree());
+	        	return resolveBeanSpec(tree, context);
 	        } else
 	        	return null;
         } catch (RuntimeException e) {
@@ -284,6 +325,19 @@ public class BeneratorScriptParser {
     		throw new SyntaxError("Unexpected token", node.getToken().getText(), node.getLine(), node.getCharPositionInLine());
     }
 
+    private static BeanSpec[] resolveBeanSpecList(CommonTree node, BeneratorContext context) throws SyntaxError {
+    	if (node.getType() == BeneratorLexer.BEANSPEC)
+    		return new BeanSpec[] { resolveBeanSpec(node, context) };
+    	else if (node.isNil()) {
+		    int childCount = node.getChildCount();
+		    BeanSpec[] specs = new BeanSpec[childCount];
+		    for (int i = 0; i < childCount; i++)
+		    	specs[i] = resolveBeanSpec(childAt(i, node), context);
+		    return specs;
+    	} else
+    		throw new SyntaxError("Unexpected token", node.getToken().getText(), node.getLine(), node.getCharPositionInLine());
+    }
+
 	private static Expression<?> convertBeanSpec(CommonTree node) throws SyntaxError {
 		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
 		node = childAt(0, node);
@@ -295,6 +349,21 @@ public class BeneratorScriptParser {
 			return convertBean(node);
 		else
 			return convertNode(node);
+	}
+
+	private static BeanSpec resolveBeanSpec(CommonTree node, BeneratorContext context) throws SyntaxError {
+		Assert.isTrue(node.getType() == BeneratorLexer.BEANSPEC, "BEANSPEC expected, found: " + node.getToken());
+		node = childAt(0, node);
+		if (node.getType() == BeneratorLexer.QUALIFIEDNAME)
+			return new QNBeanSpecExpression(convertQualifiedNameToStringArray(node)).resolve(context);
+		else if (node.getType() == BeneratorLexer.IDENTIFIER)
+			return new QNBeanSpecExpression(new String[] { node.getText() }).resolve(context);
+		else if (node.getType() == BeneratorLexer.BEAN)
+			return BeanSpec.createConstruction(convertBean(node).evaluate(context));
+		else if (node.getType() == BeneratorLexer.CONSTRUCTOR)
+			return BeanSpec.createConstruction(convertNode(node).evaluate(context));
+		else
+			return BeanSpec.createReference(convertNode(node).evaluate(context));
 	}
 
 	private static Expression<?> convertNode(CommonTree node) throws SyntaxError {

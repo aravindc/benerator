@@ -59,15 +59,20 @@ public class QNBeanSpecExpression extends DynamicExpression<Object> {
     }
 
     public Object evaluate(Context context) {
+    	return resolve(context).getBean();
+    }
+
+    public BeanSpec resolve(Context context) {
     	String objectOrClassName = ArrayFormat.format(".", qn);
     	try {
     		if (context.contains(objectOrClassName))
-    			return context.get(objectOrClassName);
-    		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
-    		return BeanUtil.newInstance(type);
+    			return BeanSpec.createReference(context.get(objectOrClassName));
+    		String className = objectOrClassName;
+    		Class<?> type = DefaultClassProvider.resolveByObjectOrDefaultInstance(className, context);
+    		return BeanSpec.createConstruction(BeanUtil.newInstance(type));
     	} catch (ConfigurationError e) {
     		if (ExceptionUtil.getRootCause(e) instanceof ClassNotFoundException)
-    			return new QNExpression(qn).evaluate(context);
+    			return new QNExpression(qn).resolve(context);
     		else
     			throw new ConfigurationError("Cannot resolve " + objectOrClassName, e);
     	}
