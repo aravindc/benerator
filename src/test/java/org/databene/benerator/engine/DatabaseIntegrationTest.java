@@ -279,7 +279,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	private void closeAndCheckCleanup() {
 		context.close();
 		db.close();
-		DBUtil.assertAllDbResourcesClosed();
+		DBUtil.assertAllDbResourcesClosed(true);
 	}
 
 }
