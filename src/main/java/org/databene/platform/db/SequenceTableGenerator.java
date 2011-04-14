@@ -21,6 +21,7 @@
 
 package org.databene.platform.db;
 
+import java.io.Closeable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -31,6 +32,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.jdbacl.DBUtil;
 import org.databene.script.ScriptUtil;
 
 /**
@@ -127,23 +129,30 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	}
 	
 	@Override
+	public void close() {
+		incrementorStrategy.close();
+		super.close();
+	}
+	
+	@Override
     public String toString() {
         return getClass().getSimpleName() + "[" + selector + "]";
     }
 	
 	// IncrementorStrategy ---------------------------------------------------------------------------------------------
 
-    interface IncrementorStrategy {
+    interface IncrementorStrategy extends Closeable {
     	void run(long currentValue, BeneratorContext context);
+    	void close();
     }
 
     class PreparedStatementStrategy implements IncrementorStrategy {
     	
-    	private PreparedStatement stmt;
+    	private PreparedStatement statement;
 
 	    public PreparedStatementStrategy(String incrementorSql, DBSystem db) {
 	    	try {
-	            stmt = db.getConnection().prepareStatement(incrementorSql);
+	            statement = db.getConnection().prepareStatement(incrementorSql);
             } catch (SQLException e) {
             	throw new RuntimeException(e);
             }
@@ -151,22 +160,26 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 
 		public void run(long currentValue, BeneratorContext context) {
 		    try {
-		    	stmt.setLong(1, currentValue + increment);
-		    	stmt.executeUpdate();
+		    	statement.setLong(1, currentValue + increment);
+		    	statement.executeUpdate();
 	        } catch (SQLException e) {
 		        throw new RuntimeException(e);
 	        }
 	    }
+
+		public void close() {
+			DBUtil.close(statement);
+		}
     }
 
     class StatementStrategy implements IncrementorStrategy {
     	
-    	private Statement stmt;
+    	private Statement statement;
     	private String sql;
 
 	    public StatementStrategy(String sql, DBSystem db) {
 	        try {
-	            this.stmt = db.getConnection().createStatement();
+	            this.statement = db.getConnection().createStatement();
 	            this.sql = sql;
             } catch (SQLException e) {
             	throw new RuntimeException(e);
@@ -177,11 +190,15 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 			try {
 	            String cmd = sql.replace("?", String.valueOf(currentValue + increment));
 	            cmd = ScriptUtil.parseUnspecificText(cmd).evaluate(context).toString();
-	            stmt.executeUpdate(cmd);
+	            statement.executeUpdate(cmd);
             } catch (SQLException e) {
             	throw new RuntimeException(e);
             }
 	    }
+
+		public void close() {
+			DBUtil.close(statement);
+		}
     }
 
 }
