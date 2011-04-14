@@ -37,6 +37,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
@@ -119,8 +120,12 @@ public class ArrayGeneratorFactory {
 	            generator = createXLSSourceGenerator(descriptor, context, sourceName);
 	        else {
 	        	try {
-		        	Object sourceObject = BeneratorScriptParser.parseBeanSpec(sourceName).evaluate(context);
-		        	return createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
+		        	BeanSpec sourceBeanSpec = BeneratorScriptParser.resolveBeanSpec(sourceName, context);
+		        	Object sourceObject = sourceBeanSpec.getBean();
+		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
+		        	if (sourceBeanSpec.isReference())
+		        		generator = GeneratorFactory.wrapNonClosing(generator);
+		        	return generator;
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Unknown source type: " + sourceName);
 	        	}

@@ -42,6 +42,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AccessingGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
@@ -197,8 +198,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             generator = GeneratorFactory.getTextLineGenerator(source, false);
         } else {
         	try {
-	        	Object sourceObject = BeneratorScriptParser.parseBeanSpec(source).evaluate(context);
-	        	generator = createSourceGeneratorFromObject(descriptor, context, sourceObject);
+	        	BeanSpec sourceSpec = BeneratorScriptParser.resolveBeanSpec(source, context);
+	        	generator = createSourceGeneratorFromObject(descriptor, context, sourceSpec);
         	} catch (Exception e) {
                 generator = new AccessingGenerator(Object.class, new GraphAccessor(source), context);
         	}
@@ -213,7 +214,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static Generator<?> createSourceGeneratorFromObject(SimpleTypeDescriptor descriptor,
-            BeneratorContext context, Object sourceObject) {
+            BeneratorContext context, BeanSpec sourceSpec) {
+		Object sourceObject = sourceSpec.getBean();
 		Generator<?> generator;
 	    if (sourceObject instanceof StorageSystem) {
 	        StorageSystem storage = (StorageSystem) sourceObject;
@@ -228,6 +230,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	        generator = (Generator<?>) sourceObject;
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
+	    if (sourceSpec.isReference())
+	    	generator = GeneratorFactory.wrapNonClosing(generator);
 	    return generator;
     }
 

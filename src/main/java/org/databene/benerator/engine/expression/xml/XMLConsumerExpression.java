@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,17 +32,18 @@ import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringA
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.parser.xml.BeanParser;
+import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Escalator;
-import org.databene.commons.Expression;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.consumer.ConsumerChain;
+import org.databene.model.consumer.NonClosingConsumerProxy;
 import org.databene.model.data.Entity;
 import org.databene.model.storage.StorageSystem;
 import org.databene.model.storage.StorageSystemInserter;
@@ -78,10 +79,9 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 		// parse consumer attribute
 		if (entityElement.hasAttribute(ATT_CONSUMER)) {
 			String consumerSpec = parseStringAttribute(entityElement, ATT_CONSUMER, context);
-			Expression<?>[] beanExs = BeneratorScriptParser.parseBeanSpecList(consumerSpec);
-			for (Expression<?> beanEx : beanExs) {
-				Object bean = beanEx.evaluate(beneratorContext);
-				addConsumer(bean, beneratorContext, consumerChain);
+			BeanSpec[] beanSpecs = BeneratorScriptParser.resolveBeanSpecList(consumerSpec, beneratorContext);
+			for (BeanSpec beanSpec : beanSpecs) {
+				addConsumer(beanSpec, beneratorContext, consumerChain);
 			}
 		}
 		
@@ -89,17 +89,16 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 		Element[] consumerElements = XMLUtil.getChildElements(entityElement, true, EL_CONSUMER);
 		for (int i = 0; i < consumerElements.length; i++) {
 			Element consumerElement = consumerElements[i];
-			Object bean;
+			BeanSpec beanSpec;
 			if (consumerElement.hasAttribute(ATT_REF)) {
 				String ref = parseStringAttribute(consumerElement, ATT_REF, context);
-				bean = beneratorContext.get(ref);
+				beanSpec = BeanSpec.createReference(beneratorContext.get(ref));
 			} else if (consumerElement.hasAttribute(ATT_CLASS) || consumerElement.hasAttribute(ATT_SPEC)) {
-				Expression<?> beanExpr = BeanParser.parseBeanExpression(consumerElement);
-				bean = beanExpr.evaluate(context);
+				beanSpec = BeanParser.resolveBeanExpression(consumerElement, beneratorContext);
 			} else
 				throw new UnsupportedOperationException(
 						"Can't handle " + XMLUtil.format(consumerElement));
-			addConsumer(bean, beneratorContext, consumerChain);
+			addConsumer(beanSpec, beneratorContext, consumerChain);
 		}
 		
 		if (consumerChain.componentCount() == 0 && consumersExpected) {
@@ -112,17 +111,22 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static void addConsumer(Object bean, BeneratorContext context, ConsumerChain<?> chain) {
+    public static void addConsumer(BeanSpec beanSpec, BeneratorContext context, ConsumerChain<?> chain) {
     	Consumer consumer;
+    	Object bean = beanSpec.getBean();
+    	boolean ref = beanSpec.isReference();
     	// check consumer type
-    	if (bean instanceof Consumer)
+    	if (bean instanceof Consumer) {
     		consumer = (Consumer<?>) bean;
-    	else if (bean instanceof StorageSystem)
+    	} else if (bean instanceof StorageSystem) {
     		consumer = new StorageSystemInserter((StorageSystem) bean);
-    	else
+    		ref = false;
+    	} else
     		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
     	if (bean instanceof ContextAware)
     		((ContextAware) bean).setContext(context);
+    	if (ref)
+    		consumer = new NonClosingConsumerProxy(consumer);
     	chain.addComponent(consumer);
 	}
 

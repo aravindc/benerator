@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -467,12 +467,16 @@ public class GeneratorFactory {
      * Creates a generator that iterates through the lines of a text file.
      *
      * @param uri         the uri of the text file
-     * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
+     * @param cyclic      indicates whether iteration should restart from the first line after it reaches the file end.
      * @return a generator of the desired characteristics
      */
     public static Generator<String> getTextLineGenerator(String uri, boolean cyclic) {
         Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
         return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
+
+	public static <T> Generator<T> wrapNonClosing(Generator<T> generator) {
+		return new NonClosingGeneratorProxy<T>(generator);
+	}
     
 }

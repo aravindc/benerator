@@ -28,6 +28,7 @@ import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.factory.ConsumerMock;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.ConsumerChain;
+import org.databene.model.consumer.ConsumerProxy;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -87,7 +88,7 @@ public class XMLConsumerExpressionTest {
 		BeneratorContext context = new BeneratorContext();
 		context.set("myc", new ConsumerMock(3));
 		ConsumerChain<?> consumerChain = (ConsumerChain<?>) expression.evaluate(context);
-		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy<?>) consumerChain.getComponent(0)).getTarget();
 		assertEquals(3, consumerMock.id);
 	}
 	
@@ -100,9 +101,9 @@ public class XMLConsumerExpressionTest {
 		BeneratorContext context = new BeneratorContext();
 		context.set("myc", new ConsumerMock());
 		ConsumerChain<?> consumerChain = (ConsumerChain<?>) expression.evaluate(context);
-		ConsumerMock consumerMock = (ConsumerMock) consumerChain.getComponent(0);
+		ConsumerMock consumerMock = (ConsumerMock) ((ConsumerProxy<?>) consumerChain.getComponent(0)).getTarget();
+		assertEquals(1, consumerMock.id);
 		assertEquals(2, consumerChain.componentCount());
-		assertEquals(consumerMock, consumerChain.getComponent(0));
 		ConsumerMock component2 = (ConsumerMock) consumerChain.getComponent(1);
 		assertEquals(5, component2.id);
 	}

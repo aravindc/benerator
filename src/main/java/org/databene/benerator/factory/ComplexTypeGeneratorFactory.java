@@ -46,6 +46,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.*;
@@ -141,8 +142,11 @@ public class ComplexTypeGeneratorFactory {
 	            generator = createXLSSourceGenerator(descriptor, context, sourceSpec);
 	        else {
 	        	try {
-		        	sourceObject = BeneratorScriptParser.parseBeanSpec(sourceSpec).evaluate(context);
+		        	BeanSpec sourceBeanSpec = BeneratorScriptParser.resolveBeanSpec(sourceSpec, context);
+		        	sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
+		        	if (sourceBeanSpec.isReference())
+		        		generator = GeneratorFactory.wrapNonClosing(generator);
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Error resolving source: " + sourceSpec, e);
 	        	}

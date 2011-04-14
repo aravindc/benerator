@@ -50,6 +50,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
+import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
@@ -129,9 +130,13 @@ public class DescriptorUtil {
 	        if (generatorSpec != null) {
 	        	if (generatorSpec.startsWith("{") && generatorSpec.endsWith("}"))
 	        		generatorSpec = generatorSpec.substring(1, generatorSpec.length() - 1);
-	        	Expression<?> beanCreator = BeneratorScriptParser.parseBeanSpec(generatorSpec);
-				generator = (Generator<?>) beanCreator.evaluate(context);
+	        	BeanSpec generatorBeanSpec = BeneratorScriptParser.resolveBeanSpec(generatorSpec, context);
+	        	generator = (Generator<?>) generatorBeanSpec.getBean();
 	            mapDetailsToBeanProperties(descriptor, generator, context);
+	            if (generatorBeanSpec.isReference()) {
+	            	generator = GeneratorFactory.wrapNonClosing(generator);
+	            	generator.init(context);
+	            }
 	        }
 	        return generator;
     	} catch (ParseException e) {

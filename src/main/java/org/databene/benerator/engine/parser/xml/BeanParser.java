@@ -23,11 +23,13 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.script.Assignment;
 import org.databene.benerator.script.BeanConstruction;
+import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.DefaultConstruction;
 import org.databene.commons.ConfigurationError;
@@ -35,6 +37,7 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +90,32 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements);
         return new BeanConstruction(instantiation, propertyInitializers);
     }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static BeanSpec resolveBeanExpression(Element element, BeneratorContext context) {
+		String id = element.getAttribute(ATT_ID);
+        Expression<?> instantiation;
+        String beanSpecString = element.getAttribute(ATT_SPEC);
+        String beanClass = element.getAttribute(ATT_CLASS);
+        boolean ref = false;
+        if (!StringUtil.isEmpty(beanSpecString)) {
+        	try {
+		        BeanSpec spec = BeneratorScriptParser.resolveBeanSpec(beanSpecString, context);
+				instantiation = ExpressionUtil.constant(spec.getBean());
+				ref = spec.isReference();
+        	} catch (ParseException e) {
+        		throw new ConfigurationError("Error parsing bean spec: " + beanSpecString, e);
+        	}
+        } else if (!StringUtil.isEmpty(beanClass)) {
+	        logger.debug("Instantiating bean of class " + beanClass + " (id=" + id + ")");
+	        instantiation = new DefaultConstruction<Object>(beanClass);
+        } else
+        	throw new ConfigurationError("Syntax error in definition of bean " + id);
+        Element[] propertyElements = XMLUtil.getChildElements(element, false, EL_PROPERTY);
+		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements);
+		Object result = new BeanConstruction(instantiation, propertyInitializers).evaluate(context);
+        return new BeanSpec(result, ref);
+	}
 
 	public static Assignment[] mapPropertyDefinitions(Element[] propertyElements) {
 		Assignment[] assignments = new Assignment[propertyElements.length];

@@ -103,8 +103,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				ConsumerMock.FLUSH,
 				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
 				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
-				ConsumerMock.FLUSH,
-				ConsumerMock.CLOSE // TODO v0.7 There should be no 'close' on a global consumer
+				ConsumerMock.FLUSH
 		);
 		assertEquals(expectedInvocations, cons.invocations);
 		assertEquals(4L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
@@ -123,8 +122,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
 				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
 				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
-				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
-				ConsumerMock.CLOSE // TODO v0.7 There should be no 'close' on a global consumer
+				ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING
 		);
 		assertEquals(expectedInvocations, cons.invocations);
 		assertEquals(4L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
@@ -207,9 +205,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING,
 					ConsumerMock.FLUSH,
 				ConsumerMock.FINISH_CONSUMING,
-				ConsumerMock.FLUSH,
-				ConsumerMock.CLOSE,
-				ConsumerMock.CLOSE // TODO v0.7 There should be no 'close' on a global consumer
+				ConsumerMock.FLUSH
 		);
 		assertEquals(expectedInvocations, cons.invocations);
 		assertEquals(10L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
@@ -236,9 +232,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				ConsumerMock.START_CONSUMING,
 				ConsumerMock.FINISH_CONSUMING,
 				ConsumerMock.FINISH_CONSUMING,
-				ConsumerMock.FLUSH,
-				ConsumerMock.CLOSE,
-				ConsumerMock.CLOSE // TODO v0.7 There should be no 'close' on a global consumer
+				ConsumerMock.FLUSH
 		);
 		assertEquals(expectedInvocations, cons.invocations);
 		assertEquals(4L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
