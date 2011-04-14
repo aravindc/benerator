@@ -29,6 +29,7 @@ package org.databene.benerator.engine.statement;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
+import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.mutator.AnyMutator;
 
 /**
@@ -50,7 +51,7 @@ public class SetGlobalPropertyStatement implements Statement {
     }
 
 	public void execute(BeneratorContext context) {
-        Object value = valueExpression.evaluate(context);
+        Object value = ExpressionUtil.evaluate(valueExpression, context);
 		if (propertyName.startsWith("benerator."))
 	        AnyMutator.setValue(context, propertyName, value, true);
         else {
