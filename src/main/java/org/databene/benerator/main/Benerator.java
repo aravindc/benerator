@@ -37,6 +37,7 @@ import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.databene.commons.ui.InfoPrinter;
 import org.databene.commons.version.VersionInfo;
 import org.databene.commons.version.VersionNumber;
+import org.databene.jdbacl.DBUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +73,7 @@ public class Benerator {
 			InfoPrinter printer = new LoggingInfoPrinter(LogCategories.CONFIG);
 			String filename = (args.length > 0 ? args[0] : "benerator.xml");
 			runFile(filename, printer);
+	    	DBUtil.assertAllDbResourcesClosed();
 		} catch (BeneratorError e) {
 			logger.error(e.getMessage(), e);
 			System.exit(e.getCode());
