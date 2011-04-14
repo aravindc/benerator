@@ -19,7 +19,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.platform.memstore; // TODO better platform name?
+package org.databene.platform.memstore;
 
 import java.util.Collection;
 import java.util.Map;
