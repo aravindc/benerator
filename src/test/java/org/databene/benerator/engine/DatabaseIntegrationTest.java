@@ -47,8 +47,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		DBUtil.resetOpenConnectionCount();
-		DBUtil.resetOpenResultSetCount();
+		DBUtil.resetMonitors();
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
 		String dbUrl = HSQLUtil.getInMemoryURL(getClass().getSimpleName());
