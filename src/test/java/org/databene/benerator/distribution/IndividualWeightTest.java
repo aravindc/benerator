@@ -52,7 +52,7 @@ public class IndividualWeightTest extends GeneratorTest {
 		source.init(context);
 		Generator<Integer> generator = createWeight().applyTo(source, false);
 		generator.init(context);
-		expectRelativeWeights(generator, 2000, 1, 1, 2, 2, 3, 3);
+		expectRelativeWeights(generator, 5000, 1, 1, 2, 2, 3, 3);
 	}
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
