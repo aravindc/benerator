@@ -23,9 +23,11 @@ package org.databene.benerator.engine;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
 import java.util.List;
 
 import org.databene.benerator.test.ConsumerMock;
+import org.databene.commons.TimeUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.DataModel;
@@ -63,15 +65,15 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 				"create table referer ( " +
 				"	id int," +
 				"	referee_id int," +
+				"	the_date date," +
 				"	primary key (id)," +
 				"   constraint referee_fk foreign key (referee_id) references referee (id))");
 		context.set("db", db);
 		DataModel.getDefaultInstance().addDescriptorProvider(db);
 	}
-
 	
 	
-	// test methods ----------------------------------------------------------------------------------------------------
+	// generation of database references -------------------------------------------------------------------------------
 
 	@Test
 	public void testScriptResolution() {
@@ -261,6 +263,9 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		closeAndCheckCleanup();
 	}
 
+	
+	// iteration through database entries ------------------------------------------------------------------------------
+
 	@Test
 	public void testDb_iterate_this() {
 		parseAndExecute(
@@ -274,6 +279,25 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(4, products.get(1).get("n"));
 		closeAndCheckCleanup();
 	}
+	
+	
+	// date generation -------------------------------------------------------------------------------------------------
+	
+	@Test
+	public void test_datetime_resolution() {
+		parseAndExecute(
+			"<generate type='referer' count='3' consumer='cons'>" +
+        	"  <attribute name='the_date' generator='org.databene.benerator.primitive.datetime.CurrentDateTimeGenerator' />" +
+        	"</generate>");
+		List<Entity> products = consumer.getProducts();
+		assertEquals(3, products.size());
+		for (Entity entity : products)
+			assertTrue(TimeUtil.isNow(((Date) entity.get("the_date")).getTime(), 2000));
+		closeAndCheckCleanup();
+	}
+	
+	
+	// private helpers -------------------------------------------------------------------------------------------------
 	
 	private void closeAndCheckCleanup() {
 		context.close();
