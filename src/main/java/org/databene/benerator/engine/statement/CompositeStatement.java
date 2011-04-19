@@ -38,10 +38,18 @@ public abstract class CompositeStatement extends AbstractStatement implements El
 	
 	protected List<Statement> subStatements = new ArrayList<Statement>();
 
+	public CompositeStatement() {
+		this(null);
+    }
+
 	public CompositeStatement(List<Statement> subStatements) {
 		this.subStatements = (subStatements != null ? subStatements : new ArrayList<Statement>());
     }
 
+	public List<Statement> getSubStatements() {
+		return subStatements;
+	}
+	
 	public void addSubStatement(Statement subStatement) {
 		subStatements.add(subStatement);
 	}

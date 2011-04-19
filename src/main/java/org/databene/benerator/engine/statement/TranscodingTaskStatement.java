@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.Statement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
@@ -106,22 +107,8 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	}
 	
 	private void checkPrecoditions(BeneratorContext context) {
-		boolean identitiesRequired = false;
 		DBSystem target = targetEx.evaluate(context);
-		List<TranscodeStatement> transcodes = CollectionUtil.extractItemsOfType(TranscodeStatement.class, subStatements);
-		for (TranscodeStatement transcode : transcodes) {
-			ComplexTypeDescriptor type = transcode.getType(context);
-			String tableName = type.getName();
-			// items to be transcoded do not need NK definition
-			tableNkRequirements.put(tableName, false);
-			for (ReferenceDescriptor ref : type.getReferenceComponents()) {
-				String targetTable = ref.getTargetType();
-				if (!tableNkRequirements.containsKey(targetTable)) {
-					tableNkRequirements.put(targetTable, true);
-					identitiesRequired = true;
-				}
-			}
-		}
+		boolean identitiesRequired = checkPreconditions(subStatements, context);
 		// check that each table for which an identity definition is required has one
 		if (identitiesRequired)
 			readIdentityDefinition(context);
@@ -143,6 +130,26 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
+
+	private boolean checkPreconditions(List<Statement> subStatements, BeneratorContext context) {
+		boolean identitiesRequired = false;
+		List<CascadeParent> children = CollectionUtil.extractItemsOfCompatibleType(CascadeParent.class, subStatements);
+		for (CascadeParent statement : children) {
+			ComplexTypeDescriptor type = statement.getType(getSourceEx().evaluate(context), context);
+			String tableName = type.getName();
+			// items to be transcoded do not need NK definition
+			tableNkRequirements.put(tableName, false);
+			for (ReferenceDescriptor ref : type.getReferenceComponents()) {
+				String targetTable = ref.getTargetType();
+				if (!tableNkRequirements.containsKey(targetTable)) {
+					tableNkRequirements.put(targetTable, true);
+					identitiesRequired = true;
+				}
+			}
+			identitiesRequired |= checkPreconditions(statement.getSubStatements(), context);
+		}
+		return identitiesRequired;
+	}
 
 	private void readIdentityDefinition(BeneratorContext context) {
 		try {

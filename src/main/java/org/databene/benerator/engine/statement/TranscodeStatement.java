@@ -21,25 +21,22 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentAndVariableSupport;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.engine.parser.xml.TranscodeParser.TypeExpression;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
-import org.databene.commons.IOUtil;
-import org.databene.commons.TypedIterable;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.jdbacl.identity.IdentityModel;
 import org.databene.jdbacl.identity.IdentityProvider;
@@ -60,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class TranscodeStatement extends AbstractStatement {
+public class TranscodeStatement extends SequentialStatement implements CascadeParent {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TranscodeStatement.class);
 	
@@ -72,7 +69,12 @@ public class TranscodeStatement extends AbstractStatement {
 	Expression<ErrorHandler> errorHandlerEx;
 	TranscodingTaskStatement parent;
 
-	public TranscodeStatement(TypeExpression typeExpression, TranscodingTaskStatement parent,
+	DBSystem source;
+	private DBSystem target;
+
+	private Entity currentEntity;
+
+	public TranscodeStatement(MutatingTypeExpression typeExpression, TranscodingTaskStatement parent,
             Expression<DBSystem> sourceEx, Expression<String> selectorEx, Expression<DBSystem> targetEx, 
             Expression<Long> pageSizeEx, Expression<ErrorHandler> errorHandlerEx) {
 	    this.typeExpression = cache(typeExpression);
@@ -82,65 +84,99 @@ public class TranscodeStatement extends AbstractStatement {
 	    this.targetEx = targetEx;
 	    this.pageSizeEx = pageSizeEx;
 	    this.errorHandlerEx = errorHandlerEx;
+	    this.currentEntity = null;
     }
 
+	@Override
 	public void execute(BeneratorContext context) {
-		DBSystem source = sourceEx.evaluate(context);
 		DBSystem target = targetEx.evaluate(context);
 		Long pageSize = ExpressionUtil.evaluate(pageSizeEx, context);
 		if (pageSize == null)
 			pageSize = 1L;
-		transcode(source, target, pageSize, context);
+		transcodeTable(getSource(context), target, pageSize, context);
     }
     
-    public ComplexTypeDescriptor getType(BeneratorContext context) {
+	public KeyMapper getKeyMapper() {
+		return parent.getKeyMapper();
+	}
+
+	public IdentityProvider getIdentityProvider() {
+		return parent.getIdentityProvider();
+	}
+
+	public Entity currentEntity() {
+		return currentEntity;
+	}
+
+    public ComplexTypeDescriptor getType(DBSystem db, BeneratorContext context) {
     	return typeExpression.evaluate(context);
     }
     
+	public DBSystem getSource(BeneratorContext context) {
+		if (source == null)
+			source = sourceEx.evaluate(context);
+		return source;
+	}
+    
+	public DBSystem getTarget(BeneratorContext context) {
+		if (target == null)
+			target = targetEx.evaluate(context);
+		return target;
+	}
+
+	public boolean needsNkMapping(String tableName) {
+		return parent.needsNkMapping(tableName);
+	}
+
     // helper methods --------------------------------------------------------------------------------------------------
 
-    private void transcode(DBSystem source, DBSystem target, long pageSize, Context ctx) {
-    	BeneratorContext context = (BeneratorContext) ctx;
-    	ComplexTypeDescriptor type = typeExpression.evaluate(context);
-		IdentityModel identity = parent.getIdentityProvider().getIdentity(type.getName(), false);
-		LOGGER.info("Starting transcoding of " + type.getName() + " from " + source.getId() + " to " + target.getId());
-		long rowCount = 0;
-		KeyMapper mapper = parent.getKeyMapper();
-		mapper.registerSource(source.getId(), source.getConnection());
+    private void transcodeTable(DBSystem source, DBSystem target, long pageSize, BeneratorContext context) {
+		KeyMapper mapper = getKeyMapper();
+		ComplexTypeDescriptor type = typeExpression.evaluate(context);
+		IdentityModel identity = getIdentityProvider().getIdentity(type.getName(), false);
 		String tableName = type.getName();
+		LOGGER.info("Starting transcoding of " + tableName + " from " + source.getId() + " to " + target.getId());
 		
 		// iterate rows
 		String selector = ExpressionUtil.evaluate(selectorEx, context);
-		TypedIterable<Entity> iterable = source.queryEntities(tableName, selector, context);
-		Generator<Entity> generator = new IteratingGenerator<Entity>(iterable);
-		//Generator<Entity> mutGen = ComplexTypeGeneratorFactory.createMutatingEntityGenerator(tableName, type, Uniqueness.NONE, context, generator);
-		generator.init(context);
+		HeavyweightTypedIterable<Entity> iterable = source.queryEntities(tableName, selector, context);
     	List<ComponentBuilder<Entity>> componentBuilders = 
     		ComplexTypeGeneratorFactory.createMutatingComponentBuilders(type, Uniqueness.NONE, context);
         Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
         ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(variables, componentBuilders, context);
-		Entity entity;
-	    while ((entity = generator.generate()) != null) {
-	    	Object sourcePK = entity.idComponentValues();
+        cavs.init(context);
+        Iterator<Entity> iterator = iterable.iterator();
+		mapper.registerSource(source.getId(), source.getConnection());
+		long rowCount = 0;
+	    while (iterator.hasNext()) {
+			Entity sourceEntity = iterator.next();
+	    	Object sourcePK = sourceEntity.idComponentValues();
 	    	boolean mapNk = parent.needsNkMapping(tableName);
 	    	String nk = null;
 	    	if (mapNk)
 	    		nk = mapper.getNaturalKey(source.getId(), identity, sourcePK);
-			cavs.apply(entity);
-	    	Object targetPK = entity.idComponentValues();
-			transcodeForeignKeys(entity, source, context);
+	    	Entity targetEntity = new Entity(sourceEntity);
+			cavs.apply(targetEntity);
+	    	Object targetPK = targetEntity.idComponentValues();
+			transcodeForeignKeys(targetEntity, source, context);
 			mapper.store(source.getId(), identity, nk, sourcePK, targetPK);
-		    target.store(entity);
-	        LOGGER.debug("transcoded {}", entity);
+		    target.store(targetEntity);
+	        LOGGER.debug("transcoded {} to {}", sourceEntity, targetEntity);
+	        cascade(sourceEntity, context);
 	        rowCount++;
 	        if (rowCount % pageSize == 0)
 	        	target.flush();
 	    }
-		IOUtil.close(generator);
     	target.flush();
 		LOGGER.info("Finished transcoding " + source.countEntities(tableName) + " rows of table " + tableName);
     }
     
+	private void cascade(Entity sourceEntity, BeneratorContext context) {
+		this.currentEntity = sourceEntity;
+		executeSubStatements(context);
+		this.currentEntity = null;
+	}
+
 	private void transcodeForeignKeys(Entity entity, DBSystem source, Context context) {
 		ComplexTypeDescriptor tableDescriptor = entity.descriptor();
 		for (ComponentDescriptor component : tableDescriptor.getComponents()) {

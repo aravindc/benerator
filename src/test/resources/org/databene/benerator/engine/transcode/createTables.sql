@@ -25,3 +25,12 @@ create table STATE (
   constraint STATE_PK primary key (ID),
   constraint STATE_COUNTRY_FK foreign key (COUNTRY_FK) references COUNTRY (ID)
 );
+
+create table CITY (
+  ID       int         not null,
+  STATE_FK int,
+  NAME     varchar(30) not null,
+  constraint CITY_PK primary key (ID),
+  constraint CITY_STATE_FK foreign key (STATE_FK) references STATE (ID)
+);
+

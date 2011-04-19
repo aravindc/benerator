@@ -40,6 +40,7 @@ public class BeneratorParseContext extends ParseContext<Statement> {
 		this.resourceManager = resourceManager;
 		factory.addParser(new BeanParser());
 		factory.addParser(new BeepParser());
+		factory.addParser(new CascadeParser());
 		factory.addParser(new CommentParser());
 		factory.addParser(new DatabaseParser());
 		factory.addParser(new DbSanity4BeneratorParser());

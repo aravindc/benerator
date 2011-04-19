@@ -21,21 +21,22 @@
 
 package org.databene.benerator.engine.parser.xml;
 
-import org.databene.benerator.engine.BeneratorContext;
+import java.util.Set;
+
+import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.statement.MutatingTypeExpression;
 import org.databene.benerator.engine.statement.TranscodeStatement;
 import org.databene.benerator.engine.statement.TranscodingTaskStatement;
-import org.databene.benerator.factory.DescriptorUtil;
 
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.commons.ArrayUtil;
-import org.databene.commons.Context;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.FallbackExpression;
-import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.DataModel;
+import org.databene.commons.xml.XMLUtil;
 import org.databene.platform.db.DBSystem;
 import org.w3c.dom.Element;
 
@@ -46,7 +47,10 @@ import org.w3c.dom.Element;
  * @author Volker Bergmann
  */
 public class TranscodeParser extends AbstractTranscodeParser {
-
+	
+	private static final Set<String> MEMBER_ELEMENTS = CollectionUtil.toSet(
+			DescriptorConstants.EL_ID, DescriptorConstants.EL_ATTRIBUTE, DescriptorConstants.EL_REFERENCE);
+	
 	public TranscodeParser() {
 	    super("transcode", TranscodingTaskStatement.class);
     }
@@ -60,8 +64,16 @@ public class TranscodeParser extends AbstractTranscodeParser {
 		Expression<DBSystem> targetEx   = parseTarget(element, parent);
 		Expression<Long>     pageSizeEx = parsePageSize(element, parent);
 	    Expression<ErrorHandler> errorHandlerEx = parseOnErrorAttribute(element, table);
-	    return new TranscodeStatement(new TypeExpression(element), 
+	    TranscodeStatement result = new TranscodeStatement(new MutatingTypeExpression(element, getRequiredAttribute("table", element)), 
 	    		parent, sourceEx, selectorEx, targetEx, pageSizeEx, errorHandlerEx);
+	    Statement[] currentPath = context.createSubPath(parentPath, result);
+	    for (Element child : XMLUtil.getChildElements(element)) {
+	    	String childName = child.getNodeName();
+	    	if (!MEMBER_ELEMENTS.contains(childName))
+	    		result.addSubStatement(context.parseChildElement(child, currentPath));
+	    	// The 'component' child elements (id, attribute, reference) are handled by the MutatingTypeExpression 
+	    }
+		return result;
     }
 
 	private Expression<String> parseSelector(Element element, TranscodingTaskStatement parent) {
@@ -91,28 +103,5 @@ public class TranscodeParser extends AbstractTranscodeParser {
 			result = new FallbackExpression<DBSystem>(result, ((TranscodingTaskStatement) parent).getTargetEx());
 	    return result;
     }
-
-	public class TypeExpression implements Expression<ComplexTypeDescriptor> {
-
-		private Element element;
-		private String tableName;
-
-		public TypeExpression(Element element) {
-			this.element = element;
-			this.tableName = getAttribute("table", element);
-		}
-
-		public ComplexTypeDescriptor evaluate(Context context) {
-		    ComplexTypeDescriptor parent = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(tableName);
-		    ComplexTypeDescriptor type = new ComplexTypeDescriptor(tableName, parent);
-		    DescriptorUtil.parseComponentConfig(element, type, (BeneratorContext) context);
-		    return type;
-		}
-
-		public boolean isConstant() {
-			return true;
-		}
-
-	}
 
 }

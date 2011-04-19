@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,30 +25,26 @@ import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
+import org.databene.jdbacl.identity.IdentityProvider;
+import org.databene.jdbacl.identity.KeyMapper;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.Entity;
+import org.databene.platform.db.DBSystem;
 
 /**
- * Executes all sub statements sequentially.<br/><br/>
- * Created: 20.02.2010 08:00:24
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 18.04.2011 08:35:04
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class SequentialStatement extends CompositeStatement {
-
-	public SequentialStatement() {
-	    this(null);
-    }
-
-	public SequentialStatement(List<Statement> subStatements) {
-	    super(subStatements);
-    }
-
-	public void execute(BeneratorContext context) {
-	    executeSubStatements(context);
-    }
-
-	protected void executeSubStatements(BeneratorContext context) {
-		for (Statement subStatement : subStatements)
-	    	subStatement.execute(context);
-	}
-
+public interface CascadeParent extends Statement {
+	void addSubStatement(Statement subStatement);
+	DBSystem getSource(BeneratorContext context);
+	DBSystem getTarget(BeneratorContext context);
+	Entity currentEntity();
+	KeyMapper getKeyMapper();
+	IdentityProvider getIdentityProvider();
+	boolean needsNkMapping(String type);
+	ComplexTypeDescriptor getType(DBSystem db, BeneratorContext context);
+	List<Statement> getSubStatements();
 }

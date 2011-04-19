@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,34 +21,43 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.util.List;
-
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.Statement;
+import org.databene.benerator.factory.DescriptorUtil;
+import org.databene.commons.Context;
+import org.databene.commons.Expression;
+import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.DataModel;
+import org.w3c.dom.Element;
 
 /**
- * Executes all sub statements sequentially.<br/><br/>
- * Created: 20.02.2010 08:00:24
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 18.04.2011 14:48:57
+ * @since TODO version
  * @author Volker Bergmann
  */
-public class SequentialStatement extends CompositeStatement {
+public class MutatingTypeExpression implements Expression<ComplexTypeDescriptor> {
 
-	public SequentialStatement() {
-	    this(null);
-    }
+	private Element element;
+	private String typeName;
 
-	public SequentialStatement(List<Statement> subStatements) {
-	    super(subStatements);
-    }
+	public MutatingTypeExpression(Element element, String tableName) {
+		this.element = element;
+		this.typeName = tableName;
+	}
 
-	public void execute(BeneratorContext context) {
-	    executeSubStatements(context);
-    }
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
 
-	protected void executeSubStatements(BeneratorContext context) {
-		for (Statement subStatement : subStatements)
-	    	subStatement.execute(context);
+	public boolean isConstant() {
+		return true;
+	}
+
+	public ComplexTypeDescriptor evaluate(Context context) {
+	    ComplexTypeDescriptor parent = (ComplexTypeDescriptor) DataModel.getDefaultInstance().getTypeDescriptor(typeName);
+	    ComplexTypeDescriptor type = new ComplexTypeDescriptor(typeName, parent);
+	    DescriptorUtil.parseComponentConfig(element, type, (BeneratorContext) context);
+	    return type;
 	}
 
 }
