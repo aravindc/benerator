@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,7 +22,7 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.TypedIterable;
+import org.databene.commons.HeavyweightTypedIterable;
 
 /**
  * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>
@@ -31,5 +31,5 @@ import org.databene.commons.TypedIterable;
  * @author Volker Bergmann
  */
 public interface SourceFactory<E> {
-	TypedIterable<E> create(String id, BeneratorContext context);
+	HeavyweightTypedIterable<E> create(String id, BeneratorContext context);
 }
