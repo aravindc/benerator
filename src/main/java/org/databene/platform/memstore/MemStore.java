@@ -28,12 +28,11 @@ import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
-import org.databene.commons.TypedIterable;
-import org.databene.commons.collection.MapValueIterable;
 import org.databene.commons.collection.OrderedNameMap;
-import org.databene.commons.iterator.DefaultTypedIterable;
+import org.databene.commons.iterator.TypedIterableProxy;
 import org.databene.commons.iterator.FilterExIterable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -42,9 +41,9 @@ import org.databene.model.storage.AbstractStorageSystem;
 import org.databene.script.ScriptUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Simple heap-based implementation of the AbstractStorageSystem interface.<br/><br/>
  * Created: 07.03.2011 14:41:40
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class MemStore extends AbstractStorageSystem {
@@ -63,21 +62,21 @@ public class MemStore extends AbstractStorageSystem {
 		return id;
 	}
 
-	public TypedIterable<Entity> queryEntities(String entityType, String selector, Context context) {
+	public HeavyweightTypedIterable<Entity> queryEntities(String entityType, String selector, Context context) {
 		Map<?, Entity> idMap = getOrCreateIdMapForType(entityType);
-		TypedIterable<Entity> result = new MapValueIterable<Entity>(idMap, Entity.class);
+		HeavyweightTypedIterable<Entity> result = new TypedIterableProxy<Entity>(Entity.class, idMap.values());
 		if (!StringUtil.isEmpty(selector)) {
 			Expression<Boolean> filterEx = new ScriptExpression<Boolean>(ScriptUtil.parseScriptText(selector));
-			result = new DefaultTypedIterable<Entity>(Entity.class, new FilterExIterable<Entity>(result, filterEx , context));
+			result = new TypedIterableProxy<Entity>(Entity.class, new FilterExIterable<Entity>(result, filterEx , context));
 		}
 		return result;
 	}
 
-	public <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
+	public <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
 		throw new UnsupportedOperationException(getClass() + " does not support queryEntityIds(...)");
 	}
 
-	public <T> TypedIterable<T> query(String selector, Context context) {
+	public <T> HeavyweightTypedIterable<T> query(String selector, Context context) {
 		throw new UnsupportedOperationException(getClass() + " does not support query(String, Context)");
 	}
 

@@ -404,7 +404,7 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     @SuppressWarnings("null")
-    public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
+    public HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("queryEntities(" + type + ")");
     	Connection connection = getThreadContext().connection;
@@ -436,7 +436,7 @@ public class DBSystem extends AbstractStorageSystem {
         return DBUtil.queryLong(query, getThreadContext().connection);
     }
 
-    public <T> TypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
+    public <T> HeavyweightTypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
         logger.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script

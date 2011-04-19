@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,7 @@ import java.io.Closeable;
 import java.io.Flushable;
 
 import org.databene.commons.Context;
-import org.databene.commons.TypedIterable;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.model.data.DescriptorProvider;
 import org.databene.model.data.Entity;
 
@@ -47,13 +47,13 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     String getId();
     
     /** Creates an iterator that provides all entities of given type. */
-    TypedIterable<Entity> queryEntities(String type, String selector, Context context);
+    HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context);
     
     /** Queries for entity ids */
-    <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
+    <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName, String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
 
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
-    <T> TypedIterable<T> query(String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
+    <T> HeavyweightTypedIterable<T> query(String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
     
     /** Persists a new entity. */
     void store(Entity entity);

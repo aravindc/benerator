@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,7 +34,6 @@ import java.util.Iterator;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.HeavyweightTypedIterable;
-import org.databene.commons.TypedIterable;
 import org.databene.jdbacl.DBUtil;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.Entity;
@@ -134,7 +133,7 @@ public class DBSystemTest {
 	@Test
 	public void testUpdater() throws Exception {
 		db.execute("insert into TEST (ID, NAME) values (1, 'Alice')");
-        TypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        HeavyweightTypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
         Iterator<Entity> iterator = entities.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
@@ -146,7 +145,7 @@ public class DBSystemTest {
         Entity entity = new Entity("TEST", "ID", 1, "NAME", "Alice");
         inserter.startConsuming(entity);
         inserter.finishConsuming(entity);
-        TypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        HeavyweightTypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
         Iterator<Entity> iterator = entities.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
@@ -158,7 +157,7 @@ public class DBSystemTest {
         Entity entity = new Entity("Xyz", "ID", 1, "NAME", "Alice");
         inserter.startConsuming(entity);
         inserter.finishConsuming(entity);
-        TypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
+        HeavyweightTypedIterable<Entity> entities = db.queryEntities("TEST", "ID = 1", new BeneratorContext());
         Iterator<Entity> iterator = entities.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(new Entity("TEST", "ID", 1, "NAME", "Alice"), iterator.next());
