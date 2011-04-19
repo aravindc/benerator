@@ -61,12 +61,12 @@ import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
-import org.databene.commons.TypedIterable;
 import org.databene.commons.Validator;
 import org.databene.commons.collection.OrderedNameMap;
 import org.databene.commons.context.ContextAware;
@@ -391,13 +391,13 @@ public class DescriptorUtil {
 		    String[] uris = DatasetUtil.getDataFiles(sourceName, dataset, nesting);
             Generator<Entity>[] sources = new Generator[uris.length];
             for (int i = 0; i < uris.length; i++) {
-            	TypedIterable<Entity> source = factory.create(uris[i], context);
+            	HeavyweightTypedIterable<Entity> source = factory.create(uris[i], context);
                 sources[i] = new IteratingGenerator<Entity>(source);
             }
 			generator = new AlternativeGenerator<Entity>(Entity.class, sources);
 		} else {
 		    // iterate over (possibly large) data file
-			TypedIterable<Entity> source = factory.create(sourceName, context);
+			HeavyweightTypedIterable<Entity> source = factory.create(sourceName, context);
 		    generator = new IteratingGenerator<Entity>(source);
 		}
 		return generator;
