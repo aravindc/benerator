@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.model.data;
 
-import org.databene.commons.TypedIterable;
+import org.databene.commons.HeavyweightTypedIterable;
 
 /**
  * Common interface for all Entity sources.<br/>
@@ -35,6 +35,6 @@ import org.databene.commons.TypedIterable;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public interface EntitySource extends TypedIterable<Entity> {
+public interface EntitySource extends HeavyweightTypedIterable<Entity> {
 
 }
