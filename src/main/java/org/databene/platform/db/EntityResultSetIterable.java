@@ -30,7 +30,7 @@ import java.sql.ResultSet;
 
 import org.databene.commons.HeavyweightIterable;
 import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.TypedIterable;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -39,7 +39,7 @@ import org.databene.model.data.Entity;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class EntityResultSetIterable implements TypedIterable<Entity> {
+public class EntityResultSetIterable implements HeavyweightTypedIterable<Entity> {
 
     private HeavyweightIterable<ResultSet> iterable;
     private ComplexTypeDescriptor entityDescriptor;
