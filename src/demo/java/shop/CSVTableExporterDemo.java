@@ -1,11 +1,11 @@
 package shop;
 
 import java.io.IOException;
-import java.util.Iterator;
 
+import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
-import org.databene.commons.TypedIterable;
 import org.databene.model.data.Entity;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.csv.CSVEntityExporter;
@@ -45,28 +45,37 @@ public class CSVTableExporterDemo {
     }
 
 	private static void exportTableAsCSV(StorageSystem db, String filename) {
-        TypedIterable<Entity> entities = db.queryEntities("db_data", null, null);
-        Iterator<Entity> iterator = entities.iterator();
-        if (iterator.hasNext()) {
-            Entity cursor = iterator.next();
-            CSVEntityExporter exporter = new CSVEntityExporter(filename, cursor.descriptor());
-        	try {
-	            logger.info("exporting data, please wait...");
-	            exporter.startConsuming(cursor);
-	            while (iterator.hasNext())
-	                exporter.startConsuming(iterator.next());
-        	} finally {
-        		exporter.close();
-        	}
-        }
+        HeavyweightTypedIterable<Entity> entities = db.queryEntities("db_data", null, null);
+        HeavyweightIterator<Entity> iterator = null;
+        try {
+			iterator = entities.iterator();
+			if (iterator.hasNext()) {
+			    Entity cursor = iterator.next();
+			    CSVEntityExporter exporter = new CSVEntityExporter(filename, cursor.descriptor());
+				try {
+			        logger.info("exporting data, please wait...");
+			        exporter.startConsuming(cursor);
+			        while (iterator.hasNext())
+			            exporter.startConsuming(iterator.next());
+				} finally {
+					exporter.close();
+				}
+			}
+		} finally {
+	        IOUtil.close(iterator);
+		}
     }
     
     private static void printFile(String filename) throws IOException {
     	System.out.println("Content of file " + filename + ":");
-	    ReaderLineIterator iterator = new ReaderLineIterator(IOUtil.getReaderForURI(filename));
-	    while (iterator.hasNext())
-	    	System.out.println(iterator.next());
-	    iterator.close();
+	    ReaderLineIterator iterator = null;
+	    try {
+			iterator = new ReaderLineIterator(IOUtil.getReaderForURI(filename));
+			while (iterator.hasNext())
+				System.out.println(iterator.next());
+		} finally {
+		    IOUtil.close(iterator);
+		}
     }
 
 }
