@@ -43,26 +43,38 @@ import org.databene.model.storage.StorageSystem;
 
 public class QueryGenerator<E> extends GeneratorProxy<E> {
 	
-	private StorageSystem storage;
+	private StorageSystem target;
 	private String selector;
 	
-    public QueryGenerator(String selector, StorageSystem storage) {
-		this.storage = storage;
+    public QueryGenerator() {
+		this(null, null);
+	}
+
+    public QueryGenerator(String selector, StorageSystem target) {
+		this.target = target;
 		this.selector = selector;
 	}
 
+	public void setTarget(StorageSystem storage) {
+		this.target = storage;
+	}
+	
+	public void setSelector(String selector) {
+		this.selector = selector;
+	}
+	
     @Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	
     	// check preconditions
     	assertNotInitialized();
-	    if (storage == null)
+	    if (target == null)
 	    	throw new InvalidGeneratorSetupException("source is null");
 	    if (StringUtil.isEmpty(selector))
 	    	throw new InvalidGeneratorSetupException("no query defined");
 	    
 	    // initialize
-		this.source = new IteratingGenerator<E>(storage.<E>query(selector, context));
+		this.source = new IteratingGenerator<E>(target.<E>query(selector, context));
 	    super.init(context);
     }
 

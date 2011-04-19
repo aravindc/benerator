@@ -44,6 +44,10 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
     @SuppressWarnings("rawtypes")
 	private Converter converter;
 
+	public QueryLongGenerator() {
+	    this(null, null);
+    }
+	
 	public QueryLongGenerator(String selector, StorageSystem source) {
 	    super(selector, source);
     }
