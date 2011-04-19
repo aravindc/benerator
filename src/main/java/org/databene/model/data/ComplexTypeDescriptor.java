@@ -131,7 +131,7 @@ public class ComplexTypeDescriptor extends TypeDescriptor implements VariableHol
     }
 	
     public List<ReferenceDescriptor> getReferenceComponents() {
-    	return CollectionUtil.extractItemsOfType(ReferenceDescriptor.class, getComponents());
+    	return CollectionUtil.extractItemsOfExactType(ReferenceDescriptor.class, getComponents());
     }
 	
     // variable handling -----------------------------------------------------------------------------------------------
