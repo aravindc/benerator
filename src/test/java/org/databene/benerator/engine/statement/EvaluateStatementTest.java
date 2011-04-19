@@ -25,8 +25,8 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.Context;
 import org.databene.commons.Encodings;
 import org.databene.commons.Expression;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.SystemInfo;
-import org.databene.commons.TypedIterable;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.Entity;
 import org.databene.model.data.TypeDescriptor;
@@ -141,17 +141,17 @@ public class EvaluateStatementTest {
 			return "id";
 		}
 
-		public TypedIterable<Entity> queryEntities(String type,
+		public HeavyweightTypedIterable<Entity> queryEntities(String type,
 				String selector, Context context) {
 			return null;
 		}
 
-		public <T> TypedIterable<T> queryEntityIds(String entityName,
+		public <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName,
 				String selector, Context context) {
 			return null;
 		}
 
-		public <T> TypedIterable<T> query(String selector, Context context) {
+		public <T> HeavyweightTypedIterable<T> query(String selector, Context context) {
 			return null;
 		}
 

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,9 +35,9 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
-import org.databene.commons.TypedIterable;
+import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.iterator.DefaultTypedIterable;
+import org.databene.commons.iterator.TypedIterableProxy;
 import org.databene.commons.iterator.HeavyweightIterableAdapter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
@@ -206,19 +206,19 @@ public class ReferenceComponentBuilderFactoryTest {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public <T> TypedIterable<T> query(String selector, Context context) {
+		public <T> HeavyweightTypedIterable<T> query(String selector, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public TypedIterable<Entity> queryEntities(String type, String selector, Context context) {
+		public HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context) {
 			throw new UnsupportedOperationException("queryEntities() not implemented");
 		}
 
 		@SuppressWarnings("unchecked")
-        public <T> TypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
+        public <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
 			HeavyweightIterableAdapter<String> source = 
 				new HeavyweightIterableAdapter<String>(CollectionUtil.toList("Alice", "Bob"));
-			return (TypedIterable<T>) new DefaultTypedIterable<String>(String.class, source);
+			return (HeavyweightTypedIterable<T>) new TypedIterableProxy<String>(String.class, source);
 		}
 
 		public void store(Entity entity) {
