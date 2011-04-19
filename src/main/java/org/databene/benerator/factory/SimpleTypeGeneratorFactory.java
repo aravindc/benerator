@@ -62,7 +62,7 @@ import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.iterator.DefaultTypedIterable;
+import org.databene.commons.iterator.TypedIterableProxy;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVLineIterable;
 import org.databene.model.data.PrimitiveType;
@@ -263,7 +263,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     				new ArrayElementExtractor<String>(String.class, 0), 
     				new ScriptConverter(context));
     		Iterable<Object> iterable = new ConvertingIterable<String[], Object>(src, converterChain);
-    	    generator = new IteratingGenerator<Object>(new DefaultTypedIterable<Object>(Object.class, iterable));
+    	    generator = new IteratingGenerator<Object>(new TypedIterableProxy<Object>(Object.class, iterable));
             if (distribution != null)
             	generator = distribution.applyTo(generator, uniqueness.isUnique());
         }
