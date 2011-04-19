@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
-import org.databene.commons.iterator.DefaultTypedIterable;
+import org.databene.commons.iterator.TypedIterableProxy;
 import org.databene.commons.iterator.HeavyweightIterableAdapter;
 
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class IteratingGeneratorTest extends GeneratorTest {
     @Test
     public void testBehaviour() {
         HeavyweightIterableAdapter<Integer> iterable = new HeavyweightIterableAdapter<Integer>(Arrays.asList(1, 2));
-		DefaultTypedIterable<Integer> hwIterable = new DefaultTypedIterable<Integer>(Integer.class, iterable);
+		TypedIterableProxy<Integer> hwIterable = new TypedIterableProxy<Integer>(Integer.class, iterable);
 		Generator<Integer> gen = new IteratingGenerator<Integer>(hwIterable);
 		gen.init(new BeneratorContext());
 		expectGeneratedSequence(gen, 1, 2).withCeasedAvailability();
