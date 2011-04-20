@@ -23,7 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import java.util.Set;
 
-import org.databene.benerator.engine.DescriptorConstants;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.MutatingTypeExpression;
 import org.databene.benerator.engine.statement.TranscodeStatement;
@@ -49,15 +49,18 @@ import org.w3c.dom.Element;
 public class TranscodeParser extends AbstractTranscodeParser {
 	
 	private static final Set<String> MEMBER_ELEMENTS = CollectionUtil.toSet(
-			DescriptorConstants.EL_ID, DescriptorConstants.EL_ATTRIBUTE, DescriptorConstants.EL_REFERENCE);
+			EL_ID, EL_ATTRIBUTE, EL_REFERENCE);
 	
 	public TranscodeParser() {
-	    super("transcode", TranscodingTaskStatement.class);
+	    super(EL_TRANSCODE, 
+	    		CollectionUtil.toSet(ATT_TABLE), 
+	    		CollectionUtil.toSet(ATT_SOURCE, ATT_SELECTOR, ATT_TARGET, ATT_PAGESIZE, ATT_ON_ERROR), 
+	    		TranscodingTaskStatement.class);
     }
 
     @Override
-    public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-		String table = getAttribute("table", element);
+    public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+		String table = getAttribute(ATT_TABLE, element);
 		TranscodingTaskStatement parent = (TranscodingTaskStatement) ArrayUtil.lastElement(parentPath);
 		Expression<DBSystem> sourceEx   = parseSource(element, parent);
 		Expression<String>   selectorEx = parseSelector(element, parent);

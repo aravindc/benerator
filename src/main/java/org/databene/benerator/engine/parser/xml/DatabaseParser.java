@@ -24,12 +24,13 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.DefineDatabaseStatement;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -37,7 +38,6 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.FallbackExpression;
-import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -48,8 +48,10 @@ import org.w3c.dom.Element;
  */
 public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 	
-	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(
-			ATT_ID, ATT_ENVIRONMENT, ATT_URL, ATT_DRIVER, ATT_USER, ATT_PASSWORD, ATT_CATALOG, ATT_SCHEMA, 
+	private static final Set<String> REQUIRED_ATTRIBUTES = CollectionUtil.toSet(ATT_ID);
+
+	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
+			ATT_ENVIRONMENT, ATT_URL, ATT_DRIVER, ATT_USER, ATT_PASSWORD, ATT_CATALOG, ATT_SCHEMA, 
 			ATT_TABLE_FILTER, ATT_INCL_TABLES, ATT_EXCL_TABLES, ATT_META_CACHE, ATT_BATCH, ATT_FETCH_SIZE, 
 			ATT_READ_ONLY, ATT_LAZY, ATT_ACC_UNK_COL_TYPES);
 
@@ -57,13 +59,18 @@ public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 	// TODO v1.0 define parser extension mechanism and move DatabaseParser and DefineDatabaseStatement to DB package?
 	
 	public DatabaseParser() {
-	    super(EL_DATABASE);
+	    super(EL_DATABASE, REQUIRED_ATTRIBUTES, OPTIONAL_ATTRIBUTES, 
+	    		BeneratorRootStatement.class, IfStatement.class);
     }
 
 	@Override
 	@SuppressWarnings("unchecked")
-    public DefineDatabaseStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-		checkAttributeSupport(XMLUtil.getAttributes(element));
+    public DefineDatabaseStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+		// check preconditions
+		assertAtLeastOneAttributeIsSet(element, ATT_ENVIRONMENT, ATT_DRIVER);
+		assertAtLeastOneAttributeIsSet(element, ATT_ENVIRONMENT, ATT_URL);
+		
+		// parse
 		try {
 			Expression<String>  id            = parseAttribute(ATT_ID, element);
 			Expression<String>  environment   = parseScriptableStringAttribute(ATT_ENVIRONMENT,  element);
@@ -91,12 +98,6 @@ public class DatabaseParser extends AbstractBeneratorDescriptorParser {
 			throw new ConfigurationError(e);
 		}
     }
-
-	private void checkAttributeSupport(Map<String, String> attributes) {
-		for (String name : attributes.keySet())
-			if (!SUPPORTED_ATTRIBUTES.contains(name))
-				throw new ConfigurationError("Not a supported attribute of <database>: " + name);
-	}
 
 	static class GlobalAcceptUnknownSimpleTypeExpression extends DynamicExpression<Boolean> {
 		public Boolean evaluate(Context context) {

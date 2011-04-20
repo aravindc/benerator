@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.EchoStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.w3c.dom.Element;
@@ -39,11 +40,11 @@ import org.w3c.dom.Element;
 public class EchoParser extends AbstractBeneratorDescriptorParser {
 
 	public EchoParser() {
-	    super(EL_ECHO);
+	    super(EL_ECHO, null, CollectionUtil.toSet(ATT_MESSAGE, ATT_TYPE));
     }
 
 	@Override
-	public EchoStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public EchoStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         Expression<String> messageEx;
 		if (!StringUtil.isEmpty(element.getAttribute(ATT_MESSAGE)))
 	        messageEx = parseScriptableStringAttribute(ATT_MESSAGE, element);

@@ -26,6 +26,7 @@ import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ImportStatement;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
 /**
@@ -67,9 +68,9 @@ public class ImportParserAndStatementTest extends BeneratorIntegrationTest {
 		context.forName("AddressGenerator");
 	}
 	
-	@Test(expected = ConfigurationError.class)
+	@Test(expected = SyntaxError.class)
 	public void testImportAttributeTypo() throws Exception {
-		parse("<import platfrmo='typo' />");
+		parse("<import platmof='typo' />");
 	}
 
 }

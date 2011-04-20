@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,9 +23,11 @@ package org.databene.benerator.engine.parser.xml;
 
 import java.util.Set;
 
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorConstants;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.ScriptableExpression;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
@@ -41,15 +43,15 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  */
 public class IncludeParser extends AbstractBeneratorDescriptorParser {
 	
-	Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(ATT_URI);
+	static final Set<String> REQUIRED_ATTRIBUTES = CollectionUtil.toSet(ATT_URI);
 
 	public IncludeParser() {
-	    super(DescriptorConstants.EL_INCLUDE);
+	    super(EL_INCLUDE, REQUIRED_ATTRIBUTES, null, 
+	    		BeneratorRootStatement.class, IfStatement.class);
     }
 
 	@Override
-	public IncludeStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-		checkAttributes(element, SUPPORTED_ATTRIBUTES);
+	public IncludeStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         String uriAttr = element.getAttribute(DescriptorConstants.ATT_URI);
 		Expression<String> uriEx = new StringExpression(new ScriptableExpression(uriAttr, null));
         return new IncludeStatement(uriEx);

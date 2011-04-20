@@ -27,7 +27,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.sample.ConstantGenerator;
-import org.databene.commons.ConfigurationError;
+import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
 /**
@@ -95,7 +95,7 @@ public class PropertyParserAndStatementTest extends BeneratorIntegrationTest {
 		assertEquals(2, ((BeanMock) beans[1]).lastValue);
 	}
 	
-	@Test(expected = ConfigurationError.class)
+	@Test(expected = SyntaxError.class)
 	public void testInvalid() throws Exception {
 		parseAndExecute("<property name='globalProp' xyz='XYZ' />");
 	}

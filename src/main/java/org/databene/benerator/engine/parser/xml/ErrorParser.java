@@ -26,6 +26,7 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.ErrorStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
@@ -39,13 +40,13 @@ import org.w3c.dom.Element;
 public class ErrorParser extends AbstractBeneratorDescriptorParser {
 
 	public ErrorParser() {
-	    super(EL_ERROR);
+	    super(EL_ERROR, null, CollectionUtil.toSet(ATT_TYPE));
     }
 
 	@Override
-	public ErrorStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public ErrorStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         Expression<String> messageEx = new StringExpression(parseScriptableElementText(element, true));
-		Expression<Integer> codeEx = parseIntAttribute("type", element);
+		Expression<Integer> codeEx = parseIntAttribute(ATT_TYPE, element);
 		return new ErrorStatement(messageEx, codeEx);
     }
 

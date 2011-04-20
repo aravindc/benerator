@@ -71,6 +71,16 @@ import org.w3c.dom.Element;
 public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GenerateOrIterateParser.class);
+
+	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
+			ATT_COUNT, ATT_MIN_COUNT, ATT_MAX_COUNT, ATT_COUNT_DISTRIBUTION, 
+			ATT_PAGESIZE, ATT_THREADS, ATT_STATS, ATT_ON_ERROR,
+			ATT_TEMPLATE, ATT_CONSUMER, 
+			ATT_NAME, ATT_TYPE, ATT_GENERATOR, ATT_VALIDATOR, 
+			ATT_CONVERTER, ATT_NULL_QUOTA, ATT_UNIQUE, ATT_DISTRIBUTION, ATT_CYCLIC,
+			ATT_SOURCE, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, ATT_DATASET, ATT_NESTING, ATT_LOCALE, ATT_FILTER
+		);
+	
 	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
 			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	private static final Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
@@ -80,7 +90,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	// DescriptorParser interface --------------------------------------------------------------------------------------
 	
 	public GenerateOrIterateParser() {
-		super("");
+		super("", null, OPTIONAL_ATTRIBUTES);
 	}
 
 	@Override
@@ -90,7 +100,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     }
 	
 	@Override
-	public Statement parse(final Element element, final Statement[] parentPath, 
+	public Statement doParse(final Element element, final Statement[] parentPath, 
 			final BeneratorParseContext pContext) {
 		final boolean looped = AbstractBeneratorDescriptorParser.containsLoop(parentPath);
 		final boolean nested = AbstractBeneratorDescriptorParser.containsGeneratorStatement(parentPath);

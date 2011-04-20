@@ -25,7 +25,6 @@ import static org.databene.benerator.engine.DescriptorConstants.ATT_ON_ERROR;
 import static org.databene.benerator.engine.DescriptorConstants.ATT_PAGESIZE;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.parseScriptableStringAttribute;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.databene.benerator.engine.Statement;
@@ -52,19 +51,17 @@ public abstract class AbstractBeneratorDescriptorParser extends AbstractXMLEleme
 	
 	protected Logger logger = LoggerFactory.getLogger(AbstractBeneratorDescriptorParser.class);
 
-	public AbstractBeneratorDescriptorParser(String elementName, Class<?>... supportedParentTypes) {
-		this(elementName, new HashSet<String>(), supportedParentTypes);
+	public AbstractBeneratorDescriptorParser(String elementName, 
+			Set<String> requiredAttributes, Set<String> optionalAttributes, Class<?>... supportedParentTypes) {
+		super(elementName, requiredAttributes, optionalAttributes, supportedParentTypes);
     }
 
-	public AbstractBeneratorDescriptorParser(String elementName, Set<String> supportedAttributes, Class<?>... supportedParentTypes) {
-		super(elementName, supportedAttributes, supportedParentTypes);
-    }
-
-	public final Statement parse(Element element, Statement[] parentPath, ParseContext<Statement> context) {
-		return parse(element, parentPath, (BeneratorParseContext) context);
+	@Override
+	public final Statement doParse(Element element, Statement[] parentPath, ParseContext<Statement> context) {
+		return doParse(element, parentPath, (BeneratorParseContext) context);
 	}
 
-	public abstract Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context);
+	public abstract Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context);
 	
 	public static boolean containsLoop(Statement[] parentPath) {
 		if (parentPath == null)

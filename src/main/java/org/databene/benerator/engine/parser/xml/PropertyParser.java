@@ -31,6 +31,7 @@ import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
@@ -51,11 +52,11 @@ import org.w3c.dom.Element;
 public class PropertyParser extends AbstractBeneratorDescriptorParser {
 
 	public PropertyParser() {
-	    super(DescriptorConstants.EL_PROPERTY);
+	    super(DescriptorConstants.EL_PROPERTY, CollectionUtil.toSet(ATT_NAME), CollectionUtil.toSet(ATT_DEFAULT, ATT_VALUE, ATT_REF, ATT_SOURCE));
     }
 
     @Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		String propertyName = element.getAttribute(ATT_NAME);
 		if (element.hasAttribute(ATT_DEFAULT))
 			return parseDefault(propertyName, element.getAttribute(ATT_DEFAULT));

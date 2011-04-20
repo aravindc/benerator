@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,9 @@ package org.databene.benerator.engine.parser.xml;
 import java.util.Collection;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
@@ -44,11 +46,12 @@ public class DefaultComponentParser extends AbstractBeneratorDescriptorParser {
 	static final Collection<String> COMPONENT_TYPES = CollectionUtil.toSet("attribute", "part", "id", "reference");
 
 	public DefaultComponentParser() {
-		super(EL_DEFAULT_COMPONENTS);
+		super(EL_DEFAULT_COMPONENTS, null, null, 
+			BeneratorRootStatement.class, IfStatement.class);
 	}
 
 	@Override
-	public XMLDefaultComponentsStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public XMLDefaultComponentsStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		return new XMLDefaultComponentsStatement(element);
 	}
 

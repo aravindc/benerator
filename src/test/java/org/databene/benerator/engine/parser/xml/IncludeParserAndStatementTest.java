@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IncludeStatement;
-import org.databene.commons.ConfigurationError;
+import org.databene.commons.SyntaxError;
 import org.junit.Test;
 
 /**
@@ -54,7 +54,7 @@ public class IncludeParserAndStatementTest extends BeneratorIntegrationTest {
 		assertEquals("done", context.get("incProp"));
 	}
 
-	@Test(expected = ConfigurationError.class)
+	@Test(expected = SyntaxError.class)
 	public void testAttributeTypo() {
 		parse("<include urr='bla.bla' />");
 	}

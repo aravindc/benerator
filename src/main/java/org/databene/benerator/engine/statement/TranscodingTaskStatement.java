@@ -108,7 +108,7 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	
 	private void checkPrecoditions(BeneratorContext context) {
 		DBSystem target = targetEx.evaluate(context);
-		boolean identitiesRequired = checkPreconditions(subStatements, context);
+		boolean identitiesRequired = collectPreconditions(subStatements, context);
 		// check that each table for which an identity definition is required has one
 		if (identitiesRequired)
 			readIdentityDefinition(context);
@@ -117,9 +117,9 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			Boolean required = req.getValue();
 			IdentityModel identity = identityProvider.getIdentity(tableName, false);
 			if (identity == null) {
-				if (required)
+				if (required) {
 					throw new ConfigurationError("For transcoding, an identity definition of table " + tableName + " is required");
-				else {
+				} else {
 					DBTable table = target.getDbMetaData().getTable(tableName);
 					identityProvider.registerIdentity(new NoIdentity(table), tableName);
 				}
@@ -131,7 +131,7 @@ public class TranscodingTaskStatement extends SequentialStatement {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 
-	private boolean checkPreconditions(List<Statement> subStatements, BeneratorContext context) {
+	private boolean collectPreconditions(List<Statement> subStatements, BeneratorContext context) {
 		boolean identitiesRequired = false;
 		List<CascadeParent> children = CollectionUtil.extractItemsOfCompatibleType(CascadeParent.class, subStatements);
 		for (CascadeParent statement : children) {
@@ -141,12 +141,12 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			tableNkRequirements.put(tableName, false);
 			for (ReferenceDescriptor ref : type.getReferenceComponents()) {
 				String targetTable = ref.getTargetType();
-				if (!tableNkRequirements.containsKey(targetTable)) {
+				if (!tableNkRequirements.containsKey(targetTable) && statement.getSource(context).countEntities(targetTable) > 0) {
 					tableNkRequirements.put(targetTable, true);
 					identitiesRequired = true;
 				}
 			}
-			identitiesRequired |= checkPreconditions(statement.getSubStatements(), context);
+			identitiesRequired |= collectPreconditions(statement.getSubStatements(), context);
 		}
 		return identitiesRequired;
 	}

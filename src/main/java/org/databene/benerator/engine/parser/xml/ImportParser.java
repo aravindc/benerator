@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,17 +39,19 @@ import static org.databene.benerator.engine.DescriptorConstants.*;
  */
 public class ImportParser extends AbstractBeneratorDescriptorParser {
 	
-	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(ATT_CLASS, ATT_DEFAULTS, ATT_DOMAINS, ATT_PLATFORMS);
+	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
+		ATT_CLASS, ATT_DEFAULTS, ATT_DOMAINS, ATT_PLATFORMS);
 
 	public ImportParser() {
-	    super(EL_IMPORT);
+	    super(EL_IMPORT, null, OPTIONAL_ATTRIBUTES);
     }
 
 	@Override
-	public ImportStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public ImportStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+		// check syntax
+		assertAtLeastOneAttributeIsSet(element, ATT_DEFAULTS, ATT_DOMAINS, ATT_PLATFORMS, ATT_CLASS);
 		
-		checkAttributes(element, SUPPORTED_ATTRIBUTES);
-		
+		// prepare parsing
 		ArrayBuilder<String> classImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> domainImports = new ArrayBuilder<String>(String.class); 
 		ArrayBuilder<String> platformImports = new ArrayBuilder<String>(String.class); 

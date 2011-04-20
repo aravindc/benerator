@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,14 +24,17 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeanStatement;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.script.Assignment;
 import org.databene.benerator.script.BeanConstruction;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.DefaultConstruction;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Expression;
@@ -54,11 +57,12 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 	private static final Logger logger =  LoggerFactory.getLogger(BeanParser.class);
 	
 	public BeanParser() {
-	    super(EL_BEAN);
+	    super(EL_BEAN, CollectionUtil.toSet(ATT_ID), CollectionUtil.toSet(ATT_CLASS, ATT_SPEC), 
+	    		BeneratorRootStatement.class, IfStatement.class);
     }
 
 	@Override
-	public BeanStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public BeanStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		try {
 			String id = element.getAttribute(ATT_ID);
 			ResourceManager resourceManager = context.getResourceManager();
@@ -72,7 +76,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Expression<?> parseBeanExpression(Element element) {
 		String id = element.getAttribute(ATT_ID);
-        Expression<?> instantiation;
+        Expression<?> instantiation = null;
         String beanSpec = element.getAttribute(ATT_SPEC);
         String beanClass = element.getAttribute(ATT_CLASS);
         if (!StringUtil.isEmpty(beanSpec)) {
@@ -85,7 +89,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 	        logger.debug("Instantiating bean of class " + beanClass + " (id=" + id + ")");
 	        instantiation = new DefaultConstruction(beanClass);
         } else
-        	throw new ConfigurationError("Syntax error in definition of bean " + id);
+        	syntaxError("bean definition is missing 'class' or 'spec' attribute", element);
         Element[] propertyElements = XMLUtil.getChildElements(element, false, EL_PROPERTY);
 		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements);
         return new BeanConstruction(instantiation, propertyInitializers);
@@ -111,7 +115,11 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 	        instantiation = new DefaultConstruction<Object>(beanClass);
         } else
         	throw new ConfigurationError("Syntax error in definition of bean " + id);
-        Element[] propertyElements = XMLUtil.getChildElements(element, false, EL_PROPERTY);
+        Element[] propertyElements = XMLUtil.getChildElements(element);
+        for (Element propertyElement : propertyElements)
+        	if (!EL_PROPERTY.equals(propertyElement.getNodeName()))
+        		syntaxError("not a supported bean child element: <" + propertyElement.getNodeName() + ">", 
+        				propertyElement);
 		Assignment[] propertyInitializers = mapPropertyDefinitions(propertyElements);
 		Object result = new BeanConstruction(instantiation, propertyInitializers).evaluate(context);
         return new BeanSpec(result, ref);

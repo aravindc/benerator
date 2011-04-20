@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,8 +21,11 @@
 
 package org.databene.benerator.engine.parser.xml;
 
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeepStatement;
+import org.databene.benerator.engine.statement.IfStatement;
+import org.databene.benerator.engine.statement.WhileStatement;
 import org.w3c.dom.Element;
 
 /**
@@ -34,11 +37,12 @@ import org.w3c.dom.Element;
 public class BeepParser extends AbstractBeneratorDescriptorParser {
 
 	public BeepParser() {
-	    super("beep");
+	    super("beep", null, null, 
+	    		BeneratorRootStatement.class, IfStatement.class, WhileStatement.class);
     }
 
 	@Override
-	public BeepStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public BeepStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         return new BeepStatement();
     }
 

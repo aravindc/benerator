@@ -44,11 +44,12 @@ import org.w3c.dom.Element;
  */
 public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 	
-	private static final Set<String> SUPPORTED_ATTRIBUTES = CollectionUtil.toSet(
-			ATT_ID, ATT_URI, ATT_TYPE, ATT_TARGET, ATT_ON_ERROR, ATT_ENCODING, ATT_OPTIMIZE, ATT_INVALIDATE, ATT_ASSERT);
+	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
+			ATT_ID, ATT_URI, ATT_TYPE, ATT_TARGET, ATT_ON_ERROR, ATT_ENCODING, 
+			ATT_OPTIMIZE, ATT_INVALIDATE, ATT_ASSERT);
 
 	public EvaluateParser() {
-		super("", SUPPORTED_ATTRIBUTES);
+		super(null, null, OPTIONAL_ATTRIBUTES);
 	}
 
 	@Override
@@ -59,9 +60,14 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public EvaluateStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-		checkAttributeSupport(element);
+	public EvaluateStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		boolean evaluate = DescriptorConstants.EL_EVALUATE.equals(element.getNodeName());
+		if (evaluate) {
+			assertAtLeastOneAttributeIsSet(element, ATT_ID, ATT_ASSERT);
+		} else {
+			assertAttributeIsNotSet(element, ATT_ID);
+			assertAttributeIsNotSet(element, ATT_ASSERT);
+		}
 		Expression<String> id           = parseAttribute(ATT_ID, element);
 		Expression<String> text         = new StringExpression(parseScriptableElementText(element, false));
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI, element);

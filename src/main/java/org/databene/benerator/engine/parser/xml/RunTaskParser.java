@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,10 +24,17 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
+import java.util.Set;
+
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.context.DefaultPageSizeExpression;
+import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.RunTaskStatement;
+import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.ErrorHandler;
@@ -44,15 +51,17 @@ import org.w3c.dom.Element;
  */
 public class RunTaskParser extends AbstractBeneratorDescriptorParser {
 	
+	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(ATT_ID, ATT_CLASS, ATT_SPEC, ATT_COUNT, ATT_PAGESIZE, ATT_THREADS, ATT_PAGER, ATT_STATS, ATT_ON_ERROR);
 	private static final DefaultPageSizeExpression DEFAULT_PAGE_SIZE = new DefaultPageSizeExpression();
 
 	public RunTaskParser() {
-	    super(EL_RUN_TASK);
+	    super(EL_RUN_TASK, null, OPTIONAL_ATTRIBUTES, 
+	    	BeneratorRootStatement.class, IfStatement.class, WhileStatement.class, GenerateOrIterateStatement.class);
     }
 
     @Override
 	@SuppressWarnings("unchecked")
-    public RunTaskStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+    public RunTaskStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		try {
 		    Expression<Task> taskProvider   = (Expression<Task>) BeanParser.parseBeanExpression(element);
 			Expression<Long> count          = parseLongAttribute(ATT_COUNT, element, 1);

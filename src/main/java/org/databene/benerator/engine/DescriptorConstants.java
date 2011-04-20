@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -53,7 +53,6 @@ public interface DescriptorConstants {
     static final String ATT_DEFAULT_SEPARATOR = "defaultSeparator";
     static final String ATT_DEFAULT_ONE_TO_ONE = "defaultOneToOne";
     static final String ATT_DEFAULT_ERR_HANDLER = "defaultErrorHandler";
-    static final String ATT_MAX_COUNT = "maxCount";
     static final String ATT_ACCEPT_UNKNOWN_SIMPLE_TYPES = "acceptUnknownSimpleTypes";
 	
     static final String EL_IF = "if";
@@ -84,7 +83,12 @@ public interface DescriptorConstants {
     static final String EL_PART = "part";
     static final String EL_ATTRIBUTE = "attribute";
     static final String EL_WAIT = "wait";
-	
+
+    static final String EL_TRANSCODING_TASK = "transcodingTask";
+    static final String EL_TRANSCODE = "transcode";
+    static final String EL_CASCADE = "cascade";
+    static final String ATT_TABLE = "table";
+
 	static final String ATT_PASSWORD = "password";
 	static final String ATT_USER = "user";
 	static final String ATT_DRIVER = "driver";
@@ -102,7 +106,12 @@ public interface DescriptorConstants {
     static final String ATT_THREADS = "threads";
     static final String ATT_PAGESIZE = "pageSize";
     static final String ATT_PAGER = "pager";
+    
     static final String ATT_COUNT = "count";
+    static final String ATT_MIN_COUNT = "minCount";
+    static final String ATT_MAX_COUNT = "maxCount";
+    static final String ATT_COUNT_DISTRIBUTION = "countDistribution";
+    
     static final String ATT_ASSERT = "assert";
     static final String ATT_TYPE = "type";
     static final String ATT_OPTIMIZE = "optimize";
@@ -129,6 +138,18 @@ public interface DescriptorConstants {
     static final String ATT_PRECISION = "precision";
     static final String ATT_DISTRIBUTION = "distribution";
     static final String ATT_STATS = "stats";
+	static final String ATT_TEMPLATE = "template";
+	static final String ATT_GENERATOR = "generator";
+	static final String ATT_VALIDATOR = "validator";
+	static final String ATT_CONVERTER = "converter";
+	static final String ATT_NULL_QUOTA = "nullQuota";
+	static final String ATT_UNIQUE = "unique";
+	static final String ATT_CYCLIC = "cyclic";
+	static final String ATT_SEPARATOR = "separator";
+	static final String ATT_SUB_SELECTOR = "subSelector";
+	static final String ATT_DATASET = "dataset";
+	static final String ATT_NESTING = "nesting";
+	static final String ATT_FILTER = "filter";
 	
     static final String ATT_CLASS = "class";
     static final String ATT_SPEC = "spec";
@@ -136,6 +157,17 @@ public interface DescriptorConstants {
     static final String ATT_DEFAULTS = "defaults";
     static final String ATT_PLATFORMS = "platforms";
     static final String ATT_DOMAINS = "domains";
+
+    static final String ATT_DEFAULT_SOURCE = "defaultSource";
+    static final String ATT_IDENTITY = "identity";
+
+    static final String EL_DBSANITY = "dbsanity";
+    static final String ATT_IN = "in";
+    static final String ATT_OUT = "out";
+    static final String ATT_TABLES = "tables";
+    static final String ATT_SKIN = "skin";
+    static final String ATT_LOCALE = "locale";
+    static final String ATT_MODE = "mode";
 
     static final Collection<String> CREATE_ENTITIES_EXT_SETUP = CollectionUtil
 		.toSet(ATT_PAGESIZE, ATT_THREADS, ATT_CONSUMER, ATT_ON_ERROR);

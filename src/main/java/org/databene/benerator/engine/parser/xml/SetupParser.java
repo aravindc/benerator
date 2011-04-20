@@ -23,6 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ import org.w3c.dom.Element;
  */
 public class SetupParser extends AbstractBeneratorDescriptorParser {
 	
-	private static final Set<String> BENERATOR_PROPERTIES = CollectionUtil.toSet(
+	private static final Set<String> BENERATOR_PROPERTIES = CollectionUtil.toSet( // TODO check for completeness
 			ATT_DEFAULT_SCRIPT,
 			ATT_DEFAULT_NULL,
 			ATT_DEFAULT_ENCODING,
@@ -62,15 +63,22 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 		);
 
 	private static final Set<String> XML_ATTRIBUTES = CollectionUtil.toSet(
-		"xmlns"
+		"xmlns", "xmlns:xsi", "xsi:schemaLocation"
 	);
 
+	private static final Set<String> OPTIONAL_ATTRIBUTES;
+	
+	static {
+		OPTIONAL_ATTRIBUTES = new HashSet<String>(BENERATOR_PROPERTIES);
+		OPTIONAL_ATTRIBUTES.addAll(XML_ATTRIBUTES);
+	}
+	
 	public SetupParser() {
-		super(EL_SETUP);
+		super(EL_SETUP, null, OPTIONAL_ATTRIBUTES);
 	}
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		Map<String, String> attributes = XMLUtil.getAttributes(element);
 		Iterator<Entry<String, String>> iterator = attributes.entrySet().iterator();
 		while (iterator.hasNext()) {

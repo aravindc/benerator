@@ -23,7 +23,7 @@ package org.databene.benerator.engine.parser.xml;
 
 import java.util.Set;
 
-import org.databene.benerator.engine.DescriptorConstants;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.CascadeParent;
 import org.databene.benerator.engine.statement.CascadeStatement;
@@ -43,14 +43,15 @@ import org.w3c.dom.Element;
 public class CascadeParser extends AbstractBeneratorDescriptorParser {
 
 	private static final Set<String> MEMBER_ELEMENTS = CollectionUtil.toSet(
-			DescriptorConstants.EL_ID, DescriptorConstants.EL_ATTRIBUTE, DescriptorConstants.EL_REFERENCE);
+			EL_ID, EL_ATTRIBUTE, EL_REFERENCE);
 
 	public CascadeParser() {
-		super("cascade", CollectionUtil.toSet("ref"), TranscodeStatement.class, CascadeStatement.class);
+		super(EL_CASCADE, CollectionUtil.toSet(ATT_REF), null, 
+				TranscodeStatement.class, CascadeStatement.class);
 	}
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath,
+	public Statement doParse(Element element, Statement[] parentPath,
 			BeneratorParseContext context) {
 		CascadeParent parent = (CascadeParent) ArrayUtil.lastElement(parentPath);
 		String ref = getRequiredAttribute("ref", element);

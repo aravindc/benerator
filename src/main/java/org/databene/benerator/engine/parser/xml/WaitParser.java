@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import org.databene.benerator.engine.statement.WaitStatement;
 import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.DynamicLongGenerator;
 import org.databene.benerator.util.ExpressionBasedGenerator;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.model.data.Uniqueness;
@@ -45,11 +46,17 @@ import org.w3c.dom.Element;
 public class WaitParser extends AbstractBeneratorDescriptorParser {
 
 	public WaitParser() {
-	    super(EL_WAIT);
+	    super(EL_WAIT, null, CollectionUtil.toSet(ATT_DURATION, ATT_MIN, ATT_MAX, ATT_PRECISION, ATT_DISTRIBUTION));
     }
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+		
+		// check attribute combinations
+		assertAtLeastOneAttributeIsSet(element, ATT_DURATION, ATT_MIN, ATT_MAX);
+		excludeAttributes(element, ATT_DURATION, ATT_MIN);
+		excludeAttributes(element, ATT_DURATION, ATT_MAX);
+		
 		// check for constant value
 		Expression<Long> duration  = parseLongAttribute(ATT_DURATION, element, null);
 		if (duration != null)

@@ -26,8 +26,11 @@ import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
 import java.util.Map;
 
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.MemStoreStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ConversionException;
 import org.databene.commons.StringUtil;
@@ -43,11 +46,11 @@ import org.w3c.dom.Element;
 public class MemStoreParser extends AbstractBeneratorDescriptorParser {
 	
 	public MemStoreParser() {
-	    super(EL_MEMSTORE);
+	    super(EL_MEMSTORE, CollectionUtil.toSet(ATT_ID), null, BeneratorRootStatement.class, IfStatement.class);
     }
 
 	@Override
-    public MemStoreStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+    public MemStoreStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		checkAttributeSupport(XMLUtil.getAttributes(element));
 		try {
 			String id = getAttribute(ATT_ID, element);

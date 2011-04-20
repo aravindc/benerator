@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,6 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.ParseException;
-import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.xml.XMLUtil;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
@@ -51,15 +50,12 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 			EL_THEN, EL_ELSE, EL_COMMENT);
 
 	public IfParser() {
-		super("if");
+		super(EL_IF, CollectionUtil.toSet(ATT_TEST), null);
 	}
 
 	@Override
-	public Statement parse(Element ifElement, Statement[] parentPath, BeneratorParseContext context) {
+	public Statement doParse(Element ifElement, Statement[] parentPath, BeneratorParseContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, ifElement);
-		if (ExpressionUtil.isNull(condition))
-			throw new ParseException("'test' attribute of 'if' statement is missing or empty", 
-					XMLUtil.format(ifElement));
 		Element thenElement = XMLUtil.getChildElement(ifElement, false, false, "then");
 		Element elseElement = XMLUtil.getChildElement(ifElement, false, false, "else");
 		List<Statement> thenStatements = null;
@@ -89,6 +85,5 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 	    		throw new ConfigurationError();
 	    }
     }
-
 
 }

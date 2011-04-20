@@ -265,7 +265,7 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
         for (Element child : XMLUtil.getChildElements(appInfo)) {
             String childName = XMLUtil.localName(child);
             if (INCLUDE.equals(childName)) {
-                IncludeStatement statement = new IncludeParser().parse(child, null, new BeneratorParseContext(this));
+                IncludeStatement statement = (IncludeStatement) new IncludeParser().parse(child, null, new BeneratorParseContext(this));
                 statement.execute(context);
             } else if ("bean".equals(childName)) {
                 Expression<?> beanExpression = BeanParser.parseBeanExpression(child);

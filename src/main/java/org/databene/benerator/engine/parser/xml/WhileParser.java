@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,9 +34,6 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
-import org.databene.commons.ParseException;
-import org.databene.commons.expression.ExpressionUtil;
-import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -51,7 +48,7 @@ public class WhileParser extends AbstractBeneratorDescriptorParser {
 			EL_SETUP, EL_IF, EL_WHILE);
 
 	public WhileParser() {
-		super(EL_WHILE);
+		super(EL_WHILE, CollectionUtil.toSet(ATT_TEST), null);
 	}
 
     public boolean supports(String elementName, String parentName) {
@@ -59,11 +56,8 @@ public class WhileParser extends AbstractBeneratorDescriptorParser {
     }
 
 	@Override
-	public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, element);
-		if (ExpressionUtil.isNull(condition))
-			throw new ParseException("'test' attribute of 'while' statement is missing or empty", 
-					XMLUtil.format(element));
 		WhileStatement whileStatement = new WhileStatement(condition);
 		List<Statement> subStatements = context.parseChildElementsOf(element, context.createSubPath(parentPath, whileStatement));
 		whileStatement.setSubStatements(subStatements);

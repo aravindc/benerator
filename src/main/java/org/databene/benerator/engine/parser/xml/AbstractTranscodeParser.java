@@ -24,6 +24,8 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.parseAttribute;
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.parseScriptAttribute;
 
+import java.util.Set;
+
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConvertingExpression;
 import org.databene.platform.db.DBSystem;
@@ -41,8 +43,9 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractTranscodeParser extends AbstractBeneratorDescriptorParser {
 
-	public AbstractTranscodeParser(String elementName, Class<?>... supportedParentTypes) {
-	    super(elementName, supportedParentTypes);
+	public AbstractTranscodeParser(String elementName, 
+			Set<String> requiredAttributes, Set<String> optionalAttributes, Class<?>... supportedParentTypes) {
+	    super(elementName, requiredAttributes, optionalAttributes, supportedParentTypes);
     }
 
 	@SuppressWarnings("unchecked")

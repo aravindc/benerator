@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,14 @@ package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
 
+import static org.databene.benerator.engine.DescriptorConstants.*;
+
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.TranscodingTaskStatement;
+import org.databene.benerator.engine.statement.WhileStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.platform.db.DBSystem;
@@ -39,11 +45,14 @@ import org.w3c.dom.Element;
 public class TranscodingTaskParser extends AbstractTranscodeParser {
 
 	public TranscodingTaskParser() {
-	    super("transcodingTask");
+	    super(EL_TRANSCODING_TASK, 
+	    		CollectionUtil.toSet(ATT_TARGET), 
+	    		CollectionUtil.toSet(ATT_IDENTITY, ATT_DEFAULT_SOURCE, ATT_PAGESIZE, ATT_ON_ERROR), 
+	    		BeneratorRootStatement.class, IfStatement.class, WhileStatement.class);
     }
 
     @Override
-    public Statement parse(Element element, Statement[] parentPath, BeneratorParseContext parsingContext) {
+    public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext parsingContext) {
     	Expression<ErrorHandler> errorHandlerExpression = parseOnErrorAttribute(element, "transcodingTask");
 		TranscodingTaskStatement statement = new TranscodingTaskStatement(
 				parseDefaultSource(element), 

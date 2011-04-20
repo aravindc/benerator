@@ -40,7 +40,7 @@ public class CommentParserAndStatementTest {
 	@Test
 	public void testValue() throws Exception {
 		Element element = XMLUtil.parseStringAsElement("<comment>Hello</comment>");
-		CommentStatement statement = new CommentParser().parse(element, null, null);
+		CommentStatement statement = (CommentStatement) new CommentParser().parse(element, null, null);
 		statement.execute(new BeneratorContext());
 		assertEquals("Hello", statement.getComment());
 	}

@@ -22,12 +22,17 @@
 package org.databene.benerator.engine.parser.xml;
 
 import static org.databene.benerator.engine.parser.xml.DescriptorParserUtil.*;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import java.util.Locale;
 
+import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.BeneratorLocaleExpression;
 import org.databene.benerator.engine.statement.DBSanityStatement;
+import org.databene.benerator.engine.statement.IfStatement;
+import org.databene.benerator.engine.statement.WhileStatement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -45,23 +50,26 @@ import org.w3c.dom.Element;
 public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser {
 	
 	public DbSanity4BeneratorParser() {
-	    super("dbsanity");
+	    super(EL_DBSANITY, 
+	    		CollectionUtil.toSet(ATT_ENVIRONMENT), 
+	    		CollectionUtil.toSet(ATT_IN, ATT_OUT, ATT_TABLES, ATT_SKIN, ATT_LOCALE, ATT_MODE, ATT_ON_ERROR),
+	    		BeneratorRootStatement.class, IfStatement.class, WhileStatement.class);
     }
 
 	@Override
-	public DBSanityStatement parse(Element element, Statement[] parentPath, BeneratorParseContext context) {
-        Expression<String> envEx = parseScriptableStringAttribute("environment", element);
+	public DBSanityStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+        Expression<String> envEx = parseScriptableStringAttribute(ATT_ENVIRONMENT, element);
         if (envEx == null)
         	throw new ConfigurationError("no environment specified in <dbsanity> element");
-        Expression<String> inEx = parseScriptableStringAttribute("in", element);
-		Expression<String> outEx = parseScriptableStringAttribute("out", element);
-        Expression<String[]> tablesEx = parseScriptableStringArrayAttribute("tables", element);
-		Expression<String> skinEx = parseScriptableStringAttribute("skin", element); // online or offline
-		Expression<Locale> localeEx = new BeneratorLocaleExpression(parseScriptableStringAttribute("locale", element)); // 2-letter-ISO code
-		Expression<String> modeNameEx = parseScriptableStringAttribute("mode", element); // verbose, quiet or default
+        Expression<String> inEx = parseScriptableStringAttribute(ATT_IN, element);
+		Expression<String> outEx = parseScriptableStringAttribute(ATT_OUT, element);
+        Expression<String[]> tablesEx = parseScriptableStringArrayAttribute(ATT_TABLES, element);
+		Expression<String> skinEx = parseScriptableStringAttribute(ATT_SKIN, element); // online or offline
+		Expression<Locale> localeEx = new BeneratorLocaleExpression(parseScriptableStringAttribute(ATT_LOCALE, element)); // 2-letter-ISO code
+		Expression<String> modeNameEx = parseScriptableStringAttribute(ATT_MODE, element); // verbose, quiet or default
 		Expression<ExecutionMode> modeEx = new ConvertingExpression<String, ExecutionMode>(
 				modeNameEx, new String2EnumConverter<ExecutionMode>(ExecutionMode.class));
-		Expression<ErrorHandler> errHandlerEx = parseOnErrorAttribute(element, "dbsanity");
+		Expression<ErrorHandler> errHandlerEx = parseOnErrorAttribute(element, EL_DBSANITY);
 		return new DBSanityStatement(envEx, inEx, outEx, tablesEx, skinEx, localeEx, modeEx, errHandlerEx);
     }
 
