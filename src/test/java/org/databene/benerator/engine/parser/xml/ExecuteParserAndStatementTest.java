@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -88,7 +88,7 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 	}
 
 	@Test
-	public void testDbInvalidation() throws Exception {
+	public void testDbInvalidationDefault() throws Exception {
 		String url = HSQLUtil.getInMemoryURL("benerator");
 		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
 		BeneratorContext context = new BeneratorContext();
@@ -98,8 +98,29 @@ public class ExecuteParserAndStatementTest extends BeneratorIntegrationTest {
 			db.execute("create table epast_test (id int)");
 			Statement statement = parse("<execute target='db'>select * from epast_test where 1 = 0</execute>");
 			statement.execute(context);
+			assertEquals(0, db.invalidationCount());
+			Statement statement2 = parse("<execute target='db'>create table BBB (id int)</execute>");
+			statement2.execute(context);
 			assertEquals(1, db.invalidationCount());
-			Statement statement2 = parse("<execute target='db' invalidate='false'>select * from epast_test where 1 = 0</execute>");
+		} finally {
+			db.execute("drop table epast_test");
+			db.close();
+		}
+	}
+
+	@Test
+	public void testDbInvalidationOverride() throws Exception {
+		String url = HSQLUtil.getInMemoryURL("benerator");
+		DBSystem db = new DBSystem("db", url, HSQLUtil.DRIVER, "sa", null);
+		BeneratorContext context = new BeneratorContext();
+		context.set("db", db);
+		assertEquals(0, db.invalidationCount());
+		try {
+			db.execute("create table epast_test (id int)");
+			Statement statement = parse("<execute target='db' invalidate='true'>select * from epast_test where 1 = 0</execute>");
+			statement.execute(context);
+			assertEquals(1, db.invalidationCount());
+			Statement statement2 = parse("<execute target='db' invalidate='false'>create table AAA (id int)</execute>");
 			statement2.execute(context);
 			assertEquals(1, db.invalidationCount());
 		} finally {

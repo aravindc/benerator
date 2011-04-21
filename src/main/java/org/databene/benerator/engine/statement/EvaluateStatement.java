@@ -52,6 +52,7 @@ import org.databene.commons.Level;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.expression.ExpressionUtil;
+import org.databene.jdbacl.DBExecutionResult;
 import org.databene.jdbacl.DBUtil;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.db.DBSystem;
@@ -154,7 +155,7 @@ public class EvaluateStatement implements Statement {
 			String text = ExpressionUtil.evaluate(textEx, context);
 			if ("sql".equals(typeValue)) {
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
-	            		text, optimizeEx.evaluate(context), invalidateEx.evaluate(context));
+	            		text, optimizeEx.evaluate(context), invalidateEx.evaluate(context)).result;
             } else if (SHELL.equals(typeValue)) {
 				result = runShell(uriValue, text, onErrorValue);
             } else if ("execute".equals(typeValue)) {
@@ -228,7 +229,7 @@ public class EvaluateStatement implements Statement {
 		return LiteralParser.parse(output);
 	}
 
-	private Object runSql(String uri, Object targetObject, String onError,
+	private DBExecutionResult runSql(String uri, Object targetObject, String onError,
 			String encoding, String text, boolean optimize, Boolean invalidate) {
 		if (targetObject == null)
 			throw new ConfigurationError("Please specify the 'target' database to execute the SQL script");
@@ -241,7 +242,7 @@ public class EvaluateStatement implements Statement {
 		else
 			throw new TaskException("No uri or content");
         Connection connection = null;
-        Object result = null;
+        DBExecutionResult result = null;
 		ErrorHandler errorHandler = new ErrorHandler(LogCategories.SQL, Level.valueOf(onError));
         try {
             connection = db.getConnection();
@@ -249,7 +250,7 @@ public class EvaluateStatement implements Statement {
             	result = DBUtil.runScript(text, connection, optimize, errorHandler);
             else
             	result = DBUtil.runScript(uri, encoding, connection, optimize, errorHandler);
-            if (!evaluate && !Boolean.FALSE.equals(invalidate))
+            if (Boolean.TRUE.equals(invalidate) || (invalidate == null && !evaluate && result.changedStructure))
             	db.invalidate(); // possibly we changed the database structure
 		} catch (Exception sqle) { 
             if (connection != null) {
