@@ -146,7 +146,8 @@ public class ModelParser {
 
     public InstanceDescriptor parseVariable(Element varElement, VariableHolder owner) {
         assertElementName(varElement, "variable");
-        InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"));
+        String type = StringUtil.emptyToNull(varElement.getAttribute("type"));
+        InstanceDescriptor descriptor = new InstanceDescriptor(varElement.getAttribute("name"), type);
         InstanceDescriptor variable = mapInstanceDetails(varElement, false, descriptor);
         owner.addVariable(variable);
         return variable;
