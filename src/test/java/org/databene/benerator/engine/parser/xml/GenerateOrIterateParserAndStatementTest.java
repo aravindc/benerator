@@ -34,6 +34,7 @@ import org.databene.benerator.test.PersonIterable;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.iterator.IteratorTestCase;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.Entity;
@@ -49,6 +50,33 @@ import org.junit.Test;
  */
 public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegrationTest {
 
+	@Test(expected = SyntaxError.class)
+	public void testVarAfterAttribute() {
+		parseAndExecute(
+				"<generate count='5'>" +
+				"	<attribute name='x' type='int'/>" +
+				"	<variable name='y' type='int'/>" +
+				"</generate>");
+	}
+	
+	@Test(expected = SyntaxError.class)
+	public void testVarAfterSubGen() {
+		parseAndExecute(
+				"<generate count='5'>" +
+				"	<generate count='3'/>" +
+				"	<variable name='y' type='int'/>" +
+				"</generate>");
+	}
+	
+	@Test(expected = SyntaxError.class)
+	public void testAttributeAfterSubGen() {
+		parseAndExecute(
+				"<generate count='5'>" +
+				"	<generate count='3'/>" +
+				"	<attribute name='y' type='int'/>" +
+				"</generate>");
+	}
+	
 	@Test
 	public void testAttributes() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);

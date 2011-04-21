@@ -81,8 +81,12 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			ATT_SOURCE, ATT_SEPARATOR, ATT_ENCODING, ATT_SELECTOR, ATT_SUB_SELECTOR, ATT_DATASET, ATT_NESTING, ATT_LOCALE, ATT_FILTER
 		);
 	
-	private static final Set<String> PART_NAMES = CollectionUtil.toSet(
+	private static final Set<String> PART_ELEMENTS = CollectionUtil.toSet(
 			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
+	
+	//private static final Set<String> UBIQUITOUS_ELEMENTS = CollectionUtil.toSet(
+	//		EL_COMMENT, EL_ECHO, EL_WAIT); // TODO execute ubiquitous elements also between <vars> and <members>
+	
 	private static final Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
 
 	DataModel dataModel = DataModel.getDefaultInstance();
@@ -172,13 +176,21 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		// parse consumers
 		boolean consumerExpected = CONSUMER_EXPECTING_ELEMENTS.contains(element.getNodeName());
 		Expression consumer = parseConsumers(element, consumerExpected, task.getResourceManager());
-		// TODO v0.7 have collection of consumers and manage each one independently
 		task.setConsumer(consumer);
 		
-		// handle sub-<generate/>
+		// handle sub elements
+		Stage stage = Stage.VARS;
 		for (Element child : XMLUtil.getChildElements(element)) {
 			String childName = child.getNodeName();
-			if (!PART_NAMES.contains(childName)) {
+			if (EL_VARIABLE.equals(childName)) {
+				if (stage != Stage.VARS)
+					syntaxError("variables must be configured before members and sub elements", child);
+			} else if (PART_ELEMENTS.contains(childName)) {
+				if (stage == Stage.OTHERS)
+					syntaxError("members must be configured before execution of sub elements ", child);
+				stage = Stage.MEMBERS;
+			} else {
+				stage = Stage.OTHERS;
 				Statement[] subPath = parseContext.createSubPath(parentPath, statement);
 				Statement subStatement = parseContext.parseChildElement(child, subPath);
 				task.addSubStatement(subStatement);
@@ -228,4 +240,8 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 		return instance;
 	}
 
+	enum Stage {
+		VARS, MEMBERS, OTHERS
+	}
+	
 }
