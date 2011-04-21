@@ -25,7 +25,7 @@ enhancements
 - RandomUtil.randomFromWeightLiteral(this.weights)
 - generic version configuration and dependency verification
 - Benerator now provides its build number
-- <execute invalidate='false' />
+- Improved database meta data invalidation algorithm, allowed override with <execute invalidate='false' />
 - new property in Benerator MBean: ConnectionCount
 - improved read-only database checking
 - new class DecimalQuantizer
