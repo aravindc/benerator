@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,8 +44,6 @@ import org.slf4j.LoggerFactory;
  */
 public class TextFileExporter<E> extends FormattingConsumer<E> implements FileExporter<E> {
 
-    private static final String DEFAULT_ENCODING = SystemInfo.getFileEncoding();
-    private static final String DEFAULT_LINE_SEPARATOR = SystemInfo.getLineSeparator();
     private static final Logger LOG = LoggerFactory.getLogger(TextFileExporter.class);
 
     // attributes ------------------------------------------------------------------------------------------------------
@@ -70,8 +68,8 @@ public class TextFileExporter<E> extends FormattingConsumer<E> implements FileEx
     
     public TextFileExporter(String uri, String encoding, String lineSeparator) {
     	this.uri = (uri != null ? uri : "export.txt");
-        this.encoding = (encoding != null ? encoding : DEFAULT_ENCODING);
-        this.lineSeparator = (lineSeparator != null ? lineSeparator : DEFAULT_LINE_SEPARATOR);
+        this.encoding = (encoding != null ? encoding : SystemInfo.getFileEncoding());
+        this.lineSeparator = (lineSeparator != null ? lineSeparator : SystemInfo.getLineSeparator());
         this.append = false;
     }
     

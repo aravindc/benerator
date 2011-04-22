@@ -30,6 +30,7 @@ import org.databene.model.consumer.TextFileExporter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
@@ -56,7 +57,6 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     // defaults --------------------------------------------------------------------------------------------------------
     
     private static final String DEFAULT_LINE_SEPARATOR = "\r\n"; // as defined by RFC 4180
-    private static final char   DEFAULT_SEPARATOR = ',';
     private static final String DEFAULT_URI       = "export.csv";
 
     // configuration attributes ----------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
 
     public CSVEntityExporter(String uri, String columnsSpec) {
-        this(uri, columnsSpec, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
+        this(uri, columnsSpec, BeneratorContext.getDefaultCellSeparator(), null, DEFAULT_LINE_SEPARATOR);
     }
 
     public CSVEntityExporter(String uri, String columnsSpec, char separator, String encoding, String lineSeparator) {
@@ -96,7 +96,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor) {
-        this(uri, descriptor, DEFAULT_SEPARATOR, null, DEFAULT_LINE_SEPARATOR);
+        this(uri, descriptor, BeneratorContext.getDefaultCellSeparator(), null, DEFAULT_LINE_SEPARATOR);
     }
 
     public CSVEntityExporter(String uri, ComplexTypeDescriptor descriptor, char separator, String encoding, String lineSeparator) {

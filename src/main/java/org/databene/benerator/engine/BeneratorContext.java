@@ -33,6 +33,7 @@ import java.util.concurrent.Executors;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
 import org.databene.benerator.script.BeneratorScriptFactory;
+import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Level;
@@ -57,7 +58,9 @@ import org.databene.script.ScriptUtil;
  * @author Volker Bergmann
  */
 public class BeneratorContext extends ContextStack implements GeneratorContext, ClassProvider {
-	
+
+    public static final char DEFAULT_CELL_SEPARATOR = ',';
+
     private DefaultContext properties;
 	private ClassCache classCache;
 	
@@ -65,7 +68,6 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected String  defaultDataset       = LocaleUtil.getDefaultCountryCode();
     protected long    defaultPageSize      = 1;
     protected boolean defaultNull          = true;
-    protected char    defaultSeparator     = ',';
     protected String  contextUri           = "./";
     public    Long    maxCount             = null;
     public    boolean defaultOneToOne      = true; // TODO v0.7 use 'false' as default
@@ -208,11 +210,11 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     }
     
 	public char getDefaultSeparator() {
-		return defaultSeparator;
+		return getDefaultCellSeparator();
 	}
 
 	public void setDefaultSeparator(char defaultSeparator) {
-		this.defaultSeparator = defaultSeparator;
+		System.setProperty("cell.separator", String.valueOf(defaultSeparator));
 	}
 
 	public ComponentDescriptor getDefaultComponentConfig(String name) {
@@ -284,4 +286,13 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     	DataModel.getDefaultInstance().setAcceptUnknownPrimitives(acceptUnknownSimpleTypes);
     }
     
+	public static char getDefaultCellSeparator() {
+		String tmp = System.getProperty("cell.separator");
+		if (tmp == null)
+			return DEFAULT_CELL_SEPARATOR;
+		if (tmp.length() != 1)
+			throw new ConfigurationError("Cell separator has illegal length: '" + tmp + "'");
+		return tmp.charAt(0);
+	}
+
 }
