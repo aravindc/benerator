@@ -32,6 +32,8 @@ import org.databene.benerator.engine.expression.ScriptExpression;
 import org.databene.benerator.engine.statement.EvaluateStatement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Expression;
+import org.databene.commons.converter.String2CharConverter;
+import org.databene.commons.expression.ConvertingExpression;
 import org.databene.commons.expression.FeatureAccessExpression;
 import org.databene.commons.expression.StringExpression;
 import org.w3c.dom.Element;
@@ -45,7 +47,7 @@ import org.w3c.dom.Element;
 public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 	
 	private static final Set<String> OPTIONAL_ATTRIBUTES = CollectionUtil.toSet(
-			ATT_ID, ATT_URI, ATT_TYPE, ATT_TARGET, ATT_ON_ERROR, ATT_ENCODING, 
+			ATT_ID, ATT_URI, ATT_TYPE, ATT_TARGET, ATT_SEPARATOR, ATT_ON_ERROR, ATT_ENCODING, 
 			ATT_OPTIMIZE, ATT_INVALIDATE, ATT_ASSERT);
 
 	public EvaluateParser() {
@@ -73,12 +75,13 @@ public class EvaluateParser extends AbstractBeneratorDescriptorParser {
 		Expression<String> uri          = parseScriptableStringAttribute(ATT_URI, element);
 		Expression<String> type         = parseAttribute(ATT_TYPE, element);
 		Expression<?> targetObject      = new FeatureAccessExpression<Object>(element.getAttribute(ATT_TARGET));
+		Expression<Character> separator = new ConvertingExpression<String, Character>(parseScriptableStringAttribute(ATT_SEPARATOR, element), new String2CharConverter());
 		Expression<String> onError      = parseScriptableStringAttribute(ATT_ON_ERROR, element);
 		Expression<String> encoding     = parseScriptableStringAttribute(ATT_ENCODING, element);
 		Expression<Boolean> optimize    = parseBooleanExpressionAttribute(ATT_OPTIMIZE, element, false);
 		Expression<Boolean> invalidate  = parseBooleanExpressionAttribute(ATT_INVALIDATE, element, null);
 		Expression<?> assertion         = new ScriptExpression<Object>(element.getAttribute(ATT_ASSERT));
-		return new EvaluateStatement(evaluate, id, text, uri, type, targetObject, onError, encoding, optimize, invalidate, assertion);
+		return new EvaluateStatement(evaluate, id, text, uri, type, targetObject, separator, onError, encoding, optimize, invalidate, assertion);
 	}
 
 }

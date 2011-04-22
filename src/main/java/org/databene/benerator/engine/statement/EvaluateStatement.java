@@ -92,6 +92,7 @@ public class EvaluateStatement implements Statement {
 	Expression<String> uriEx;
 	Expression<String> typeEx;
 	Expression<?> targetObjectEx;
+	Expression<Character> separatorEx;
 	Expression<String> onErrorEx;
 	Expression<String> encodingEx;
     Expression<Boolean> optimizeEx;
@@ -100,14 +101,15 @@ public class EvaluateStatement implements Statement {
 
     public EvaluateStatement(boolean evaluate, Expression<String> idEx, Expression<String> textEx, 
     		Expression<String> uriEx, Expression<String> typeEx, Expression<?> targetObjectEx,
-    		Expression<String> onErrorEx, Expression<String> encodingEx, Expression<Boolean> optimizeEx,
-            Expression<Boolean> invalidateEx, Expression<?> assertionEx) {
+    		Expression<Character> separatorEx, Expression<String> onErrorEx, Expression<String> encodingEx, 
+    		Expression<Boolean> optimizeEx, Expression<Boolean> invalidateEx, Expression<?> assertionEx) {
     	this.evaluate = evaluate;
     	this.idEx = idEx;
     	this.textEx = textEx;
     	this.uriEx = uriEx;
     	this.typeEx = typeEx;
     	this.targetObjectEx = targetObjectEx;
+    	this.separatorEx = separatorEx;
     	this.onErrorEx = onErrorEx;
     	this.encodingEx = encodingEx;
     	this.optimizeEx = optimizeEx;
@@ -154,8 +156,12 @@ public class EvaluateStatement implements Statement {
 			Object result = null;
 			String text = ExpressionUtil.evaluate(textEx, context);
 			if ("sql".equals(typeValue)) {
+	            Character separator = ExpressionUtil.evaluate(separatorEx, context);
+	            if (separator == null)
+	            	separator = ';';
 	            result = runSql(uriValue, targetObject, onErrorValue, encoding, 
-	            		text, optimizeEx.evaluate(context), invalidateEx.evaluate(context)).result;
+	            		text, separator, 
+	            		optimizeEx.evaluate(context), invalidateEx.evaluate(context)).result;
             } else if (SHELL.equals(typeValue)) {
 				result = runShell(uriValue, text, onErrorValue);
             } else if ("execute".equals(typeValue)) {
@@ -230,7 +236,7 @@ public class EvaluateStatement implements Statement {
 	}
 
 	private DBExecutionResult runSql(String uri, Object targetObject, String onError,
-			String encoding, String text, boolean optimize, Boolean invalidate) {
+			String encoding, String text, char separator, boolean optimize, Boolean invalidate) {
 		if (targetObject == null)
 			throw new ConfigurationError("Please specify the 'target' database to execute the SQL script");
 		Assert.instanceOf(targetObject, DBSystem.class, "target");
@@ -247,9 +253,9 @@ public class EvaluateStatement implements Statement {
         try {
             connection = db.getConnection();
             if (text != null)
-            	result = DBUtil.runScript(text, connection, optimize, errorHandler);
+            	result = DBUtil.runScript(text, separator, connection, optimize, errorHandler);
             else
-            	result = DBUtil.runScript(uri, encoding, connection, optimize, errorHandler);
+            	result = DBUtil.runScript(uri, encoding, separator, connection, optimize, errorHandler);
             if (Boolean.TRUE.equals(invalidate) || (invalidate == null && !evaluate && result.changedStructure))
             	db.invalidate(); // possibly we changed the database structure
 		} catch (Exception sqle) { 
