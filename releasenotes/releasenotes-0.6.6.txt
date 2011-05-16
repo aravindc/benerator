@@ -9,6 +9,7 @@ summary
 changes
 -------
 - changed StorageSystem interface to use HeavyweightTypedIterable
+- database meta data cache file location was changed to the subdirectory databene/cache/ of the user's home directory
 
 
 enhancements
