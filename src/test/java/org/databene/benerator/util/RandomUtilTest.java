@@ -64,7 +64,7 @@ public class RandomUtilTest extends GeneratorTest {
 	@Test
 	public void testRandomFromLiteral() {
 		ObjectCounter<Object> counter = new ObjectCounter<Object>(2);
-		int n = 1000;
+		int n = 3000;
 		for (int i = 0; i < n; i++)
 			counter.count(RandomUtil.randomFromWeightLiteral("'A'^2,'B'^1"));
 		assertEquals(2, counter.getCounts().size());
