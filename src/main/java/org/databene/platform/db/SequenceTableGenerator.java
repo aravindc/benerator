@@ -32,6 +32,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.SimpleGenerator;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.commons.IOUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.script.ScriptUtil;
 
@@ -120,11 +121,17 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	public E generate() {
 		assertInitialized();
 		HeavyweightTypedIterable<E> iterable = db.query(query, context);
-		HeavyweightIterator<E> iterator = iterable.iterator();
-		if (!iterator.hasNext())
-			return null;
-		E result = iterator.next();
-		incrementorStrategy.run(result.longValue(), (BeneratorContext) context);
+		HeavyweightIterator<E> iterator = null;
+		E result;
+		try {
+			iterator = iterable.iterator();
+			if (!iterator.hasNext())
+				return null;
+			result = iterator.next();
+			incrementorStrategy.run(result.longValue(), (BeneratorContext) context);
+		} finally {
+			IOUtil.close(iterator);
+		}
 		return result;
 	}
 	
