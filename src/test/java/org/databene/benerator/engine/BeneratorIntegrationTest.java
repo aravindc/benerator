@@ -45,12 +45,14 @@ public abstract class BeneratorIntegrationTest {
 	@Before
 	public void setUpEnvironment() throws Exception {
 		DataModel.getDefaultInstance().clear();
+		System.setProperty(BeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 		context = new BeneratorContext();
 	}
 
 	@After
 	public void tearDown() {
 		DataModel.getDefaultInstance().clear();
+		System.setProperty(BeneratorContext.CELL_SEPARATOR_SYSPROP, ",");
 	}
 
 	protected BeneratorContext parseAndExecuteFile(String filename) throws IOException {
