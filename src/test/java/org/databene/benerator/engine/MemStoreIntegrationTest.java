@@ -148,4 +148,26 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 		}
 	}
 	
+	@Test
+	public void testIntegration() {
+		parseAndExecute(
+			"<setup>" +
+			"	<memstore id='store'/>" +
+			"	<generate type='product' count='100' consumer='store'>" +
+			"		<id name='id' type='int' />" +
+			"		<attribute name='name' pattern='[A-Z][a-z]{3,8}' />" +
+			"	</generate>" + 
+			"</setup>"
+		);
+		MemStore store = (MemStore) context.get("store");
+		Collection<Entity> products = store.getEntities("product");
+		assertEquals(100, products.size());
+		int index = 1;
+		for (Entity order : products) {
+			assertNotNull(order);
+			assertEquals(index, order.get("id"));
+			index++;
+		}
+	}
+	
 }
