@@ -59,7 +59,9 @@ import org.databene.script.ScriptUtil;
  */
 public class BeneratorContext extends ContextStack implements GeneratorContext, ClassProvider {
 
-    public static final char DEFAULT_CELL_SEPARATOR = ',';
+    public static final String CELL_SEPARATOR_SYSPROP = "cell.separator";
+
+	public static final char DEFAULT_CELL_SEPARATOR = ',';
 
     private DefaultContext properties;
 	private ClassCache classCache;
@@ -214,7 +216,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 
 	public void setDefaultSeparator(char defaultSeparator) {
-		System.setProperty("cell.separator", String.valueOf(defaultSeparator));
+		System.setProperty(CELL_SEPARATOR_SYSPROP, String.valueOf(defaultSeparator));
 	}
 
 	public ComponentDescriptor getDefaultComponentConfig(String name) {
@@ -287,7 +289,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     }
     
 	public static char getDefaultCellSeparator() {
-		String tmp = System.getProperty("cell.separator");
+		String tmp = System.getProperty(CELL_SEPARATOR_SYSPROP);
 		if (tmp == null)
 			return DEFAULT_CELL_SEPARATOR;
 		if (tmp.length() != 1)
