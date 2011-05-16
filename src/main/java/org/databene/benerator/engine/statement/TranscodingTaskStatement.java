@@ -118,7 +118,7 @@ public class TranscodingTaskStatement extends SequentialStatement {
 			IdentityModel identity = identityProvider.getIdentity(tableName, false);
 			if (identity == null) {
 				if (required) {
-					throw new ConfigurationError("For transcoding, an identity definition of table " + tableName + " is required");
+					throw new ConfigurationError("For transcoding, an identity definition of table '" + tableName + "' is required");
 				} else {
 					DBTable table = target.getDbMetaData().getTable(tableName);
 					identityProvider.registerIdentity(new NoIdentity(table), tableName);
