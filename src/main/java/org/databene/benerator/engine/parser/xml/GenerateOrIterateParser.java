@@ -184,10 +184,10 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			String childName = child.getNodeName();
 			if (EL_VARIABLE.equals(childName)) {
 				if (stage != Stage.VARS)
-					syntaxError("variables must be configured before members and sub elements", child);
+					syntaxWarning("variables must be configured before members and sub elements", child);
 			} else if (PART_ELEMENTS.contains(childName)) {
 				if (stage == Stage.OTHERS)
-					syntaxError("members must be configured before execution of sub elements ", child);
+					syntaxWarning("members must be configured before execution of sub elements ", child);
 				stage = Stage.MEMBERS;
 			} else {
 				stage = Stage.OTHERS;
