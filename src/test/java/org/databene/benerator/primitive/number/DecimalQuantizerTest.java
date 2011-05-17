@@ -28,9 +28,9 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link DecimalQuantizer}.<br/><br/>
  * Created: 11.04.2011 16:28:24
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class DecimalQuantizerTest {

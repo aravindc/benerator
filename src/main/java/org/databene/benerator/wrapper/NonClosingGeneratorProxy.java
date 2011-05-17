@@ -23,11 +23,14 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorState;
+import org.databene.benerator.engine.ResourceManager;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} proxy that prevents its delegate from being closed.
+ * Note: Users of this class must ensure that the delegate is closed 
+ * a different way (e.g. by a {@link ResourceManager}).<br/><br/>
  * Created: 13.04.2011 20:12:18
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class NonClosingGeneratorProxy<E> extends GeneratorProxy<E> {
@@ -39,7 +42,7 @@ public class NonClosingGeneratorProxy<E> extends GeneratorProxy<E> {
 	@Override
 	public void close() {
 	    this.state = GeneratorState.CLOSED;
-		// don't close the source here! It must be closed elsewhere by its originator.
+		// Note: Don't close the source here! It must be closed elsewhere by its originator.
 	}
 	
 }

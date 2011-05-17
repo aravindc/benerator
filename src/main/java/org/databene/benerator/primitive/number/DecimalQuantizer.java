@@ -24,29 +24,31 @@ package org.databene.benerator.primitive.number;
 import java.math.BigDecimal;
 
 import org.databene.commons.ConversionException;
+import org.databene.commons.Converter;
 import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Converter} that quantizes {@link Number}s by a given 'min' value and 
+ * 'granularity' and converts it into a {@link BigDecimal}.<br/><br/>
  * Created: 11.04.2011 17:53:55
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class DecimalQuantizer extends ThreadSafeConverter<Number, BigDecimal> {
 	
 	private BigDecimal min;
-	private BigDecimal precision;
+	private BigDecimal granularity;
 
-	public DecimalQuantizer(BigDecimal min, BigDecimal precision) {
+	public DecimalQuantizer(BigDecimal min, BigDecimal granularity) {
 	    super(Number.class, BigDecimal.class);
 	    this.min = (min != null ? min : BigDecimal.ZERO);
-	    this.precision = precision;
+	    this.granularity = granularity;
     }
 
 	public BigDecimal convert(Number sourceValue) throws ConversionException {
 		BigDecimal value = (sourceValue instanceof BigDecimal ? (BigDecimal) sourceValue : new BigDecimal(sourceValue.doubleValue()));
-		BigDecimal ofs = value.subtract(min).divideToIntegralValue(precision);
-		return ofs.multiply(precision).add(min);
+		BigDecimal ofs = value.subtract(min).divideToIntegralValue(granularity);
+		return ofs.multiply(granularity).add(min);
     }
 
 }

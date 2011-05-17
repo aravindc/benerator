@@ -24,9 +24,10 @@ package org.databene.benerator.dataset;
 import org.databene.benerator.Generator;
 
 /**
- * TODO Document class.<br/><br/>
+ * Interface for dataset related {@link Generator}s 
+ * which can generate data with and for dedicated sub sets.<br/><br/>
  * Created: 09.03.2011 14:00:02
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public interface DatasetBasedGenerator<E> extends Generator<E> {

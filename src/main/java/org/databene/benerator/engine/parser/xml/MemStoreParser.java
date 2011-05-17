@@ -38,9 +38,9 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses a &lt;memstore%gt; statement.<br/><br/>
  * Created: 08.03.2011 13:28:55
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class MemStoreParser extends AbstractBeneratorDescriptorParser {

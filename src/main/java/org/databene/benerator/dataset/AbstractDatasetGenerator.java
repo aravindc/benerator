@@ -28,9 +28,9 @@ import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract implementation of the {@link DatasetBasedGenerator} interface.<br/><br/>
  * Created: 10.03.2011 10:44:58
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> implements DatasetBasedGenerator<E> {

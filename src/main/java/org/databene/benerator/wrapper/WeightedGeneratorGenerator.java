@@ -29,9 +29,12 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} that wraps several other 'source generators' and assigns a weight to each one. 
+ * Calls to {@link Generator#generate()} are forwarded to a random source generator, with a probability 
+ * proportional to its assigned weight. If a source generator becomes unavailable, its weight is 
+ * ignored.<br/><br/>
  * Created: 09.03.2011 07:59:04
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Generator<E>> {

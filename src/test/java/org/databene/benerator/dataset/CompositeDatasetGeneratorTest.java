@@ -33,9 +33,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link CompositeDatasetGenerator}.<br/><br/>
  * Created: 09.03.2011 16:28:23
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class CompositeDatasetGeneratorTest extends GeneratorTest {

@@ -29,9 +29,9 @@ import org.databene.commons.version.VersionInfo;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link VersionInfo} class.<br/><br/>
  * Created: 23.03.2011 11:34:32
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class VersionInfoTest {

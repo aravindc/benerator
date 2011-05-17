@@ -22,9 +22,10 @@
 package org.databene.benerator.script;
 
 /**
- * TODO Document class.<br/><br/>
+ * A bean specification which can declare if it wraps a 'value' or just represents a 'reference'.
+ * This is used for managing scopes with 'local' objects and references to 'global' ones.<br/><br/>
  * Created: 13.04.2011 19:07:09
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class BeanSpec {

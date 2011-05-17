@@ -29,7 +29,7 @@ import org.databene.commons.IOUtil;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Integration test for Benerator's CSV functionality.<br/><br/>
  * Created: 03.02.2011 18:15:34
  * @since 0.6.5
  * @author Volker Bergmann

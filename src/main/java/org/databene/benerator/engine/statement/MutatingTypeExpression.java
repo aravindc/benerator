@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
 /**
  * TODO Document class.<br/><br/>
  * Created: 18.04.2011 14:48:57
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class MutatingTypeExpression implements Expression<ComplexTypeDescriptor> {
@@ -40,9 +40,9 @@ public class MutatingTypeExpression implements Expression<ComplexTypeDescriptor>
 	private Element element;
 	private String typeName;
 
-	public MutatingTypeExpression(Element element, String tableName) {
+	public MutatingTypeExpression(Element element, String typeName) {
 		this.element = element;
-		this.typeName = tableName;
+		this.typeName = typeName;
 	}
 
 	public void setTypeName(String typeName) {

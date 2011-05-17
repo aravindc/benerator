@@ -26,9 +26,9 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.benerator.wrapper.WeightedGeneratorGenerator;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link DatasetBasedGenerator} implementation which bases on a composite dataset.<br/><br/>
  * Created: 09.03.2011 11:01:04
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>, E> implements DatasetBasedGenerator<E> {

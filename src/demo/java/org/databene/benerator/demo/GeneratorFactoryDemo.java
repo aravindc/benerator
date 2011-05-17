@@ -28,9 +28,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.GeneratorFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * Demonstrates usages of the {@link GeneratorFactory}.<br/><br/>
  * Created: 08.03.2011 17:39:20
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class GeneratorFactoryDemo {

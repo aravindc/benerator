@@ -35,9 +35,9 @@ import org.databene.commons.xml.XMLUtil;
 import org.w3c.dom.Element;
 
 /**
- * TODO Document class.<br/><br/>
+ * Parses &lt;cascade ref="..."&gt; descriptors.<br/><br/>
  * Created: 18.04.2011 08:27:48
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class CascadeParser extends AbstractBeneratorDescriptorParser {

@@ -22,9 +22,11 @@
 package org.databene.benerator.dataset;
 
 /**
- * TODO Document class.<br/><br/>
+ * Represents a generation product which comes from a dataset.
+ * Besides the core generated 'product', it stores the 'dataset' name
+ * and the applied 'nesting' hierarchy name.<br/><br/>
  * Created: 09.03.2011 10:56:43
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class ProductFromDataset<E> {

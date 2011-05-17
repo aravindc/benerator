@@ -31,9 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Statement} that instantiates a {@link MemStore} 
+ * and registers it in the {@link BeneratorContext}.<br/><br/>
  * Created: 08.03.2011 13:30:45
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class MemStoreStatement implements Statement {

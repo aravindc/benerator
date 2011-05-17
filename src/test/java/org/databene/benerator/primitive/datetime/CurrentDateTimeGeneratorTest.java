@@ -31,9 +31,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link CurrentDateGenerator}.<br/><br/>
  * Created: 15.04.2011 08:52:43
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class CurrentDateTimeGeneratorTest {

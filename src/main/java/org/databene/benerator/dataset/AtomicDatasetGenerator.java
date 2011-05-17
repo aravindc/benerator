@@ -25,9 +25,9 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link DatasetBasedGenerator} implementation which bases on an atomic dataset.<br/><br/>
  * Created: 09.03.2011 10:54:28
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements DatasetBasedGenerator<E> {
