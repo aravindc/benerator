@@ -34,6 +34,7 @@ enhancements
 - transcode feature supports cascade with mutation
 - Supporting 'separator' attribute in <execute> and <evaluate>
 - DB Sanity versioning support, for example: <dbsanity ... appVersion="1.1.2" />
+- supporting parameterized selector in SequenceTableGenerator, e.g. "user_id = ? and module_name = ?"
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)

@@ -43,7 +43,7 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 
 	@BeforeClass
 	public static void setupDB() {
-	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(QueryGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null);
+	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(SequenceTableGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null);
 		db.execute("create table TT ( id int, value int )");
 		db.execute("insert into TT (id, value) values (1, 1000)");
 		db.execute("insert into TT (id, value) values (2, 2000)");
@@ -97,6 +97,21 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 	        	i++;
 	        }
 	        assertAvailable(generator);
+        } finally {
+	        IOUtil.close(generator);
+        }
+	}
+
+	@Test
+	public void testParameterizedSelector() {
+		SequenceTableGenerator<Integer> generator = null;
+		try {
+	        generator = new SequenceTableGenerator<Integer>("TT", "value", db, "id = ?");
+	        generator.init(context);
+        	assertEquals(1000, generator.generateWithParams(1).intValue());
+        	assertEquals(2000, generator.generateWithParams(2).intValue());
+        	assertEquals(1001, generator.generateWithParams(1).intValue());
+        	assertEquals(2001, generator.generateWithParams(2).intValue());
         } finally {
 	        IOUtil.close(generator);
         }

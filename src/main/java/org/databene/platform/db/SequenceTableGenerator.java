@@ -23,10 +23,12 @@ package org.databene.platform.db;
 
 import java.io.Closeable;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.SimpleGenerator;
@@ -52,7 +54,8 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	
 	private String query;
 	private IncrementorStrategy incrementorStrategy;
-
+	private PreparedStatement parameterizedAccessorStatement;
+	
     public SequenceTableGenerator() {
     	this(null, null, null);
     }
@@ -119,14 +122,18 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     }
 
 	public E generate() {
+		if (this.state == GeneratorState.CLOSED)
+			return null;
 		assertInitialized();
 		HeavyweightTypedIterable<E> iterable = db.query(query, context);
 		HeavyweightIterator<E> iterator = null;
 		E result;
 		try {
 			iterator = iterable.iterator();
-			if (!iterator.hasNext())
+			if (!iterator.hasNext()) {
+				close();
 				return null;
+			}
 			result = iterator.next();
 			incrementorStrategy.run(result.longValue(), (BeneratorContext) context);
 		} finally {
@@ -134,10 +141,39 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 		}
 		return result;
 	}
+
+	@SuppressWarnings({ "unchecked", "cast" })
+	public E generateWithParams(Object... params) {
+		if (this.state == GeneratorState.CLOSED)
+			return null;
+		ResultSet resultSet = null;
+		E result = null;
+		try {
+			if (parameterizedAccessorStatement == null) {
+				String queryText = String.valueOf(ScriptUtil.parseUnspecificText(query).evaluate(context));
+				parameterizedAccessorStatement = db.getConnection().prepareStatement(queryText);
+			}
+			for (int i = 0; i < params.length; i++)
+				parameterizedAccessorStatement.setObject(i + 1, params[i]);
+			resultSet = parameterizedAccessorStatement.executeQuery();
+			if (!resultSet.next()) {
+				close();
+				return null;
+			}
+			result = (E) resultSet.getObject(1);
+			incrementorStrategy.run(result.longValue(), (BeneratorContext) context, params);
+		} catch (SQLException e) {
+			throw new RuntimeException("Error fetching value in " + getClass().getSimpleName(), e);
+		} finally {
+			DBUtil.close(resultSet);
+		}
+		return (E) result;
+	}
 	
 	@Override
 	public void close() {
-		incrementorStrategy.close();
+		IOUtil.close(incrementorStrategy);
+		DBUtil.close(parameterizedAccessorStatement);
 		super.close();
 	}
 	
@@ -149,7 +185,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	// IncrementorStrategy ---------------------------------------------------------------------------------------------
 
     interface IncrementorStrategy extends Closeable {
-    	void run(long currentValue, BeneratorContext context);
+    	void run(long currentValue, BeneratorContext context, Object... params);
     	void close();
     }
 
@@ -165,9 +201,11 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
             }
         }
 
-		public void run(long currentValue, BeneratorContext context) {
+		public void run(long currentValue, BeneratorContext context, Object... params) {
 		    try {
 		    	statement.setLong(1, currentValue + increment);
+		    	for (int i = 0; i < params.length; i++)
+		    		statement.setObject(2 + i, params[i]);
 		    	statement.executeUpdate();
 	        } catch (SQLException e) {
 		        throw new RuntimeException(e);
@@ -193,7 +231,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
             }
         }
 
-		public void run(long currentValue, BeneratorContext context) {
+		public void run(long currentValue, BeneratorContext context, Object... params) {
 			try {
 	            String cmd = sql.replace("?", String.valueOf(currentValue + increment));
 	            cmd = ScriptUtil.parseUnspecificText(cmd).evaluate(context).toString();
