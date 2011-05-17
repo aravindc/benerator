@@ -47,3 +47,4 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - Some BeneratorScript syntax errors are ignored and lead to wrong results
 - resource leak in database resource management
 - resource leak in SequenceTableGenerator
+- script is not recognized if white space follows the closing curly brace
