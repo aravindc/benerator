@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  */
 public class SetupParser extends AbstractBeneratorDescriptorParser {
 	
-	private static final Set<String> BENERATOR_PROPERTIES = CollectionUtil.toSet( // TODO check for completeness
+	private static final Set<String> BENERATOR_PROPERTIES = CollectionUtil.toSet(
 			ATT_DEFAULT_SCRIPT,
 			ATT_DEFAULT_NULL,
 			ATT_DEFAULT_ENCODING,
