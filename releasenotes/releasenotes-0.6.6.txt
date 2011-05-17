@@ -27,7 +27,7 @@ enhancements
 - Benerator now provides its build number
 - Improved database meta data invalidation algorithm, allowed override with <execute invalidate='false' />
 - Database resource monitoring
-- new properties in Benerator MBean: OpenConnectionCount, ...
+- new properties in Benerator MBean: OpenConnectionCount, OpenResultSetCount, OpenStatementCount, OpenPreparedStatementCount
 - improved read-only database checking
 - new class DecimalQuantizer
 - Supporting transcoding to non-empty tables as long as transcoded data is not yet present in the target system
