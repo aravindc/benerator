@@ -16,7 +16,7 @@ enhancements
 ------------
 - CSVEntityExporter, FlatFileEntityExporter and ScriptedEntityExporter support dateCapitalization and timestampCapitalization
 - endWithNewLine property lets CSVEntityExporter-generated files optionally end with a 'new line'
-- new in-memory storage system: <store>
+- new in-memory storage system: <memstore>
 - Added family names for Ireland and New Zealand
 - PersonGenerator and AddressGenerator can now be applied to regions like 'europe', not only countries. 
   For a single country, specify its two-letter-iso-code
