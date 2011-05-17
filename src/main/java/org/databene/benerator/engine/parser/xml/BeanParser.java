@@ -24,11 +24,9 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.BeanStatement;
-import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.script.Assignment;
 import org.databene.benerator.script.BeanConstruction;
 import org.databene.benerator.script.BeanSpec;
@@ -57,8 +55,7 @@ public class BeanParser extends AbstractBeneratorDescriptorParser {
 	private static final Logger logger =  LoggerFactory.getLogger(BeanParser.class);
 	
 	public BeanParser() {
-	    super(EL_BEAN, CollectionUtil.toSet(ATT_ID), CollectionUtil.toSet(ATT_CLASS, ATT_SPEC), 
-	    		BeneratorRootStatement.class, IfStatement.class);
+	    super(EL_BEAN, CollectionUtil.toSet(ATT_ID), CollectionUtil.toSet(ATT_CLASS, ATT_SPEC));
     }
 
 	@Override
