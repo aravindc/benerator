@@ -30,6 +30,7 @@ import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.Level;
 import org.databene.commons.expression.ExpressionUtil;
+import org.databene.commons.version.VersionNumber;
 import org.databene.dbsanity.DbSanity;
 import org.databene.dbsanity.ExecutionMode;
 
@@ -43,7 +44,7 @@ import org.databene.dbsanity.ExecutionMode;
 public class DBSanityStatement implements Statement {
 	
 	Expression<String> envEx;
-	// TODO support app version
+	Expression<String> appVersionEx;
 	Expression<String> inEx;
 	Expression<String> outEx;
 	Expression<String[]> tablesEx;
@@ -52,11 +53,12 @@ public class DBSanityStatement implements Statement {
 	Expression<ExecutionMode> modeEx;
 	Expression<ErrorHandler> errHandlerEx;
 
-	public DBSanityStatement(Expression<String> envEx, Expression<String> inEx, 
-			Expression<String> outEx, Expression<String[]> tablesEx, 
+	public DBSanityStatement(Expression<String> envEx, Expression<String> appVersionEx, 
+			Expression<String> inEx, Expression<String> outEx, Expression<String[]> tablesEx, 
 			Expression<String> skinEx, Expression<Locale> localeEx,
 			Expression<ExecutionMode> modeEx, Expression<ErrorHandler> errHandlerEx) {
 		this.envEx = envEx;
+		this.appVersionEx = appVersionEx;
 		this.inEx = inEx;
 		this.outEx = outEx;
 		this.tablesEx = tablesEx;
@@ -74,6 +76,9 @@ public class DBSanityStatement implements Statement {
 			String environment = envEx.evaluate(context);
 			dbSanity.setEnvironment(context.resolveRelativeUri(environment));
 
+			String appVersion = ExpressionUtil.evaluate(appVersionEx, context);
+			dbSanity.setAppVersion(VersionNumber.valueOf(appVersion));
+			
 			String in = ExpressionUtil.evaluate(inEx, context);
 			String inFolderName = (in != null ? in : "dbsanity");
 			File inFolder = new File(context.resolveRelativeUri(inFolderName));

@@ -201,6 +201,7 @@
 	<xs:element name="dbsanity">
 		<xs:complexType>
 			<xs:attribute name="environment" type="xs:string" use="required"/>
+			<xs:attribute name="appVersion"  type="xs:string"/>
 			<xs:attribute name="in"          type="xs:string"/>
 			<xs:attribute name="out"         type="xs:string"/>
 			<xs:attribute name="tables"      type="xs:NMTOKENS"/>

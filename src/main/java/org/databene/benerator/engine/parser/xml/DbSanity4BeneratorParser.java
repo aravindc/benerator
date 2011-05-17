@@ -61,6 +61,7 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
         Expression<String> envEx = parseScriptableStringAttribute(ATT_ENVIRONMENT, element);
         if (envEx == null)
         	throw new ConfigurationError("no environment specified in <dbsanity> element");
+        Expression<String> appVersionEx = parseScriptableStringAttribute(ATT_APPVERSION, element);
         Expression<String> inEx = parseScriptableStringAttribute(ATT_IN, element);
 		Expression<String> outEx = parseScriptableStringAttribute(ATT_OUT, element);
         Expression<String[]> tablesEx = parseScriptableStringArrayAttribute(ATT_TABLES, element);
@@ -70,7 +71,7 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
 		Expression<ExecutionMode> modeEx = new ConvertingExpression<String, ExecutionMode>(
 				modeNameEx, new String2EnumConverter<ExecutionMode>(ExecutionMode.class));
 		Expression<ErrorHandler> errHandlerEx = parseOnErrorAttribute(element, EL_DBSANITY);
-		return new DBSanityStatement(envEx, inEx, outEx, tablesEx, skinEx, localeEx, modeEx, errHandlerEx);
+		return new DBSanityStatement(envEx, appVersionEx, inEx, outEx, tablesEx, skinEx, localeEx, modeEx, errHandlerEx);
     }
 
 }
