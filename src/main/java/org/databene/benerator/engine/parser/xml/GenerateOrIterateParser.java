@@ -85,7 +85,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 			EL_VARIABLE, EL_VALUE, EL_ID, EL_COMPOSITE_ID, EL_ATTRIBUTE, EL_REFERENCE, EL_CONSUMER);
 	
 	//private static final Set<String> UBIQUITOUS_ELEMENTS = CollectionUtil.toSet(
-	//		EL_COMMENT, EL_ECHO, EL_WAIT); // TODO execute ubiquitous elements also between <vars> and <members>
+	//		EL_COMMENT, EL_ECHO, EL_WAIT); // TODO v0.7 execute ubiquitous elements also between <vars> and <members>
 	
 	private static final Set<String> CONSUMER_EXPECTING_ELEMENTS = CollectionUtil.toSet(EL_GENERATE, EL_ITERATE);
 
