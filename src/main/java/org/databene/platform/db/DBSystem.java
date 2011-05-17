@@ -519,7 +519,7 @@ public class DBSystem extends AbstractStorageSystem {
     	getDialect().setSequenceValue(sequenceName, increment, getThreadContext().connection);
     }
     
-    public Connection createConnection() {
+    Connection createConnection() {
 		try {
             Connection connection = DBUtil.connect(url, driver, user, password, readOnly);
             if (!connectedBefore) {
