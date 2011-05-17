@@ -28,9 +28,7 @@ import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
-import org.databene.commons.ParseException;
 import org.databene.commons.xml.XMLUtil;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
@@ -56,8 +54,14 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 	@Override
 	public Statement doParse(Element ifElement, Statement[] parentPath, BeneratorParseContext context) {
 		Expression<Boolean> condition = parseBooleanExpressionAttribute(ATT_TEST, ifElement);
-		Element thenElement = XMLUtil.getChildElement(ifElement, false, false, "then");
-		Element elseElement = XMLUtil.getChildElement(ifElement, false, false, "else");
+		Element[] thenElements = XMLUtil.getChildElements(ifElement, false, "then");
+		if (thenElements.length > 1)
+			syntaxError("Multiple <then> elements", ifElement);
+		Element thenElement = (thenElements.length == 1 ? thenElements[0] : null);
+		Element[] elseElements = XMLUtil.getChildElements(ifElement, false, "else");
+		if (elseElements.length > 1)
+			syntaxError("Multiple <else> elements", ifElement);
+		Element elseElement = (elseElements.length == 1 ? elseElements[0] : null);
 		List<Statement> thenStatements = null;
 		List<Statement> elseStatements = null;
 		IfStatement ifStatement = new IfStatement(condition);
@@ -65,7 +69,7 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 		if (elseElement != null) {
 			// if there is an 'else' element, there must be an 'if' element too
 			if (thenElement == null)
-				throw new ParseException("'else' without 'then'", XMLUtil.format(ifElement));
+				syntaxError("'else' without 'then'", elseElement);
 			thenStatements = context.parseChildElementsOf(thenElement, ifPath);
 			elseStatements = context.parseChildElementsOf(elseElement, ifPath);
 			// check that no elements conflict with 'then' and 'else'
@@ -82,7 +86,7 @@ public class IfParser extends AbstractBeneratorDescriptorParser {
 	private static void assertThenElseChildren(Element ifElement) {
 	    for (Element child : XMLUtil.getChildElements(ifElement)) {
 	    	if (!STRICT_CHILDREN.contains(child.getNodeName()))
-	    		throw new ConfigurationError();
+	    		syntaxError("Illegal child element: ", child);
 	    }
     }
 

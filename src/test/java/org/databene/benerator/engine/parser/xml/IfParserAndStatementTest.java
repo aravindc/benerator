@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.engine.Statement;
-import org.databene.commons.ParseException;
+import org.databene.commons.SyntaxError;
 import org.databene.commons.xml.XMLUtil;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -85,19 +85,19 @@ public class IfParserAndStatementTest extends BeneratorIntegrationTest {
 		assertEquals("NOK", context.getProperty("executed"));
 	}
 	
-	@Test(expected = ParseException.class)
+	@Test(expected = SyntaxError.class)
 	public void testElseWithoutIf() throws Exception {
 		parseAndExecute("<if test='2==3'><else/></if>");
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = SyntaxError.class)
 	public void testTwoThens() throws Exception {
 		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then/><then/></if>");
 		new IfParser().parse(element, null, null);
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = SyntaxError.class)
 	public void testTwoElses() throws Exception {
 		new BeneratorContext(); // this first for setting the default script engine to benerator script
 		Element element = XMLUtil.parseStringAsElement("<if test='2==3'><then/><else/><else/></if>");
