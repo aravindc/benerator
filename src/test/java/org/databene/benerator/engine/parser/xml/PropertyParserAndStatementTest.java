@@ -45,6 +45,12 @@ public class PropertyParserAndStatementTest extends BeneratorIntegrationTest {
 	}
 	
 	@Test
+	public void testEscapedValue() throws Exception {
+		parseAndExecute("<property name='globalProp' value=\"\\\'\\t\\'\" />");
+		assertEquals("'\t'", context.get("globalProp"));
+	}
+	
+	@Test
 	public void testDefault_undefined() throws Exception {
 		parseAndExecute("<property name='globalProp' default='XYZ' />");
 		assertEquals("XYZ", context.get("globalProp"));
