@@ -22,7 +22,6 @@
 package org.databene.benerator.nullable;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.script.Script;
@@ -38,6 +37,8 @@ import org.slf4j.LoggerFactory;
  */
 public class NullableScriptGenerator extends AbstractNullableGenerator<Object>{
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(NullableScriptGenerator.class);
+
     private Script script;
     private Context context;
     
@@ -52,8 +53,8 @@ public class NullableScriptGenerator extends AbstractNullableGenerator<Object>{
 
 	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
         Object result = ScriptUtil.execute(script, context);
-        if (logger.isDebugEnabled())
-            logger.debug("Generated: " + result);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Generated: " + result);
         return wrapper.setProduct(result);
     }
     
@@ -67,8 +68,6 @@ public class NullableScriptGenerator extends AbstractNullableGenerator<Object>{
     public String toString() {
         return getClass().getSimpleName() + '[' + script + ']';
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(ScriptGenerator.class);
 
 	public boolean isParallelizable() {
 	    return true;
