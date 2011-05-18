@@ -44,7 +44,7 @@ public class ConvertingNullableGeneratorProxy<S, P> extends NullableGeneratorWra
     }
 
 	public ProductWrapper<P> generate(ProductWrapper<P> pWrapper) {
-		ProductWrapper<S> sWrapper = realGenerator.generate(new ProductWrapper<S>());
+		ProductWrapper<S> sWrapper = source.generate(new ProductWrapper<S>());
 		if (sWrapper != null)
 			return pWrapper.setProduct(converter.convert(sWrapper.product));
 		else

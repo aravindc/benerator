@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,27 +21,36 @@
 
 package org.databene.benerator.nullable;
 
-import java.io.Closeable;
-
-import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.commons.Resettable;
-import org.databene.commons.ThreadAware;
 
 /**
- * Interface for classes that can generate <code>null</code> values.
- * For differing between a generated <code>null</code> and unavailability,
- * a {@link ProductWrapper} class is introduced. It may wrap a <code>null</code>
- * value that has been generated or may be <code>null</code> itself for 
- * declaring unavailability.<br/><br/>
- * Created: 26.01.2010 17:11:16
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 18.05.2011 14:23:51
+ * @since TODO version
  * @author Volker Bergmann
  */
-public interface NullableGenerator<E> extends Resettable, Closeable, ThreadAware {
-    Class<E> getGeneratedType();
-	void init(GeneratorContext context) throws InvalidGeneratorSetupException;
-    ProductWrapper<E> generate(ProductWrapper<E> wrapper);
-    void close();
+public class NullableGeneratorProxy<E> extends NullableGeneratorWrapper<E, E> {
+
+    // constructors ----------------------------------------------------------------------------------------------------
+
+    protected NullableGeneratorProxy() {
+        this(null);
+    }
+
+    public NullableGeneratorProxy(NullableGenerator<E> source) {
+        super(source);
+    }
+    
+    // Generator interface implementation ------------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+    public Class<E> getGeneratedType() {
+        return (source != null ? source.getGeneratedType() : (Class<E>) Object.class); // TODO v1.0 possibly there is a better way to handle this?
+    }
+
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+    	assertInitialized();
+        return source.generate(wrapper);
+    }
+
 }

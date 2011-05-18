@@ -50,12 +50,12 @@ public class NullInjectingGeneratorProxy<E> extends NullableGeneratorWrapper<E, 
     }
 
     public Class<E> getGeneratedType() {
-    	return realGenerator.getGeneratedType();
+    	return source.getGeneratedType();
     }
 
 	@Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-		realGenerator.init(context);
+		source.init(context);
     	super.init(context);
     }
 
@@ -71,12 +71,12 @@ public class NullInjectingGeneratorProxy<E> extends NullableGeneratorWrapper<E, 
     		wrapper.product = null;
     		return wrapper;
     	}
-    	return realGenerator.generate(wrapper);
+    	return source.generate(wrapper);
     }
 
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "[" + nullQuota + ", " + realGenerator + "]";
+	    return getClass().getSimpleName() + "[" + nullQuota + ", " + source + "]";
 	}
     
 }

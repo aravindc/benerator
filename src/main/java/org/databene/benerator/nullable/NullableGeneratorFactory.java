@@ -28,6 +28,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
+import org.databene.commons.Validator;
 import org.databene.model.data.TypeDescriptor;
 
 /**
@@ -73,5 +74,20 @@ public class NullableGeneratorFactory {
         }
         return generator;
     }
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static NullableGenerator<?> createConvertingGenerator(NullableGenerator<?> generator, Converter<?,?> converter) {
+        if (converter != null)
+            return new ConvertingNullableGeneratorProxy(generator, converter);
+        return generator;
+	}
+
+	public static <T> NullableGenerator<T> wrapWithValidator(Validator<T> validator, NullableGenerator<T> generator) {
+		return new ValidatingNullableGeneratorProxy<T>(generator, validator);
+	}
+
+	public static <T> NullableGenerator<T> wrapCyclic(NullableGenerator<T> generator) {
+		return new CyclicNullableGeneratorProxy<T>(generator);
+	}
 
 }

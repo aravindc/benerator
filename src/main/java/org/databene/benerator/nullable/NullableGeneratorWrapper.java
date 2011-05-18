@@ -32,32 +32,32 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  */
 public abstract class NullableGeneratorWrapper<S, P> extends AbstractNullableGenerator<P> {
 	
-	protected NullableGenerator<S> realGenerator;
+	protected NullableGenerator<S> source;
 
-	public NullableGeneratorWrapper(NullableGenerator<S> realGenerator) {
-	    this.realGenerator = realGenerator;
+	public NullableGeneratorWrapper(NullableGenerator<S> source) {
+	    this.source = source;
     }
 
 	public void close() {
-	    realGenerator.close();
+		source.close();
     }
 
 	public void reset() {
-	    realGenerator.reset();
+		source.reset();
     }
 
 	@Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-	    realGenerator.init(context);
+		source.init(context);
 	    super.init(context);
     }
 
 	public boolean isThreadSafe() {
-	    return realGenerator.isThreadSafe();
+	    return source.isThreadSafe();
 	}
 	
 	public boolean isParallelizable() {
-	    return realGenerator.isParallelizable();
+	    return source.isParallelizable();
 	}
 	
 }

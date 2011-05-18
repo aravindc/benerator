@@ -21,13 +21,20 @@
 
 package org.databene.benerator.factory;
 
+import static org.databene.model.data.TypeDescriptor.PATTERN;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.nullable.NullableScriptGenerator;
+import org.databene.benerator.primitive.ValueMapper;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
+import org.databene.commons.Converter;
+import org.databene.commons.Validator;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.Script;
@@ -53,6 +60,10 @@ public class VariableGeneratorFactory {
 		// check for script
 		TypeDescriptor type = descriptor.getTypeDescriptor();
 		generator = createScriptGenerator(type, context);
+		if (generator != null) {
+	        generator = wrapWithPostprocessors(generator, type, context);
+	        generator = wrapWithProxy(generator, type);
+		}
 
 		if (generator == null) {
 			Generator<?> source = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
@@ -78,6 +89,63 @@ public class VariableGeneratorFactory {
             return new NullableScriptGenerator(script, context);
         } else
         	return null;
+    }
+
+    static NullableGenerator<?> wrapWithPostprocessors(NullableGenerator<?> generator, TypeDescriptor descriptor, BeneratorContext context) {
+		generator = createConvertingGenerator(descriptor, generator, context);
+		if (descriptor instanceof SimpleTypeDescriptor) {
+			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
+			generator = createMappingGenerator(simpleType, generator);
+			generator = createTypeConvertingGenerator(simpleType, generator);
+		}
+        generator = createValidatingGenerator(descriptor, generator, context);
+		return generator;
+	}
+    
+    @SuppressWarnings("unchecked")
+    protected static <T> NullableGenerator<T> createValidatingGenerator(
+            TypeDescriptor descriptor, NullableGenerator<T> generator, BeneratorContext context) {
+		Validator<T> validator = DescriptorUtil.getValidator(descriptor, context);
+        if (validator != null)
+            generator = NullableGeneratorFactory.wrapWithValidator(validator, generator);
+        return generator;
+    }
+
+    static NullableGenerator<?> createTypeConvertingGenerator(SimpleTypeDescriptor descriptor, NullableGenerator<?> generator) {
+        if (descriptor == null || descriptor.getPrimitiveType() == null)
+            return generator;
+        Converter<?, ?> converter = TypeGeneratorFactory.createConverter(descriptor, generator.getGeneratedType());
+    	return (converter != null ? NullableGeneratorFactory.createConvertingGenerator(generator, converter) : generator);
+    }
+
+    public static NullableGenerator<?> createConvertingGenerator(TypeDescriptor descriptor, NullableGenerator<?> generator, BeneratorContext context) {
+        Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
+        if (converter != null) {
+            if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
+                BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
+            }
+            generator = NullableGeneratorFactory.createConvertingGenerator(descriptor, generator, context);
+        }
+        return generator;
+    }
+
+	static NullableGenerator<?> createMappingGenerator(SimpleTypeDescriptor descriptor, NullableGenerator<?> generator) {
+        if (descriptor == null || descriptor.getMap() == null)
+            return generator;
+        String mappingSpec = descriptor.getMap();
+        ValueMapper mapper = new ValueMapper(mappingSpec);
+        return NullableGeneratorFactory.createConvertingGenerator(generator, mapper);
+    }
+
+    public static <T> NullableGenerator<T> wrapWithProxy(NullableGenerator<T> generator, TypeDescriptor descriptor) {
+		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
+		return wrapWithProxy(generator, cyclic);
+    }
+
+	public static <T> NullableGenerator<T> wrapWithProxy(NullableGenerator<T> generator, boolean cyclic) {
+		if (cyclic)
+			generator = NullableGeneratorFactory.wrapCyclic(generator);
+		return generator;
     }
 
 }

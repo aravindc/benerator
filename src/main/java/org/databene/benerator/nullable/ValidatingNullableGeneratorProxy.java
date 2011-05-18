@@ -54,7 +54,7 @@ public class ValidatingNullableGeneratorProxy<E> extends NullableGeneratorWrappe
     }
 
 	public Class<E> getGeneratedType() {
-	    return realGenerator.getGeneratedType();
+	    return source.getGeneratedType();
     }
     
     /**
@@ -68,7 +68,7 @@ public class ValidatingNullableGeneratorProxy<E> extends NullableGeneratorWrappe
         boolean valid;
         int count = 0;
         do {
-        	wrapper = realGenerator.generate(wrapper);
+        	wrapper = source.generate(wrapper);
         	if (wrapper == null)
         		return null;
 			valid = validator.valid(wrapper.product);
