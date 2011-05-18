@@ -179,8 +179,10 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		    	complexTypeDescriptor = new ComplexTypeDescriptor(complexTypeName);
 		    	for (int i = 0; i < headers.length; i++) {
 		    		String header = headers[i];
-		    		SimpleTypeDescriptor componentType = 
-		    			PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(feed[i].getClass());
+		    		Object value = feed[i];
+					SimpleTypeDescriptor componentType = (value != null ?
+		    			PrimitiveDescriptorProvider.INSTANCE.getPrimitiveTypeDescriptor(value.getClass()) :
+		    			null);
 		    		ComponentDescriptor component = new PartDescriptor(header, componentType);
 		    		complexTypeDescriptor.addComponent(component);
 		    	}
