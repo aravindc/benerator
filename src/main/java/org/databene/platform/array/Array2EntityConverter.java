@@ -64,8 +64,9 @@ public class Array2EntityConverter extends ThreadSafeConverter<Object[], Entity>
         this.converters = new Converter[featureNames.length];
         for (int i = 0; i < featureNames.length; i++) {
         	ComponentDescriptor component = descriptor.getComponent(featureNames[i]);
-        	if (component != null) {
-        		Class<?> javaType = ((SimpleTypeDescriptor) component.getTypeDescriptor()).getPrimitiveType().getJavaType();
+        	if (component != null && component.getTypeDescriptor() != null) {
+        		SimpleTypeDescriptor componentType = (SimpleTypeDescriptor) component.getTypeDescriptor();
+				Class<?> javaType = componentType.getPrimitiveType().getJavaType();
         		if (stringSource)
         			this.converters[i] = ConverterManager.getInstance().createConverter(String.class, javaType);
         		else
