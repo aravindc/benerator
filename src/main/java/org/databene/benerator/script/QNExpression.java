@@ -57,18 +57,10 @@ public class QNExpression extends DynamicExpression<Object> {
     }
 
     public Object evaluate(Context context) {
-        String qn = ArrayFormat.format(".", qnParts);
-        if (context.contains(qn))
-        	return context.get(qn);
-        else
-        	return readField(qnParts, qnParts.length - 1, ArrayUtil.lastElement(qnParts), context);
+    	return resolveNamePart(qnParts, qnParts.length, context);
     }
 
-    private static Object readField(String[] qnParts, int qnLength, String fieldName, Context context) {
-    	return FeatureAccessor.getValue(lookup(qnParts, qnLength, context), fieldName);
-    }
-    
-    public static Object lookup(String[] qnParts, int qnLength, Context context) {
+    public static Object resolveNamePart(String[] qnParts, int qnLength, Context context) {
     	String objectOrClassName = ArrayFormat.formatPart(".", 0, qnLength, qnParts);
     	if (context.contains(objectOrClassName)) {
     		return context.get(objectOrClassName);
@@ -84,7 +76,11 @@ public class QNExpression extends DynamicExpression<Object> {
     		}
     	}
     }
-    
+
+    private static Object readField(String[] qnParts, int qnLength, String fieldName, Context context) {
+    	return FeatureAccessor.getValue(resolveNamePart(qnParts, qnLength, context), fieldName);
+    }
+
 	public BeanSpec resolve(Context context) {
         String qn = ArrayFormat.format(".", qnParts);
         if (context.contains(qn)) {

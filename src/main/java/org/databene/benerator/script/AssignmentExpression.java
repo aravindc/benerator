@@ -50,7 +50,7 @@ public class AssignmentExpression extends DynamicExpression<Object> {
 		} else {
 			// get last parent object of QN and set the feature denoted by the last QN part
 			String fieldName = lhs[lhs.length - 1];
-			Object field = QNExpression.lookup(lhs, lhs.length - 1, context);
+			Object field = QNExpression.resolveNamePart(lhs, lhs.length - 1, context);
 			AnyMutator.setValue(field, fieldName, value, false);
 		}
 	    return value;
