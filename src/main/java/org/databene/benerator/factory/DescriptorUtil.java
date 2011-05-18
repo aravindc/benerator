@@ -48,7 +48,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -90,7 +89,6 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
-import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
 import org.w3c.dom.Element;
@@ -332,9 +330,8 @@ public class DescriptorUtil {
 	    Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
         OrderedNameMap<NullableGenerator<?>> varGens = new OrderedNameMap<NullableGenerator<?>>();
         for (InstanceDescriptor variable : variables) {
-            Generator<?> gen = InstanceGeneratorFactory.createSingleInstanceGenerator(variable, Uniqueness.NONE, context);
-			NullableGenerator<?> varGen = NullableGeneratorFactory.injectNulls(gen, variable.getNullQuota());
-            varGens.put(variable.getName(), varGen);
+            NullableGenerator<?> generator = VariableGeneratorFactory.createGenerator(variable, context);
+            varGens.put(variable.getName(), generator);
         }
 	    return varGens;
     }
