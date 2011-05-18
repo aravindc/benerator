@@ -40,6 +40,11 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	protected GeneratorContext context;
 
 	public AbstractGenerator() {
+	    this(null);
+    }
+
+	public AbstractGenerator(GeneratorContext context) {
+		this.context = context;
 	    this.state = GeneratorState.CREATED;
     }
 

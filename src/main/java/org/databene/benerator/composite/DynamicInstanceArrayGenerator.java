@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 import org.databene.commons.ArrayUtil;
+import org.databene.commons.Assert;
 
 /**
  * Array generator that allows for dynamic change of the array length algorithm.<br/><br/>
@@ -38,9 +39,10 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
 	private Generator<Long> countGenerator;
 
     public DynamicInstanceArrayGenerator(Generator<Object> source, Generator<Long> countGenerator, BeneratorContext context) {
-        super(source);
+        super(source, context);
+        Assert.notNull(source, "source");
+        Assert.notNull(countGenerator, "countGenerator");
         this.countGenerator = countGenerator;
-        this.context = context;
     }
     
 	public Class<Object> getGeneratedType() {
@@ -77,6 +79,12 @@ public class DynamicInstanceArrayGenerator extends GeneratorWrapper<Object, Obje
     public void reset() {
         super.reset();
         countGenerator.reset();
+    }
+    
+    @Override
+    public void close() {
+    	countGenerator.close();
+    	super.close();
     }
     
     @Override

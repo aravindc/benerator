@@ -47,6 +47,11 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     protected Generator<S> source;
 
     public GeneratorWrapper(Generator<S> source) {
+        this(source, null);
+    }
+
+    public GeneratorWrapper(Generator<S> source, GeneratorContext context) {
+    	super(context);
         this.source = source;
     }
 
