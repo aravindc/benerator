@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,9 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
@@ -33,7 +36,7 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class LazyStatement implements Statement { // TODO v0.7 remove this class
+public class LazyStatement implements Statement, Closeable { // TODO v0.7 remove this class
 
 	private Expression<Statement> targetExpression;
 	private Statement target;
@@ -60,6 +63,11 @@ public class LazyStatement implements Statement { // TODO v0.7 remove this class
 	@Override
 	public String toString() {
 	    return getClass().getSimpleName() + '(' + (target != null ? target : targetExpression) + ')';
+	}
+
+	public void close() throws IOException {
+		if (target instanceof Closeable)
+			((Closeable) target).close();
 	}
 
 }

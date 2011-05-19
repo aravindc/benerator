@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,9 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 
@@ -30,7 +33,7 @@ import org.databene.benerator.engine.Statement;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class StatementProxy implements Statement {
+public class StatementProxy implements Statement, Closeable {
 	
 	protected Statement realStatement;
 
@@ -46,4 +49,8 @@ public class StatementProxy implements Statement {
 	    return realStatement;
     }
 
+	public void close() throws IOException {
+		if (realStatement instanceof Closeable)
+			((Closeable) realStatement).close();
+	}
 }

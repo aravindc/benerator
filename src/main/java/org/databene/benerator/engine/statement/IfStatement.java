@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -20,6 +20,9 @@
  */
 
 package org.databene.benerator.engine.statement;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
@@ -65,5 +68,12 @@ public class IfStatement extends ConditionStatement {
 	public void setElseStatement(Statement elseStatement) {
 	    this.elseStatement = elseStatement;
     }
+
+	public void close() throws IOException {
+		if (thenStatement instanceof Closeable)
+			((Closeable) thenStatement).close();
+		if (elseStatement instanceof Closeable)
+			((Closeable) elseStatement).close();
+	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,10 @@ public class WhileStatement extends ConditionStatement {
 	public void execute(BeneratorContext context) {
 	    while (condition.evaluate(context))
 	    	statements.execute(context);
+	}
+
+	public void close() throws IOException {
+		statements.close();
 	}
 	
 }

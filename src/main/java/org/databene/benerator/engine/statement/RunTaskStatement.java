@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,7 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ import org.databene.task.runner.PagedTaskRunner;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class RunTaskStatement extends AbstractStatement {
+public class RunTaskStatement extends AbstractStatement implements Closeable {
 	
 	protected Expression<? extends Task> taskProvider;
 	protected Task task;
@@ -102,6 +103,10 @@ public class RunTaskStatement extends AbstractStatement {
 			task = taskProvider.evaluate(context);
 	    return task;
     }
+
+	public void close() {
+		task.close();
+	}
 
 	private List<PageListener> getPageListeners(BeneratorContext context) {
 		List<PageListener> listeners = new ArrayList<PageListener>();

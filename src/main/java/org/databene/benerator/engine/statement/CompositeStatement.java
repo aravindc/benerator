@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,6 +21,8 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ import org.databene.commons.Visitor;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class CompositeStatement extends AbstractStatement implements Element<Statement> {
+public abstract class CompositeStatement extends AbstractStatement implements Closeable, Element<Statement> {
 	
 	protected List<Statement> subStatements = new ArrayList<Statement>();
 
@@ -68,4 +70,10 @@ public abstract class CompositeStatement extends AbstractStatement implements El
 	    		visitor.visit(subStatement);
     }
 
+	public void close() throws IOException {
+		for (Statement subStatement : subStatements)
+			if (subStatement instanceof Closeable)
+				((Closeable) subStatement).close();
+	}
+	
 }
