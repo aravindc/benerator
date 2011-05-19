@@ -137,7 +137,7 @@ public class DescriptorRunner implements ResourceManager {
 					.append(RoundedNumberFormat.format(throughput, 0)).append(" p.h.)");
             }
 			logger.info(message.toString());
-			if (System.getProperty("profile").equals("true"))
+			if ("true".equals(System.getProperty("profile")))
 				Profiler.defaultInstance().printSummary();
 			List<String> generations = getGeneratedFiles();
 			if (generations.size() > 0)

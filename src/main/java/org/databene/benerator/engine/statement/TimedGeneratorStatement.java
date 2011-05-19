@@ -75,7 +75,7 @@ public class TimedGeneratorStatement extends StatementProxy {
 			else
 				logger.info("Created " + dc + " '" + name + "' data set(s)");
 		}
-		if (System.getProperty("profile").equals("true"))
+		if ("true".equals(System.getProperty("profile")))
 			Profiler.defaultInstance().addSample(profilerPath, dt);
     }
 
