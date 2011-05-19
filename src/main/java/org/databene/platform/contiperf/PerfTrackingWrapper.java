@@ -22,14 +22,15 @@
 package org.databene.platform.contiperf;
 
 import java.io.Closeable;
+import java.io.File;
 
-import org.databene.contiperf.ExecutionLogger;
+import org.databene.contiperf.Config;
 import org.databene.contiperf.Invoker;
 import org.databene.contiperf.PerformanceRequirement;
 import org.databene.contiperf.PerformanceTracker;
 //import org.databene.contiperf.report.ConsoleReportModule;
 //import org.databene.contiperf.report.ReportContext;
-import org.databene.contiperf.log.ConsoleExecutionLogger;
+import org.databene.contiperf.report.ReportContext;
 
 /**
  * Common parent class for Benerator runners that support performance tracking.<br/><br/>
@@ -40,7 +41,7 @@ import org.databene.contiperf.log.ConsoleExecutionLogger;
 public abstract class PerfTrackingWrapper implements Closeable {
 	private PerformanceTracker tracker;
 	private PerformanceRequirement requirement;
-	private ExecutionLogger executionLogger;
+	private ReportContext context;
 
 	protected abstract Invoker getInvoker();
 
@@ -51,7 +52,8 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	public PerfTrackingWrapper(PerformanceTracker tracker) {
 	    this.tracker = tracker;
 	    this.requirement = new PerformanceRequirement();
-	    this.executionLogger = new ConsoleExecutionLogger();
+	    File reportFolder = Config.instance().getReportFolder();
+		this.context = new ReportContext(reportFolder, AssertionError.class);
     }
 	
 	public void setMax(int max) {
@@ -62,8 +64,8 @@ public abstract class PerfTrackingWrapper implements Closeable {
 		requirement.setPercentiles(percentilesSpec);
 	}
 	
-	public void setExecutionLogger(ExecutionLogger executionLogger) {
-		this.executionLogger = executionLogger;
+	public void setContext(ReportContext context) {
+		this.context = context;
 	}
 	
 	public PerformanceTracker getTracker() {
@@ -71,7 +73,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 			// the tracker is initialized lazily for allowing the class to be first constructed in a simple way 
 			// and then be configured by calling the property setters.
 			Invoker invoker = getInvoker();
-			tracker = new PerformanceTracker(invoker, requirement, executionLogger);
+			tracker = new PerformanceTracker(invoker, requirement, context);
 		}
 		return tracker;
 	}

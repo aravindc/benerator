@@ -24,6 +24,8 @@ package org.databene.benerator.engine.parser.xml;
 import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.parser.xml.XmlDescriptorParser.parseStringAttribute;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -113,14 +115,25 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 				return parseGenerate(
 						element, parentPath, pContext, (BeneratorContext) context, !looped, nested);
             }
+			@Override
+			public String toString() {
+				return XMLUtil.format(element);
+			}
 		};
 		Statement statement = new LazyStatement(expression);
-		if (!looped)
-			statement = new TimedGeneratorStatement(getNameOrType(element), statement);
+		statement = new TimedGeneratorStatement(getNameOrType(element), statement, createProfilerPath(parentPath, statement), !looped);
 		return statement;
 	}
 	
 	// private helpers -------------------------------------------------------------------------------------------------
+
+	private List<String> createProfilerPath(Statement[] parentPath, Statement currentElement) {
+		List<String> path = new ArrayList<String>(parentPath.length + 1);
+		for (int i = 0; i < parentPath.length; i++)
+			path.add(parentPath[i].toString());
+		path.add(currentElement.toString());
+		return path;
+	}
 
 	private String getNameOrType(Element element) {
 		String result = element.getAttribute(ATT_NAME);

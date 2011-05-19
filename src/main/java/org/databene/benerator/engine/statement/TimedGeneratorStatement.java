@@ -26,9 +26,12 @@
 
 package org.databene.benerator.engine.statement;
 
+import java.util.List;
+
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
+import org.databene.profile.Profiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +48,14 @@ public class TimedGeneratorStatement extends StatementProxy {
 	private static final Logger logger = LoggerFactory.getLogger(TimedGeneratorStatement.class);
 
 	private String name;
+	List<String> profilerPath;
+	private boolean logging;
 	
-    public TimedGeneratorStatement(String name, Statement realStatement) {
+    public TimedGeneratorStatement(String name, Statement realStatement, List<String> profilerPath, boolean logging) {
     	super(realStatement);
     	this.name = name;
+    	this.profilerPath = profilerPath;
+    	this.logging = logging;
     }
 
     @Override
@@ -58,14 +65,18 @@ public class TimedGeneratorStatement extends StatementProxy {
 		super.execute(context);
 		long dc = BeneratorMonitor.INSTANCE.getTotalGenerationCount() - c0;
 		long dt = System.currentTimeMillis() - t0;
-		if (dc == 0)
-			logger.info("No data created for '" + name + "' setup");
-		else if (dt > 0)
-			logger.info("Created " + dc + " data sets from '"
-					+ name + "' setup in " + dt + " ms ("
-					+ (dc * 1000 / dt) + "/s)");
-		else
-			logger.info("Created " + dc + " '" + name + "' data set(s)");
+		if (logging) {
+			if (dc == 0)
+				logger.info("No data created for '" + name + "' setup");
+			else if (dt > 0)
+				logger.info("Created " + dc + " data sets from '"
+						+ name + "' setup in " + dt + " ms ("
+						+ (dc * 1000 / dt) + "/s)");
+			else
+				logger.info("Created " + dc + " '" + name + "' data set(s)");
+		}
+		if (System.getProperty("profile").equals("true"))
+			Profiler.defaultInstance().addSample(profilerPath, dt);
     }
 
 }
