@@ -53,7 +53,7 @@ public abstract class PerfTrackingWrapper implements Closeable {
 	    this.tracker = tracker;
 	    this.requirement = new PerformanceRequirement();
 	    File reportFolder = Config.instance().getReportFolder();
-		this.context = new ReportContext(reportFolder, AssertionError.class);
+		this.context = new ReportContext(reportFolder, org.databene.commons.AssertionError.class);
     }
 	
 	public void setMax(int max) {

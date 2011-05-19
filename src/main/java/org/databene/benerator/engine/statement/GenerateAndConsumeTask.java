@@ -204,8 +204,8 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     }
     
     protected void runSubTask(Statement subStatement, BeneratorContext context) {
-    	while (subStatement instanceof LazyStatement)
-    		subStatement = ((LazyStatement) subStatement).getTarget(context);
+    	while (subStatement instanceof StatementProxy) 
+    		subStatement = ((StatementProxy) subStatement).getRealStatement(context);
         if (subStatement instanceof GeneratorStatement) {
             GeneratorStatement generatorStatement = (GeneratorStatement) subStatement;
 			generatorStatement.prepare(context);
@@ -220,8 +220,8 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     }
     
     protected void closeSubStatement(Statement subStatement) {
-    	while (subStatement instanceof LazyStatement)
-    		subStatement = ((LazyStatement) subStatement).getTarget(context);
+    	while (subStatement instanceof StatementProxy)
+    		subStatement = ((StatementProxy) subStatement).getRealStatement(context);
         if (subStatement instanceof Closeable)
         	IOUtil.close((Closeable) subStatement);
     }

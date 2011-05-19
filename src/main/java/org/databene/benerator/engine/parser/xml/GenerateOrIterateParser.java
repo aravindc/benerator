@@ -128,9 +128,10 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
 	// private helpers -------------------------------------------------------------------------------------------------
 
 	private List<String> createProfilerPath(Statement[] parentPath, Statement currentElement) {
-		List<String> path = new ArrayList<String>(parentPath.length + 1);
-		for (int i = 0; i < parentPath.length; i++)
-			path.add(parentPath[i].toString());
+		List<String> path = new ArrayList<String>(parentPath != null ? parentPath.length + 1 : 1);
+		if (parentPath != null)
+			for (int i = 0; i < parentPath.length; i++)
+				path.add(parentPath[i].toString());
 		path.add(currentElement.toString());
 		return path;
 	}

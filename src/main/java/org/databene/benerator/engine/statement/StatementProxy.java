@@ -45,7 +45,7 @@ public class StatementProxy implements Statement, Closeable {
 	    realStatement.execute(context);
     }
 
-	public Statement getRealStatement() {
+	public Statement getRealStatement(BeneratorContext context) {
 	    return realStatement;
     }
 

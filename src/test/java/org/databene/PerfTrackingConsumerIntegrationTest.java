@@ -24,9 +24,10 @@ package org.databene;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.engine.BeneratorIntegrationTest;
+import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.statement.GenerateAndConsumeTask;
 import org.databene.benerator.engine.statement.GenerateOrIterateStatement;
-import org.databene.benerator.engine.statement.LazyStatement;
+import org.databene.benerator.engine.statement.StatementProxy;
 import org.databene.benerator.engine.statement.TimedGeneratorStatement;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.model.consumer.ConsumerChain;
@@ -71,7 +72,10 @@ public class PerfTrackingConsumerIntegrationTest extends BeneratorIntegrationTes
 	}
 
 	private void checkStats(TimedGeneratorStatement statement) {
-	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) ((LazyStatement) statement.getRealStatement()).getTarget(null);
+		Statement tmp = statement;
+		while (tmp instanceof StatementProxy)
+			tmp = ((StatementProxy) tmp).getRealStatement(context);
+	    GenerateOrIterateStatement realStatement = (GenerateOrIterateStatement) tmp;
 		ConsumerChain<?> chain = (ConsumerChain<?>) ((GenerateAndConsumeTask) realStatement.getTarget()).getConsumer();
 		PerfTrackingConsumer tracker = (PerfTrackingConsumer) chain.getComponent(0);
 		LatencyCounter counter = tracker.getTracker().getCounter();

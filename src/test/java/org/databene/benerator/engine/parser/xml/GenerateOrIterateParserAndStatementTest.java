@@ -49,6 +49,7 @@ import org.junit.Test;
  */
 public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegrationTest {
 
+	@Test
 	public void testVarAfterAttribute() {
 		parseAndExecute(
 				"<generate count='5'>" +
@@ -57,6 +58,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"</generate>");
 	}
 	
+	@Test
 	public void testVarAfterSubGen() {
 		parseAndExecute(
 				"<generate count='5'>" +
@@ -65,6 +67,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 				"</generate>");
 	}
 	
+	@Test
 	public void testAttributeAfterSubGen() {
 		parseAndExecute(
 				"<generate count='5'>" +
@@ -198,7 +201,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		assertTrue(innerConsumer.closeCount.get() > 0);
 		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
-
+/*
     @Test
 	public void testSubGeneratePageSize2() throws Exception {
 		BeneratorMonitor.INSTANCE.setTotalGenerationCount(0);

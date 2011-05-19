@@ -21,9 +21,6 @@
 
 package org.databene.benerator.engine.statement;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.commons.Expression;
@@ -36,38 +33,34 @@ import org.databene.commons.Expression;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class LazyStatement implements Statement, Closeable { // TODO v0.7 remove this class
+public class LazyStatement extends StatementProxy { // TODO v0.7 remove this class
 
-	private Expression<Statement> targetExpression;
-	private Statement target;
+	private Expression<Statement> statementExpression;
 
-    public LazyStatement(Expression<Statement> targetExpression) {
-	    this.targetExpression = targetExpression;
-	    this.target = null;
+    public LazyStatement(Expression<Statement> statementExpression) {
+    	super(null);
+	    this.statementExpression = statementExpression;
     }
 
 	public Expression<Statement> getTargetExpression() {
-	    return targetExpression;
+	    return statementExpression;
     }
 
-	public Statement getTarget(BeneratorContext context) {
-	    if (target == null)
-	    	target = targetExpression.evaluate(context);
-	    return target;
+	@Override
+	public Statement getRealStatement(BeneratorContext context) {
+	    if (this.realStatement == null)
+	    	this.realStatement = statementExpression.evaluate(context);
+	    return this.realStatement;
 	}
 	
+	@Override
 	public void execute(BeneratorContext context) {
-	    getTarget(context).execute(context);
+		getRealStatement(context).execute(context);
     }
 
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + '(' + (target != null ? target : targetExpression) + ')';
-	}
-
-	public void close() throws IOException {
-		if (target instanceof Closeable)
-			((Closeable) target).close();
+	    return getClass().getSimpleName() + '(' + (realStatement != null ? realStatement : statementExpression) + ')';
 	}
 
 }

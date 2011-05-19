@@ -102,7 +102,7 @@ public class BeneratorRootStatement extends SequentialStatement {
 					return;
 				}
 			} else if (statement instanceof StatementProxy)
-				visit(((StatementProxy) statement).getRealStatement());
+				visit(((StatementProxy) statement).getRealStatement(context));
 			else if (statement instanceof LazyStatement) {
 	            Expression<Statement> targetExpression = ((LazyStatement) statement).getTargetExpression();
 	            visit(ExpressionUtil.evaluate(targetExpression, context));
