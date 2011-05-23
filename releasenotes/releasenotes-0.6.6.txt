@@ -49,3 +49,4 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 - resource leak in SequenceTableGenerator
 - script is not recognized if white space follows the closing curly brace
 - Access of static Java methods in BeneratorScript
+- <defaultComponents> are ignored
