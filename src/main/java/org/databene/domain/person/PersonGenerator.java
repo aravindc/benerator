@@ -48,7 +48,7 @@ import java.util.Map;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class PersonGenerator extends CompositeGenerator<Person> {
+public class PersonGenerator extends CompositeGenerator<Person> { // TODO be dataset aware
 
 	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
 	
