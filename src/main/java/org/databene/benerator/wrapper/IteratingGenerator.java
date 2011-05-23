@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -95,8 +95,10 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
     public E generate() {
         try {
             assertInitialized();
-            if (iterator == null || !iterator.hasNext())
+            if (iterator == null || !iterator.hasNext()) {
+            	closeIterator();
             	return null;
+            }
         	E result = iterator.next();
         	if (!iterator.hasNext())
 	            closeIterator();
