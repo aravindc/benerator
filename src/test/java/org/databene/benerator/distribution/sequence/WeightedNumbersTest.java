@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -46,7 +46,7 @@ public class WeightedNumbersTest extends GeneratorTest {
 	public void testCreateGenerator_nonUnique() {
 		Generator<Integer> generator = intDist.createGenerator(Integer.class, 0, 3, 1, false);
 		generator.init(context);
-		expectRelativeWeights(generator, 1000, 0, 0, 1, 3, 2, 2, 3, 1);
+		expectRelativeWeights(generator, 3000, 0, 0, 1, 3, 2, 2, 3, 1);
 	}
 	
 	@Test(expected = ConfigurationError.class)
@@ -63,7 +63,7 @@ public class WeightedNumbersTest extends GeneratorTest {
 	public void testApply_nonUnique() {
 		Generator<String> generator = intDist.applyTo(new SequenceTestGenerator<String>("X", "A", "B", "C"), false);
 		generator.init(context);
-		expectRelativeWeights(generator, 2000, "X", 0, "A", 3, "B", 2, "C", 1);
+		expectRelativeWeights(generator, 3000, "X", 0, "A", 3, "B", 2, "C", 1);
 	}
 
 }
