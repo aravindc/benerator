@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.platform.flat;
 
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
 import org.databene.commons.HeavyweightIterator;
@@ -133,18 +135,20 @@ public class FlatFileEntitySource extends FileBasedEntitySource {
     // private helpers -------------------------------------------------------------------------------------------------
     
     private void init() {
-        this.iterable = createIterable(uri, descriptors, encoding, lineFilter);
-        this.converter = createConverter(entityDescriptor, descriptors);
+    	if (ArrayUtil.isEmpty(descriptors))
+    		throw new InvalidGeneratorSetupException("Missing column descriptors. " +
+    				"Use the 'columns' property of the " + getClass().getSimpleName() + " to define them.");
+        this.iterable = createIterable();
+        this.converter = createConverter();
     }
     
-    private Iterable<String[]> createIterable(String uri, FlatFileColumnDescriptor[] descriptors, 
-    		String encoding, String lineFilter) {
+    private Iterable<String[]> createIterable() {
         PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
         return new FlatFileLineIterable(resolveUri(), formats, true, encoding, lineFilter);
     }
 
     @SuppressWarnings("unchecked")
-    private Converter<String[], Entity> createConverter(ComplexTypeDescriptor entityDescriptor, FlatFileColumnDescriptor[] descriptors) {
+    private Converter<String[], Entity> createConverter() {
         String[] featureNames = ArrayPropertyExtractor.convert(descriptors, "name", String.class);
         Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, featureNames, true);
         Converter<String[], String[]> aConv = new ArrayConverter<String, String>(String.class, String.class, preprocessor);
