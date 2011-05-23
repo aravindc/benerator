@@ -28,6 +28,7 @@ package org.databene.benerator.factory;
 
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -70,7 +71,10 @@ public class InstanceGeneratorFactory {
         		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(),
         				(ArrayTypeDescriptor) type, uniqueness, context);
             else if (type == null) {
-            	if (descriptor instanceof IdDescriptor)
+            	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(descriptor.getName());
+            	if (defaultConfig != null)
+            		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
+            	else if (descriptor instanceof IdDescriptor)
     				generator = new IncrementGenerator(1);
             	else
             		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
