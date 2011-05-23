@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,16 @@
 
 package org.databene.benerator.wrapper;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.HeavyweightIterator;
+import org.databene.commons.IOUtil;
+import org.databene.commons.TypedIterable;
 import org.databene.commons.iterator.TypedIterableProxy;
 import org.databene.commons.iterator.HeavyweightIterableAdapter;
 
@@ -45,7 +50,7 @@ import org.junit.Test;
 public class IteratingGeneratorTest extends GeneratorTest {
 
     @Test
-    public void testBehaviour() {
+    public void testDefaultBehaviour() {
         HeavyweightIterableAdapter<Integer> iterable = new HeavyweightIterableAdapter<Integer>(Arrays.asList(1, 2));
 		TypedIterableProxy<Integer> hwIterable = new TypedIterableProxy<Integer>(Integer.class, iterable);
 		Generator<Integer> gen = new IteratingGenerator<Integer>(hwIterable);
@@ -53,4 +58,51 @@ public class IteratingGeneratorTest extends GeneratorTest {
 		expectGeneratedSequence(gen, 1, 2).withCeasedAvailability();
 	}
     
+    @Test
+    public void testEmptyIterator() {
+    	EmptyIterable emptySource = new EmptyIterable();
+    	Generator<Integer> generator = new IteratingGenerator<Integer>(emptySource);
+    	generator.init(new BeneratorContext());
+    	assertNull(generator.generate());
+    	assertTrue(emptySource.latestInstance.closed);
+    	IOUtil.close(generator);
+	}
+    
+    public static class EmptyIterable implements TypedIterable<Integer> {
+
+    	public EmptyIterator latestInstance;
+    	
+		public Class<Integer> getType() {
+			return Integer.class;
+		}
+    	
+		public HeavyweightIterator<Integer> iterator() {
+			latestInstance = new EmptyIterator();
+			 return latestInstance;
+		}
+
+    }
+    
+    public static class EmptyIterator implements HeavyweightIterator<Integer> {
+    	
+    	public boolean closed = false;
+
+		public boolean hasNext() {
+			return false;
+		}
+
+		public Integer next() {
+			throw new IllegalStateException();
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException("EmptyIterator.remove() is not supported");
+		}
+
+		public void close() {
+			closed = true;
+		}
+    	
+    }
+    	
 }
