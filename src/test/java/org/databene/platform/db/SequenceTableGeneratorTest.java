@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,9 +23,14 @@ package org.databene.platform.db;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import org.databene.benerator.engine.DescriptorRunner;
+import org.databene.benerator.test.ConsumerMock;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.jdbacl.hsql.HSQLUtil;
+import org.databene.model.data.Entity;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,25 +49,21 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 	@BeforeClass
 	public static void setupDB() {
 	    db = new DBSystem("db", HSQLUtil.getInMemoryURL(SequenceTableGeneratorTest.class.getSimpleName()), HSQLUtil.DRIVER, "sa", null);
-		db.execute("create table TT ( id int, value int )");
-		db.execute("insert into TT (id, value) values (1, 1000)");
-		db.execute("insert into TT (id, value) values (2, 2000)");
+		db.execute("create table TT ( id1 int, id2 int, value int )");
+		db.execute("insert into TT (id1, id2, value) values (1, 2, 1000)");
+		db.execute("insert into TT (id1, id2, value) values (2, 3, 2000)");
     }
 	
 	@Before
 	public void setupTable() {
-		db.execute("update TT set value = 1000 where id = 1");
-		db.execute("update TT set value = 2000 where id = 2");
+		db.execute("update TT set value = 1000 where id1 = 1 and id2 = 2");
+		db.execute("update TT set value = 2000 where id1 = 2 and id2 = 3");
 	}
 
 	@AfterClass
 	public static void closeDB() {
-		IOUtil.close(db);
-	}
-	
-	@AfterClass
-	public static void tearDownDB() {
 		db.execute("drop table TT");
+		IOUtil.close(db);
 	}
 	
 	@Test
@@ -70,7 +71,7 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 		SequenceTableGenerator<Integer> generator = null;
 		try {
 	        generator = new SequenceTableGenerator<Integer>("TT", "value", db);
-	        generator.setSelector("id = 1");
+	        generator.setSelector("id1 = 1 and id2 = 2");
 	        generator.init(context);
 	        for (int i = 0; i < 100; i++)
 	        	assertEquals(1000 + i, generator.generate().intValue());
@@ -86,7 +87,7 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 		try {
 	        generator = new SequenceTableGenerator<Integer>("TT", "value", db);
 	        // the selector makes the generator use row #1 and #2 after each other for generating id values
-	        generator.setSelector("{'id = ' + (1 + (num % 2))}");
+	        generator.setSelector("{'id1 = ' + (1 + (num % 2)) + ' and id2 = ' + (2 + (num % 2))}");
 	        generator.init(context);
 	        for (int i = 0; i < 100;) {
 		        context.set("num", i);
@@ -106,15 +107,26 @@ public class SequenceTableGeneratorTest extends GeneratorTest {
 	public void testParameterizedSelector() {
 		SequenceTableGenerator<Integer> generator = null;
 		try {
-	        generator = new SequenceTableGenerator<Integer>("TT", "value", db, "id = ?");
+	        generator = new SequenceTableGenerator<Integer>("TT", "value", db, "id1 = ? and id2 = ?");
 	        generator.init(context);
-        	assertEquals(1000, generator.generateWithParams(1).intValue());
-        	assertEquals(2000, generator.generateWithParams(2).intValue());
-        	assertEquals(1001, generator.generateWithParams(1).intValue());
-        	assertEquals(2001, generator.generateWithParams(2).intValue());
+        	assertEquals(1000, generator.generateWithParams(1, 2).intValue());
+        	assertEquals(2000, generator.generateWithParams(2, 3).intValue());
+        	assertEquals(1001, generator.generateWithParams(1, 2).intValue());
+        	assertEquals(2001, generator.generateWithParams(2, 3).intValue());
         } finally {
 	        IOUtil.close(generator);
         }
 	}
 
+	@Test
+	public void testIntegration() throws Exception {
+		ConsumerMock<Entity> consumer = new ConsumerMock<Entity>(true);
+		context.set("cons", consumer);
+		new DescriptorRunner("org/databene/platform/db/SequenceTableIntegrationTest.ben.xml", context).run();
+		List<Entity> products = consumer.getProducts();
+		assertEquals(2, products.size());
+		assertEquals(new Entity("x", "id", 2000), products.get(0));
+		assertEquals(new Entity("x", "id", 2001), products.get(1));
+	}
+	
 }
