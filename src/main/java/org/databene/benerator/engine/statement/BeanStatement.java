@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,10 +30,9 @@ import java.beans.PropertyDescriptor;
 import java.io.Closeable;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.ResourceManager;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.script.BeanConstruction;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -62,7 +61,7 @@ public class BeanStatement extends SequentialStatement {
         this.resourceManager = resourceManager;
     }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
     @Override
     public void execute(BeneratorContext context) {
 		// invoke constructor
@@ -80,23 +79,9 @@ public class BeanStatement extends SequentialStatement {
 			DataModel.getDefaultInstance().addDescriptorProvider((DescriptorProvider) bean);
 		if (bean instanceof Closeable && resourceManager != null)
 			resourceManager.addResource((Closeable) bean);
-		if (bean instanceof Generator)
-			bean = new InitOnceGenerator((Generator<?>) bean, context);
+		if (bean instanceof Generator && constructionExpression instanceof BeanConstruction)
+			((Generator) bean).init(context);
 		context.set(id, bean);
     }
 
-	static class InitOnceGenerator<E> extends GeneratorProxy<E> {
-		
-		InitOnceGenerator(Generator<E> realGenerator, GeneratorContext context) {
-			super(realGenerator);
-			super.init(context); // init realGenerator and set internal state by super class
-		}
-		
-		@Override
-		public void init(GeneratorContext context) {
-			// prevent the real generator from being re-initialized in subsequent use
-		}
-		
-	}
-	
 }
