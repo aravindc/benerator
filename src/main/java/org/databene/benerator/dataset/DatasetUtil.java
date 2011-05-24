@@ -50,6 +50,8 @@ public class DatasetUtil {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatasetUtil.class);
     
+    public static final String REGION_NESTING  = "/org/databene/dataset/region";
+	
 	private static String defaultRegionName;
 	private static Dataset defaultRegion;
 	
