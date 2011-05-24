@@ -61,6 +61,32 @@ public class CompanyNameGeneratorTest extends GeneratorClassTest {
         check("XX");
     }
 
+    @Test
+    public void testGenerateForDACH() {
+        CompanyNameGenerator generator = new CompanyNameGenerator("dach");
+        generator.init(context);
+        for (int i = 0; i < 100; i++) {
+            CompanyName name = generator.generate();
+            logger.debug(name.toString());
+            assertNotNull(name);
+            assertTrue(name.toString().length() > 1);
+            System.out.println(name);
+        }
+    }
+/*
+    @Test
+    public void testWorld() {
+        CompanyNameGenerator generator = new CompanyNameGenerator("world");
+        generator.init(context);
+        for (int i = 0; i < 100; i++) {
+            CompanyName name = generator.generate();
+            logger.debug(name.toString());
+            assertNotNull(name);
+            assertTrue(name.toString().length() > 1);
+            System.out.println(name);
+        }
+    }
+*/
     public void check(String dataset) {
         CompanyNameGenerator generator = new CompanyNameGenerator(dataset);
         generator.init(context);
