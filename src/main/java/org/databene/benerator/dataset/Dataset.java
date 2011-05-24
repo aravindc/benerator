@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,8 @@
 
 package org.databene.benerator.dataset;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Defines a data set that may be nested.<br/><br/>
@@ -42,7 +42,7 @@ public class Dataset {
     private String id;
     private String type;
     private String name;
-    private Set<Dataset> subSets;
+    private List<Dataset> subSets;
     
     // constructor -----------------------------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ public class Dataset {
         this.id = type + ':' + name;
         this.type = type;
         this.name = name;
-        this.subSets = new HashSet<Dataset>();
+        this.subSets = new ArrayList<Dataset>();
     }
     
     // interface -------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ public class Dataset {
         subSets.add(subSet);
     }
     
-    public Set<Dataset> getSubSets() {
+    public List<Dataset> getSubSets() {
         return subSets;
     }
     
@@ -79,8 +79,8 @@ public class Dataset {
     	return subSets.isEmpty();
     }
     
-    public Set<Dataset> allAtomicSubSets() {
-        Set<Dataset> atomicSubSets = new HashSet<Dataset>();
+    public List<Dataset> allAtomicSubSets() {
+    	List<Dataset> atomicSubSets = new ArrayList<Dataset>();
         for (Dataset subSet : subSets) {
             if (subSet.getSubSets().size() == 0)
                 atomicSubSets.add(subSet);
