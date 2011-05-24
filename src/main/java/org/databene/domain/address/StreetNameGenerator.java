@@ -52,7 +52,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StreetNameGenerator.class);
 
-    private static final String REGION = "org/databene/dataset/region";
+    private static final String REGION_NESTING = "org/databene/dataset/region";
     private static final String FILENAME_PATTERN = "/org/databene/domain/address/street_{0}.csv";
     
     private String datasetName;
@@ -73,7 +73,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 	// DatasetBasedGenerator interface implementation ------------------------------------------------------------------
 	
 	public String getNesting() {
-		return REGION;
+		return REGION_NESTING;
 	}
 
 	public String getDataset() {
@@ -120,7 +120,7 @@ public class StreetNameGenerator extends GeneratorProxy<String> implements Datas
 	}
 	
 	private static Generator<String> createSource(String datasetName) {
-	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION, Encodings.UTF_8);
+	    return new WeightedDatasetCSVGenerator<String>(FILENAME_PATTERN, datasetName, REGION_NESTING, Encodings.UTF_8);
     }
 
 }
