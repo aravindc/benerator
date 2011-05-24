@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.domain.person;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.dataset.ProductFromDataset;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
@@ -48,10 +49,12 @@ import java.util.Map;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class PersonGenerator extends CompositeGenerator<Person> { // TODO be dataset aware
+public class PersonGenerator extends CompositeGenerator<Person> implements DatasetBasedGenerator<Person> {
 
 	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
 	
+    private static final String REGION_NESTING = "org/databene/dataset/region";
+
 	private String datasetName;
 	private Locale locale;
 	
@@ -119,15 +122,16 @@ public class PersonGenerator extends CompositeGenerator<Person> { // TODO be dat
 		this.locale = locale;
     }
 
+	public String getNesting() {
+		return REGION_NESTING;
+	}
+	
 	public String getDataset() {
 		return datasetName;
 	}
 
     public void setDataset(String datasetName) {
     	this.datasetName = datasetName;
-        maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
-        femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
-        familyNameGen = new FamilyNameGenerator(datasetName);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -149,38 +153,46 @@ public class PersonGenerator extends CompositeGenerator<Person> { // TODO be dat
         salutationProvider.setLocale(locale);
 
 		try {
-	        initMembers(context);
+	        initMembersWithDataset(context);
 		} catch (RuntimeException e) {
 			Country fallBackCountry = Country.getFallback();
 			if (!fallBackCountry.getIsoCode().equals(datasetName)) {
 				logger.error("Error initializing " + getClass().getSimpleName(), e);
 				logger.error("Cannot generate persons for " + datasetName + ", falling back to " + fallBackCountry);
 				this.datasetName = fallBackCountry.getIsoCode();
-				initMembers(context);
+				initMembersWithDataset(context);
 			} else
 				throw e;
 		}
         super.init(context);
     }
-
+    
     public Person generate() throws IllegalGeneratorStateException {
+	    return generateForDataset(randomDataset());
+    }
+
+	public ProductFromDataset<Person> generateWithDatasetInfo() {
+	    String usedDataset = randomDataset();
+	    Person person = generateForDataset(usedDataset);
+        return new ProductFromDataset<Person>(person, REGION_NESTING, usedDataset);
+	}
+
+	public Person generateForDataset(String datasetToUse) {
     	assertInitialized();
         Person person = new Person(acadTitleGen.getLocale());
         person.setGender(genderGen.generate());
         GivenNameGenerator givenNameGenerator 
         	= (Gender.MALE.equals(person.getGender()) ? maleGivenNameGen : femaleGivenNameGen);
-        ProductFromDataset<String> baseInfo = givenNameGenerator.generateWithDatasetInfo();
-        String usedDataset = baseInfo.dataset;
-        String givenName = baseInfo.product;
+        String givenName = givenNameGenerator.generateForDataset(datasetToUse);
 		person.setGivenName(givenName);
         if (secondNameTest.generate()) {
         	do {
-        		person.setSecondGivenName(givenNameGenerator.generateForDataset(usedDataset));
+        		person.setSecondGivenName(givenNameGenerator.generateForDataset(datasetToUse));
         	} while (person.getGivenName().equals(person.getSecondGivenName()));
         }
-        String familyName = familyNameGen.generateForDataset(usedDataset);
+        String familyName = familyNameGen.generateForDataset(datasetToUse);
 		if (Gender.FEMALE.equals(person.getGender()))
-			familyName = getFemaleFamilyNameConverter(usedDataset).convert(familyName);
+			familyName = getFemaleFamilyNameConverter(datasetToUse).convert(familyName);
 		person.setFamilyName(familyName);
         person.setSalutation(salutationProvider.salutation(person.getGender()));
         person.setAcademicTitle(acadTitleGen.generate());
@@ -190,6 +202,12 @@ public class PersonGenerator extends CompositeGenerator<Person> { // TODO be dat
         person.setBirthDate(birthDateGenerator.generate());
         person.setEmail(emailGenerator.generate(givenName, familyName));
         return person;
+	}
+	
+	// private helpers -------------------------------------------------------------------------------------------------
+
+    private String randomDataset() {
+    	return maleGivenNameGen.generateWithDatasetInfo().dataset;
     }
 
 	private Converter<String, String> getFemaleFamilyNameConverter(String usedDataset) {
@@ -201,12 +219,12 @@ public class PersonGenerator extends CompositeGenerator<Person> { // TODO be dat
 	    return result;
 	}
 
-	private void initMembers(GeneratorContext context) {
-	    maleGivenNameGen = new GivenNameGenerator(datasetName, Gender.MALE);
+	private void initMembersWithDataset(GeneratorContext context) {
+	    maleGivenNameGen = registerComponent(new GivenNameGenerator(datasetName, Gender.MALE));
 	    maleGivenNameGen.init(context);
-	    femaleGivenNameGen = new GivenNameGenerator(datasetName, Gender.FEMALE);
+	    femaleGivenNameGen = registerComponent(new GivenNameGenerator(datasetName, Gender.FEMALE));
 	    femaleGivenNameGen.init(context);
-	    familyNameGen = new FamilyNameGenerator(datasetName);
+	    familyNameGen = registerComponent(new FamilyNameGenerator(datasetName));
 	    familyNameGen.init(context);
 	    emailGenerator = new EMailAddressBuilder(datasetName);
 	    emailGenerator.init(context);
