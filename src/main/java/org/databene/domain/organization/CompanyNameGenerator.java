@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,14 @@
 
 package org.databene.domain.organization;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.dataset.AbstractDatasetGenerator;
+import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
@@ -57,25 +62,19 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
+public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
+	protected static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
     private static final String ORG = "/org/databene/domain/organization/";
     private static final String PERS = "/org/databene/domain/person/";
-    private static final String REGION  = "/org/databene/dataset/region";
+
+    protected static Map<String, NullableGenerator<String>> locationGenerators = new HashMap<String, NullableGenerator<String>>();
     
-    private String datasetName;
-    private boolean sector;
-    private boolean location;
-    private boolean legalForm;
-    
-    private AlternativeGenerator<String> core;
-    private NullableGenerator<String> sectorGenerator;
-    private Generator<String> legalFormGenerator;
-    private NullableGenerator<String> locationGenerator;
-    
-    private transient ThreadLocalProductWrapper<String> productWrapper;
+    protected String datasetName;
+    protected boolean sector;
+    protected boolean location;
+    protected boolean legalForm;
     
     public CompanyNameGenerator() {
     	this(true, true, true);
@@ -90,154 +89,177 @@ public class CompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
     }
 
     public CompanyNameGenerator(boolean sector, boolean location, boolean legalForm, String datasetName) {
+    	super(DatasetUtil.REGION_NESTING, datasetName);
     	this.sector = sector;
     	this.location = location;
     	this.legalForm = legalForm;
         this.datasetName = datasetName;
         setDataset(datasetName);
-        this.productWrapper = new ThreadLocalProductWrapper<String>();
     }
     
-    public void setDataset(String datasetName) {
-    	this.datasetName = datasetName;
+	@Override
+	protected Generator<CompanyName> createGeneratorForAtomicDataset(Dataset dataset) {
+		return new AtomicCompanyNameGenerator();
 	}
-    
-	public Class<CompanyName> getGeneratedType() {
-	    return CompanyName.class;
-    }
 
-    @Override
-    public synchronized void init(GeneratorContext context) {
-        try {
-			initLocationGenerator(datasetName, context);
-		} catch (Exception e) {
-			String fallbackDataset = DatasetUtil.fallbackRegionName();
-			logger.warn("Error initializing location generator for dataset " + datasetName + ", falling back to " + fallbackDataset);
-			initLocationGenerator(fallbackDataset, context);
+	class AtomicCompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
+		
+	    private AlternativeGenerator<String> shortNameGenerator;
+	    private NullableGenerator<String> sectorGenerator;
+	    private Generator<String> legalFormGenerator;
+	    private NullableGenerator<String> locationGenerator;
+
+	    private transient ThreadLocalProductWrapper<String> productWrapper;
+	    
+	    public AtomicCompanyNameGenerator() {
+	        this.productWrapper = new ThreadLocalProductWrapper<String>();
+	    }
+	    
+		public Class<CompanyName> getGeneratedType() {
+		    return CompanyName.class;
+	    }
+
+	    @Override
+	    public synchronized void init(GeneratorContext context) {
+	        try {
+				initWithDataset(datasetName, context);
+			} catch (Exception e) {
+				String fallbackDataset = DatasetUtil.fallbackRegionName();
+				logger.warn("Error initializing location generator for dataset " + datasetName + ", falling back to " + fallbackDataset);
+				initWithDataset(fallbackDataset, context);
+			}
+	    }
+
+		public void initWithDataset(String datasetToUse, GeneratorContext context) {
+			createAndInitLocationGenerator(datasetToUse);
+			initLegalFormGenerator(datasetToUse);
+			initSectorGenerator(datasetToUse);
+			shortNameGenerator = new AlternativeGenerator<String>(String.class);
+			createInitialsNameGenerator();
+			createPersonNameGenerator(datasetToUse);
+			createArtificialNameGenerator();
+			createTechNameGenerator();
+			shortNameGenerator.init(context);
+			super.init(context);
 		}
-        initLegalFormGenerator(datasetName, context);
-        initSectorGenerator(datasetName, context);
 
-        core = new AlternativeGenerator<String>(String.class);
-        core.addSource(new RegexStringGenerator("[A-Z]{3}"));
-        core.init(context);
-        
-        createPersonNameGenerator(datasetName, core, context);
-        createArtificialNameGenerator(core, context);
-        createTechNameGenerator(core, context);
-        super.init(context);
-    }
+		public CompanyName generate() {
+			CompanyName name = new CompanyName();
+	        name.setShortName(shortNameGenerator.generate());
+	        ProductWrapper<String> wrapper = productWrapper.get();
+	        if (sectorGenerator != null) {
+				String sector = sectorGenerator.generate(wrapper).product;
+		        if (sector != null)
+		            name.setSector(sector);
+	        }
+	        if (locationGenerator != null) {
+	        	wrapper = locationGenerator.generate(wrapper);
+	        	if (wrapper != null)
+		            name.setLocation(wrapper.product);
+	        }
+	        if (legalFormGenerator != null)
+	        	name.setLegalForm(legalFormGenerator.generate());
+	        name.setDatasetName(datasetName);
+	        return name;
+	    }
 
-	public CompanyName generate() {
-		CompanyName name = new CompanyName();
-        name.setShortName(core.generate());
-        ProductWrapper<String> wrapper = productWrapper.get();
-        if (sectorGenerator != null) {
-			String sector = sectorGenerator.generate(wrapper).product;
-	        if (sector != null)
-	            name.setSector(sector);
-        }
-        if (locationGenerator != null) {
-        	wrapper = locationGenerator.generate(wrapper);
-        	if (wrapper != null)
-	            name.setLocation(wrapper.product);
-        }
-        if (legalFormGenerator != null)
-        	name.setLegalForm(legalFormGenerator.generate());
-        name.setDatasetName(datasetName);
-        return name;
-    }
+	    @Override
+	    public String toString() {
+	        return getClass().getSimpleName() + '[' + datasetName + ']';
+	    }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '[' + datasetName + ']';
-    }
+	    // private helpers -------------------------------------------------------------------------------------------------
+	    
+		private void createInitialsNameGenerator() {
+			shortNameGenerator.addSource(new RegexStringGenerator("[A-Z]{3}"));
+		}
 
-    // private helpers -------------------------------------------------------------------------------------------------
-    
-	private static void createTechNameGenerator(AlternativeGenerator<String> coreGenerator, GeneratorContext context) {
-	    try {
-            Generator<String> tech = new MessageGenerator("{0}{1}", 
-                    new SequencedCSVSampleGenerator<String>(ORG + "tech1.csv"),
-                    new SequencedCSVSampleGenerator<String>(ORG + "tech2.csv")
-                );
-            tech.init(context);
-	        coreGenerator.addSource(tech);
-        } catch (Exception e) {
-        	logger.info("Cannot create technical company name generator: " + e.getMessage());
-        }
-    }
+		private void createTechNameGenerator() {
+		    try {
+	            Generator<String> tech = new MessageGenerator("{0}{1}", 
+	                    new SequencedCSVSampleGenerator<String>(ORG + "tech1.csv"),
+	                    new SequencedCSVSampleGenerator<String>(ORG + "tech2.csv")
+	                );
+		        shortNameGenerator.addSource(tech);
+	        } catch (Exception e) {
+	        	logger.info("Cannot create technical company name generator: " + e.getMessage());
+	        }
+	    }
 
-	private static void createArtificialNameGenerator(AlternativeGenerator<String> coreGenerator, GeneratorContext context) {
-	    try {
-	    	TokenCombiner artificial = new TokenCombiner(ORG + "artificialName.csv", false, '-', Encodings.UTF_8, false);
-            artificial.init(context);
-	        coreGenerator.addSource(artificial);
-        } catch (Exception e) {
-        	logger.info("Cannot create artificial company name generator: " + e.getMessage());
-        }
-    }
+		private void createArtificialNameGenerator() {
+		    try {
+		    	TokenCombiner artificial = new TokenCombiner(ORG + "artificialName.csv", false, '-', Encodings.UTF_8, false);
+		    	shortNameGenerator.addSource(artificial);
+	        } catch (Exception e) {
+	        	logger.info("Cannot create artificial company name generator: " + e.getMessage());
+	        }
+	    }
 
-	private static void createPersonNameGenerator(String datasetName, AlternativeGenerator<String> coreGenerator, GeneratorContext context) {
-	    try {
-	        Generator<String> person = new MessageGenerator("{0} {1}", 
-	                new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetName, REGION),
-	                new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetName, REGION)
-	            );
-	        person.init(context);
-	        coreGenerator.addSource(person);
-        } catch (Exception e) {
-        	logger.info("Cannot create person-based company name generator: " + e.getMessage());
-        }
-    }
+		private void createPersonNameGenerator(String datasetToUse) {
+		    try {
+		        Generator<String> person = new MessageGenerator("{0} {1}", 
+		                new WeightedDatasetCSVGenerator<String>(PERS + "givenName_male_{0}.csv", datasetToUse, DatasetUtil.REGION_NESTING),
+		                new WeightedDatasetCSVGenerator<String>(PERS + "familyName_{0}.csv", datasetToUse, DatasetUtil.REGION_NESTING)
+		            );
+		        shortNameGenerator.addSource(person);
+	        } catch (Exception e) {
+	        	logger.info("Cannot create person-based company name generator: " + e.getMessage());
+	        }
+	    }
 
-	private void initSectorGenerator(String datasetName, GeneratorContext context) {
-	    if (sector) {
-        	try {
-        		WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
-        				ORG + "sector_{0}.csv", datasetName, REGION, Encodings.UTF_8);
-				sectorGenerator = NullableGeneratorFactory.injectNulls(source, 0.7);
-        		sectorGenerator.init(context);
-        	} catch (Exception e) {
-        		logger.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
-        		initSectorGenerator("US", context);
-        	}
-        }
-    }
+		private void initSectorGenerator(String datasetName) {
+		    if (sector) {
+	        	try {
+	        		WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
+	        				ORG + "sector_{0}.csv", datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
+					sectorGenerator = NullableGeneratorFactory.injectNulls(source, 0.7);
+	        		sectorGenerator.init(context);
+	        	} catch (Exception e) {
+	        		logger.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
+	        		initSectorGenerator("US");
+	        	}
+	        }
+	    }
 
-	private void initLegalFormGenerator(String datasetName, GeneratorContext context) {
-	    if (legalForm) {
-        	try {
-        		legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", 
-        				datasetName, REGION, Encodings.UTF_8);
-        		legalFormGenerator.init(context);
-        	} catch (Exception e) {
-        		logger.error("Cannot create legal form generator: " + e.getMessage() + ". Falling back to US. ");
-        		initLegalFormGenerator("US", context);
-        	}
-        }
-    }
+		private void initLegalFormGenerator(String datasetName) {
+		    if (legalForm) {
+		    	
+	        	try {
+	        		legalFormGenerator = new WeightedDatasetCSVGenerator<String>(ORG + "legalForm_{0}.csv", 
+	        				datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
+	        		legalFormGenerator.init(context);
+	        	} catch (Exception e) {
+	        		logger.error("Cannot create legal form generator: " + e.getMessage() + ". Falling back to US. ");
+	        		initLegalFormGenerator("US");
+	        	}
+	        }
+	    }
 
-	@SuppressWarnings("unchecked")
-    private void initLocationGenerator(String datasetName, GeneratorContext context) {
-		double nullQuota = 0.8;
-	    Country country = Country.getInstance(datasetName);
-	    Generator<String> locationBaseGen;
-        if (location && country != null) {
-        	try {
-	            Generator<String> city = new ConvertingGenerator<City, String>(
-	            		new CityGenerator(country.getIsoCode()), new PropertyAccessConverter("name"), new NameNormalizer());
-	            locationBaseGen = new AlternativeGenerator<String>(String.class, 
-	                    			new ConstantGenerator<String>(country.getLocalName()), 
-	                    			city);
-        	} catch (Exception e) {
-        		logger.info("Cannot create location generator: " + e.getMessage());
-                locationBaseGen = new ConstantGenerator<String>(null);
-        	}
-        } else
-        	locationBaseGen = new ConstantGenerator<String>(null);
-        locationGenerator = NullableGeneratorFactory.injectNulls(locationBaseGen, nullQuota);
-        locationGenerator.init(context);
-    }
+		@SuppressWarnings("unchecked")
+	    private void createAndInitLocationGenerator(String datasetName) {
+			locationGenerator = locationGenerators.get(datasetName);
+			if (locationGenerator == null) {
+				double nullQuota = 0.8;
+			    Country country = Country.getInstance(datasetName);
+			    Generator<String> locationBaseGen;
+		        if (location && country != null) {
+		        	try {
+			            Generator<String> city = new ConvertingGenerator<City, String>(
+			            		new CityGenerator(country.getIsoCode()), new PropertyAccessConverter("name"), new NameNormalizer());
+			            locationBaseGen = new AlternativeGenerator<String>(String.class, 
+			                    			new ConstantGenerator<String>(country.getLocalName()), 
+			                    			city);
+		        	} catch (Exception e) {
+		        		logger.info("Cannot create location generator: " + e.getMessage());
+		                locationBaseGen = new ConstantGenerator<String>(null);
+		        	}
+		        } else
+		        	locationBaseGen = new ConstantGenerator<String>(null);
+		        locationGenerator = NullableGeneratorFactory.injectNulls(locationBaseGen, nullQuota);
+		        locationGenerator.init(context);
+		        locationGenerators.put(datasetName, locationGenerator);
+			}
+	    }
+	}
 
 }
