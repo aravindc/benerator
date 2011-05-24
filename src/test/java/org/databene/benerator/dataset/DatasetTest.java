@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.dataset;
 
-import java.util.Set;
+import java.util.List;
 
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
@@ -63,7 +63,7 @@ public class DatasetTest {
         assertNotNull(eu);
         Dataset centralEurope = DatasetUtil.getDataset(REGION, "central_europe");
         assertTrue(eu.getSubSets().contains(centralEurope));
-        Set<Dataset> atomicSubSets = eu.allAtomicSubSets();
+        List<Dataset> atomicSubSets = eu.allAtomicSubSets();
         assertTrue(atomicSubSets.contains(DatasetUtil.getDataset(REGION, "DE")));
         assertTrue(atomicSubSets.contains(DatasetUtil.getDataset(REGION, "CH")));
         String[] dataFiles = DatasetUtil.getDataFiles("org/databene/domain/person/familyName_{0}.csv", "europe", REGION);
