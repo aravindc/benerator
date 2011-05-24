@@ -28,7 +28,15 @@ import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
 
 /**
- * Abstract implementation of the {@link DatasetBasedGenerator} interface.<br/><br/>
+ * Abstract implementation of the {@link DatasetBasedGenerator} interface.
+ * It is configured with 'nesting' and 'dataset'. Depending on the type of 
+ * the dataset (atomic or composite), it initializes a delegate instance 
+ * of a {@link DatasetBasedGenerator}, either a {@link CompositeDatasetGenerator}
+ * or an {@link AtomicDatasetGenerator}. For the dfinition of custom 
+ * {@link DatasetBasedGenerator}s, inherit from this class and implement 
+ * the abstract method {@link #createAtomicDatasetGenerator(Dataset, boolean)}.
+ * All dataset recognition and handling and data generation will be handled 
+ * automatically.<br/><br/>
  * Created: 10.03.2011 10:44:58
  * @since 0.6.6
  * @author Volker Bergmann
