@@ -23,8 +23,10 @@ package org.databene.benerator.dataset;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
-import org.databene.commons.Assert;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -87,11 +89,11 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		DatasetBasedGenerator<E> sourceGen = getSource();
 		if (sourceGen instanceof CompositeDatasetGenerator)
 			return ((CompositeDatasetGenerator<E>) sourceGen).generateForDataset(requestedDataset);
-		else {
-			Assert.equals(requestedDataset, sourceGen.getDataset(), 
-					"Wrong dataset, expected " + requestedDataset + ", found " + sourceGen.getDataset());
+		else if (requestedDataset.equals(sourceGen.getDataset()))
 			return sourceGen.generate();
-		}
+		else
+			throw new IllegalGeneratorStateException("Wrong dataset, expected " + requestedDataset + ", " +
+					"found " + sourceGen.getDataset());
 	}
     
 	// helper methods --------------------------------------------------------------------------------------------------
@@ -123,7 +125,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		if (generator != null)
 			return new AtomicDatasetGenerator<E>(generator, nesting, dataset.getName());
 		if (required)
-			throw new ConfigurationError("Unable to create generator for atomic dataset: " + dataset.getName());
+			throw new InvalidGeneratorSetupException("Unable to create generator for atomic dataset: " + dataset.getName());
 		else
 			return null;
 	}
@@ -135,6 +137,13 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		return (DatasetBasedGenerator<E>) super.getSource();
 	}
 	
+	protected String randomDataset() {
+		if (source instanceof CompositeDatasetGenerator) {
+			Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
+			return RandomUtil.randomElement(dataset.getSubSets()).getName();
+		} else
+			return datasetName;
+	}
 	
 	
 	// java.lang.Object overrides --------------------------------------------------------------------------------------
