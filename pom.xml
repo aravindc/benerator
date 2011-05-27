@@ -29,12 +29,6 @@
         in language and region. It is strongly customizable with plugins and configuration options.
     </description>
 
-    <contributors>
-		<contributor>
-			<name>Daniela Crescenzio</name>
-		</contributor>
-    </contributors>
-
     <licenses>
         <license>
             <name>GNU Public License</name>
@@ -58,6 +52,26 @@
             </comments>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>Volker Bergmann</name>
+            <id>vbergmann</id>
+            <email>volker@databene.org</email>
+            <timezone>+1</timezone>
+            <roles>
+                <role>Project Founder</role>
+                <role>Architect</role>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <contributors>
+		<contributor>
+			<name>Daniela Crescenzio</name>
+		</contributor>
+    </contributors>
 
     <dependencies>
     
