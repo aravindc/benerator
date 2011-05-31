@@ -61,6 +61,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
+import org.databene.platform.db.DBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,13 +97,33 @@ public class AnnotationMapper {
 	
 	// utility methods -------------------------------------------------------------------------------------------------
 	
+	public static BeneratorContext parseClassAnnotations(Annotation[] annotations) {
+		BeneratorContext context = new BeneratorContext();
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof Database) {
+				Database dbAnno = (Database) annotation;
+				DBSystem db;
+				if (!StringUtil.isEmpty(dbAnno.environment()))
+					db = new DBSystem(dbAnno.id(), dbAnno.environment());
+				else 
+					db = new DBSystem(dbAnno.id(), dbAnno.url(), dbAnno.driver(), dbAnno.user(), dbAnno.password());
+				if (!StringUtil.isEmpty(dbAnno.catalog()))
+					db.setCatalog(dbAnno.catalog());
+				if (!StringUtil.isEmpty(dbAnno.schema()))
+					db.setSchema(dbAnno.schema());
+				db.setLazy(true);
+				context.set(db.getId(), db);
+			}
+			// TODO support @Bean
+		}
+		return context;
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Generator<Object[]> createMethodParamGenerator(Method testMethod) {
+    public static Generator<Object[]> createMethodParamGenerator(Method testMethod, BeneratorContext context) {
     	// TODO v0.6.5 wrap functionality with a class MethodArgsGenerator and support/test it in Descriptor files (combined with Invoker)
 		try {
 			Generator<Object[]> generator = null;
-			BeneratorContext context = new BeneratorContext();
-	
 			// Evaluate @Generator and @Source annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
 			Source sourceAnno = testMethod.getAnnotation(Source.class);
