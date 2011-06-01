@@ -63,7 +63,7 @@ public class QueryGeneratorTest extends GeneratorTest {
 	public void testSimple() {
 		QueryGenerator<Integer> generator = null;
 		try {
-	        generator = new QueryGenerator<Integer>("select value from TT", db);
+	        generator = new QueryGenerator<Integer>("select value from TT", db, true);
 	        generator.init(context);
 	        assertEquals(1000, generator.generate().intValue());
 	        assertUnavailable(generator);

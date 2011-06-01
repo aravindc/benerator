@@ -69,7 +69,7 @@ public class DBSystemTest {
 		db.setReadOnly(true);
 
 		// test select w/ readOnly
-		HeavyweightTypedIterable<Object> result = db.query("select id from Test", null);
+		HeavyweightTypedIterable<Object> result = db.query("select id from Test", false, null);
 		result.iterator().close();
 
 		// test insert w/ readOnly

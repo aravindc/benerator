@@ -206,7 +206,7 @@ public class ReferenceComponentBuilderFactoryTest {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public <T> HeavyweightTypedIterable<T> query(String selector, Context context) {
+		public <T> HeavyweightTypedIterable<T> query(String selector, boolean simplify, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 

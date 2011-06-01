@@ -355,7 +355,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 	        );
 	        context.set("db", db);
 			statement.execute(context);
-			HeavyweightTypedIterable<Object> check = db.query("select N from GOIPAST", context);
+			HeavyweightTypedIterable<Object> check = db.query("select N from GOIPAST", true, context);
 			HeavyweightIterator<Object> iterator = check.iterator();
 			IteratorTestCase.expectNextElements(iterator, 2, 2).withNoNext();
 			iterator.close();

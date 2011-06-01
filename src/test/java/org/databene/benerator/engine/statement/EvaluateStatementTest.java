@@ -155,7 +155,7 @@ public class EvaluateStatementTest {
 			return null;
 		}
 
-		public <T> HeavyweightTypedIterable<T> query(String selector, Context context) {
+		public <T> HeavyweightTypedIterable<T> query(String selector, boolean simplify, Context context) {
 			return null;
 		}
 
