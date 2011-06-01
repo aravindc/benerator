@@ -460,7 +460,7 @@ public class DBSystem extends AbstractStorageSystem {
         	else
         		query += " where " + selector;
         }
-        return query(query, false, context);
+        return query(query, true, context);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
