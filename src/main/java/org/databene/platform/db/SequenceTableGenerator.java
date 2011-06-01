@@ -125,7 +125,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 		if (this.state == GeneratorState.CLOSED)
 			return null;
 		assertInitialized();
-		HeavyweightTypedIterable<E> iterable = db.query(query, context);
+		HeavyweightTypedIterable<E> iterable = db.query(query, true, context);
 		HeavyweightIterator<E> iterator = null;
 		E result;
 		try {

@@ -222,7 +222,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            boolean subSelect = !StringUtil.isEmpty(subSelector);
 				String selectorToUse = (subSelect ? subSelector : selector);
 	            if (selectorToUse != null && selectorToUse.startsWith("select")) {
-	            	generator = new IteratingGenerator(sourceSystem.query(selectorToUse, context));
+	            	generator = new IteratingGenerator(sourceSystem.query(selectorToUse, true, context));
 	            } else {
 		            generator = new IteratingGenerator<Object>(sourceSystem.<Object>queryEntityIds(targetTypeName, selectorToUse, context));
 		            if (selectorToUse == null && distribution == null)

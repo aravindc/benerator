@@ -45,14 +45,16 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 	
 	private StorageSystem target;
 	private String selector;
+	private boolean simplifying;
 	
     public QueryGenerator() {
-		this(null, null);
+		this(null, null, true);
 	}
 
-    public QueryGenerator(String selector, StorageSystem target) {
+    public QueryGenerator(String selector, StorageSystem target, boolean simplifying) {
 		this.target = target;
 		this.selector = selector;
+		this.simplifying = simplifying;
 	}
 
 	public void setTarget(StorageSystem storage) {
@@ -74,7 +76,7 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 	    	throw new InvalidGeneratorSetupException("no query defined");
 	    
 	    // initialize
-		this.source = new IteratingGenerator<E>(target.<E>query(selector, context));
+		this.source = new IteratingGenerator<E>(target.<E>query(selector, simplifying, context));
 	    super.init(context);
     }
 

@@ -184,10 +184,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             Object sourceObject = context.get(source);
             if (sourceObject instanceof StorageSystem)
             	if (!StringUtil.isEmpty(subSelector)) {
-            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(subSelector, context));
+            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(subSelector, true, context));
                     generator = GeneratorFactoryUtil.createCyclicHeadGenerator(generator);
             	} else
-            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, context));
+            		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
             else

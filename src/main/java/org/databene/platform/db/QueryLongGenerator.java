@@ -49,7 +49,7 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
     }
 	
 	public QueryLongGenerator(String selector, StorageSystem source) {
-	    super(selector, source);
+	    super(selector, source, true);
     }
 	
 	@Override
