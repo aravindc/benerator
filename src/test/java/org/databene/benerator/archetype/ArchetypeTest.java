@@ -52,16 +52,16 @@ public class ArchetypeTest {
 		// verify
 		String[] createdFiles = targetFolder.list();
 		// check that benerator.xml was copied from the archetype
-		assertTrue(ArrayUtil.contains(createdFiles, "benerator.xml"));
+		assertTrue(ArrayUtil.contains("benerator.xml", createdFiles));
 		// check that benerator xsd was copied from the classpath
-		assertTrue(ArrayUtil.contains(createdFiles, "benerator-" + VersionInfo.getInfo("benerator").getVersion() + ".xsd"));
+		assertTrue(ArrayUtil.contains("benerator-" + VersionInfo.getInfo("benerator").getVersion() + ".xsd", createdFiles));
 		// check that src/main/resources is mapped to src in Eclipse projects
 		File src = new File(targetFolder, "src");
 		assertTrue(src.exists());
 		assertTrue(src.isDirectory());
-		assertTrue(ArrayUtil.contains(src.list(), "log4j.xml")); 
+		assertTrue(ArrayUtil.contains("log4j.xml", src.list())); 
 		// check that ARCHETYPE-INF was not copied
-		assertFalse(ArrayUtil.contains(createdFiles, "ARCHETYPE-INF"));
+		assertFalse(ArrayUtil.contains("ARCHETYPE-INF", createdFiles));
 	}
 	
 }

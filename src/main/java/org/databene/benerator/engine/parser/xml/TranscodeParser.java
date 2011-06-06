@@ -61,7 +61,7 @@ public class TranscodeParser extends AbstractTranscodeParser {
     @Override
     public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		String table = getAttribute(ATT_TABLE, element);
-		TranscodingTaskStatement parent = (TranscodingTaskStatement) ArrayUtil.lastElement(parentPath);
+		TranscodingTaskStatement parent = (TranscodingTaskStatement) ArrayUtil.lastElementOf(parentPath);
 		Expression<DBSystem> sourceEx   = parseSource(element, parent);
 		Expression<String>   selectorEx = parseSelector(element, parent);
 		Expression<DBSystem> targetEx   = parseTarget(element, parent);

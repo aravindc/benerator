@@ -103,10 +103,10 @@ public class SeedGeneratorTest extends GeneratorTest {
 	    	assertTrue(c >= '0' && c <= '2');
 	    if (depth > 1) {
 	    	assertEquals('0', (char) sequence[0]);
-		    char lastAtom = ArrayUtil.lastElement(sequence);
+		    char lastAtom = ArrayUtil.lastElementOf(sequence);
 			assertTrue("Expected last atom to be '1' or '2': " + seqString, lastAtom == '1' || lastAtom == '2');
-		    assertTrue(ArrayUtil.contains(sequence, '0'));
-		    assertTrue(ArrayUtil.contains(sequence, '1'));
+		    assertTrue(ArrayUtil.contains('0', sequence));
+		    assertTrue(ArrayUtil.contains('1', sequence));
 	    }
 	    if (depth >= 4) {
 	        assertTrue(

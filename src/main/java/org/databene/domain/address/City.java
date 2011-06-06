@@ -83,7 +83,7 @@ public class City {
     }
 
     public void addPostalCode(String postalCode) {
-        postalCodes = ArrayUtil.append(postalCodes, postalCode);
+        postalCodes = ArrayUtil.append(postalCode, postalCodes);
     }
 
     /** @deprecated use property postalCodes */
@@ -104,7 +104,7 @@ public class City {
     @Deprecated
     public void addZipCode(String zipCode) {
     	escalator.escalate("property City.zipCode is deprecated, use City.postalCode instead", City.class, "Invoked addZipCode()");
-        postalCodes = ArrayUtil.append(postalCodes, zipCode);
+        postalCodes = ArrayUtil.append(zipCode, postalCodes);
     }
 
     public String getAreaCode() {

@@ -63,7 +63,7 @@ public class QNInvocationExpression extends DynamicExpression<Object> {
 
 	public Object evaluate(Context context) {
 		Object[] args = ExpressionUtil.evaluateAll(argExpressions, context);
-		String methodName = ArrayUtil.lastElement(qn);
+		String methodName = ArrayUtil.lastElementOf(qn);
 		return invoke(qn, qn.length - 1, methodName, args, context);
     }
 

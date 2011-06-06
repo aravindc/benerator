@@ -91,7 +91,7 @@ public class QNExpression extends DynamicExpression<Object> {
 				return BeanSpec.createConstruction(bean);
     		} catch (ConfigurationError e) {
     			LOGGER.debug("Class not found: " + qn);
-    	    	Object bean = readField(qnParts, qnParts.length - 1, ArrayUtil.lastElement(qnParts), context);
+    	    	Object bean = readField(qnParts, qnParts.length - 1, ArrayUtil.lastElementOf(qnParts), context);
 				return BeanSpec.createReference(bean);
     		}
         }

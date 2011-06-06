@@ -33,6 +33,7 @@ import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.version.VersionNumber;
 import org.databene.dbsanity.DbSanity;
 import org.databene.dbsanity.ExecutionMode;
+import org.databene.dbsanity.model.SanityCheckSuite;
 
 /**
  * {@link Statement} implementation that performs DB Sanity checks 
@@ -107,7 +108,8 @@ public class DBSanityStatement implements Statement {
 				dbSanity.setMode(mode);
 			
 			// perform check(s)
-			boolean success = dbSanity.execute();
+			SanityCheckSuite dbsSuite = dbSanity.execute();
+			boolean success = (dbsSuite.getErrorCount() == 0 && dbsSuite.getFailureCount() == 0);
 			
 			if (!success)
 				getErrorHandler(context).handleError("DB Sanity check failed.");

@@ -68,7 +68,7 @@ public class DatasetTest {
         assertTrue(atomicSubSets.contains(DatasetUtil.getDataset(REGION, "CH")));
         String[] dataFiles = DatasetUtil.getDataFiles("org/databene/domain/person/familyName_{0}.csv", "europe", REGION);
         logger.debug(ArrayFormat.format(dataFiles));
-        assertTrue(ArrayUtil.contains(dataFiles, "org/databene/domain/person/familyName_DE.csv"));
+        assertTrue(ArrayUtil.contains("org/databene/domain/person/familyName_DE.csv", dataFiles));
     }
     
 }

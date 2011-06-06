@@ -53,7 +53,7 @@ public class CascadeParser extends AbstractBeneratorDescriptorParser {
 	@Override
 	public Statement doParse(Element element, Statement[] parentPath,
 			BeneratorParseContext context) {
-		CascadeParent parent = (CascadeParent) ArrayUtil.lastElement(parentPath);
+		CascadeParent parent = (CascadeParent) ArrayUtil.lastElementOf(parentPath);
 		String ref = getRequiredAttribute("ref", element);
 		CascadeStatement result = new CascadeStatement(ref, new MutatingTypeExpression(element, null), parent);
 		Statement[] currentPath = context.createSubPath(parentPath, result);

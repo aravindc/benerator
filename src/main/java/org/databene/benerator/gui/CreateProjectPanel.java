@@ -214,7 +214,7 @@ public class CreateProjectPanel extends JPanel {
 		testButton = createButton("testConnection", new TestConnectionListener());
 		pane.addElement(testButton);
 
-		String[] supportedFormats = ArrayUtil.append(DBSnapshotTool.supportedFormats(), "none");
+		String[] supportedFormats = ArrayUtil.append("none", DBSnapshotTool.supportedFormats());
 		dbSnapshotField = createComboBoxRow( "dbSnapshot", i18n, pane, (Object[]) supportedFormats);
 		pane.endRow();
 
