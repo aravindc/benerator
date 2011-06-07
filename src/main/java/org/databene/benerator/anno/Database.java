@@ -27,9 +27,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO Document class.<br/><br/>
+ * Annotation for declaring a database.<br/><br/>
  * Created: 31.05.2011 12:11:07
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)

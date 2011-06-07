@@ -22,9 +22,9 @@
 package org.databene.benerator.script;
 
 /**
- * TODO Document class.<br/><br/>
+ * Helper class for testing.<br/><br/>
  * Created: 18.05.2011 16:18:57
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class ScriptTestUtil {

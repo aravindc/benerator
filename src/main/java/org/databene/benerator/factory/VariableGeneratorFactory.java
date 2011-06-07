@@ -41,9 +41,9 @@ import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Factory class that creates {@link Generator}s for &lt;variable&gt;s.<br/><br/>
  * Created: 18.05.2011 12:01:24
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class VariableGeneratorFactory {

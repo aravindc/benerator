@@ -24,12 +24,12 @@ package org.databene.benerator.nullable;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * TODO Document class.<br/><br/>
+ * Proxy class for {@link NullableGenerator}s.<br/><br/>
  * Created: 18.05.2011 14:23:51
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
-public class NullableGeneratorProxy<E> extends NullableGeneratorWrapper<E, E> {
+public abstract class NullableGeneratorProxy<E> extends NullableGeneratorWrapper<E, E> {
 
     // constructors ----------------------------------------------------------------------------------------------------
 

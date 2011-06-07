@@ -32,9 +32,9 @@ import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the &lt;defaultComponents&gt; element.<br/><br/>
  * Created: 23.05.2011 09:37:37
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class DefaultComponentIntegrationTest extends BeneratorIntegrationTest {

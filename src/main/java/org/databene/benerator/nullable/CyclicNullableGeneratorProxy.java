@@ -25,9 +25,10 @@ import org.databene.benerator.GeneratorState;
 import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
- * TODO Document class.<br/><br/>
+ * Proxy class for {@link NullableGenerator} that adds cyclic behavior to its source 
+ * generator by calling {@link #reset()} when the source has become unavailable.<br/><br/>
  * Created: 18.05.2011 14:22:43
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class CyclicNullableGeneratorProxy<E> extends NullableGeneratorProxy<E> {

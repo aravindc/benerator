@@ -29,9 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO Document class.<br/><br/>
+ * Tests the {@link QNExpression}.<br/><br/>
  * Created: 18.05.2011 16:17:22
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 public class QNExpressionTest {
@@ -66,6 +66,8 @@ public class QNExpressionTest {
 		context.importClass("org.databene.benerator.script.*");
 		check("pubVarContent", context, "ScriptTestUtil", "pubvar");
 	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
 
 	private void check(Object expected, String... parts) {
 		check(expected, new BeneratorContext(), parts);
