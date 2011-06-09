@@ -31,7 +31,6 @@ import java.util.Map;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.test.Person;
-import org.databene.commons.ArrayFormat;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Context;
@@ -117,7 +116,8 @@ public class BeneratorScriptParserTest {
 
 	@Test
 	public void testVarargsInvocation() throws Exception {
-		checkExpression("A, B, C", ArrayFormat.class.getName() + ".format('A', 'B', 'C')");
+		checkExpression("ABC", getClass().getName() + ".varargs1('A', 'B', 'C')");
+		checkExpression("BC", getClass().getName() + ".varargs2('A', 'B', 'C')");
 	}
 	
 	@Test
@@ -583,6 +583,17 @@ public class BeneratorScriptParserTest {
 	
 	public static String exclamate(String arg) {
 		return arg + "!";
+	}
+	
+	public static String varargs1(String... args) {
+		StringBuilder builder = new StringBuilder();
+		for (String arg : args)
+			builder.append(arg);
+		return builder.toString();
+	}
+	
+	public static String varargs2(String arg1, String... arg2) {
+		return varargs1(arg2);
 	}
 	
 	public static String staticStringAttrib = "hi!!";
