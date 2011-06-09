@@ -24,6 +24,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.UnaryExpression;
+import org.databene.commons.math.ArithmeticEngine;
 
 /**
  * {@link Expression} that evaluates to the bitwise complement of another expression's result.<br/><br/>
@@ -34,16 +35,11 @@ import org.databene.commons.expression.UnaryExpression;
 final class BitwiseComplementExpression extends UnaryExpression<Object> {
 	
 	public BitwiseComplementExpression(Expression<?> term) {
-		super(term);
+		super("~", term);
 	}
 
 	public Object evaluate(Context context) {
 		return ArithmeticEngine.defaultInstance().bitwiseComplement(term.evaluate(context));
-	}
-	
-	@Override
-	public String toString() {
-		return "~" + term;
 	}
 	
 }

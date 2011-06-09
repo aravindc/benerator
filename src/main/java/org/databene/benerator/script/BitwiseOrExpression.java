@@ -24,6 +24,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.BinaryExpression;
+import org.databene.commons.math.ArithmeticEngine;
 
 /**
  * Numerical {@link Expression} that combines the results of two other numerical expressions 
@@ -35,7 +36,7 @@ import org.databene.commons.expression.BinaryExpression;
 final class BitwiseOrExpression extends BinaryExpression<Object> {
 	
 	public BitwiseOrExpression(Expression<?> term1, Expression<?> term2) {
-		super(term1, term2);
+		super("|", term1, term2);
 	}
 
 	public Object evaluate(Context context) {

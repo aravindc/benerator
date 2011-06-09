@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,7 @@ package org.databene.benerator.script;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.BinaryExpression;
+import org.databene.commons.math.ArithmeticEngine;
 
 /**
  * {@link Expression} that performs an unsigned right shift (&gt;&gt;&gt;).<br/><br/>
@@ -34,16 +35,11 @@ import org.databene.commons.expression.BinaryExpression;
 final class UnsignedRightShiftExpression extends BinaryExpression<Object> {
 	
 	UnsignedRightShiftExpression(Expression<?> term1, Expression<?> term2) {
-		super(term1, term2);
+		super(">>>", term1, term2);
 	}
 
 	public Object evaluate(Context context) {
 		return ArithmeticEngine.defaultInstance().shiftRightUnsigned(term1.evaluate(context), term2.evaluate(context));
-	}
-	
-	@Override
-	public String toString() {
-		return "(" + term1 + " >>> " + term2 + ")";
 	}
 	
 }

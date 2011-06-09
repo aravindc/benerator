@@ -43,9 +43,24 @@ import org.databene.commons.Assert;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SyntaxError;
+import org.databene.commons.expression.ConditionalAndExpression;
+import org.databene.commons.expression.ConditionalOrExpression;
 import org.databene.commons.expression.ConstantExpression;
+import org.databene.commons.expression.DivisionExpression;
+import org.databene.commons.expression.EqualsExpression;
 import org.databene.commons.expression.ForNameExpression;
+import org.databene.commons.expression.GreaterExpression;
+import org.databene.commons.expression.GreaterOrEqualsExpression;
+import org.databene.commons.expression.LessExpression;
+import org.databene.commons.expression.LessOrEqualsExpression;
+import org.databene.commons.expression.LogicalComplementExpression;
+import org.databene.commons.expression.ModuloExpression;
+import org.databene.commons.expression.MultiplicationExpression;
+import org.databene.commons.expression.NotEqualsExpression;
+import org.databene.commons.expression.SubtractionExpression;
+import org.databene.commons.expression.SumExpression;
 import org.databene.commons.expression.TypeConvertingExpression;
+import org.databene.commons.expression.UnaryMinusExpression;
 import org.databene.model.data.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -252,8 +267,7 @@ public class BeneratorScriptParser {
     private static BeneratorParser parser(String text) throws IOException {
 	    BeneratorLexer lex = new BeneratorLexer(new ANTLRReaderStream(new StringReader(text)));
 	    CommonTokenStream tokens = new CommonTokenStream(lex);
-	    BeneratorParser parser = new BeneratorParser(tokens);
-	    return parser;
+	    return new BeneratorParser(tokens);
     }
 	
     private static SyntaxError mapToSyntaxError(RecognitionException cause, String text) {
@@ -525,8 +539,9 @@ public class BeneratorScriptParser {
 		return new TypeConvertingExpression(sourceExpression, targetType);
     }
 
-    private static Expression<?> convertNegation(CommonTree node) throws SyntaxError {
-		return new NegationExpression(convertNode(childAt(0, node)));
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private static Expression<?> convertNegation(CommonTree node) throws SyntaxError {
+		return new UnaryMinusExpression(convertNode(childAt(0, node)));
     }
 
     private static Expression<?> convertLogicalComplement(CommonTree node) throws SyntaxError {
@@ -560,20 +575,36 @@ public class BeneratorScriptParser {
 		return result;
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Expression<?> convertPlus(CommonTree node) throws SyntaxError {
-		return new SumExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+		SumExpression result = new SumExpression();
+		for (CommonTree child : getChildNodes(node))
+			result.addTerm((Expression) convertNode(child));
+		return result;
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Expression<?> convertMinus(CommonTree node) throws SyntaxError {
-		return new SubtractionExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+		SubtractionExpression result = new SubtractionExpression();
+		for (CommonTree child : getChildNodes(node))
+			result.addTerm((Expression) convertNode(child));
+		return result;
     }
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Expression<?> convertStar(CommonTree node) throws SyntaxError {
-		return new MultiplicationExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+		MultiplicationExpression result = new MultiplicationExpression();
+		for (CommonTree child : getChildNodes(node))
+			result.addTerm((Expression) convertNode(child));
+		return result;
     }
 
-    private static Expression<?> convertSlash(CommonTree node) throws SyntaxError {
-		return new DivisionExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private static Expression<?> convertSlash(CommonTree node) throws SyntaxError {
+    	DivisionExpression result = new DivisionExpression();
+		for (CommonTree child : getChildNodes(node))
+			result.addTerm((Expression) convertNode(child));
+		return result;
     }
 
     private static Expression<Object> convertPercent(CommonTree node) throws SyntaxError {
@@ -628,14 +659,20 @@ public class BeneratorScriptParser {
 		return new GreaterOrEqualsExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
     }
 
-    private static Expression<Boolean> convertConditionalOr(CommonTree node) throws SyntaxError {
-		return new ConditionalOrExpression(convertNode(childAt(0, node)), convertNode(childAt(1, node)));
+    @SuppressWarnings("unchecked")
+	private static Expression<Boolean> convertConditionalOr(CommonTree node) throws SyntaxError {
+		ConditionalOrExpression result = new ConditionalOrExpression("||");
+		for (CommonTree child : getChildNodes(node))
+			result.addTerm((Expression<Object>) convertNode(child));
+		return result;
     }
 
-    private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws SyntaxError {
-		return new ConditionalAndExpression(
-				convertNode(childAt(0, node)), 
-				convertNode(childAt(1, node)));
+    @SuppressWarnings("unchecked")
+	private static Expression<Boolean> convertConditionalAnd(CommonTree node) throws SyntaxError {
+    	ConditionalAndExpression result = new ConditionalAndExpression("&&");
+    	for (CommonTree child : getChildNodes(node))
+    		result.addTerm((Expression<Object>) convertNode(child));
+		return result;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
