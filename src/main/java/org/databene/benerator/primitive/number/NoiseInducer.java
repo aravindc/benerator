@@ -26,12 +26,12 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.factory.GeneratorFactory;
-import org.databene.benerator.script.ArithmeticEngine;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ThreadSafeConverter;
+import org.databene.commons.math.ArithmeticEngine;
 
 /**
  * {@link Converter} implementation that transforms numbers 

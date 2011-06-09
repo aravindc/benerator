@@ -82,7 +82,7 @@ public class PropertyParser extends AbstractBeneratorDescriptorParser {
 	        switch (subExpressions.length) {
 		        case 0: throw new ConfigurationError("No valid property spec: " + XMLUtil.format(element));
 		        case 1: return subExpressions[0];
-		        default: return new CompositeExpression<Object>(subExpressions) {
+		        default: return new CompositeExpression<Object, Object>(subExpressions) {
 		    		public Object[] evaluate(Context context) {
 		                return ExpressionUtil.evaluateAll(terms, context);
 		            }

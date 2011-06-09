@@ -68,7 +68,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -189,18 +188,14 @@ public class DBSystem extends AbstractStorageSystem {
     		return;
     	}
     	LOGGER.debug("setting environment '{}'", environment);
-		try {
-			JDBCConnectData connectData = DBUtil.getConnectData(environment);
-			this.environment = environment;
-			this.url = connectData.url;
-			this.driver = connectData.driver;
-			this.catalogName = connectData.catalog;
-			this.schemaName = connectData.schema;
-			this.user = connectData.user;
-			this.password = connectData.password;
-		} catch (IOException e) {
-			throw new ConfigurationError("Failed to read settings for environment " + environment);
-		}
+		JDBCConnectData connectData = DBUtil.getConnectData(environment);
+		this.environment = environment;
+		this.url = connectData.url;
+		this.driver = connectData.driver;
+		this.catalogName = connectData.catalog;
+		this.schemaName = connectData.schema;
+		this.user = connectData.user;
+		this.password = connectData.password;
 	}
 
     public String getDriver() {
@@ -637,10 +632,8 @@ public class DBSystem extends AbstractStorageSystem {
 		}
 	}
 
-	private JDBCDBImporter createJDBCImporter() throws ConnectFailedException {
-		JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password);
-		importer.setCatalogName(catalogName);
-		importer.setSchemaName(schemaName);
+	private JDBCDBImporter createJDBCImporter() {
+		JDBCDBImporter importer = new JDBCDBImporter(url, driver, user, password, catalogName, schemaName);
 		importer.setIncludeTables(includeTables);
 		importer.setExcludeTables(excludeTables);
 		importer.setImportingIndexes(false);

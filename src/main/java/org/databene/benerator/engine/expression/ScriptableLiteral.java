@@ -43,7 +43,7 @@ import org.databene.commons.expression.UnaryExpression;
 public class ScriptableLiteral extends UnaryExpression<Object> {
 
     public ScriptableLiteral(String textOrScript) {
-	    super(new ScriptableExpression(textOrScript, null));
+	    super(ScriptableLiteral.class.getSimpleName(), new ScriptableExpression(textOrScript, null));
     }
 
     public Object evaluate(Context context) {
@@ -54,9 +54,4 @@ public class ScriptableLiteral extends UnaryExpression<Object> {
 			return feed;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + '(' + term + ')';
-    }
-    
 }

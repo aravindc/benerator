@@ -21,12 +21,12 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.script.ArithmeticEngine;
 import org.databene.commons.Accessor;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.accessor.FeatureAccessor;
 import org.databene.commons.converter.NumberToNumberConverter;
+import org.databene.commons.math.ArithmeticEngine;
 import org.databene.model.consumer.AbstractConsumer;
 import org.databene.model.consumer.Consumer;
 import org.databene.model.data.PrimitiveType;

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,9 +32,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.script.DateArithmetic;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.math.DateArithmetic;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
