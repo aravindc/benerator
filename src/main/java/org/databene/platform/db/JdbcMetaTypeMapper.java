@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
-import org.databene.jdbacl.model.DBColumnType;
+import org.databene.jdbacl.model.DBDataType;
 import org.databene.model.data.PrimitiveType;
 
 /**
@@ -78,7 +78,7 @@ public class JdbcMetaTypeMapper {
                 Types.VARCHAR, PrimitiveType.STRING);
     }
 
-    public static String abstractType(DBColumnType columnType, boolean acceptUnknown) {
+    public static String abstractType(DBDataType columnType, boolean acceptUnknown) {
         int jdbcType = columnType.getJdbcType();
         PrimitiveType primitiveType = TYPE_MAP.get(jdbcType);
         if (primitiveType != null)

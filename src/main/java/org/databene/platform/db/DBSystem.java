@@ -41,7 +41,7 @@ import org.databene.jdbacl.ResultSetConverter;
 import org.databene.jdbacl.dialect.OracleDialect;
 import org.databene.jdbacl.model.DBCatalog;
 import org.databene.jdbacl.model.DBColumn;
-import org.databene.jdbacl.model.DBColumnType;
+import org.databene.jdbacl.model.DBDataType;
 import org.databene.jdbacl.model.DBForeignKeyConstraint;
 import org.databene.jdbacl.model.DBMetaDataImporter;
 import org.databene.jdbacl.model.DBPrimaryKeyConstraint;
@@ -688,7 +688,7 @@ public class DBSystem extends AbstractStorageSystem {
                 String fkColumnName = foreignKeyColumnNames[0];
                 DBTable targetTable = constraint.getRefereeTable();
                 DBColumn fkColumn = constraint.getTable().getColumn(fkColumnName);
-                DBColumnType concreteType = fkColumn.getType();
+                DBDataType concreteType = fkColumn.getType();
                 String abstractType = JdbcMetaTypeMapper.abstractType(concreteType, acceptUnknownColumnTypes);
                 ReferenceDescriptor descriptor = new ReferenceDescriptor(
                         fkColumnName, 
@@ -717,7 +717,7 @@ public class DBSystem extends AbstractStorageSystem {
                 logger.debug("Leaving out version column " + columnId);
                 continue;
             }
-            DBColumnType columnType = column.getType();
+            DBDataType columnType = column.getType();
             String type = JdbcMetaTypeMapper.abstractType(columnType, acceptUnknownColumnTypes);
             String defaultValue = column.getDefaultValue();
             SimpleTypeDescriptor typeDescriptor = new SimpleTypeDescriptor(columnId, type);
@@ -780,7 +780,7 @@ public class DBSystem extends AbstractStorageSystem {
 				}
 				String primitiveTypeName = primitiveType.getName();
                 DBColumn column = table.getColumn(name);
-                DBColumnType columnType = column.getType();
+                DBDataType columnType = column.getType();
                 int sqlType = columnType.getJdbcType();
                 Class<?> javaType = driverTypeMapper.concreteType(primitiveTypeName);
                 ColumnInfo info = new ColumnInfo(name, sqlType, javaType);
