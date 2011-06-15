@@ -14,6 +14,7 @@ changes
 
 enhancements
 ------------
+- Performance improvement in BeneratorScript
 - CSVEntityExporter, FlatFileEntityExporter and ScriptedEntityExporter support dateCapitalization and timestampCapitalization
 - endWithNewLine property lets CSVEntityExporter-generated files optionally end with a 'new line'
 - new in-memory storage system: <memstore>
@@ -41,6 +42,7 @@ bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222
 -------------------------------------------------------------------------------------------------
 - #3291330: <setup defaultSeparator=";"> ignored by CSVEntityExporter
 - #3240662: <evaluate> does not unescape BeneratorScript expressions correctly
+- 3316871: 'condition' is ignored
 - Generation of Turkish names fails
 - Using deprecated property Address.zipCode in AddressFormat
 - FemaleFamilyNameConverter can be applied to Composite datasets
