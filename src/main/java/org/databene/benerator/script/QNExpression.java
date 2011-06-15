@@ -26,6 +26,9 @@
 
 package org.databene.benerator.script;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
@@ -49,6 +52,8 @@ import org.slf4j.LoggerFactory;
 public class QNExpression extends DynamicExpression<Object> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeneratorScriptParser.class);
+	
+	private static Set<String> noClasses = new HashSet<String>(1000);
 
 	private String[] qnParts;
 	
@@ -65,15 +70,18 @@ public class QNExpression extends DynamicExpression<Object> {
     	if (context.contains(objectOrClassName)) {
     		return context.get(objectOrClassName);
     	} else {
-    		try {
-    			return DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
-    		} catch (ConfigurationError e) {
-    			LOGGER.debug("Class not found: " + objectOrClassName);
-    			if (qnLength > 1) {
-	    			return readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
-    			} else
-    				throw new UnsupportedOperationException("'" + objectOrClassName + "' is not defined");
+    		if (!noClasses.contains(objectOrClassName)) {
+	    		try {
+	    			return (Class<?>) ((Class<?>) DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context));
+	    		} catch (ConfigurationError e) {
+	    		}
     		}
+			LOGGER.debug("Class not found: " + objectOrClassName);
+			noClasses.add(objectOrClassName);
+			if (qnLength > 1) {
+    			return readField(qnParts, qnLength - 1, qnParts[qnLength - 1], context);
+			} else
+				throw new UnsupportedOperationException("'" + objectOrClassName + "' is not defined");
     	}
     }
 
@@ -86,14 +94,17 @@ public class QNExpression extends DynamicExpression<Object> {
         if (context.contains(qn)) {
         	return BeanSpec.createReference(context.get(qn));
         } else {
-    		try {
-    			Class<?> bean = DefaultClassProvider.resolveByObjectOrDefaultInstance(qn, context);
-				return BeanSpec.createConstruction(bean);
-    		} catch (ConfigurationError e) {
-    			LOGGER.debug("Class not found: " + qn);
-    	    	Object bean = readField(qnParts, qnParts.length - 1, ArrayUtil.lastElementOf(qnParts), context);
-				return BeanSpec.createReference(bean);
-    		}
+        	if (!noClasses.contains(qn)) {
+	    		try {
+	    			Class<?> bean = DefaultClassProvider.resolveByObjectOrDefaultInstance(qn, context);
+					return BeanSpec.createConstruction(bean);
+	    		} catch (ConfigurationError e) {
+	    		}
+        	}
+			LOGGER.debug("Class not found: " + qn);
+			noClasses.add(qn);
+	    	Object bean = readField(qnParts, qnParts.length - 1, ArrayUtil.lastElementOf(qnParts), context);
+			return BeanSpec.createReference(bean);
         }
 	}
     
