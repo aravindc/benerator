@@ -87,33 +87,35 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // Check for settings that can be handled generically
         NullableGenerator<?> generator;
-        generator = createNullableScriptBuilder(descriptor, context);
-        if (generator != null) {
-        	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
-			return builderFromGenerator(NullableGeneratorFactory.injectNulls(generator, nullQuota), descriptor);
-        }
         generator = createNullQuotaOneBuilder(descriptor);
         if (generator != null)
         	return builderFromGenerator(generator, descriptor);
         generator = createNullableGenerator(descriptor, context);
         if (generator != null)
         	return builderFromGenerator(generator, descriptor);
+
+        ComponentBuilder<?> result = null;
+        result = createNullableScriptBuilder(descriptor, context);
         
         // ...
-        if (descriptor instanceof ArrayElementDescriptor)
-        	return createPartBuilder(descriptor, ownerUniqueness, context);
-        else if (descriptor instanceof PartDescriptor) {
-        	TypeDescriptor type = descriptor.getTypeDescriptor();
-        	if (type instanceof AlternativeGroupDescriptor)
-				return createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, ownerUniqueness, context);
-			else
-				return createPartBuilder(descriptor, ownerUniqueness, context);
-        } else if (descriptor instanceof ReferenceDescriptor)
-            return createReferenceBuilder((ReferenceDescriptor)descriptor, context);
-        else if (descriptor instanceof IdDescriptor)
-            return createIdBuilder((IdDescriptor)descriptor, ownerUniqueness, context);
-        else 
-            throw new ConfigurationError("Not a supported element: " + descriptor.getClass());
+        if (result == null) {
+	        if (descriptor instanceof ArrayElementDescriptor)
+	        	result = createPartBuilder(descriptor, ownerUniqueness, context);
+	        else if (descriptor instanceof PartDescriptor) {
+	        	TypeDescriptor type = descriptor.getTypeDescriptor();
+	        	if (type instanceof AlternativeGroupDescriptor)
+	        		result = createAlternativeGroupBuilder((AlternativeGroupDescriptor) type, ownerUniqueness, context);
+				else
+					result = createPartBuilder(descriptor, ownerUniqueness, context);
+	        } else if (descriptor instanceof ReferenceDescriptor)
+	        	result = createReferenceBuilder((ReferenceDescriptor)descriptor, context);
+	        else if (descriptor instanceof IdDescriptor)
+	        	result = createIdBuilder((IdDescriptor)descriptor, ownerUniqueness, context);
+	        else 
+	            throw new ConfigurationError("Not a supported element: " + descriptor.getClass());
+        }
+        result = wrapWithCondition(descriptor, result);
+        return result;
     }
 
     private static ComponentBuilder<?> builderFromGenerator(NullableGenerator<?> generator, ComponentDescriptor descriptor) {
@@ -124,7 +126,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     		return new PlainEntityComponentBuilder(descriptor.getName(), generator);
     }
 
-	protected static NullableGenerator<?> createNullableScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
+	protected static ComponentBuilder<?> createNullableScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
     	TypeDescriptor type = component.getTypeDescriptor();
         if (type == null)
         	return null;
@@ -133,7 +135,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         	return null;
         Script script = ScriptUtil.parseScriptText(scriptText);
         NullableGenerator<?> generator = new NullableScriptGenerator(script, context);
-        return NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
+        generator = NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
+        double nullQuota = DescriptorUtil.getNullQuota(component);
+        generator = NullableGeneratorFactory.injectNulls(generator, nullQuota);
+		return builderFromGenerator(generator, component);
+
     }
 
     private static NullableGenerator<?> createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
@@ -249,16 +255,19 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // check 'cyclic' config
         generator = DescriptorUtil.wrapWithProxy(generator, typeDescriptor);
-        ComponentBuilder<?> builder = wrapWithNullInjector(generator, descriptor);
-        return wrapWithCondition(typeDescriptor.getCondition(), builder);
+        return wrapWithNullInjector(generator, descriptor);
     }
 
     // non-public helpers ----------------------------------------------------------------------------------------------
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static ComponentBuilder<?> wrapWithCondition(String conditionScript, ComponentBuilder<?> builder) {
-    	if (!StringUtil.isEmpty(conditionScript)) {
-		    Expression<Boolean> condition = new ScriptExpression<Boolean>(conditionScript);
+    static ComponentBuilder<?> wrapWithCondition(ComponentDescriptor descriptor, ComponentBuilder<?> builder) {
+    	TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
+    	if (typeDescriptor == null)
+    		return builder;
+    	String conditionText = typeDescriptor.getCondition();
+    	if (!StringUtil.isEmpty(conditionText)) {
+		    Expression<Boolean> condition = new ScriptExpression<Boolean>(conditionText);
 		    return new ConditionalComponentBuilder(builder, condition);
     	} else
     		return builder;
