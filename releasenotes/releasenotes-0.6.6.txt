@@ -40,8 +40,13 @@ enhancements
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
-- #3291330: <setup defaultSeparator=";"> ignored by CSVEntityExporter
+- #3176350: CSVEntityExporter append
+- #3201098: Exception when using metaCache="true"
+- #3201108: <evaluate> invalidates meta data cache
+- #3216713: xls with empty partly cells raises exception
 - #3240662: <evaluate> does not unescape BeneratorScript expressions correctly
+- #3273855: Catalog 'null' not found in database
+- #3291330: <setup defaultSeparator=";"> ignored by CSVEntityExporter
 - #3316871: 'condition' is ignored
 - #3317166: Benerator Wizard ignores textual project folder spec
 - Generation of Turkish names fails
