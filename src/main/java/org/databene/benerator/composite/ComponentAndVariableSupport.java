@@ -46,7 +46,6 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(SourceAwareGenerator.class);
     
-    // TODO split off VariableSupport
 	private Map<String, NullableGenerator<?>> variables;
 	private OrderedNameMap<ProductWrapper<?>> variableResults;
 	private ComponentBuilderSupport<E> allComponentsBuilder;
