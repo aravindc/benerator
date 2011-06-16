@@ -14,7 +14,7 @@
     	<gui_version>0.2.8</gui_version>
     	<webdecs_version>0.5.8</webdecs_version>
     	<commons_version>0.5.8</commons_version>
-    	<contiperf_version>2.0.0</contiperf_version>
+    	<contiperf_version>2.0.0-SNAPSHOT-2011-06-16</contiperf_version>
     </properties>
 
     <packaging>jar</packaging>
