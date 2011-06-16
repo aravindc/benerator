@@ -190,7 +190,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
-            else
+            else // TODO v0.6.7 support Iterable
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
