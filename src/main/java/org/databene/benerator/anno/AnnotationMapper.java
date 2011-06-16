@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,8 +50,11 @@ import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.factory.ArrayGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.InstanceGeneratorFactory;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
+import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.model.data.ArrayElementDescriptor;
@@ -63,6 +66,7 @@ import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
+import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,29 +104,24 @@ public class AnnotationMapper {
 	public static BeneratorContext parseClassAnnotations(Annotation[] annotations) {
 		BeneratorContext context = new BeneratorContext();
 		for (Annotation annotation : annotations) {
-			if (annotation instanceof Database) {
-				Database dbAnno = (Database) annotation;
-				DBSystem db;
-				if (!StringUtil.isEmpty(dbAnno.environment()))
-					db = new DBSystem(dbAnno.id(), dbAnno.environment());
-				else 
-					db = new DBSystem(dbAnno.id(), dbAnno.url(), dbAnno.driver(), dbAnno.user(), dbAnno.password());
-				if (!StringUtil.isEmpty(dbAnno.catalog()))
-					db.setCatalog(dbAnno.catalog());
-				if (!StringUtil.isEmpty(dbAnno.schema()))
-					db.setSchema(dbAnno.schema());
-				db.setLazy(true);
-				context.set(db.getId(), db);
-			}
-			// TODO support @Bean
+			if (annotation instanceof Database)
+				parseDatabase((Database) annotation, context);
+			else if (annotation instanceof Bean)
+				parseBean((Bean) annotation, context);
 		}
 		return context;
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<Object[]> createMethodParamGenerator(Method testMethod, BeneratorContext context) {
     	// TODO v0.6.5 wrap functionality with a class MethodArgsGenerator and support/test it in Descriptor files (combined with Invoker)
 		try {
+			// Evaluate @Bean annotations
+			if (testMethod.getAnnotation(Bean.class) != null)
+				parseBean(testMethod.getAnnotation(Bean.class), context);
+			// Evaluate @Database annotations
+			if (testMethod.getAnnotation(Database.class) != null)
+				parseDatabase(testMethod.getAnnotation(Database.class), context);
 			Generator<Object[]> generator = null;
 			// Evaluate @Generator and @Source annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
@@ -185,6 +184,65 @@ public class AnnotationMapper {
     
     // helper methods --------------------------------------------------------------------------------------------------
 	
+	private static void parseDatabase(Database annotation, BeneratorContext context) {
+		DBSystem db;
+		if (!StringUtil.isEmpty(annotation.environment()))
+			db = new DBSystem(annotation.id(), annotation.environment());
+		else 
+			db = new DBSystem(annotation.id(), annotation.url(), annotation.driver(), 
+					annotation.user(), annotation.password());
+		if (!StringUtil.isEmpty(annotation.catalog()))
+			db.setCatalog(annotation.catalog());
+		if (!StringUtil.isEmpty(annotation.schema()))
+			db.setSchema(annotation.schema());
+		db.setLazy(true);
+		context.set(db.getId(), db);
+	}
+	
+	private static void parseBean(Bean annotation, BeneratorContext context) {
+        Object bean = instantiateBean(annotation, context);
+        applyProperties(annotation.properties(), bean, context);
+        context.set(annotation.id(), bean);
+	}
+
+	private static Object instantiateBean(Bean beanAnno, BeneratorContext context) {
+		String beanSpec = beanAnno.spec();
+		Class<?> beanClass = beanAnno.type();
+		if (!StringUtil.isEmpty(beanSpec)) {
+			try {
+				if (beanClass != Object.class)
+					throw new ConfigurationError("'type' and 'spec' exclude each other in a @Bean");
+		        return BeneratorScriptParser.parseBeanSpec(beanSpec).evaluate(context);
+			} catch (ParseException e) {
+				throw new ConfigurationError("Error parsing bean spec: " + beanSpec, e);
+			}
+		} else if (beanClass != Object.class) {
+		    return BeanUtil.newInstance(beanClass);
+		} else
+			throw new ConfigurationError("@Bean is missing 'type' or 'spec' attribute");
+	}
+	
+	private static void applyProperties(Property[] properties, Object bean, BeneratorContext context) {
+		for (Property property : properties) {
+			Object value = resolveProperty(property, bean, context);
+			BeanUtil.setPropertyValue(bean, property.name(), value, true, true);
+		}
+    }
+
+    private static Object resolveProperty(Property property, Object bean, BeneratorContext context) {
+		if (!StringUtil.isEmpty(property.value())) {
+			if (!StringUtil.isEmpty(property.ref()))
+				throw new ConfigurationError("'value' and 'ref' exclude each other in a @Property");
+			Object value = ScriptUtil.evaluate(property.value(), context);
+			if (value instanceof String)
+				value = StringUtil.unescape((String) value);
+			return value;
+		} else if (!StringUtil.isEmpty(property.ref())) {
+			return context.get(property.ref());
+		} else
+			throw new ConfigurationError("@Property is missing 'value' or 'ref' attribute");
+	}
+
 	@SuppressWarnings("unchecked")
     private static Generator<Object[]> createParamGenerator(Method testMethod, BeneratorContext context) {
 	    InstanceDescriptor array = mapMethodParams(testMethod);

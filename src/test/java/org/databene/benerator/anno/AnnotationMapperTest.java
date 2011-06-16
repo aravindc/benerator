@@ -24,6 +24,8 @@ package org.databene.benerator.anno;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -31,10 +33,13 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.databene.benerator.distribution.sequence.StepSequence;
+import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
+import org.databene.platform.db.DBSystem;
 import org.junit.Test;
 
 /**
@@ -224,6 +229,90 @@ public class AnnotationMapperTest {
 	
 	
 	
+	// test class annotations ------------------------------------------------------------------------------------------
+	
+	@Test
+	public void testDatabaseAnnotation() {
+		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithDatabase.class.getAnnotations());
+		DBSystem db = (DBSystem) context.get("db");
+		assertNotNull(db);
+		assertEquals("hsqlmem", db.getEnvironment());
+	}
+	
+	@Database(id = "db", environment = "hsqlmem")
+	static class ClassWithDatabase {
+	}
+	
+	@Test
+	public void testSimpleBeanAnnotation() {
+		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithSimpleBean.class.getAnnotations());
+		Object bean = context.get("bean");
+		assertNotNull(bean);
+		assertEquals(ArrayList.class, bean.getClass());
+	}
+	
+	@Bean(id = "bean", type = ArrayList.class)
+	static class ClassWithSimpleBean {
+	}
+	
+	@Test
+	public void testBeanSpecAnnotation() {
+		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanSpec.class.getAnnotations());
+		Object bean = context.get("bean");
+		assertNotNull(bean);
+		assertEquals(Date.class, bean.getClass());
+		assertEquals(123, ((Date) bean).getTime());
+	}
+	
+	@Bean(id = "bean", spec = "new java.util.Date(123)")
+	static class ClassWithBeanSpec {
+	}
+	
+	@Test
+	public void testBeanPropertiesAnnotation() {
+		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanProperties.class.getAnnotations());
+		Object bean = context.get("bean");
+		assertNotNull(bean);
+		assertEquals(Date.class, bean.getClass());
+		assertEquals(234, ((Date) bean).getTime());
+	}
+	
+	@Bean(id = "bean", type = Date.class, properties = { @Property(name="time", value="234") })
+	static class ClassWithBeanProperties {
+	}
+	
+	@Test
+	public void testBeanPropertiesSpecAnnotation() {
+		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanPropertiesSpec.class.getAnnotations());
+		Object bean = context.get("bean");
+		assertNotNull(bean);
+		assertEquals(Date.class, bean.getClass());
+		assertEquals(345, ((Date) bean).getTime());
+	}
+	
+	@Bean(id = "bean", spec = "new java.util.Date{ time = 345 }")
+	static class ClassWithBeanPropertiesSpec {
+	}
+	
+	@Test
+	public void testBeanSource() {
+		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanSource.class.getAnnotations());
+		Object bean = context.get("bean");
+		assertNotNull(bean);
+		assertEquals(ConstantGenerator.class, bean.getClass());
+		assertEquals(42, ((ConstantGenerator<?>) bean).getValue());
+	}
+	
+	@Bean(id = "bean", spec = "new org.databene.benerator.sample.ConstantGenerator(42)")
+	static class ClassWithBeanSource {
+		@Test
+		@Source("bean")
+		public void test(int value) {
+			
+		}
+	}
+	
+	
 	// helper method ---------------------------------------------------------------------------------------------------
 	
 	private void checkMethod(String method, Class<?> methodArgType, String expectedType, Object ... details)
@@ -245,5 +334,5 @@ public class AnnotationMapperTest {
 			assertEquals(expectedValue, actualValue);
         }
     }
-	
+
 }
