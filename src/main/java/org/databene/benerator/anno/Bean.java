@@ -27,9 +27,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO Document class.<br/><br/>
+ * Annotation for bean construction in context.<br/><br/>
  * Created: 16.06.2011 10:20:02
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)

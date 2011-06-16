@@ -24,9 +24,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * TODO Document class.<br/><br/>
+ * Property configration for a @{@link Bean}.<br/><br/>
  * Created: 16.06.2011 10:22:44
- * @since TODO version
+ * @since 0.6.6
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
