@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,6 +40,7 @@ import java.io.ObjectOutputStream;
 import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -296,13 +297,16 @@ public class CreateProjectPanel extends JPanel {
 		String[] messages = new String[errors.length];
 		for (int i = 0; i < errors.length; i++) {
 			Object error = errors[i];
-			if (error instanceof I18NError) {
+			if (error instanceof ZipException) {
+				messages[i] = I18NError.renderMessage("ZipException", i18n);
+			} else if (error instanceof I18NError) {
 				messages[i] = ((I18NError) error).renderMessage(i18n);
 			} else
 				messages[i] = ToStringConverter.convert(error, "null");
 		}
 		JOptionPane.showMessageDialog(CreateProjectPanel.this, messages, "Error", JOptionPane.ERROR_MESSAGE);
 	}
+
 	
 	class ArchetypeListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
