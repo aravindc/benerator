@@ -104,7 +104,7 @@ public class MemStore extends AbstractStorageSystem {
 	}
 
 	public void close() {
-		// TODO v0.6.6 don't close global resources after <generate> and use 'typeMap.clear();' here
+		typeMap.clear();
 	}
 	
 	public void printContent() {
