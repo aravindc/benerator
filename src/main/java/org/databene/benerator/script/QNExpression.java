@@ -72,7 +72,7 @@ public class QNExpression extends DynamicExpression<Object> {
     	} else {
     		if (!noClasses.contains(objectOrClassName)) {
 	    		try {
-	    			return (Class<?>) ((Class<?>) DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context));
+	    			return DefaultClassProvider.resolveByObjectOrDefaultInstance(objectOrClassName, context);
 	    		} catch (ConfigurationError e) {
 	    		}
     		}
