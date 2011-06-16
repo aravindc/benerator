@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>org.databene</groupId>
 			<artifactId>databene-commons</artifactId>
-			<version>${version.commonsVersion}</version>
+			<version>${version.dependencies.commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.databene</groupId>
