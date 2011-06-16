@@ -19,13 +19,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.engine;
+package org.databene.platform.memstore;
 
 import static org.junit.Assert.*;
 
 import java.util.Collection;
 import java.util.List;
 
+import org.databene.benerator.engine.BeneratorIntegrationTest;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
@@ -72,6 +73,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 
 	@Test
 	public void testStore() {
+		MemStore.ignoreClose = true;
 		parseAndExecute(
 			"<generate type='product' count='3' consumer='dst'>" +
 			"	<id name='id' type='int' />" +
@@ -89,6 +91,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testIterate() {
+		MemStore.ignoreClose = false;
 		parseAndExecute("<iterate source='src' type='product' consumer='cons'/>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(3, products.size());
@@ -102,6 +105,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testIterateWithSelector() {
+		MemStore.ignoreClose = false;
 		parseAndExecute("<iterate source='src' type='product' selector='_candidate.id == 4' consumer='cons'/>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(1, products.size());
@@ -110,6 +114,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testVariable() {
+		MemStore.ignoreClose = false;
 		parseAndExecute(
 			"<generate type='order' consumer='cons'>" +
 			"	<variable name='p' source='src' type='product'/>" +
@@ -130,6 +135,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testAttribute() {
+		MemStore.ignoreClose = false;
 		parseAndExecute(
 			"<generate type='order' consumer='cons'>" +
 			"	<id name='id' type='int' />" +
@@ -150,6 +156,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testIntegration() {
+		MemStore.ignoreClose = true;
 		parseAndExecute(
 			"<setup>" +
 			"	<memstore id='store'/>" +

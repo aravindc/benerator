@@ -48,6 +48,8 @@ import org.databene.script.ScriptUtil;
  */
 public class MemStore extends AbstractStorageSystem {
 
+	static boolean ignoreClose = false; // for testing
+
 	private final String id;
 	private OrderedNameMap<ComplexTypeDescriptor> types;
 	private Map<String, Map<Object, Entity>> typeMap;
@@ -104,7 +106,8 @@ public class MemStore extends AbstractStorageSystem {
 	}
 
 	public void close() {
-		typeMap.clear();
+		if (!ignoreClose)
+			typeMap.clear();
 	}
 	
 	public void printContent() {
