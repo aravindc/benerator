@@ -37,7 +37,7 @@ import org.databene.commons.operation.FirstArgSelector;
  */
 public class ReferenceDescriptor extends ComponentDescriptor {
 	
-	// TODO 0.7 the class implies a reference to a primary key, but it could be an arbitrary column
+	// TODO v0.7 the class implies a reference to a primary key, but it could be an arbitrary column
 
     private static final String TARGET_TYPE = "targetType";
     
