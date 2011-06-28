@@ -68,10 +68,10 @@ public class CSVEntityExporterTest {
 		descriptor = new ComplexTypeDescriptor("Person", "entity");
 		descriptor.addComponent(new PartDescriptor("name", "string"));
 		descriptor.addComponent(new PartDescriptor("age", "int"));
-		descriptor.addComponent(new PartDescriptor("score", "inst"));
+		descriptor.addComponent(new PartDescriptor("notes", "string"));
 		// create Person instances for testing
-		alice = new Entity("Person", "name", "Alice", "age", 23, "score", 10);
-		bob = new Entity("Person", "name", "Bob", "age", 34, "score", 3);
+		alice = new Entity("Person", "name", "Alice", "age", 23, "notes", "");
+		bob = new Entity("Person", "name", "Bob", "age", 34, "notes", null);
 	}
 	
 	// tests -----------------------------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ public class CSVEntityExporterTest {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter(customFile.getAbsolutePath(), descriptor);
 			cosumeAndClose(exporter);
-			assertEquals("name,age,score\r\nAlice,23,10\r\nBob,34,3", getContent(customFile));
+			assertEquals("name,age,notes\r\nAlice,23,\r\nBob,34,", getContent(customFile));
 		} finally {
 			customFile.delete();
 		}
@@ -174,7 +174,42 @@ public class CSVEntityExporterTest {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter();
 			cosumeAndClose(exporter);
-			assertEquals("name,age,score\r\nAlice,23,10\r\nBob,34,3", getContent(DEFAULT_FILE));
+			assertEquals("name,age,notes\r\nAlice,23,\r\nBob,34,", getContent(DEFAULT_FILE));
+		} finally {
+			DEFAULT_FILE.delete();
+		}
+	}
+	
+	@Test
+	public void testEmptyAndNull_default() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter();
+			cosumeAndClose(exporter);
+			assertEquals("name,age,notes\r\nAlice,23,\r\nBob,34,", getContent(DEFAULT_FILE));
+		} finally {
+			DEFAULT_FILE.delete();
+		}
+	}
+	
+	@Test
+	public void testEmptyAndNull_quoteEmpty() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter();
+			exporter.setQuoteEmpty(true);
+			cosumeAndClose(exporter);
+			assertEquals("name,age,notes\r\nAlice,23,\"\"\r\nBob,34,", getContent(DEFAULT_FILE));
+		} finally {
+			DEFAULT_FILE.delete();
+		}
+	}
+	
+	@Test
+	public void testEmptyAndNull_dontQuoteEmpty() throws Exception {
+		try {
+			CSVEntityExporter exporter = new CSVEntityExporter();
+			exporter.setQuoteEmpty(false);
+			cosumeAndClose(exporter);
+			assertEquals("name,age,notes\r\nAlice,23,\r\nBob,34,", getContent(DEFAULT_FILE));
 		} finally {
 			DEFAULT_FILE.delete();
 		}

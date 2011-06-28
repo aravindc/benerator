@@ -65,6 +65,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     private boolean headless;
     private boolean endWithNewLine;
     private char separator;
+    private boolean quoteEmpty;
 
     // state attributes ------------------------------------------------------------------------------------------------
 
@@ -89,6 +90,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     	if (columnsSpec != null)
     		setColumns(ArrayFormat.parse(columnsSpec, ",", String.class));
         this.separator = separator;
+        this.quoteEmpty = false; // TODO v0.7 true by default
     }
 
 	public CSVEntityExporter(ComplexTypeDescriptor descriptor) {
@@ -141,6 +143,14 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
 		this.endWithNewLine = endWithNewLine;
 	}
 	
+	public boolean isQuoteEmpty() {
+		return quoteEmpty;
+	}
+	
+	public void setQuoteEmpty(boolean quoteEmpty) {
+		this.quoteEmpty = quoteEmpty;
+	}
+	
     // Callback methods for parent class functionality -----------------------------------------------------------------
 
     @Override
@@ -155,10 +165,17 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
             if (i > 0)
                 printer.print(separator);
             Object value = entity.getComponent(columns[i]);
-            String s = plainConverter.convert(value);
-            if (s.indexOf(separator) >= 0)
-                s = '"' + s + '"';
-            printer.print(s);
+            String out;
+            if (value == null)
+            	out = getNullString();
+            else {
+	            out = plainConverter.convert(value);
+	            if (out.length() == 0 && quoteEmpty)
+	            	out = "\"\"";
+	            else if (out.indexOf(separator) >= 0)
+	            	out = '"' + out + '"';
+            }
+            printer.print(out);
         }
     }
 
