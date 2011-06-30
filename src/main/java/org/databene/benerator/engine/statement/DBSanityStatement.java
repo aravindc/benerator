@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.Level;
@@ -49,13 +50,14 @@ public class DBSanityStatement implements Statement {
 	Expression<String> inEx;
 	Expression<String> outEx;
 	Expression<String[]> tablesEx;
+	Expression<String[]> tagsEx;
 	Expression<String> skinEx;
 	Expression<Locale> localeEx;
 	Expression<ExecutionMode> modeEx;
 	Expression<ErrorHandler> errHandlerEx;
 
-	public DBSanityStatement(Expression<String> envEx, Expression<String> appVersionEx, 
-			Expression<String> inEx, Expression<String> outEx, Expression<String[]> tablesEx, 
+	public DBSanityStatement(Expression<String> envEx, Expression<String> inEx, Expression<String> outEx, 
+			Expression<String> appVersionEx, Expression<String[]> tablesEx, Expression<String[]> tagsEx, 
 			Expression<String> skinEx, Expression<Locale> localeEx,
 			Expression<ExecutionMode> modeEx, Expression<ErrorHandler> errHandlerEx) {
 		this.envEx = envEx;
@@ -63,6 +65,7 @@ public class DBSanityStatement implements Statement {
 		this.inEx = inEx;
 		this.outEx = outEx;
 		this.tablesEx = tablesEx;
+		this.tagsEx = tagsEx;
 		this.skinEx = skinEx;
 		this.localeEx = localeEx;
 		this.modeEx = modeEx;
@@ -77,9 +80,6 @@ public class DBSanityStatement implements Statement {
 			String environment = envEx.evaluate(context);
 			dbSanity.setEnvironment(context.resolveRelativeUri(environment));
 
-			String appVersion = ExpressionUtil.evaluate(appVersionEx, context);
-			dbSanity.setAppVersion(VersionNumber.valueOf(appVersion));
-			
 			String in = ExpressionUtil.evaluate(inEx, context);
 			String inFolderName = (in != null ? in : "dbsanity");
 			File inFolder = new File(context.resolveRelativeUri(inFolderName));
@@ -96,8 +96,14 @@ public class DBSanityStatement implements Statement {
 			if (skin != null)
 				dbSanity.setSkin(skin);
 			
+			String appVersion = ExpressionUtil.evaluate(appVersionEx, context);
+			dbSanity.setAppVersion(VersionNumber.valueOf(appVersion));
+			
 			String[] tables = ExpressionUtil.evaluate(tablesEx, context);
 			dbSanity.setTables(tables);
+			
+			String[] tags = ExpressionUtil.evaluate(tagsEx, context);
+			dbSanity.setTags(CollectionUtil.toSet(tags));
 			
 			Locale locale = ExpressionUtil.evaluate(localeEx, context);
 			if (locale != null)
