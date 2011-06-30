@@ -22,7 +22,7 @@ enhancements
 - PersonGenerator and AddressGenerator can now be applied to regions like 'europe', not only countries. 
   For a single country, specify its two-letter-iso-code
 - Added demos
-- New method TimeUtil.lastDayOfMonth() and TimeUtil.lastDayOfMonth()
+- New method TimeUtil.firstDayOfMonth() and TimeUtil.lastDayOfMonth()
 - RandomUtil.randomFromWeightLiteral(this.weights)
 - generic version configuration and dependency verification
 - Benerator now provides its build number
@@ -34,7 +34,7 @@ enhancements
 - Supporting transcoding to non-empty tables as long as transcoded data is not yet present in the target system
 - transcode feature supports cascade with mutation
 - Supporting 'separator' attribute in <execute> and <evaluate>
-- DB Sanity versioning support, for example: <dbsanity ... appVersion="1.1.2" />
+- DB Sanity version and tag support, for example: <dbsanity ... appVersion="1.1.2" tags="migration"/>
 - supporting parameterized selector in SequenceTableGenerator, e.g. "user_id = ? and module_name = ?"
 - Feature Request #3341290: Add property CSVEntityExporter.quoteEmpty
 
