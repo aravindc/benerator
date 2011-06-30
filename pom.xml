@@ -10,7 +10,7 @@
     <properties>
     	<build_number>${buildNumber}</build_number>
     	<jdbacl_version>0.6.8</jdbacl_version>
-    	<dbsanity_version>0.8</dbsanity_version>
+    	<dbsanity_version>0.8.1</dbsanity_version>
     	<gui_version>0.2.8</gui_version>
     	<webdecs_version>0.5.8</webdecs_version>
     	<commons_version>0.5.8</commons_version>
