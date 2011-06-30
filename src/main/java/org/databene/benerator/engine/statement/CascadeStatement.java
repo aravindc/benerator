@@ -71,6 +71,8 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CascadeStatement.class);
 	
+	private static final String REF_SYNTAX_MESSAGE = "Expected Syntax: table(column1, column2, ...)";
+
 	private CascadeParent parent;
 	private Reference ref;
 	private Entity currentEntity;
@@ -284,26 +286,26 @@ public class CascadeStatement extends SequentialStatement implements CascadePare
 				// parse table name
 				int token = tokenizer.nextToken();
 				if (token != TT_WORD)
-					throw new SyntaxError("Expected Syntax: table(column1, column2, ...)", refSpec);
+					throw new SyntaxError(REF_SYNTAX_MESSAGE, refSpec);
 				String tableName = tokenizer.sval;
 				
 				// parse column names
 				if ((token = tokenizer.nextToken()) != '(')
-					throw new SyntaxError("Expected Syntax: table(column1, column2, ...)", refSpec);
+					throw new SyntaxError(REF_SYNTAX_MESSAGE, refSpec);
 				ArrayBuilder<String> columnNames = new ArrayBuilder<String>(String.class);
 				do {
 					if ((token = tokenizer.nextToken()) != TT_WORD)
-						throw new SyntaxError("Expected Syntax: table(column1, column2, ...)", refSpec);
+						throw new SyntaxError(REF_SYNTAX_MESSAGE, refSpec);
 					columnNames.add(tokenizer.sval);
 					token = tokenizer.nextToken();
 					if (token != ',' && token != ')')
-						throw new SyntaxError("Expected Syntax: table(column1, column2, ...)", refSpec);
+						throw new SyntaxError(REF_SYNTAX_MESSAGE, refSpec);
 				} while (token == ',');
 				if (token != ')')
 					throw new SyntaxError("reference definition must end with ')'", refSpec);
 				return new Reference(tableName, columnNames.toArray());
 			} catch (IOException e) {
-				throw new SyntaxError("Expected Syntax: table(column1, column2, ...)", refSpec);
+				throw new SyntaxError(REF_SYNTAX_MESSAGE, refSpec);
 			}
 		}
 
