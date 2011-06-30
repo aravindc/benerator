@@ -4,6 +4,11 @@ release notes benerator 0.6.6
 
 summary
 -------
+Improved performance and fixed bugs. A memstore utility provides database-like features for tracking intermediary data. 
+Simplified the transcoding of data graphs. Many smaller improvements from feature requests of Benerator users, e.g. 
+extended formatting features for CSV-/FlatFile-/ScriptedEntityExporter. PersonGenerator and AddressGenerator can now 
+be applied to composite regions like 'europe'. A new dependy checker verifies consistency of deployments. New DB Sanity 
+features are supported.
 
 
 changes
