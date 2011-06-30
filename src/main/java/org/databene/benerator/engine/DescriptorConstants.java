@@ -162,10 +162,11 @@ public interface DescriptorConstants {
     static final String ATT_IDENTITY = "identity";
 
     static final String EL_DBSANITY = "dbsanity";
-    static final String ATT_APPVERSION = "appVersion";
     static final String ATT_IN = "in";
     static final String ATT_OUT = "out";
+    static final String ATT_APPVERSION = "appVersion";
     static final String ATT_TABLES = "tables";
+    static final String ATT_TAGS = "tags";
     static final String ATT_SKIN = "skin";
     static final String ATT_LOCALE = "locale";
     static final String ATT_MODE = "mode";
