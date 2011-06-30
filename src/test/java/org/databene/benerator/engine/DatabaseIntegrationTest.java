@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.databene.benerator.test.ConsumerMock;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.jdbacl.DBUtil;
 import org.databene.jdbacl.hsql.HSQLUtil;
@@ -111,7 +112,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	}
 
 	@Test
-	public void testDbRef_default_not_null_defaultOneToMany() {
+	public void testDbRef_default_not_null_defaultManyToOne() {
 		context.setDefaultOneToOne(false);
 		parseAndExecute(
 				"<generate type='referer' count='3' consumer='cons'>" +
@@ -295,6 +296,149 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 			assertTrue(TimeUtil.isNow(((Date) entity.get("the_date")).getTime(), 2000));
 		closeAndCheckCleanup();
 	}
+
+	// transaction control ---------------------------------------------------------------------------------------------
+	
+	@Test
+	public void testTx_default() {
+		context.setDefaultOneToOne(false);
+		db.execute("delete from referee");
+		parseAndExecute(
+				"<generate type='referee' count='2' consumer='cons'>" +
+				"	<generate type='referer' count='2' consumer='cons'>" +
+	        	"	</generate>" +
+	        	"</generate>");
+		// check generated products
+		List<Entity> products = consumer.getProducts();
+		assertEquals(6, products.size());
+		// check transactions
+		List<String> expectedInvocations = CollectionUtil.toList(
+				ConsumerMock.START_CONSUMING, // referee #1
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #1
+					ConsumerMock.FLUSH,
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #2
+					ConsumerMock.FLUSH,
+				ConsumerMock.FINISH_CONSUMING, ConsumerMock.FLUSH, // referee #1
+				ConsumerMock.START_CONSUMING, // referee #2
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #3
+					ConsumerMock.FLUSH,
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #4
+					ConsumerMock.FLUSH,
+				ConsumerMock.FINISH_CONSUMING, ConsumerMock.FLUSH // referee #2
+		);
+		assertEquals(expectedInvocations, consumer.invocations);
+		
+		closeAndCheckCleanup();
+	}
+
+	@Test
+	public void testTx_subPageSize0() {
+		context.setDefaultOneToOne(false);
+		db.execute("delete from referee");
+		parseAndExecute(
+				"<generate type='referee' count='2' consumer='cons'>" +
+				"	<generate type='referer' count='2' pageSize='0' consumer='cons'>" +
+	        	"	</generate>" +
+	        	"</generate>");
+		// check generated products
+		List<Entity> products = consumer.getProducts();
+		assertEquals(6, products.size());
+		// check transactions
+		List<String> expectedInvocations = CollectionUtil.toList(
+				ConsumerMock.START_CONSUMING, // referee #1
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #1
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #2
+				ConsumerMock.FINISH_CONSUMING, ConsumerMock.FLUSH, // referee #1
+				ConsumerMock.START_CONSUMING, // referee #2
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #3
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #4
+				ConsumerMock.FINISH_CONSUMING, ConsumerMock.FLUSH // referee #2
+		);
+		assertEquals(expectedInvocations, consumer.invocations);
+		
+		closeAndCheckCleanup();
+	}
+
+	@Test
+	public void testTx_allPageSizes0() {
+		context.setDefaultOneToOne(false);
+		db.execute("delete from referee");
+		parseAndExecute(
+				"<generate type='referee' count='2' pageSize='0' consumer='cons'>" +
+				"	<generate type='referer' count='2' pageSize='0' consumer='cons'>" +
+	        	"	</generate>" +
+	        	"</generate>");
+		// check generated products
+		List<Entity> products = consumer.getProducts();
+		assertEquals(6, products.size());
+		// check transactions
+		List<String> expectedInvocations = CollectionUtil.toList(
+				ConsumerMock.START_CONSUMING, // referee #1
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #1
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #2
+				ConsumerMock.FINISH_CONSUMING, // referee #1
+				ConsumerMock.START_CONSUMING, // referee #2
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #3
+					ConsumerMock.START_CONSUMING, ConsumerMock.FINISH_CONSUMING, // referer #4
+				ConsumerMock.FINISH_CONSUMING // referee #2
+		);
+		assertEquals(expectedInvocations, consumer.invocations);
+		
+		closeAndCheckCleanup();
+	}
+	
+	
+	
+	// selector resolution ---------------------------------------------------------------------------------------------
+	
+	@Test
+	public void testStaticEntitySelector_partial() {
+		// TODO v0.6.7 implement test
+		// selector="{'id = ' + x}"
+	}
+
+	@Test
+	public void testStaticEntitySelector_complete() {
+		// TODO v0.6.7 implement test
+		// selector="{'select * from tbl where id = ' + x}"
+	}
+
+	@Test
+	public void testDynamicEntitySelector_partial() {
+		// TODO v0.6.7 implement test
+		// selector="{{'id = ' + x}}"
+	}
+
+	@Test
+	public void testDynamicEntitySelector_complete() {
+		// TODO v0.6.7 implement test
+		// selector="{{'select * from tbl where id = ' + x}}"
+	}
+
+	@Test
+	public void testStaticArraySelector() {
+		// TODO v0.6.7 implement test
+		// selector="{'select x, y from tbl where id = ' + x}"
+	}
+
+	@Test
+	public void testDynamicArraySelector() {
+		// TODO v0.6.7 implement test
+		// selector="{{'select x, x from tbl where id = ' + x}}"
+	}
+	
+	@Test
+	public void testStaticValueSelector() {
+		// TODO v0.6.7 implement test
+		// selector="{'select x from tbl where id = ' + x}"
+	}
+
+	@Test
+	public void testDynamicValueSelector() {
+		// TODO v0.6.7 implement test
+		// selector="{{'select x from tbl where id = ' + x}}"
+	}
+	
 	
 	
 	// private helpers -------------------------------------------------------------------------------------------------
