@@ -32,9 +32,11 @@ import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.SimpleGenerator;
+import org.databene.commons.Escalator;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.IOUtil;
+import org.databene.commons.LoggerEscalator;
 import org.databene.jdbacl.DBUtil;
 import org.databene.script.ScriptUtil;
 
@@ -48,13 +50,15 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	
 	private String table;
 	private String column;
-	private DBSystem db;
+	private DBSystem database;
 	private String selector;
 	protected Long increment = 1L;
 	
 	private String query;
 	private IncrementorStrategy incrementorStrategy;
 	private PreparedStatement parameterizedAccessorStatement;
+	
+	private Escalator escalator;
 	
     public SequenceTableGenerator() {
     	this(null, null, null);
@@ -67,8 +71,9 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     public SequenceTableGenerator(String table, String column, DBSystem db, String selector) {
     	this.table = table;
 	    this.column = column;
-	    this.db = db;
+	    this.database = db;
 	    this.selector = selector;
+	    this.escalator = new LoggerEscalator();
     }
     
 	public void setTable(String table) {
@@ -79,8 +84,19 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     	this.column = column;
     }
 	
-	public void setDb(DBSystem db) {
-		this.db = db;
+	/**
+	 * @deprecated Replaced with {@link #setDatabase(DBSystem)}
+	 */
+	@Deprecated
+	public void setDb(DBSystem db) { // TODO v0.7 remove 'db' property
+		String className = getClass().getName();
+		String escalationMessage = "Property " + className + ".db is deprecated, use " + className + ".database instead";
+		escalator.escalate(escalationMessage, getClass(), null);
+		setDatabase(db);
+	}
+
+	public void setDatabase(DBSystem db) {
+		this.database = db;
 	}
 
 	public void setSelector(String selector) {
@@ -98,7 +114,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
         // check preconditions
         assertNotInitialized();
-        if (db == null)
+        if (database == null)
         	throw new InvalidGeneratorSetupException("db is null");
         
         // initialize
@@ -116,16 +132,16 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     	if (selector != null)
     		incrementorSql = ScriptUtil.combineScriptableParts(incrementorSql, " where ", selector);
     	if (selector == null || !ScriptUtil.isScript(selector)) 
-    		return new PreparedStatementStrategy(incrementorSql, db);
+    		return new PreparedStatementStrategy(incrementorSql, database);
     	else
-    		return new StatementStrategy(incrementorSql, db);
+    		return new StatementStrategy(incrementorSql, database);
     }
 
 	public E generate() {
 		if (this.state == GeneratorState.CLOSED)
 			return null;
 		assertInitialized();
-		HeavyweightTypedIterable<E> iterable = db.query(query, true, context);
+		HeavyweightTypedIterable<E> iterable = database.query(query, true, context);
 		HeavyweightIterator<E> iterator = null;
 		E result;
 		try {
@@ -151,7 +167,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 		try {
 			if (parameterizedAccessorStatement == null) {
 				String queryText = String.valueOf(ScriptUtil.parseUnspecificText(query).evaluate(context));
-				parameterizedAccessorStatement = db.getConnection().prepareStatement(queryText);
+				parameterizedAccessorStatement = database.getConnection().prepareStatement(queryText);
 			}
 			for (int i = 0; i < params.length; i++)
 				parameterizedAccessorStatement.setObject(i + 1, params[i]);
