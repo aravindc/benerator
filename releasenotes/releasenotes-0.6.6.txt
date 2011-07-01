@@ -45,6 +45,7 @@ enhancements
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
 -------------------------------------------------------------------------------------------------
+- #3329989: Connecting SQL server with NTLM causes NPE
 - #3176350: CSVEntityExporter append
 - #3201098: Exception when using metaCache="true"
 - #3201108: <evaluate> invalidates meta data cache
