@@ -34,5 +34,5 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.METHOD } )
-	public @interface DescriptorBased {
+	public @interface DescriptorBased { // TODO v0.6.7 support file() and name()
 }
