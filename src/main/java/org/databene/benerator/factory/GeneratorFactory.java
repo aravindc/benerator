@@ -32,6 +32,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
+import org.databene.benerator.primitive.DistributedLengthStringGenerator;
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.benerator.primitive.regex.RegexGeneratorFactory;
@@ -43,6 +44,9 @@ import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVCellIterable;
 import org.databene.document.csv.CSVLineIterable;
+import org.databene.regex.CustomCharClass;
+import org.databene.regex.Factor;
+import org.databene.regex.Quantifier;
 import org.databene.regex.RegexParser;
 
 import java.text.DateFormat;
@@ -57,7 +61,10 @@ import java.util.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class GeneratorFactory {
+public class GeneratorFactory { 
+	
+	// TODO make this an interface and provide three implementations: 
+	// EquivalenceClassGeneratorFactory, CoverageGeneratorFactory, NiceGeneratorFactory
 	
     // Singleton related stuff -----------------------------------------------------------------------------------------
 
@@ -135,9 +142,10 @@ public class GeneratorFactory {
 	    } else {
 	    	String[] values = new String[samples.length];
 	    	for (int i = 0; i < samples.length; i++) {
-	    		String value = String.valueOf(samples[i].getValue());
-	    		if (value == null)
+	    		T rawValue = samples[i].getValue();
+	    		if (rawValue == null)
 	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
+				String value = String.valueOf(rawValue);
 	    		values[i] = value;
 	    	}
 	        IteratingGenerator<String> source = new IteratingGenerator<String>(new ArrayIterable<String>(values, String.class));
@@ -332,7 +340,54 @@ public class GeneratorFactory {
         return new CharacterGenerator(Arrays.asList(characters));
     }
 
-    /**
+	public static Generator<String> getStringGenerator(String pattern,
+			Integer minLength, Integer maxLength, Distribution lengthDistribution,
+			Locale locale, boolean unique) {
+        if (maxLength == null)
+            maxLength = defaultMaxLength();
+        if (minLength == null) {
+        	if (pattern != null && pattern.length() == 0)
+        		minLength = 0;
+        	else {
+	            int defaultMinLength = defaultMinLength();
+	            minLength = Math.min(maxLength, defaultMinLength);
+        	}
+        }
+        if (pattern == null)
+            pattern = "[A-Z]{" + minLength + ',' + maxLength + '}';
+        Object regex;
+        try {
+			regex = new RegexParser().parseRegex(pattern);
+		} catch (ParseException e) {
+			throw new ConfigurationError(e);
+		}
+        if (lengthDistribution != null) {
+        	if (!(regex instanceof Factor))
+        		throw new ConfigurationError("Illegal regular expression in the context of a length distribution: " + pattern);
+        	Factor factor = (Factor) regex;
+        	Object atom = factor.getAtom();
+        	if (!(atom instanceof CustomCharClass))
+        		throw new ConfigurationError("Illegal regex atom in the context of a length distribution: " + atom);
+        	Set<Character> chars = ((CustomCharClass) atom).getCharSet().getSet();
+        	Quantifier quantifier = factor.getQuantifier();
+        	minLength = Math.max(minLength, quantifier.getMin());
+        	if (quantifier.getMax() != null)
+        		maxLength = Math.min(maxLength, quantifier.getMax());
+			return getStringGenerator(chars, minLength, maxLength, lengthDistribution);
+        }
+        if (locale == null)
+            locale = defaultLocale();
+		return getRegexStringGenerator(pattern, minLength, maxLength, unique); 
+	}
+    
+	private static Generator<String> getStringGenerator(Collection<Character> chars,
+			Integer minLength, Integer maxLength, Distribution lengthDistribution) {
+		Generator<Character> charGenerator = getCharacterGenerator(chars);
+		Generator<Integer> lengthGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
+		return new DistributedLengthStringGenerator(charGenerator, lengthGenerator);
+	}
+
+	/**
      * Creates a generator that produces Strings which match a regular expression in a locale
      *
      * @param pattern   the regular expression
@@ -343,6 +398,7 @@ public class GeneratorFactory {
      */
     public static Generator<String> getRegexStringGenerator(String pattern, int minLength, Integer maxLength, boolean unique) 
             	throws ConfigurationError {
+    	// TODO support locale for \w
         Generator<String> generator = RegexGeneratorFactory.create(pattern, maxLength, unique);
         return new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength));
@@ -478,5 +534,17 @@ public class GeneratorFactory {
 	public static <T> Generator<T> wrapNonClosing(Generator<T> generator) {
 		return new NonClosingGeneratorProxy<T>(generator);
 	}
-    
+
+	private static int defaultMinLength() {
+		return 1;
+	}
+
+    private static Integer defaultMaxLength() {
+		return 30;
+	}
+
+	private static Locale defaultLocale() {
+		return Locale.getDefault();
+	}
+
 }

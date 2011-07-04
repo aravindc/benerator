@@ -90,8 +90,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     public static Generator<?> createSimpleTypeGenerator(
 			SimpleTypeDescriptor descriptor, boolean nullable, Uniqueness uniqueness,
 			BeneratorContext context) {
-        if (logger.isDebugEnabled())
-            logger.debug("create(" + descriptor.getName() + ')');
+        logger.debug("create({})", descriptor.getName());
         Generator<?> generator = null;
         generator = createConstantGenerator(descriptor, context);
         if (generator == null)
@@ -393,40 +392,17 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
         if (maxLength == null) {
             // maxLength was not set in this descriptor. So check the parent setting's value 
-            // (it is interpreted as constraint which may be too high to be useful by default)
             maxLength = descriptor.getMaxLength();
-            if (maxLength == null)
-                maxLength = (Integer) descriptor.getDetailDefault(MAX_LENGTH);
-            if (maxLength == null || maxLength > 10000)
-                maxLength = 10000;
         }
 
         // check pattern against null
         String pattern = ToStringConverter.convert(descriptor.getDetailValue(PATTERN), null);
-        if (pattern == null)
-            pattern = (String) descriptor.getDetailDefault(PATTERN);
 
-        // evaluate min length
         Integer minLength = descriptor.getMinLength();
-        if (minLength == null) {
-        	if (pattern != null && pattern.length() == 0)
-        		minLength = 0;
-        	else {
-	            int defaultMinLength = (Integer) descriptor.getDetailDefault(MIN_LENGTH);
-	            minLength = Math.min(maxLength, defaultMinLength);
-        	}
-        }
-
-        // evaluate pattern
-        if (pattern == null)
-            pattern = "[A-Z]{" + minLength + ',' + maxLength + '}';
-
-        // evaluate locale
+        Distribution lengthDistribution = GeneratorFactoryUtil.getDistribution(
+        		descriptor.getLengthDistribution(), Uniqueness.NONE, false, context);
         Locale locale = descriptor.getLocale();
-        if (locale == null)
-            locale = (Locale) descriptor.getDetailDefault(LOCALE);
-        // evaluate uniqueness and create generator
-        return GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, uniqueness.isUnique());
+        return GeneratorFactory.getStringGenerator(pattern, minLength, maxLength, lengthDistribution, locale, uniqueness.isUnique());
     }
     
     @SuppressWarnings("unchecked")
