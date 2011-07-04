@@ -100,7 +100,7 @@ public class AnnotationMapperTest {
 	
 	@Test
 	public void testValues() throws Exception {
-		checkMethod("valuesMethod", String.class, "string", "values", "A, B" );
+		checkMethod("valuesMethod", String.class, "string", "values", "'A','B'" );
 	}
 
 	public void valuesMethod(@Values({"A", "B"}) String name) { }

@@ -114,8 +114,9 @@ public class AnnotationMapper {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public static Generator<Object[]> createMethodParamGenerator(Method testMethod, BeneratorContext context) {
-    	// TODO v0.6.7 wrap functionality with a class MethodArgsGenerator and support/test it in Descriptor files (combined with Invoker)
 		try {
+			if ("testSizeDistribution".equals(testMethod.getName())) // TODO remove
+				System.out.println();
 			// Evaluate @Bean annotations
 			if (testMethod.getAnnotation(Bean.class) != null)
 				parseBean(testMethod.getAnnotation(Bean.class), context);
@@ -126,7 +127,6 @@ public class AnnotationMapper {
 			// Evaluate @Generator and @Source annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
 			Source sourceAnno = testMethod.getAnnotation(Source.class);
-			// TODO v0.6.7 these annotations should be mapped to the array instance descriptor
 			if (generatorAnno != null || sourceAnno != null) {
 				String methodName = testMethod.getName();
 				ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
@@ -263,20 +263,22 @@ public class AnnotationMapper {
 			LOGGER.debug("mapDetails(" + annotation + ", " + instanceDescriptor + ")");
 	    try {
 			Class<?> annotationType = annotation.annotationType();
-			if (Unique.class.equals(annotationType))
+			if (annotationType == Unique.class)
 				instanceDescriptor.setDetailValue("unique", true);
-			else if (Granularity.class.equals(annotationType))
+			else if (annotationType == Granularity.class)
 				instanceDescriptor.getLocalType(false).setDetailValue("precision", String.valueOf(DescriptorUtil.convertType(((Granularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
-			else if (SizeDistribution.class.equals(annotationType))
+			else if (annotationType == SizeDistribution.class)
 				instanceDescriptor.getLocalType(false).setDetailValue("lengthDistribution", ((SizeDistribution) annotation).value());
-			else if (Pattern.class.equals(annotationType))
+			else if (annotationType == Pattern.class)
 				mapPatternAnnotation((Pattern) annotation, instanceDescriptor);
-			else if (Size.class.equals(annotationType))
+			else if (annotationType == Size.class)
 				mapSizeAnnotation((Size) annotation, instanceDescriptor);
-			else if (Source.class.equals(annotationType))
+			else if (annotationType == Source.class)
 				mapSourceAnnotation((Source) annotation, instanceDescriptor);
+			else if (annotationType == Values.class)
+				mapValuesAnnotation((Values) annotation, instanceDescriptor);
 			else
-				mapValueAnnotation(annotation, instanceDescriptor);
+				mapAnyValueTypeAnnotation(annotation, instanceDescriptor);
 		} catch (Exception e) {
 			throw new ConfigurationError("Error mapping annotation settings", e);
 		}
@@ -309,7 +311,19 @@ public class AnnotationMapper {
 	    	setDetail(detailName, value, instanceDescriptor);
     }
 
-	private static void mapValueAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) throws Exception {
+	private static void mapValuesAnnotation(Values annotation, InstanceDescriptor instanceDescriptor) throws Exception {
+		Method method = annotation.annotationType().getMethod("value");
+		String[] values = (String[]) method.invoke(annotation);
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < values.length; i++) {
+			if (i > 0)
+				builder.append(',');
+			builder.append("'").append(values[i].replace("'", "\\'")).append("'");
+		}
+		((SimpleTypeDescriptor) instanceDescriptor.getLocalType(false)).setValues(builder.toString());
+    }
+
+	private static void mapAnyValueTypeAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) throws Exception {
 		Method method = annotation.annotationType().getMethod("value");
 		Object value = normalize(method.invoke(annotation));
 		String detailName = StringUtil.uncapitalize(annotation.annotationType().getSimpleName());
