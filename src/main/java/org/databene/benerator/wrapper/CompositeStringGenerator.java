@@ -1,9 +1,14 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License (GPL).
+ * GNU General Public License.
+ *
+ * For redistributing this software or a derivative work under a license other
+ * than the GPL-compatible Free Software License as defined by the Free
+ * Software Foundation or approved by OSI, you must first obtain a commercial
+ * license to this software product from Volker Bergmann.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -22,62 +27,64 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 /**
- * Takes the output of several source {@link Generator}s and combines them to a result String.
- * If the source generators generate unique data, the CompositeStringGenerator is able to combine 
- * their output to unique values when setting its 'unique' property to 'true'.<br/><br/>
- * Created: 28.07.2010 21:53:41
- * @since 0.6.3
+ * Uses n String generators and appends the output of each one in each generate() call.<br/>
+ * <br/>
+ * Created: 17.11.2007 17:33:21
  * @author Volker Bergmann
  */
-public abstract class CompositeStringGenerator extends GeneratorWrapper<Object[], String>{
+public class CompositeStringGenerator extends GeneratorWrapper<String[], String> {
 	
 	private boolean unique;
 
-	public CompositeStringGenerator() {
-	    this(false);
+    // constructors ----------------------------------------------------------------------------------------------------
+
+    public CompositeStringGenerator() {
+        this(false);
     }
 
-	public CompositeStringGenerator(boolean unique) {
-		super(null);
-	    this.unique = unique;
+    public CompositeStringGenerator(boolean unique, Generator<?>... sources) {
+        super(wrap(unique, sources));
+        this.unique = unique;
     }
-	
-    public boolean isUnique() {
-    	return unique;
+    
+	public boolean isUnique() {
+		return unique;
+	}
+
+    // Generator interface ---------------------------------------------------------------------------------------------
+
+    public Class<String> getGeneratedType() {
+        return String.class;
     }
 
-	public void setUnique(boolean unique) {
-    	this.unique = unique;
+    public String generate() {
+        StringBuilder builder = new StringBuilder();
+        String[] parts = source.generate();
+        if (parts == null)
+        	return null;
+        for (String part : parts)
+            builder.append(part);
+        return builder.toString();
     }
 
-	final public Class<String> getGeneratedType() {
-	    return String.class;
-    }
+    // java.lang.Object overrides --------------------------------------------------------------------------------------
 
     @Override
-	public synchronized void init(GeneratorContext context) {
-		Generator<? extends Object>[] sources = initSources(context, unique);
-		super.setSource(new CompositeArrayGenerator<Object>(Object.class, unique, sources));
-	    super.init(context);
-	}
-	
-	public String generate() {
-		assertInitialized();
-		Object[] parts = source.generate();
-		if (parts == null)
-			return null;
-		StringBuilder builder = new StringBuilder();
-		for (Object part : parts) {
-			if (part == null)
-				return null;
-			builder.append(part);
-		}
-		return builder.toString();
+    public String toString() {
+        int count = 0;
+        if (source != null)
+            count = ((CompositeArrayGenerator<String>) source).getSources().length;
+        return getClass().getSimpleName() + "[count=" + count + ", " +
+                "source=" + source + ", unique=" + unique + ']';
     }
 
-    protected abstract Generator<?>[] initSources(GeneratorContext context, boolean unique);
+    // private helpers -------------------------------------------------------------------------------------------------
+
+    private static Generator<String[]> wrap(boolean unique, Generator<?>... sources) {
+        return new CompositeArrayGenerator<String>(String.class, unique, GeneratorFactoryUtil.stringGenerators(sources));
+    }
 
 }
