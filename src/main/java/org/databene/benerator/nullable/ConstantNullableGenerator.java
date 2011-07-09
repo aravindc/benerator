@@ -57,12 +57,6 @@ public class ConstantNullableGenerator<E> extends AbstractNullableGenerator<E> {
 	    return generatedType;
     }
 
-	public void reset() {
-    }
-
-	public void close() {
-    }
-
 	public boolean isParallelizable() {
 	    return true;
     }
@@ -71,4 +65,9 @@ public class ConstantNullableGenerator<E> extends AbstractNullableGenerator<E> {
 	    return true;
     }
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + value + ']';
+	}
+	
 }
