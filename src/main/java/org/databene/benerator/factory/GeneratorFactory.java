@@ -27,23 +27,19 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
-import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.primitive.BooleanGenerator;
+import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
-import org.databene.benerator.primitive.DistributedLengthStringGenerator;
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.datetime.DateGenerator;
-import org.databene.benerator.primitive.regex.RegexGeneratorFactory;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
 import org.databene.commons.converter.*;
-import org.databene.commons.iterator.ArrayIterable;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
 import org.databene.document.csv.CSVCellIterable;
 import org.databene.document.csv.CSVLineIterable;
+import org.databene.model.data.Uniqueness;
 import org.databene.regex.CustomCharClass;
 import org.databene.regex.Factor;
 import org.databene.regex.Quantifier;
@@ -61,29 +57,23 @@ import java.util.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class GeneratorFactory { 
+public abstract class GeneratorFactory { 
 	
-	// TODO make this an interface and provide three implementations: 
-	// EquivalenceClassGeneratorFactory, CoverageGeneratorFactory, NiceGeneratorFactory
-	
-    // Singleton related stuff -----------------------------------------------------------------------------------------
-
-    /**
-     * Private constructor that prevents the user from multiple instantiation
-     */
-    private GeneratorFactory() {
-    }
-
     // boolean generator -----------------------------------------------------------------------------------------------
 
-    /**
+	/**
      * Creates a generator for boolean values with a trueQuota [0-1]
      *
      * @param trueQuota a value from 0 to 1, indicating the quota of true values to generate among the non-null values
      * @return a Boolean generator of the desired characteristics
      */
-    public static Generator<Boolean> getBooleanGenerator(double trueQuota) {
-        return new BooleanGenerator(trueQuota);
+	public Generator<Boolean> createBooleanGenerator(double trueQuota) {
+    	SequenceGenerator<Boolean> generator = new SequenceGenerator<Boolean>(Boolean.class);
+    	if (trueQuota < 1)
+    		generator.addValue(false);
+    	if (trueQuota > 0)
+    		generator.addValue(true);
+    	return generator;
     }
 
     // number generators -----------------------------------------------------------------------------------------------
@@ -98,13 +88,13 @@ public class GeneratorFactory {
      * @param distribution The Sequence of WeightFunction to use for generation
      * @return a Number generator of the desired characteristics
      */
-    public static <T extends Number> Generator<T> getNumberGenerator(
+    public <T extends Number> Generator<T> createNumberGenerator(
             Class<T> numberType, T min, T max, T precision,
             Distribution distribution, boolean unique) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int prefixDigits = (max != null ? MathUtil.prefixDigits(max.doubleValue()) : MathUtil.prefixDigits(min.doubleValue()));
 		int totalDigits = prefixDigits + fractionDigits;
-        return getNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique);
+        return createNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique);
     }
     
     /**
@@ -113,56 +103,29 @@ public class GeneratorFactory {
      * @param numberType   the number type, e.g. java.lang.Integer
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
-     * @param precision    the resolution to use in number generation.
+     * @param granularity    the resolution to use in number generation.
      * @return a Number generator of the desired characteristics
      */
-    public static <T extends Number> Generator<T> getNumberGenerator(
-            Class<T> numberType, T min, T max, int totalDigits, int fractionDigits, T precision,
+    public <T extends Number> Generator<T> createNumberGenerator(
+            Class<T> numberType, T min, T max, Integer totalDigits, Integer fractionDigits, T granularity,
             Distribution distribution, boolean unique) {
         Assert.notNull(numberType, "numberType");
-        return distribution.createGenerator(numberType, min, max, precision, unique); 
+        if (min != null && min.equals(max))
+            return new ConstantGenerator<T>(min);
+        if (min == null)
+        	min = defaultMin(numberType);
+        if (granularity == null)
+        	granularity = defaultGranularity(numberType);
+        if (distribution == null)
+        	distribution = defaultDistribution(unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
+        return distribution.createGenerator(numberType, min, max, granularity, unique); 
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
     }
 
     // sample source ------------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-	public static <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
-            Distribution distribution, boolean unique) {
-	    WeightedSample<T>[] samples = (WeightedSample<T>[]) BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
-	    if (distribution == null && !unique && weightsUsed(samples)) {
-	    	AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>(targetType);
-	    	for (int i = 0; i < samples.length; i++) {
-	    		WeightedSample<T> sample = samples[i];
-	    		if (sample.getValue() == null)
-	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-	    		generator.addSample(sample);
-	    	}
-	    	return generator;
-	    } else {
-	    	String[] values = new String[samples.length];
-	    	for (int i = 0; i < samples.length; i++) {
-	    		T rawValue = samples[i].getValue();
-	    		if (rawValue == null)
-	    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-				String value = String.valueOf(rawValue);
-	    		values[i] = value;
-	    	}
-	        IteratingGenerator<String> source = new IteratingGenerator<String>(new ArrayIterable<String>(values, String.class));
-	        if (distribution == null)
-	        	distribution = SequenceManager.RANDOM_SEQUENCE;
-	        Generator<T> gen = GeneratorFactory.getConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
-	    	return distribution.applyTo(gen, unique);
-	    }
-    }
-
-    private static boolean weightsUsed(WeightedSample<?>[] samples) {
-	    for (WeightedSample<?> sample : samples)
-	    	if (sample.getWeight() != 1)
-	    		return true;
-	    return false;
-    }
-
+	public abstract <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
+            Distribution distribution, boolean unique);
 
     /**
      * Creates a generator that reads cell Strings from a CSV file and converts them into objects by a converter
@@ -172,7 +135,7 @@ public class GeneratorFactory {
      * @return a Generator that creates instances of the parameterized type T.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <T> Generator<T> getSampleGenerator(String uri, String encoding, Converter<String, T> converter) {
+    public <T> Generator<T> createSampleGenerator(String uri, String encoding, Converter<String, T> converter) {
         if (converter == null)
             converter = new NoOpConverter();
         return new WeightedCSVSampleGenerator<T>(uri, encoding, converter);
@@ -185,7 +148,7 @@ public class GeneratorFactory {
      * @return a generator that selects from the listed sample values
      */
     @SuppressWarnings("unchecked")
-    public static <T> Generator<T> getSampleGenerator(Collection<T> values) {
+    public <T> Generator<T> createSampleGenerator(Collection<T> values) {
     	Class<T> generatedType = (Class<T>) Object.class;
     	if (values.size() > 0) {
     		T first = values.iterator().next();
@@ -194,15 +157,7 @@ public class GeneratorFactory {
         return new AttachedWeightSampleGenerator<T>(generatedType, values);
     }
 
-    /**
-     * Creates a Generator that chooses from a set of values with equal weights.
-     *
-     * @param values A collection of values to choose from
-     * @return a generator that selects from the listed sample values
-     */
-    public static <T> Generator<T> getSampleGenerator(Class<T> generatedType, Collection<T> values) {
-        return new AttachedWeightSampleGenerator<T>(generatedType, values);
-    }
+    public abstract <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique);
 
     /**
      * Creates a Generator that chooses from an array of values with equal weights.
@@ -211,9 +166,9 @@ public class GeneratorFactory {
      * @return a generator that selects from the listed sample values
      */
     @SuppressWarnings("unchecked")
-    public static <T> Generator<T> getSampleGenerator(T ... values) {
+    public <T> Generator<T> createSampleGenerator(T ... values) {
     	Class<T> generatedType = (values.length > 0 ? (Class<T>) values[0].getClass() : (Class<T>) Object.class);
-    	return getSampleGenerator(generatedType, values);
+    	return createSampleGenerator(generatedType, values);
     }
 
     /**
@@ -222,7 +177,7 @@ public class GeneratorFactory {
      * @param values An array of values to choose from
      * @return a generator that selects from the listed sample values
      */
-    public static <T> Generator<T> getSampleGenerator(Class<T> generatedType, T ... values) {
+    public <T> Generator<T> createSampleGenerator(Class<T> generatedType, T ... values) {
         return new AttachedWeightSampleGenerator<T>(generatedType, values);
     }
 
@@ -232,7 +187,7 @@ public class GeneratorFactory {
      * @param samples A collection of sample values
      * @return a generator of the desired characteristics
      */
-    public static <T> Generator<T> getWeightedSampleGenerator(Collection<WeightedSample<T>> samples) {
+    public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples) {
         AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
@@ -244,7 +199,7 @@ public class GeneratorFactory {
      * @param samples A collection of sample values
      * @return a generator of the desired characteristics
      */
-    public static <T> Generator<T> getWeightedSampleGenerator(WeightedSample<T> ... samples) {
+    public <T> Generator<T> createWeightedSampleGenerator(WeightedSample<T> ... samples) {
         AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
@@ -261,7 +216,7 @@ public class GeneratorFactory {
      * @param distribution the distribution to use
      * @return a generator of the desired characteristics
      */
-    public static Generator<Date> getDateGenerator(
+    public Generator<Date> createDateGenerator(
             Date min, Date max, long precision, Distribution distribution) {
     	if (min == null) {
     		if (max == null) {
@@ -281,7 +236,7 @@ public class GeneratorFactory {
      * @param pattern   the pattern to use for parsing the CSV cells
      * @return a generator of the desired characteristics
      */
-    public static Generator<Date> getDateGenerator(String uri, String encoding, String pattern) {
+    public Generator<Date> createDateGenerator(String uri, String encoding, String pattern) {
         DateFormat format = new SimpleDateFormat(pattern);
         Converter<String, Date> converter = new ParseFormatConverter<Date>(Date.class, format, false);
         return new WeightedCSVSampleGenerator<Date>(uri, encoding, converter);
@@ -297,12 +252,12 @@ public class GeneratorFactory {
      * @param locale    the locale to use for '\w' evaluation
      * @return a generator of the desired characteristics
      */
-    public static Generator<Character> getCharacterGenerator(String pattern, Locale locale) {
+    public Generator<Character> createCharacterGenerator(String pattern, Locale locale) {
         Collection<Character> chars = charSet(pattern, locale);
         return new CharacterGenerator(chars);
     }
 
-    private static Collection<Character> charSet(String pattern, Locale locale) {
+    private Collection<Character> charSet(String pattern, Locale locale) {
         Collection<Character> chars;
         if (pattern != null) {
             try {
@@ -315,7 +270,7 @@ public class GeneratorFactory {
         return chars;
     }
 
-    public static Generator<Character> getUniqueCharacterGenerator(String pattern, Locale locale) {
+    public Generator<Character> createUniqueCharacterGenerator(String pattern, Locale locale) {
         Character[] chars = CollectionUtil.toArray(charSet(pattern, locale), Character.class);
         return new SequenceGenerator<Character>(Character.class, chars);
     }
@@ -326,7 +281,7 @@ public class GeneratorFactory {
      * @param characters the set of characters to choose from
      * @return a generator of the desired characteristics
      */
-    public static Generator<Character> getCharacterGenerator(Collection<Character> characters) {
+    public Generator<Character> createCharacterGenerator(Collection<Character> characters) {
         return new CharacterGenerator(characters);
     }
 
@@ -336,11 +291,11 @@ public class GeneratorFactory {
      * @param characters the set of characters to choose from
      * @return a generator of the desired characteristics
      */
-    public static Generator<Character> getCharacterGenerator(Character ... characters) {
+    public Generator<Character> createCharacterGenerator(Character ... characters) {
         return new CharacterGenerator(Arrays.asList(characters));
     }
 
-	public static Generator<String> getStringGenerator(String pattern,
+	public Generator<String> createStringGenerator(String pattern,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution,
 			Locale locale, boolean unique) {
         if (maxLength == null)
@@ -373,19 +328,18 @@ public class GeneratorFactory {
         	minLength = Math.max(minLength, quantifier.getMin());
         	if (quantifier.getMax() != null)
         		maxLength = Math.min(maxLength, quantifier.getMax());
-			return getStringGenerator(chars, minLength, maxLength, lengthDistribution);
+			return createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique);
         }
         if (locale == null)
             locale = defaultLocale();
-		return getRegexStringGenerator(pattern, minLength, maxLength, unique); 
+		return createRegexStringGenerator(pattern, minLength, maxLength, unique); 
 	}
     
-	private static Generator<String> getStringGenerator(Collection<Character> chars,
-			Integer minLength, Integer maxLength, Distribution lengthDistribution) {
-		Generator<Character> charGenerator = getCharacterGenerator(chars);
-		Generator<Integer> lengthGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
-		return new DistributedLengthStringGenerator(charGenerator, lengthGenerator);
-	}
+	public abstract Generator<String> createStringGenerator(Collection<Character> chars,
+			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique);
+
+	public abstract Generator<String> createCompositeStringGenerator(
+			GeneratorProvider<?> partGeneratorProvider, int minParts, int maxParts, boolean unique);
 
 	/**
      * Creates a generator that produces Strings which match a regular expression in a locale
@@ -396,10 +350,9 @@ public class GeneratorFactory {
      * @return a generator of the desired characteristics
      * @throws ConfigurationError 
      */
-    public static Generator<String> getRegexStringGenerator(String pattern, int minLength, Integer maxLength, boolean unique) 
+    public Generator<String> createRegexStringGenerator(String pattern, int minLength, Integer maxLength, boolean unique) 
             	throws ConfigurationError {
-    	// TODO support locale for \w
-        Generator<String> generator = RegexGeneratorFactory.create(pattern, maxLength, unique);
+    	Generator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, unique, this);
         return new ValidatingGeneratorProxy<String>(
                 generator, new StringLengthValidator(minLength, maxLength));
     }
@@ -414,7 +367,7 @@ public class GeneratorFactory {
      * @param converter the converter to apply to the products of the source generator
      * @return a generator of the desired characteristics
      */
-    public static <S, T> Generator<T> getConvertingGenerator(Generator<S> source, Converter<S, T> converter) {
+    public <S, T> Generator<T> createConvertingGenerator(Generator<S> source, Converter<S, T> converter) {
         return new ConvertingGenerator<S, T>(source, converter);
     }
 
@@ -430,7 +383,7 @@ public class GeneratorFactory {
      * @see java.text.MessageFormat
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Generator<String> getMessageGenerator(
+    public Generator<String> createMessageGenerator(
             String pattern, int minLength, int maxLength, Generator ... sources) {
         Generator<String> generator = new ConvertingGenerator<Object[], String>(
                 new SimpleCompositeArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
@@ -448,7 +401,7 @@ public class GeneratorFactory {
      * @param sizeDistribution      distribution for the collection size
      * @return a generator of the desired characteristics
      */
-    public static <C extends Collection<I>, I> Generator<C> getCollectionGenerator(
+    public <C extends Collection<I>, I> Generator<C> createCollectionGenerator(
             Class<C> collectionType, Generator<I> source, 
             int minSize, int maxSize, Distribution sizeDistribution) {
         return new CollectionGenerator<C, I>(collectionType, source, minSize, maxSize, sizeDistribution);
@@ -462,7 +415,7 @@ public class GeneratorFactory {
      * @param sizeDistribution   distribution for the array length
      * @return a generator of the desired characteristics
      */
-    public static <T> Generator<T[]> getArrayGenerator(
+    public <T> Generator<T[]> createArrayGenerator(
             Generator<T> source, Class<T> type, 
             int minSize, int maxSize, Distribution sizeDistribution) {
         return new SimpleArrayGenerator<T>(source, type, minSize, maxSize, sizeDistribution);
@@ -474,21 +427,23 @@ public class GeneratorFactory {
      * @param sources the source generators
      * @return a generator of the desired characteristics
      */
-    public static <T> Generator<T[]> getArrayGenerator(Class<T> componentType, Generator<T> ... sources) {
+    public <T> Generator<T[]> createArrayGenerator(Class<T> componentType, Generator<T> ... sources) {
         return new SimpleCompositeArrayGenerator<T>(componentType, sources);
     }
+
+	public abstract <T> Generator<T[]> createArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique);
+
+	public abstract <T> Generator<T[]> createArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique);
 
     // wrappers --------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a generator that returns a constant value.
+     * Creates a generator that returns a single value.
      *
      * @param value the value to return
      * @return a generator that returns a constant value.
      */
-    public static <T> Generator<T> getConstantGenerator(T value) {
-        return new ConstantGenerator<T>(value);
-    }
+    public abstract <T> Generator<T> createSingleValueGenerator(T value, boolean unique);
 
     // source generators -----------------------------------------------------------------------------------------------
 
@@ -500,7 +455,7 @@ public class GeneratorFactory {
      * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
      * @return a generator of the desired characteristics
      */
-    public static Generator<String> getCSVCellGenerator(String uri, char separator, boolean cyclic) {
+    public Generator<String> createCSVCellGenerator(String uri, char separator, boolean cyclic) {
         Generator<String> generator = new IteratingGenerator<String>(new CSVCellIterable(uri, separator));
         return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
@@ -514,7 +469,7 @@ public class GeneratorFactory {
      * @param cyclic           indicates wether iteration should restart from the first line after it reaches the file end.
      * @return a generator of the desired characteristics
      */
-    public static Generator<String[]> getCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines, boolean cyclic) {
+    public Generator<String[]> createCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines, boolean cyclic) {
         Generator<String[]> generator = new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, SystemInfo.getFileEncoding()));
         return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
@@ -526,25 +481,44 @@ public class GeneratorFactory {
      * @param cyclic      indicates whether iteration should restart from the first line after it reaches the file end.
      * @return a generator of the desired characteristics
      */
-    public static Generator<String> getTextLineGenerator(String uri, boolean cyclic) {
+    public Generator<String> createTextLineGenerator(String uri, boolean cyclic) {
         Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
         return DescriptorUtil.wrapWithProxy(generator, cyclic);
     }
 
-	public static <T> Generator<T> wrapNonClosing(Generator<T> generator) {
+	public <T> Generator<T> wrapNonClosing(Generator<T> generator) {
 		return new NonClosingGeneratorProxy<T>(generator);
 	}
 
-	private static int defaultMinLength() {
-		return 1;
-	}
+	public abstract NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota);
+	public abstract NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota);
 
-    private static Integer defaultMaxLength() {
-		return 30;
-	}
+	public abstract <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType);
+	
+//    public abstract Generator<String> createRepetitiveStringGenerator(Generator<String> partGenerator, int minReps, int maxReps, boolean unique);
+	
+	// default setting providers ---------------------------------------------------------------------------------------
 
-	private static Locale defaultLocale() {
-		return Locale.getDefault();
-	}
+	public abstract boolean shouldNullifyEachNullable();
+
+	protected abstract boolean defaultNullable();
+	protected abstract boolean defaultUnique();
+	protected abstract double defaultNullQuota();
+	
+	protected abstract double defaultTrueQuota() ;
+
+	protected abstract <T extends Number> T defaultMin(Class<T> numberType) ;
+	protected abstract <T extends Number> T defaultMax(Class<T> numberType);
+	protected abstract <T extends Number> T defaultGranularity(Class<T> numberType);
+	protected abstract <T extends Number> int defaultTotalDigits(Class<T> numberType);
+	protected abstract <T extends Number> int defaultFractionDigits(Class<T> numberType);
+
+	public abstract Distribution defaultDistribution(Uniqueness uniqueness);
+
+	protected abstract int defaultMinLength();
+	protected abstract Integer defaultMaxLength();
+	protected abstract Distribution defaultLengthDistribution(Uniqueness uniqueness, boolean required);
+	
+	protected abstract Locale defaultLocale();
 
 }
