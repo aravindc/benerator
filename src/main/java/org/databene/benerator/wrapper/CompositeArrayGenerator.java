@@ -45,6 +45,10 @@ public class CompositeArrayGenerator<S> extends GeneratorProxy<S[]> {
 	public void setUnique(boolean unique) {
     	this.unique = unique;
     }
+	
+	public Generator<? extends S>[] getSources() {
+		return sources;
+	}
     
     @Override
     public synchronized void init(GeneratorContext context) {
