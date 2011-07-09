@@ -34,6 +34,8 @@ import javax.validation.constraints.Size;
 
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.factory.EquivalenceGeneratorFactory;
+import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -49,6 +51,8 @@ import org.junit.Test;
  * @author Volker Bergmann
  */
 public class AnnotationMapperTest {
+
+	private AnnotationMapper annotationMapper = new AnnotationMapper(new VolumeGeneratorFactory());
 
 	@Test
 	public void testUnannotated() throws Exception {
@@ -233,19 +237,21 @@ public class AnnotationMapperTest {
 	
 	@Test
 	public void testDatabaseAnnotation() {
-		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithDatabase.class.getAnnotations());
+		BeneratorContext context = createContext();
+		annotationMapper.parseClassAnnotations(ClassWithDatabase.class.getAnnotations(), context);
 		DBSystem db = (DBSystem) context.get("db");
 		assertNotNull(db);
 		assertEquals("hsqlmem", db.getEnvironment());
 	}
-	
+
 	@Database(id = "db", environment = "hsqlmem")
 	static class ClassWithDatabase {
 	}
 	
 	@Test
 	public void testSimpleBeanAnnotation() {
-		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithSimpleBean.class.getAnnotations());
+		BeneratorContext context = createContext();
+		annotationMapper.parseClassAnnotations(ClassWithSimpleBean.class.getAnnotations(), context);
 		Object bean = context.get("bean");
 		assertNotNull(bean);
 		assertEquals(ArrayList.class, bean.getClass());
@@ -257,7 +263,8 @@ public class AnnotationMapperTest {
 	
 	@Test
 	public void testBeanSpecAnnotation() {
-		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanSpec.class.getAnnotations());
+		BeneratorContext context = createContext();
+		annotationMapper.parseClassAnnotations(ClassWithBeanSpec.class.getAnnotations(), context);
 		Object bean = context.get("bean");
 		assertNotNull(bean);
 		assertEquals(Date.class, bean.getClass());
@@ -270,7 +277,8 @@ public class AnnotationMapperTest {
 	
 	@Test
 	public void testBeanPropertiesAnnotation() {
-		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanProperties.class.getAnnotations());
+		BeneratorContext context = createContext();
+		annotationMapper.parseClassAnnotations(ClassWithBeanProperties.class.getAnnotations(), context);
 		Object bean = context.get("bean");
 		assertNotNull(bean);
 		assertEquals(Date.class, bean.getClass());
@@ -283,7 +291,8 @@ public class AnnotationMapperTest {
 	
 	@Test
 	public void testBeanPropertiesSpecAnnotation() {
-		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanPropertiesSpec.class.getAnnotations());
+		BeneratorContext context = createContext();
+		annotationMapper.parseClassAnnotations(ClassWithBeanPropertiesSpec.class.getAnnotations(), context);
 		Object bean = context.get("bean");
 		assertNotNull(bean);
 		assertEquals(Date.class, bean.getClass());
@@ -296,7 +305,8 @@ public class AnnotationMapperTest {
 	
 	@Test
 	public void testBeanSource() {
-		BeneratorContext context = AnnotationMapper.parseClassAnnotations(ClassWithBeanSource.class.getAnnotations());
+		BeneratorContext context = createContext();
+		annotationMapper.parseClassAnnotations(ClassWithBeanSource.class.getAnnotations(), context);
 		Object bean = context.get("bean");
 		assertNotNull(bean);
 		assertEquals(ConstantGenerator.class, bean.getClass());
@@ -313,7 +323,13 @@ public class AnnotationMapperTest {
 	}
 	
 	
-	// helper method ---------------------------------------------------------------------------------------------------
+	// helper methods --------------------------------------------------------------------------------------------------
+	
+	protected BeneratorContext createContext() {
+		BeneratorContext context = new BeneratorContext();
+		context.setGeneratorFactory(new EquivalenceGeneratorFactory());
+		return context;
+	}
 	
 	private void checkMethod(String method, Class<?> methodArgType, String expectedType, Object ... details)
             throws NoSuchMethodException {
