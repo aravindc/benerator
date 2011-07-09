@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
@@ -51,7 +50,6 @@ public class GenderGenerator extends GeneratorProxy<Gender> {
 
     public GenderGenerator(double femaleQuota) {
         setFemaleQuota(femaleQuota);
-        initSource();
     }
 
     // Generator interface implementation ------------------------------------------------------------------------------
@@ -61,10 +59,14 @@ public class GenderGenerator extends GeneratorProxy<Gender> {
         return Gender.class;
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-	    initSource();
+	    source = context.getGeneratorFactory().createWeightedSampleGenerator(
+	    		new WeightedSample<Gender>(Gender.FEMALE, femaleQuota),
+	    		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
+	    );
         super.init(context);
     }
 
@@ -76,16 +78,6 @@ public class GenderGenerator extends GeneratorProxy<Gender> {
 
     public void setFemaleQuota(double femaleQuota) {
     	this.femaleQuota = femaleQuota;
-    }
-    
-    // helper methods --------------------------------------------------------------------------------------------------
-    
-	@SuppressWarnings("unchecked")
-    private void initSource() {
-	    source = GeneratorFactory.getWeightedSampleGenerator(
-	    		new WeightedSample<Gender>(Gender.FEMALE, femaleQuota),
-	    		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
-	    );
     }
     
 }

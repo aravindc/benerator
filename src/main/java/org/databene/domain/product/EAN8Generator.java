@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.domain.product;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
@@ -65,7 +64,7 @@ public class EAN8Generator extends GeneratorWrapper<String, String> {
 
     @Override
     public synchronized void init(GeneratorContext context) {
-        setSource(GeneratorFactory.getRegexStringGenerator("[0-9]{7}", 7, 7, unique));
+        setSource(context.getGeneratorFactory().createRegexStringGenerator("[0-9]{7}", 7, 7, unique));
         super.init(context);
     }
     
