@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -48,7 +48,6 @@ import org.databene.commons.Encodings;
 import org.databene.commons.Expression;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
-import org.databene.commons.NullSafeComparator;
 import org.databene.commons.OrderedMap;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
@@ -464,7 +463,7 @@ public class ProjectBuilder implements Runnable {
         Map<String, String> attributes = new OrderedMap<String, String>();
         for (FeatureDetail<? extends Object> detail : descriptor.getDetails()) {
             Object value = detail.getValue();
-            if (value != null && !NullSafeComparator.equals(value, detail.getDefault())) {
+            if (value != null && !istDefaultValue(value, detail.getName())) {
             	if (value instanceof Expression)
             		value = ((Expression<?>) value).evaluate(null);
                 attributes.put(detail.getName(), toStringConverter.convert(value));
@@ -481,7 +480,11 @@ public class ProjectBuilder implements Runnable {
         writer.append("\n\n").append(TAB);
     }
 	
-    private static void appendEndElement(String nodeName, LFNormalizingStringBuilder writer) {
+    private static boolean istDefaultValue(Object value, String name) {
+		return false; // TODO implement correctly using VolumeGeneratorFactory
+	}
+
+	private static void appendEndElement(String nodeName, LFNormalizingStringBuilder writer) {
 	    writer.append("</").append(nodeName).append(">");
     }
 
