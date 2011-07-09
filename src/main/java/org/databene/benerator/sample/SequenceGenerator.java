@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,12 @@
 
 package org.databene.benerator.sample;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.commons.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,18 +39,28 @@ import org.slf4j.LoggerFactory;
  * Creates a predefined sequence of objects.<br/>
  * <br/>
  * Created: 19.11.2007 15:21:24
+ * @author Volker Bergmann
  */
 public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
     
     private static Logger logger = LoggerFactory.getLogger(SequenceGenerator.class);
 
     private Class<E> productType;
-    private E[] values;
+    private List<E> values;
     private int cursor = 0;
 
     public SequenceGenerator(Class<E> productType, E ... values) {
         this.productType = productType;
-        this.values = values;
+        this.values = CollectionUtil.toList(values);
+    }
+    
+    public SequenceGenerator(Class<E> productType, Collection<E> values) {
+        this.productType = productType;
+        this.values = new ArrayList<E>(values);
+    }
+    
+    public void addValue(E value) {
+    	this.values.add(value);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -57,8 +72,8 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
     public synchronized E generate() {
         if (cursor < 0)
             return null;
-        E result = values[cursor];
-        if (cursor < values.length - 1)
+        E result = values.get(cursor);
+        if (cursor < values.size() - 1)
             cursor++;
         else
             cursor = -1;
@@ -78,6 +93,11 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
         values = null;
         cursor = -1;
         super.close();
+    }
+    
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + values;
     }
     
 }
