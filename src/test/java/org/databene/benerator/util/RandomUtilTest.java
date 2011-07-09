@@ -68,8 +68,8 @@ public class RandomUtilTest extends GeneratorTest {
 		for (int i = 0; i < n; i++)
 			counter.count(RandomUtil.randomFromWeightLiteral("'A'^2,'B'^1"));
 		assertEquals(2, counter.getCounts().size());
-		assertEquals(n / 3. * 2., counter.getCount("A"), Math.sqrt(n));
-		assertEquals(n / 3., counter.getCount("B"), Math.sqrt(n));
+		assertEquals(n / 3. * 2., counter.getCount("A"), 100);
+		assertEquals(n / 3., counter.getCount("B"), 100);
 	}
 	
 	@Test
