@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE } )
+@Target( { ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR } )
 public @interface Database {
 	String id();
 	String environment() default "";
