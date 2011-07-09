@@ -29,7 +29,7 @@ package org.databene.domain.address;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DigitsGenerator;
-import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;

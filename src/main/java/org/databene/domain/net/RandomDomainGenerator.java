@@ -28,7 +28,7 @@ package org.databene.domain.net;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.primitive.regex.RegexStringGenerator;
+import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.util.AbstractGenerator;
 
 /**
