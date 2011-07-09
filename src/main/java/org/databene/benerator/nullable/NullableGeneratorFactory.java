@@ -26,6 +26,7 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.DescriptorUtil;
+import org.databene.commons.ArrayUtil;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.Validator;
@@ -43,6 +44,14 @@ public class NullableGeneratorFactory {
 	
 	public static NullableGenerator<?> createConstantGenerator(Object value) {
 		return new ConstantNullableGenerator<Object>(value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> NullableGenerator<T>[] wrapAll(Generator<T>[] sources) {
+		NullableGenerator<T>[] result = ArrayUtil.newInstance(NullableGenerator.class, sources.length);
+		for (int i = 0; i < sources.length; i++)
+			result[i] = wrap(sources[i]);
+		return result;
 	}
 
 	public static <T> NullableGenerator<T> wrap(Generator<T> source) {
@@ -88,6 +97,15 @@ public class NullableGeneratorFactory {
 
 	public static <T> NullableGenerator<T> wrapCyclic(NullableGenerator<T> generator) {
 		return new CyclicNullableGeneratorProxy<T>(generator);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static NullableGenerator<?> createNullStartingGenerator(Generator<?> source) {
+		return new NullStartingGenerator(source);
+	}
+
+	public static <T> NullableGenerator<T> createNullStartingGenerator(NullableGenerator<T> source) {
+		return new NullStartingNullableGenerator<T>(source);
 	}
 
 }
