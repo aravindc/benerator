@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,10 +42,17 @@ import org.databene.benerator.util.ThreadSafeGenerator;
 public class OneShotGenerator<E> extends ThreadSafeGenerator<E> {
 
 	private E value;
+	private Class<E> generatedType;
 	private boolean used;
 	
-    public OneShotGenerator(E value) {
+    @SuppressWarnings("unchecked")
+	public OneShotGenerator(E value) {
+	    this(value, (Class<E>) value.getClass());
+    }
+
+    public OneShotGenerator(E value, Class<E> generatedType) {
 	    this.value = value;
+	    this.generatedType = generatedType;
 	    this.used = false;
     }
 
@@ -56,16 +63,15 @@ public class OneShotGenerator<E> extends ThreadSafeGenerator<E> {
 	    super.close();
     }
 
-    public E generate() throws IllegalGeneratorStateException {
+    public synchronized E generate() throws IllegalGeneratorStateException {
 	    if (used)
 	    	return null;
 	    used = true;
 	    return value;
     }
 
-    @SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
-	    return (Class<E>) value.getClass();
+	    return generatedType;
     }
 
     @Override
