@@ -153,8 +153,7 @@ public abstract class GeneratorTest {
     }
     
     public static void assertUnavailable(Generator<?> generator) {
-        assertNull("Generator " + generator + " is expected to be unavailable", 
-        		generator.generate());
+        assertNull("Generator " + generator + " is expected to be unavailable", generator.generate());
     }
 
     public static void assertAvailable(Generator<?> generator) {
@@ -305,7 +304,8 @@ public abstract class GeneratorTest {
         for (int i = 0; i < invocations; i++) {
         	T generation = generator.generate();
             assertNotNull("Generator has gone unavailable. " +
-            		"Generated only " + i + " of " + expectedProduct.length + " expected values", generation);
+            		"Generated only " + i + " of " + expectedProduct.length + " expected values: " + observedSet, 
+            		generation);
             logger.debug("created " + format(generation));
             assertTrue("The generated value '" + format(generation) + "' was not in the expected set: " + expectedSet,
                     expectedSet.contains(generation));
