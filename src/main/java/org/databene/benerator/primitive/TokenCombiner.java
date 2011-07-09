@@ -28,7 +28,7 @@ import java.util.Set;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.wrapper.CompositeStringGenerator;
+import org.databene.benerator.wrapper.AbstractCompositeStringGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.ConfigurationError;
@@ -103,7 +103,7 @@ public class TokenCombiner extends GeneratorProxy<String> {
 	    super.init(context);
 	}
 
-	protected class SimpleTokenCombinator extends CompositeStringGenerator {
+	protected class SimpleTokenCombinator extends AbstractCompositeStringGenerator {
 		
 		SimpleTokenCombinator(boolean unique) {
 	        super(unique);
