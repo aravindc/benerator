@@ -43,7 +43,6 @@ import org.databene.benerator.distribution.function.GaussianFunction;
 import org.databene.benerator.distribution.sequence.HeadSequence;
 import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
-import org.databene.benerator.primitive.regex.RegexStringGeneratorFactoryTest;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
@@ -58,14 +57,16 @@ import static junit.framework.Assert.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class GeneratorFactoryTest extends GeneratorTest {
+public class VolumeGeneratorFactoryTest extends GeneratorTest {
 
-    private static Logger logger = LoggerFactory.getLogger(GeneratorFactoryTest.class);
+    private static Logger logger = LoggerFactory.getLogger(VolumeGeneratorFactoryTest.class);
+    
+    private GeneratorFactory generatorFactory = new VolumeGeneratorFactory();
 
     // boolean source -----------------------------------------------------------------------------------------------
 
     public void testGetBooleanGenerator() {
-        initAndUseGenerator(GeneratorFactory.getBooleanGenerator(0.5f));
+        initAndUseGenerator(generatorFactory.createBooleanGenerator(0.5f));
     }
 
     // number generators -----------------------------------------------------------------------------------------------
@@ -105,7 +106,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
     
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
-        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, sequence, false);
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, sequence, false);
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             T n = generator.generate();
@@ -119,7 +120,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, WeightFunction weightFunction) {
-        Generator<T> generator = GeneratorFactory.getNumberGenerator(type, min, max, precision, weightFunction, false);
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, weightFunction, false);
         generator.init(context);
         int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
         int[] count = new int[range];
@@ -141,12 +142,12 @@ public class GeneratorFactoryTest extends GeneratorTest {
         List<Integer> samples = new ArrayList<Integer>();
         for (int i = 0; i < 10; i++)
             samples.add(i);
-        Generator<Integer> generator = GeneratorFactory.getSampleGenerator(samples);
+        Generator<Integer> generator = generatorFactory.createSampleGenerator(samples);
         initAndUseGenerator(generator);
     }
 
     public void testGetEmptySampleGenerator() {
-        Generator<Object> generator = GeneratorFactory.getSampleGenerator();
+        Generator<Object> generator = generatorFactory.createSampleGenerator();
 		generator.init(context);
 		assertNull(generator.generate());
     }
@@ -156,7 +157,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetDateGeneratorByDistributionType() {
         for (Sequence sequence : SequenceManager.registeredSequences())
-            GeneratorFactory.getDateGenerator(date(2006, 0, 1), date(2006, 11, 31), Period.DAY.getMillis(), sequence);
+            generatorFactory.createDateGenerator(date(2006, 0, 1), date(2006, 11, 31), Period.DAY.getMillis(), sequence);
     }
 
     @Test
@@ -164,7 +165,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         Date min = date(2006, 0, 1);
         Date max = date(2006, 11, 31);
         for (WeightFunction distributionFunction : getDistributionFunctions(min.getTime(), max.getTime())) {
-            Generator<Date> generator = GeneratorFactory.getDateGenerator(min, max, Period.DAY.getMillis(), distributionFunction);
+            Generator<Date> generator = generatorFactory.createDateGenerator(min, max, Period.DAY.getMillis(), distributionFunction);
             initAndUseGenerator(generator);
         }
     }
@@ -172,7 +173,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetDateGeneratorFromSource() {
         String url = "org/databene/benerator/factory/dates.csv";
-        Generator<Date> generator = GeneratorFactory.getDateGenerator(url, Encodings.UTF_8, "dd.MM.yyyy");
+        Generator<Date> generator = generatorFactory.createDateGenerator(url, Encodings.UTF_8, "dd.MM.yyyy");
         initAndUseGenerator(generator);
     }
 
@@ -195,7 +196,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
     }
 
     private void checkCharacterGeneratorOfLocale(Locale locale) {
-        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(null, locale);
+        Generator<Character> generator = generatorFactory.createCharacterGenerator(null, locale);
         generator.init(context);
         List<Character> specialChars;
         specialChars = new ArrayList<Character>(LocaleUtil.letters(locale));
@@ -214,14 +215,14 @@ public class GeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetCharacterGeneratorByRegex() {
         String pattern = "[A-Za-z0-1]";
-        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(pattern, Locale.GERMAN);
+        Generator<Character> generator = generatorFactory.createCharacterGenerator(pattern, Locale.GERMAN);
         initAndUseGenerator(generator);
     }
 
     @Test
     public void testGetCharacterGeneratorBySet() {
         Set<Character> set = new CharSet('A', 'Z').getSet();
-        Generator<Character> generator = GeneratorFactory.getCharacterGenerator(set);
+        Generator<Character> generator = generatorFactory.createCharacterGenerator(set);
         initAndUseGenerator(generator);
     }
 
@@ -229,30 +230,21 @@ public class GeneratorFactoryTest extends GeneratorTest {
     public void testGetRegexGenerator() {
 //      checkRegexGenerator(null, 0, 0, true);
 //      checkRegexGenerator("", 0, 0, false);
-      checkRegexGeneration("[1-9]\\d{0,3}", 1, 4, false);
+        checkRegexGeneration("[1-9]\\d{0,3}", 1, 4, false);
+        checkRegexGeneration("12345678901234567890123456789012", 1, null, false);
   }
 
     @Test
     public void testGetUniqueRegexGenerator() {
-      Generator<String> generator = GeneratorFactory.getRegexStringGenerator("[0-9]{3}", 3, 3, true);
+      Generator<String> generator = generatorFactory.createRegexStringGenerator("[0-9]{3}", 3, 3, true);
       generator.init(context);
       expectUniqueGenerations(generator, 1000).withCeasedAvailability();
   }
 
-    private void checkRegexGeneration(String pattern, int minLength, int maxLength, boolean nullable) {
-        Generator<String> generator = GeneratorFactory.getRegexStringGenerator(pattern, minLength, maxLength, false);
+    private void checkRegexGeneration(String pattern, int minLength, Integer maxLength, boolean nullable) {
+        Generator<String> generator = generatorFactory.createRegexStringGenerator(pattern, minLength, maxLength, false);
         generator.init(context);
-        RegexStringGeneratorFactoryTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
-    }
-
-    // enum source --------------------------------------------------------------------------------------------------
-
-    @Test
-    public void testGetConstantGenerator() {
-        Generator<Object> generator = GeneratorFactory.getConstantGenerator(null);
-        assertNull(generator.generate());
-        initAndUseGenerator(GeneratorFactory.getConstantGenerator(""));
-        initAndUseGenerator(GeneratorFactory.getConstantGenerator(5));
+        RegexStringGeneratorFactory_volumeTest.checkRegexGeneration(generator, pattern, minLength, maxLength, nullable);
     }
 
     // weighted sample source ---------------------------------------------------------------------------------------
@@ -265,13 +257,13 @@ public class GeneratorFactoryTest extends GeneratorTest {
             WeightedSample<Integer> sample = new WeightedSample<Integer>(i, i * 2. / (n * (n + 1)));
             samples.add(sample);
         }
-        Generator<Integer> generator = GeneratorFactory.getWeightedSampleGenerator(samples);
+        Generator<Integer> generator = generatorFactory.createWeightedSampleGenerator(samples);
         initAndUseGenerator(generator);
     }
 
     @Test
     public void testGetWeightedSampleGeneratorBySource() {
-        Generator<String> generator = GeneratorFactory.getSampleGenerator("file://weighted-names.csv");
+        Generator<String> generator = generatorFactory.createSampleGenerator("file://weighted-names.csv");
         initAndUseGenerator(generator);
     }
 
@@ -284,7 +276,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         NumberFormat format = DecimalFormat.getInstance();
         format.setMinimumFractionDigits(0);
         format.setMaximumFractionDigits(2);
-        Generator<String> generator = GeneratorFactory.getConvertingGenerator(
+        Generator<String> generator = generatorFactory.createConvertingGenerator(
                 source, new FormatFormatConverter(Object.class, format, false));
         initAndUseGenerator(generator);
     }
@@ -296,7 +288,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
         AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         String pattern = "{0} {1}";
-        Generator<String> generator = GeneratorFactory.getMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
+        Generator<String> generator = generatorFactory.createMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
         generator.init(context);
         for (int i = 0; i < 10; i++) {
             String message = generator.generate();
@@ -316,7 +308,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         for (Sequence sequence : SequenceManager.registeredSequences()) {
         	if (sequence instanceof HeadSequence)
         		continue;
-            Generator<List<?>> generator = GeneratorFactory.getCollectionGenerator(
+            Generator<List<?>> generator = generatorFactory.createCollectionGenerator(
                     List.class, source, 0, 5, sequence);
             initAndUseGenerator(generator);
         }
@@ -329,7 +321,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         int minSize = 0;
         int maxSize = 5;
         for (WeightFunction distributionFunction : getDistributionFunctions(minSize, maxSize)) {
-            Generator<List<?>> generator = GeneratorFactory.getCollectionGenerator(
+            Generator<List<?>> generator = generatorFactory.createCollectionGenerator(
                     List.class, source, minSize, maxSize, distributionFunction);
             initAndUseGenerator(generator);
         }
@@ -343,7 +335,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         for (Sequence sequence : SequenceManager.registeredSequences()) {
         	if (sequence instanceof HeadSequence)
         		continue;
-            Generator<Integer[]> generator = GeneratorFactory.getArrayGenerator(source, Integer.class, 0, 5, sequence);
+            Generator<Integer[]> generator = generatorFactory.createArrayGenerator(source, Integer.class, 0, 5, sequence);
             initAndUseGenerator(generator);
         }
     }
@@ -354,7 +346,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         int maxLength = 5;
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (WeightFunction distributionFunction : getDistributionFunctions(minLength, maxLength)) {
-            Generator<Integer[]> generator = GeneratorFactory.getArrayGenerator(source, Integer.class, minLength, maxLength, distributionFunction);
+            Generator<Integer[]> generator = generatorFactory.createArrayGenerator(source, Integer.class, minLength, maxLength, distributionFunction);
             initAndUseGenerator(generator);
         }
     }
@@ -367,7 +359,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
         AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
-        Generator<Object[]> generator = GeneratorFactory.getArrayGenerator(Object.class, sources);
+        Generator<Object[]> generator = generatorFactory.createArrayGenerator(Object.class, sources);
         generator.init(context);
         for (int i = 0; i < 10; i++) {
             Object[] array = generator.generate();
@@ -381,7 +373,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetCSVCellGenerator() {
-        Generator<String> generator = GeneratorFactory.getCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true);
+        Generator<String> generator = generatorFactory.createCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true);
         generator.init(context);
         assertEquals("Alice", generator.generate());
         assertEquals("Bob", generator.generate());
@@ -391,7 +383,7 @@ public class GeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetArraySourceGenerator() {
-        Generator<String[]> generator = GeneratorFactory.getCSVLineGenerator(
+        Generator<String[]> generator = generatorFactory.createCSVLineGenerator(
                 "file://org/databene/csv/names-abc.csv", ',', true, true);
         generator.init(context);
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
