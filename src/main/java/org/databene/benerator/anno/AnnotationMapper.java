@@ -49,7 +49,9 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.factory.ArrayGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
-import org.databene.benerator.factory.InstanceGeneratorFactory;
+import org.databene.benerator.factory.EquivalenceGeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.BeanUtil;
@@ -97,33 +99,46 @@ public class AnnotationMapper {
 		dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
 	}
 	
-	private AnnotationMapper() {}
+	private GeneratorFactory defaultFactory;
 	
-	// utility methods -------------------------------------------------------------------------------------------------
+	public AnnotationMapper(GeneratorFactory defaultFactory) {
+		this.defaultFactory = defaultFactory;
+	}
 	
-	public static BeneratorContext parseClassAnnotations(Annotation[] annotations) {
-		BeneratorContext context = new BeneratorContext();
+	// interface -------------------------------------------------------------------------------------------------------
+	
+	public void parseClassAnnotations(Annotation[] annotations, BeneratorContext context) {
+		applyGeneratorFactoryClassConfig(annotations, context);
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Database)
 				parseDatabase((Database) annotation, context);
 			else if (annotation instanceof Bean)
 				parseBean((Bean) annotation, context);
 		}
-		return context;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Generator<Object[]> createMethodParamGenerator(Method testMethod, BeneratorContext context) {
+    public Generator<Object[]> createMethodParamGenerator(Method testMethod, BeneratorContext context) {
 		try {
-			if ("testSizeDistribution".equals(testMethod.getName())) // TODO remove
-				System.out.println();
+			// resolve GeneratorFactory annotations of the test method
+			if (testMethod.getAnnotation(Equivalence.class) != null)
+				context.setGeneratorFactory(new EquivalenceGeneratorFactory());
+			/* TODO else if (testMethod.getAnnotation(Coverage.class) != null)
+				context.setGeneratorFactory(new CoverageGeneratorFactory());*/
+			else if (testMethod.getAnnotation(Volume.class) != null)
+				context.setGeneratorFactory(new VolumeGeneratorFactory());
+			else // if the test 
+				applyGeneratorFactoryClassConfig(testMethod.getDeclaringClass().getAnnotations(), context);
+			
 			// Evaluate @Bean annotations
 			if (testMethod.getAnnotation(Bean.class) != null)
 				parseBean(testMethod.getAnnotation(Bean.class), context);
+			
 			// Evaluate @Database annotations
 			if (testMethod.getAnnotation(Database.class) != null)
 				parseDatabase(testMethod.getAnnotation(Database.class), context);
 			Generator<Object[]> generator = null;
+			
 			// Evaluate @Generator and @Source annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
 			Source sourceAnno = testMethod.getAnnotation(Source.class);
@@ -166,24 +181,28 @@ public class AnnotationMapper {
 		}
     }
 
-	public static InstanceDescriptor mapMethodParams(Method testMethod) {
-	    DataModel dataModel = DataModel.getDefaultInstance();
-		dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
-		ArrayTypeDescriptor type = new ArrayTypeDescriptor(testMethod.getName());
-		Class<?>[] parameterTypes = testMethod.getParameterTypes();
-		Annotation[][] paramAnnos = testMethod.getParameterAnnotations();
-		for (int i = 0; i < parameterTypes.length; i++)
-			type.addElement(mapArrayElement(parameterTypes[i], paramAnnos[i], i));
-	    InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), type);
-		if (testMethod.getAnnotation(Unique.class) != null)
-			instance.setUnique(true);
-		return instance;
-    }
-
     
     
     // helper methods --------------------------------------------------------------------------------------------------
 	
+	private void applyGeneratorFactoryClassConfig(Annotation[] annotations, BeneratorContext context) {
+		boolean configured = false;
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof Equivalence) {
+				context.setGeneratorFactory(new EquivalenceGeneratorFactory());
+				configured = true;
+			/* TODO } else if (annotation instanceof Coverage) {
+				context.setGeneratorFactory(new CoverageGeneratorFactory());
+				configured = true; */
+			} else if (annotation instanceof Volume) {
+				context.setGeneratorFactory(new VolumeGeneratorFactory());
+				configured = true;
+			}
+		}
+		if (!configured)
+			context.setGeneratorFactory(defaultFactory);
+	}
+
 	private static void parseDatabase(Database annotation, BeneratorContext context) {
 		DBSystem db;
 		if (!StringUtil.isEmpty(annotation.environment()))
@@ -243,11 +262,25 @@ public class AnnotationMapper {
 			throw new ConfigurationError("@Property is missing 'value' or 'ref' attribute");
 	}
 
-	@SuppressWarnings("unchecked")
     private static Generator<Object[]> createParamGenerator(Method testMethod, BeneratorContext context) {
 	    InstanceDescriptor array = mapMethodParams(testMethod);
-	    Uniqueness uniqueness = (array.isUnique() ? Uniqueness.SIMPLE : Uniqueness.NONE);
-		return (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(array, uniqueness, context);
+        Uniqueness uniqueness = DescriptorUtil.uniqueness(array, context);
+        return ArrayGeneratorFactory.createSimpleArrayGenerator(array.getName(),
+				(ArrayTypeDescriptor) array.getTypeDescriptor(), uniqueness, context);
+    }
+
+	static InstanceDescriptor mapMethodParams(Method testMethod) {
+	    DataModel dataModel = DataModel.getDefaultInstance();
+		dataModel.addDescriptorProvider(PrimitiveDescriptorProvider.INSTANCE);
+		ArrayTypeDescriptor type = new ArrayTypeDescriptor(testMethod.getName());
+		Class<?>[] parameterTypes = testMethod.getParameterTypes();
+		Annotation[][] paramAnnos = testMethod.getParameterAnnotations();
+		for (int i = 0; i < parameterTypes.length; i++)
+			type.addElement(mapParameter(parameterTypes[i], paramAnnos[i], i));
+	    InstanceDescriptor instance = new InstanceDescriptor(testMethod.getName(), type);
+		if (testMethod.getAnnotation(Unique.class) != null)
+			instance.setUnique(true);
+		return instance;
     }
 
 	private static <T> void mapAnnotation(Annotation annotation, InstanceDescriptor descriptor) {
@@ -267,6 +300,8 @@ public class AnnotationMapper {
 				instanceDescriptor.setDetailValue("unique", true);
 			else if (annotationType == Granularity.class)
 				instanceDescriptor.getLocalType(false).setDetailValue("precision", String.valueOf(DescriptorUtil.convertType(((Granularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
+			else if (annotationType == DecimalGranularity.class)
+				instanceDescriptor.getLocalType(false).setDetailValue("precision", String.valueOf(DescriptorUtil.convertType(((DecimalGranularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
 			else if (annotationType == SizeDistribution.class)
 				instanceDescriptor.getLocalType(false).setDetailValue("lengthDistribution", ((SizeDistribution) annotation).value());
 			else if (annotationType == Pattern.class)
@@ -332,11 +367,19 @@ public class AnnotationMapper {
 
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	private static ArrayElementDescriptor mapArrayElement(Class<?> type, Annotation[] annos, int index) {
+	private static ArrayElementDescriptor mapParameter(Class<?> type, Annotation[] annos, int index) {
 		String abstractType = BeanDescriptorProvider.defaultInstance().abstractType(type);
 		ArrayElementDescriptor descriptor = new ArrayElementDescriptor(index, abstractType);
 	    for (Annotation annotation : annos)
             mapAnnotation(annotation, descriptor);
+	    if (descriptor.getDeclaredDetailValue("nullable") == null) { // assure an explicit setting for nullability
+	    	if (BeanUtil.isPrimitiveType(type.getName()))
+	    		descriptor.setNullable(false); // primitives can never be null
+	    	else if (descriptor.getDeclaredDetailValue("nullQuota") != null && ((Double) descriptor.getDeclaredDetailValue("nullQuota")) == 0.)
+	    		descriptor.setNullable(false);
+	    	else
+	    		descriptor.setNullable(true);
+	    }
         return descriptor;
     }
 	
@@ -349,7 +392,7 @@ public class AnnotationMapper {
     	else if (annotation instanceof DecimalMax)
     		typeDescriptor.setMax(String.valueOf(DescriptorUtil.convertType(((DecimalMax) annotation).value(), typeDescriptor)));
     	else if (annotation instanceof DecimalMin)
-    		typeDescriptor.setMax(String.valueOf(DescriptorUtil.convertType(((DecimalMin) annotation).value(), typeDescriptor)));
+    		typeDescriptor.setMin(String.valueOf(DescriptorUtil.convertType(((DecimalMin) annotation).value(), typeDescriptor)));
     	else if (annotation instanceof Digits) {
     		Digits digits = (Digits) annotation;
 			typeDescriptor.setPrecision(String.valueOf(Math.pow(10, - digits.fraction())));
