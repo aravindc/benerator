@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,10 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive.regex;
+package org.databene.benerator.primitive;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 import java.util.Locale;
@@ -47,8 +50,9 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     /** The locale from which to choose letters */
     private Locale locale;
 
-    /** maximum value for unlimited quantities */
-    private int quantityLimit;
+    private int minLength;
+
+    private int maxLength;
 
     /** indicates if the generated values shall be unique */
     private boolean unique;
@@ -61,8 +65,8 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     }
 
     /** Initializes the generator to an empty regular expression and the fallback locale */
-    public RegexStringGenerator(int maxQuantity) {
-        this((String) null, maxQuantity);
+    public RegexStringGenerator(int maxLength) {
+        this((String) null, maxLength);
     }
 
     /** Initializes the generator to a maxQuantity of 30 and the fallback locale */
@@ -71,15 +75,15 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     }
 
     /** Initializes the generator to the fallback locale */
-    public RegexStringGenerator(String pattern, int quantityLimit) {
-        this(pattern, quantityLimit, false);
+    public RegexStringGenerator(String pattern, int maxLength) {
+        this(pattern, maxLength, false);
     }
 
     /** Initializes the generator with the String representation of a regular expression */
-    public RegexStringGenerator(String pattern, Integer quantityLimit, boolean unique) {
+    public RegexStringGenerator(String pattern, Integer maxLength, boolean unique) {
         super();
         this.pattern = pattern;
-        this.quantityLimit = quantityLimit;
+        this.maxLength = maxLength;
         this.unique = unique;
     }
 
@@ -102,13 +106,21 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
+    
+	public int getMinLength() {
+		return minLength;
+	}
+	
+	public void setMinLength(int minLength) {
+		this.minLength = minLength;
+	}
 
-    public int getMaxQuantity() {
-        return quantityLimit;
+    public int getMaxLength() {
+        return maxLength;
     }
 
-    public void setMaxQuantity(int quantityLimit) {
-        this.quantityLimit = quantityLimit;
+    public void setMaxQuantity(int maxLength) {
+        this.maxLength = maxLength;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -116,13 +128,20 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     /** ensures consistency of the generators state */
     @Override
     public void init(GeneratorContext context) {
+    	Generator<String> tmp = getGeneratorFactory(context).createRegexStringGenerator(pattern, minLength, maxLength, unique);
         try {
-        	setSource(RegexGeneratorFactory.create(pattern, quantityLimit, unique));
+        	System.out.println(pattern);
+			setSource(tmp);
             super.init(context);
         } catch (Exception e) {
-            throw new InvalidGeneratorSetupException(e);
+        	getGeneratorFactory(context).createRegexStringGenerator(pattern, minLength, maxLength, unique);
+            throw new InvalidGeneratorSetupException("Illegal regular expression: ", e);
         }
     }
+
+	protected GeneratorFactory getGeneratorFactory(GeneratorContext context) {
+		return (context != null ? context.getGeneratorFactory() : new VolumeGeneratorFactory());
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
