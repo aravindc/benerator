@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,6 @@ package org.databene.benerator.sample;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
@@ -69,7 +68,7 @@ public class WeigthedLiteralGenerator<E> extends GeneratorProxy<E> {
 	public synchronized void init(GeneratorContext context) {
 		if (valueSpec == null)
 			throw new InvalidGeneratorSetupException("'codes' is null");
-	    super.setSource(GeneratorFactory.createFromWeightedLiteralList(valueSpec, targetType, null, unique));
+	    super.setSource(context.getGeneratorFactory().createFromWeightedLiteralList(valueSpec, targetType, null, unique));
 	    super.init(context);
     }
 
