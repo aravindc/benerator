@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,7 +22,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.distribution.Distribution;
-import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.Expression;
 
 /**
@@ -46,13 +46,14 @@ public class DynamicCountGenerator extends DynamicLongGenerator {
         this.resetToMin = resetToMin;
     }
     
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected void resetMembers(Long minValue, Long maxValue) {
 		if (maxValue != null)
 		    super.resetMembers(minValue, maxValue);
 		else {
 			Long constant = (resetToMin ? minValue : null);
-			source = GeneratorFactory.getConstantGenerator(constant);
+			source = new ConstantGenerator(constant); // TODO is this correct?
 	        source.init(context);
 		}
 	}
