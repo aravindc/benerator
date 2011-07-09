@@ -21,12 +21,15 @@
 
 package org.databene.benerator.composite;
 
+import java.lang.reflect.Array;
+
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
+import org.databene.commons.ArrayUtil;
 
 /**
  * Uses one dedicated generator for each array element and combines their outputs in a cartesian product.<br/><br/>
@@ -34,16 +37,19 @@ import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
  * @since 0.6.2
  * @author Volker Bergmann
  */
-public class UniqueArrayGenerator extends CompositeGenerator<Object[]> {
+public class UniqueArrayGenerator<T> extends CompositeGenerator<T[]> {
 	// TODO v0.7 check and clean up all *ArrayGenerator classes
 	
-	private ThreadLocalProductWrapper<?> threadLocalWrapper = new ThreadLocalProductWrapper<Object>();
-	private NullableGenerator<?>[] sources;
+	private ThreadLocalProductWrapper<T> threadLocalWrapper = new ThreadLocalProductWrapper<T>();
+	private Class<T> componentType;
+	private NullableGenerator<? extends T>[] sources;
 	private int arrayLength;
-	private Object[] buffer;
+	private T[] buffer;
 	
-	public UniqueArrayGenerator(NullableGenerator<?>[] sources) {
-		super(Object[].class);
+	@SuppressWarnings("unchecked")
+	public UniqueArrayGenerator(Class<T> componentType, NullableGenerator<? extends T>... sources) {
+		super(ArrayUtil.arrayType(componentType));
+		this.componentType = componentType;
 		this.sources = sources;
 		this.arrayLength = sources.length;
 		registerComponents(sources);
@@ -63,30 +69,32 @@ public class UniqueArrayGenerator extends CompositeGenerator<Object[]> {
 	    super.reset();
 	}
 	
-	public Object[] generate() {
+	public T[] generate() {
 		assertInitialized();
 		fetchNext(arrayLength - 1);
 	    return buffer;
     }
 
+	@SuppressWarnings("unchecked")
 	private void initBuffer() {
-	    buffer = new Object[sources.length];
+	    buffer = (T[]) Array.newInstance(componentType, sources.length);
 	    for (int i = 0; i < sources.length - 1; i++) { // init all elements except the last one
 	        ProductWrapper<?> wrapper = generateAt(i);
 	        if (wrapper == null) {
 	        	buffer = null;
 	        	break;
 	        } else
-	        	buffer[i] = wrapper.product;
+	        	buffer[i] = (T) wrapper.product;
         }
     }
 
+	@SuppressWarnings("unchecked")
 	private void fetchNext(int index) {
 		if (buffer == null)
 			return;
 		ProductWrapper<?> wrapper = generateAt(index);
 		if (wrapper != null) {
-			buffer[index] = wrapper.product;
+			buffer[index] = (T) wrapper.product;
 		} else if (index > 0) {
 			sources[index].reset();
 			fetchNext(index);
