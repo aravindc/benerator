@@ -30,7 +30,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ArrayUtil;
-import org.databene.commons.NullSafeComparator;
 import org.databene.commons.ArrayFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,20 +108,16 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
             return;
         }
         // if available, fetch the digit's next value
-        boolean rep = false;
         Generator<? extends S> gen = sources[index];
         
-        Object tmp = gen.generate();
-        if (tmp != null) {
-            if (!NullSafeComparator.equals(next[index], tmp)) {
-                next[index] = tmp;
-                return;
-            } else
-                rep = true;
+        Object element = gen.generate();
+        if (element != null) {
+            next[index] = element;
+            return;
         }
-        // sources[index] was not available or returned the same value as before
+        // sources[index] was not available
         fetchNextArrayItem(index + 1);
-        if (next != null && !rep) {
+        if (next != null) {
             gen.reset();
             next[index] = gen.generate();
         }
