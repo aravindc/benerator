@@ -393,49 +393,49 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	
 	@Test
 	public void testStaticEntitySelector_partial() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{'id = ' + x}"
 	}
 
 	@Test
 	public void testStaticEntitySelector_complete() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{'select * from tbl where id = ' + x}"
 	}
 
 	@Test
 	public void testDynamicEntitySelector_partial() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{{'id = ' + x}}"
 	}
 
 	@Test
 	public void testDynamicEntitySelector_complete() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{{'select * from tbl where id = ' + x}}"
 	}
 
 	@Test
 	public void testStaticArraySelector() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{'select x, y from tbl where id = ' + x}"
 	}
 
 	@Test
 	public void testDynamicArraySelector() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{{'select x, x from tbl where id = ' + x}}"
 	}
 	
 	@Test
 	public void testStaticValueSelector() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{'select x from tbl where id = ' + x}"
 	}
 
 	@Test
 	public void testDynamicValueSelector() {
-		// TODO v0.6.7 implement test
+		// TODO v0.7.0 implement test
 		// selector="{{'select x from tbl where id = ' + x}}"
 	}
 	
