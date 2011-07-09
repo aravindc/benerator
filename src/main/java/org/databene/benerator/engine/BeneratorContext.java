@@ -32,6 +32,8 @@ import java.util.concurrent.Executors;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
+import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ErrorHandler;
@@ -63,6 +65,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 
 	public static final char DEFAULT_CELL_SEPARATOR = ',';
 
+	private GeneratorFactory generatorFactory;
     private DefaultContext properties;
 	private ClassCache classCache;
 	
@@ -91,6 +94,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	
 	public BeneratorContext(String contextUri) {
 		this.contextUri = contextUri;
+		this.generatorFactory = new VolumeGeneratorFactory(); // TODO make this configurable
 		properties = new DefaultContext();
 		push(new DefaultContext(java.lang.System.getenv()));
 		push(new DefaultContext(java.lang.System.getProperties()));
@@ -102,6 +106,14 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	}
 	
 	// interface -------------------------------------------------------------------------------------------------------
+	
+	public GeneratorFactory getGeneratorFactory() {
+		return generatorFactory;
+	}
+
+	public void setGeneratorFactory(GeneratorFactory generatorFactory) {
+		this.generatorFactory = generatorFactory;
+	}
 	
 	public void setProperty(String name, Object value) {
 		properties.set(name, value);
