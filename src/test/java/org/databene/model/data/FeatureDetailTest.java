@@ -39,15 +39,15 @@ public class FeatureDetailTest {
 
 	@Test
 	public void testEquals() {
-		FeatureDetail<Integer> min = new FeatureDetail<Integer>("min", Integer.class, true, 1);
+		FeatureDetail<Integer> min = new FeatureDetail<Integer>("min", Integer.class, true);
 		min.setValue(1);
 		assertFalse(min.equals(null));
 		assertFalse(min.equals(""));
 		assertTrue(min.equals(min));
-		FeatureDetail<Integer> min2 = new FeatureDetail<Integer>("min", Integer.class, true, 1);
+		FeatureDetail<Integer> min2 = new FeatureDetail<Integer>("min", Integer.class, true);
 		min.setValue(2);
 		assertFalse(min.equals(min2));
-		FeatureDetail<Integer> max = new FeatureDetail<Integer>("max", Integer.class, true, 1);
+		FeatureDetail<Integer> max = new FeatureDetail<Integer>("max", Integer.class, true);
 		assertFalse(min.equals(max));
 	}
 	
