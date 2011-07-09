@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -106,13 +105,13 @@ public class DayGenerator extends ThreadSafeGenerator<Date> {
 		int count = 0;
 		Calendar calendar = (Calendar) minCalendar.clone();
 		do {
-			// TODO v0.6.7 tune performance
+			// TODO v0.7.0 tune performance
 			calendar.add(Calendar.YEAR, yearGranularity);
 			calendar.add(Calendar.MONTH, monthGranularity);
 			calendar.add(Calendar.DAY_OF_MONTH, dayGranularity);
 			count++;
 		} while (!max.before(calendar.getTime()));
-		multiplierGenerator = GeneratorFactory.getNumberGenerator(
+		multiplierGenerator = context.getGeneratorFactory().createNumberGenerator(
 				Integer.class, 0, count - 1, 1, distribution, unique);
 		multiplierGenerator.init(context);
 	    super.init(context);

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,7 +34,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.TimeUtil;
 
@@ -122,7 +121,7 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     			new DayGenerator(minDate, maxDate, dateDistribution, false));
     	dateGenerator.setPrecision(datePrecision);
     	this.dateGenerator.init(context);
-    	this.timeOffsetGenerator = registerComponent(GeneratorFactory.getNumberGenerator(
+    	this.timeOffsetGenerator = registerComponent(context.getGeneratorFactory().createNumberGenerator(
     			Long.class, minTime, maxTime, timePrecision, timeDistribution, false));
     	this.timeOffsetGenerator.init(context);
         super.init(context);
