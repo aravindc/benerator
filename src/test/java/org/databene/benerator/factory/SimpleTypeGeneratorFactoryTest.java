@@ -89,18 +89,20 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testCreateSampleGeneratorUnweighted() {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), Uniqueness.NONE, null);
+		BeneratorContext context = new BeneratorContext();
+		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a','b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b", 1);
 		SimpleTypeDescriptor descriptor = (SimpleTypeDescriptor) new SimpleTypeDescriptor("test").withValues("'a','b,c'").withSeparator("|");
-		generator = SimpleTypeGeneratorFactory.createSampleGenerator(descriptor, Uniqueness.NONE, null);
+		generator = SimpleTypeGeneratorFactory.createSampleGenerator(descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 1, "b,c", 1);
 	}
 
 	@Test
 	public void testCreateSampleGeneratorWeighted() {
-		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, null);
+		BeneratorContext context = new BeneratorContext();
+		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
 		generator.init(context);
 		expectRelativeWeights(generator, 1000, "a", 2, "b", 1);
 	}
