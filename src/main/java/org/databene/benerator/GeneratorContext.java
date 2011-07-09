@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,7 @@ package org.databene.benerator;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 
+import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.Context;
 
 /**
@@ -51,6 +52,7 @@ public interface GeneratorContext extends Context {
 
 	// other features --------------------------------------------------------------------------------------------------
 	
+    GeneratorFactory getGeneratorFactory();
 	Object getProperty(String name);
     Class<?> forName(String className);
 	ExecutorService getExecutorService();
