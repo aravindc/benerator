@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.AttachedWeight;
@@ -233,26 +232,13 @@ public class DescriptorUtilTest {
 	}
 
 	@Test
-	public void testGetLocale() {
-		assertEquals(Locale.US, DescriptorUtil.getLocale(new SimpleTypeDescriptor("test")));
-		assertEquals(Locale.ENGLISH, DescriptorUtil.getLocale(new SimpleTypeDescriptor("test").withLocaleId("en")));
-		assertEquals(Locale.GERMANY, DescriptorUtil.getLocale(new SimpleTypeDescriptor("test").withLocaleId("de_DE")));
-	}
-
-	@Test
 	public void testIsUnique() {
-		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test")));
-		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(false)));
-		assertEquals(true, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(true)));
+		BeneratorContext context = new BeneratorContext();
+		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test"), context));
+		assertEquals(false, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(false), context));
+		assertEquals(true, DescriptorUtil.isUnique(new InstanceDescriptor("test").withUnique(true), context));
 	}
 
-	@Test
-	public void testGetNullQuota() {
-		assertEquals(0., DescriptorUtil.getNullQuota(new InstanceDescriptor("test")));
-		assertEquals(0., DescriptorUtil.getNullQuota(new InstanceDescriptor("test").withNullQuota(0)));
-		assertEquals(1., DescriptorUtil.getNullQuota(new InstanceDescriptor("test").withNullQuota(1)));
-	}
-	
 	@Test
 	public void testGetSeparator() {
 		BeneratorContext context = new BeneratorContext(null);
