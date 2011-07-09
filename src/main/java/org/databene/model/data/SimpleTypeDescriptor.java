@@ -73,23 +73,23 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public SimpleTypeDescriptor(String name, String parentName) {
         super(name, parentName);
         // number setup
-        addConstraint(MIN,             String.class,  "1", new MaxNumberStringOperation());
-        addConstraint(MAX,             String.class,  "9", new MinNumberStringOperation());
-        addConstraint(MIN_EXCLUSIVE,   String.class,  "0", new MaxNumberStringOperation());
-        addConstraint(MAX_EXCLUSIVE,   String.class, "10", new MinNumberStringOperation());
-        addConstraint(TOTAL_DIGITS,    String.class, "10", new FirstArgSelector<String>());
-        addConstraint(FRACTION_DIGITS, String.class,  "0", new FirstArgSelector<String>());
-        addConfig(PRECISION,           String.class,  "1");
+        addConstraint(MIN,             String.class, new MaxNumberStringOperation());
+        addConstraint(MAX,             String.class, new MinNumberStringOperation());
+        addConstraint(MIN_EXCLUSIVE,   String.class, new MaxNumberStringOperation()); // TODO replace with boolean minInclusive
+        addConstraint(MAX_EXCLUSIVE,   String.class, new MinNumberStringOperation()); // TODO replace with boolean maxInclusive
+        addConstraint(TOTAL_DIGITS,    String.class, new FirstArgSelector<String>());
+        addConstraint(FRACTION_DIGITS, String.class, new FirstArgSelector<String>());
+        addConfig(PRECISION,           String.class);
         // boolean setup
-        addConfig(TRUE_QUOTA,          Double.class, 0.5);
+        addConfig(TRUE_QUOTA,          Double.class);
         // string setup
-        addConstraint(MIN_LENGTH,      Integer.class,  1, new MaxOperation<Integer>());
-        addConstraint(MAX_LENGTH,      Integer.class, 30, new MinOperation<Integer>());
-        addConfig(LENGTH_DISTRIBUTION, String.class, "random");
+        addConstraint(MIN_LENGTH,      Integer.class, new MaxOperation<Integer>());
+        addConstraint(MAX_LENGTH,      Integer.class, new MinOperation<Integer>());
+        addConfig(LENGTH_DISTRIBUTION, String.class);
         // other config
-        addConfig(VALUES,              String.class, null);
-        addConfig(CONSTANT,            String.class, null);
-        addConfig(MAP,                 String.class, null);
+        addConfig(VALUES,              String.class);
+        addConfig(CONSTANT,            String.class);
+        addConfig(MAP,                 String.class);
     }
 
     // properties ------------------------------------------------------------------------------------------------------

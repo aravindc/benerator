@@ -77,20 +77,20 @@ public class InstanceDescriptor extends FeatureDescriptor {
         super(name);
         this.localType = localType;
 
-        addConstraint(TYPE,        String.class, null, null);
+        addConstraint(TYPE,        String.class, null);
         setType(typeName);
 
         // constraints
-        addConstraint(UNIQUE,        Boolean.class, false, new OrOperation());
-        addConstraint(NULLABLE,      Boolean.class, false, new AndOperation());
-        addConstraint(MIN_COUNT,     Expression.class, null, null);
-        addConstraint(MAX_COUNT,     Expression.class, null, null);
+        addConstraint(UNIQUE,        Boolean.class, new OrOperation());
+        addConstraint(NULLABLE,      Boolean.class, new AndOperation());
+        addConstraint(MIN_COUNT,     Expression.class, null);
+        addConstraint(MAX_COUNT,     Expression.class, null);
         
         // configs
-        addConfig(COUNT,              Expression.class, null);
-        addConfig(COUNT_PRECISION,    Expression.class, new ConstantExpression<Long>(1L));
-        addConfig(COUNT_DISTRIBUTION, String.class, null);
-        addConfig(NULL_QUOTA,         Double.class,     0.);
+        addConfig(COUNT,              Expression.class);
+        addConfig(COUNT_PRECISION,    Expression.class);
+        addConfig(COUNT_DISTRIBUTION, String.class);
+        addConfig(NULL_QUOTA,         Double.class);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -155,7 +155,8 @@ public class InstanceDescriptor extends FeatureDescriptor {
     }
 
     public Uniqueness getUniqueness() {
-    	return (isUnique() ? Uniqueness.SIMPLE : Uniqueness.NONE);
+    	Boolean unique = isUnique();
+    	return (unique != null ? (unique ? Uniqueness.SIMPLE : Uniqueness.NONE) : null);
     }
     
     public Boolean isNullable() {
@@ -226,8 +227,6 @@ public class InstanceDescriptor extends FeatureDescriptor {
             if (detail.isConstraint())
                 value = detail.getValue();
         }
-        if (value == null)
-            value = getDetailDefault(name);
         return value;
     }
     

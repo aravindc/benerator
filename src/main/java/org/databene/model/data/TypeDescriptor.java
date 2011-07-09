@@ -89,27 +89,27 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
 	protected void init() {
 		// constraints
-        addConstraint(VALIDATOR, String.class, null, new FirstNonNullSelector<String>()); 
-        addConstraint(FILTER, String.class, null, new FirstNonNullSelector<String>()); 
-        addConstraint(CONDITION, String.class, null, new FirstNonNullSelector<String>()); 
+        addConstraint(VALIDATOR, String.class, new FirstNonNullSelector<String>()); 
+        addConstraint(FILTER, String.class, new FirstNonNullSelector<String>()); 
+        addConstraint(CONDITION, String.class, new FirstNonNullSelector<String>()); 
         
         // config
-        addConfig(GENERATOR,      String.class,   null);
-        addConfig(CONVERTER,      String.class,   null);
-        addConfig(PATTERN,        String.class,   null);
-        addConfig(SCRIPT,         String.class,   null);
-        addConfig(SOURCE,         String.class,   null);
-        addConfig(SELECTOR,       String.class,   null);
-        addConfig(SUB_SELECTOR,   String.class,   null);
-        addConfig(SEPARATOR,      String.class,   null);
-        addConfig(ENCODING,       String.class,   null);
-        addConfig(CYCLIC,         Boolean.class,  null);
+        addConfig(GENERATOR,      String.class);
+        addConfig(CONVERTER,      String.class);
+        addConfig(PATTERN,        String.class);
+        addConfig(SCRIPT,         String.class);
+        addConfig(SOURCE,         String.class);
+        addConfig(SELECTOR,       String.class);
+        addConfig(SUB_SELECTOR,   String.class);
+        addConfig(SEPARATOR,      String.class);
+        addConfig(ENCODING,       String.class);
+        addConfig(CYCLIC,         Boolean.class);
         // i18n config
-        addConfig(LOCALE,         Locale.class,   null);
-        addConfig(DATASET,        String.class,   null);
-        addConfig(NESTING,        String.class,   null);
+        addConfig(LOCALE,         Locale.class);
+        addConfig(DATASET,        String.class);
+        addConfig(NESTING,        String.class);
         // distribution
-        addConfig(DISTRIBUTION,   String.class,   null);
+        addConfig(DISTRIBUTION,   String.class);
 	}
     
     // properties ------------------------------------------------------------------------------------------------------

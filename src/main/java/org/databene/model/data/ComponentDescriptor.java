@@ -47,7 +47,7 @@ public abstract class ComponentDescriptor extends InstanceDescriptor {
     
     protected ComponentDescriptor(String name, String typeName, TypeDescriptor localType) {
         super(name, typeName, localType);
-        addConfig(MODE, Mode.class, Mode.normal);
+        addConfig(MODE, Mode.class);
     }
     
     // properties ------------------------------------------------------------------------------------------------------

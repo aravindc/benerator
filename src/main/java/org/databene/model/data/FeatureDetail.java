@@ -33,7 +33,7 @@ import org.databene.commons.Operation;
 import org.databene.commons.operation.FirstArgSelector;
 
 /**
- * A FeatureDescriptor is composed og FeatureDetails, which have name, value, type and default value.<br/>
+ * A FeatureDescriptor is composed og FeatureDetails, which have name, value and type.<br/>
  * <br/>
  * Created: 03.08.2007 06:57:42
  * @author Volker Bergmann
@@ -47,27 +47,24 @@ public class FeatureDetail<E> {
     private String name;
     private Class<E> type;
     private E value;
-    private E defaultValue;
     private Operation<E, E> combinator;
     private boolean constraint;
     private boolean deprecated;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public FeatureDetail(String name, Class<E> type, boolean constraint, E defaultValue) {
-        this(name, type, constraint, defaultValue, new FirstArgSelector<E>());
+    public FeatureDetail(String name, Class<E> type, boolean constraint) {
+        this(name, type, constraint, new FirstArgSelector<E>());
     }
 
-    public FeatureDetail(String name, Class<E> type, boolean constraint, 
-    		E defaultValue, Operation<E, E> combinator) {
-    	this(name, type, constraint, defaultValue, combinator, false);
+    public FeatureDetail(String name, Class<E> type, boolean constraint, Operation<E, E> combinator) {
+    	this(name, type, constraint, combinator, false);
     }
     
     public FeatureDetail(String name, Class<E> type, boolean constraint, 
-    		E defaultValue, Operation<E, E> combinator, boolean deprecated) {
+    		Operation<E, E> combinator, boolean deprecated) {
         this.name = name;
         this.type = type;
-        this.defaultValue = defaultValue;
         this.value = null;
         this.constraint = constraint;
         this.combinator = combinator;
@@ -95,10 +92,6 @@ public class FeatureDetail<E> {
             throw new IllegalArgumentException("Tried to assign a value of type '" + value.getClass().getName() 
                     + "'to detail '" + name + "' of type '" + type + "'");
         this.value = value;
-    }
-
-    public E getDefault() {
-        return defaultValue;
     }
 
     @SuppressWarnings("unchecked")

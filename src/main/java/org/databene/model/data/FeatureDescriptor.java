@@ -32,7 +32,7 @@ public class FeatureDescriptor implements Named {
 
     public FeatureDescriptor(String name) {
         this.details = new OrderedNameMap<FeatureDetail<?>>();
-        addConstraint(NAME, String.class, null, null);
+        addConstraint(NAME, String.class, null);
         setName(name);
     }
     
@@ -68,11 +68,6 @@ public class FeatureDescriptor implements Named {
     public void setDetailValue(String detailName, Object detailValue) {
         FeatureDetail<Object> detail = getConfiguredDetail(detailName);
         detail.setValue(AnyConverter.convert(detailValue, detail.getType()));
-    }
-
-    public <T> T getDetailDefault(String name) {
-        FeatureDetail<T> detail = getConfiguredDetail(name);
-        return detail.getDefault();
     }
 
     public List<FeatureDetail<?>> getDetails() {
@@ -128,21 +123,21 @@ public class FeatureDescriptor implements Named {
         return detail.getType();
     }
 
-    protected <T> void addConfig(String name, Class<T> type, T defaultValue) {
-    	addConfig(name, type, defaultValue, false);
+    protected <T> void addConfig(String name, Class<T> type) {
+    	addConfig(name, type, false);
     }
 
-    protected <T> void addConfig(String name, Class<T> type, T defaultValue, boolean deprecated) {
-        addDetail(name, type, false, defaultValue, deprecated, null);
+    protected <T> void addConfig(String name, Class<T> type, boolean deprecated) {
+        addDetail(name, type, false, deprecated, null);
     }
 
-    protected <T> void addConstraint(String name, Class<T> type, T defaultValue, Operation<T, T> combinator) {
-        addDetail(name, type, true, defaultValue, false, combinator);
+    protected <T> void addConstraint(String name, Class<T> type, Operation<T, T> combinator) {
+        addDetail(name, type, true, false, combinator);
     }
 
-    protected <T> void addDetail(String detailName, Class<T> detailType, boolean constraint, T defaultValue, 
+    protected <T> void addDetail(String detailName, Class<T> detailType, boolean constraint, 
     		boolean deprecated, Operation<T,T> combinator) {
-        this.details.put(detailName, new FeatureDetail<T>(detailName, detailType, constraint, defaultValue, combinator));
+        this.details.put(detailName, new FeatureDetail<T>(detailName, detailType, constraint, combinator));
     }
 
     // generic property access -----------------------------------------------------------------------------------------

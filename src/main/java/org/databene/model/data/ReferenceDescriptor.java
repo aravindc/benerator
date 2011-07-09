@@ -53,7 +53,7 @@ public class ReferenceDescriptor extends ComponentDescriptor {
 
     public ReferenceDescriptor(String name, String typeName, String targetType) {
         super(name, typeName);
-        addConstraint(TARGET_TYPE, String.class, null, new FirstArgSelector<String>());
+        addConstraint(TARGET_TYPE, String.class, new FirstArgSelector<String>());
         setTargetType(targetType);
     }
     
