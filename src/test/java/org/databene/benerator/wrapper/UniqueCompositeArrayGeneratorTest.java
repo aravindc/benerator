@@ -28,7 +28,7 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
-import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
@@ -57,9 +57,9 @@ public class UniqueCompositeArrayGeneratorTest extends GeneratorTest {
     @SuppressWarnings("unchecked")
     public void testString() {
         Generator<String>[] sources = new Generator [] {
-                new ConstantGenerator<String>("x"),
+                new OneShotGenerator<String>("x"),
                 new SequenceTestGenerator<String>("a", "b"),
-                new ConstantGenerator<String>("x")
+                new OneShotGenerator<String>("x")
         };
         UniqueCompositeArrayGenerator<String> generator = new UniqueCompositeArrayGenerator<String>(String.class, sources);
         generator.init(context);
