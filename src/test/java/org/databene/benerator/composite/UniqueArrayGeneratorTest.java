@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,13 +39,13 @@ public class UniqueArrayGeneratorTest extends GeneratorTest {
 	public void testNotNull() {
 		NullableSequenceTestGenerator<Integer> gen0 = new NullableSequenceTestGenerator<Integer>(1, 2);
 		NullableSequenceTestGenerator<Integer> gen1 = new NullableSequenceTestGenerator<Integer>(3, 4);
-		UniqueArrayGenerator generator = new UniqueArrayGenerator(ArrayUtil.toArray(gen0, gen1));
+		UniqueArrayGenerator<Integer> generator = new UniqueArrayGenerator<Integer>(Integer.class, ArrayUtil.toArray(gen0, gen1));
 		generator.init(context);
 		expectGeneratedSequence(generator, 
-			new Object[] { 1, 3 },
-			new Object[] { 1, 4 },
-			new Object[] { 2, 3 },
-			new Object[] { 2, 4 }
+			new Integer[] { 1, 3 },
+			new Integer[] { 1, 4 },
+			new Integer[] { 2, 3 },
+			new Integer[] { 2, 4 }
 		);
 	}
 	
@@ -54,13 +54,13 @@ public class UniqueArrayGeneratorTest extends GeneratorTest {
 	public void testNull() {
 		NullableSequenceTestGenerator<Integer> gen0 = new NullableSequenceTestGenerator<Integer>(null, 1);
 		NullableSequenceTestGenerator<Integer> gen1 = new NullableSequenceTestGenerator<Integer>(null, 2);
-		UniqueArrayGenerator generator = new UniqueArrayGenerator(ArrayUtil.toArray(gen0, gen1));
+		UniqueArrayGenerator<Integer> generator = new UniqueArrayGenerator<Integer>(Integer.class, ArrayUtil.toArray(gen0, gen1));
 		generator.init(context);
 		expectGeneratedSequence(generator, 
-			new Object[] { null, null },
-			new Object[] { null,    2 },
-			new Object[] {    1, null },
-			new Object[] {    1,    2 }
+			new Integer[] { null, null },
+			new Integer[] { null,    2 },
+			new Integer[] {    1, null },
+			new Integer[] {    1,    2 }
 		);
 	}
 	
@@ -70,17 +70,17 @@ public class UniqueArrayGeneratorTest extends GeneratorTest {
 		NullableSequenceTestGenerator<Integer> gen0 = new NullableSequenceTestGenerator<Integer>(1, 2);
 		NullableSequenceTestGenerator<Integer> gen1 = new NullableSequenceTestGenerator<Integer>(3, 4);
 		NullableSequenceTestGenerator<Integer> gen2 = new NullableSequenceTestGenerator<Integer>(5, 6);
-		UniqueArrayGenerator generator = new UniqueArrayGenerator(ArrayUtil.toArray(gen0, gen1, gen2));
+		UniqueArrayGenerator<Integer> generator = new UniqueArrayGenerator<Integer>(Integer.class, ArrayUtil.toArray(gen0, gen1, gen2));
 		generator.init(context);
 		expectGeneratedSequence(generator, 
-			new Object[] { 1, 3, 5 },
-			new Object[] { 1, 3, 6 },
-			new Object[] { 1, 4, 5 },
-			new Object[] { 1, 4, 6 },
-			new Object[] { 2, 3, 5 },
-			new Object[] { 2, 3, 6 },
-			new Object[] { 2, 4, 5 },
-			new Object[] { 2, 4, 6 }
+			new Integer[] { 1, 3, 5 },
+			new Integer[] { 1, 3, 6 },
+			new Integer[] { 1, 4, 5 },
+			new Integer[] { 1, 4, 6 },
+			new Integer[] { 2, 3, 5 },
+			new Integer[] { 2, 3, 6 },
+			new Integer[] { 2, 4, 5 },
+			new Integer[] { 2, 4, 6 }
 		);
 	}
 	
