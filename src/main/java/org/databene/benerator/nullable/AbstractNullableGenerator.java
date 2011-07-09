@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class AbstractNullableGenerator<E> implements NullableGenerator<E> {
+public abstract class AbstractNullableGenerator<E> implements NullableGenerator<E> { // TODO create common concept with AbstractGenerator
 	
 	protected GeneratorState state = GeneratorState.CREATED;
 
@@ -40,6 +40,14 @@ public abstract class AbstractNullableGenerator<E> implements NullableGenerator<
 	    state = GeneratorState.RUNNING;
     }
 
+	public void reset() {
+		state = GeneratorState.RUNNING;
+	}
+	
+	public void close() {
+		state = GeneratorState.CLOSED;
+	}
+	
 	// internal helpers ------------------------------------------------------------------------------------------------
     
     protected final void assertNotInitialized() {
