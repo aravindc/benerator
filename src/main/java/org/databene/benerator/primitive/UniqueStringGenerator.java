@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,7 +33,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
 import org.databene.commons.ArrayFormat;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Generates unique strings of variable length.<br/>
@@ -53,7 +53,7 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
         this(4, 8, new CharSet('A', 'Z').getSet());
     }
 
-    public UniqueStringGenerator(int minLength, int maxLength, Set<Character> charSet) {
+    public UniqueStringGenerator(int minLength, int maxLength, Collection<Character> charSet) {
         this(minLength, maxLength, CollectionUtil.toCharArray(charSet));
     }
 
