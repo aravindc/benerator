@@ -27,14 +27,12 @@
 package org.databene.benerator.factory;
 
 import static org.databene.model.data.SimpleTypeDescriptor.*;
-import static org.databene.model.data.TypeDescriptor.LOCALE;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.ConstraintValidator;
@@ -61,8 +59,6 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
 import org.databene.commons.HeavyweightTypedIterable;
-import org.databene.commons.LocaleUtil;
-import org.databene.commons.NumberUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
@@ -85,10 +81,12 @@ import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
+import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
 import org.w3c.dom.Element;
@@ -132,7 +130,7 @@ public class DescriptorUtil {
 	        	generator = (Generator<?>) generatorBeanSpec.getBean();
 	            mapDetailsToBeanProperties(descriptor, generator, context);
 	            if (generatorBeanSpec.isReference()) {
-	            	generator = GeneratorFactory.wrapNonClosing(generator);
+	            	generator = context.getGeneratorFactory().wrapNonClosing(generator);
 	            	generator.init(context);
 	            }
 	        }
@@ -210,15 +208,6 @@ public class DescriptorUtil {
         }
     }
 
-	public static Locale getLocale(TypeDescriptor descriptor) {
-        Locale locale = descriptor.getLocale();
-        if (locale == null)
-            locale = (Locale) descriptor.getDetailDefault(LOCALE);
-        if (locale == null)
-            locale = LocaleUtil.getFallbackLocale();
-        return locale;
-    }
-
 	public static DateFormat getPatternAsDateFormat(TypeDescriptor descriptor) {
         String pattern = descriptor.getPattern();
         if (pattern != null)
@@ -227,24 +216,26 @@ public class DescriptorUtil {
         	return TimeUtil.createDefaultDateFormat();
     }
 
-	public static boolean isUnique(InstanceDescriptor descriptor) {
+	public static boolean isUnique(InstanceDescriptor descriptor, BeneratorContext context) {
         Boolean unique = descriptor.isUnique();
         if (unique == null)
-            unique = false;
+            unique = context.getGeneratorFactory().defaultUnique();
         return unique;
     }
-	
+/*	
 	public static Expression<Boolean> getUniqueness(final InstanceDescriptor descriptor) {
 		return new UniquenessExpression(descriptor);
     }
-	
-    public static double getNullQuota(InstanceDescriptor descriptor) {
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota == null)
-            nullQuota = 0.;
-        return nullQuota;
+*/
+    public static Uniqueness uniqueness(InstanceDescriptor descriptor, BeneratorContext context) {
+    	if (descriptor instanceof IdDescriptor)
+    		return Uniqueness.ORDERED;
+    	else if (isUnique(descriptor, context))
+    		return Uniqueness.SIMPLE;
+    	else
+    		return Uniqueness.NONE;
     }
-    
+
 	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
 		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
 		return wrapWithProxy(generator, cyclic);
@@ -343,7 +334,7 @@ public class DescriptorUtil {
 			);
 		return scriptConverter;
 	}
-
+/*
     public static <T extends Number> T getMax(SimpleTypeDescriptor descriptor, Class<T> targetType, boolean unique) {
         try {
             String detailValue = (String) descriptor.getDetailValue(MAX);
@@ -368,6 +359,8 @@ public class DescriptorUtil {
             throw new ConfigurationError(e);
         }
     }
+*/
+
 
     public static <T extends Number> T getNumberDetail(SimpleTypeDescriptor descriptor, String detailName, Class<T> targetType) {
         try {
@@ -442,21 +435,18 @@ public class DescriptorUtil {
         return minLength;
     }
 
-    protected static Integer getMaxLength(SimpleTypeDescriptor descriptor) {
+    protected static Integer getMaxLength(SimpleTypeDescriptor descriptor, GeneratorFactory generatorFactory) {
         // evaluate max length
         Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
         if (maxLength == null) {
-            // maxLength was not set in this descriptor. So check the parent setting's value 
-            // (it is interpreted as constraint which may be to high to be useful by default)
+            // maxLength was not set in this descriptor, so check the default value 
             maxLength = descriptor.getMaxLength();
             if (maxLength == null)
-                maxLength = (Integer) descriptor.getDetailDefault(MAX_LENGTH);
-            if (maxLength > 10000)
-                maxLength = 10000;
+                maxLength = generatorFactory.defaultMaxLength();
         }
         return maxLength;
     }
-
+/*
 	static class UniquenessExpression extends DynamicExpression<Boolean> {
 		InstanceDescriptor descriptor;
 		
@@ -468,11 +458,21 @@ public class DescriptorUtil {
 			return isUnique(descriptor);
         }
 	}
-
+*/
 	static class GlobalMaxCountExpression extends DynamicExpression<Long> {
 		public Long evaluate(Context context) {
             return ((BeneratorContext) context).getMaxCount();
         }
+	}
+
+	public static boolean isNullable(ComponentDescriptor descriptor, BeneratorContext context) {
+		Boolean nullable = descriptor.isNullable();
+		if (nullable != null)
+			return nullable;
+		Double nullQuota = descriptor.getNullQuota();
+		if (nullQuota != null)
+			return (nullQuota > 0);
+		return context.getGeneratorFactory().defaultNullable();
 	}
 
 }

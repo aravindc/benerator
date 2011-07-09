@@ -70,7 +70,7 @@ public class VariableGeneratorFactory {
 			generator = NullableGeneratorFactory.wrap(source);
 		}
 		
-		return NullableGeneratorFactory.injectNulls(generator, descriptor.getNullQuota());
+		return context.getGeneratorFactory().applyNullSettings(generator, descriptor.isNullable(), descriptor.getNullQuota());
 	}
 
 	private static NullableGenerator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {

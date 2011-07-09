@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,7 +37,6 @@ import org.databene.model.data.Uniqueness;
 import org.databene.benerator.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.IncrementGenerator;
-import org.databene.benerator.sample.ConstantGenerator;
 
 /**
  * Creates entity generators from entity metadata.<br/>
@@ -54,59 +53,30 @@ public class InstanceGeneratorFactory {
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = null;
-        // create a source generator
-        generator = createNullQuotaOneGenerator(descriptor);
-        if (generator == null) {
-            Uniqueness uniqueness = uniqueness(descriptor);
-            if (!uniqueness.isUnique())
-            	uniqueness = ownerUniqueness;
-            TypeDescriptor type = descriptor.getTypeDescriptor();
-            if (type instanceof SimpleTypeDescriptor)
-				generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
-						(SimpleTypeDescriptor) type, false, uniqueness, context);
-            else if (type instanceof ComplexTypeDescriptor)
-        		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(),
-        				(ComplexTypeDescriptor) type, uniqueness, context);
-            else if (type instanceof ArrayTypeDescriptor)
-        		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(),
-        				(ArrayTypeDescriptor) type, uniqueness, context);
-            else if (type == null) {
-            	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(descriptor.getName());
-            	if (defaultConfig != null)
-            		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
-            	else if (descriptor instanceof IdDescriptor)
-    				generator = new IncrementGenerator(1);
-            	else
-            		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
-            } else
-            	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
-        }
+        Uniqueness uniqueness = DescriptorUtil.uniqueness(descriptor, context);
+        if (!uniqueness.isUnique())
+        	uniqueness = ownerUniqueness;
+        TypeDescriptor type = descriptor.getTypeDescriptor();
+        if (type instanceof SimpleTypeDescriptor)
+			generator = SimpleTypeGeneratorFactory.createSimpleTypeGenerator(
+					(SimpleTypeDescriptor) type, false, uniqueness, context);
+        else if (type instanceof ComplexTypeDescriptor)
+    		generator = ComplexTypeGeneratorFactory.createComplexTypeGenerator(descriptor.getName(),
+    				(ComplexTypeDescriptor) type, uniqueness, context);
+        else if (type instanceof ArrayTypeDescriptor)
+    		generator = ArrayGeneratorFactory.createArrayGenerator(descriptor.getName(),
+    				(ArrayTypeDescriptor) type, uniqueness, context);
+        else if (type == null) {
+        	ComponentDescriptor defaultConfig = context.getDefaultComponentConfig(descriptor.getName());
+        	if (defaultConfig != null)
+        		return createSingleInstanceGenerator(defaultConfig, ownerUniqueness, context);
+        	else if (descriptor instanceof IdDescriptor)
+				generator = new IncrementGenerator(1);
+        	else
+        		throw new UnsupportedOperationException("Type of " + descriptor.getName() + " is not defined");
+        } else
+        	throw new UnsupportedOperationException("Not a supported descriptor type: " + type.getClass());
         return generator;
     }
     
-	// private helpers -------------------------------------------------------------------------------------------------
-
-    private static Uniqueness uniqueness(InstanceDescriptor descriptor) {
-    	if (descriptor instanceof IdDescriptor)
-    		return Uniqueness.ORDERED;
-    	else if (DescriptorUtil.isUnique(descriptor))
-    		return Uniqueness.SIMPLE;
-    	else
-    		return Uniqueness.NONE;
-    }
-
-    public static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
-        Double nullQuota = descriptor.getNullQuota();
-        if (nullQuota != null && nullQuota.doubleValue() == 1.)
-            return new ConstantGenerator<Object>(null);
-        return null;
-    }
-
-    public static Generator<?> createNullableGenerator(
-    		InstanceDescriptor descriptor, BeneratorContext context) {
-        if (!descriptor.overwritesParent() && descriptor.isNullable() && context.isDefaultNull()) 
-            return new ConstantGenerator<Object>(null);
-        return null;
-    }
-
 }

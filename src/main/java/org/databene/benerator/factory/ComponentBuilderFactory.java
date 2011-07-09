@@ -34,6 +34,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.IdDescriptor;
+import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -55,7 +56,6 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.nullable.ConstantNullableGenerator;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.nullable.NullableScriptGenerator;
@@ -75,25 +75,19 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     
     protected ComponentBuilderFactory() { }
 
-    private static final Logger logger = LoggerFactory.getLogger(ComponentBuilderFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentBuilderFactory.class);
     
     private static DataModel dataModel = DataModel.getDefaultInstance();
 
     // factory methods for component generators ------------------------------------------------------------------------
 
     protected static ComponentBuilder<?> createComponentBuilder(ComponentDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
-        if (logger.isDebugEnabled())
-            logger.debug("createComponentBuilder(" + descriptor.getName() + ')');
+        LOGGER.debug("createComponentBuilder({})", descriptor.getName());
         
-        // Check for settings that can be handled generically
-        NullableGenerator<?> generator;
-        generator = createNullQuotaOneBuilder(descriptor);
-        if (generator != null)
-        	return builderFromGenerator(generator, descriptor);
-        generator = createNullableGenerator(descriptor, context);
-        if (generator != null)
-        	return builderFromGenerator(generator, descriptor);
-
+        // do I only need to generate nulls?
+        if (DescriptorUtil.isNullable(descriptor, context) && shouldNullifyEachNullable(descriptor, context))
+            return builderFromNullableGenerator(createNullGenerator(descriptor, context), descriptor);
+        
         ComponentBuilder<?> result = null;
         result = createNullableScriptBuilder(descriptor, context);
         
@@ -108,7 +102,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 				else
 					result = createPartBuilder(descriptor, ownerUniqueness, context);
 	        } else if (descriptor instanceof ReferenceDescriptor)
-	        	result = createReferenceBuilder((ReferenceDescriptor)descriptor, context);
+	        	result = createReferenceBuilder((ReferenceDescriptor) descriptor, context);
 	        else if (descriptor instanceof IdDescriptor)
 	        	result = createIdBuilder((IdDescriptor)descriptor, ownerUniqueness, context);
 	        else 
@@ -116,14 +110,6 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         }
         result = wrapWithCondition(descriptor, result);
         return result;
-    }
-
-    private static ComponentBuilder<?> builderFromGenerator(NullableGenerator<?> generator, ComponentDescriptor descriptor) {
-    	if (descriptor instanceof ArrayElementDescriptor) {
-    		int index = ((ArrayElementDescriptor) descriptor).getIndex();
-    		return new ArrayElementBuilder(index, generator);
-    	} else
-    		return new PlainEntityComponentBuilder(descriptor.getName(), generator);
     }
 
 	protected static ComponentBuilder<?> createNullableScriptBuilder(ComponentDescriptor component, BeneratorContext context) {
@@ -136,30 +122,35 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         Script script = ScriptUtil.parseScriptText(scriptText);
         NullableGenerator<?> generator = new NullableScriptGenerator(script, context);
         generator = NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
-        double nullQuota = DescriptorUtil.getNullQuota(component);
-        generator = NullableGeneratorFactory.injectNulls(generator, nullQuota);
-		return builderFromGenerator(generator, component);
+        generator = context.getGeneratorFactory().applyNullSettings(generator, component.isNullable(), component.getNullQuota());
+		return builderFromNullableGenerator(generator, component);
 
     }
 
-    private static NullableGenerator<?> createNullQuotaOneBuilder(ComponentDescriptor descriptor) {
-    	Generator<?> generator = InstanceGeneratorFactory.createNullQuotaOneGenerator(descriptor);
-    	return (generator != null ? createNullGenerator(descriptor) : null);
+	protected static boolean shouldNullifyEachNullable(InstanceDescriptor descriptor,
+			BeneratorContext context) {
+		// nullQuota == 1?
+        Double nullQuota = descriptor.getNullQuota();
+		if (nullQuota != null && nullQuota.doubleValue() == 1.)
+			return true;
+		// nullable?
+		Boolean nullable = descriptor.isNullable();
+		if (nullable != null && nullable == false) // nullable defaults to true
+			return false;
+		if (!context.getGeneratorFactory().shouldNullifyEachNullable()) 
+			return false; // if the factory does not permit to nullify, it overrides the context setting
+		return (!descriptor.overwritesParent() && context.isDefaultNull());
 	}
 
-    private static NullableGenerator<?> createNullableGenerator(ComponentDescriptor descriptor, BeneratorContext context) {
-    	Generator<?> generator = InstanceGeneratorFactory.createNullableGenerator(descriptor, context);
-    	return (generator != null ? createNullGenerator(descriptor) : null);
-	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static NullableGenerator<?> createNullGenerator(ComponentDescriptor descriptor) {
-		Class<?> generatedType = String.class;
+	private static NullableGenerator<?> createNullGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
+		Class<?> generatedType;
 		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
-		if (typeDescriptor instanceof SimpleTypeDescriptor) {
+		if (typeDescriptor instanceof SimpleTypeDescriptor)
 			generatedType = ((SimpleTypeDescriptor) typeDescriptor).getPrimitiveType().getJavaType();
-		}
-	    return new ConstantNullableGenerator(null, generatedType); 
+		else
+			generatedType = String.class;
+		return context.getGeneratorFactory().createNullGenerator(generatedType); 
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -178,20 +169,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             ComponentDescriptor part, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(part, ownerUniqueness, context);
         generator = createMultiplicityWrapper(part, generator, context);
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
-        return wrapWithNullInjector(generator, part);
-    }
-
-    private static ComponentBuilder<?> wrapWithNullInjector(Generator<?> source, ComponentDescriptor descriptor) {
-    	double nullQuota = DescriptorUtil.getNullQuota(descriptor);
-    	NullableGenerator<?> generator = NullableGeneratorFactory.injectNulls(source, nullQuota);
-        return builderFromGenerator(generator, descriptor);
+        LOGGER.debug("Created {}", generator);
+        return builderFromGenerator(generator, part, context);
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     static ComponentBuilder<?> createReferenceBuilder(ReferenceDescriptor descriptor, BeneratorContext context) {
-        boolean unique = DescriptorUtil.getUniqueness(descriptor).evaluate(context);
+        boolean unique = DescriptorUtil.isUnique(descriptor, context);
         Uniqueness uniqueness = (unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
         SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) descriptor.getTypeDescriptor();
 
@@ -246,16 +230,16 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         
         // apply distribution if necessary
         if (distribution != null)
-            generator = new DistributingGenerator(generator, distribution, descriptor.isUnique());
+            generator = new DistributingGenerator(generator, distribution, unique);
         
         // check multiplicity
         generator = ComponentBuilderFactory.createMultiplicityWrapper(descriptor, generator, context);
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Created " + generator);
         
         // check 'cyclic' config
         generator = DescriptorUtil.wrapWithProxy(generator, typeDescriptor);
-        return wrapWithNullInjector(generator, descriptor);
+        return builderFromGenerator(generator, descriptor, context);
     }
 
     // non-public helpers ----------------------------------------------------------------------------------------------
@@ -275,9 +259,21 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 
 	static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = createSingleInstanceGenerator(id, ownerUniqueness, context);
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
-        return wrapWithNullInjector(generator, id);
+        LOGGER.debug("Created {}", generator);
+        return builderFromGenerator(generator, id, context);
+    }
+
+    private static ComponentBuilder<?> builderFromGenerator(Generator<?> source, ComponentDescriptor descriptor, BeneratorContext context) {
+    	NullableGenerator<?> generator = context.getGeneratorFactory().applyNullSettings(source, descriptor.isNullable(), descriptor.getNullQuota());
+        return builderFromNullableGenerator(generator, descriptor);
+    }
+
+	private static ComponentBuilder<?> builderFromNullableGenerator(NullableGenerator<?> generator, ComponentDescriptor descriptor) {
+    	if (descriptor instanceof ArrayElementDescriptor) {
+    		int index = ((ArrayElementDescriptor) descriptor).getIndex();
+    		return new ArrayElementBuilder(index, generator);
+    	} else
+    		return new PlainEntityComponentBuilder(descriptor.getName(), generator);
     }
 
     @SuppressWarnings("unchecked")

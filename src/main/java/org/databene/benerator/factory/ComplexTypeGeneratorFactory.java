@@ -146,7 +146,7 @@ public class ComplexTypeGeneratorFactory {
 		        	sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 		        	if (sourceBeanSpec.isReference())
-		        		generator = GeneratorFactory.wrapNonClosing(generator);
+		        		generator = context.getGeneratorFactory().wrapNonClosing(generator);
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Error resolving source: " + sourceSpec, e);
 	        	}

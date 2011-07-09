@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -104,7 +104,7 @@ public class TypeGeneratorFactory {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
             }
-            generator = GeneratorFactory.getConvertingGenerator(generator, converter);
+            generator = context.getGeneratorFactory().createConvertingGenerator(generator, converter);
         }
         return generator;
     }

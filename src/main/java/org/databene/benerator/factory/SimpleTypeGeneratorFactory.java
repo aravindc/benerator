@@ -111,8 +111,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         generator = wrapWithPostprocessors(generator, descriptor, context);
         generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
         // done
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
+        logger.debug("Created {}", generator);
         return generator;
     }
 	
@@ -140,7 +139,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 			return new ConstantGenerator<String>("");
         try {
 			Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
-			return GeneratorFactory.createFromWeightedLiteralList(valueSpec, targetType, distribution, uniqueness.isUnique());
+			return context.getGeneratorFactory().createFromWeightedLiteralList(valueSpec, targetType, distribution, uniqueness.isUnique());
         } catch (org.databene.commons.ParseException e) {
 	        throw new ConfigurationError("Error parsing samples: " + valueSpec, e);
         }
@@ -189,12 +188,12 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             		generator = new IteratingGenerator(((StorageSystem) sourceObject).query(selector, true, context));
             else if (sourceObject instanceof Generator)
                 generator = (Generator<?>) sourceObject;
-            else // TODO v0.6.7 support Iterable
+            else // TODO v0.7.0 support Iterable
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
         } else if (lcn.endsWith(".txt")) {
-            generator = GeneratorFactory.getTextLineGenerator(source, false);
+            generator = context.getGeneratorFactory().createTextLineGenerator(source, false);
         } else {
         	try {
 	        	BeanSpec sourceSpec = BeneratorScriptParser.resolveBeanSpec(source, context);
@@ -230,7 +229,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    if (sourceSpec.isReference())
-	    	generator = GeneratorFactory.wrapNonClosing(generator);
+	    	generator = context.getGeneratorFactory().wrapNonClosing(generator);
 	    return generator;
     }
 
@@ -284,15 +283,15 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         } else if (String.class.isAssignableFrom(targetType)) {
             return createStringGenerator(descriptor, uniqueness, context);
         } else if (Boolean.class == targetType) {
-            return createBooleanGenerator(descriptor);
+            return createBooleanGenerator(descriptor, context);
         } else if (Character.class == targetType) {
-            return createCharacterGenerator(descriptor, uniqueness);
+            return createCharacterGenerator(descriptor, uniqueness, context);
         } else if (Date.class == targetType) {
             return createDateGenerator(descriptor, uniqueness, context);
         } else if (Timestamp.class == targetType) {
             return createTimestampGenerator(descriptor, uniqueness, context);
         } else if (byte[].class == targetType) {
-            return createByteArrayGenerator(descriptor);
+            return createByteArrayGenerator(descriptor, context);
         } else
             return null;
     }
@@ -309,11 +308,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Class<?> javaType = descriptor.getPrimitiveType().getJavaType();
         return new AlternativeGenerator(javaType, sources);
     }
-    private static Generator<?> createByteArrayGenerator(
-            SimpleTypeDescriptor descriptor) {
+    
+    private static Generator<?> createByteArrayGenerator(SimpleTypeDescriptor descriptor, BeneratorContext context) {
         Generator<Byte> byteGenerator = new AsByteGeneratorWrapper<Integer>(new RandomIntegerGenerator(-128, 127, 1));
         return new ByteArrayGenerator(byteGenerator, 
-        		DescriptorUtil.getMinLength(descriptor), DescriptorUtil.getMaxLength(descriptor));
+        		DescriptorUtil.getMinLength(descriptor), DescriptorUtil.getMaxLength(descriptor, context.getGeneratorFactory()));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -329,18 +328,19 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         long precision = parseDatePrecision(descriptor);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
-	    return GeneratorFactory.getDateGenerator(min, max, precision, distribution);
+	    return context.getGeneratorFactory().createDateGenerator(min, max, precision, distribution);
     }
 
-    private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness) {
+    private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         String pattern = descriptor.getPattern();
         if (pattern == null)
             pattern = ".";
-        Locale locale = DescriptorUtil.getLocale(descriptor);
-        if (uniqueness.isUnique())
-            return GeneratorFactory.getUniqueCharacterGenerator(pattern, locale);
+        Locale locale = descriptor.getLocale();
+        GeneratorFactory generatorFactory = context.getGeneratorFactory();
+		if (uniqueness.isUnique())
+            return generatorFactory.createUniqueCharacterGenerator(pattern, locale);
         else
-            return GeneratorFactory.getCharacterGenerator(pattern, locale);
+            return generatorFactory.createCharacterGenerator(pattern, locale);
     }
 
     private static Date parseDate(SimpleTypeDescriptor descriptor, String detailName, Date defaultDate) {
@@ -365,25 +365,20 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             return 24 * 3600 * 1000L;
     }
 
-    private static Generator<Boolean> createBooleanGenerator(SimpleTypeDescriptor descriptor) {
-        Double trueQuota = descriptor.getTrueQuota();
-        if (trueQuota == null)
-            trueQuota = (Double) descriptor.getDetailDefault(TRUE_QUOTA);
-        return GeneratorFactory.getBooleanGenerator(trueQuota);
+    private static Generator<Boolean> createBooleanGenerator(SimpleTypeDescriptor descriptor, BeneratorContext context) {
+        return context.getGeneratorFactory().createBooleanGenerator(descriptor.getTrueQuota());
     }
 
     private static <T extends Number> Generator<T> createNumberGenerator(
             SimpleTypeDescriptor descriptor, Class<T> targetType, Uniqueness uniqueness, BeneratorContext context) {
-        T min = DescriptorUtil.getNumberDetailOrDefault(descriptor, MIN, targetType);
+        T min = DescriptorUtil.getNumberDetail(descriptor, MIN, targetType);
         T max = DescriptorUtil.getNumberDetail(descriptor, MAX, targetType);
-        if (min.equals(max))
-            return new ConstantGenerator<T>(min);
-        Integer totalDigits = DescriptorUtil.getNumberDetailOrDefault(descriptor, "totalDigits", Integer.class);
-        Integer fractionDigits = DescriptorUtil.getNumberDetailOrDefault(descriptor, "fractionDigits", Integer.class);
-        T precision = DescriptorUtil.getNumberDetailOrDefault(descriptor, PRECISION, targetType);
+        Integer totalDigits = DescriptorUtil.getNumberDetail(descriptor, "totalDigits", Integer.class);
+        Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
+        T precision = DescriptorUtil.getNumberDetail(descriptor, PRECISION, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
-        return GeneratorFactory.getNumberGenerator(
+        return context.getGeneratorFactory().createNumberGenerator(
                 targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness.isUnique());
     }
 
@@ -402,15 +397,15 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Distribution lengthDistribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getLengthDistribution(), Uniqueness.NONE, false, context);
         Locale locale = descriptor.getLocale();
-        return GeneratorFactory.getStringGenerator(pattern, minLength, maxLength, lengthDistribution, locale, uniqueness.isUnique());
+        return context.getGeneratorFactory().createStringGenerator(pattern, minLength, maxLength, lengthDistribution, locale, uniqueness.isUnique());
     }
     
     @SuppressWarnings("unchecked")
     protected static <A extends Annotation, T> Validator<T> createRestrictionValidator(
-            SimpleTypeDescriptor descriptor, boolean nullable) {
+            SimpleTypeDescriptor descriptor, boolean nullable, GeneratorFactory context) {
         if ((descriptor.getMinLength() != null || descriptor.getMaxLength() != null) && "string".equals(descriptor.getName())) {
             Integer minLength = DescriptorUtil.getMinLength(descriptor);
-            Integer maxLength = DescriptorUtil.getMaxLength(descriptor);
+            Integer maxLength = DescriptorUtil.getMaxLength(descriptor, context);
             return (Validator<T>) new StringLengthValidator(minLength, maxLength, nullable);
         }
         return null;

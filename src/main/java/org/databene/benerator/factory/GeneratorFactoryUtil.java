@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,6 +37,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DynamicCountGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
+import org.databene.benerator.wrapper.AsStringGenerator;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.BeanUtil;
@@ -102,16 +103,11 @@ public class GeneratorFactoryUtil {
 	public static Distribution getDistribution(String spec, Uniqueness uniqueness, boolean required, BeneratorContext context) {
         
         // handle absence of distribution spec
-        if (StringUtil.isEmpty(spec)) {
-        	switch (uniqueness) {
-	        	case ORDERED: 	return SequenceManager.STEP_SEQUENCE;
-	        	case SIMPLE: 	return SequenceManager.EXPAND_SEQUENCE;
-	        	case NONE: 		if (required)
-	        						return SequenceManager.RANDOM_SEQUENCE;
-	        					else
-	        						return null;
-        	}
-        }
+        if (StringUtil.isEmpty(spec))
+        	if (required)
+        		return context.getGeneratorFactory().defaultDistribution(uniqueness);
+        	else
+        		return null;
         
         // check for context reference
         Object contextObject = context.get(spec);
@@ -171,6 +167,22 @@ public class GeneratorFactoryUtil {
 
 	public static <T> Generator<T> createCyclicHeadGenerator(Generator<T> source) {
 		return new CyclicGeneratorProxy<T>(new NShotGeneratorProxy<T>(source, 1));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Generator<String>[] stringGenerators(Generator<?>[] sources) {
+		Generator<String>[] result = new Generator[sources.length];
+		for (int i = 0; i < sources.length; i++)
+			result[i] = stringGenerator(sources[i]);
+		return result;
+	}
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Generator<String> stringGenerator(Generator<?> source) {
+		if (source.getGeneratedType() == String.class)
+			return (Generator<String>) source;
+		else
+			return new AsStringGenerator(source);
 	}
 
 }

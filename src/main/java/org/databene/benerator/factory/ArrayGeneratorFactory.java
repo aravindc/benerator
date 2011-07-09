@@ -94,6 +94,40 @@ public class ArrayGeneratorFactory {
     
     // private helpers -------------------------------------------------------------------------------------------------
 
+    public static Generator<Object[]> createSyntheticArrayGenerator(String name, 
+            ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
+        List<ComponentBuilder<Object[]>> elementBuilders = 
+        	createSyntheticElementBuilders(arrayType, uniqueness, context);
+        Generator<Object[]> baseGenerator;
+        if (uniqueness.isUnique()) {
+        	// TODO we first create ComponentBuilders and then unwrap them! This can be simplified... 
+        	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
+        	NullableGenerator<?>[] generators = new NullableGenerator[elementBuilders.size()];
+        	for (int i = 0; i < generators.length; i++)
+        		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
+        	baseGenerator = new UniqueArrayGenerator<Object>(Object.class, generators);
+        	elementBuilders = null; // element builders are now controlled by the UniqueArrayGenerator
+        } else
+        	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
+        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(arrayType, context);
+		return new SourceAwareGenerator<Object[]>(name, baseGenerator, variables, elementBuilders, context);
+    }
+
+    @SuppressWarnings("unchecked")
+	public static Generator<Object[]> createSimpleArrayGenerator(String name, 
+            ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
+    	// TODO this method was written as a quick hack for the functionality required in Feed4JUnit and needs to be merged into createSyntheticArrayGenerator() in the long run
+        List<ComponentBuilder<Object[]>> elementBuilders = 
+        	createSyntheticElementBuilders(arrayType, uniqueness, context);
+    	@SuppressWarnings("rawtypes")
+		NullableGenerator[] generators = new NullableGenerator[elementBuilders.size()];
+    	// TODO we first create ComponentBuilders and then unwrap them! This can be simplified... 
+    	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
+    	for (int i = 0; i < generators.length; i++)
+    		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
+    	return context.getGeneratorFactory().createArrayGenerator(Object.class, generators, uniqueness.isUnique());
+    }
+
     private static Generator<Object[]> createMutatingArrayGenerator(
     		String instanceName, ArrayTypeDescriptor type, Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
     	Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
@@ -124,7 +158,7 @@ public class ArrayGeneratorFactory {
 		        	Object sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 		        	if (sourceBeanSpec.isReference())
-		        		generator = GeneratorFactory.wrapNonClosing(generator);
+		        		generator = context.getGeneratorFactory().wrapNonClosing(generator);
 		        	return generator;
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Unknown source type: " + sourceName);
@@ -181,23 +215,6 @@ public class ArrayGeneratorFactory {
 	    } else
 	        throw new ConfigurationError("Source type not supported: " + sourceObject.getClass());
 	    return generator;
-    }
-
-    private static Generator<Object[]> createSyntheticArrayGenerator(String name, 
-            ArrayTypeDescriptor arrayType, Uniqueness uniqueness, BeneratorContext context) {
-        List<ComponentBuilder<Object[]>> elementBuilders = 
-        	createSyntheticElementBuilders(arrayType, uniqueness, context);
-        Generator<Object[]> baseGenerator;
-        if (uniqueness.isUnique()) {
-        	NullableGenerator<?>[] sources = new NullableGenerator[elementBuilders.size()];
-        	for (int i = 0; i < sources.length; i++)
-        		sources[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
-        	baseGenerator = new UniqueArrayGenerator(sources);
-        	elementBuilders = null; // element builders are now controlled by the UniqueArrayGenerator
-        } else
-        	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
-        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(arrayType, context);
-		return new SourceAwareGenerator<Object[]>(name, baseGenerator, variables, elementBuilders, context);
     }
 
 	@SuppressWarnings("unchecked")
