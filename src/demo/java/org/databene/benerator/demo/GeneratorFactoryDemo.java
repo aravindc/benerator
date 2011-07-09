@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
 
 /**
@@ -36,13 +37,14 @@ import org.databene.benerator.factory.GeneratorFactory;
 public class GeneratorFactoryDemo {
 
 	public static void main(String[] args) {
-		generateByRegex();
-		generateByWeightedLiteralList();
-		iterateCsv();
+		GeneratorFactory factory = new EquivalenceGeneratorFactory();
+		generateByRegex(factory);
+		generateByWeightedLiteralList(factory);
+		iterateCsv(factory);
 	}
 
-	private static void iterateCsv() {
-		Generator<String[]> generator = GeneratorFactory.getCSVLineGenerator("org/databene/benerator/products.csv", ';', true, false);
+	private static void iterateCsv(GeneratorFactory generatorFactory) {
+		Generator<String[]> generator = generatorFactory.createCSVLineGenerator("org/databene/benerator/products.csv", ';', true, false);
 		generator.init(new BeneratorContext());
 		String[] row;
 		while ((row = generator.generate()) != null) // null signals that the generator is used up
@@ -50,17 +52,17 @@ public class GeneratorFactoryDemo {
 		generator.close();
 	}
 
-	private static void generateByWeightedLiteralList() {
-		Generator<String> generator = GeneratorFactory.createFromWeightedLiteralList("'Alpha'^4,'Bravo'^1", String.class, null, false);
+	private static void generateByWeightedLiteralList(GeneratorFactory generatorFactory) {
+		Generator<String> generator = generatorFactory.createFromWeightedLiteralList("'Alpha'^4,'Bravo'^1", String.class, null, false);
 		generator.init(new BeneratorContext());
 		for (int i = 0; i < 10; i++)
 			System.out.println(generator.generate());
 		generator.close();
 	}
 
-	private static void generateByRegex() {
-		// generating german phone numbers
-		Generator<String> generator = GeneratorFactory.getRegexStringGenerator("\\+49\\-[1-9]{2,5}\\-[1-9][0-9]{3,9}", 8, 20, false);
+	private static void generateByRegex(GeneratorFactory generatorFactory) {
+		// generating German phone numbers
+		Generator<String> generator = generatorFactory.createRegexStringGenerator("\\+49\\-[1-9]{2,5}\\-[1-9][0-9]{3,9}", 8, 20, false);
 		generator.init(new BeneratorContext());
 		for (int i = 0; i < 10; i++)
 			System.out.println(generator.generate());

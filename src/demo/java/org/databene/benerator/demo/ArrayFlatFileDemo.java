@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,7 @@ import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.file.FileBuilder;
 import org.databene.benerator.wrapper.CompositeArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
@@ -95,19 +95,20 @@ public class ArrayFlatFileDemo {
 
         @SuppressWarnings({ "unchecked", "cast", "rawtypes" })
         private static Generator<Object>[] createSources() {
-            Generator<Date> dateGenerator = GeneratorFactory.getDateGenerator( // transaction date
+            VolumeGeneratorFactory generatorFactory = new VolumeGeneratorFactory();
+			Generator<Date> dateGenerator = generatorFactory.createDateGenerator( // transaction date
                     TimeUtil.date(2004, 0, 1), TimeUtil.date(2006, 11, 31), Period.DAY.getMillis(),
                     SequenceManager.RANDOM_SEQUENCE);
             FormatFormatConverter<Date> dateRenderer = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat("yyyyMMdd"), false);
 			Generator<Object>[] sources = (Generator<Object>[]) new Generator[] {
                     new ConstantGenerator<String>("R"),
-                    GeneratorFactory.getNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, false),
-                    GeneratorFactory.getSampleGenerator("BUY", "SALE"), // transaction type
+                    generatorFactory.createNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, false),
+                    generatorFactory.createSampleGenerator("BUY", "SALE"), // transaction type
                     new ConvertingGenerator(dateGenerator, dateRenderer), // transaction date
-                    GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly"), // partner
-                    GeneratorFactory.getRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
-                    GeneratorFactory.getNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, false), // item count
-                    GeneratorFactory.getNumberGenerator(BigDecimal.class, // item price
+                    generatorFactory.createSampleGenerator("Alice", "Bob", "Charly"), // partner
+                    generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
+                    generatorFactory.createNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, false), // item count
+                    generatorFactory.createNumberGenerator(BigDecimal.class, // item price
                             new BigDecimal("0.50"), new BigDecimal("99.99"), new BigDecimal("0.01"),
                             SequenceManager.CUMULATED_SEQUENCE, false)
             };

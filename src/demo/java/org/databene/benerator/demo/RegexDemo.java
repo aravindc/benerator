@@ -17,11 +17,12 @@ public class RegexDemo {
 
     public static void main(String[] args) {
     	BeneratorContext context = new BeneratorContext();
-        Generator<String> phoneGenerator = GeneratorFactory.getRegexStringGenerator(PHONE_PATTERN, 1, 16, false);
+    	GeneratorFactory generatorFactory = context.getGeneratorFactory();
+        Generator<String> phoneGenerator = generatorFactory.createRegexStringGenerator(PHONE_PATTERN, 1, 16, false);
         phoneGenerator.init(context);
         for (int i = 0; i < 5; i++)
             System.out.println(phoneGenerator.generate());
-        Generator<String> emailGenerator = GeneratorFactory.getRegexStringGenerator(EMAIL_PATTERN, 1, 100, false);
+        Generator<String> emailGenerator = generatorFactory.createRegexStringGenerator(EMAIL_PATTERN, 1, 100, false);
         emailGenerator.init(context);
         for (int i = 0; i < 5; i++)
             System.out.println(emailGenerator.generate());

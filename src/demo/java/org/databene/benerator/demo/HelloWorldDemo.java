@@ -14,10 +14,11 @@ public class HelloWorldDemo {
     	// first create a context
     	BeneratorContext context = new BeneratorContext();
         // create and initialize the salutation generator
-    	Generator<String> salutation = GeneratorFactory.getSampleGenerator("Hi", "Hello", "Howdy");
+    	GeneratorFactory generatorFactory = context.getGeneratorFactory();
+    	Generator<String> salutation = generatorFactory.createSampleGenerator("Hi", "Hello", "Howdy");
         salutation.init(context);
         // create and initialize the name generator
-        Generator<String> name = GeneratorFactory.getSampleGenerator("Alice", "Bob", "Charly");
+        Generator<String> name = generatorFactory.createSampleGenerator("Alice", "Bob", "Charly");
         name.init(context);
         // use the generators
         for (int i = 0; i < 5; i++)

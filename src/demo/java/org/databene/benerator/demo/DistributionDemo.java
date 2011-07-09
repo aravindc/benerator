@@ -7,7 +7,7 @@ import org.databene.benerator.distribution.sequence.RandomWalkSequence;
 import org.databene.benerator.distribution.sequence.ShuffleSequence;
 import org.databene.benerator.distribution.sequence.StepSequence;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.VolumeGeneratorFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +46,7 @@ public class DistributionDemo {
     }
 
     private static DistributionPane createDistributionPane(String label, Sequence sequence) {
-    	Generator<Integer> generator = GeneratorFactory.getNumberGenerator(Integer.class, 0, N - 1, 1, sequence, false);
+    	Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 0, N - 1, 1, sequence, false);
     	generator.init(new BeneratorContext());
 		return new DistributionPane(label, generator);
     }
