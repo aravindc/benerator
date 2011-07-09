@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,7 +25,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
 import org.databene.commons.context.ContextAware;
@@ -51,7 +50,7 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	private Class<? extends Number> numberType;
 	private ArithmeticEngine arithmetic;
 	private Generator<Number> noiseGenerator;
-	private Context context;
+	private GeneratorContext context;
 
 	public NoiseInducer() {
 	    this(-0.1, 0.1, 0.001);
@@ -109,7 +108,7 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
     }
 
 	public void setContext(Context context) {
-	    this.context = context;
+	    this.context = (GeneratorContext) context;
     }
 
 	// Converter interface implementation ------------------------------------------------------------------------------
@@ -147,13 +146,13 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	    this.numberType = (relative ? Double.class : sourceValue.getClass());
 	    Converter<Number, ? extends Number> converter = ConverterManager.getInstance().createConverter(Number.class, numberType);
 	    arithmetic = new ArithmeticEngine();
-	    noiseGenerator = GeneratorFactory.getNumberGenerator(
+	    noiseGenerator = context.getGeneratorFactory().createNumberGenerator(
 	    		(Class<Number>) numberType, 
 	    		(Number) converter.convert(minNoise), 
 	    		(Number) converter.convert(maxNoise), 
 	    		(Number) converter.convert(noisePrecision), 
 	    		noiseDistribution, false);
-	    noiseGenerator.init((GeneratorContext) context);
+	    noiseGenerator.init(context);
 	}
 
 }
