@@ -29,7 +29,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * Creates Strings from a {@link Character} {@link Generator} with a length defined by a number Generator.<br/>
  * <br/>
  * Created: 04.07.2011 01:35:15
- * @since 0.6.7
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 public class DistributedLengthStringGenerator extends ThreadSafeGenerator<String> {
