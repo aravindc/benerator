@@ -23,6 +23,7 @@ package org.databene.benerator.primitive.number;
 
 import static org.junit.Assert.*;
 
+import org.databene.benerator.engine.BeneratorContext;
 import org.junit.Test;
 
 /**
@@ -36,6 +37,7 @@ public class NoiseInducerTest {
 	@Test
 	public void testConvert_absolute() {
 		NoiseInducer inducer = new NoiseInducer(-2., 2., 0.01);
+		inducer.setContext(new BeneratorContext());
 		inducer.setRelative(false);
 		for (int i = 0; i < 100; i++) {
 			Number result = inducer.convert(0.);
@@ -47,6 +49,7 @@ public class NoiseInducerTest {
 	public void testConvert_relative() {
 		NoiseInducer inducer = new NoiseInducer(-0.5, 0.5, 0.01);
 		inducer.setRelative(true);
+		inducer.setContext(new BeneratorContext());
 		for (int i = 0; i < 100; i++) {
 			assertEquals(0., inducer.convert(0.));
 		}
@@ -56,6 +59,7 @@ public class NoiseInducerTest {
 	public void testConvertMinMax() {
 		NoiseInducer inducer = new NoiseInducer(-2., 2., 1);
 		inducer.setRelative(false);
+		inducer.setContext(new BeneratorContext());
 		for (int i = 0; i < 100; i++) {
 			Number result = inducer.convert(0, -1., 1.);
 			assertTrue(result.intValue() >= -1. && result.intValue() <= 1.);
