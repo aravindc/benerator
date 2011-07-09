@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * On each call to generate(), it chooses a generator from a collection,
@@ -40,16 +39,6 @@ import org.databene.benerator.util.GeneratorUtil;
 public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
     // constructors ----------------------------------------------------------------------------------------------------
-
-    @SuppressWarnings("unchecked")
-    public AlternativeGenerator() {
-        this((Class<E>) Object.class);
-    }
-
-    /** Initializes the generator to a collection of source generators */
-    public AlternativeGenerator(Generator<E>... sources) {
-        this(GeneratorUtil.commonTargetTypeOf(sources), sources);
-    }
 
 	/** Initializes the generator to a collection of source generators */
     public AlternativeGenerator(Class<E> targetType, Generator<E>... sources) {
