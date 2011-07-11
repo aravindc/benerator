@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,7 +21,6 @@
 
 package org.databene.benerator.nullable;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.script.Script;
@@ -58,12 +57,6 @@ public class NullableScriptGenerator extends AbstractNullableGenerator<Object>{
         return wrapper.setProduct(result);
     }
     
-	public void reset() throws IllegalGeneratorStateException {
-    }
-
-	public void close() {
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + script + ']';

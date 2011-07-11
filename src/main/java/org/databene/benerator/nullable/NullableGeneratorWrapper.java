@@ -38,12 +38,16 @@ public abstract class NullableGeneratorWrapper<S, P> extends AbstractNullableGen
 	    this.source = source;
     }
 
+	@Override
 	public void close() {
 		source.close();
+		super.close();
     }
 
+	@Override
 	public void reset() {
 		source.reset();
+		super.reset();
     }
 
 	@Override

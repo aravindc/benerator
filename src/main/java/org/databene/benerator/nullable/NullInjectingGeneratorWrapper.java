@@ -82,14 +82,18 @@ public class NullInjectingGeneratorWrapper<E> extends AbstractNullableGenerator<
     	return wrapper;
     }
 
-    public void reset() throws IllegalGeneratorStateException {
+    @Override
+	public void reset() throws IllegalGeneratorStateException {
     	source.reset();
     	closed = false;
+    	super.reset();
     }
 
-    public void close() {
+    @Override
+	public void close() {
     	source.close();
     	closed = true;
+    	super.close();
     }
 
 	public boolean isParallelizable() {

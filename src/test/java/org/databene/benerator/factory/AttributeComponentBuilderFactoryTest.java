@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -762,11 +762,15 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 			return wrapper;
 		}
 		
+		@Override
 		public void reset() {
+			super.reset();
 			builder.reset();
 		}
 		
+		@Override
 		public void close() {
+			super.close();
 			builder.close();
 		}
 
