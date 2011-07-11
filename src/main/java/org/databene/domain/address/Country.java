@@ -90,7 +90,7 @@ public class Country {
         this.states = new OrderedNameMap<State>();
         String filename = "/org/databene/domain/address/state_" + isoCode + ".csv";
         if (!IOUtil.isURIAvailable(filename)) {
-        	logger.debug("No states defined for " + this);
+        	LOGGER.debug("No states defined for {}", this);
         	return;
         }
 		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', Encodings.UTF_8);
@@ -267,7 +267,7 @@ public class Country {
 
 	// constants -------------------------------------------------------------------------------------------------------
 	
-	private static final Logger logger = LoggerFactory.getLogger(Country.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Country.class);
 
 	private static final String DEFAULT_PHONE_CODE = "[2-9][0-9][0-9]";
 
@@ -400,7 +400,7 @@ public class Country {
         CSVLineIterator iterator = null;
         try {
             iterator = new CSVLineIterator(FILE_NAME, ',', true);
-            logger.debug("Parsing country setup file " + FILE_NAME);
+            LOGGER.debug("Parsing country setup file {}", FILE_NAME);
             while (iterator.hasNext()) {
                 String[] cells = iterator.next();
                 String isoCode = cells[0];
@@ -409,8 +409,7 @@ public class Country {
                 String mobilCodePattern = (cells.length > 3 ? cells[3].trim() : DEFAULT_MOBILE_PHONE_PATTERN);
                 String name = (cells.length > 4 ? cells[4].trim() : null);
                 Country country = new Country(isoCode, defaultLocale, phoneCode, mobilCodePattern, name);
-                if (logger.isDebugEnabled())
-                    logger.debug("parsed " + country);
+                LOGGER.debug("Parsed country {}" + country);
             }
         } catch (IOException e) {
             throw new ConfigurationError("Country definition file could not be processed. ", e);
