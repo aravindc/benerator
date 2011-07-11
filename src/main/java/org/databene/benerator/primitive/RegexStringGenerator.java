@@ -130,7 +130,6 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     public void init(GeneratorContext context) {
     	Generator<String> tmp = getGeneratorFactory(context).createRegexStringGenerator(pattern, minLength, maxLength, unique);
         try {
-        	System.out.println(pattern);
 			setSource(tmp);
             super.init(context);
         } catch (Exception e) {
