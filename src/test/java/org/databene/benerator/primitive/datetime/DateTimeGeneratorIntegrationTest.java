@@ -26,9 +26,12 @@ import static org.junit.Assert.*;
 import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorIntegrationTest;
+import org.databene.benerator.engine.parser.String2DistributionConverter;
 import org.databene.benerator.engine.statement.BeanStatement;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.TimeUtil;
+import org.databene.commons.converter.ConverterManager;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -39,6 +42,14 @@ import org.junit.Test;
  * @author Volker Bergmann
  */
 public class DateTimeGeneratorIntegrationTest extends BeneratorIntegrationTest {
+
+	@Before
+	public void setupConverterManager() {
+		ConverterManager converterManager = ConverterManager.getInstance();
+		converterManager.reset();
+    	converterManager.registerConverterClass(String2DistributionConverter.class);
+		converterManager.setContext(context);
+	}
 
 	@Test
 	public void test() {

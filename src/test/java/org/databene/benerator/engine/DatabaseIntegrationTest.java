@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.util.Date;
 import java.util.List;
 
+import org.databene.benerator.primitive.datetime.CurrentDateTimeGenerator;
 import org.databene.benerator.test.ConsumerMock;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.TimeUtil;
@@ -288,7 +289,7 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 	public void test_datetime_resolution() {
 		parseAndExecute(
 			"<generate type='referer' count='3' consumer='cons'>" +
-        	"  <attribute name='the_date' generator='org.databene.benerator.primitive.datetime.CurrentDateTimeGenerator' />" +
+        	"  <attribute name='the_date' generator='" + CurrentDateTimeGenerator.class.getName() + "' />" +
         	"</generate>");
 		List<Entity> products = consumer.getProducts();
 		assertEquals(3, products.size());

@@ -241,11 +241,15 @@ public class DescriptorUtilTest {
 
 	@Test
 	public void testGetSeparator() {
-		BeneratorContext context = new BeneratorContext(null);
-		assertEquals(',', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
-		context.setDefaultSeparator('|');
-		assertEquals('|', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
-		assertEquals(';', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x").withSeparator(";"), context));
+		BeneratorContext context = new BeneratorContext();
+		try {
+			assertEquals(',', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
+			context.setDefaultSeparator('|');
+			assertEquals('|', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x"), context));
+			assertEquals(';', DescriptorUtil.getSeparator(new SimpleTypeDescriptor("x").withSeparator(";"), context));
+		} finally {
+			context.setDefaultSeparator(',');
+		}
 	}
 	
 	@Test

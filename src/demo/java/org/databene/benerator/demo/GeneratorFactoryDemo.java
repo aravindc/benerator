@@ -27,6 +27,8 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
+import org.databene.commons.Encodings;
 
 /**
  * Demonstrates usages of the {@link GeneratorFactory}.<br/><br/>
@@ -44,7 +46,7 @@ public class GeneratorFactoryDemo {
 	}
 
 	private static void iterateCsv(GeneratorFactory generatorFactory) {
-		Generator<String[]> generator = generatorFactory.createCSVLineGenerator("org/databene/benerator/products.csv", ';', true, false);
+		Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator("org/databene/benerator/products.csv", ';', true, Encodings.UTF_8);
 		generator.init(new BeneratorContext());
 		String[] row;
 		while ((row = generator.generate()) != null) // null signals that the generator is used up

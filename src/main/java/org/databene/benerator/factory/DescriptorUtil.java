@@ -130,7 +130,7 @@ public class DescriptorUtil {
 	        	generator = (Generator<?>) generatorBeanSpec.getBean();
 	            mapDetailsToBeanProperties(descriptor, generator, context);
 	            if (generatorBeanSpec.isReference()) {
-	            	generator = context.getGeneratorFactory().wrapNonClosing(generator);
+	            	generator = GeneratorFactoryUtil.wrapNonClosing(generator);
 	            	generator.init(context);
 	            }
 	        }

@@ -159,7 +159,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		Generator<Entity> generator = createGenerator(twen);
 		generator.init(context);
 		Entity person1 = generator.generate();
-		assertEquals(PersonIterable.ALICE, person1);
+		assertEquals(PersonIterable.createAlice(), person1);
 		assertUnavailable(generator);
 	}
 	

@@ -50,6 +50,7 @@ import org.databene.commons.CollectionUtil;
 import org.databene.commons.ComparableComparator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.NumberUtil;
+import org.databene.commons.OrderedSet;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.NumberToNumberConverter;
 import org.databene.commons.math.ArithmeticEngine;
@@ -72,18 +73,17 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T[]> createArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
+	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
     	return new UniqueArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override
-	public <T> Generator<T[]> createArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
+	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
     	return new UniqueCompositeArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override
-	public <T> Generator<T> createSampleGenerator(Collection<T> values,
-			Class<T> generatedType, boolean unique) {
+	public <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique) {
         return new SequenceGenerator<T>(generatedType, CollectionUtil.toArray(values));
 	}
 
@@ -101,7 +101,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     		values[i] = value;
     	}
 	    SequenceGenerator<String> source = new SequenceGenerator<String>(String.class, values);
-	    return createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	    return GeneratorFactoryUtil.createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
     }
 
     @SuppressWarnings("unchecked")
@@ -172,7 +172,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     }
     
 	@Override
-	public Generator<String> createStringGenerator(Collection<Character> chars,
+	public Generator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
 		Generator<Character> charGenerator = createCharacterGenerator(chars);
 		Set<Integer> counts = defaultCounts(minLength, maxLength);
@@ -196,45 +196,25 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	}
 	
     @Override
-	public Generator<Character> createCharacterGenerator(Collection<Character> characters) {
-    	Set<Character> uppers = new TreeSet<Character>();
-    	Set<Character> lowers = new TreeSet<Character>();
-    	Set<Character> digits = new TreeSet<Character>();
-    	Set<Character> spaces = new TreeSet<Character>();
-    	Set<Character> others = new TreeSet<Character>();
-    	for (char c : characters) {
-    		if (Character.isUpperCase(c))
-    			uppers.add(c);
-    		else if (Character.isLowerCase(c))
-    			lowers.add(c);
-    		else if (Character.isDigit(c))
-    			digits.add(c);
-    		else if (Character.isWhitespace(c))
-    			spaces.add(c);
-    		else
-    			others.add(c);
-    	}
-        SequenceGenerator<Character> generator = new SequenceGenerator<Character>(Character.class);
-        add(uppers, generator);
-        add(lowers, generator);
-        add(digits, generator);
-        for (Character c : spaces)
-        	generator.addValue(c);
-        for (Character c : others)
-        	generator.addValue(c);
-        return generator;
+	public Generator<Character> createCharacterGenerator(String pattern, Locale locale, boolean unique) {
+        Character[] chars = CollectionUtil.toArray(defaultSubSet(GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale)), Character.class);
+        return new SequenceGenerator<Character>(Character.class, chars);
     }
 
-    private void add(Set<Character> chars, SequenceGenerator<Character> generator) {
-		if (chars.size() == 0)
+    @Override
+	public Generator<Character> createCharacterGenerator(Set<Character> characters) {
+        return new SequenceGenerator<Character>(Character.class, defaultSubSet(characters));
+    }
+
+    private void addSelection(Set<Character> ofChars, Set<Character> toChars) {
+		if (ofChars.size() == 0)
 			return;
-		Character[] array = CollectionUtil.toArray(chars);
-		generator.addValue(array[0]);
+		Character[] array = CollectionUtil.toArray(ofChars);
+		toChars.add(array[0]);
 		if (array.length >= 3)
-			generator.addValue(array[array.length/2]);
+			toChars.add(array[array.length/2]);
 		if (array.length >= 2)
-			generator.addValue(ArrayUtil.lastElementOf(array));
-			
+			toChars.add(ArrayUtil.lastElementOf(array));
 	}
 
 	protected Set<Integer> defaultCounts(int minParts, int maxParts) {
@@ -258,6 +238,36 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	public <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType) {
 		return new OneShotNullableGenerator<T>(null, generatedType);
 	}
+
+    @Override
+	public Set<Character> defaultSubSet(Set<Character> characters) {
+    	Set<Character> uppers = new TreeSet<Character>();
+    	Set<Character> lowers = new TreeSet<Character>();
+    	Set<Character> digits = new TreeSet<Character>();
+    	Set<Character> spaces = new TreeSet<Character>();
+    	Set<Character> others = new TreeSet<Character>();
+    	for (char c : characters) {
+    		if (Character.isUpperCase(c))
+    			uppers.add(c);
+    		else if (Character.isLowerCase(c))
+    			lowers.add(c);
+    		else if (Character.isDigit(c))
+    			digits.add(c);
+    		else if (Character.isWhitespace(c))
+    			spaces.add(c);
+    		else
+    			others.add(c);
+    	}
+    	Set<Character> result = new OrderedSet<Character>();
+        addSelection(uppers, result);
+        addSelection(lowers, result);
+        addSelection(digits, result);
+        for (Character c : spaces)
+        	result.add(c);
+        for (Character c : others)
+        	result.add(c);
+        return result;
+    }
 
     // defaults --------------------------------------------------------------------------------------------------------
     
@@ -310,11 +320,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	@Override
 	protected Distribution defaultLengthDistribution(Uniqueness uniqueness, boolean required) {
     	return (required ? SequenceManager.STEP_SEQUENCE : null);
-	}
-
-	@Override
-	protected Locale defaultLocale() {
-		return Locale.getDefault();
 	}
 
 	@Override

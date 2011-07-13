@@ -34,20 +34,13 @@ import org.databene.benerator.*;
 import org.databene.benerator.primitive.datetime.DateGenerator;
 import org.databene.benerator.wrapper.*;
 import org.databene.commons.*;
-import org.databene.commons.converter.*;
-import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.document.csv.CSVCellIterable;
-import org.databene.document.csv.CSVLineIterable;
 import org.databene.model.data.Uniqueness;
 import org.databene.regex.CustomCharClass;
 import org.databene.regex.Factor;
 import org.databene.regex.Quantifier;
 import org.databene.regex.RegexParser;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -57,7 +50,7 @@ import java.util.*;
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class GeneratorFactory { 
+public abstract class GeneratorFactory { // TODO scan implementations and check generator name consistency
 	
     // boolean generator -----------------------------------------------------------------------------------------------
 
@@ -127,59 +120,11 @@ public abstract class GeneratorFactory {
 	public abstract <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique);
 
-    /**
-     * Creates a generator that reads cell Strings from a CSV file and converts them into objects by a converter
-     *
-     * @param uri       The URI or filename to read the data from
-     * @param converter the converter to use for representing the file entries
-     * @return a Generator that creates instances of the parameterized type T.
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> Generator<T> createSampleGenerator(String uri, String encoding, Converter<String, T> converter) {
-        if (converter == null)
-            converter = new NoOpConverter();
-        return new WeightedCSVSampleGenerator<T>(uri, encoding, converter);
-    }
-
-    /**
-     * Creates a Generator that chooses from a set of values with equal weights.
-     *
-     * @param values A collection of values to choose from
-     * @return a generator that selects from the listed sample values
-     */
-    @SuppressWarnings("unchecked")
-    public <T> Generator<T> createSampleGenerator(Collection<T> values) {
-    	Class<T> generatedType = (Class<T>) Object.class;
-    	if (values.size() > 0) {
-    		T first = values.iterator().next();
-			generatedType = (Class<T>) first.getClass();
-    	}
-        return new AttachedWeightSampleGenerator<T>(generatedType, values);
+    public <T> Generator<T> createSampleGenerator(Class<T> generatedType, boolean unique, T... values) {
+    	return createSampleGenerator(CollectionUtil.toSet(values), generatedType, unique);
     }
 
     public abstract <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique);
-
-    /**
-     * Creates a Generator that chooses from an array of values with equal weights.
-     *
-     * @param values An array of values to choose from
-     * @return a generator that selects from the listed sample values
-     */
-    @SuppressWarnings("unchecked")
-    public <T> Generator<T> createSampleGenerator(T ... values) {
-    	Class<T> generatedType = (values.length > 0 ? (Class<T>) values[0].getClass() : (Class<T>) Object.class);
-    	return createSampleGenerator(generatedType, values);
-    }
-
-    /**
-     * Creates a Generator that chooses from an array of values with equal weights.
-     *
-     * @param values An array of values to choose from
-     * @return a generator that selects from the listed sample values
-     */
-    public <T> Generator<T> createSampleGenerator(Class<T> generatedType, T ... values) {
-        return new AttachedWeightSampleGenerator<T>(generatedType, values);
-    }
 
     /**
      * Creates a generator that chooses from a set of samples, using an individual weight for each sample.
@@ -188,6 +133,7 @@ public abstract class GeneratorFactory {
      * @return a generator of the desired characteristics
      */
     public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples) {
+    	// TODO Eq. version
         AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
@@ -200,6 +146,7 @@ public abstract class GeneratorFactory {
      * @return a generator of the desired characteristics
      */
     public <T> Generator<T> createWeightedSampleGenerator(WeightedSample<T> ... samples) {
+    	// TODO Eq. version
         AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
@@ -218,6 +165,7 @@ public abstract class GeneratorFactory {
      */
     public Generator<Date> createDateGenerator(
             Date min, Date max, long precision, Distribution distribution) {
+    	// TODO Eq. version
     	if (min == null) {
     		if (max == null) {
         		min = TimeUtil.date(1970, 0, 1);
@@ -229,19 +177,6 @@ public abstract class GeneratorFactory {
         return new DateGenerator(min, max, precision, distribution);
     }
 
-    /**
-     * Creates a date generator that generates date entries from a CSV file.
-     *
-     * @param uri       the uri of the CSV file.
-     * @param pattern   the pattern to use for parsing the CSV cells
-     * @return a generator of the desired characteristics
-     */
-    public Generator<Date> createDateGenerator(String uri, String encoding, String pattern) {
-        DateFormat format = new SimpleDateFormat(pattern);
-        Converter<String, Date> converter = new ParseFormatConverter<Date>(Date.class, format, false);
-        return new WeightedCSVSampleGenerator<Date>(uri, encoding, converter);
-    }
-
     // text generators -------------------------------------------------------------------------------------------------
 
     /**
@@ -250,29 +185,17 @@ public abstract class GeneratorFactory {
      * @param pattern   the regular expression that indicates the available range of values.
      *                  If null, any letters of the specified locale will be used
      * @param locale    the locale to use for '\w' evaluation
+     * @param unique    flag indicating if character generation should be unique
      * @return a generator of the desired characteristics
      */
-    public Generator<Character> createCharacterGenerator(String pattern, Locale locale) {
-        Collection<Character> chars = charSet(pattern, locale);
-        return new CharacterGenerator(chars);
-    }
-
-    private Collection<Character> charSet(String pattern, Locale locale) {
-        Collection<Character> chars;
-        if (pattern != null) {
-            try {
-                chars = RegexParser.toCharSet(new RegexParser(locale).parseSingleChar(pattern)).getSet();
-            } catch (ParseException e) {
-                throw new ConfigurationError("Invalid regular expression.", e);
-            }
-        } else
-            chars = LocaleUtil.letters(locale);
-        return chars;
-    }
-
-    public Generator<Character> createUniqueCharacterGenerator(String pattern, Locale locale) {
-        Character[] chars = CollectionUtil.toArray(charSet(pattern, locale), Character.class);
-        return new SequenceGenerator<Character>(Character.class, chars);
+    public Generator<Character> createCharacterGenerator(String pattern, Locale locale, boolean unique) {
+    	if (unique) {
+	        Character[] chars = CollectionUtil.toArray(GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale), Character.class);
+	        return new SequenceGenerator<Character>(Character.class, chars);
+    	} else {
+            Collection<Character> chars = GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale);
+            return new CharacterGenerator(chars);
+    	}
     }
 
     /**
@@ -281,18 +204,8 @@ public abstract class GeneratorFactory {
      * @param characters the set of characters to choose from
      * @return a generator of the desired characteristics
      */
-    public Generator<Character> createCharacterGenerator(Collection<Character> characters) {
-        return new CharacterGenerator(characters);
-    }
-
-    /**
-     * Creates a character generator that creates values from a set of characters
-     *
-     * @param characters the set of characters to choose from
-     * @return a generator of the desired characteristics
-     */
-    public Generator<Character> createCharacterGenerator(Character ... characters) {
-        return new CharacterGenerator(Arrays.asList(characters));
+    public Generator<Character> createCharacterGenerator(Set<Character> characters) {
+        return new CharacterGenerator(defaultSubSet(characters));
     }
 
 	public Generator<String> createStringGenerator(String pattern,
@@ -311,11 +224,7 @@ public abstract class GeneratorFactory {
         if (pattern == null)
             pattern = "[A-Z]{" + minLength + ',' + maxLength + '}';
         Object regex;
-        try {
-			regex = new RegexParser().parseRegex(pattern);
-		} catch (ParseException e) {
-			throw new ConfigurationError(e);
-		}
+		regex = new RegexParser().parseRegex(pattern);
         if (lengthDistribution != null) {
         	if (!(regex instanceof Factor))
         		throw new ConfigurationError("Illegal regular expression in the context of a length distribution: " + pattern);
@@ -331,11 +240,11 @@ public abstract class GeneratorFactory {
 			return createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique);
         }
         if (locale == null)
-            locale = defaultLocale();
+            locale = GeneratorFactoryUtil.defaultLocale();
 		return createRegexStringGenerator(pattern, minLength, maxLength, unique); 
 	}
     
-	public abstract Generator<String> createStringGenerator(Collection<Character> chars,
+	public abstract Generator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique);
 
 	public abstract Generator<String> createCompositeStringGenerator(
@@ -357,83 +266,21 @@ public abstract class GeneratorFactory {
                 generator, new StringLengthValidator(minLength, maxLength));
     }
 
-    // formatting generators -------------------------------------------------------------------------------------------
-
-    /**
-     * Creates a generator that accepts products from a source generator
-     * and converts them to target products by the converter
-     *
-     * @param source    the source generator
-     * @param converter the converter to apply to the products of the source generator
-     * @return a generator of the desired characteristics
-     */
-    public <S, T> Generator<T> createConvertingGenerator(Generator<S> source, Converter<S, T> converter) {
-        return new ConvertingGenerator<S, T>(source, converter);
-    }
-
-    /**
-     * Creates a generator that generates messages by reading the products of several source generators and
-     * combining them by a Java MessageFormat.
-     *
-     * @param pattern   the MessageFormat pattern
-     * @param minLength the minimum length of the generated value
-     * @param maxLength the maximum length of the generated value
-     * @param sources   the source generators of which to assemble the products
-     * @return a generator of the desired characteristics
-     * @see java.text.MessageFormat
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Generator<String> createMessageGenerator(
-            String pattern, int minLength, int maxLength, Generator ... sources) {
-        Generator<String> generator = new ConvertingGenerator<Object[], String>(
-                new SimpleCompositeArrayGenerator<Object>(Object.class, sources), (Converter) new MessageConverter(pattern, null));
-        generator = new ValidatingGeneratorProxy<String>(generator, new StringLengthValidator(minLength, maxLength));
-        return generator;
-    }
-
     // collection generators -------------------------------------------------------------------------------------------
 
     /**
-     * Creates a generator that combines several products of a source generator to a collection.
-     *
-     * @param collectionType     the type of collection to create, e.g. java.util.List or java.util.TreeSet
-     * @param source             the generator that provides the collection items
-     * @param sizeDistribution      distribution for the collection size
-     * @return a generator of the desired characteristics
-     */
-    public <C extends Collection<I>, I> Generator<C> createCollectionGenerator(
-            Class<C> collectionType, Generator<I> source, 
-            int minSize, int maxSize, Distribution sizeDistribution) {
-        return new CollectionGenerator<C, I>(collectionType, source, minSize, maxSize, sizeDistribution);
-    }
-
-    /**
-     * Creates a generator that combines several products of a source generator to a collection.
-     *
-     * @param source             the generator that provides the array items
-     * @param type               the type of the array
-     * @param sizeDistribution   distribution for the array length
-     * @return a generator of the desired characteristics
-     */
-    public <T> Generator<T[]> createArrayGenerator(
-            Generator<T> source, Class<T> type, 
-            int minSize, int maxSize, Distribution sizeDistribution) {
-        return new SimpleArrayGenerator<T>(source, type, minSize, maxSize, sizeDistribution);
-    }
-
-    /**
-     * Creates a generator that reads products of an array of generators and combines them to an array.
-     *
+     * Creates a generator that reads products of an array of generators and combines them in an array.
      * @param sources the source generators
      * @return a generator of the desired characteristics
      */
-    public <T> Generator<T[]> createArrayGenerator(Class<T> componentType, Generator<T> ... sources) {
-        return new SimpleCompositeArrayGenerator<T>(componentType, sources);
-    }
+	public abstract <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique);
 
-	public abstract <T> Generator<T[]> createArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique);
-
-	public abstract <T> Generator<T[]> createArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique);
+    /**
+     * Creates a generator that reads products of an array of {@link NullableGenerator}s and combines them in an array.
+     * @param sources the source generators
+     * @return a generator of the desired characteristics
+     */
+	public abstract <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique);
 
     // wrappers --------------------------------------------------------------------------------------------------------
 
@@ -445,59 +292,18 @@ public abstract class GeneratorFactory {
      */
     public abstract <T> Generator<T> createSingleValueGenerator(T value, boolean unique);
 
-    // source generators -----------------------------------------------------------------------------------------------
-
-    /**
-     * Creates a generator that iterates through the cells of a CSV file.
-     *
-     * @param uri         the uri of the CSV file
-     * @param separator   the cell separator used in the CSV file
-     * @param cyclic      indicates wether iteration should restart from the first line after it reaches the file end.
-     * @return a generator of the desired characteristics
-     */
-    public Generator<String> createCSVCellGenerator(String uri, char separator, boolean cyclic) {
-        Generator<String> generator = new IteratingGenerator<String>(new CSVCellIterable(uri, separator));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic);
-    }
-
-    /**
-     * Creates a generator that creates lines from a CSV file as String arrays.
-     *
-     * @param uri              the uri of the CSV file
-     * @param separator        the cell separator used in the CSV file
-     * @param ignoreEmptyLines flag wether to leave out empty lines
-     * @param cyclic           indicates wether iteration should restart from the first line after it reaches the file end.
-     * @return a generator of the desired characteristics
-     */
-    public Generator<String[]> createCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines, boolean cyclic) {
-        Generator<String[]> generator = new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, SystemInfo.getFileEncoding()));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic);
-    }
-
-    /**
-     * Creates a generator that iterates through the lines of a text file.
-     *
-     * @param uri         the uri of the text file
-     * @param cyclic      indicates whether iteration should restart from the first line after it reaches the file end.
-     * @return a generator of the desired characteristics
-     */
-    public Generator<String> createTextLineGenerator(String uri, boolean cyclic) {
-        Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic);
-    }
-
-	public <T> Generator<T> wrapNonClosing(Generator<T> generator) {
-		return new NonClosingGeneratorProxy<T>(generator);
-	}
-
 	public abstract NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota);
 	public abstract NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota);
 
 	public abstract <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType);
 	
-//    public abstract Generator<String> createRepetitiveStringGenerator(Generator<String> partGenerator, int minReps, int maxReps, boolean unique);
+	
 	
 	// default setting providers ---------------------------------------------------------------------------------------
+
+	public Set<Character> defaultSubSet(Set<Character> characters) {
+		return characters;
+	}
 
 	public abstract boolean shouldNullifyEachNullable();
 
@@ -519,6 +325,4 @@ public abstract class GeneratorFactory {
 	protected abstract Integer defaultMaxLength();
 	protected abstract Distribution defaultLengthDistribution(Uniqueness uniqueness, boolean required);
 	
-	protected abstract Locale defaultLocale();
-
 }

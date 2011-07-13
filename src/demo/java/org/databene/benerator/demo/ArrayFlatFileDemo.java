@@ -103,9 +103,9 @@ public class ArrayFlatFileDemo {
 			Generator<Object>[] sources = (Generator<Object>[]) new Generator[] {
                     new ConstantGenerator<String>("R"),
                     generatorFactory.createNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, false),
-                    generatorFactory.createSampleGenerator("BUY", "SALE"), // transaction type
+                    generatorFactory.createSampleGenerator(String.class, false, "BUY", "SALE"), // transaction type
                     new ConvertingGenerator(dateGenerator, dateRenderer), // transaction date
-                    generatorFactory.createSampleGenerator("Alice", "Bob", "Charly"), // partner
+                    generatorFactory.createSampleGenerator(String.class, false, "Alice", "Bob", "Charly"), // partner
                     generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
                     generatorFactory.createNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, false), // item count
                     generatorFactory.createNumberGenerator(BigDecimal.class, // item price

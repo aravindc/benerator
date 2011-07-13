@@ -26,8 +26,6 @@
 
 package org.databene.benerator.factory;
 
-import java.text.ParseException;
-
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
 import org.databene.benerator.sample.ConstantGenerator;
@@ -35,8 +33,12 @@ import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.primitive.ConcatenatingGenerator;
 import org.databene.commons.CharSet;
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.ConfigurationError;
-import org.databene.regex.*;
+import org.databene.regex.Choice;
+import org.databene.regex.CustomCharClass;
+import org.databene.regex.Factor;
+import org.databene.regex.Group;
+import org.databene.regex.RegexParser;
+import org.databene.regex.Sequence;
 
 /**
  * Creates generators for regular expressions and their sub parts.<br/>
@@ -51,12 +53,8 @@ public class RegexGeneratorFactory {
     }
 
     public static Generator<String> create(String pattern, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
-		try {
-	        Object regex = new RegexParser().parseRegex(pattern);
-	        return createFromObject(regex, minLength, maxLength, unique, factory);
-        } catch (ParseException e) {
-        	throw new ConfigurationError("Error creating RegexGenerator for pattern: " + pattern, e);
-        }
+        Object regex = new RegexParser().parseRegex(pattern);
+        return createFromObject(regex, minLength, maxLength, unique, factory);
 	}
 
     // private helpers -------------------------------------------------------------------------------------------------
@@ -102,7 +100,7 @@ public class RegexGeneratorFactory {
     private static Generator<String> createFromSequence(Sequence sequence, int minCount, Integer maxCount, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
     	Object[] factors = sequence.getFactors();
 		Generator<String>[] componentGenerators = createComponentGenerators(factors, minLength, maxLength, unique, factory);
-    	Generator<String[]> partGenerator = factory.createArrayGenerator(String.class, componentGenerators, unique);
+    	Generator<String[]> partGenerator = factory.createCompositeArrayGenerator(String.class, componentGenerators, unique);
     	return new ConcatenatingGenerator(partGenerator);
     }
 

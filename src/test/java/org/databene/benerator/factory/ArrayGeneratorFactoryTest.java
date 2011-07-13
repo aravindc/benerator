@@ -34,6 +34,7 @@ import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ArrayElementExtractor;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.databene.model.data.ArrayElementDescriptor;
 import org.databene.model.data.ArrayTypeDescriptor;
@@ -43,6 +44,7 @@ import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -62,16 +64,15 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 	static final Object[] INT23 = new Object[] { 2, 3 };
 	static final Object[] INT24 = new Object[] { 2, 4 };
 
-	
-	static {
-		initDataModel();
-	}
-
-	private static void initDataModel() {
+	@Before
+	public void setup() {
+		ConverterManager.getInstance().reset();
 	    DefaultDescriptorProvider provider = new DefaultDescriptorProvider(ArrayGeneratorFactoryTest.class.getName());
 		provider.addDescriptor(createPersonDescriptor());
-		DataModel.getDefaultInstance().addDescriptorProvider(provider);
-    }
+		DataModel dataModel = DataModel.getDefaultInstance();
+		dataModel.clear();
+		dataModel.addDescriptorProvider(provider);
+	}
 
 	@Test
 	public void testGenerator() {
@@ -167,13 +168,13 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 	
 	@Test
 	public void testEntitySource() {
-		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("");
+		ArrayTypeDescriptor descriptor = new ArrayTypeDescriptor("testEntitySourceType");
 		descriptor.setSource(PersonIterable.class.getName());
-		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
+		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("testEntitySource", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 2; i++) {
 	        Object[] product = generator.generate();
-	        assertTrue(Arrays.equals(ALICE, product) || Arrays.equals(BOB, product));
+	        assertTrue("Found: " + ArrayFormat.format(product), Arrays.equals(ALICE, product) || Arrays.equals(BOB, product));
         }
 		assertNull(generator.generate());
 	}

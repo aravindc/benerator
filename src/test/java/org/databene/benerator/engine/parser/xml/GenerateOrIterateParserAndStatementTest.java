@@ -318,7 +318,7 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		context.set("cons", consumer);
 		statement.execute(context);
 		assertEquals(2, consumer.products.size());
-		assertEquals(PersonIterable.PERSONS, consumer.products);
+		assertEquals(PersonIterable.createPersons(), consumer.products);
 	}
 	
 	/** Tests pure {@link Entity} generation */

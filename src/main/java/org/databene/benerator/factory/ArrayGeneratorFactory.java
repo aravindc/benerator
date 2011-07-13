@@ -125,7 +125,7 @@ public class ArrayGeneratorFactory {
     	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
     	for (int i = 0; i < generators.length; i++)
     		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
-    	return context.getGeneratorFactory().createArrayGenerator(Object.class, generators, uniqueness.isUnique());
+    	return context.getGeneratorFactory().createCompositeArrayGenerator(Object.class, generators, uniqueness.isUnique());
     }
 
     private static Generator<Object[]> createMutatingArrayGenerator(
@@ -158,7 +158,7 @@ public class ArrayGeneratorFactory {
 		        	Object sourceObject = sourceBeanSpec.getBean();
 		        	generator = createSourceGeneratorFromObject(descriptor, context, generator, sourceObject);
 		        	if (sourceBeanSpec.isReference())
-		        		generator = context.getGeneratorFactory().wrapNonClosing(generator);
+		        		generator = GeneratorFactoryUtil.wrapNonClosing(generator);
 		        	return generator;
 	        	} catch (Exception e) {
 	        		throw new UnsupportedOperationException("Unknown source type: " + sourceName);

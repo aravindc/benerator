@@ -31,6 +31,7 @@ import static junit.framework.Assert.*;
 
 import java.io.IOException;
 
+import org.databene.commons.Encodings;
 import org.databene.document.csv.CSVCellIterator;
 
 /**
@@ -43,7 +44,7 @@ public class CSVCellIteratorTest {
 
 	@Test
     public void test() throws IOException {
-        CSVCellIterator iterator = new CSVCellIterator("org/databene/csv/names-abc.csv", ',');
+        CSVCellIterator iterator = new CSVCellIterator("org/databene/csv/names-abc.csv", ',', Encodings.UTF_8);
         assertTrue(iterator.hasNext());
         assertEquals("Alice",  iterator.next());
         assertTrue(iterator.hasNext());

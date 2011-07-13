@@ -33,10 +33,13 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.measure.count.ObjectCounter;
+import org.databene.model.data.DataModel;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.script.ScriptUtil;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -55,12 +58,17 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	private static final String SCRIPTED_NAMES_CSV = "org/databene/benerator/factory/scripted_names.csv";
 	private static final String SCRIPTED_NAMES_WGT_CSV = "org/databene/benerator/factory/scripted_names.wgt.csv";
 
-	String contextUri = ".";
-	
 	@BeforeClass
 	public static void setUpBeneneratorScript() {
     	ScriptUtil.addFactory("ben", new BeneratorScriptFactory());
     	ScriptUtil.setDefaultScriptEngine("ben");
+	}
+	
+	@Before
+	public void setUpConverterManager() {
+    	ConverterManager.getInstance().reset();
+    	ConverterManager.getInstance().setContext(context);
+    	DataModel.getDefaultInstance().clear();
 	}
 	
 	// 'value' attribute tests -----------------------------------------------------------------------------------------
@@ -180,8 +188,8 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		ObjectCounter<String> counter = new ObjectCounter<String>(2);
 		for (int i = 0; i < 2; i++)
 			counter.count(generator.generate());
-		assertEquals(1, counter.getCount("Alice"));
-		assertEquals(1, counter.getCount("Otto"));
+		assertEquals(counter.toString(), 1, counter.getCount("Alice"));
+		assertEquals(counter.toString(), 1, counter.getCount("Otto"));
 		assertUnavailable(generator);
 	}
 	

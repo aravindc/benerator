@@ -22,7 +22,7 @@
 package org.databene.benerator.factory;
 
 import java.util.Collection;
-import java.util.Locale;
+import java.util.Set;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
@@ -67,7 +67,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T[]> createArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
+	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
         if (unique)
         	return new UniqueArrayGenerator<T>(componentType, sources);
         else
@@ -75,7 +75,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T[]> createArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
+	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
         if (unique)
         	return new UniqueCompositeArrayGenerator<T>(componentType, sources);
         else
@@ -85,6 +85,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	@Override
 	public <T> Generator<T> createSampleGenerator(Collection<T> values,
 			Class<T> generatedType, boolean unique) {
+		// TODO uniqueness
         return new AttachedWeightSampleGenerator<T>(generatedType, values);
 	}
 
@@ -114,7 +115,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	        IteratingGenerator<String> source = new IteratingGenerator<String>(new ArrayIterable<String>(values, String.class));
 	        if (distribution == null)
 	        	distribution = SequenceManager.RANDOM_SEQUENCE;
-	        Generator<T> gen = createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	        Generator<T> gen = GeneratorFactoryUtil.createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
 	    	return distribution.applyTo(gen, unique);
 	    }
     }
@@ -132,7 +133,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
     }
 
 	@Override
-	public Generator<String> createStringGenerator(Collection<Character> chars,
+	public Generator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
         if (unique) {
             return new UniqueStringGenerator(minLength, maxLength, chars);
@@ -206,11 +207,6 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	protected Locale defaultLocale() {
-		return Locale.getDefault();
-	}
-
-	@Override
 	protected <T extends Number> T defaultMin(Class<T> numberType) {
 		return NumberToNumberConverter.convert(1, numberType);
 	}
@@ -227,12 +223,12 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 
 	@Override
 	protected <T extends Number> int defaultTotalDigits(Class<T> numberType) {
-		return 10;
+		return 10; // TODO
 	}
 
 	@Override
 	protected <T extends Number> int defaultFractionDigits(Class<T> numberType) {
-		return 0;
+		return 0; // TODO
 	}
 
 	@Override
@@ -258,7 +254,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 
 	@Override
 	protected double defaultNullQuota() {
-		return 0.;
+		return 1.;
 	}
 
 	@Override
@@ -279,5 +275,5 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 		}
 		return result;
 	}
-	
+
 }

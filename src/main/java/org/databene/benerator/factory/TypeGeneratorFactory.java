@@ -62,7 +62,7 @@ import static org.databene.model.data.TypeDescriptor.*;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class TypeGeneratorFactory {
+public class TypeGeneratorFactory { // TODO replace explicit generator constructions with GeneratorFactory calls
     
     private static final Logger logger = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
@@ -104,7 +104,7 @@ public class TypeGeneratorFactory {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
             }
-            generator = context.getGeneratorFactory().createConvertingGenerator(generator, converter);
+            generator = GeneratorFactoryUtil.createConvertingGenerator(generator, converter);
         }
         return generator;
     }
@@ -114,21 +114,21 @@ public class TypeGeneratorFactory {
 		generator = (Generator<E>) createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor) {
 			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
-			generator = (Generator<E>) createMappingGenerator(simpleType, generator);
+			generator = (Generator<E>) createMappingGenerator(simpleType, generator, context);
 			generator = (Generator<E>) createTypeConvertingGenerator(simpleType, generator);
 		}
         generator = (Generator<E>) createValidatingGenerator(descriptor, generator, context);
 		return generator;
 	}
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     static Generator<?> createMappingGenerator(
-            SimpleTypeDescriptor descriptor, Generator<?> generator) {
+            SimpleTypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
         if (descriptor == null || descriptor.getMap() == null)
             return generator;
         String mappingSpec = descriptor.getMap();
         ValueMapper mapper = new ValueMapper(mappingSpec);
-        return new ConvertingGenerator(generator, mapper);
+        return GeneratorFactoryUtil.createConvertingGenerator(generator, mapper);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

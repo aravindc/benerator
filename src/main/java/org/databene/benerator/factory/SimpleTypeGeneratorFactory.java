@@ -58,13 +58,10 @@ import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ArrayElementExtractor;
 import org.databene.commons.converter.ConverterChain;
-import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
 import org.databene.commons.converter.ToStringConverter;
-import org.databene.commons.iterator.TypedIterableProxy;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.document.csv.CSVLineIterable;
 import org.databene.model.data.PrimitiveType;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.UnionSimpleTypeDescriptor;
@@ -193,7 +190,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         } else if (lcn.endsWith(".csv")) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
         } else if (lcn.endsWith(".txt")) {
-            generator = context.getGeneratorFactory().createTextLineGenerator(source, false);
+            generator = GeneratorFactoryUtil.createTextLineGenerator(source, false);
         } else {
         	try {
 	        	BeanSpec sourceSpec = BeneratorScriptParser.resolveBeanSpec(source, context);
@@ -229,7 +226,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 	    } else
 	        throw new UnsupportedOperationException("Source type not supported: " + sourceObject.getClass());
 	    if (sourceSpec.isReference())
-	    	generator = context.getGeneratorFactory().wrapNonClosing(generator);
+	    	generator = GeneratorFactoryUtil.wrapNonClosing(generator);
 	    return generator;
     }
 
@@ -256,12 +253,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
         	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverter(context));
         } else {
-    		Iterable<String[]> src = new CSVLineIterable(sourceName, separator, true, encoding);
+    		Generator<String[]> src = GeneratorFactoryUtil.createCSVLineGenerator(sourceName, separator, true, encoding);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
     				new ArrayElementExtractor<String>(String.class, 0), 
     				new ScriptConverter(context));
-    		Iterable<Object> iterable = new ConvertingIterable<String[], Object>(src, converterChain);
-    	    generator = new IteratingGenerator<Object>(new TypedIterableProxy<Object>(Object.class, iterable));
+    		generator = new ConvertingGenerator<String[], Object>(src, converterChain);
             if (distribution != null)
             	generator = distribution.applyTo(generator, uniqueness.isUnique());
         }
@@ -337,10 +333,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             pattern = ".";
         Locale locale = descriptor.getLocale();
         GeneratorFactory generatorFactory = context.getGeneratorFactory();
-		if (uniqueness.isUnique())
-            return generatorFactory.createUniqueCharacterGenerator(pattern, locale);
-        else
-            return generatorFactory.createCharacterGenerator(pattern, locale);
+        return generatorFactory.createCharacterGenerator(pattern, locale, uniqueness.isUnique());
     }
 
     private static Date parseDate(SimpleTypeDescriptor descriptor, String detailName, Date defaultDate) {

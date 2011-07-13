@@ -142,12 +142,12 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         List<Integer> samples = new ArrayList<Integer>();
         for (int i = 0; i < 10; i++)
             samples.add(i);
-        Generator<Integer> generator = generatorFactory.createSampleGenerator(samples);
+        Generator<Integer> generator = generatorFactory.createSampleGenerator(samples, Integer.class, false);
         initAndUseGenerator(generator);
     }
 
     public void testGetEmptySampleGenerator() {
-        Generator<Object> generator = generatorFactory.createSampleGenerator();
+        Generator<Integer> generator = generatorFactory.createSampleGenerator(new HashSet<Integer>(), Integer.class, false);
 		generator.init(context);
 		assertNull(generator.generate());
     }
@@ -170,13 +170,6 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         }
     }
 
-    @Test
-    public void testGetDateGeneratorFromSource() {
-        String url = "org/databene/benerator/factory/dates.csv";
-        Generator<Date> generator = generatorFactory.createDateGenerator(url, Encodings.UTF_8, "dd.MM.yyyy");
-        initAndUseGenerator(generator);
-    }
-
     private Date date(int year, int nullBasedMonth, int day) {
         return new GregorianCalendar(year, nullBasedMonth, day).getTime();
     }
@@ -196,7 +189,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
 
     private void checkCharacterGeneratorOfLocale(Locale locale) {
-        Generator<Character> generator = generatorFactory.createCharacterGenerator(null, locale);
+        Generator<Character> generator = generatorFactory.createCharacterGenerator(null, locale, false);
         generator.init(context);
         List<Character> specialChars;
         specialChars = new ArrayList<Character>(LocaleUtil.letters(locale));
@@ -215,7 +208,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetCharacterGeneratorByRegex() {
         String pattern = "[A-Za-z0-1]";
-        Generator<Character> generator = generatorFactory.createCharacterGenerator(pattern, Locale.GERMAN);
+        Generator<Character> generator = generatorFactory.createCharacterGenerator(pattern, Locale.GERMAN, false);
         initAndUseGenerator(generator);
     }
 
@@ -260,13 +253,9 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         Generator<Integer> generator = generatorFactory.createWeightedSampleGenerator(samples);
         initAndUseGenerator(generator);
     }
-
-    @Test
-    public void testGetWeightedSampleGeneratorBySource() {
-        Generator<String> generator = generatorFactory.createSampleGenerator("file://weighted-names.csv");
-        initAndUseGenerator(generator);
-    }
-
+    
+    
+    
     // formatting generators -------------------------------------------------------------------------------------------
 
     @Test
@@ -276,7 +265,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         NumberFormat format = DecimalFormat.getInstance();
         format.setMinimumFractionDigits(0);
         format.setMaximumFractionDigits(2);
-        Generator<String> generator = generatorFactory.createConvertingGenerator(
+        Generator<String> generator = GeneratorFactoryUtil.createConvertingGenerator(
                 source, new FormatFormatConverter(Object.class, format, false));
         initAndUseGenerator(generator);
     }
@@ -288,7 +277,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
         AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         String pattern = "{0} {1}";
-        Generator<String> generator = generatorFactory.createMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
+        Generator<String> generator = GeneratorFactoryUtil.createMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
         generator.init(context);
         for (int i = 0; i < 10; i++) {
             String message = generator.generate();
@@ -308,7 +297,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         for (Sequence sequence : SequenceManager.registeredSequences()) {
         	if (sequence instanceof HeadSequence)
         		continue;
-            Generator<List<?>> generator = generatorFactory.createCollectionGenerator(
+            Generator<List<?>> generator = GeneratorFactoryUtil.createCollectionGeneratorOfVariableSize(
                     List.class, source, 0, 5, sequence);
             initAndUseGenerator(generator);
         }
@@ -321,7 +310,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         int minSize = 0;
         int maxSize = 5;
         for (WeightFunction distributionFunction : getDistributionFunctions(minSize, maxSize)) {
-            Generator<List<?>> generator = generatorFactory.createCollectionGenerator(
+            Generator<List<?>> generator = GeneratorFactoryUtil.createCollectionGeneratorOfVariableSize(
                     List.class, source, minSize, maxSize, distributionFunction);
             initAndUseGenerator(generator);
         }
@@ -335,7 +324,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         for (Sequence sequence : SequenceManager.registeredSequences()) {
         	if (sequence instanceof HeadSequence)
         		continue;
-            Generator<Integer[]> generator = generatorFactory.createArrayGenerator(source, Integer.class, 0, 5, sequence);
+            Generator<Integer[]> generator = GeneratorFactoryUtil.createArrayGeneratorOfVariableLength(source, Integer.class, 0, 5, sequence);
             initAndUseGenerator(generator);
         }
     }
@@ -346,7 +335,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         int maxLength = 5;
         Generator<Integer> source = new RandomIntegerGenerator(0, 9);
         for (WeightFunction distributionFunction : getDistributionFunctions(minLength, maxLength)) {
-            Generator<Integer[]> generator = generatorFactory.createArrayGenerator(source, Integer.class, minLength, maxLength, distributionFunction);
+            Generator<Integer[]> generator = GeneratorFactoryUtil.createArrayGeneratorOfVariableLength(source, Integer.class, minLength, maxLength, distributionFunction);
             initAndUseGenerator(generator);
         }
     }
@@ -359,7 +348,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         List<String> names = Arrays.asList("Alice", "Bob", "Charly");
         AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
         Generator[] sources = new Generator[] { salutationGenerator, nameGenerator };
-        Generator<Object[]> generator = generatorFactory.createArrayGenerator(Object.class, sources);
+        Generator<Object[]> generator = generatorFactory.createCompositeArrayGenerator(Object.class, sources, false);
         generator.init(context);
         for (int i = 0; i < 10; i++) {
             Object[] array = generator.generate();
@@ -373,22 +362,22 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
 
     @Test
     public void testGetCSVCellGenerator() {
-        Generator<String> generator = generatorFactory.createCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', true);
+        Generator<String> generator = GeneratorFactoryUtil.createCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', Encodings.UTF_8);
         generator.init(context);
         assertEquals("Alice", generator.generate());
         assertEquals("Bob", generator.generate());
         assertEquals("Charly", generator.generate());
-        assertEquals("Alice", generator.generate());
+        assertNull(generator.generate());
     }
 
     @Test
     public void testGetArraySourceGenerator() {
-        Generator<String[]> generator = generatorFactory.createCSVLineGenerator(
-                "file://org/databene/csv/names-abc.csv", ',', true, true);
+        Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator(
+                "file://org/databene/csv/names-abc.csv", ',', true, Encodings.UTF_8);
         generator.init(context);
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
         assertArrayEquals(new String[] { "Charly"}, generator.generate());
-        assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
+        assertNull(generator.generate());
     }
 
     private void assertArrayEquals(String[] expected, String[] actual) {
