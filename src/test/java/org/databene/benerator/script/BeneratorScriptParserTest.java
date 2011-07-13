@@ -38,9 +38,11 @@ import org.databene.commons.SyntaxError;
 import org.databene.commons.Expression;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.context.DefaultContext;
+import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.domain.person.Gender;
 
+import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 
@@ -53,6 +55,11 @@ import static junit.framework.Assert.*;
  */
 
 public class BeneratorScriptParserTest {
+
+	@Before
+	public void setup() {
+		ConverterManager.getInstance().reset();
+	}
 
 	@Test
 	public void testNullLiteral() throws Exception {
