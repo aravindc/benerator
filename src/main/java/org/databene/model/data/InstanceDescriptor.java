@@ -160,7 +160,13 @@ public class InstanceDescriptor extends FeatureDescriptor {
     }
     
     public Boolean isNullable() {
-        return (Boolean)getDetailValue(NULLABLE);
+        Boolean value = (Boolean) super.getDetailValue(NULLABLE);
+        if (value == null && parent != null) {
+            FeatureDetail<?> detail = parent.getConfiguredDetail(NULLABLE);
+            if (detail.getValue() != null && !(Boolean) detail.getValue())
+                value = (Boolean) detail.getValue();
+        }
+        return value;
     }
     
     public void setNullable(Boolean nullable) {
