@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,24 +33,32 @@ import org.databene.model.data.EntitySource;
 import org.databene.model.data.PartDescriptor;
 
 /**
- * {@link EntitySource} implementation for testing.<br/><br/>
+ * {@link EntitySource} implementation for testing.<br/>
+ * <br/>
  * Created: 11.03.2010 12:42:48
  * @since 0.6.0
  * @author Volker Bergmann
  */
 public class PersonIterable extends AbstractEntitySource {
 
-	public static final ComplexTypeDescriptor PERSON_DESCRIPTOR = new ComplexTypeDescriptor("Person")
-		.withComponent(new PartDescriptor("name", "string"))
-		.withComponent(new PartDescriptor("age", "int"));
-	
-	public static final Entity ALICE = new Entity(PERSON_DESCRIPTOR, "name", "Alice", "age", "23");
-	public static final Entity BOB = new Entity(PERSON_DESCRIPTOR, "name", "Bob", "age", "34");
-
-	public static final List<Entity> PERSONS = CollectionUtil.toList(ALICE, BOB);
+	public static final ComplexTypeDescriptor PERSON_DESCRIPTOR = new ComplexTypeDescriptor(
+			"Person").withComponent(new PartDescriptor("name", "string"))
+			.withComponent(new PartDescriptor("age", "int"));
 
 	public HeavyweightIterator<Entity> iterator() {
-	    return new HeavyweightIteratorProxy<Entity>(PERSONS.iterator());
-    }
+		return new HeavyweightIteratorProxy<Entity>(createPersons().iterator());
+	}
+
+	public static List<Entity> createPersons() {
+		return CollectionUtil.toList(createAlice(), createBob());
+	}
+
+	public static Entity createAlice() {
+		return new Entity(PERSON_DESCRIPTOR, "name", "Alice", "age", "23");
+	}
+
+	public static Entity createBob() {
+		return new Entity(PERSON_DESCRIPTOR, "name", "Bob", "age", "34");
+	}
 
 }
