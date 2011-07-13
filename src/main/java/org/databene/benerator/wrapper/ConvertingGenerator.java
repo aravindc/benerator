@@ -75,6 +75,8 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     public T generate() {
         try {
             Object tmp = source.generate();
+            if (tmp == null)
+            	return null;
             for (Converter converter : converters)
             	tmp = converter.convert(tmp);
             return (T) tmp;
