@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,9 +31,9 @@ import org.databene.regex.RegexParser;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.wrapper.GeneratorProxy;
 import org.databene.commons.LocaleUtil;
+import org.databene.commons.SyntaxError;
 
 import java.util.*;
-import java.text.ParseException;
 
 /**
  * Generates Character values from a character set or a regular expression.<br/>
@@ -138,7 +138,7 @@ public class CharacterGenerator extends GeneratorProxy<Character> {
             }
             this.source = new SampleGenerator<Character>(Character.class, values);
             super.init(context);
-        } catch (ParseException e) {
+        } catch (SyntaxError e) {
             throw new IllegalGeneratorStateException(e);
         }
     }
