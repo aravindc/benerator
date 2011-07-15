@@ -162,7 +162,7 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 			Iterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
 			if (ArrayUtil.isEmpty(columns)) {
 				if (cellIterator.hasNext())
-					columns = cellIterator.next();
+					setColumns(cellIterator.next());
 				else
 					throw new ConfigurationError("empty CSV file");
 			}
