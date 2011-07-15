@@ -120,7 +120,6 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
     		consumer = (Consumer<?>) bean;
     	} else if (bean instanceof StorageSystem) {
     		consumer = new StorageSystemInserter((StorageSystem) bean);
-    		ref = false;
     	} else
     		throw new UnsupportedOperationException("Consumer type not supported: " + BeanUtil.simpleClassName(bean));
     	if (bean instanceof ContextAware)
