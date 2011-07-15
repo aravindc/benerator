@@ -84,7 +84,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
         
         if (instanceName != null)
         	context.set(instanceName, currentInstance);
-        context.set("this", currentInstance);
+        context.set("this", currentInstance); // TODO BUG: array sub generators use this too, overwriting a top-level entity generator
     }
 	
 	@Override
