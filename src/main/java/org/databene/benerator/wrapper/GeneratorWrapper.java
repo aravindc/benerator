@@ -32,6 +32,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.BeanUtil;
+import org.databene.commons.IOUtil;
 import org.databene.commons.NullSafeComparator;
 
 /**
@@ -98,7 +99,7 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     @Override
     public void close() {
     	super.close();
-        source.close();
+        IOUtil.close(source);
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
