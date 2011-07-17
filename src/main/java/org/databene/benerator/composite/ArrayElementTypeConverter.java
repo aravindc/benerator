@@ -76,4 +76,9 @@ public class ArrayElementTypeConverter extends AbstractConverter<Object[], Objec
 	    return false;
     }
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[" + type + "]";
+	}
+	
 }
