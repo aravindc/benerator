@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.commons.ArrayFormat;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
@@ -83,6 +84,11 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
         } catch (ConversionException e) {
             throw new IllegalGeneratorStateException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + "[source=" + source + ", converters=[" + ArrayFormat.format(converters) + "]]";
     }
     
 }
