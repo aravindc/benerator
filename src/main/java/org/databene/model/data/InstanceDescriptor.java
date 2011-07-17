@@ -284,4 +284,10 @@ public class InstanceDescriptor extends FeatureDescriptor {
 	public boolean overwritesParent() {
 		return parent != null;
 	}
+	
+	@Override
+	public String toString() {
+		return getName() + "[details=" + renderDetails() + ", type=" + getTypeDescriptor() + "]";
+	}
+
 }
