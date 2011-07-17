@@ -110,7 +110,7 @@ public class AnnotationMapper {
 	// interface -------------------------------------------------------------------------------------------------------
 	
 	public void parseClassAnnotations(Annotation[] annotations, BeneratorContext context) {
-		applyGeneratorFactoryClassConfig(annotations, context);
+		applyClassGeneratorFactory(annotations, context);
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Database)
 				parseDatabase((Database) annotation, context);
@@ -119,32 +119,14 @@ public class AnnotationMapper {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<Object[]> createMethodParamGenerator(Method testMethod, BeneratorContext context) {
 		try {
-			// resolve GeneratorFactory annotations of the test method
-			if (testMethod.getAnnotation(Equivalence.class) != null)
-				context.setGeneratorFactory(new EquivalenceGeneratorFactory());
-			/* TODO else if (testMethod.getAnnotation(Coverage.class) != null)
-				context.setGeneratorFactory(new CoverageGeneratorFactory());*/
-			else if (testMethod.getAnnotation(Volume.class) != null)
-				context.setGeneratorFactory(new VolumeGeneratorFactory());
-			else // if the test 
-				applyGeneratorFactoryClassConfig(testMethod.getDeclaringClass().getAnnotations(), context);
+			applyMethodGeneratorFactory(testMethod, context);
+			applyMethodDefaultsProvider(testMethod, context);
 
-			// resolve DefaultsProvider annotations of the test method
-			if (testMethod.getAnnotation(Gentle.class) != null)
-				context.setDefaultsProvider(new GentleDefaultsProvider());
-			else if (testMethod.getAnnotation(Mean.class) != null)
-				context.setDefaultsProvider(new MeanDefaultsProvider());
-			else // if the test 
-				applyDefaultsProviderClassConfig(testMethod.getDeclaringClass().getAnnotations(), context);
-			
-			// Evaluate @Bean annotations
+			// Evaluate @Bean and @Database annotations
 			if (testMethod.getAnnotation(Bean.class) != null)
 				parseBean(testMethod.getAnnotation(Bean.class), context);
-			
-			// Evaluate @Database annotations
 			if (testMethod.getAnnotation(Database.class) != null)
 				parseDatabase(testMethod.getAnnotation(Database.class), context);
 			Generator<Object[]> generator = null;
@@ -152,36 +134,13 @@ public class AnnotationMapper {
 			// Evaluate @Generator and @Source annotations
 			org.databene.benerator.anno.Generator generatorAnno = testMethod.getAnnotation(org.databene.benerator.anno.Generator.class);
 			Source sourceAnno = testMethod.getAnnotation(Source.class);
-			if (generatorAnno != null || sourceAnno != null) {
-				String methodName = testMethod.getName();
-				ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
-				InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
-				if (sourceAnno != null)
-					mapAnnotation(sourceAnno, descriptor);
-				else
-					mapAnnotation(generatorAnno, descriptor);
-				Class<?>[] paramTypes = testMethod.getParameterTypes();
-				for (int i = 0; i < paramTypes.length; i++) {
-					String elementType = BeanDescriptorProvider.defaultInstance().abstractType(paramTypes[i]);
-					ArrayElementDescriptor elementDescriptor = new ArrayElementDescriptor(i, elementType);
-					typeDescriptor.addElement(elementDescriptor);
-				}
-				generator = ArrayGeneratorFactory.createArrayGenerator(
-						testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
-			} else if (testMethod.getAnnotation(DescriptorBased.class) != null) {
+			if (generatorAnno != null)
+				generator = createGeneratorGenerator(generatorAnno, testMethod, context);
+			else if (sourceAnno != null)
+				generator = createSourceGenerator(sourceAnno, testMethod, context);
+			else if (testMethod.getAnnotation(DescriptorBased.class) != null) {
 				DescriptorBased descriptorAnno = testMethod.getAnnotation(DescriptorBased.class);
-				String filename;
-				if (descriptorAnno.file().length() > 0)
-					filename = descriptorAnno.file();
-				else
-					filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
-				String testName;
-				if (descriptorAnno.name().length() > 0) // TODO test
-					testName = descriptorAnno.name();
-				else
-					testName = testMethod.getName();
-				BeneratorContext beneratorContext = new BeneratorContext();
-				generator = (Generator) new DescriptorBasedGenerator(filename, testName, beneratorContext);
+				generator = createDescriptorBasedGenerator(descriptorAnno, testMethod);
 			}
 			
 			// evaluate parameter generators if necessary
@@ -201,11 +160,87 @@ public class AnnotationMapper {
 		}
     }
 
+	protected void applyMethodGeneratorFactory(Method testMethod,
+			BeneratorContext context) {
+		if (testMethod.getAnnotation(Equivalence.class) != null)
+			context.setGeneratorFactory(new EquivalenceGeneratorFactory());
+		/* TODO else if (testMethod.getAnnotation(Coverage.class) != null)
+			context.setGeneratorFactory(new CoverageGeneratorFactory());*/
+		else if (testMethod.getAnnotation(Volume.class) != null)
+			context.setGeneratorFactory(new VolumeGeneratorFactory());
+		else 
+			applyClassGeneratorFactory(testMethod.getDeclaringClass().getAnnotations(), context);
+	}
+
+	protected void applyMethodDefaultsProvider(Method testMethod,
+			BeneratorContext context) {
+		if (testMethod.getAnnotation(Gentle.class) != null)
+			context.setDefaultsProvider(new GentleDefaultsProvider());
+		else if (testMethod.getAnnotation(Mean.class) != null)
+			context.setDefaultsProvider(new MeanDefaultsProvider());
+		else
+			applyClassDefaultsProvider(testMethod.getDeclaringClass().getAnnotations(), context);
+	}
+
+	private Generator<Object[]> createSourceGenerator(
+			org.databene.benerator.anno.Source source, Method testMethod, BeneratorContext context) {
+		String methodName = testMethod.getName();
+		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
+		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
+		mapAnnotation(source, descriptor);
+		mapParamTypes(testMethod, typeDescriptor);
+		Generator<Object[]> baseGenerator = ArrayGeneratorFactory.createArrayGenerator(
+				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
+		
+		return baseGenerator;
+	}
+
+	private Generator<Object[]> createGeneratorGenerator(
+			org.databene.benerator.anno.Generator annotation, Method testMethod, BeneratorContext context) {
+		String methodName = testMethod.getName();
+		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
+		InstanceDescriptor descriptor = new InstanceDescriptor(methodName, typeDescriptor);
+		mapAnnotation(annotation, descriptor);
+		mapParamTypes(testMethod, typeDescriptor);
+		return ArrayGeneratorFactory.createArrayGenerator(
+				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
+	}
+
+	private void mapParamTypes(Method testMethod,
+			ArrayTypeDescriptor typeDescriptor) {
+		Class<?>[] paramTypes = testMethod.getParameterTypes();
+		for (int i = 0; i < paramTypes.length; i++) {
+			String elementType = BeanDescriptorProvider.defaultInstance().abstractType(paramTypes[i]);
+			ArrayElementDescriptor elementDescriptor = new ArrayElementDescriptor(i, elementType);
+			typeDescriptor.addElement(elementDescriptor);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected Generator<Object[]> createDescriptorBasedGenerator(
+			DescriptorBased descriptorAnno, Method testMethod)
+			throws IOException {
+		Generator<Object[]> generator;
+		String filename;
+		if (descriptorAnno.file().length() > 0)
+			filename = descriptorAnno.file();
+		else
+			filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
+		String testName;
+		if (descriptorAnno.name().length() > 0) // TODO test
+			testName = descriptorAnno.name();
+		else
+			testName = testMethod.getName();
+		BeneratorContext beneratorContext = new BeneratorContext();
+		generator = (Generator) new DescriptorBasedGenerator(filename, testName, beneratorContext);
+		return generator;
+	}
+
     
     
     // helper methods --------------------------------------------------------------------------------------------------
 	
-	private void applyGeneratorFactoryClassConfig(Annotation[] annotations, BeneratorContext context) {
+	private void applyClassGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
 		boolean configured = false;
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Equivalence) {
@@ -223,7 +258,7 @@ public class AnnotationMapper {
 			context.setGeneratorFactory(defaultFactory);
 	}
 
-	private void applyDefaultsProviderClassConfig(Annotation[] annotations, BeneratorContext context) {
+	private void applyClassDefaultsProvider(Annotation[] annotations, BeneratorContext context) {
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Gentle)
 				context.setDefaultsProvider(new GentleDefaultsProvider());
