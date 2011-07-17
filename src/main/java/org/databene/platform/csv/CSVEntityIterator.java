@@ -38,6 +38,7 @@ import org.databene.commons.IOUtil;
 import org.databene.commons.Patterns;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.Tabular;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.NoOpConverter;
@@ -57,7 +58,7 @@ import java.util.List;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CSVEntityIterator implements HeavyweightIterator<Entity> {
+public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
 
     private String uri;
     private char   separator;
@@ -100,6 +101,10 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
     }
     
     // properties ------------------------------------------------------------------------------------------------------
+    
+    public String[] getColumnNames() {
+    	return columns;
+    }
     
 	public void setColumns(String[] columns) {
 		if (ArrayUtil.isEmpty(columns))
@@ -160,12 +165,11 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity> {
 	private void init() {
 		try {
 			Iterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
-			if (ArrayUtil.isEmpty(columns)) {
-				if (cellIterator.hasNext())
-					setColumns(cellIterator.next());
-				else
-					throw new ConfigurationError("empty CSV file");
-			}
+			if (!cellIterator.hasNext())
+				throw new ConfigurationError("empty CSV file");
+			String[] header = cellIterator.next();
+			if (ArrayUtil.isEmpty(columns))
+				setColumns(header);
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
 	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, columns, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);

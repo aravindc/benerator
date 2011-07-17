@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,9 @@ import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
+import org.databene.commons.Tabular;
 import org.databene.commons.converter.NoOpConverter;
+import org.databene.document.csv.CSVUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
@@ -38,14 +40,14 @@ import org.databene.model.data.FileBasedEntitySource;
  * Imports {@link Entity} data from CSV files.<br/><br/>
  * @author Volker Bergmann
  */
-public class CSVEntitySource extends FileBasedEntitySource {
+public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 	
     private char separator;
     private String encoding;
     private Converter<String, ?> preprocessor;
 
     private ComplexTypeDescriptor entityDescriptor;
-	private String[] columns;
+	private String[] columnNames;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -77,7 +79,6 @@ public class CSVEntitySource extends FileBasedEntitySource {
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
         this.preprocessor = preprocessor;
-        
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -94,12 +95,18 @@ public class CSVEntitySource extends FileBasedEntitySource {
         this.entityDescriptor = new ComplexTypeDescriptor(entityName);
     }
 
+	public String[] getColumnNames() {
+		if (ArrayUtil.isEmpty(columnNames))
+			columnNames = StringUtil.trimAll(CSVUtil.parseHeader(uri, separator, encoding));
+		return columnNames;
+	}
+
 	public void setColumns(String[] columns) {
 		if (ArrayUtil.isEmpty(columns))
-			this.columns = null;
+			this.columnNames = null;
 		else {
-	        this.columns = columns;
-	        StringUtil.trimAll(this.columns);
+	        this.columnNames = columns;
+	        StringUtil.trimAll(this.columnNames);
 		}
     }
 
@@ -108,7 +115,7 @@ public class CSVEntitySource extends FileBasedEntitySource {
 	public HeavyweightIterator<Entity> iterator() {
         try {
 			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityDescriptor, preprocessor, separator, encoding);
-			iterator.setColumns(columns);
+			iterator.setColumns(getColumnNames());
 			return iterator;
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
@@ -122,5 +129,5 @@ public class CSVEntitySource extends FileBasedEntitySource {
         return getClass().getSimpleName() + "[uri=" + uri + ", encoding=" + encoding + ", separator=" + separator +
                 ", entityName=" + entityDescriptor.getName() + "]";
     }
-    
+
 }
