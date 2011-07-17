@@ -80,7 +80,7 @@ public class ArrayTypeDescriptor extends TypeDescriptor implements VariableHolde
         if (elements.size() == 0)
             return super.toString();
         //return new CompositeFormatter(false, false).render(super.toString() + '{', new CompositeAdapter(), "}");
-        return getClass().getSimpleName() + elements.toString();
+        return getClass().getSimpleName() + "[name=" + getName() + ", elements=" + elements.toString() + ']';
     }
 
 }
