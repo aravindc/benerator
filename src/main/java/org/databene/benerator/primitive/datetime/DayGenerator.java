@@ -32,6 +32,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.TimeUtil;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Generates dates with a granularity of days, months or years.<br/><br/>
@@ -112,7 +113,7 @@ public class DayGenerator extends ThreadSafeGenerator<Date> {
 			count++;
 		} while (!max.before(calendar.getTime()));
 		multiplierGenerator = context.getGeneratorFactory().createNumberGenerator(
-				Integer.class, 0, count - 1, 1, distribution, unique);
+				Integer.class, 0, count - 1, 1, distribution, (unique ? Uniqueness.SIMPLE : Uniqueness.NONE));
 		multiplierGenerator.init(context);
 	    super.init(context);
 	}

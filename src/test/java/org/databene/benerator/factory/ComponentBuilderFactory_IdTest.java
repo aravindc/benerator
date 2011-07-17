@@ -22,11 +22,16 @@
 package org.databene.benerator.factory;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
+import org.databene.benerator.primitive.HibUUIDGenerator;
+import org.databene.benerator.primitive.IncrementGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.Entity;
 import org.databene.model.data.IdDescriptor;
+import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.junit.Test;
 
@@ -36,7 +41,7 @@ import org.junit.Test;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class ComponentBuilderFactory_IdTest {
+public class ComponentBuilderFactory_IdTest extends AbstractComponentBuilderFactoryTest {
 
     @Test
 	public void testDefault() {
@@ -47,8 +52,73 @@ public class ComponentBuilderFactory_IdTest {
 		assertEquals(1, entity.get("id"));
 	}
     
-    // TODO test other id generation options
-
+	/**
+	 * Tests UUID generation
+	 * <id name="id" strategy="uuid"/>
+	 */
+	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public void testUuid() {
+		String componentName = "id";
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "string");
+		type.setGenerator(HibUUIDGenerator.class.getName());
+		IdDescriptor id = new IdDescriptor(componentName, type);
+		ComponentBuilder builder = createComponentBuilder(id);
+		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
+		expectUniqueGenerations(helper, 10);
+	}
+	
+	/**
+	 * Tests 'increment' id generation with unspecified type
+	 * <id name="id" strategy="increment"/>
+	 */
+	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public void testIncrementIdWithoutType() {
+		String componentName = "id";
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "long");
+		type.setGenerator(IncrementGenerator.class.getName());
+		IdDescriptor id = new IdDescriptor(componentName, type);
+		ComponentBuilder builder = createComponentBuilder(id);
+		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
+		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
+	}
+	
+	/**
+	 * Tests id generation with unspecified type and strategy
+	 * <id name="id"/>
+	 */
+	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public void testDefaultIdGeneration() {
+		String componentName = "id";
+		IdDescriptor id = new IdDescriptor(componentName);
+		ComponentBuilder builder = createComponentBuilder(id);
+		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
+		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+		assertNotNull(helper.generate(new ProductWrapper<Long>()));
+	}
+	
+	/**
+	 * Tests 'increment' id generation with 'byte' type
+	 * <id name="id" type="byte" strategy="increment"/>
+	 */
+	@Test
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    public void testIncrementByteId() {
+		String componentName = "id";
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "byte");
+		type.setGenerator(IncrementGenerator.class.getName());
+		IdDescriptor id = new IdDescriptor(componentName, type);
+		ComponentBuilder builder = createComponentBuilder(id);
+		ComponentBuilderGenerator<Byte> helper = new ComponentBuilderGenerator(builder, componentName);
+		helper.init(context);
+		expectGeneratedSequenceOnce(helper, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
+	}
+	
     @SuppressWarnings("unchecked")
 	private ComponentBuilder<Entity> createAndInitBuilder(IdDescriptor id) {
 		BeneratorContext context = new BeneratorContext(null);

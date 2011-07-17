@@ -51,6 +51,8 @@ import org.databene.benerator.factory.ArrayGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.GentleDefaultsProvider;
+import org.databene.benerator.factory.MeanDefaultsProvider;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
@@ -129,6 +131,14 @@ public class AnnotationMapper {
 				context.setGeneratorFactory(new VolumeGeneratorFactory());
 			else // if the test 
 				applyGeneratorFactoryClassConfig(testMethod.getDeclaringClass().getAnnotations(), context);
+
+			// resolve DefaultsProvider annotations of the test method
+			if (testMethod.getAnnotation(Gentle.class) != null)
+				context.setDefaultsProvider(new GentleDefaultsProvider());
+			else if (testMethod.getAnnotation(Mean.class) != null)
+				context.setDefaultsProvider(new MeanDefaultsProvider());
+			else // if the test 
+				applyDefaultsProviderClassConfig(testMethod.getDeclaringClass().getAnnotations(), context);
 			
 			// Evaluate @Bean annotations
 			if (testMethod.getAnnotation(Bean.class) != null)
@@ -159,9 +169,19 @@ public class AnnotationMapper {
 				generator = ArrayGeneratorFactory.createArrayGenerator(
 						testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
 			} else if (testMethod.getAnnotation(DescriptorBased.class) != null) {
-				String filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
+				DescriptorBased descriptorAnno = testMethod.getAnnotation(DescriptorBased.class);
+				String filename;
+				if (descriptorAnno.file().length() > 0)
+					filename = descriptorAnno.file();
+				else
+					filename = testMethod.getDeclaringClass().getName().replace('.', File.separatorChar) + ".ben.xml";
+				String testName;
+				if (descriptorAnno.name().length() > 0) // TODO test
+					testName = descriptorAnno.name();
+				else
+					testName = testMethod.getName();
 				BeneratorContext beneratorContext = new BeneratorContext();
-				generator = (Generator) new DescriptorBasedGenerator(filename, testMethod.getName(), beneratorContext);
+				generator = (Generator) new DescriptorBasedGenerator(filename, testName, beneratorContext);
 			}
 			
 			// evaluate parameter generators if necessary
@@ -201,6 +221,15 @@ public class AnnotationMapper {
 		}
 		if (!configured)
 			context.setGeneratorFactory(defaultFactory);
+	}
+
+	private void applyDefaultsProviderClassConfig(Annotation[] annotations, BeneratorContext context) {
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof Gentle)
+				context.setDefaultsProvider(new GentleDefaultsProvider());
+			else if (annotation instanceof Mean)
+				context.setDefaultsProvider(new MeanDefaultsProvider());
+		}
 	}
 
 	private static void parseDatabase(Database annotation, BeneratorContext context) {
@@ -376,9 +405,9 @@ public class AnnotationMapper {
 	    	if (BeanUtil.isPrimitiveType(type.getName()))
 	    		descriptor.setNullable(false); // primitives can never be null
 	    	else if (descriptor.getDeclaredDetailValue("nullQuota") != null && ((Double) descriptor.getDeclaredDetailValue("nullQuota")) == 0.)
-	    		descriptor.setNullable(false);
+	    		descriptor.setNullable(false); // if nullQuota == 1, then set nullable to false
 	    	else
-	    		descriptor.setNullable(true);
+	    		descriptor.setNullable(null); // leave the decision to the generator factories
 	    }
         return descriptor;
     }

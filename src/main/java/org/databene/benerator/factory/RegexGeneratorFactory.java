@@ -140,16 +140,18 @@ public class RegexGeneratorFactory {
     }
 
     private static Generator<String> createFromCharacter(char c, int minCount, Integer maxCount, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
-		int minReps = max(minLength, minCount, factory.defaultMinLength()); 
-		int maxReps = min(maxLength, maxCount, factory.defaultMaxLength()); 
+    	DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
+		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
+		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength()); 
 		return factory.createStringGenerator(CollectionUtil.toSet(c), minReps, maxReps, null, unique);
     }
     
 	private static Generator<String> createCharSetGenerator(
 			CharSet charSet, int minCount, Integer maxCount, int minLength, Integer maxLength, 
 			boolean unique, GeneratorFactory factory) {
-		int minReps = max(minLength, minCount, factory.defaultMinLength()); 
-		int maxReps = min(maxLength, maxCount, factory.defaultMaxLength());
+		DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
+		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
+		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength());
 		return factory.createStringGenerator(charSet.getSet(), minReps, maxReps, null, unique);
     }
     

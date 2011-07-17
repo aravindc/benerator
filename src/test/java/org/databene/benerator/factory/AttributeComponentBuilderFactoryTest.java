@@ -28,25 +28,17 @@ package org.databene.benerator.factory;
 
 import java.util.Date;
 
-import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
-import org.databene.benerator.nullable.AbstractNullableGenerator;
 import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.primitive.HibUUIDGenerator;
-import org.databene.benerator.primitive.IncrementGenerator;
-import org.databene.benerator.test.NullableGeneratorTest;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.expression.ConstantExpression;
 import org.databene.commons.validator.StringValidator;
 import org.databene.model.data.AlternativeGroupDescriptor;
-import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
-import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.ReferenceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
@@ -61,7 +53,7 @@ import static junit.framework.Assert.*;
  * Created: 10.08.2007 12:40:41
  * @author Volker Bergmann
  */
-public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest {
+public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuilderFactoryTest {
 	
 	// TODO v1.0 define tests for all syntax paths
 	
@@ -313,73 +305,6 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
 	}
 
 	// Id Descriptor tests ---------------------------------------------------------------------------------------------
-	
-	/**
-	 * Tests UUID generation
-	 * <id name="id" strategy="uuid"/>
-	 */
-	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testUuid() {
-		String componentName = "id";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "string");
-		type.setGenerator(HibUUIDGenerator.class.getName());
-		IdDescriptor id = new IdDescriptor(componentName, type);
-		ComponentBuilder builder = createComponentBuilder(id);
-		ComponentBuilderGenerator<String> helper = new ComponentBuilderGenerator(builder, componentName);
-		helper.init(context);
-		expectUniqueGenerations(helper, 10);
-	}
-	
-	/**
-	 * Tests 'increment' id generation with unspecified type
-	 * <id name="id" strategy="increment"/>
-	 */
-	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testIncrementIdWithoutType() {
-		String componentName = "id";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "long");
-		type.setGenerator(IncrementGenerator.class.getName());
-		IdDescriptor id = new IdDescriptor(componentName, type);
-		ComponentBuilder builder = createComponentBuilder(id);
-		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
-		helper.init(context);
-		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L);
-	}
-	
-	/**
-	 * Tests id generation with unspecified type and strategy
-	 * <id name="id"/>
-	 */
-	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testDefaultIdGeneration() {
-		String componentName = "id";
-		IdDescriptor id = new IdDescriptor(componentName);
-		ComponentBuilder builder = createComponentBuilder(id);
-		ComponentBuilderGenerator<Long> helper = new ComponentBuilderGenerator(builder, componentName);
-		helper.init(context);
-		expectGeneratedSequenceOnce(helper, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-		assertNotNull(helper.generate(new ProductWrapper<Long>()));
-	}
-	
-	/**
-	 * Tests 'increment' id generation with 'byte' type
-	 * <id name="id" type="byte" strategy="increment"/>
-	 */
-	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testIncrementByteId() {
-		String componentName = "id";
-		SimpleTypeDescriptor type = new SimpleTypeDescriptor("idType", "byte");
-		type.setGenerator(IncrementGenerator.class.getName());
-		IdDescriptor id = new IdDescriptor(componentName, type);
-		ComponentBuilder builder = createComponentBuilder(id);
-		ComponentBuilderGenerator<Byte> helper = new ComponentBuilderGenerator(builder, componentName);
-		helper.init(context);
-		expectGeneratedSequenceOnce(helper, (byte) 1, (byte) 2, (byte) 3, (byte) 4);
-	}
 	
 	@Test
     @SuppressWarnings({ "cast", "unchecked", "rawtypes" })
@@ -720,105 +645,4 @@ public class AttributeComponentBuilderFactoryTest extends NullableGeneratorTest 
         return builder;
     }
 */
-	// private helpers -------------------------------------------------------------------------------------------------
-	
-	private ComponentBuilder<Entity> createComponentBuilder(ComponentDescriptor component) {
-		return createComponentBuilder(component, new BeneratorContext());
-	}
-	
-	@SuppressWarnings("unchecked")
-    private ComponentBuilder<Entity> createComponentBuilder(ComponentDescriptor component, BeneratorContext context) {
-		return (ComponentBuilder<Entity>) ComponentBuilderFactory.createComponentBuilder(component, Uniqueness.NONE, context);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static final class ComponentBuilderGenerator<E> extends AbstractNullableGenerator<E> {
-		
-        @SuppressWarnings("rawtypes")
-		private ComponentBuilder builder;
-		private String componentName;
-
-        @SuppressWarnings("rawtypes")
-		public ComponentBuilderGenerator(ComponentBuilder builder, String componentName) {
-			this.builder = builder;
-			this.componentName = componentName;
-		}
-
-		@Override
-        public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-	        builder.init(context);
-	        super.init(context);
-        }
-
-        public Class<E> getGeneratedType() {
-	        return builder.getGeneratedType();
-        }
-
-        public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-			Entity entity = new Entity("Test");
-			if (!builder.buildComponentFor(entity))
-				return null;
-			wrapper.product = (E) entity.get(componentName);
-			return wrapper;
-		}
-		
-		@Override
-		public void reset() {
-			super.reset();
-			builder.reset();
-		}
-		
-		@Override
-		public void close() {
-			super.close();
-			builder.close();
-		}
-
-		public boolean isParallelizable() {
-	        return false;
-        }
-
-		public boolean isThreadSafe() {
-	        return false;
-        }
-
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private <T> void expectUniqueSequence(PartDescriptor name, T... products) {
-		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
-		helper.init(context);
-		expectGeneratedSequence(helper, products).withCeasedAvailability();
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private <T> void expectUniqueSet(PartDescriptor name, T... products) {
-		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
-		helper.init(context);
-		expectGeneratedSet(helper, products).withCeasedAvailability();
-	}
-	
-	/*
-	private <T> void expectSequence(PartDescriptor name, T... products) {
-		ComponentBuilder builder = createComponentBuilder(name);
-		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
-		expectGeneratedSet(helper, products).withContinuedAvailability();
-	}
-	*/
-
-	private void expectNullGenerations(ComponentBuilderGenerator<String> gen, int n) {
-	    ProductWrapper<String> wrapper = new ProductWrapper<String>();
-	    for (int i = 0; i < n; i++) {
-	    	wrapper = gen.generate(wrapper);
-	    	assertNotNull(wrapper);
-	    	assertNull(wrapper.product);
-	    }
-    }
-	
-	enum TestEnum {
-		firstInstance
-	}
-
 }

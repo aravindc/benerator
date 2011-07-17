@@ -69,7 +69,7 @@ import org.databene.model.data.Uniqueness;
 public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
 	public EquivalenceGeneratorFactory() {
-		super();
+		super(new MeanDefaultsProvider());
 	}
 
 	@Override
@@ -108,18 +108,18 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	@Override
 	public <T extends Number> Generator<T> createNumberGenerator(
             Class<T> numberType, T min, T max, Integer totalDigits, Integer fractionDigits, T granularity,
-            Distribution distribution, boolean unique) {
+            Distribution distribution, Uniqueness uniqueness) {
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
         Assert.notNull(numberType, "numberType");
         if (distribution != null)
         	return super.createNumberGenerator(numberType, min, max, totalDigits, fractionDigits, granularity,
-                    distribution, unique);
+                    distribution, uniqueness);
         if (min == null)
-        	min = (NumberUtil.isLimited(numberType) ? NumberUtil.minValue(numberType) : defaultMin(numberType));
+        	min = (NumberUtil.isLimited(numberType) ? NumberUtil.minValue(numberType) : defaultsProvider.defaultMin(numberType));
         if (max == null)
-        	max = (NumberUtil.isLimited(numberType) ? NumberUtil.maxValue(numberType) : defaultMax(numberType));
+        	max = (NumberUtil.isLimited(numberType) ? NumberUtil.maxValue(numberType) : defaultsProvider.defaultMax(numberType));
         if (granularity == null)
-        	granularity = defaultGranularity(numberType);
+        	granularity = defaultsProvider.defaultGranularity(numberType);
         if (((Comparable<T>) min).compareTo(max) == 0) // if min==max then return min once
             return new OneShotGenerator<T>(min);
 
@@ -272,21 +272,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     // defaults --------------------------------------------------------------------------------------------------------
     
     @Override
-	protected <T extends Number> T defaultMax(Class<T> numberType) {
-		return NumberToNumberConverter.convert(10000, numberType);
-	}
-
-	@Override
-	protected <T extends Number> T defaultMin(Class<T> numberType) {
-		return NumberToNumberConverter.convert(-10000, numberType);
-	}
-
-	@Override
-	protected <T extends Number> T defaultGranularity(Class<T> numberType) {
-		return NumberToNumberConverter.convert(1, numberType);
-	}
-
-    @Override
 	public NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
 		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
 			return NullableGeneratorFactory.createNullStartingGenerator(source);
@@ -300,21 +285,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 			return NullableGeneratorFactory.createNullStartingGenerator(source);
 		else
 			return source;
-	}
-
-	@Override
-	public boolean shouldNullifyEachNullable() {
-		return false;
-	}
-
-	@Override
-	protected int defaultMinLength() {
-		return 0;
-	}
-
-	@Override
-	protected Integer defaultMaxLength() {
-		return 1000;
 	}
 
 	@Override
@@ -335,16 +305,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 		return 0.5;
 	}
 
-	@Override
-	protected <T extends Number> int defaultTotalDigits(Class<T> numberType) {
-		return 10; // TODO
-	}
-
-	@Override
-	protected <T extends Number> int defaultFractionDigits(Class<T> numberType) {
-		return 0; // TODO
-	}
-
 	static class ValueSet<T extends Number> {
 		
 		Interval<T> numberRange;
@@ -355,7 +315,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ValueSet(T min, boolean minInclusive, T max, boolean maxInclusive, T granularity, Class<T> numberType) {
 			this.set = new HashSet<T>();
-	        this.numberRange = new Interval<T>(min, minInclusive, max, maxInclusive, new ComparableComparator()); // TODO handle min/MaxExclusive
+	        this.numberRange = new Interval<T>(min, minInclusive, max, maxInclusive, new ComparableComparator());
 	        this.granularity = granularity;
 	        this.numberType = numberType;
 		}
@@ -373,18 +333,8 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	protected boolean defaultNullable() {
-		return true;
-	}
-
-	@Override
 	protected boolean defaultUnique() {
 		return true;
-	}
-
-	@Override
-	protected double defaultNullQuota() {
-		return 0.5;
 	}
 
 }

@@ -59,7 +59,7 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testGetCountGenerator_default() {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst");
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		assertNull(countGenerator.generate());
 	}
@@ -67,7 +67,7 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testGetCountGenerator_distributed() {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(2).withMaxCount(4);
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		expectGeneratedSet(countGenerator, 100, 2L, 3L, 4L).withContinuedAvailability();
 	}
@@ -75,7 +75,7 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testGetCountGenerator_minMax() {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(2).withMaxCount(3);
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		expectGeneratedSet(countGenerator, 20, 2L, 3L).withContinuedAvailability();
 	}
@@ -83,7 +83,7 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 	@Test
 	public void testGetCountGenerator_min() {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(6);
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
 		assertNull(countGenerator.generate());
 	}

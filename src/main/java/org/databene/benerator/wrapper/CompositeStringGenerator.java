@@ -37,7 +37,7 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
  */
 public class CompositeStringGenerator extends GeneratorWrapper<String[], String> {
 	
-	private boolean unique;
+	protected boolean unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private static Generator<String[]> wrap(boolean unique, Generator<?>... sources) {
+    protected static Generator<String[]> wrap(boolean unique, Generator<?>... sources) {
         return new CompositeArrayGenerator<String>(String.class, unique, GeneratorFactoryUtil.stringGenerators(sources));
     }
 

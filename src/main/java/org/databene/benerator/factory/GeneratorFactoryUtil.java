@@ -38,6 +38,7 @@ import org.databene.benerator.distribution.FeatureWeight;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DynamicCountGenerator;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
 import org.databene.benerator.wrapper.AsStringGenerator;
@@ -274,13 +275,19 @@ public class GeneratorFactoryUtil {
     	};
     }
 
-	public static Generator<Long> getCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin) {
+	public static Generator<Long> getCountGenerator(final InstanceDescriptor descriptor, boolean resetToMin, BeneratorContext context) {
     	Expression<Long> count = DescriptorUtil.getCount(descriptor);
     	if (count != null)
     		return new ExpressionBasedGenerator<Long>(count, Long.class);
     	else {
 			final Expression<Long> minCount = DescriptorUtil.getMinCount(descriptor);
 			final Expression<Long> maxCount = DescriptorUtil.getMaxCount(descriptor);
+			if (minCount.isConstant() && maxCount.isConstant() && descriptor.getCountDistribution() == null) {
+				Long minCountValue = minCount.evaluate(context);
+				Long maxCountValue = maxCount.evaluate(context);
+				if (minCountValue.equals(maxCountValue))
+					return new ConstantGenerator<Long>(minCountValue);
+			}
 			final Expression<Long> countPrecision = DescriptorUtil.getCountPrecision(descriptor);
 			final Expression<Distribution> countDistribution = 
 				getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);

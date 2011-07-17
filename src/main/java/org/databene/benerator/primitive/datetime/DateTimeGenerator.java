@@ -36,6 +36,7 @@ import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.commons.TimeUtil;
+import org.databene.model.data.Uniqueness;
 
 /**
  * Creates DateTimes with separate date and time distribution characteristics.<br/><br/>
@@ -122,7 +123,7 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     	dateGenerator.setPrecision(datePrecision);
     	this.dateGenerator.init(context);
     	this.timeOffsetGenerator = registerComponent(context.getGeneratorFactory().createNumberGenerator(
-    			Long.class, minTime, maxTime, timePrecision, timeDistribution, false));
+    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE));
     	this.timeOffsetGenerator.init(context);
         super.init(context);
     }

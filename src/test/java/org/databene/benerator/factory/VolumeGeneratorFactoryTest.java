@@ -46,6 +46,7 @@ import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.Generator;
 import org.databene.commons.*;
 import org.databene.commons.converter.FormatFormatConverter;
+import org.databene.model.data.Uniqueness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.junit.Test;
@@ -106,7 +107,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
     
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
-        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, sequence, false);
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, sequence, Uniqueness.NONE);
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             T n = generator.generate();
@@ -120,7 +121,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, WeightFunction weightFunction) {
-        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, weightFunction, false);
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, weightFunction, Uniqueness.NONE);
         generator.init(context);
         int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
         int[] count = new int[range];

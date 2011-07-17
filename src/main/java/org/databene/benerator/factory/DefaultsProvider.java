@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,22 +19,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.anno;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.databene.benerator.factory;
 
 /**
- * Marks an element as configured by a Benerator descriptor file.<br/><br/>
- * Created: 08.05.2010 07:57:51
- * @since 0.6.2
+ * TODO Document class.<br/><br/>
+ * Created: 15.07.2011 21:13:20
+ * @since TODO version
  * @author Volker Bergmann
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD } )
-public @interface DescriptorBased { // TODO rename to @Descriptor? or @Benerator?
-	String file() default "";
-	String name() default "";
+public interface DefaultsProvider {
+	<T extends Number> int defaultTotalDigits(Class<T> numberType);
+	<T extends Number> int defaultFractionDigits(Class<T> numberType);
+	<T extends Number> T defaultGranularity(Class<T> numberType);
+	<T extends Number> T defaultMin(Class<T> numberType) ;
+	<T extends Number> T defaultMax(Class<T> numberType);
+	int defaultMinLength();
+	Integer defaultMaxLength();
+	boolean defaultNullable();
+	double  defaultNullQuota();
 }

@@ -31,6 +31,7 @@ import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.commons.math.ArithmeticEngine;
+import org.databene.model.data.Uniqueness;
 
 /**
  * {@link Converter} implementation that transforms numbers 
@@ -151,7 +152,7 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	    		(Number) converter.convert(minNoise), 
 	    		(Number) converter.convert(maxNoise), 
 	    		(Number) converter.convert(noisePrecision), 
-	    		noiseDistribution, false);
+	    		noiseDistribution, Uniqueness.NONE);
 	    noiseGenerator.init(context);
 	}
 

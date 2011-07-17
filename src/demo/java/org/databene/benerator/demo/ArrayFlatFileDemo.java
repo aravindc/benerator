@@ -40,6 +40,7 @@ import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.format.Alignment;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.document.flat.ArrayFlatFileWriter;
+import org.databene.model.data.Uniqueness;
 import org.databene.script.AbstractScript;
 
 import java.io.*;
@@ -102,15 +103,15 @@ public class ArrayFlatFileDemo {
             FormatFormatConverter<Date> dateRenderer = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat("yyyyMMdd"), false);
 			Generator<Object>[] sources = (Generator<Object>[]) new Generator[] {
                     new ConstantGenerator<String>("R"),
-                    generatorFactory.createNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, false),
+                    generatorFactory.createNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, Uniqueness.NONE),
                     generatorFactory.createSampleGenerator(String.class, false, "BUY", "SALE"), // transaction type
                     new ConvertingGenerator(dateGenerator, dateRenderer), // transaction date
                     generatorFactory.createSampleGenerator(String.class, false, "Alice", "Bob", "Charly"), // partner
                     generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
-                    generatorFactory.createNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, false), // item count
+                    generatorFactory.createNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, Uniqueness.NONE), // item count
                     generatorFactory.createNumberGenerator(BigDecimal.class, // item price
                             new BigDecimal("0.50"), new BigDecimal("99.99"), new BigDecimal("0.01"),
-                            SequenceManager.CUMULATED_SEQUENCE, false)
+                            SequenceManager.CUMULATED_SEQUENCE, Uniqueness.NONE)
             };
 			GeneratorUtil.initAll(sources, new BeneratorContext());
 			return sources;

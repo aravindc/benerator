@@ -61,15 +61,21 @@ public class EquivalenceStringGenerator<E> extends ThreadSafeGenerator<String> {
 		assertInitialized();
 		if (currentLength == null)
 			return null;
-		E part = partGenerator.generate();
-		if (part == null) {
-			currentLength = lengthGenerator.generate();
+		E part = partGenerator.generate(); // try to select a new character and keep the previous length 
+		if (part == null) {                             // if you are through with the characters, ...
+			currentLength = lengthGenerator.generate(); // ...choose the next length value...
 			if (currentLength == null)
 				return null;
-			partGenerator.reset();
+			partGenerator.reset();                      // ...and reset character selection
 			part = partGenerator.generate();
 		}
-		return createString(part, currentLength);
+		String result = createString(part, currentLength);
+		if (currentLength == 0) 
+			while (partGenerator.generate() != null) {
+				// for length 0, any character repetition is "", 
+				// so get rid of the remaining characters and proceed to the next length value
+			}
+		return result;
 	}
 	
 	@Override
@@ -94,4 +100,10 @@ public class EquivalenceStringGenerator<E> extends ThreadSafeGenerator<String> {
 		return builder.toString();
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[partGenerator = " + partGenerator + ", " +
+				"countGenerator = " + lengthGenerator + "]";
+	}
+	
 }

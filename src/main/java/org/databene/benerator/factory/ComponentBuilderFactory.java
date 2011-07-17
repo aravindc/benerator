@@ -122,10 +122,21 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         Script script = ScriptUtil.parseScriptText(scriptText);
         NullableGenerator<?> generator = new NullableScriptGenerator(script, context);
         generator = NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
-        generator = context.getGeneratorFactory().applyNullSettings(generator, component.isNullable(), component.getNullQuota());
+        generator = context.getGeneratorFactory().applyNullSettings(generator, getNullability(component), component.getNullQuota());
 		return builderFromNullableGenerator(generator, component);
 
     }
+
+	protected static Boolean getNullability(ComponentDescriptor component) {
+		Boolean nullable = component.isNullable();
+		TypeDescriptor typeDescriptor = component.getTypeDescriptor();
+		if (nullable == null && component.getNullQuota() == null && typeDescriptor != null) {
+			// if nullability is not specified, but a source or generator, then do not generate nulls
+			if (typeDescriptor.getSource() != null || typeDescriptor.getGenerator() != null)
+				nullable = false;
+		}
+		return nullable;
+	}
 
 	protected static boolean shouldNullifyEachNullable(InstanceDescriptor descriptor,
 			BeneratorContext context) {
@@ -137,8 +148,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 		Boolean nullable = descriptor.isNullable();
 		if (nullable != null && nullable == false) // nullable defaults to true
 			return false;
-		if (!context.getGeneratorFactory().shouldNullifyEachNullable()) 
-			return false; // if the factory does not permit to nullify, it overrides the context setting
+		if (context.getDefaultsProvider().defaultNullQuota() < 1) 
+			return false; // if the factory requires nullification, it overrides the context setting
 		return (!descriptor.overwritesParent() && context.isDefaultNull());
 	}
 
@@ -258,13 +269,13 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
 	static ComponentBuilder<?> createIdBuilder(IdDescriptor id, Uniqueness ownerUniqueness, BeneratorContext context) {
-        Generator<?> generator = createSingleInstanceGenerator(id, ownerUniqueness, context);
+        Generator<?> generator = createSingleInstanceGenerator(id, Uniqueness.ORDERED, context);
         LOGGER.debug("Created {}", generator);
         return builderFromGenerator(generator, id, context);
     }
 
     private static ComponentBuilder<?> builderFromGenerator(Generator<?> source, ComponentDescriptor descriptor, BeneratorContext context) {
-    	NullableGenerator<?> generator = context.getGeneratorFactory().applyNullSettings(source, descriptor.isNullable(), descriptor.getNullQuota());
+    	NullableGenerator<?> generator = context.getGeneratorFactory().applyNullSettings(source, getNullability(descriptor), descriptor.getNullQuota());
         return builderFromNullableGenerator(generator, descriptor);
     }
 
@@ -279,7 +290,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     @SuppressWarnings("unchecked")
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
-    	Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(instance, true);
+    	Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(instance, true, context);
     	return new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
     			countGenerator, context);
     }

@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.parser.String2DistributionConverter;
+import org.databene.benerator.factory.DefaultsProvider;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptFactory;
@@ -115,6 +116,10 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		this.generatorFactory = generatorFactory;
 	}
 	
+	public void setDefaultsProvider(DefaultsProvider defaultsProvider) {
+		this.generatorFactory.setDefaultsProvider(defaultsProvider);
+	}
+
 	public void setProperty(String name, Object value) {
 		properties.set(name, value);
 	}
@@ -307,6 +312,10 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 		if (tmp.length() != 1)
 			throw new ConfigurationError("Cell separator has illegal length: '" + tmp + "'");
 		return tmp.charAt(0);
+	}
+
+	public DefaultsProvider getDefaultsProvider() {
+		return getGeneratorFactory().getDefaultsProvider();
 	}
 
 }

@@ -28,6 +28,7 @@ package org.databene.benerator.factory;
 
 import org.databene.benerator.sample.*;
 import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
 import org.databene.benerator.*;
@@ -51,6 +52,21 @@ import java.util.*;
  * @author Volker Bergmann
  */
 public abstract class GeneratorFactory { // TODO scan implementations and check generator name consistency
+	
+	protected DefaultsProvider defaultsProvider;
+	
+	protected GeneratorFactory(DefaultsProvider defaultsProvider) {
+		this.defaultsProvider = defaultsProvider;
+	}
+
+	public DefaultsProvider getDefaultsProvider() {
+		return defaultsProvider;
+	}
+
+	public void setDefaultsProvider(DefaultsProvider defaultsProvider) {
+		this.defaultsProvider = defaultsProvider;
+	}
+	
 	
     // boolean generator -----------------------------------------------------------------------------------------------
 
@@ -83,11 +99,11 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      */
     public <T extends Number> Generator<T> createNumberGenerator(
             Class<T> numberType, T min, T max, T precision,
-            Distribution distribution, boolean unique) {
+            Distribution distribution, Uniqueness uniqueness) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int prefixDigits = (max != null ? MathUtil.prefixDigits(max.doubleValue()) : MathUtil.prefixDigits(min.doubleValue()));
 		int totalDigits = prefixDigits + fractionDigits;
-        return createNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, unique);
+        return createNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
     
     /**
@@ -101,17 +117,21 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      */
     public <T extends Number> Generator<T> createNumberGenerator(
             Class<T> numberType, T min, T max, Integer totalDigits, Integer fractionDigits, T granularity,
-            Distribution distribution, boolean unique) {
+            Distribution distribution, Uniqueness uniqueness) {
         Assert.notNull(numberType, "numberType");
         if (min != null && min.equals(max))
             return new ConstantGenerator<T>(min);
         if (min == null)
-        	min = defaultMin(numberType);
+        	min = defaultsProvider.defaultMin(numberType);
         if (granularity == null)
-        	granularity = defaultGranularity(numberType);
-        if (distribution == null)
-        	distribution = defaultDistribution(unique ? Uniqueness.SIMPLE : Uniqueness.NONE);
-        return distribution.createGenerator(numberType, min, max, granularity, unique); 
+        	granularity = defaultsProvider.defaultGranularity(numberType);
+        if (distribution == null) {
+            if (Uniqueness.ORDERED == uniqueness)
+            	distribution = SequenceManager.STEP_SEQUENCE;
+            else
+            	distribution = defaultDistribution(uniqueness);
+        }
+        return distribution.createGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
     }
 
@@ -212,12 +232,12 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 			Integer minLength, Integer maxLength, Distribution lengthDistribution,
 			Locale locale, boolean unique) {
         if (maxLength == null)
-            maxLength = defaultMaxLength();
+            maxLength = defaultsProvider.defaultMaxLength();
         if (minLength == null) {
         	if (pattern != null && pattern.length() == 0)
         		minLength = 0;
         	else {
-	            int defaultMinLength = defaultMinLength();
+	            int defaultMinLength = defaultsProvider.defaultMinLength();
 	            minLength = Math.min(maxLength, defaultMinLength);
         	}
         }
@@ -305,24 +325,12 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 		return characters;
 	}
 
-	public abstract boolean shouldNullifyEachNullable();
-
-	protected abstract boolean defaultNullable();
 	protected abstract boolean defaultUnique();
-	protected abstract double defaultNullQuota();
 	
 	protected abstract double defaultTrueQuota() ;
 
-	protected abstract <T extends Number> T defaultMin(Class<T> numberType) ;
-	protected abstract <T extends Number> T defaultMax(Class<T> numberType);
-	protected abstract <T extends Number> T defaultGranularity(Class<T> numberType);
-	protected abstract <T extends Number> int defaultTotalDigits(Class<T> numberType);
-	protected abstract <T extends Number> int defaultFractionDigits(Class<T> numberType);
-
 	public abstract Distribution defaultDistribution(Uniqueness uniqueness);
 
-	protected abstract int defaultMinLength();
-	protected abstract Integer defaultMaxLength();
 	protected abstract Distribution defaultLengthDistribution(Uniqueness uniqueness, boolean required);
-	
+
 }

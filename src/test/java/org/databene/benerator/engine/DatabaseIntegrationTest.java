@@ -440,6 +440,12 @@ public class DatabaseIntegrationTest extends BeneratorIntegrationTest {
 		// selector="{{'select x from tbl where id = ' + x}}"
 	}
 	
+	@Test
+	public void testCacheBehavior() {
+		// TODO v0.7.0 implement test
+		// verify that a distribution like 'random' fetches a query result only once in N <generate> loops
+	}
+	
 	
 	
 	// private helpers -------------------------------------------------------------------------------------------------

@@ -308,7 +308,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static Generator<?> createByteArrayGenerator(SimpleTypeDescriptor descriptor, BeneratorContext context) {
         Generator<Byte> byteGenerator = new AsByteGeneratorWrapper<Integer>(new RandomIntegerGenerator(-128, 127, 1));
         return new ByteArrayGenerator(byteGenerator, 
-        		DescriptorUtil.getMinLength(descriptor), DescriptorUtil.getMaxLength(descriptor, context.getGeneratorFactory()));
+        		DescriptorUtil.getMinLength(descriptor), DescriptorUtil.getMaxLength(descriptor, context.getDefaultsProvider()));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -370,9 +370,9 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
         T precision = DescriptorUtil.getNumberDetail(descriptor, PRECISION, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
-        		descriptor.getDistribution(), uniqueness, true, context);
+        		descriptor.getDistribution(), uniqueness, false, context);
         return context.getGeneratorFactory().createNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness.isUnique());
+                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
@@ -398,7 +398,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             SimpleTypeDescriptor descriptor, boolean nullable, GeneratorFactory context) {
         if ((descriptor.getMinLength() != null || descriptor.getMaxLength() != null) && "string".equals(descriptor.getName())) {
             Integer minLength = DescriptorUtil.getMinLength(descriptor);
-            Integer maxLength = DescriptorUtil.getMaxLength(descriptor, context);
+            Integer maxLength = DescriptorUtil.getMaxLength(descriptor, context.getDefaultsProvider());
             return (Validator<T>) new StringLengthValidator(minLength, maxLength, nullable);
         }
         return null;

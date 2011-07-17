@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -18,7 +18,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.databene.benerator.anno;
 
 import java.lang.annotation.ElementType;
@@ -27,14 +26,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks an element as configured by a Benerator descriptor file.<br/><br/>
- * Created: 08.05.2010 07:57:51
- * @since 0.6.2
+ * TODO Document class.<br/><br/>
+ * Created: 15.07.2011 21:38:28
+ * @since TODO version
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD } )
-public @interface DescriptorBased { // TODO rename to @Descriptor? or @Benerator?
-	String file() default "";
-	String name() default "";
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR } )
+public @interface Mean {
+
 }

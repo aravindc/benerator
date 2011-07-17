@@ -151,7 +151,7 @@ public class GenerateOrIterateParser extends AbstractBeneratorDescriptorParser {
     		BeneratorContext context, boolean infoLog, boolean nested) {
 	    InstanceDescriptor descriptor = mapDescriptorElement(element, context);
 		
-		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false);
+		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		Expression<Long> pageSize = parsePageSize(element);
 		Expression<Integer> threads = DescriptorParserUtil.parseIntAttribute(ATT_THREADS, element, 1);
 		Expression<PageListener> pager = (Expression<PageListener>) BeneratorScriptParser.parseBeanSpec(element.getAttribute(ATT_PAGER));

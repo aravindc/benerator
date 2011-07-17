@@ -47,7 +47,6 @@ import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.converter.ConverterManager;
-import org.databene.commons.converter.NumberToNumberConverter;
 import org.databene.commons.iterator.ArrayIterable;
 import org.databene.model.data.Uniqueness;
 
@@ -63,7 +62,7 @@ import org.databene.model.data.Uniqueness;
 public class VolumeGeneratorFactory extends GeneratorFactory {
 
 	public VolumeGeneratorFactory() {
-		super();
+		super(new GentleDefaultsProvider());
 	}
 
 	@Override
@@ -150,8 +149,8 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	public NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
     	if (nullQuota == null) {
     		if (nullable == null)
-    			nullable = defaultNullable();
-    		nullQuota = (nullable ?  defaultNullQuota() : 0);
+    			nullable = defaultsProvider.defaultNullable();
+    		nullQuota = (nullable ?  defaultsProvider.defaultNullQuota() : 0);
     	}
 		return NullableGeneratorFactory.injectNulls(source, nullQuota);
 	}
@@ -160,8 +159,8 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	public NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota)  {
     	if (nullQuota == null) {
     		if (nullable == null)
-    			nullable = defaultNullable();
-    		nullQuota = (nullable ?  defaultNullQuota() : 0);
+    			nullable = defaultsProvider.defaultNullable();
+    		nullQuota = (nullable ?  defaultsProvider.defaultNullQuota() : 0);
     	}
 		return NullableGeneratorFactory.injectNulls(source, nullQuota);
 	}
@@ -173,25 +172,15 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
     	else
     		return new ConstantGenerator<T>(value);
     }
-
+/*
     @Override
 	public boolean shouldNullifyEachNullable() {
 		return true;
 	}
-	
+*/
 	@Override
 	protected double defaultTrueQuota() {
 		return 0.5;
-	}
-
-	@Override
-	protected int defaultMinLength() {
-		return 1;
-	}
-
-	@Override
-	protected Integer defaultMaxLength() {
-		return 30;
 	}
 
 	@Override
@@ -207,31 +196,6 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	protected <T extends Number> T defaultMin(Class<T> numberType) {
-		return NumberToNumberConverter.convert(1, numberType);
-	}
-
-	@Override
-	protected <T extends Number> T defaultMax(Class<T> numberType) {
-		return NumberToNumberConverter.convert(9, numberType);
-	}
-
-	@Override
-	protected <T extends Number> T defaultGranularity(Class<T> numberType) {
-		return NumberToNumberConverter.convert(1, numberType);
-	}
-
-	@Override
-	protected <T extends Number> int defaultTotalDigits(Class<T> numberType) {
-		return 10; // TODO
-	}
-
-	@Override
-	protected <T extends Number> int defaultFractionDigits(Class<T> numberType) {
-		return 0; // TODO
-	}
-
-	@Override
 	public Distribution defaultDistribution(Uniqueness uniqueness) {
 		if (uniqueness == null)
 			return SequenceManager.STEP_SEQUENCE;
@@ -243,18 +207,8 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	protected boolean defaultNullable() {
-		return false;
-	}
-
-	@Override
 	protected boolean defaultUnique() {
 		return false;
-	}
-
-	@Override
-	protected double defaultNullQuota() {
-		return 1.;
 	}
 
 	@Override

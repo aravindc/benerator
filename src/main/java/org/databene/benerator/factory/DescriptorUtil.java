@@ -71,7 +71,6 @@ import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.commons.converter.String2NumberConverter;
 import org.databene.commons.converter.ToStringConverter;
 import org.databene.commons.expression.ConstantExpression;
-import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.expression.MinExpression;
 import org.databene.commons.validator.AndValidator;
@@ -435,14 +434,14 @@ public class DescriptorUtil {
         return minLength;
     }
 
-    protected static Integer getMaxLength(SimpleTypeDescriptor descriptor, GeneratorFactory generatorFactory) {
+    protected static Integer getMaxLength(SimpleTypeDescriptor descriptor, DefaultsProvider defaultsProvider) {
         // evaluate max length
         Integer maxLength = (Integer) descriptor.getDeclaredDetailValue(MAX_LENGTH);
         if (maxLength == null) {
             // maxLength was not set in this descriptor, so check the default value 
             maxLength = descriptor.getMaxLength();
             if (maxLength == null)
-                maxLength = generatorFactory.defaultMaxLength();
+                maxLength = defaultsProvider.defaultMaxLength();
         }
         return maxLength;
     }
@@ -459,7 +458,11 @@ public class DescriptorUtil {
         }
 	}
 */
-	static class GlobalMaxCountExpression extends DynamicExpression<Long> {
+	static class GlobalMaxCountExpression implements Expression<Long> {
+		public boolean isConstant() {
+			return true;
+		}
+		
 		public Long evaluate(Context context) {
             return ((BeneratorContext) context).getMaxCount();
         }
@@ -472,7 +475,7 @@ public class DescriptorUtil {
 		Double nullQuota = descriptor.getNullQuota();
 		if (nullQuota != null)
 			return (nullQuota > 0);
-		return context.getGeneratorFactory().defaultNullable();
+		return context.getDefaultsProvider().defaultNullable();
 	}
 
 }
