@@ -215,24 +215,20 @@ public class DescriptorUtil {
         	return TimeUtil.createDefaultDateFormat();
     }
 
-	public static boolean isUnique(InstanceDescriptor descriptor, BeneratorContext context) {
-        Boolean unique = descriptor.isUnique();
-        if (unique == null)
-            unique = context.getGeneratorFactory().defaultUnique();
-        return unique;
-    }
-/*	
-	public static Expression<Boolean> getUniqueness(final InstanceDescriptor descriptor) {
-		return new UniquenessExpression(descriptor);
-    }
-*/
-    public static Uniqueness uniqueness(InstanceDescriptor descriptor, BeneratorContext context) {
+	public static Uniqueness getUniqueness(InstanceDescriptor descriptor, BeneratorContext context) {
     	if (descriptor instanceof IdDescriptor)
     		return Uniqueness.ORDERED;
     	else if (isUnique(descriptor, context))
     		return Uniqueness.SIMPLE;
     	else
     		return Uniqueness.NONE;
+    }
+
+	public static boolean isUnique(InstanceDescriptor descriptor, BeneratorContext context) {
+        Boolean unique = descriptor.isUnique();
+        if (unique == null)
+            unique = context.getGeneratorFactory().defaultUnique();
+        return unique;
     }
 
 	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
@@ -445,20 +441,8 @@ public class DescriptorUtil {
         }
         return maxLength;
     }
-/*
-	static class UniquenessExpression extends DynamicExpression<Boolean> {
-		InstanceDescriptor descriptor;
-		
-		public UniquenessExpression(InstanceDescriptor descriptor) {
-	        this.descriptor = descriptor;
-        }
 
-		public Boolean evaluate(Context context) {
-			return isUnique(descriptor);
-        }
-	}
-*/
-	static class GlobalMaxCountExpression implements Expression<Long> {
+    static class GlobalMaxCountExpression implements Expression<Long> {
 		public boolean isConstant() {
 			return true;
 		}
@@ -466,16 +450,6 @@ public class DescriptorUtil {
 		public Long evaluate(Context context) {
             return ((BeneratorContext) context).getMaxCount();
         }
-	}
-
-	public static boolean isNullable(ComponentDescriptor descriptor, BeneratorContext context) {
-		Boolean nullable = descriptor.isNullable();
-		if (nullable != null)
-			return nullable;
-		Double nullQuota = descriptor.getNullQuota();
-		if (nullQuota != null)
-			return (nullQuota > 0);
-		return context.getDefaultsProvider().defaultNullable();
 	}
 
 }
