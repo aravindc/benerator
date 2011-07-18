@@ -85,7 +85,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         LOGGER.debug("createComponentBuilder({})", descriptor.getName());
         
         // do I only need to generate nulls?
-        if (DescriptorUtil.isNullable(descriptor, context) && shouldNullifyEachNullable(descriptor, context))
+        if (getNullability(descriptor, context) && shouldNullifyEachNullable(descriptor, context))
             return builderFromNullableGenerator(createNullGenerator(descriptor, context), descriptor);
         
         ComponentBuilder<?> result = null;
@@ -122,20 +122,25 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         Script script = ScriptUtil.parseScriptText(scriptText);
         NullableGenerator<?> generator = new NullableScriptGenerator(script, context);
         generator = NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
-        generator = context.getGeneratorFactory().applyNullSettings(generator, getNullability(component), component.getNullQuota());
+        generator = context.getGeneratorFactory().applyNullSettings(generator, getNullability(component, context), component.getNullQuota());
 		return builderFromNullableGenerator(generator, component);
 
     }
 
-	protected static Boolean getNullability(ComponentDescriptor component) {
-		Boolean nullable = component.isNullable();
-		TypeDescriptor typeDescriptor = component.getTypeDescriptor();
-		if (nullable == null && component.getNullQuota() == null && typeDescriptor != null) {
+	protected static boolean getNullability(InstanceDescriptor descriptor, BeneratorContext context) {
+		Boolean nullable = descriptor.isNullable();
+		if (nullable != null)
+			return nullable;
+		Double nullQuota = descriptor.getNullQuota();
+		if (nullQuota != null && nullQuota > 0)
+			return true;
+		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
+		if (descriptor.getNullQuota() == null && typeDescriptor != null) {
 			// if nullability is not specified, but a source or generator, then do not generate nulls
 			if (typeDescriptor.getSource() != null || typeDescriptor.getGenerator() != null)
-				nullable = false;
+				return false;
 		}
-		return nullable;
+		return context.getDefaultsProvider().defaultNullable();
 	}
 
 	protected static boolean shouldNullifyEachNullable(InstanceDescriptor descriptor,
@@ -275,7 +280,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
     private static ComponentBuilder<?> builderFromGenerator(Generator<?> source, ComponentDescriptor descriptor, BeneratorContext context) {
-    	NullableGenerator<?> generator = context.getGeneratorFactory().applyNullSettings(source, getNullability(descriptor), descriptor.getNullQuota());
+    	NullableGenerator<?> generator = context.getGeneratorFactory().applyNullSettings(source, getNullability(descriptor, context), descriptor.getNullQuota());
         return builderFromNullableGenerator(generator, descriptor);
     }
 

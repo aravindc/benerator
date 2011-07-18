@@ -53,7 +53,7 @@ public class InstanceGeneratorFactory {
     public static Generator<?> createSingleInstanceGenerator(
             InstanceDescriptor descriptor, Uniqueness ownerUniqueness, BeneratorContext context) {
         Generator<?> generator = null;
-        Uniqueness uniqueness = DescriptorUtil.uniqueness(descriptor, context);
+        Uniqueness uniqueness = DescriptorUtil.getUniqueness(descriptor, context);
         if (!uniqueness.isUnique())
         	uniqueness = ownerUniqueness;
         TypeDescriptor type = descriptor.getTypeDescriptor();
