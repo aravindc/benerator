@@ -84,7 +84,8 @@ public class AnnotationMapperTest {
 	@Test
 	public void testUniqueMethod() throws Exception {
 	    Method stringMethod = getClass().getDeclaredMethod("uniqueMethod", new Class[] { String.class });
-		InstanceDescriptor arrayDescriptor = AnnotationMapper.mapMethodParams(stringMethod);
+		AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory());
+		InstanceDescriptor arrayDescriptor = mapper.mapMethodParamsAnnotations(stringMethod);
 		assertEquals(true, arrayDescriptor.isUnique());
 	}
 	
@@ -334,7 +335,8 @@ public class AnnotationMapperTest {
 	private void checkMethod(String method, Class<?> methodArgType, String expectedType, Object ... details)
             throws NoSuchMethodException {
 	    Method stringMethod = getClass().getDeclaredMethod(method, new Class[] { methodArgType });
-		InstanceDescriptor arrayDescriptor = AnnotationMapper.mapMethodParams(stringMethod);
+	    AnnotationMapper mapper = new AnnotationMapper(new EquivalenceGeneratorFactory());
+		InstanceDescriptor arrayDescriptor = mapper.mapMethodParamsAnnotations(stringMethod);
 		ArrayTypeDescriptor typeDescriptor = (ArrayTypeDescriptor) arrayDescriptor.getTypeDescriptor();
 		assertEquals(1, typeDescriptor.getElements().size());
 		ArrayElementDescriptor param1 = typeDescriptor.getElement(0);
