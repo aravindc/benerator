@@ -29,7 +29,7 @@ package org.databene.platform.java;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.model.data.ComplexTypeDescriptor;
-import org.databene.model.data.DescriptorProvider;
+import org.databene.model.data.DefaultDescriptorProvider;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.TypeMapper;
@@ -43,17 +43,18 @@ import java.math.BigInteger;
  * Created: 27.06.2007 23:04:19
  * @author Volker Bergmann
  */
-public class BeanDescriptorProvider implements DescriptorProvider {
+public class BeanDescriptorProvider extends DefaultDescriptorProvider {
 	
 	private static final BeanDescriptorProvider DEFAULT_INSTANCE = new BeanDescriptorProvider();
 	
 	public static BeanDescriptorProvider defaultInstance() {
 		return DEFAULT_INSTANCE;
 	}
-    
-    private TypeMapper mapper;
 
+	private TypeMapper mapper;
+    
     public BeanDescriptorProvider() {
+    	super("bean", false);
         mapper = new TypeMapper(
                 "byte", byte.class,
                 "byte", Byte.class,
@@ -92,34 +93,17 @@ public class BeanDescriptorProvider implements DescriptorProvider {
             );
     }
     
-    public String getId() {
-        return "ben";
-    }
-    
-    public TypeDescriptor[] getTypeDescriptors() {
-        return new TypeDescriptor[0]; // There are way too many candidates
-    }
+    // interface -------------------------------------------------------------------------------------------------------
 
-    public TypeDescriptor getTypeDescriptor(String typeName) {
-        return createTypeDescriptor(typeName);
-    }
-    
-/*
-    public String getType(Object bean) {
-        return bean.getClass().getName();
-    }
-
-    public String[] getFeatureNames(Object bean) {
-        PropertyDescriptor[] descriptors = BeanUtil.getPropertyDescriptors(bean.getClass());
-        String[] propertyNames = new String[descriptors.length - 1];
-        int i = 0;
-        for (PropertyDescriptor descriptor : descriptors)
-            if (!"class".equals(descriptor.getName()))
-                propertyNames[i++] = descriptor.getName();
-        return propertyNames;
-    }
-*/
-    // private helpers -------------------------------------------------------------------------------------------------
+	@Override
+	public TypeDescriptor getTypeDescriptor(String abstractTypeName) {
+		if (mapper.concreteType(abstractTypeName) != null)
+			return null; // the PrimitiveDescriptorProvider is responsible for primitives
+		TypeDescriptor result = super.getTypeDescriptor(abstractTypeName);
+		if (result == null)
+			result = createTypeDescriptor(abstractTypeName);
+		return result;
+	}
 
     /**
      * @param concreteType
@@ -127,7 +111,10 @@ public class BeanDescriptorProvider implements DescriptorProvider {
      * @see org.databene.model.data.TypeMapper#abstractType(Class)
      */
     public String abstractType(Class<?> concreteType) {
-        return mapper.abstractType(concreteType);
+        String result = mapper.abstractType(concreteType);
+        if (result == null)
+        	result = concreteType.getName();
+		return result;
     }
 
     /**
@@ -144,13 +131,6 @@ public class BeanDescriptorProvider implements DescriptorProvider {
         } catch (ClassNotFoundException e) {
             throw new ConfigurationError("No class mapping found for '" + primitiveType + "'", e);
         }
-    }
-
-    public Class<?> javaTypeForAbstractType(String abstractType) {
-        Class<?> type = mapper.concreteType(abstractType);
-        if (type == null)
-            throw new UnsupportedOperationException("Not mapped to a Java type: " + abstractType);
-        return type;
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
