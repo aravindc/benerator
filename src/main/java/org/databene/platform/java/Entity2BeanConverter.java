@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,22 +38,35 @@ import java.util.Map;
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */
-public class Entity2BeanConverter<T> extends ThreadSafeConverter<Entity, T> {
+public class Entity2BeanConverter extends ThreadSafeConverter<Object, Object> { // TODO rename to Entity2JavaConverter
 
-    public Entity2BeanConverter(Class<T> targetType) {
-        super(Entity.class, targetType);
+    public Entity2BeanConverter() {
+        super(Object.class, Object.class);
     }
 
-    @SuppressWarnings("unchecked")
-    public T convert(Entity entity) {
-    	T result;
-        if (targetType != null)
-            result = BeanUtil.newInstance(targetType);
-        else
-            result = (T) BeanUtil.newInstance(entity.type());
+    public Object convert(Object entityOrArray) {
+    	if (entityOrArray == null)
+    		return null;
+    	else if (entityOrArray.getClass().isArray())
+    		return convertArray((Object[]) entityOrArray);
+    	else if (entityOrArray instanceof Entity)
+    		return convertEntity((Entity) entityOrArray);
+    	else
+    		return entityOrArray;
+    }
+
+	private Object convertArray(Object[] array) {
+		Object[] result = new Object[array.length];
+		for (int i = 0; i < array.length; i++)
+			result[i] = convert(array[i]);
+		return result;
+	}
+
+	private Object convertEntity(Entity entity) {
+		Object result = BeanUtil.newInstance(entity.type());
         for (Map.Entry<String, Object> entry : entity.getComponents().entrySet())
             BeanUtil.setPropertyValue(result, entry.getKey(), entry.getValue(), false);
         return result;
-    }
+	}
 
 }
