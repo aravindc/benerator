@@ -64,7 +64,8 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
     private char   separator;
     private String encoding;
     private String[] columns;
-    Converter<String, ?> preprocessor;
+    private Converter<String, ?> preprocessor;
+    private boolean expectingHeader;
 
     private HeavyweightIterator<Entity> source;
     
@@ -98,15 +99,21 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
         this.initialized = false;
+        this.expectingHeader = true;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
     
+	public void setExpectingHeader(boolean expectHeader) {
+		this.expectingHeader = expectHeader;
+	}
+	
     public String[] getColumnNames() {
     	return columns;
     }
     
 	public void setColumns(String[] columns) {
+		this.expectingHeader = false;
 		if (ArrayUtil.isEmpty(columns))
 			this.columns = null;
 		else {
@@ -167,9 +174,8 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
 			Iterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
 			if (!cellIterator.hasNext())
 				throw new ConfigurationError("empty CSV file");
-			String[] header = cellIterator.next();
-			if (ArrayUtil.isEmpty(columns))
-				setColumns(header);
+			if (expectingHeader)
+				setColumns(cellIterator.next());
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
 	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, columns, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);

@@ -43,6 +43,7 @@ import java.util.Iterator;
 public class CSVEntitySourceTest {
 
     private static final String PERSON_URI = "org/databene/platform/csv/person-bean.csv";
+	private static final String PERSON_URI_WO_HEADERS = "string://Alice,23\nBob,34\nCharly,45";
 
     // test methods ----------------------------------------------------------------------------------------------------
 
@@ -63,18 +64,18 @@ public class CSVEntitySourceTest {
 
     @Test
     public void testWithoutHeaders() {
-    	CSVEntitySource source = new CSVEntitySource(PERSON_URI, "Person");
+    	CSVEntitySource source = new CSVEntitySource(PERSON_URI_WO_HEADERS, "Person");
     	source.setColumns(new String[] { "c1", "c2" });
     	source.setContext(new BeneratorContext());
-        checkIteration(source.iterator(), "c1", "c2", true);
-        checkIteration(source.iterator(), "c1", "c2", true);
+        checkIteration(source.iterator(), "c1", "c2", false);
+        checkIteration(source.iterator(), "c1", "c2", false);
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void checkIteration(Iterator<Entity> iterator, String col1, String col2, boolean headersExpected) {
+    private void checkIteration(Iterator<Entity> iterator, String col1, String col2, boolean headersAsEntityExpected) {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
-        if (headersExpected) {
+        if (headersAsEntityExpected) {
             assertTrue(iterator.hasNext());
             assertEquals(new Entity(descriptor, col1, "name", col2, "age"), iterator.next());
         }

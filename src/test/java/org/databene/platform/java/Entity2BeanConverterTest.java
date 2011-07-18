@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,15 +26,19 @@
 
 package org.databene.platform.java;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import static junit.framework.Assert.*;
+
+import org.databene.commons.ArrayFormat;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.PersonBean;
 import org.databene.platform.java.Entity2BeanConverter;
 
 /**
- * Tests the Entity2BeanConverter.<br/>
+ * Tests the {@link Entity2BeanConverter}.<br/>
  * <br/>
  * Created: 29.08.2007 18:54:45
  * @author Volker Bergmann
@@ -42,11 +46,29 @@ import org.databene.platform.java.Entity2BeanConverter;
 public class Entity2BeanConverterTest {
 
 	@Test
-    public void test() {
+    public void testEntity() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
-        Entity entity = new Entity(descriptor, "name", "Alice", "age", 23);
+        Entity entity = createAlice(descriptor);
         PersonBean bean = new PersonBean("Alice", 23);
-        assertEquals(bean, new Entity2BeanConverter<PersonBean>(PersonBean.class).convert(entity));
+        assertEquals(bean, new Entity2BeanConverter().convert(entity));
     }
+
+	@Test
+    public void testEntityArray() {
+        ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
+        Object[] expected = new Object[] { new PersonBean("Alice", 23), new PersonBean("Bob", 34) };
+        Object[] array = new Object[] { createAlice(descriptor), createBob(descriptor) };
+        Object[] actual = (Object[]) new Entity2BeanConverter().convert(array);
+		assertTrue("Expected [" + ArrayFormat.format(expected) + "], found: [" + ArrayFormat.format(actual) + "]",
+				Arrays.deepEquals(expected, actual));
+    }
+
+	protected Entity createAlice(ComplexTypeDescriptor descriptor) {
+		return new Entity(descriptor, "name", "Alice", "age", 23);
+	}
+	
+	protected Entity createBob(ComplexTypeDescriptor descriptor) {
+		return new Entity(descriptor, "name", "Bob", "age", 34);
+	}
 	
 }

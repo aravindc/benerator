@@ -48,6 +48,8 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 
     private ComplexTypeDescriptor entityDescriptor;
 	private String[] columnNames;
+	private boolean expectingHeader;
+	
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -79,6 +81,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
         this.encoding = encoding;
         this.entityDescriptor = descriptor;
         this.preprocessor = preprocessor;
+        this.expectingHeader = true;
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -96,8 +99,10 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
     }
 
 	public String[] getColumnNames() {
-		if (ArrayUtil.isEmpty(columnNames))
+		if (ArrayUtil.isEmpty(columnNames)) {
 			columnNames = StringUtil.trimAll(CSVUtil.parseHeader(uri, separator, encoding));
+			expectingHeader = true;
+		}
 		return columnNames;
 	}
 
@@ -107,6 +112,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 		else {
 	        this.columnNames = columns;
 	        StringUtil.trimAll(this.columnNames);
+			expectingHeader = false;
 		}
     }
 
@@ -115,7 +121,10 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 	public HeavyweightIterator<Entity> iterator() {
         try {
 			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityDescriptor, preprocessor, separator, encoding);
-			iterator.setColumns(getColumnNames());
+			if (!expectingHeader) {
+				iterator.setColumns(getColumnNames());
+				iterator.setExpectingHeader(false);
+			}
 			return iterator;
 		} catch (FileNotFoundException e) {
 			throw new ConfigurationError("Cannot create iterator. ", e);
