@@ -53,8 +53,8 @@ import org.databene.model.data.Mode;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.array.Entity2ArrayConverter;
-import org.databene.platform.csv.CSVEntitySourceFactory;
-import org.databene.platform.xls.XLSEntitySourceFactory;
+import org.databene.platform.csv.CSVArraySourceFactory;
+import org.databene.platform.xls.XLSArraySourceFactory;
 import org.databene.script.ScriptConverter;
 import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
@@ -73,8 +73,7 @@ public class ArrayGeneratorFactory {
     @SuppressWarnings("unchecked")
     public static Generator<Object[]> createArrayGenerator(String instanceName, 
 			ArrayTypeDescriptor type, Uniqueness uniqueness, BeneratorContext context) {
-        if (logger.isDebugEnabled())
-            logger.debug("createArrayGenerator(" + type.getName() + ")");
+        logger.debug("createArrayGenerator({})", type.getName());
         // create original generator
         Generator<Object[]> generator = null;
         generator = (Generator<Object[]>) DescriptorUtil.getGeneratorByName(type, context);
@@ -87,8 +86,7 @@ public class ArrayGeneratorFactory {
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
         generator = DescriptorUtil.wrapWithProxy(generator, type);
-        if (logger.isDebugEnabled())
-            logger.debug("Created " + generator);
+        logger.debug("Created {}", generator);
         return generator;
     }
     
@@ -176,24 +174,26 @@ public class ArrayGeneratorFactory {
     	return generator;
     }
 
-    private static Generator<Object[]> createCSVSourceGenerator(ArrayTypeDescriptor descriptor, BeneratorContext context,
+    private static Generator<Object[]> createCSVSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
-    	if (logger.isDebugEnabled())
-    		logger.debug("createCSVSourceGenerator(" + descriptor +")");
-		String encoding = descriptor.getEncoding();
+    	logger.debug("createCSVSourceGenerator({})", arrayType);
+		String encoding = arrayType.getEncoding();
 		if (encoding == null)
 		    encoding = context.getDefaultEncoding();
-		char separator = DescriptorUtil.getSeparator(descriptor, context);
-		SourceFactory<Entity> factory = new CSVEntitySourceFactory(descriptor.getName(), new ScriptConverter(context), separator, encoding);
-		return createEntitySourceArrayGenerator(descriptor, context, sourceName, factory);
+		char separator = DescriptorUtil.getSeparator(arrayType, context);
+		SourceFactory<Object[]> factory = new CSVArraySourceFactory(arrayType.getName(), new ScriptConverter(context), separator, encoding);
+		Generator<Object[]> generator = DescriptorUtil.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
+		generator = new ConvertingGenerator<Object[], Object[]>(generator, new ArrayElementTypeConverter(arrayType));
+		return generator;
     }
 
-    private static Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor descriptor, BeneratorContext context,
+	private static Generator<Object[]> createXLSSourceGenerator(ArrayTypeDescriptor arrayType, BeneratorContext context,
             String sourceName) {
-    	if (logger.isDebugEnabled())
-    		logger.debug("createXLSSourceGenerator(" + descriptor +")");
-		SourceFactory<Entity> factory = new XLSEntitySourceFactory(descriptor.getName(), new ScriptConverter(context));
-		return createEntitySourceArrayGenerator(descriptor, context, sourceName, factory);
+		logger.debug("createXLSSourceGenerator({})", arrayType);
+		SourceFactory<Object[]> factory = new XLSArraySourceFactory(new ScriptConverter(context));
+		Generator<Object[]> generator = DescriptorUtil.createRawSourceGenerator(arrayType.getNesting(), arrayType.getDataset(), sourceName, factory, Object[].class, context);
+		generator = new ConvertingGenerator<Object[], Object[]>(generator, new ArrayElementTypeConverter(arrayType));
+		return generator;
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -231,15 +231,6 @@ public class ArrayGeneratorFactory {
             }
         }
 	    return elementBuilders;
-    }
-
-    
-    private static Generator<Object[]> createEntitySourceArrayGenerator(ArrayTypeDescriptor arrayType,
-            BeneratorContext context, String sourceName, SourceFactory<Entity> factory) {
-	    Generator<Entity> generator = DescriptorUtil.createRawEntitySourceGenerator(arrayType, context, sourceName, factory);
-		Generator<Object[]> result = new ConvertingGenerator<Entity, Object[]>(generator, new Entity2ArrayConverter());
-		result = new ConvertingGenerator<Object[], Object[]>(result, new ArrayElementTypeConverter(arrayType));
-		return result;
     }
 
 }

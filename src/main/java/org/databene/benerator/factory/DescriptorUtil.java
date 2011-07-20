@@ -79,7 +79,6 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.ArrayTypeDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
-import org.databene.model.data.Entity;
 import org.databene.model.data.IdDescriptor;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.PrimitiveType;
@@ -366,24 +365,22 @@ public class DescriptorUtil {
         }
     }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Generator<Entity> createRawEntitySourceGenerator(TypeDescriptor complexType,
-            BeneratorContext context, String sourceName, SourceFactory factory) {
-	    Generator<Entity> generator;
-	    String dataset = complexType.getDataset();
-		String nesting = complexType.getNesting();
+    @SuppressWarnings("unchecked")
+	public static <T> Generator<T> createRawSourceGenerator(String nesting, String dataset,
+            String sourceName, SourceFactory<T> factory, Class<T> generatedType, BeneratorContext context) {
+	    Generator<T> generator;
 		if (dataset != null && nesting != null) {
 		    String[] uris = DatasetUtil.getDataFiles(sourceName, dataset, nesting);
-            Generator<Entity>[] sources = new Generator[uris.length];
+            Generator<T>[] sources = new Generator[uris.length];
             for (int i = 0; i < uris.length; i++) {
-            	HeavyweightTypedIterable<Entity> source = factory.create(uris[i], context);
-                sources[i] = new IteratingGenerator<Entity>(source);
+            	HeavyweightTypedIterable<T> source = factory.create(uris[i], context);
+                sources[i] = new IteratingGenerator<T>(source);
             }
-			generator = new AlternativeGenerator<Entity>(Entity.class, sources);
+			generator = new AlternativeGenerator<T>(generatedType, sources); // TODO support equivalence partitions
 		} else {
 		    // iterate over (possibly large) data file
-			HeavyweightTypedIterable<Entity> source = factory.create(sourceName, context);
-		    generator = new IteratingGenerator<Entity>(source);
+			HeavyweightTypedIterable<T> source = factory.create(sourceName, context);
+		    generator = new IteratingGenerator<T>(source);
 		}
 		return generator;
     }

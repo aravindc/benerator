@@ -283,7 +283,7 @@ public class ComplexTypeGeneratorFactory {
 	
 	private static Generator<Entity> createEntitySourceGenerator(ComplexTypeDescriptor complexType,
             BeneratorContext context, String sourceName, SourceFactory<Entity> factory) {
-	    Generator<Entity> generator = DescriptorUtil.createRawEntitySourceGenerator(complexType, context, sourceName, factory);
+	    Generator<Entity> generator = DescriptorUtil.createRawSourceGenerator(complexType.getNesting(), complexType.getDataset(), sourceName, factory, Entity.class, context);
 		generator = new ConvertingGenerator<Entity, Entity>(generator, new ComponentTypeConverter(complexType));
 		return generator;
     }

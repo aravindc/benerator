@@ -71,6 +71,7 @@ import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
+import org.databene.platform.xls.XLSLineIterable;
 import org.databene.regex.RegexParser;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
@@ -135,6 +136,15 @@ public class GeneratorFactoryUtil {
      */
     public static Generator<String[]> createCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines, String encoding) {
         return new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, encoding));
+    }
+
+    /**
+     * Creates a generator that creates lines from a XLS file as {@link Object} arrays.
+     * @param uri the uri of the XLS file
+     * @return a generator of the desired characteristics
+     */
+    public static Generator<Object[]> createXLSLineGenerator(String uri, boolean skipFirstRow) {
+        return new IteratingGenerator<Object[]>(new XLSLineIterable(uri, skipFirstRow, null));
     }
 
     /**
