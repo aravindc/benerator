@@ -87,7 +87,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 	@Test
 	public void testXlsSource() {
 		ArrayTypeDescriptor descriptor = createPersonDescriptor();
-		descriptor.setSource("org/databene/benerator/factory/person.xls");
+		descriptor.setSource("org/databene/benerator/factory/person.ent.xls");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		assertEqualArrays(ALICE, generator.generate());
