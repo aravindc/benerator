@@ -50,6 +50,7 @@ import org.databene.benerator.wrapper.AsByteGeneratorWrapper;
 import org.databene.benerator.wrapper.ByteArrayGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.commons.Condition;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
@@ -57,6 +58,7 @@ import org.databene.commons.Validator;
 import org.databene.commons.accessor.GraphAccessor;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ArrayElementExtractor;
+import org.databene.commons.converter.ConditionalConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.DateString2DurationConverter;
 import org.databene.commons.converter.LiteralParser;
@@ -189,6 +191,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
                 throw new UnsupportedOperationException("Not a supported source: " + sourceObject);
         } else if (lcn.endsWith(".csv")) {
             return createSimpleTypeCSVSourceGenerator(descriptor, source, uniqueness, context);
+        } else if (lcn.endsWith(".xls")) {
+            return createSimpleTypeXLSSourceGenerator(descriptor, source, uniqueness, context);
         } else if (lcn.endsWith(".txt")) {
             generator = GeneratorFactoryUtil.createTextLineGenerator(source, false);
         } else {
@@ -261,6 +265,26 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             if (distribution != null)
             	generator = distribution.applyTo(generator, uniqueness.isUnique());
         }
+		return generator;
+	}
+
+    private static Generator<?> createSimpleTypeXLSSourceGenerator(
+			SimpleTypeDescriptor descriptor, String sourceName, Uniqueness uniqueness, BeneratorContext context) {
+		// TODO define common mechanism for file sources CSV, XLS, ... and entity, array, simple type
+		Generator<?> generator;
+        Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
+		Generator<Object[]> src = GeneratorFactoryUtil.createXLSLineGenerator(sourceName, false);
+		Converter<Object[], Object> converterChain = new ConverterChain<Object[], Object>(
+				new ArrayElementExtractor<Object>(Object.class, 0),
+				new ConditionalConverter(new Condition<Object>() {
+					public boolean evaluate(Object argument) {
+						return (argument instanceof String);
+					}
+				},
+				new ScriptConverter(context)));
+		generator = new ConvertingGenerator<Object[], Object>(src, converterChain);
+        if (distribution != null)
+        	generator = distribution.applyTo(generator, uniqueness.isUnique());
 		return generator;
 	}
 
