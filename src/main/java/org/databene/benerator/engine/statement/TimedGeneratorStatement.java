@@ -32,6 +32,7 @@ import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorMonitor;
 import org.databene.benerator.engine.Statement;
 import org.databene.profile.Profiler;
+import org.databene.profile.Profiling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class TimedGeneratorStatement extends StatementProxy {
 			else
 				logger.info("Created " + dc + " '" + name + "' data set(s)");
 		}
-		if ("true".equals(System.getProperty("profile")))
+		if (Profiling.isEnabled())
 			Profiler.defaultInstance().addSample(profilerPath, dt);
     }
 

@@ -41,6 +41,7 @@ import org.databene.commons.xml.XMLUtil;
 import org.databene.model.consumer.FileExporter;
 import org.databene.model.data.DataModel;
 import org.databene.profile.Profiler;
+import org.databene.profile.Profiling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -137,7 +138,7 @@ public class DescriptorRunner implements ResourceManager {
 					.append(RoundedNumberFormat.format(throughput, 0)).append(" p.h.)");
             }
 			logger.info(message.toString());
-			if ("true".equals(System.getProperty("profile")))
+			if (Profiling.isEnabled())
 				Profiler.defaultInstance().printSummary();
 			List<String> generations = getGeneratedFiles();
 			if (generations.size() > 0)
