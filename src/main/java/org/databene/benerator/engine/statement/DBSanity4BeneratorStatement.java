@@ -29,12 +29,14 @@ import org.databene.benerator.engine.Statement;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
+import org.databene.commons.JDBCConnectData;
 import org.databene.commons.Level;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.version.VersionNumber;
 import org.databene.dbsanity.DbSanity;
 import org.databene.dbsanity.ExecutionMode;
 import org.databene.dbsanity.model.SanityCheckSuite;
+import org.databene.platform.db.DBSystem;
 
 /**
  * {@link Statement} implementation that performs DB Sanity checks 
@@ -43,9 +45,10 @@ import org.databene.dbsanity.model.SanityCheckSuite;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class DBSanityStatement implements Statement {
+public class DBSanity4BeneratorStatement implements Statement {
 	
 	Expression<String> envEx;
+	Expression<DBSystem> databaseEx;
 	Expression<String> appVersionEx;
 	Expression<String> inEx;
 	Expression<String> outEx;
@@ -56,11 +59,12 @@ public class DBSanityStatement implements Statement {
 	Expression<ExecutionMode> modeEx;
 	Expression<ErrorHandler> errHandlerEx;
 
-	public DBSanityStatement(Expression<String> envEx, Expression<String> inEx, Expression<String> outEx, 
+	public DBSanity4BeneratorStatement(Expression<String> envEx, Expression<DBSystem> databaseEx, Expression<String> inEx, Expression<String> outEx, 
 			Expression<String> appVersionEx, Expression<String[]> tablesEx, Expression<String[]> tagsEx, 
 			Expression<String> skinEx, Expression<Locale> localeEx,
 			Expression<ExecutionMode> modeEx, Expression<ErrorHandler> errHandlerEx) {
 		this.envEx = envEx;
+		this.databaseEx = databaseEx;
 		this.appVersionEx = appVersionEx;
 		this.inEx = inEx;
 		this.outEx = outEx;
@@ -77,9 +81,14 @@ public class DBSanityStatement implements Statement {
 			// initialize DB Sanity
 			DbSanity dbSanity = new DbSanity();
 
-			String environment = envEx.evaluate(context);
-			dbSanity.setEnvironment(context.resolveRelativeUri(environment));
-
+			if (envEx != null) {
+				String environment = envEx.evaluate(context);
+				dbSanity.setEnvironment(context.resolveRelativeUri(environment));
+			} else {
+				DBSystem db = databaseEx.evaluate(context); // TODO test db usage
+				dbSanity.setConnection(db.getConnection());
+				dbSanity.setConnectData(new JDBCConnectData(db.getDriver(), db.getUrl(), db.getUser(), db.getPassword()));
+			}
 			String in = ExpressionUtil.evaluate(inEx, context);
 			String inFolderName = (in != null ? in : "dbsanity");
 			File inFolder = new File(context.resolveRelativeUri(inFolderName));
