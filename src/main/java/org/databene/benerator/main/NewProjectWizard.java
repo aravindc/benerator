@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,7 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import org.databene.benerator.gui.CreateProjectPanel;
-import org.databene.commons.StringUtil;
 import org.databene.commons.ui.I18NSupport;
 
 /**
@@ -61,7 +60,6 @@ public class NewProjectWizard extends JFrame {
 	public NewProjectWizard() {
 		setIcons("org/databene/benerator/gui/benerator{0}.png", 16, 32, 64, 128);
 		
-		checkLocale();
 		i18n = new I18NSupport("org/databene/benerator/gui/benerator", Locale.getDefault());
 		mainPanel = new CreateProjectPanel(i18n);
 		
@@ -91,12 +89,6 @@ public class NewProjectWizard extends JFrame {
 		this.setIconImages(images);
 	}
 
-	private void checkLocale() {
-		String localeCode = System.getProperty(Benerator.LOCALE_VM_PARAM); // TODO v0.7 remove 'benerator.locale' cmdline param
-		if (!StringUtil.isEmpty(localeCode))
-			Locale.setDefault(new Locale(localeCode));
-	}
-	
 	public static void main(String[] args) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		new NewProjectWizard().setVisible(true);

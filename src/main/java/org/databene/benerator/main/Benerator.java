@@ -54,8 +54,6 @@ import javax.script.ScriptEngineManager;
  */
 public class Benerator {
 	
-	public static final String LOCALE_VM_PARAM = "benerator.locale"; // TODO v0.7 remove
-	
 	private static final Logger logger = LoggerFactory.getLogger(Benerator.class);
 
 	// methods ---------------------------------------------------------------------------------------------------------
