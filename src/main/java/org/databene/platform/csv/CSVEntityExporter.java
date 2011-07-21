@@ -90,7 +90,7 @@ public class CSVEntityExporter extends TextFileExporter<Entity> {
     	if (columnsSpec != null)
     		setColumns(ArrayFormat.parse(columnsSpec, ",", String.class));
         this.separator = separator;
-        this.quoteEmpty = false; // TODO v0.7 true by default
+        this.quoteEmpty = true;
     }
 
 	public CSVEntityExporter(ComplexTypeDescriptor descriptor) {
