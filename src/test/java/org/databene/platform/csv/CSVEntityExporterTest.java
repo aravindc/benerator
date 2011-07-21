@@ -174,7 +174,7 @@ public class CSVEntityExporterTest {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter();
 			cosumeAndClose(exporter);
-			assertEquals("name,age,notes\r\nAlice,23,\r\nBob,34,", getContent(DEFAULT_FILE));
+			assertEquals("name,age,notes\r\nAlice,23,\"\"\r\nBob,34,", getContent(DEFAULT_FILE));
 		} finally {
 			DEFAULT_FILE.delete();
 		}
@@ -185,7 +185,7 @@ public class CSVEntityExporterTest {
 		try {
 			CSVEntityExporter exporter = new CSVEntityExporter();
 			cosumeAndClose(exporter);
-			assertEquals("name,age,notes\r\nAlice,23,\r\nBob,34,", getContent(DEFAULT_FILE));
+			assertEquals("name,age,notes\r\nAlice,23,\"\"\r\nBob,34,", getContent(DEFAULT_FILE));
 		} finally {
 			DEFAULT_FILE.delete();
 		}
