@@ -76,7 +76,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
     protected boolean defaultNull          = true;
     protected String  contextUri           = "./";
     public    Long    maxCount             = null;
-    public    boolean defaultOneToOne      = true; // TODO v0.7 use 'false' as default
+    public    boolean defaultOneToOne      = false;
     public    boolean acceptUnknownSimpleTypes = false;
 
 

@@ -11,6 +11,7 @@ changes
 - moved default values from Descriptor classes to GeneratorFactory
 - removed min/maxExlusive:number with min/maxInclusive:boolean
 - CSVEntityExporter.quoteEmpty is true by default
+- <setup defaultOneToOne="false"> by default
 
 
 enhancements
