@@ -33,14 +33,14 @@ import org.databene.commons.converter.ThreadSafeConverter;
 import java.util.Map;
 
 /**
- * Converts an Entity to a JavaBean.<br/>
+ * Converts entities and entity arrays to Java beans and bean arrays.<br/>
  * <br/>
  * Created: 29.08.2007 08:50:24
  * @author Volker Bergmann
  */
-public class Entity2BeanConverter extends ThreadSafeConverter<Object, Object> { // TODO rename to Entity2JavaConverter
+public class Entity2JavaConverter extends ThreadSafeConverter<Object, Object> {
 
-    public Entity2BeanConverter() {
+    public Entity2JavaConverter() {
         super(Object.class, Object.class);
     }
 

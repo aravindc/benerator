@@ -30,7 +30,7 @@ import org.databene.document.csv.BeanCSVWriter;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityIterator;
-import org.databene.platform.java.Entity2BeanConverter;
+import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.commons.*;
 import org.databene.commons.iterator.ConvertingIterator;
 import org.slf4j.Logger;
@@ -76,7 +76,7 @@ public class CityManager {
 			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
 					new CSVEntityIterator("/org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
 							"org.databene.domain.address.State", ',', Encodings.UTF_8),
-					(Converter) new Entity2BeanConverter());
+					(Converter) new Entity2JavaConverter());
 			while (iterator.hasNext()) {
 				State state = iterator.next();
 				country.addState(state);

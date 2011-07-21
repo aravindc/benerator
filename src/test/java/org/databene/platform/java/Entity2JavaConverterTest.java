@@ -35,22 +35,22 @@ import org.databene.commons.ArrayFormat;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.platform.PersonBean;
-import org.databene.platform.java.Entity2BeanConverter;
+import org.databene.platform.java.Entity2JavaConverter;
 
 /**
- * Tests the {@link Entity2BeanConverter}.<br/>
+ * Tests the {@link Entity2JavaConverter}.<br/>
  * <br/>
  * Created: 29.08.2007 18:54:45
  * @author Volker Bergmann
  */
-public class Entity2BeanConverterTest {
+public class Entity2JavaConverterTest {
 
 	@Test
     public void testEntity() {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
         Entity entity = createAlice(descriptor);
         PersonBean bean = new PersonBean("Alice", 23);
-        assertEquals(bean, new Entity2BeanConverter().convert(entity));
+        assertEquals(bean, new Entity2JavaConverter().convert(entity));
     }
 
 	@Test
@@ -58,7 +58,7 @@ public class Entity2BeanConverterTest {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor(PersonBean.class.getName());
         Object[] expected = new Object[] { new PersonBean("Alice", 23), new PersonBean("Bob", 34) };
         Object[] array = new Object[] { createAlice(descriptor), createBob(descriptor) };
-        Object[] actual = (Object[]) new Entity2BeanConverter().convert(array);
+        Object[] actual = (Object[]) new Entity2JavaConverter().convert(array);
 		assertTrue("Expected [" + ArrayFormat.format(expected) + "], found: [" + ArrayFormat.format(actual) + "]",
 				Arrays.deepEquals(expected, actual));
     }
