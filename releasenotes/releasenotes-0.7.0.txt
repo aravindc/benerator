@@ -24,6 +24,7 @@ enhancements
 - Defined SimpleMethodParamsGenerator as abstract parent class for Generators that create method parameters as Object arrays.
 - Defined AsStringGenerator for wrapping an arbitrary Generator and return String representations of products
 - CompositeStringGenerator supports uniqueness
+- Direct DB Sanity integration by <dbsanity database="..." ... />
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
