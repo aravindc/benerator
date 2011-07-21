@@ -799,8 +799,16 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
             		descriptor.addValue(value);
             } else if (MIN_INCLUSIVE.equals(nodeName)) {
                 descriptor.setMin(value);
+                descriptor.setMinInclusive(true);
+            } else if (MIN_EXCLUSIVE.equals(nodeName)) {
+                descriptor.setMin(value);
+                descriptor.setMinInclusive(false);
             } else if (MAX_INCLUSIVE.equals(nodeName)) {
                 descriptor.setMax(value);
+                descriptor.setMaxInclusive(true);
+            } else if (MAX_EXCLUSIVE.equals(nodeName)) {
+                descriptor.setMax(value);
+                descriptor.setMaxInclusive(false);
             } else if (LENGTH.equals(nodeName)) {
                 int length = Integer.parseInt(value);
                 descriptor.setMinLength(length);
@@ -933,8 +941,10 @@ public class XMLSchemaDescriptorProvider extends DefaultDescriptorProvider imple
     public static final String BASE = "base";
     public static final String VALUE = "value";
     public static final String LENGTH = "length";
-    public static final String MAX_INCLUSIVE = "maxInclusive";
     public static final String MIN_INCLUSIVE = "minInclusive";
+    public static final String MIN_EXCLUSIVE = "minExclusive";
+    public static final String MAX_EXCLUSIVE = "maxExclusive";
+    public static final String MAX_INCLUSIVE = "maxInclusive";
     public static final String ENUMERATION = "enumeration";
 
     private static final String TYPE = "type";
