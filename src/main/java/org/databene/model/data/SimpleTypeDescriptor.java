@@ -118,14 +118,6 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         setDetailValue(MIN, min);
     }
 
-    public String getMax() {
-        return (String) getDetailValue(MAX);
-    }
-
-    public void setMax(String max) {
-        setDetailValue(MAX, max);
-    }
-
     public Boolean isMinInclusive() {
         return (Boolean) getDetailValue(MIN_INCLUSIVE);
     }
@@ -134,11 +126,19 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         setDetailValue(MIN, minInclusive);
     }
 
+    public String getMax() {
+        return (String) getDetailValue(MAX);
+    }
+
+    public void setMax(String max) {
+        setDetailValue(MAX, max);
+    }
+
     public Boolean isMaxInclusive() {
         return (Boolean) getDetailValue(MAX_INCLUSIVE);
     }
 
-    public void setMaxExclusive(Boolean maxInclusive) {
+    public void setMaxInclusive(Boolean maxInclusive) {
         setDetailValue(MAX_INCLUSIVE, maxInclusive);
     }
 
