@@ -568,9 +568,9 @@
 		
 		<!-- number generator setup -->
 		<xs:attribute name="min"          type="xs:string"/>
-		<xs:attribute name="minExclusive" type="xs:string"/>
+		<xs:attribute name="minInclusive" type="xs:string"/>
 		<xs:attribute name="max"          type="xs:string"/>
-		<xs:attribute name="maxExclusive" type="xs:string"/>
+		<xs:attribute name="maxInclusive" type="xs:string"/>
 		<xs:attribute name="precision"    type="xs:string"/>
 		
 		<!-- String generator setup -->

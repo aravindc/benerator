@@ -47,7 +47,7 @@ public class DistributionDemo {
     }
 
     private static DistributionPane createDistributionPane(String label, Sequence sequence) {
-    	Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 0, N - 1, 1, sequence, Uniqueness.NONE);
+    	Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 0, true, N - 1, true, 1, sequence, Uniqueness.NONE);
     	generator.init(new BeneratorContext());
 		return new DistributionPane(label, generator);
     }

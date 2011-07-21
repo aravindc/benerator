@@ -103,14 +103,14 @@ public class ArrayFlatFileDemo {
             FormatFormatConverter<Date> dateRenderer = new FormatFormatConverter<Date>(Date.class, new SimpleDateFormat("yyyyMMdd"), false);
 			Generator<Object>[] sources = (Generator<Object>[]) new Generator[] {
                     new ConstantGenerator<String>("R"),
-                    generatorFactory.createNumberGenerator(Integer.class, 1, LENGTH, 1, SequenceManager.RANDOM_WALK_SEQUENCE, Uniqueness.NONE),
+                    generatorFactory.createNumberGenerator(Integer.class, 1, true, LENGTH, true, 1, SequenceManager.RANDOM_WALK_SEQUENCE, Uniqueness.NONE),
                     generatorFactory.createSampleGenerator(String.class, false, "BUY", "SALE"), // transaction type
                     new ConvertingGenerator(dateGenerator, dateRenderer), // transaction date
                     generatorFactory.createSampleGenerator(String.class, false, "Alice", "Bob", "Charly"), // partner
                     generatorFactory.createRegexStringGenerator("[A-Z0-9]{6}", 6, 6, false), // article number
-                    generatorFactory.createNumberGenerator(Integer.class, 1, 20, 1, SequenceManager.RANDOM_SEQUENCE, Uniqueness.NONE), // item count
+                    generatorFactory.createNumberGenerator(Integer.class, 1, true, 20, true, 1, SequenceManager.RANDOM_SEQUENCE, Uniqueness.NONE), // item count
                     generatorFactory.createNumberGenerator(BigDecimal.class, // item price
-                            new BigDecimal("0.50"), new BigDecimal("99.99"), new BigDecimal("0.01"),
+                            new BigDecimal("0.50"), true, new BigDecimal("99.99"), true, new BigDecimal("0.01"),
                             SequenceManager.CUMULATED_SEQUENCE, Uniqueness.NONE)
             };
 			GeneratorUtil.initAll(sources, new BeneratorContext());

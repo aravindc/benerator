@@ -98,12 +98,13 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @return a Number generator of the desired characteristics
      */
     public <T extends Number> Generator<T> createNumberGenerator(
-            Class<T> numberType, T min, T max, T precision,
+            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, T precision,
             Distribution distribution, Uniqueness uniqueness) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
         int prefixDigits = (max != null ? MathUtil.prefixDigits(max.doubleValue()) : MathUtil.prefixDigits(min.doubleValue()));
 		int totalDigits = prefixDigits + fractionDigits;
-        return createNumberGenerator(numberType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
+        return createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
+        		totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
     
     /**
@@ -116,7 +117,8 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @return a Number generator of the desired characteristics
      */
     public <T extends Number> Generator<T> createNumberGenerator(
-            Class<T> numberType, T min, T max, Integer totalDigits, Integer fractionDigits, T granularity,
+            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
+            Integer totalDigits, Integer fractionDigits, T granularity,
             Distribution distribution, Uniqueness uniqueness) {
         Assert.notNull(numberType, "numberType");
         if (min != null && min.equals(max))

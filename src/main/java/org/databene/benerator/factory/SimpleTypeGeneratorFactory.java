@@ -389,14 +389,16 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static <T extends Number> Generator<T> createNumberGenerator(
             SimpleTypeDescriptor descriptor, Class<T> targetType, Uniqueness uniqueness, BeneratorContext context) {
         T min = DescriptorUtil.getNumberDetail(descriptor, MIN, targetType);
+        Boolean minInclusive = descriptor.isMinInclusive();
         T max = DescriptorUtil.getNumberDetail(descriptor, MAX, targetType);
+        Boolean maxInclusive = descriptor.isMaxInclusive();
         Integer totalDigits = DescriptorUtil.getNumberDetail(descriptor, "totalDigits", Integer.class);
         Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
         T precision = DescriptorUtil.getNumberDetail(descriptor, PRECISION, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, false, context);
-        return context.getGeneratorFactory().createNumberGenerator(
-                targetType, min, max, totalDigits, fractionDigits, precision, distribution, uniqueness);
+        return context.getGeneratorFactory().createNumberGenerator(targetType, min, minInclusive, max, maxInclusive, 
+                totalDigits, fractionDigits, precision, distribution, uniqueness);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {

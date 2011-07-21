@@ -107,13 +107,13 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     @SuppressWarnings("unchecked")
 	@Override
 	public <T extends Number> Generator<T> createNumberGenerator(
-            Class<T> numberType, T min, T max, Integer totalDigits, Integer fractionDigits, T granularity,
-            Distribution distribution, Uniqueness uniqueness) {
+            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
+            Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
         Assert.notNull(numberType, "numberType");
         if (distribution != null)
-        	return super.createNumberGenerator(numberType, min, max, totalDigits, fractionDigits, granularity,
-                    distribution, uniqueness);
+        	return super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
+        			totalDigits, fractionDigits, granularity, distribution, uniqueness);
         if (min == null)
         	min = (NumberUtil.isLimited(numberType) ? NumberUtil.minValue(numberType) : defaultsProvider.defaultMin(numberType));
         if (max == null)
@@ -125,8 +125,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
         NumberToNumberConverter<Number, T> converter = new NumberToNumberConverter<Number, T>(Number.class, numberType);
         ArithmeticEngine engine = ArithmeticEngine.defaultInstance();
-        boolean minInclusive = true; // TODO
-        boolean maxInclusive = true; // TODO
         ValueSet<T> values = new ValueSet<T>(min, minInclusive, max, maxInclusive, granularity, numberType);
 
         // values to be tested for any range, duplicated are sieved out by ValueSet

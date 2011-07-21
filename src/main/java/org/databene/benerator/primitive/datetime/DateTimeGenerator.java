@@ -123,7 +123,7 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     	dateGenerator.setPrecision(datePrecision);
     	this.dateGenerator.init(context);
     	this.timeOffsetGenerator = registerComponent(context.getGeneratorFactory().createNumberGenerator(
-    			Long.class, minTime, maxTime, timePrecision, timeDistribution, Uniqueness.NONE));
+    			Long.class, minTime, true, maxTime, true, timePrecision, timeDistribution, Uniqueness.NONE));
     	this.timeOffsetGenerator.init(context);
         super.init(context);
     }

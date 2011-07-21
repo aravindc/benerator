@@ -21,7 +21,7 @@ public class CustomSequenceDemo {
 	/** Defines the Sequence 'odd', creates an Integer generator that acceses it and invokes the generator 10 times */
     public static void main(String[] args) {
         Sequence odd = new OddNumberSequence();
-        Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 3, Integer.MAX_VALUE, 2, odd, Uniqueness.NONE);
+        Generator<Integer> generator = new VolumeGeneratorFactory().createNumberGenerator(Integer.class, 3, true, Integer.MAX_VALUE, true, 2, odd, Uniqueness.NONE);
         generator.init(new BeneratorContext());
         for (int i = 0; i < 10; i++)
             System.out.println(generator.generate());

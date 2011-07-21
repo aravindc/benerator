@@ -149,8 +149,8 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	    arithmetic = new ArithmeticEngine();
 	    noiseGenerator = context.getGeneratorFactory().createNumberGenerator(
 	    		(Class<Number>) numberType, 
-	    		(Number) converter.convert(minNoise), 
-	    		(Number) converter.convert(maxNoise), 
+	    		(Number) converter.convert(minNoise), true,
+	    		(Number) converter.convert(maxNoise), true,
 	    		(Number) converter.convert(noisePrecision), 
 	    		noiseDistribution, Uniqueness.NONE);
 	    noiseGenerator.init(context);

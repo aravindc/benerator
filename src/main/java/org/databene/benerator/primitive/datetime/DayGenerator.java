@@ -113,7 +113,7 @@ public class DayGenerator extends ThreadSafeGenerator<Date> {
 			count++;
 		} while (!max.before(calendar.getTime()));
 		multiplierGenerator = context.getGeneratorFactory().createNumberGenerator(
-				Integer.class, 0, count - 1, 1, distribution, (unique ? Uniqueness.SIMPLE : Uniqueness.NONE));
+				Integer.class, 0, true, count - 1, true, 1, distribution, (unique ? Uniqueness.SIMPLE : Uniqueness.NONE));
 		multiplierGenerator.init(context);
 	    super.init(context);
 	}

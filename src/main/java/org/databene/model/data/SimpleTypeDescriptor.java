@@ -26,6 +26,7 @@
 
 package org.databene.model.data;
 
+import org.databene.commons.operation.AndOperation;
 import org.databene.commons.operation.FirstArgSelector;
 import org.databene.commons.operation.MaxNumberStringOperation;
 import org.databene.commons.operation.MaxOperation;
@@ -43,8 +44,8 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     public static final String MIN = "min";
     public static final String MAX = "max";
-    public static final String MIN_EXCLUSIVE = "minExclusive";
-    public static final String MAX_EXCLUSIVE = "maxExclusive";
+    public static final String MIN_INCLUSIVE = "minInclusive";
+    public static final String MAX_INCLUSIVE = "maxInclusive";
 
     public static final String TOTAL_DIGITS = "totalDigits";
     public static final String FRACTION_DIGITS = "fractionDigits";
@@ -73,12 +74,12 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
     public SimpleTypeDescriptor(String name, String parentName) {
         super(name, parentName);
         // number setup
-        addConstraint(MIN,             String.class, new MaxNumberStringOperation());
-        addConstraint(MAX,             String.class, new MinNumberStringOperation());
-        addConstraint(MIN_EXCLUSIVE,   String.class, new MaxNumberStringOperation()); // TODO replace with boolean minInclusive
-        addConstraint(MAX_EXCLUSIVE,   String.class, new MinNumberStringOperation()); // TODO replace with boolean maxInclusive
-        addConstraint(TOTAL_DIGITS,    String.class, new FirstArgSelector<String>());
-        addConstraint(FRACTION_DIGITS, String.class, new FirstArgSelector<String>());
+        addConstraint(MIN,             String.class,  new MaxNumberStringOperation());
+        addConstraint(MAX,             String.class,  new MinNumberStringOperation());
+        addConstraint(MIN_INCLUSIVE,   Boolean.class, new AndOperation());
+        addConstraint(MAX_INCLUSIVE,   Boolean.class, new AndOperation());
+        addConstraint(TOTAL_DIGITS,    String.class,  new FirstArgSelector<String>());
+        addConstraint(FRACTION_DIGITS, String.class,  new FirstArgSelector<String>());
         addConfig(PRECISION,           String.class);
         // boolean setup
         addConfig(TRUE_QUOTA,          Double.class);
@@ -125,20 +126,20 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         setDetailValue(MAX, max);
     }
 
-    public String getMinExclusive() {
-        return (String) getDetailValue(MIN_EXCLUSIVE);
+    public Boolean isMinInclusive() {
+        return (Boolean) getDetailValue(MIN_INCLUSIVE);
     }
 
-    public void setMinExclusive(String minExclusive) {
-        setDetailValue(MIN, minExclusive);
+    public void setMinInclusive(Boolean minInclusive) {
+        setDetailValue(MIN, minInclusive);
     }
 
-    public String getMaxExclusive() {
-        return (String) getDetailValue(MAX_EXCLUSIVE);
+    public Boolean isMaxInclusive() {
+        return (Boolean) getDetailValue(MAX_INCLUSIVE);
     }
 
-    public void setMaxExclusive(String maxExclusive) {
-        setDetailValue(MAX_EXCLUSIVE, maxExclusive);
+    public void setMaxExclusive(Boolean maxInclusive) {
+        setDetailValue(MAX_INCLUSIVE, maxInclusive);
     }
 
     public String getTotalDigits() {

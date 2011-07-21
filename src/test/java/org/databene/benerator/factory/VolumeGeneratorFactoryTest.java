@@ -107,7 +107,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
     
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
-        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, sequence, Uniqueness.NONE);
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, precision, sequence, Uniqueness.NONE);
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             T n = generator.generate();
@@ -121,7 +121,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
 
     private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, WeightFunction weightFunction) {
-        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, max, precision, weightFunction, Uniqueness.NONE);
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, precision, weightFunction, Uniqueness.NONE);
         generator.init(context);
         int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
         int[] count = new int[range];
