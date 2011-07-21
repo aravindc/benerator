@@ -29,7 +29,7 @@ import java.util.Locale;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.engine.expression.BeneratorLocaleExpression;
-import org.databene.benerator.engine.statement.DBSanityStatement;
+import org.databene.benerator.engine.statement.DBSanity4BeneratorStatement;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.WhileStatement;
 import org.databene.commons.CollectionUtil;
@@ -39,10 +39,11 @@ import org.databene.commons.Expression;
 import org.databene.commons.converter.String2EnumConverter;
 import org.databene.commons.expression.ConvertingExpression;
 import org.databene.dbsanity.ExecutionMode;
+import org.databene.platform.db.DBSystem;
 import org.w3c.dom.Element;
 
 /**
- * Parses Benerator's &lt;dbsanity&gt; descriptor XML element and maps it to a {@link DBSanityStatement}.<br/><br/>
+ * Parses Benerator's &lt;dbsanity&gt; descriptor XML element and maps it to a {@link DBSanity4BeneratorStatement}.<br/><br/>
  * Created: 29.11.2010 11:09:28
  * @since 0.6.4
  * @author Volker Bergmann
@@ -56,11 +57,13 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
 	    		BeneratorRootStatement.class, IfStatement.class, WhileStatement.class);
     }
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public DBSanityStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
+	public DBSanity4BeneratorStatement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
         Expression<String> envEx = parseScriptableStringAttribute(ATT_ENVIRONMENT, element);
-        if (envEx == null)
-        	throw new ConfigurationError("no environment specified in <dbsanity> element");
+        Expression<DBSystem> databaseEx = (Expression<DBSystem>) parseScriptAttribute(ATT_DATABASE, element);
+        if (envEx == null && databaseEx == null)
+        	throw new ConfigurationError("no database or environment specified in <dbsanity> element");
         Expression<String> inEx = parseScriptableStringAttribute(ATT_IN, element);
 		Expression<String> outEx = parseScriptableStringAttribute(ATT_OUT, element);
         Expression<String> appVersionEx = parseScriptableStringAttribute(ATT_APPVERSION, element);
@@ -72,7 +75,7 @@ public class DbSanity4BeneratorParser extends AbstractBeneratorDescriptorParser 
 		Expression<ExecutionMode> modeEx = new ConvertingExpression<String, ExecutionMode>(
 				modeNameEx, new String2EnumConverter<ExecutionMode>(ExecutionMode.class));
 		Expression<ErrorHandler> errHandlerEx = parseOnErrorAttribute(element, EL_DBSANITY);
-		return new DBSanityStatement(envEx, inEx, outEx, appVersionEx, tablesEx, tagsEx, skinEx, localeEx, modeEx, errHandlerEx);
+		return new DBSanity4BeneratorStatement(envEx, databaseEx, inEx, outEx, appVersionEx, tablesEx, tagsEx, skinEx, localeEx, modeEx, errHandlerEx);
     }
 
 }
