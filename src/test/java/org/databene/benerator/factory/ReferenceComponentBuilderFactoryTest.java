@@ -206,7 +206,7 @@ public class ReferenceComponentBuilderFactoryTest {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
-		public <T> HeavyweightTypedIterable<T> query(String selector, boolean simplify, Context context) {
+		public HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context) {
 			throw new UnsupportedOperationException("query() not implemented");
 		}
 
@@ -214,11 +214,10 @@ public class ReferenceComponentBuilderFactoryTest {
 			throw new UnsupportedOperationException("queryEntities() not implemented");
 		}
 
-		@SuppressWarnings("unchecked")
-        public <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName, String selector, Context context) {
+        public HeavyweightTypedIterable<?> queryEntityIds(String entityName, String selector, Context context) {
 			HeavyweightIterableAdapter<String> source = 
 				new HeavyweightIterableAdapter<String>(CollectionUtil.toList("Alice", "Bob"));
-			return (HeavyweightTypedIterable<T>) new TypedIterableProxy<String>(String.class, source);
+			return new TypedIterableProxy<String>(String.class, source);
 		}
 
 		public void store(Entity entity) {

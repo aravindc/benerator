@@ -150,12 +150,12 @@ public class EvaluateStatementTest {
 			return null;
 		}
 
-		public <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName,
+		public HeavyweightTypedIterable<?> queryEntityIds(String entityName,
 				String selector, Context context) {
 			return null;
 		}
 
-		public <T> HeavyweightTypedIterable<T> query(String selector, boolean simplify, Context context) {
+		public HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context) {
 			return null;
 		}
 

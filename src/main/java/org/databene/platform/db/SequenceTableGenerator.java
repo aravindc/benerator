@@ -137,12 +137,13 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     		return new StatementStrategy(incrementorSql, database);
     }
 
+	@SuppressWarnings("unchecked")
 	public E generate() {
 		if (this.state == GeneratorState.CLOSED)
 			return null;
 		assertInitialized();
-		HeavyweightTypedIterable<E> iterable = database.query(query, true, context);
-		HeavyweightIterator<E> iterator = null;
+		HeavyweightTypedIterable<?> iterable = database.query(query, true, context);
+		HeavyweightIterator<?> iterator = null;
 		E result;
 		try {
 			iterator = iterable.iterator();
@@ -150,7 +151,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 				close();
 				return null;
 			}
-			result = iterator.next();
+			result = (E) iterator.next();
 			incrementorStrategy.run(result.longValue(), (BeneratorContext) context);
 		} finally {
 			IOUtil.close(iterator);

@@ -431,7 +431,7 @@ public class DBSystem extends AbstractStorageSystem {
         return DBUtil.queryLong(query, getThreadContext().connection);
     }
 
-    public <T> HeavyweightTypedIterable<T> queryEntityIds(String tableName, String selector, Context context) {
+    public HeavyweightTypedIterable<?> queryEntityIds(String tableName, String selector, Context context) {
         logger.debug("queryEntityIds({}, {})", tableName, selector);
         
         // check for script
@@ -459,13 +459,13 @@ public class DBSystem extends AbstractStorageSystem {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> HeavyweightTypedIterable<T> query(String query, boolean simplify, Context context) {
+    public HeavyweightTypedIterable<?> query(String query, boolean simplify, Context context) {
         if (logger.isDebugEnabled())
             logger.debug("query(" + query + ")");
         Connection connection = getThreadContext().connection;
         QueryIterable resultSetIterable = createQuery(query, context, connection);
         ResultSetConverter converter = new ResultSetConverter(Object.class, simplify);
-		return (HeavyweightTypedIterable<T>) new ConvertingIterable<ResultSet, Object>(resultSetIterable, converter);
+		return new ConvertingIterable<ResultSet, Object>(resultSetIterable, converter);
     }
     
     public Consumer<Entity> inserter() {

@@ -12,6 +12,7 @@ changes
 - removed min/maxExlusive:number with min/maxInclusive:boolean
 - CSVEntityExporter.quoteEmpty is true by default
 - <setup defaultOneToOne="false"> by default
+- removed generic parameter from StorageSystem.queryEntityIds() andStorageSystem.query()
 
 
 enhancements

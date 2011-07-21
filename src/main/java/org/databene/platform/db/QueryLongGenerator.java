@@ -38,7 +38,6 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 
-@SuppressWarnings("unchecked")
 public class QueryLongGenerator extends QueryGenerator<Long> {
 	
     @SuppressWarnings("rawtypes")
@@ -57,6 +56,7 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
 	    return Long.class;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Long generate() {
 		Object input = super.generate();

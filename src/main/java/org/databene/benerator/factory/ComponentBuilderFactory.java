@@ -230,7 +230,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	            if (selectorToUse != null && selectorToUse.startsWith("select")) {
 	            	generator = new IteratingGenerator(sourceSystem.query(selectorToUse, true, context));
 	            } else {
-		            generator = new IteratingGenerator<Object>(sourceSystem.<Object>queryEntityIds(targetTypeName, selectorToUse, context));
+		            generator = new IteratingGenerator(sourceSystem.queryEntityIds(targetTypeName, selectorToUse, context));
 		            if (selectorToUse == null && distribution == null)
 		            	if (context.isDefaultOneToOne())
 		            		distribution = new ExpandSequence();

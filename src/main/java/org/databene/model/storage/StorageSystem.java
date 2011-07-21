@@ -50,10 +50,10 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     HeavyweightTypedIterable<Entity> queryEntities(String type, String selector, Context context);
     
     /** Queries for entity ids */
-    <T> HeavyweightTypedIterable<T> queryEntityIds(String entityName, String selector, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
+    HeavyweightTypedIterable<?> queryEntityIds(String entityName, String selector, Context context);
 
     /** Creates an Iterable for repetitive iteration through the results of the specified query. */
-    <T> HeavyweightTypedIterable<T> query(String selector, boolean simplify, Context context); // TODO v0.7 the generic parameter allows any type, thus is useless
+    HeavyweightTypedIterable<?> query(String selector, boolean simplify, Context context);
     
     /** Persists a new entity. */
     void store(Entity entity);
@@ -69,4 +69,5 @@ public interface StorageSystem extends DescriptorProvider, Closeable, Flushable 
     
     /** Closes the database. */
     void close();
+    
 }

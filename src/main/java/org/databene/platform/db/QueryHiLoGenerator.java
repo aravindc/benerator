@@ -46,7 +46,7 @@ public class QueryHiLoGenerator extends HiLoGenerator {
         this(selector, source, DEFAULT_MAX_LO);
     }
     
-    public QueryHiLoGenerator(String selector, StorageSystem source, int maxLo) {
+	public QueryHiLoGenerator(String selector, StorageSystem source, int maxLo) {
         super(new QueryLongGenerator(selector, source), maxLo);
     }
     

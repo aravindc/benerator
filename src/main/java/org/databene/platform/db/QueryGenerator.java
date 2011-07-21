@@ -41,6 +41,7 @@ import org.databene.model.storage.StorageSystem;
  * @author Volker Bergmann
  */
 
+@SuppressWarnings("rawtypes")
 public class QueryGenerator<E> extends GeneratorProxy<E> {
 	
 	private StorageSystem target;
@@ -65,7 +66,8 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 		this.selector = selector;
 	}
 	
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	
     	// check preconditions
@@ -76,7 +78,7 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 	    	throw new InvalidGeneratorSetupException("no query defined");
 	    
 	    // initialize
-		this.source = new IteratingGenerator<E>(target.<E>query(selector, simplifying, context));
+		this.source = new IteratingGenerator(target.query(selector, simplifying, context));
 	    super.init(context);
     }
 
