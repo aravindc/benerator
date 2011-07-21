@@ -18,6 +18,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.databene.benerator.anno;
 
 import java.lang.annotation.ElementType;
@@ -26,9 +27,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO Document class.<br/><br/>
+ * Annotation that marks a class or method to be tested with gentle value defaults.<br/><br/>
  * Created: 15.07.2011 21:38:21
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -22,6 +22,7 @@
 package org.databene.platform.xls;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightIterator;
@@ -29,9 +30,10 @@ import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.document.xls.XLSLineIterator;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Iterable} implementation which creates {@link Iterator}s 
+ * that provide lines of XLS files as array objects.<br/><br/>
  * Created: 19.07.2011 08:36:18
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 public class XLSLineIterable implements HeavyweightTypedIterable<Object[]> {

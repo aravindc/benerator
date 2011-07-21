@@ -31,7 +31,7 @@ import org.databene.commons.iterator.HeadSkippingIterable;
 import org.databene.document.csv.CSVLineIterable;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link SourceFactory} which creates array {@link Iterable}s for CSV files.<br/><br/>
  * Created: 19.07.2011 08:23:39
  * @since 0.7.0
  * @author Volker Bergmann

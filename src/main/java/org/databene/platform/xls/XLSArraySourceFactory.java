@@ -27,9 +27,9 @@ import org.databene.commons.Converter;
 import org.databene.commons.HeavyweightTypedIterable;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link SourceFactory} implementation which creates {@link XLSLineIterable}s.<br/><br/>
  * Created: 19.07.2011 08:31:10
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 public class XLSArraySourceFactory implements SourceFactory<Object[]> {
