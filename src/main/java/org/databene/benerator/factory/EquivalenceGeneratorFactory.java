@@ -122,6 +122,10 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         	granularity = defaultsProvider.defaultGranularity(numberType);
         if (((Comparable<T>) min).compareTo(max) == 0) // if min==max then return min once
             return new OneShotGenerator<T>(min);
+        if (minInclusive == null)
+        	minInclusive = true;
+        if (maxInclusive == null)
+        	maxInclusive = true;
 
         NumberToNumberConverter<Number, T> converter = new NumberToNumberConverter<Number, T>(Number.class, numberType);
         ArithmeticEngine engine = ArithmeticEngine.defaultInstance();
