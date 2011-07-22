@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO Document class.<br/><br/>
+ * Annotation which marks a class or method for testing with serial data characteristics.<br/><br/>
  * Created: 22.07.2011 12:09:02
  * @since 0.7.0
  * @author Volker Bergmann

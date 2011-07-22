@@ -24,6 +24,7 @@ package org.databene.benerator.nullable;
 import java.lang.reflect.Array;
 import java.util.List;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.AbstractGenerator;
@@ -33,9 +34,10 @@ import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Abstract {@link Generator} class which wraps multiple source generators 
+ * and provides utility methods for child classes.<br/><br/>
  * Created: 22.07.2011 11:50:21
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 public abstract class MultiNullableGeneratorWrapper<S, P> extends AbstractGenerator<P> {

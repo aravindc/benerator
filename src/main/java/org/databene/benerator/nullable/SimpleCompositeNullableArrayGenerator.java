@@ -28,9 +28,9 @@ import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.ArrayUtil;
 
 /**
- * TODO Document class.<br/><br/>
+ * Combines the output of several source generators in a parallel manner.<br/><br/>
  * Created: 22.07.2011 11:42:11
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 public class SimpleCompositeNullableArrayGenerator<S> extends MultiNullableGeneratorWrapper<S, S[]> {

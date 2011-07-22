@@ -53,7 +53,9 @@ import org.databene.commons.converter.ConverterManager;
 import org.databene.model.data.Uniqueness;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link GeneratorFactory} implementation which provides 
+ * serial value generation and parallel combinations.<br/>
+ * <br/>
  * Created: 22.07.2011 10:14:36
  * @since 0.7.0
  * @author Volker Bergmann
