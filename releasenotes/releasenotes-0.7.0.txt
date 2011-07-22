@@ -13,6 +13,7 @@ changes
 - CSVEntityExporter.quoteEmpty is true by default
 - <setup defaultOneToOne="false"> by default
 - removed generic parameter from StorageSystem.queryEntityIds() andStorageSystem.query()
+- removed predefined "benerator" variable from context (use "context" now)
 
 
 enhancements
@@ -25,6 +26,8 @@ enhancements
 - Defined AsStringGenerator for wrapping an arbitrary Generator and return String representations of products
 - CompositeStringGenerator supports uniqueness
 - Direct DB Sanity integration by <dbsanity database="..." ... />
+- Added TimeUtil.addDays(), addMonths(), addYears()
+- Introduced generatorFactory attribute in <setup>
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
