@@ -109,7 +109,7 @@ public class PropertyParserAndStatementTest extends BeneratorIntegrationTest {
 	@Test
 	public void testBeneratorProperty() throws Exception {
 		assertTrue(context.getDefaultPageSize() != 123);
-		parseAndExecute("<property name='benerator.defaultPageSize' value='123' />");
+		parseAndExecute("<property name='context.defaultPageSize' value='123' />");
 		assertEquals(123, context.getDefaultPageSize());
 	}
 	

@@ -52,7 +52,7 @@ public class SetGlobalPropertyStatement implements Statement {
 
 	public void execute(BeneratorContext context) {
         Object value = ExpressionUtil.evaluate(valueExpression, context);
-		if (propertyName.startsWith("benerator."))
+		if (propertyName.startsWith("context."))
 	        AnyMutator.setValue(context, propertyName, value, true);
         else {
 			context.setProperty(propertyName, value);
