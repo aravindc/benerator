@@ -56,19 +56,10 @@ public class BeneratorRootStatement extends SequentialStatement {
 
     @Override
     public void execute(BeneratorContext context) {
-    	for (Entry<String, String> attribute : attributes.entrySet()) {
-    		String key = attribute.getKey();
-			String value = attribute.getValue();
-			Object result;
-			if ("generatorFactory".equals(key))
-    			result = BeneratorScriptParser.parseBeanSpec(value).evaluate(context);
-			else 
-				result = value;
-			BeanUtil.setPropertyValue(context, key, result, true, true);
-    	}
+    	mapAttributesTo(context);
     	super.execute(context);
     }
-    
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     public Generator<?> getGenerator(String name, BeneratorContext context) {
     	GeneratorStatement statement = getGeneratorStatement(name, context);
@@ -85,6 +76,19 @@ public class BeneratorRootStatement extends SequentialStatement {
     	return statement;
 	}
 
+	protected void mapAttributesTo(BeneratorContext context) {
+		for (Entry<String, String> attribute : attributes.entrySet()) {
+    		String key = attribute.getKey();
+			String value = attribute.getValue();
+			Object result;
+			if ("generatorFactory".equals(key))
+    			result = BeneratorScriptParser.parseBeanSpec(value).evaluate(context);
+			else 
+				result = value;
+			BeanUtil.setPropertyValue(context, key, result, true, true);
+    	}
+	}
+    
 	class BeneratorVisitor implements Visitor<Statement> {
 		
 		private String name;
