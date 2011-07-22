@@ -95,7 +95,7 @@ public class BeneratorContext extends ContextStack implements GeneratorContext, 
 	
 	public BeneratorContext(String contextUri) {
 		this.contextUri = contextUri;
-		this.generatorFactory = new VolumeGeneratorFactory(); // TODO make this configurable
+		this.generatorFactory = new VolumeGeneratorFactory();
 		properties = new DefaultContext();
 		push(new DefaultContext(java.lang.System.getenv()));
 		push(new DefaultContext(java.lang.System.getProperties()));
