@@ -32,11 +32,9 @@ import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.util.SimpleGenerator;
-import org.databene.commons.Escalator;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.IOUtil;
-import org.databene.commons.LoggerEscalator;
 import org.databene.jdbacl.DBUtil;
 import org.databene.script.ScriptUtil;
 
@@ -58,8 +56,6 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	private IncrementorStrategy incrementorStrategy;
 	private PreparedStatement parameterizedAccessorStatement;
 	
-	private Escalator escalator;
-	
     public SequenceTableGenerator() {
     	this(null, null, null);
     }
@@ -73,7 +69,6 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
 	    this.column = column;
 	    this.database = db;
 	    this.selector = selector;
-	    this.escalator = new LoggerEscalator();
     }
     
 	public void setTable(String table) {
@@ -84,17 +79,6 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     	this.column = column;
     }
 	
-	/**
-	 * @deprecated Replaced with {@link #setDatabase(DBSystem)}
-	 */
-	@Deprecated
-	public void setDb(DBSystem db) { // TODO v0.7 remove 'db' property
-		String className = getClass().getName();
-		String escalationMessage = "Property " + className + ".db is deprecated, use " + className + ".database instead";
-		escalator.escalate(escalationMessage, getClass(), null);
-		setDatabase(db);
-	}
-
 	public void setDatabase(DBSystem db) {
 		this.database = db;
 	}
