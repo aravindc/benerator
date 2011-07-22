@@ -27,7 +27,10 @@
 package org.databene.benerator.factory;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -39,6 +42,7 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.primitive.DynamicCountGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.ExpressionBasedGenerator;
 import org.databene.benerator.wrapper.AsStringGenerator;
@@ -341,6 +345,18 @@ public class GeneratorFactoryUtil {
 
 	public static Locale defaultLocale() {
 		return Locale.getDefault();
+	}
+
+	public static <T> List<T> extractValues(Collection<WeightedSample<T>> samples) {
+		List<T> values = new ArrayList<T>(samples.size());
+		Iterator<WeightedSample<T>> iterator = samples.iterator();
+    	while (iterator.hasNext()) {
+    		T value = iterator.next().getValue();
+    		if (value == null)
+    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
+    		values.add(value);
+    	}
+		return values;
 	}
 
 }
