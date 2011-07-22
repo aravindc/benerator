@@ -168,11 +168,11 @@ public class GenerateOrIterateParserAndStatementTest extends BeneratorIntegratio
 		context.set("cons1", outerConsumer);
 		statement.execute(context);
 		assertEquals(3, outerConsumer.startConsumingCount.get());
-		// TODO v0.7 assertTrue(outerConsumer.closeCount.get() == 0);
+		assertTrue(outerConsumer.closeCount.get() == 0);
 		ConsumerMock<Entity> innerConsumer = (ConsumerMock<Entity>) ConsumerMock.instances.get(2);
 		assertEquals(6, innerConsumer.startConsumingCount.get());
 		assertTrue(innerConsumer.flushCount.get() > 0);
-		// TODO v0.7 assertTrue(outerConsumer.closeCount.get() == 0);
+		assertTrue(outerConsumer.closeCount.get() == 0);
 		assertTrue(innerConsumer.closeCount.get() > 0);
 		assertEquals(9L, BeneratorMonitor.INSTANCE.getTotalGenerationCount());
 	}
