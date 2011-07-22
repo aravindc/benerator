@@ -251,7 +251,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
             WeightedSample<Integer> sample = new WeightedSample<Integer>(i, i * 2. / (n * (n + 1)));
             samples.add(sample);
         }
-        Generator<Integer> generator = generatorFactory.createWeightedSampleGenerator(samples);
+        Generator<Integer> generator = generatorFactory.createWeightedSampleGenerator(samples, Integer.class);
         initAndUseGenerator(generator);
     }
     
