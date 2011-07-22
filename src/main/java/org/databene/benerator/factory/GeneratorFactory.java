@@ -142,11 +142,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
 	public abstract <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique);
 
-    public <T> Generator<T> createSampleGenerator(Class<T> generatedType, boolean unique, T... values) {
-    	return createSampleGenerator(CollectionUtil.toSet(values), generatedType, unique);
-    }
-
-    public abstract <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique);
+    public abstract <T> Generator<T> createSampleGenerator(Collection<? extends T> values, Class<T> generatedType, boolean unique);
 
     /**
      * Creates a generator that chooses from a set of samples, using an individual weight for each sample.
@@ -154,21 +150,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param samples A collection of sample values
      * @return a generator of the desired characteristics
      */
-    public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples) {
-    	// TODO Eq. version
-        AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
-        generator.setSamples(samples);
-        return generator;
-    }
-
-    /**
-     * Creates a generator that chooses from a set of samples, using an individual weight for each sample.
-     *
-     * @param samples A collection of sample values
-     * @return a generator of the desired characteristics
-     */
-    public <T> Generator<T> createWeightedSampleGenerator(WeightedSample<T> ... samples) {
-    	// TODO Eq. version
+    public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
         AttachedWeightSampleGenerator<T> generator = new AttachedWeightSampleGenerator<T>();
         generator.setSamples(samples);
         return generator;
@@ -187,7 +169,6 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      */
     public Generator<Date> createDateGenerator(
             Date min, Date max, long precision, Distribution distribution) {
-    	// TODO Eq. version
     	if (min == null) {
     		if (max == null) {
         		min = TimeUtil.date(1970, 0, 1);
@@ -211,13 +192,11 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @return a generator of the desired characteristics
      */
     public Generator<Character> createCharacterGenerator(String pattern, Locale locale, boolean unique) {
-    	if (unique) {
-	        Character[] chars = CollectionUtil.toArray(GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale), Character.class);
+        Set<Character> chars = GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale);
+    	if (unique)
 	        return new SequenceGenerator<Character>(Character.class, chars);
-    	} else {
-            Collection<Character> chars = GeneratorFactoryUtil.fullLocaleCharSet(pattern, locale);
+    	else
             return new CharacterGenerator(chars);
-    	}
     }
 
     /**
