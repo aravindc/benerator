@@ -264,7 +264,6 @@ HexDigit
 DECIMALLITERAL
     :   ('0' .. '9')+ '.' ('0' .. '9')* Exponent?  
     |   ('0' .. '9')+ Exponent  
-    |   HexPrefix (HexDigit )* ( () | ('.' (HexDigit )* ) ) ( 'p' | 'P' ) ( '+' | '-' )? ( '0' .. '9' )+
     ;
         
 fragment 

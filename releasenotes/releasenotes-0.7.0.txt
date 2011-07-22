@@ -14,6 +14,7 @@ changes
 - <setup defaultOneToOne="false"> by default
 - removed generic parameter from StorageSystem.queryEntityIds() andStorageSystem.query()
 - removed predefined "benerator" variable from context (use "context" now)
+- removed hexadecimal syntax for decimal number literals in BeneratorScript
 
 
 enhancements
