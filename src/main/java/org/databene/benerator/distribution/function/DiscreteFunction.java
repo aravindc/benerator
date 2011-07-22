@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,7 +40,7 @@ public class DiscreteFunction extends AbstractWeightFunction {
 
     private double[] values;
 
-    public DiscreteFunction(double ... weights) { // TODO v0.6.x support varargs arguments in BeneratorScript
+    public DiscreteFunction(double ... weights) {
         this.values = weights;
     }
 
