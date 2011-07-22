@@ -82,7 +82,7 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     }
 
     /** Initializes the generator to an unweighted sample list */
-    public AttachedWeightSampleGenerator(Class<E> generatedType, Iterable<E> values) {
+    public AttachedWeightSampleGenerator(Class<E> generatedType, Iterable<? extends E> values) {
     	super(generatedType);
         setValues(values);
     }
