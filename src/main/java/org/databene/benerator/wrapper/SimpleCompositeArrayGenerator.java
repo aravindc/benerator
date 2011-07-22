@@ -41,6 +41,7 @@ import java.lang.reflect.Array;
 public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S[]> {
 
     private Class<S> componentType;
+    private boolean available;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -49,6 +50,7 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 	public SimpleCompositeArrayGenerator(Class<S> componentType, Generator<? extends S> ... sources) {
         super(ArrayUtil.arrayType(componentType), sources);
         this.componentType = componentType;
+        this.available = true;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
@@ -56,10 +58,17 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     /** @see org.databene.benerator.Generator#generate() */
     @SuppressWarnings("unchecked")
     public S[] generate() {
+    	if (!available)
+    		return null;
         S[] array = (S[]) Array.newInstance(componentType, sources.length);
         for (int i = 0; i < array.length; i++) {
             try {
-                array[i] = sources[i].generate();
+                S product = sources[i].generate();
+                if (product == null) {
+                	available = false;
+                	return null;
+                }
+				array[i] = product;
             } catch (Exception e) {
                 throw new RuntimeException("Generation failed for generator #" + i + ": " + sources[i], e);
             }
@@ -67,4 +76,16 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         return array;
     }
 
+    @Override
+    public synchronized void reset() {
+    	super.reset();
+    	this.available = true;
+    }
+    
+    @Override
+    public synchronized void close() {
+    	super.close();
+    	this.available = false;
+    }
+    
 }
