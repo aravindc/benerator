@@ -22,6 +22,7 @@
 package org.databene.benerator.factory;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -83,8 +84,8 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T> createSampleGenerator(Collection<T> values, Class<T> generatedType, boolean unique) {
-        return new SequenceGenerator<T>(generatedType, CollectionUtil.toArray(values));
+	public <T> Generator<T> createSampleGenerator(Collection<? extends T> values, Class<T> generatedType, boolean unique) {
+        return new SequenceGenerator<T>(generatedType, values);
 	}
 
 	@Override
@@ -102,6 +103,17 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     	}
 	    SequenceGenerator<String> source = new SequenceGenerator<String>(String.class, values);
 	    return GeneratorFactoryUtil.createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+    }
+
+    @Override
+	public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
+    	return super.createWeightedSampleGenerator(samples, targetType); // TODO Eq. version
+    }
+
+    @Override
+	public Generator<Date> createDateGenerator(
+            Date min, Date max, long precision, Distribution distribution) {
+    	return super.createDateGenerator(min, max, precision, distribution); // TODO Eq. version
     }
 
     @SuppressWarnings("unchecked")
