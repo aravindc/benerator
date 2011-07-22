@@ -53,6 +53,7 @@ import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.GentleDefaultsProvider;
 import org.databene.benerator.factory.MeanDefaultsProvider;
+import org.databene.benerator.factory.SerialGeneratorFactory;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
@@ -168,6 +169,8 @@ public class AnnotationMapper {
 			context.setGeneratorFactory(new CoverageGeneratorFactory());*/
 		else if (testMethod.getAnnotation(Volume.class) != null)
 			context.setGeneratorFactory(new VolumeGeneratorFactory());
+		else if (testMethod.getAnnotation(Serial.class) != null)
+			context.setGeneratorFactory(new SerialGeneratorFactory());
 		else 
 			applyClassGeneratorFactory(testMethod.getDeclaringClass().getAnnotations(), context);
 	}
@@ -240,6 +243,7 @@ public class AnnotationMapper {
     // helper methods --------------------------------------------------------------------------------------------------
 	
 	private void applyClassGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
+		// TODO avoid duplicate annotation evaluation for method and class
 		boolean configured = false;
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Equivalence) {
@@ -251,7 +255,9 @@ public class AnnotationMapper {
 			} else if (annotation instanceof Volume) {
 				context.setGeneratorFactory(new VolumeGeneratorFactory());
 				configured = true;
-			}
+			} else if (annotation instanceof Serial)
+				context.setGeneratorFactory(new SerialGeneratorFactory());
+
 		}
 		if (!configured)
 			context.setGeneratorFactory(defaultFactory);
