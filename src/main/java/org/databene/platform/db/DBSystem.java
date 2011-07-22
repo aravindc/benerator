@@ -510,8 +510,8 @@ public class DBSystem extends AbstractStorageSystem {
     	return DBUtil.queryLong(getDialect().renderFetchSequenceValue(sequenceName), getThreadContext().connection);
     }
     
-    public void setSequenceValue(String sequenceName, long increment) throws SQLException {
-    	getDialect().setSequenceValue(sequenceName, increment, getThreadContext().connection);
+    public void setSequenceValue(String sequenceName, long value) throws SQLException {
+    	getDialect().setSequenceValue(sequenceName, value, getThreadContext().connection);
     }
     
     Connection createConnection() {
