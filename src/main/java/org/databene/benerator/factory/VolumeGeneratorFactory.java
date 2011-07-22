@@ -82,7 +82,7 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T> createSampleGenerator(Collection<T> values,
+	public <T> Generator<T> createSampleGenerator(Collection<? extends T> values,
 			Class<T> generatedType, boolean unique) {
 		// TODO uniqueness
         return new AttachedWeightSampleGenerator<T>(generatedType, values);
