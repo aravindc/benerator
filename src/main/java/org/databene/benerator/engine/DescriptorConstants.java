@@ -54,7 +54,8 @@ public interface DescriptorConstants {
     static final String ATT_DEFAULT_ONE_TO_ONE = "defaultOneToOne";
     static final String ATT_DEFAULT_ERR_HANDLER = "defaultErrorHandler";
     static final String ATT_ACCEPT_UNKNOWN_SIMPLE_TYPES = "acceptUnknownSimpleTypes";
-	
+    static final String ATT_GENERATOR_FACTORY = "generatorFactory";
+    
     static final String EL_IF = "if";
     static final String EL_THEN = "then";
     static final String EL_ELSE = "else";

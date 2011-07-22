@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import org.databene.benerator.engine.statement.IncludeStatement;
 import org.databene.benerator.engine.statement.LazyStatement;
 import org.databene.benerator.engine.statement.SequentialStatement;
 import org.databene.benerator.engine.statement.StatementProxy;
+import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -55,8 +56,16 @@ public class BeneratorRootStatement extends SequentialStatement {
 
     @Override
     public void execute(BeneratorContext context) {
-    	for (Entry<String, String> attribute : attributes.entrySet())
-    		BeanUtil.setPropertyValue(context, attribute.getKey(), attribute.getValue(), true, true);
+    	for (Entry<String, String> attribute : attributes.entrySet()) {
+    		String key = attribute.getKey();
+			String value = attribute.getValue();
+			Object result;
+			if ("generatorFactory".equals(key))
+    			result = BeneratorScriptParser.parseBeanSpec(value).evaluate(context);
+			else 
+				result = value;
+			BeanUtil.setPropertyValue(context, key, result, true, true);
+    	}
     	super.execute(context);
     }
     

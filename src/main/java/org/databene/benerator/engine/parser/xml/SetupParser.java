@@ -59,7 +59,8 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 			ATT_DEFAULT_ONE_TO_ONE,
 			ATT_DEFAULT_ERR_HANDLER,
 			ATT_MAX_COUNT,
-			ATT_ACCEPT_UNKNOWN_SIMPLE_TYPES
+			ATT_ACCEPT_UNKNOWN_SIMPLE_TYPES,
+			ATT_GENERATOR_FACTORY
 		);
 
 	private static final Set<String> XML_ATTRIBUTES = CollectionUtil.toSet(
@@ -80,6 +81,7 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 	@Override
 	public Statement doParse(Element element, Statement[] parentPath, BeneratorParseContext context) {
 		Map<String, String> attributes = XMLUtil.getAttributes(element);
+		// remove standard XML root attributes and verify that the remaining ones are legal
 		Iterator<Entry<String, String>> iterator = attributes.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, String> attribute = iterator.next();
@@ -90,6 +92,7 @@ public class SetupParser extends AbstractBeneratorDescriptorParser {
 					throw new ConfigurationError("Not a supported attribute in <" + EL_SETUP + ">: " + attribute.getKey());
 			}
 		}
+		// create root statement and configure its children
 	    BeneratorRootStatement rootStatement = new BeneratorRootStatement(attributes);
 	    Statement[] currentPath = context.createSubPath(parentPath, rootStatement);
 		List<Statement> subStatements = context.parseChildElementsOf(element, currentPath);

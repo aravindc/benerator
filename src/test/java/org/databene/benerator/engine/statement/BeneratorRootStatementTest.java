@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,22 +25,34 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
+import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.commons.CollectionUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
 
 /**
- * Tests the BeneratorMainTask.<br/><br/>
+ * Tests the {@link BeneratorRootStatement}.<br/><br/>
  * Created: 24.10.2009 11:22:25
  * @since 0.6.0
  * @author Volker Bergmann
  */
 public class BeneratorRootStatementTest extends GeneratorTest {
 
+	@Test
+	public void testGeneratorFactoryConfig() {
+		Map<String, String> attributes = CollectionUtil.buildMap(
+				"generatorFactory", EquivalenceGeneratorFactory.class.getName());
+		BeneratorRootStatement root = new BeneratorRootStatement(attributes);
+		root.execute(context);
+		assertEquals(EquivalenceGeneratorFactory.class, context.getGeneratorFactory().getClass());
+	}
+	
 	@Test
 	public void testGetGenerator_simple() throws Exception {
         check("org/databene/benerator/engine/statement/simple.ben.xml");
