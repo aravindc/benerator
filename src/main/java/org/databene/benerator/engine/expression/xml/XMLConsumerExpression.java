@@ -106,7 +106,7 @@ public class XMLConsumerExpression extends DynamicExpression<Consumer<?>> {
 			escalator.escalate("No consumers defined for " + entityName, this, null);
 		}
 		for (Consumer<Entity> consumer : consumerChain.getComponents())
-			resourceManager.addResource(consumer); // TODO v0.7 add only local consumers
+			resourceManager.addResource(consumer);
 		return consumerChain;
 	}
 
