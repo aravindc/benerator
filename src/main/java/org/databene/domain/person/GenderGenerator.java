@@ -29,6 +29,7 @@ package org.databene.domain.person;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.commons.CollectionUtil;
 
 /**
  * Generates {@link Gender} objects.<br/>
@@ -63,10 +64,10 @@ public class GenderGenerator extends GeneratorProxy<Gender> {
 	@Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-	    source = context.getGeneratorFactory().createWeightedSampleGenerator(
+	    source = context.getGeneratorFactory().createWeightedSampleGenerator(CollectionUtil.toList(
 	    		new WeightedSample<Gender>(Gender.FEMALE, femaleQuota),
 	    		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
-	    );
+	    ), Gender.class);
         super.init(context);
     }
 
