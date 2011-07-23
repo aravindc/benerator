@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
@@ -48,10 +49,13 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.factory.ArrayGeneratorFactory;
+import org.databene.benerator.factory.CoverageGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.factory.GeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.factory.GentleDefaultsProvider;
+import org.databene.benerator.factory.InstanceGeneratorFactory;
 import org.databene.benerator.factory.MeanDefaultsProvider;
 import org.databene.benerator.factory.SerialGeneratorFactory;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
@@ -73,6 +77,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.platform.db.DBSystem;
 import org.databene.platform.java.BeanDescriptorProvider;
+import org.databene.platform.java.Entity2JavaConverter;
 import org.databene.script.ScriptUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +118,6 @@ public class AnnotationMapper {
 	// interface -------------------------------------------------------------------------------------------------------
 	
 	public void parseClassAnnotations(Annotation[] annotations, BeneratorContext context) {
-		applyClassGeneratorFactory(annotations, context);
 		for (Annotation annotation : annotations) {
 			if (annotation instanceof Database)
 				parseDatabase((Database) annotation, context);
@@ -121,11 +125,18 @@ public class AnnotationMapper {
 				parseBean((Bean) annotation, context);
 		}
 	}
+	
+	public Generator<?> createAndInitAttributeGenerator(Field attribute, BeneratorContext context) {
+		Source sourceAnno = attribute.getAnnotation(Source.class);
+		if (sourceAnno != null)
+			return createAndInitAttributeSourceGenerator(sourceAnno, attribute, context);
+		else
+			return null;
+	}
 
-    public Generator<Object[]> createMethodParamsGenerator(Method testMethod, BeneratorContext context) {
+    public Generator<Object[]> createAndInitMethodParamsGenerator(Method testMethod, BeneratorContext context) {
 		try {
 			applyMethodGeneratorFactory(testMethod, context);
-			applyMethodDefaultsProvider(testMethod, context);
 
 			// Evaluate @Bean and @Database annotations
 			if (testMethod.getAnnotation(Bean.class) != null)
@@ -142,11 +153,16 @@ public class AnnotationMapper {
 			if (generatorAnno != null)
 				generator = createGeneratorGenerator(generatorAnno, testMethod, context);
 			else if (sourceAnno != null)
-				generator = createSourceGenerator(sourceAnno, testMethod, context);
+				generator = createMethodSourceGenerator(sourceAnno, testMethod, context);
 			else if (descriptorBasedAnno != null)
 				generator = createDescriptorBasedGenerator(descriptorBasedAnno, testMethod);
 			else // ... otherwise evaluate parameter annotations
-				generator = createParamGenerator(testMethod, context);
+				generator = createParamsGenerator(testMethod, context);
+			
+			// apply offset
+			Offset offset = testMethod.getAnnotation(Offset.class);
+			if (offset != null)
+				generator = GeneratorFactoryUtil.wrapWithOffset(generator, offset.value());
 			
 			// evaluate @TestFeed annotation
 			InvocationCount testCount = testMethod.getAnnotation(InvocationCount.class);
@@ -161,31 +177,64 @@ public class AnnotationMapper {
 		}
     }
 
-	protected void applyMethodGeneratorFactory(Method testMethod,
-			BeneratorContext context) {
-		if (testMethod.getAnnotation(Equivalence.class) != null)
-			context.setGeneratorFactory(new EquivalenceGeneratorFactory());
-		/* TODO else if (testMethod.getAnnotation(Coverage.class) != null)
-			context.setGeneratorFactory(new CoverageGeneratorFactory());*/
-		else if (testMethod.getAnnotation(Volume.class) != null)
-			context.setGeneratorFactory(new VolumeGeneratorFactory());
-		else if (testMethod.getAnnotation(Serial.class) != null)
-			context.setGeneratorFactory(new SerialGeneratorFactory());
-		else 
+    // helper methods --------------------------------------------------------------------------------------------------
+	
+	protected void applyMethodGeneratorFactory(Method testMethod, BeneratorContext context) {
+		boolean configured = applyGeneratorFactory(testMethod.getAnnotations(), context);
+		if (!configured)
 			applyClassGeneratorFactory(testMethod.getDeclaringClass().getAnnotations(), context);
+		applyMethodDefaultsProvider(testMethod, context);
 	}
 
-	protected void applyMethodDefaultsProvider(Method testMethod,
-			BeneratorContext context) {
-		if (testMethod.getAnnotation(Gentle.class) != null)
-			context.setDefaultsProvider(new GentleDefaultsProvider());
-		else if (testMethod.getAnnotation(Mean.class) != null)
-			context.setDefaultsProvider(new MeanDefaultsProvider());
-		else
-			applyClassDefaultsProvider(testMethod.getDeclaringClass().getAnnotations(), context);
+	private void applyClassGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
+		boolean configured = applyGeneratorFactory(annotations, context);
+		if (!configured)
+			context.setGeneratorFactory(defaultFactory);
 	}
 
-	private Generator<Object[]> createSourceGenerator(
+	protected boolean applyGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
+		boolean configured = false;
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof Equivalence) {
+				context.setGeneratorFactory(new EquivalenceGeneratorFactory());
+				return true;
+			} else if (annotation instanceof Coverage) {
+				context.setGeneratorFactory(new CoverageGeneratorFactory());
+				return true;
+			} else if (annotation instanceof Volume) {
+				context.setGeneratorFactory(new VolumeGeneratorFactory());
+				return true;
+			} else if (annotation instanceof Serial) {
+				context.setGeneratorFactory(new SerialGeneratorFactory());
+				return true;
+			}
+		}
+		return configured;
+	}
+
+	protected void applyMethodDefaultsProvider(Method testMethod, BeneratorContext context) {
+		// check if the method is annotated with an individual DefaultsProvider...
+		boolean configured = applyDefaultsProvider(testMethod.getAnnotations(), context);
+		// ... otherwise check for a class-wide DefaultsProvider annotation...
+		if (!configured)
+			applyDefaultsProvider(testMethod.getDeclaringClass().getAnnotations(), context);
+		// ...otherwise the GeneratorFactory's DefaultProvider is used
+	}
+
+	private boolean applyDefaultsProvider(Annotation[] annotations, BeneratorContext context) {
+		for (Annotation annotation : annotations) {
+			if (annotation instanceof Gentle) {
+				context.setDefaultsProvider(new GentleDefaultsProvider());
+				return true;
+			} else if (annotation instanceof Mean) {
+				context.setDefaultsProvider(new MeanDefaultsProvider());
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Generator<Object[]> createMethodSourceGenerator(
 			org.databene.benerator.anno.Source source, Method testMethod, BeneratorContext context) {
 		String methodName = testMethod.getName();
 		ArrayTypeDescriptor typeDescriptor = new ArrayTypeDescriptor(methodName);
@@ -195,6 +244,22 @@ public class AnnotationMapper {
 		Generator<Object[]> baseGenerator = ArrayGeneratorFactory.createArrayGenerator(
 				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
 		return baseGenerator;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Generator<?> createAndInitAttributeSourceGenerator(
+			org.databene.benerator.anno.Source source, Field attribute, BeneratorContext context) {
+		String attName = attribute.getName();
+		TypeDescriptor typeDescriptor = createTypeDescriptor(attribute.getType());
+		InstanceDescriptor descriptor = new InstanceDescriptor(attName, typeDescriptor);
+		mapAnnotation(source, descriptor);
+		Offset offset = attribute.getAnnotation(Offset.class);
+		if (offset != null)
+			mapAnnotation(offset, descriptor);
+		Generator generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
+		generator = GeneratorFactoryUtil.createConvertingGenerator(generator, new Entity2JavaConverter());
+		generator.init(context);
+		return generator;
 	}
 
 	private Generator<Object[]> createGeneratorGenerator(
@@ -208,8 +273,7 @@ public class AnnotationMapper {
 				testMethod.getName(), typeDescriptor, Uniqueness.NONE, context);
 	}
 
-	private void mapParamTypes(Method testMethod,
-			ArrayTypeDescriptor typeDescriptor) {
+	private void mapParamTypes(Method testMethod, ArrayTypeDescriptor typeDescriptor) {
 		Class<?>[] paramTypes = testMethod.getParameterTypes();
 		for (int i = 0; i < paramTypes.length; i++) {
 			String elementType = BeanDescriptorProvider.defaultInstance().abstractType(paramTypes[i]);
@@ -240,38 +304,6 @@ public class AnnotationMapper {
 
     
     
-    // helper methods --------------------------------------------------------------------------------------------------
-	
-	private void applyClassGeneratorFactory(Annotation[] annotations, BeneratorContext context) {
-		// TODO avoid duplicate annotation evaluation for method and class
-		boolean configured = false;
-		for (Annotation annotation : annotations) {
-			if (annotation instanceof Equivalence) {
-				context.setGeneratorFactory(new EquivalenceGeneratorFactory());
-				configured = true;
-			/* TODO } else if (annotation instanceof Coverage) {
-				context.setGeneratorFactory(new CoverageGeneratorFactory());
-				configured = true; */
-			} else if (annotation instanceof Volume) {
-				context.setGeneratorFactory(new VolumeGeneratorFactory());
-				configured = true;
-			} else if (annotation instanceof Serial)
-				context.setGeneratorFactory(new SerialGeneratorFactory());
-
-		}
-		if (!configured)
-			context.setGeneratorFactory(defaultFactory);
-	}
-
-	private void applyClassDefaultsProvider(Annotation[] annotations, BeneratorContext context) {
-		for (Annotation annotation : annotations) {
-			if (annotation instanceof Gentle)
-				context.setDefaultsProvider(new GentleDefaultsProvider());
-			else if (annotation instanceof Mean)
-				context.setDefaultsProvider(new MeanDefaultsProvider());
-		}
-	}
-
 	private static void parseDatabase(Database annotation, BeneratorContext context) {
 		DBSystem db;
 		if (!StringUtil.isEmpty(annotation.environment()))
@@ -331,7 +363,7 @@ public class AnnotationMapper {
 			throw new ConfigurationError("@Property is missing 'value' or 'ref' attribute");
 	}
 
-    private Generator<Object[]> createParamGenerator(Method testMethod, BeneratorContext context) {
+    private Generator<Object[]> createParamsGenerator(Method testMethod, BeneratorContext context) {
 	    InstanceDescriptor array = mapMethodParamsAnnotations(testMethod);
         Uniqueness uniqueness = DescriptorUtil.getUniqueness(array, context);
         Generator<Object[]> generator = ArrayGeneratorFactory.createSimpleArrayGenerator(array.getName(),
@@ -381,6 +413,8 @@ public class AnnotationMapper {
 				mapSourceAnnotation((Source) annotation, instanceDescriptor);
 			else if (annotationType == Values.class)
 				mapValuesAnnotation((Values) annotation, instanceDescriptor);
+			else if (annotationType == Offset.class)
+				mapOffsetAnnotation((Offset) annotation, instanceDescriptor);
 			else
 				mapAnyValueTypeAnnotation(annotation, instanceDescriptor);
 		} catch (Exception e) {
@@ -427,6 +461,11 @@ public class AnnotationMapper {
 		((SimpleTypeDescriptor) instanceDescriptor.getLocalType(false)).setValues(builder.toString());
     }
 
+	private static void mapOffsetAnnotation(Offset annotation, InstanceDescriptor instanceDescriptor) throws Exception {
+		if (annotation.value() != 0)
+			instanceDescriptor.getLocalType().setOffset(annotation.value());
+    }
+
 	private static void mapAnyValueTypeAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) throws Exception {
 		Method method = annotation.annotationType().getMethod("value");
 		Object value = normalize(method.invoke(annotation));
@@ -434,18 +473,8 @@ public class AnnotationMapper {
 		setDetail(detailName, value, instanceDescriptor);
     }
 
-	// helpers ---------------------------------------------------------------------------------------------------------
-	
 	private ArrayElementDescriptor mapParameter(Class<?> type, Annotation[] annos, int index) {
-		String abstractType = BeanDescriptorProvider.defaultInstance().abstractType(type);
-		TypeDescriptor baseTypeDescriptor = dataModel.getTypeDescriptor(abstractType);
-		TypeDescriptor typeDescriptor;
-		if (baseTypeDescriptor instanceof SimpleTypeDescriptor) {
-			typeDescriptor = new SimpleTypeDescriptor(type.getName(), (SimpleTypeDescriptor) baseTypeDescriptor);
-		} else if (baseTypeDescriptor instanceof ComplexTypeDescriptor) {
-			typeDescriptor = new ComplexTypeDescriptor(type.getName(), (ComplexTypeDescriptor) baseTypeDescriptor);
-		} else
-			throw new ConfigurationError("Cannot handle descriptor: " + baseTypeDescriptor);
+		TypeDescriptor typeDescriptor = createTypeDescriptor(type);
 		ArrayElementDescriptor descriptor = new ArrayElementDescriptor(index, typeDescriptor);
 	    for (Annotation annotation : annos)
             mapAnnotation(annotation, descriptor);
@@ -459,7 +488,7 @@ public class AnnotationMapper {
 	    }
         return descriptor;
     }
-	
+
 	private static void mapBeanValidationParameter(Annotation annotation, InstanceDescriptor element) {
     	SimpleTypeDescriptor typeDescriptor = (SimpleTypeDescriptor) element.getLocalType(false);
 		if (annotation instanceof AssertFalse)
@@ -514,4 +543,17 @@ public class AnnotationMapper {
 		return value;
 	}
 
+	protected TypeDescriptor createTypeDescriptor(Class<?> type) {
+		String abstractType = BeanDescriptorProvider.defaultInstance().abstractType(type);
+		TypeDescriptor baseTypeDescriptor = dataModel.getTypeDescriptor(abstractType);
+		TypeDescriptor typeDescriptor;
+		if (baseTypeDescriptor instanceof SimpleTypeDescriptor) {
+			typeDescriptor = new SimpleTypeDescriptor(type.getName(), (SimpleTypeDescriptor) baseTypeDescriptor);
+		} else if (baseTypeDescriptor instanceof ComplexTypeDescriptor) {
+			typeDescriptor = new ComplexTypeDescriptor(type.getName(), (ComplexTypeDescriptor) baseTypeDescriptor);
+		} else
+			throw new ConfigurationError("Cannot handle descriptor: " + baseTypeDescriptor);
+		return typeDescriptor;
+	}
+	
 }
