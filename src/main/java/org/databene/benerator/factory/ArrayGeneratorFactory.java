@@ -85,7 +85,7 @@ public class ArrayGeneratorFactory {
             generator = createMutatingArrayGenerator(instanceName, type, uniqueness, generator, context);
         // create wrappers
         generator = TypeGeneratorFactory.wrapWithPostprocessors(generator, type, context);
-        generator = DescriptorUtil.wrapWithProxy(generator, type);
+        generator = GeneratorFactoryUtil.wrapWithProxy(generator, type);
         logger.debug("Created {}", generator);
         return generator;
     }
@@ -171,6 +171,7 @@ public class ArrayGeneratorFactory {
     	Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
         if (distribution != null)
         	generator = new DistributingGenerator<Object[]>(generator, distribution, uniqueness.isUnique());
+        generator = GeneratorFactoryUtil.wrapWithProxy(generator, descriptor);
     	return generator;
     }
 
