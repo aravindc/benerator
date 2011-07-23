@@ -21,6 +21,7 @@ changes
 enhancements
 ------------
 - supporting different types of GeneratorFactories
+- Defined VolumeGeneratorFactory, EquivalenceGeneratorFactory, CoverageGeneratorFactory and SerialGeneratorFactory 
 - new annotation @DecimalGranularity
 - New Converter class NumberQuantizer
 - Added configurable GeneratorFactory to BeneratorContext
@@ -30,6 +31,7 @@ enhancements
 - Direct DB Sanity integration by <dbsanity database="..." ... />
 - Added TimeUtil.addDays(), addMonths(), addYears()
 - Introduced generatorFactory attribute in <setup>
+- Added generic 'offset' feature
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
