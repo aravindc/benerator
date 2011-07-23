@@ -46,7 +46,7 @@ public class GeneratorFactoryDemo {
 	}
 
 	private static void iterateCsv(GeneratorFactory generatorFactory) {
-		Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator("org/databene/benerator/products.csv", ';', true, Encodings.UTF_8);
+		Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator("org/databene/benerator/products.csv", ';', Encodings.UTF_8, true);
 		generator.init(new BeneratorContext());
 		String[] row;
 		while ((row = generator.generate()) != null) // null signals that the generator is used up
