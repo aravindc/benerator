@@ -108,7 +108,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
             throw new ConfigurationError("Can't handle descriptor " + descriptor);
         // create wrappers
         generator = wrapWithPostprocessors(generator, descriptor, context);
-        generator = DescriptorUtil.wrapWithProxy(generator, descriptor);
+        generator = GeneratorFactoryUtil.wrapWithProxy(generator, descriptor);
         // done
         logger.debug("Created {}", generator);
         return generator;
@@ -194,7 +194,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         } else if (lcn.endsWith(".xls")) {
             return createSimpleTypeXLSSourceGenerator(descriptor, source, uniqueness, context);
         } else if (lcn.endsWith(".txt")) {
-            generator = GeneratorFactoryUtil.createTextLineGenerator(source, false);
+            generator = GeneratorFactoryUtil.createTextLineGenerator(source);
         } else {
         	try {
 	        	BeanSpec sourceSpec = BeneratorScriptParser.resolveBeanSpec(source, context);
@@ -257,7 +257,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		} else if (sourceName.toLowerCase().endsWith(".wgt.csv") || distribution instanceof IndividualWeight) {
         	generator = new WeightedCSVSampleGenerator(sourceName, encoding, new ScriptConverter(context));
         } else {
-    		Generator<String[]> src = GeneratorFactoryUtil.createCSVLineGenerator(sourceName, separator, true, encoding);
+    		Generator<String[]> src = GeneratorFactoryUtil.createCSVLineGenerator(sourceName, separator, encoding, true);
     		Converter<String[], Object> converterChain = new ConverterChain<String[], Object>(
     				new ArrayElementExtractor<String>(String.class, 0), 
     				new ScriptConverter(context));
@@ -273,7 +273,7 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
 		// TODO define common mechanism for file sources CSV, XLS, ... and entity, array, simple type
 		Generator<?> generator;
         Distribution distribution = GeneratorFactoryUtil.getDistribution(descriptor.getDistribution(), uniqueness, false, context);
-		Generator<Object[]> src = GeneratorFactoryUtil.createXLSLineGenerator(sourceName, false);
+		Generator<Object[]> src = GeneratorFactoryUtil.createXLSLineGenerator(sourceName);
 		Converter<Object[], Object> converterChain = new ConverterChain<Object[], Object>(
 				new ArrayElementExtractor<Object>(Object.class, 0),
 				new ConditionalConverter(new Condition<Object>() {
