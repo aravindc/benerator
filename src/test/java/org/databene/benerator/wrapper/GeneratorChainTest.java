@@ -21,6 +21,7 @@
 
 package org.databene.benerator.wrapper;
 
+import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
@@ -35,10 +36,21 @@ public class GeneratorChainTest extends GeneratorTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test() {
-		GeneratorChain<Integer> chain = new GeneratorChain<Integer>(Integer.class, 
+	public void testUnique() {
+		GeneratorChain<Integer> chain = new GeneratorChain<Integer>(Integer.class, true, 
+				new SequenceTestGenerator<Integer>(2, 3),
+				new SequenceTestGenerator<Integer>(1, 2));
+		chain.init(context);
+		expectGeneratedSequence(chain, 2, 3, 1).withCeasedAvailability();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testNonUnique() {
+		GeneratorChain<Integer> chain = new GeneratorChain<Integer>(Integer.class, false, 
 				new OneShotGenerator<Integer>(2),
 				new OneShotGenerator<Integer>(1));
+		chain.init(context);
 		expectGeneratedSequence(chain, 2, 1).withCeasedAvailability();
 	}
 	

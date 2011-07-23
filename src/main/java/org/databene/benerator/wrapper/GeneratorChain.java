@@ -21,28 +21,78 @@
 
 package org.databene.benerator.wrapper;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.databene.benerator.Generator;
+import org.databene.benerator.GeneratorContext;
 
 /**
  * Proxies several source generators, initially returning products of the first source as long 
- * as it is available, then of the second source and son on.<br/><br/>
+ * as it is available, then of the second source and son on.
+ * When generating unique data, the last source generator is required to generate unique data itself.<br/>
+ * <br/>
  * Created: 22.07.2011 14:58:00
  * @since 0.7.0
  * @author Volker Bergmann
  */
 public class GeneratorChain<E> extends MultiGeneratorWrapper<E, E> {
 
+	private boolean unique;
 	private int index;
+	private Set<E> usedValues;
 	
-	public GeneratorChain(Class<E> generatedType, Generator<? extends E>... sources) {
+	public GeneratorChain(Class<E> generatedType, boolean unique, Generator<? extends E>... sources) {
 		super(generatedType, sources);
-		this.index = 0;
+		this.unique = unique;
+		this.usedValues = new HashSet<E>();
+	}
+	
+	@Override
+	public synchronized void init(GeneratorContext context) {
+		clearMembers();
+		super.init(context);
 	}
 
 	public E generate() {
+		assertInitialized();
 		if (sources.length < 1)
 			return null;
-		E result = sources[index].generate();
+		E result;
+		boolean ok = true;
+		do {
+			result = generateUnvalidated();
+			if (unique) {
+				if (index < sources.length - 1) {
+					// for all but the last generator check if the value has already occurred and store it...
+					ok = usedValues.add(result);
+				} else {
+					// ...since each generator is expected to be unique itself, 
+					// there is no need to store the value of the last generator in the chain
+					ok = !usedValues.contains(result);
+				}
+			}
+		} while (result != null && !ok);
+		return result;
+	}
+
+	@Override
+	public synchronized void reset() {
+		super.reset();
+		clearMembers();
+	}
+
+	@Override
+	public synchronized void close() {
+		super.close();
+		clearMembers();
+	}
+	
+	// helpers ---------------------------------------------------------------------------------------------------------
+	
+	protected E generateUnvalidated() {
+		E result;
+		result = sources[index].generate();
 		while (result == null && index < sources.length - 1) {
 			index++;
 			result = sources[index].generate();
@@ -50,10 +100,9 @@ public class GeneratorChain<E> extends MultiGeneratorWrapper<E, E> {
 		return result;
 	}
 
-	@Override
-	public synchronized void reset() {
-		super.reset();
+	protected void clearMembers() {
 		this.index = 0;
+		this.usedValues.clear();
 	}
-	
+
 }
