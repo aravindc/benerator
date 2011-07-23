@@ -21,8 +21,11 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Date;
+
 import org.databene.commons.BeanUtil;
 import org.databene.commons.NumberUtil;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
@@ -68,6 +71,14 @@ public class MeanDefaultsProvider implements DefaultsProvider {
 
 	public double defaultNullQuota() {
 		return 0.5;
+	}
+
+	public Date defaultMinDate() {
+		return TimeUtil.date(-2000, 0, 1);
+	}
+
+	public Date defaultMaxDate() {
+		return TimeUtil.date(2999, 11, 31);
 	}
 
 }

@@ -21,6 +21,8 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Date;
+
 /**
  * Interface for all classes that provide default values for testing.<br/><br/>
  * Created: 15.07.2011 21:13:20
@@ -37,4 +39,6 @@ public interface DefaultsProvider {
 	Integer defaultMaxLength();
 	boolean defaultNullable();
 	double  defaultNullQuota();
+	Date defaultMinDate();
+	Date defaultMaxDate();
 }

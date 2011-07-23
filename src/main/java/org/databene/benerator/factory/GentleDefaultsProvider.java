@@ -21,6 +21,9 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Date;
+
+import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
@@ -63,8 +66,16 @@ public class GentleDefaultsProvider implements DefaultsProvider {
 		return false;
 	}
 	
-	public double  defaultNullQuota() {
+	public double defaultNullQuota() {
 		return 1.;
+	}
+
+	public Date defaultMinDate() {
+		return TimeUtil.today();
+	}
+
+	public Date defaultMaxDate() {
+		return TimeUtil.addYears(TimeUtil.today(), 2);
 	}
 
 }

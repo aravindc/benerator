@@ -23,7 +23,6 @@ package org.databene.benerator.factory;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -53,6 +52,7 @@ import org.databene.commons.ComparableComparator;
 import org.databene.commons.Converter;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.OrderedSet;
+import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.NumberToNumberConverter;
@@ -109,9 +109,17 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
 
     @Override
-	public Generator<Date> createDateGenerator(
-            Date min, Date max, long precision, Distribution distribution) {
-    	return super.createDateGenerator(min, max, precision, distribution); // TODO Eq. version
+	public Generator<Date> createDateGenerator(Date min, Date max, long granularity, Distribution distribution) {
+    	// TODO v0.7 find a useful concept for date granularity
+    	if (min == null)
+    		min = defaultsProvider.defaultMinDate();
+    	if (max == null)
+    		max = defaultsProvider.defaultMaxDate();
+    	TreeSet<Date> values = new TreeSet<Date>();
+    	values.add(min);
+    	values.add(TimeUtil.midnightOf(new Date((min.getTime() + max.getTime()) / 2)));
+    	values.add(max);
+    	return new SequenceGenerator<Date>(Date.class, values);
     }
 
     @SuppressWarnings("unchecked")
@@ -322,11 +330,11 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 		Interval<T> numberRange;
 		T granularity;
 		Class<T> numberType;
-		private HashSet<T> set;
+		private TreeSet<T> set;
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ValueSet(T min, boolean minInclusive, T max, boolean maxInclusive, T granularity, Class<T> numberType) {
-			this.set = new HashSet<T>();
+			this.set = new TreeSet<T>();
 	        this.numberRange = new Interval<T>(min, minInclusive, max, maxInclusive, new ComparableComparator());
 	        this.granularity = granularity;
 	        this.numberType = numberType;
