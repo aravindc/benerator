@@ -87,4 +87,9 @@ public class OneShotGenerator<E> extends ThreadSafeGenerator<E> {
 	    super.reset();
     }
 
+    @Override
+    public String toString() {
+    	return getClass().getSimpleName() + '[' + value + ']';
+    }
+    
 }
