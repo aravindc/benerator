@@ -90,9 +90,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setSource("org/databene/benerator/factory/person.ent.xls");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
-		assertEqualArrays(ALICE, generator.generate());
-		assertEqualArrays(OTTO, generator.generate());
-		assertNull(generator.generate());
+		expectGeneratedSequence(generator, ALICE, OTTO).withCeasedAvailability();
 	}
 	
     @Test
