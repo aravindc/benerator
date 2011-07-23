@@ -254,7 +254,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
             LOGGER.debug("Created " + generator);
         
         // check 'cyclic' config
-        generator = DescriptorUtil.wrapWithProxy(generator, typeDescriptor);
+        generator = GeneratorFactoryUtil.wrapWithProxy(generator, typeDescriptor);
         return builderFromGenerator(generator, descriptor, context);
     }
 
