@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-		targetNamespace="http://databene.org/benerator/0.6.6"
-		xmlns="http://databene.org/benerator/0.6.6"
+		targetNamespace="http://databene.org/benerator/0.7.0"
+		xmlns="http://databene.org/benerator/0.7.0"
 		elementFormDefault="qualified">
 		
 	<xs:annotation>
@@ -621,6 +621,7 @@
 		<xs:attribute name="unique"       type="xs:string"/>
 		<xs:attribute name="distribution" type="xs:string"/>
 		<xs:attribute name="cyclic"       type="xs:string"/>
+		<xs:attribute name="offset"       type="xs:string"/>
 	</xs:attributeGroup>
 	
 </xs:schema>
