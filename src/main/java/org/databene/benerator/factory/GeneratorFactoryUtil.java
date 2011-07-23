@@ -52,6 +52,7 @@ import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.NonClosingGeneratorProxy;
+import org.databene.benerator.wrapper.OffsetBasedGenerator;
 import org.databene.benerator.wrapper.SimpleArrayGenerator;
 import org.databene.benerator.wrapper.SimpleCompositeArrayGenerator;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
@@ -73,6 +74,7 @@ import org.databene.document.csv.CSVLineIterable;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
+import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.storage.StorageSystem;
 import org.databene.platform.xls.XLSLineIterable;
@@ -134,11 +136,11 @@ public class GeneratorFactoryUtil {
      *
      * @param uri              the uri of the CSV file
      * @param separator        the cell separator used in the CSV file
-     * @param ignoreEmptyLines flag wether to leave out empty lines
      * @param encoding 
+     * @param ignoreEmptyLines flag wether to leave out empty lines
      * @return a generator of the desired characteristics
      */
-    public static Generator<String[]> createCSVLineGenerator(String uri, char separator, boolean ignoreEmptyLines, String encoding) {
+    public static Generator<String[]> createCSVLineGenerator(String uri, char separator, String encoding, boolean ignoreEmptyLines) {
         return new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, encoding));
     }
 
@@ -147,21 +149,23 @@ public class GeneratorFactoryUtil {
      * @param uri the uri of the XLS file
      * @return a generator of the desired characteristics
      */
-    public static Generator<Object[]> createXLSLineGenerator(String uri, boolean skipFirstRow) {
-        return new IteratingGenerator<Object[]>(new XLSLineIterable(uri, skipFirstRow, null));
+    public static Generator<Object[]> createXLSLineGenerator(String uri) {
+        return new IteratingGenerator<Object[]>(new XLSLineIterable(uri, false, null));
     }
 
     /**
      * Creates a generator that iterates through the lines of a text file.
      *
      * @param uri         the URI of the text file
-     * @param cyclic      indicates whether iteration should restart from the first line after it reaches the file end.
      * @return a generator of the desired characteristics
      */
-    public static Generator<String> createTextLineGenerator(String uri, boolean cyclic) {
-        Generator<String> generator = new IteratingGenerator<String>(new TextLineIterable(uri));
-        return DescriptorUtil.wrapWithProxy(generator, cyclic);
+    public static Generator<String> createTextLineGenerator(String uri) {
+        return new IteratingGenerator<String>(new TextLineIterable(uri));
     }
+
+    public static <T> OffsetBasedGenerator<T> wrapWithOffset(Generator<T> generator, int offset) {
+		return new OffsetBasedGenerator<T>(generator, offset);
+	}
 
 	public static <T> Generator<T> wrapNonClosing(Generator<T> generator) {
 		return new NonClosingGeneratorProxy<T>(generator);
@@ -177,7 +181,7 @@ public class GeneratorFactoryUtil {
      * @param converter the converter to apply to the products of the source generator
      * @return a generator of the desired characteristics
      */
-    public static <S, T> Generator<T> createConvertingGenerator(Generator<S> source, Converter<S, T> converter) {
+    public static <S, T> Generator<T> createConvertingGenerator(Generator<S> source, Converter<S, T> converter) { // TODO apply wherever possible
         return new ConvertingGenerator<S, T>(source, converter);
     }
 
@@ -357,6 +361,21 @@ public class GeneratorFactoryUtil {
     		values.add(value);
     	}
 		return values;
+	}
+
+	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
+		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
+		if (cyclic)
+			generator = new CyclicGeneratorProxy<T>(generator);
+		int offset = getOffset(descriptor);
+		if (offset > 0)
+			generator = wrapWithOffset(generator, offset);
+		return generator;
+    }
+
+	public static int getOffset(TypeDescriptor descriptor) {
+		Integer offset = descriptor.getOffset();
+		return (offset != null ? offset : 0);
 	}
 
 }
