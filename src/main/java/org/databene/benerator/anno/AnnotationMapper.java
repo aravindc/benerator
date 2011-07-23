@@ -415,6 +415,10 @@ public class AnnotationMapper {
 				mapValuesAnnotation((Values) annotation, instanceDescriptor);
 			else if (annotationType == Offset.class)
 				mapOffsetAnnotation((Offset) annotation, instanceDescriptor);
+			else if (annotationType == MinDate.class)
+				mapMinDateAnnotation((MinDate) annotation, instanceDescriptor);
+			else if (annotationType == MaxDate.class)
+				mapMaxDateAnnotation((MaxDate) annotation, instanceDescriptor);
 			else
 				mapAnyValueTypeAnnotation(annotation, instanceDescriptor);
 		} catch (Exception e) {
@@ -464,6 +468,20 @@ public class AnnotationMapper {
 	private static void mapOffsetAnnotation(Offset annotation, InstanceDescriptor instanceDescriptor) throws Exception {
 		if (annotation.value() != 0)
 			instanceDescriptor.getLocalType().setOffset(annotation.value());
+    }
+
+	private static void mapMinDateAnnotation(MinDate annotation, InstanceDescriptor instanceDescriptor) throws Exception {
+		TypeDescriptor localType = instanceDescriptor.getLocalType();
+		if (!(localType instanceof SimpleTypeDescriptor))
+			throw new ConfigurationError("@MinDate can only be applied to Date types");
+		((SimpleTypeDescriptor) localType).setMin(annotation.value());
+    }
+
+	private static void mapMaxDateAnnotation(MaxDate annotation, InstanceDescriptor instanceDescriptor) throws Exception {
+		TypeDescriptor localType = instanceDescriptor.getLocalType();
+		if (!(localType instanceof SimpleTypeDescriptor))
+			throw new ConfigurationError("@MaxDate can only be applied to Date types");
+		((SimpleTypeDescriptor) localType).setMax(annotation.value());
     }
 
 	private static void mapAnyValueTypeAnnotation(Annotation annotation, InstanceDescriptor instanceDescriptor) throws Exception {
