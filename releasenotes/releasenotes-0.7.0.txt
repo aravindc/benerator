@@ -29,7 +29,7 @@ enhancements
 - Defined AsStringGenerator for wrapping an arbitrary Generator and return String representations of products
 - CompositeStringGenerator supports uniqueness
 - Direct DB Sanity integration by <dbsanity database="..." ... />
-- Added TimeUtil.addDays(), addMonths(), addYears()
+- Added TimeUtil.addDays(), addMonths(), addYears(), midnightOf()
 - Introduced generatorFactory attribute in <setup>
 - Added generic 'offset' feature
 
