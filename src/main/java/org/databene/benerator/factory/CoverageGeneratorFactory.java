@@ -21,6 +21,16 @@
 
 package org.databene.benerator.factory;
 
+import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.databene.benerator.Generator;
+import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.wrapper.GeneratorChain;
+import org.databene.model.data.Uniqueness;
+
 /**
  * {@link GeneratorFactory} implementation which creates data sets 
  * that cover the full range of available data and combinations.<br/><br/>
@@ -28,6 +38,61 @@ package org.databene.benerator.factory;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class CoverageGeneratorFactory { // TODO extends GeneratorFactory {
+public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // TODO test this class
+	
+	private SerialGeneratorFactory serialFactory;
+	
+	public CoverageGeneratorFactory() {
+		this.serialFactory = new SerialGeneratorFactory();
+	}
+
+    @SuppressWarnings("unchecked")
+	@Override
+	public Generator<Date> createDateGenerator(
+            Date min, Date max, long granularity, Distribution distribution) {
+    	return new GeneratorChain<Date>(Date.class, // TODO avoid duplicates
+    		super.createDateGenerator(min, max, granularity, distribution),
+    		serialFactory.createDateGenerator(min, max, granularity, distribution)
+		);
+    }
+
+    @SuppressWarnings("unchecked")
+	@Override
+	public <T extends Number> Generator<T> createNumberGenerator(
+            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
+            Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
+    	return new GeneratorChain<T>(numberType, // TODO avoid duplicates
+    			super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness),
+    		serialFactory.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness)
+		);
+    }
+    
+	@SuppressWarnings("unchecked")
+	@Override
+	public Generator<String> createStringGenerator(Set<Character> chars,
+			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
+    	return new GeneratorChain<String>(String.class, // TODO avoid duplicates
+    		super.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique),
+    		serialFactory.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique)
+		);
+	}
+	
+    @Override
+	public Set<Character> defaultSubSet(Set<Character> characters) {
+    	return characters;
+    }
+
+	@Override
+	protected Set<Integer> defaultCounts(int minParts, int maxParts) {
+		TreeSet<Integer> counts = new TreeSet<Integer>();
+		for (int i = minParts; i <= maxParts; i++)
+			counts.add(i);
+		return counts;
+	}
+
+	@Override
+	public Distribution defaultDistribution(Uniqueness uniqueness) {
+    	return SequenceManager.STEP_SEQUENCE;
+	}
 
 }

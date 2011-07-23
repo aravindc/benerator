@@ -24,6 +24,7 @@ package org.databene.benerator.factory;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
@@ -49,9 +50,10 @@ import org.databene.commons.ArrayUtil;
 import org.databene.commons.Assert;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ComparableComparator;
-import org.databene.commons.ConfigurationError;
+import org.databene.commons.Converter;
 import org.databene.commons.NumberUtil;
 import org.databene.commons.OrderedSet;
+import org.databene.commons.converter.AnyConverter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.commons.converter.NumberToNumberConverter;
 import org.databene.commons.math.ArithmeticEngine;
@@ -89,26 +91,22 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> Generator<T> createFromWeightedLiteralList(String valueSpec, Class<T> targetType,
             Distribution distribution, boolean unique) {
-	    WeightedSample<T>[] samples = (WeightedSample<T>[]) BeneratorScriptParser.parseWeightedLiteralList(valueSpec);
-    	String[] values = new String[samples.length];
-    	for (int i = 0; i < samples.length; i++) {
-    		T rawValue = samples[i].getValue();
-    		if (rawValue == null)
-    			throw new ConfigurationError("null is not supported in values='...', drop it from the list and use a nullQuota instead");
-			String value = String.valueOf(rawValue);
-    		values[i] = value;
-    	}
-	    SequenceGenerator<String> source = new SequenceGenerator<String>(String.class, values);
-	    return GeneratorFactoryUtil.createConvertingGenerator(source, ConverterManager.getInstance().createConverter(String.class, targetType));
+	    List<WeightedSample<?>> samples = CollectionUtil.toList(BeneratorScriptParser.parseWeightedLiteralList(valueSpec));
+		List<?> values = GeneratorFactoryUtil.extractValues((List) samples);
+	    Converter<?, T> typeConverter = new AnyConverter<T>(targetType);
+	    Collection<T> convertedValues = ConverterManager.convertAll((List) values, typeConverter);
+	    return createSampleGenerator(convertedValues, targetType, true);
     }
 
     @Override
 	public <T> Generator<T> createWeightedSampleGenerator(Collection<WeightedSample<T>> samples, Class<T> targetType) {
-    	return super.createWeightedSampleGenerator(samples, targetType); // TODO Eq. version
+    	List<T> values = GeneratorFactoryUtil.extractValues(samples);
+	    return createSampleGenerator(values, targetType, true);
     }
+
 
     @Override
 	public Generator<Date> createDateGenerator(
@@ -220,17 +218,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         return new SequenceGenerator<Character>(Character.class, defaultSubSet(characters));
     }
 
-    private void addSelection(Set<Character> ofChars, Set<Character> toChars) {
-		if (ofChars.size() == 0)
-			return;
-		Character[] array = CollectionUtil.toArray(ofChars);
-		toChars.add(array[0]);
-		if (array.length >= 3)
-			toChars.add(array[array.length/2]);
-		if (array.length >= 2)
-			toChars.add(ArrayUtil.lastElementOf(array));
-	}
-
 	protected Set<Integer> defaultCounts(int minParts, int maxParts) {
 		Set<Integer> lengths = new TreeSet<Integer>();
 		lengths.add(minParts); 
@@ -282,6 +269,17 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         	result.add(c);
         return result;
     }
+
+    protected void addSelection(Set<Character> ofChars, Set<Character> toChars) {
+		if (ofChars.size() == 0)
+			return;
+		Character[] array = CollectionUtil.toArray(ofChars);
+		toChars.add(array[0]);
+		if (array.length >= 3)
+			toChars.add(array[array.length/2]);
+		if (array.length >= 2)
+			toChars.add(ArrayUtil.lastElementOf(array));
+	}
 
     // defaults --------------------------------------------------------------------------------------------------------
     
