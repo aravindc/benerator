@@ -126,6 +126,15 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 	}
 
 	@Test
+	public void testSimpleCSVImportWithOffset() {
+		SimpleTypeDescriptor type = new SimpleTypeDescriptor("givenNameWithOffset");
+		type.setSource(NAME_CSV);
+		type.setOffset(1);
+		Generator<String> generator = createAndInitGenerator(type, Uniqueness.NONE);
+		expectGeneratedSequence(generator, "Otto").withCeasedAvailability();
+	}
+
+	@Test
 	public void testTabSeparatedCSVImport() {
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("name");
 		type.setSource(NAMES_TAB_CSV);
