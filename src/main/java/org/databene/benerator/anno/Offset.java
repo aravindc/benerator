@@ -27,7 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO Document class.<br/><br/>
+ * Annotation which specifies that a given number of generated data elements 
+ * should be skipped when testing.<br/><br/>
  * Created: 23.07.2011 11:20:59
  * @since 0.7.0
  * @author Volker Bergmann

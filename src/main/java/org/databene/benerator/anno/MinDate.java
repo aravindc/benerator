@@ -27,9 +27,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * TODO Document class.<br/><br/>
+ * Specifies a minimum date to use for testing.<br/><br/>
  * Created: 23.07.2011 17:19:56
- * @since TODO version
+ * @since 0.7.0
  * @author Volker Bergmann
  */
 @Retention(RetentionPolicy.RUNTIME)

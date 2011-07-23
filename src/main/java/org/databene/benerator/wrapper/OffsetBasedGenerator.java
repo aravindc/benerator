@@ -25,7 +25,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} proxy which hides the first products of its source generator.<br/><br/>
  * Created: 23.07.2011 10:00:49
  * @since 0.7.0
  * @author Volker Bergmann
