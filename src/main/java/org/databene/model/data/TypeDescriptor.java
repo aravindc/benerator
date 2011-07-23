@@ -52,6 +52,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
     public static final String SCRIPT       = "script";
 
     public static final String SOURCE       = "source";
+    public static final String OFFSET       = "offset";
     public static final String SELECTOR     = "selector";
     public static final String SUB_SELECTOR = "subSelector";
     public static final String ENCODING     = "encoding";
@@ -99,6 +100,7 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
         addConfig(PATTERN,        String.class);
         addConfig(SCRIPT,         String.class);
         addConfig(SOURCE,         String.class);
+        addConfig(OFFSET,         Integer.class);
         addConfig(SELECTOR,       String.class);
         addConfig(SUB_SELECTOR,   String.class);
         addConfig(SEPARATOR,      String.class);
@@ -184,6 +186,14 @@ public abstract class TypeDescriptor extends FeatureDescriptor {
 
     public void setSource(String source) {
         setDetailValue(SOURCE, source);
+    }
+
+    public Integer getOffset() {
+        return (Integer) getDetailValue(OFFSET);
+    }
+
+    public void setOffset(Integer offset) {
+        setDetailValue(OFFSET, offset);
     }
 
     public String getSelector() {
