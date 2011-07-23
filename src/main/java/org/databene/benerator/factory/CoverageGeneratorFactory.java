@@ -50,7 +50,7 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	@Override
 	public Generator<Date> createDateGenerator(
             Date min, Date max, long granularity, Distribution distribution) {
-    	return new GeneratorChain<Date>(Date.class, // TODO avoid duplicates
+    	return new GeneratorChain<Date>(Date.class, true, 
     		super.createDateGenerator(min, max, granularity, distribution),
     		serialFactory.createDateGenerator(min, max, granularity, distribution)
 		);
@@ -61,8 +61,8 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	public <T extends Number> Generator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
-    	return new GeneratorChain<T>(numberType, // TODO avoid duplicates
-    			super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness),
+    	return new GeneratorChain<T>(numberType, true, 
+    		super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness),
     		serialFactory.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, totalDigits, fractionDigits, granularity, distribution, uniqueness)
 		);
     }
@@ -71,7 +71,7 @@ public class CoverageGeneratorFactory extends EquivalenceGeneratorFactory { // T
 	@Override
 	public Generator<String> createStringGenerator(Set<Character> chars,
 			Integer minLength, Integer maxLength, Distribution lengthDistribution, boolean unique) {
-    	return new GeneratorChain<String>(String.class, // TODO avoid duplicates
+    	return new GeneratorChain<String>(String.class, true, 
     		super.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique),
     		serialFactory.createStringGenerator(chars, minLength, maxLength, lengthDistribution, unique)
 		);
