@@ -50,7 +50,6 @@ import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
-import org.databene.benerator.wrapper.CyclicGeneratorProxy;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
@@ -228,15 +227,6 @@ public class DescriptorUtil {
         if (unique == null)
             unique = context.getGeneratorFactory().defaultUnique();
         return unique;
-    }
-
-	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
-		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
-		return wrapWithProxy(generator, cyclic);
-    }
-
-	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, boolean cyclic) {
-	    return (cyclic ? new CyclicGeneratorProxy<T>(generator) : generator);
     }
 
 	public static char getSeparator(TypeDescriptor descriptor, BeneratorContext context) {
