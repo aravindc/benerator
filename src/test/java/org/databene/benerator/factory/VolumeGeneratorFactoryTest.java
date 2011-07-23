@@ -374,7 +374,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     @Test
     public void testGetArraySourceGenerator() {
         Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator(
-                "file://org/databene/csv/names-abc.csv", ',', true, Encodings.UTF_8);
+                "file://org/databene/csv/names-abc.csv", ',', Encodings.UTF_8, true);
         generator.init(context);
         assertArrayEquals(new String[] { "Alice", "Bob" }, generator.generate());
         assertArrayEquals(new String[] { "Charly"}, generator.generate());
