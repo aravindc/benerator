@@ -68,10 +68,10 @@ public class XLSEntityIteratorTest extends XLSTest {
 	public void testImport() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
-			assertProduct(PROD1, DataUtil.nextNotNull(iterator));
-			Entity next = DataUtil.nextNotNull(iterator);
+			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
+			Entity next = DataUtil.nextNotNullData(iterator);
 			assertProduct(PROD2, next);
-			assertPerson(PERSON1, DataUtil.nextNotNull(iterator));
+			assertPerson(PERSON1, DataUtil.nextNotNullData(iterator));
 			assertNull(iterator.next(new DataContainer<Entity>()));
 		} finally {
 			iterator.close();
@@ -109,8 +109,8 @@ public class XLSEntityIteratorTest extends XLSTest {
 		// test import
 		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
 		try {
-			assertProduct(PROD1, DataUtil.nextNotNull(iterator));
-			assertProduct(PROD2, DataUtil.nextNotNull(iterator));
+			assertProduct(PROD1, DataUtil.nextNotNullData(iterator));
+			assertProduct(PROD2, DataUtil.nextNotNullData(iterator));
 			assertNull(iterator.next(new DataContainer<Entity>()));
 		} finally {
 			iterator.close();

@@ -59,11 +59,11 @@ public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest {
 
     private void check(String uri) throws IOException {
         DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new BeneratorContext());
-        assertEquals(createPerson("Alice", "23"), DataUtil.nextNotNull(iterator));
-        assertEquals(createPerson("Bob", "34"), DataUtil.nextNotNull(iterator));
-        assertEquals(createPerson("Charly", "45"), DataUtil.nextNotNull(iterator));
-        assertEquals(createRole("Admin"), DataUtil.nextNotNull(iterator));
-        assertEquals(createRole("User"), DataUtil.nextNotNull(iterator));
+        assertEquals(createPerson("Alice", "23"), DataUtil.nextNotNullData(iterator));
+        assertEquals(createPerson("Bob", "34"), DataUtil.nextNotNullData(iterator));
+        assertEquals(createPerson("Charly", "45"), DataUtil.nextNotNullData(iterator));
+        assertEquals(createRole("Admin"), DataUtil.nextNotNullData(iterator));
+        assertEquals(createRole("User"), DataUtil.nextNotNullData(iterator));
         assertUnavailable(iterator);
         iterator.close();
     }
