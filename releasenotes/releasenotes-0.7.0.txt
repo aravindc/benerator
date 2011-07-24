@@ -18,6 +18,7 @@ changes
 - removed property 'db' from SequenceTableGenerator (replaced with property 'database')
 - renamed Entity2BeanConverter to Entity2JavaConverter
 - replaced OfflineSequenceGenerator with CachedSequenceGenerator
+- replaced Iterable and Iterator with DataSource and DataIterator
 
 
 enhancements
