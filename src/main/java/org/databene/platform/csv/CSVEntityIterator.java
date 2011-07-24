@@ -27,13 +27,13 @@
 package org.databene.platform.csv;
 
 import org.databene.platform.array.Array2EntityConverter;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.commons.ArrayUtil;
-import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.Patterns;
 import org.databene.commons.StringUtil;
@@ -42,12 +42,10 @@ import org.databene.commons.Tabular;
 import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.commons.iterator.ConvertingIterator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -58,16 +56,16 @@ import java.util.List;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
+public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 
     private String uri;
-    private char   separator;
+    private char separator;
     private String encoding;
     private String[] columns;
     private Converter<String, ?> preprocessor;
     private boolean expectingHeader;
 
-    private HeavyweightIterator<Entity> source;
+    private DataIterator<Entity> source;
     
     private boolean initialized;
     private ComplexTypeDescriptor entityDescriptor;
@@ -122,27 +120,14 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
 		}
     }
 
-    // HeavyweightIterator interface -----------------------------------------------------------------------------------
+    // DataIterator interface ------------------------------------------------------------------------------------------
     
-	public void remove() {
-		source.remove();
+	public Class<Entity> getType() {
+		return Entity.class;
 	}
-
-    public boolean hasNext() {
-    	assureInitialized();
-        return source.hasNext();
-    }
-    
-    private void assureInitialized() {
-    	if (!initialized) {
-    		init();
-    		initialized = true;
-    	}
-	}
-
+	
 	public Entity next() {
-    	if (!source.hasNext())
-    		throw new IllegalStateException("No more entity to fetch, check hasNext() before calling next()");
+    	assureInitialized();
         return source.next();
     }
     
@@ -153,8 +138,9 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
     public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, Patterns patterns) throws FileNotFoundException {
     	List<Entity> list = new ArrayList<Entity>();
     	CSVEntityIterator iterator = new CSVEntityIterator(uri, descriptor, preprocessor, separator, encoding);
-    	while (iterator.hasNext())
-    		list.add(iterator.next());
+    	Entity entity;
+    	while ((entity = iterator.next()) != null)
+    		list.add(entity);
     	return list;
     }
 
@@ -168,18 +154,23 @@ public class CSVEntityIterator implements HeavyweightIterator<Entity>, Tabular {
 
     // private helpers -------------------------------------------------------------------------------------------------
     
+    private void assureInitialized() {
+    	if (!initialized) {
+    		init();
+    		initialized = true;
+    	}
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void init() {
 		try {
-			Iterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
-			if (!cellIterator.hasNext())
-				throw new ConfigurationError("empty CSV file");
+			DataIterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
 			if (expectingHeader)
 				setColumns(cellIterator.next());
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
 	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, columns, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);
-	        this.source = new ConvertingIterator<String[], Entity>(cellIterator, converter);
+	        this.source = new ConvertingDataIterator<String[], Entity>(cellIterator, converter);
 		} catch (IOException e) {
 			throw new RuntimeException("Error in processing " + uri, e);
 		}

@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.Tabular;
@@ -35,6 +34,7 @@ import org.databene.document.csv.CSVUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Imports {@link Entity} data from CSV files.<br/><br/>
@@ -118,7 +118,7 @@ public class CSVEntitySource extends FileBasedEntitySource implements Tabular {
 
     // EntitySource interface ------------------------------------------------------------------------------------------
 
-	public HeavyweightIterator<Entity> iterator() {
+	public DataIterator<Entity> iterator() {
         try {
 			CSVEntityIterator iterator = new CSVEntityIterator(resolveUri(), entityDescriptor, preprocessor, separator, encoding);
 			if (!expectingHeader) {

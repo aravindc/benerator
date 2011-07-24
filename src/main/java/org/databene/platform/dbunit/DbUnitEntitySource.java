@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,9 @@ package org.databene.platform.dbunit;
 import java.io.IOException;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Imports entities from a DbUnit XML file.<br/>
@@ -46,7 +46,7 @@ public class DbUnitEntitySource extends FileBasedEntitySource {
         super(uri, context);
     }
     
-    public HeavyweightIterator<Entity> iterator() {
+    public DataIterator<Entity> iterator() {
         try {
             return new DbUnitEntityIterator(resolveUri(), context);
         } catch (IOException e) {

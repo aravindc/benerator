@@ -107,8 +107,8 @@ public class Noun {
 		Set<Noun> nouns = new HashSet<Noun>(500);
 		String url = LocaleUtil.availableLocaleUrl("/org/databene/domain/lang/noun", locale, ".csv");
 		CSVLineIterator iterator = new CSVLineIterator(url, ',', true);
-		while (iterator.hasNext()) {
-			String[] line = iterator.next();
+		String[] line;
+		while ((line = iterator.next()) != null) {
 			String singular = (StringUtil.isEmpty(line[0]) ? null : line[0].trim());
 			String plural;
 			if (line.length > 1 && !StringUtil.isEmpty(line[1])) {

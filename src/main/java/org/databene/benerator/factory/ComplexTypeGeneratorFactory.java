@@ -133,7 +133,7 @@ public class ComplexTypeGeneratorFactory {
         else {
         	String lcSourceName = sourceSpec.toLowerCase();
         	if (lcSourceName.endsWith(".xml"))
-	            generator = new IteratingGenerator<Entity>(new DbUnitEntitySource(sourceSpec, context));
+	            generator = new DataSourceGenerator<Entity>(new DbUnitEntitySource(sourceSpec, context));
 	        else if (lcSourceName.endsWith(".csv"))
 	            generator = createCSVSourceGenerator(descriptor, context, sourceSpec);
 	        else if (lcSourceName.endsWith(".flat"))
@@ -177,7 +177,7 @@ public class ComplexTypeGeneratorFactory {
 	        else 
 	        	generator = new IteratingGenerator<Entity>(storage.queryEntities(descriptor.getName(), selector, context));
 	    } else if (sourceObject instanceof EntitySource) {
-	        generator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
+	        generator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
 	    } else if (sourceObject instanceof Generator) {
 	        generator = (Generator<Entity>) sourceObject;
 	    } else
@@ -198,7 +198,7 @@ public class ComplexTypeGeneratorFactory {
 		Converter<String, String> scriptConverter = DescriptorUtil.createScriptConverter(context);
 		FlatFileEntitySource iterable = new FlatFileEntitySource(sourceName, descriptor, scriptConverter, encoding, null, ffcd);
 		iterable.setContext(context);
-		generator = new IteratingGenerator<Entity>(iterable);
+		generator = new DataSourceGenerator<Entity>(iterable);
 		return generator;
 	}
 

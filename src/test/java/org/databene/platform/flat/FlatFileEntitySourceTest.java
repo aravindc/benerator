@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,12 +31,11 @@ import static junit.framework.Assert.*;
 import org.databene.document.flat.FlatFileColumnDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.webdecs.DataIterator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.format.Alignment;
-
-import java.util.Iterator;
 
 /**
  * Tests the {@link FlatFileEntitySource}.<br/>
@@ -63,44 +62,35 @@ public class FlatFileEntitySourceTest {
     public void testUnfiltered() {
         FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), null, descriptors);
         source.setContext(new BeneratorContext());
-        Iterator<Entity> iterator = source.iterator();
-        assertTrue(iterator.hasNext());
+        DataIterator<Entity> iterator = source.iterator();
         assertEquals(ALICE, iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(BOB, iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(CHARLY, iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
         iterator = source.iterator();
-        assertTrue(iterator.hasNext());
         assertEquals(ALICE, iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(BOB, iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(CHARLY, iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
     }
     
     @Test
     public void testFiltered() {
         FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), "Bob.*", descriptors);
         source.setContext(new BeneratorContext());
-        Iterator<Entity> iterator = source.iterator();
-        assertTrue(iterator.hasNext());
+        DataIterator<Entity> iterator = source.iterator();
         assertEquals(BOB, iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
         iterator = source.iterator();
-        assertTrue(iterator.hasNext());
         assertEquals(BOB, iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
     }
     
     @Test(expected = InvalidGeneratorSetupException.class)
     public void testMissingColumnSpec() {
         FlatFileEntitySource source = new FlatFileEntitySource(URI, descriptor, SystemInfo.getFileEncoding(), null);
         source.setContext(new BeneratorContext());
-        Iterator<Entity> iterator = source.iterator();
-        assertTrue(iterator.hasNext());
+        DataIterator<Entity> iterator = source.iterator();
         assertEquals(BOB, iterator.next());
     }
     

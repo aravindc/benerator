@@ -24,13 +24,13 @@ package org.databene.benerator.test;
 import java.util.List;
 
 import org.databene.commons.CollectionUtil;
-import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.iterator.HeavyweightIteratorProxy;
 import org.databene.model.data.AbstractEntitySource;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.PartDescriptor;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.util.DataIteratorFromJavaIterator;
 
 /**
  * {@link EntitySource} implementation for testing.<br/>
@@ -45,8 +45,8 @@ public class PersonIterable extends AbstractEntitySource {
 			"Person").withComponent(new PartDescriptor("name", "string"))
 			.withComponent(new PartDescriptor("age", "int"));
 
-	public HeavyweightIterator<Entity> iterator() {
-		return new HeavyweightIteratorProxy<Entity>(createPersons().iterator());
+	public DataIterator<Entity> iterator() {
+		return new DataIteratorFromJavaIterator<Entity>(createPersons().iterator(), Entity.class);
 	}
 
 	public static List<Entity> createPersons() {

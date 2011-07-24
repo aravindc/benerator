@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,10 +33,8 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.converter.NoOpConverter;
-import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.xls.XLSLineIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -47,6 +45,7 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.array.Array2EntityConverter;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Iterates an Excel sheet and maps its rows to {@link Entity} instances.<br/>
@@ -56,7 +55,7 @@ import org.databene.platform.array.Array2EntityConverter;
  * @author Volker Bergmann
  */
 
-public class XLSEntityIterator implements HeavyweightIterator<Entity> {
+public class XLSEntityIterator implements DataIterator<Entity> {
 
 	private String uri;
 	
@@ -66,7 +65,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 	
 	private Converter<String, ?> preprocessor;
 	
-	private HeavyweightIterator<Entity> source;
+	private DataIterator<Entity> source;
 	
 	// constructors ----------------------------------------------------------------------------------------------------
 
@@ -82,26 +81,27 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		this.sheetNo = -1;
 	}
 
-	// HeavyweightIterator interface implementation --------------------------------------------------------------------
+	// DataSource interface implementation -----------------------------------------------------------------------------
 
-	public void remove() {
-		source.remove();
+	public Class<Entity> getType() {
+		return Entity.class;
 	}
-
-	public boolean hasNext() {
-		if (sheetNo == -1 || (source != null && !source.hasNext()))
+	
+	public synchronized Entity next() {
+		if (sheetNo == -1)
 			nextSheet();
-		return (source != null && source.hasNext());
+		Entity result;
+		do {
+			if (source == null)
+				return null;
+			result = source.next();
+			if (result == null)
+				nextSheet();
+		} while (source != null && result == null);
+		return result;
 	}
 
-	public Entity next() {
-		if (!hasNext())
-			throw new IllegalStateException("No more entity to fetch, check hasNext() before calling next()");
-		else
-			return source.next();
-	}
-
-	public void close() {
+	public synchronized void close() {
 		IOUtil.close(source);
 	}
 	
@@ -111,8 +111,9 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 			throws IOException {
     	List<Entity> list = new ArrayList<Entity>();
     	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor);
-    	while (iterator.hasNext())
-    		list.add(iterator.next());
+		Entity row;
+    	while ((row = iterator.next()) != null)
+			list.add(row);
     	return list;
 	}
 
@@ -133,48 +134,63 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 
     private void nextSheet() {
     	if (sheetNo < workbook.getNumberOfSheets() - 1) {
+    		if (source != null)
+    			IOUtil.close(source);
 			this.sheetNo++;
 			source = createSheetIterator(
-					workbook.getSheetAt(sheetNo), workbook.getSheetName(sheetNo), preprocessor, uri);
+				workbook.getSheetAt(sheetNo), workbook.getSheetName(sheetNo), preprocessor, uri);
     	} else
     		source = null;
     }
 
-	private static HeavyweightIterator<Entity> createSheetIterator(
+	private static DataIterator<Entity> createSheetIterator(
 			HSSFSheet sheet, String sheetName, Converter<String, ?> preprocessor, String uri) {
 		return new SheetIterator(sheet, sheetName, preprocessor, uri);
     }
 	
-	static class SheetIterator extends ConvertingIterator<Object[], Entity> {
+	static class SheetIterator implements DataIterator<Entity> {
 		
 	    private DataModel dataModel = DataModel.getDefaultInstance();
 
 	    private String defaultProviderId;
 	    private ComplexTypeDescriptor complexTypeDescriptor = null;
-	    private Entity next;
+	    DataIterator<Object[]> source;
+	    Converter<Object[], Entity> converter;
+	    Object[] buffer;
 		
 		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
-	        super(new XLSLineIterator(sheet, true, preprocessor), null);
+	        this.source = new XLSLineIterator(sheet, true, preprocessor);
 	        this.defaultProviderId = defaultProviderId;
 	        init(complexTypeName);
         }
 		
-		@Override
-		public boolean hasNext() {
-		    return (next != null);
+		public Class<Entity> getType() {
+			return Entity.class;
 		}
 		
-		@Override
-		public synchronized Entity next() {
-			Entity result = next;
-	        next = (super.hasNext() ? super.next() : null);
-			return result;
+		public Entity next() {
+			Object[] rawData;
+			if (buffer != null) {
+				rawData = buffer;
+				buffer = null;
+			} else
+				rawData = source.next();
+			return converter.convert(rawData);
 		}
-
+		
+		public void close() {
+			source.close();
+		}
+		
 		private void init(String complexTypeName) {
-			Object[] feed = source.next();
+			buffer = source.next();
 			String headers[] = ((XLSLineIterator) source).getHeaders();
-		    complexTypeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(complexTypeName);
+		    createComplexTypeDescriptor(complexTypeName, headers, buffer);
+		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
+        }
+
+		protected void createComplexTypeDescriptor(String complexTypeName, String[] headers, Object[] feed) {
+			complexTypeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(complexTypeName);
 		    if (complexTypeDescriptor == null) {
 		    	complexTypeDescriptor = new ComplexTypeDescriptor(complexTypeName);
 		    	for (int i = 0; i < headers.length; i++) {
@@ -193,9 +209,7 @@ public class XLSEntityIterator implements HeavyweightIterator<Entity> {
 		    	}
 		    	provider.addDescriptor(complexTypeDescriptor);
 		    }
-		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
-		    next = converter.convert(feed);
-        }
+		}
 		
 	}
 	

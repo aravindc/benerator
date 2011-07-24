@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,8 +31,9 @@ import org.databene.document.csv.CSVLineIterator;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityIterator;
 import org.databene.platform.java.Entity2JavaConverter;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.commons.*;
-import org.databene.commons.iterator.ConvertingIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,14 +74,13 @@ public class CityManager {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private static void parseStateFile(Country country) {
 		try {
-			Iterator<State> iterator = new ConvertingIterator<Entity, State>(
+			DataIterator<State> iterator = new ConvertingDataIterator<Entity, State>(
 					new CSVEntityIterator("/org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
 							"org.databene.domain.address.State", ',', Encodings.UTF_8),
 					(Converter) new Entity2JavaConverter());
-			while (iterator.hasNext()) {
-				State state = iterator.next();
+			State state;
+			while ((state = iterator.next()) != null)
 				country.addState(state);
-			}
 		} catch (FileNotFoundException e) {
 			LOGGER.warn("No state definition file found: " + e.getMessage());
 		}
@@ -90,8 +90,8 @@ public class CityManager {
 		CSVLineIterator iterator = new CSVLineIterator(filename, ';', Encodings.UTF_8);
         String[] header = iterator.next();
         int warnCount = 0;
-        while (iterator.hasNext()) {
-            String[] cells = iterator.next();
+        String[] cells;
+        while ((cells = iterator.next()) != null) {
             if (cells.length == 0)
                 continue;
             if (LOGGER.isDebugEnabled())

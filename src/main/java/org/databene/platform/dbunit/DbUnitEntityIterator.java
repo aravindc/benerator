@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,8 +30,8 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.DataIterator;
 import org.databene.commons.Context;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.xml.XMLUtil;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * Created: 05.08.2007 07:43:36
  * @author Volker Bergmann
  */
-public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
+public class DbUnitEntityIterator implements DataIterator<Entity> {
 
     private static final Logger logger = LoggerFactory.getLogger(DbUnitEntityIterator.class);
 
@@ -77,26 +77,25 @@ public class DbUnitEntityIterator implements HeavyweightIterator<Entity> {
         this.nextRowNum = 0;
     }
     
-    // HeavyweightIterator interface implementation --------------------------------------------------------------------
+    // DataIterator interface implementation ---------------------------------------------------------------------------
 
-    public boolean hasNext() {
-        return nextRowNum < rows.size();
+    public Class<Entity> getType() {
+    	return Entity.class;
     }
-
+    
     public Entity next() {
-        if (nextRowNum < rows.size()) {
-            Row row = rows.get(nextRowNum);
-            String[] rowValues = row.getValues();
-            ComplexTypeDescriptor descriptor = getType(row);
-			Entity result = new Entity(descriptor);
-            for (int i = 0; i < rowValues.length; i++) {
-                String rowValue = rowValues[i];
-				result.setComponent(row.getColumnName(i), rowValue);
-            }
-            nextRowNum++;
-            return result;
-        } else
-            return null;
+        if (nextRowNum >= rows.size())
+        	return null;
+        Row row = rows.get(nextRowNum);
+        String[] rowValues = row.getValues();
+        ComplexTypeDescriptor descriptor = getType(row);
+		Entity result = new Entity(descriptor);
+        for (int i = 0; i < rowValues.length; i++) {
+            String rowValue = rowValues[i];
+			result.setComponent(row.getColumnName(i), rowValue);
+        }
+        nextRowNum++;
+        return result;
     }
 
     public void remove() {

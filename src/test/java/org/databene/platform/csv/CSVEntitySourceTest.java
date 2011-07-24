@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,8 +32,7 @@ import static junit.framework.Assert.*;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
-
-import java.util.Iterator;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Tests the {@link CSVEntitySource}.<br/><br/>
@@ -73,19 +72,14 @@ public class CSVEntitySourceTest {
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    private void checkIteration(Iterator<Entity> iterator, String col1, String col2, boolean headersAsEntityExpected) {
+    private void checkIteration(DataIterator<Entity> iterator, String col1, String col2, boolean headersAsEntityExpected) {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
-        if (headersAsEntityExpected) {
-            assertTrue(iterator.hasNext());
+        if (headersAsEntityExpected)
             assertEquals(new Entity(descriptor, col1, "name", col2, "age"), iterator.next());
-        }
-        assertTrue(iterator.hasNext());
         assertEquals(new Entity(descriptor, col1, "Alice",  col2, "23"), iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(new Entity(descriptor, col1, "Bob",    col2, "34"), iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(new Entity(descriptor, col1, "Charly", col2, "45"), iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
     }
     
 }

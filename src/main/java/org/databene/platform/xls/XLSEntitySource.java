@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,11 +30,11 @@ import java.io.IOException;
 
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.model.data.Entity;
 import org.databene.model.data.EntitySource;
 import org.databene.model.data.FileBasedEntitySource;
+import org.databene.webdecs.DataIterator;
 
 /**
  * Implements an {@link EntitySource} that reads Entities from an Excel sheet.<br/>
@@ -65,7 +65,7 @@ public class XLSEntitySource extends FileBasedEntitySource {
 
     // EntityIterable interface ----------------------------------------------------------------------------------------
 
-    public HeavyweightIterator<Entity> iterator() {
+    public DataIterator<Entity> iterator() {
         try {
 			return new XLSEntityIterator(resolveUri(), preprocessor);
 		} catch (IOException e) {

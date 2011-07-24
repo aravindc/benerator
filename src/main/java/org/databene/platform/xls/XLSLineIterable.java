@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightIterator;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.document.xls.XLSLineIterator;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
 
 /**
  * {@link Iterable} implementation which creates {@link Iterator}s 
@@ -36,7 +36,7 @@ import org.databene.document.xls.XLSLineIterator;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class XLSLineIterable implements HeavyweightTypedIterable<Object[]> {
+public class XLSLineIterable implements DataSource<Object[]> {
 	
 	String uri;
 	Converter<String, ?> preprocessor;
@@ -52,7 +52,7 @@ public class XLSLineIterable implements HeavyweightTypedIterable<Object[]> {
 		return Object[].class;
 	}
 
-	public HeavyweightIterator<Object[]> iterator() {
+	public DataIterator<Object[]> iterator() {
 		try {
 			return new XLSLineIterator(uri, 0, usingHeaders); // TODO use preprocessor
 		} catch (IOException e) {

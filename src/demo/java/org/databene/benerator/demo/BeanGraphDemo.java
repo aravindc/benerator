@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,13 +37,16 @@ import java.io.BufferedReader;
  * Demonstrates how to create (simple) bean graphs from a CSV file.<br/>
  * <br/>
  * Created: 19.07.2007 07:06:22
+ * @author Volker Bergmann
  */
 public class BeanGraphDemo {
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = IOUtil.getReaderForURI("org/databene/benerator/products.csv");
         CSVToJavaBeanMapper<Product> mapper = new CSVToJavaBeanMapper<Product>(reader, Product.class);
-        while (mapper.hasNext())
-            System.out.println(mapper.next());
+        Product value;
+        while ((value = mapper.next()) != null)
+			System.out.println(value);
     }
+    
 }

@@ -49,6 +49,7 @@ import org.databene.benerator.wrapper.AsStringGenerator;
 import org.databene.benerator.wrapper.CollectionGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.CyclicGeneratorProxy;
+import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.NonClosingGeneratorProxy;
@@ -69,8 +70,8 @@ import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
 import org.databene.commons.iterator.TextLineIterable;
 import org.databene.commons.validator.StringLengthValidator;
-import org.databene.document.csv.CSVCellIterable;
-import org.databene.document.csv.CSVLineIterable;
+import org.databene.document.csv.CSVCellSource;
+import org.databene.document.csv.CSVLineSource;
 import org.databene.model.data.FeatureDescriptor;
 import org.databene.model.data.FeatureDetail;
 import org.databene.model.data.InstanceDescriptor;
@@ -128,7 +129,7 @@ public class GeneratorFactoryUtil {
      * @return a generator of the desired characteristics
      */
     public static Generator<String> createCSVCellGenerator(String uri, char separator, String encoding) {
-        return new IteratingGenerator<String>(new CSVCellIterable(uri, separator));
+        return new DataSourceGenerator<String>(new CSVCellSource(uri, separator));
     }
 
     /**
@@ -141,7 +142,7 @@ public class GeneratorFactoryUtil {
      * @return a generator of the desired characteristics
      */
     public static Generator<String[]> createCSVLineGenerator(String uri, char separator, String encoding, boolean ignoreEmptyLines) {
-        return new IteratingGenerator<String[]>(new CSVLineIterable(uri, separator, ignoreEmptyLines, encoding));
+        return new DataSourceGenerator<String[]>(new CSVLineSource(uri, separator, ignoreEmptyLines, encoding));
     }
 
     /**
@@ -150,7 +151,7 @@ public class GeneratorFactoryUtil {
      * @return a generator of the desired characteristics
      */
     public static Generator<Object[]> createXLSLineGenerator(String uri) {
-        return new IteratingGenerator<Object[]>(new XLSLineIterable(uri, false, null));
+        return new DataSourceGenerator<Object[]>(new XLSLineIterable(uri, false, null));
     }
 
     /**

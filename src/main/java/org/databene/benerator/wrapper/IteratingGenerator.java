@@ -72,11 +72,11 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-	public boolean isParallelizable() {
+	public boolean isParallelizable() { // TODO
 	    return true;
     }
 
-	public boolean isThreadSafe() {
+	public boolean isThreadSafe() { // TODO
 	    return true;
     }
     

@@ -26,7 +26,7 @@
 
 package org.databene.model.data;
 
-import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.webdecs.DataSource;
 
 /**
  * Common interface for all Entity sources.<br/>
@@ -35,6 +35,6 @@ import org.databene.commons.HeavyweightTypedIterable;
  * @since 0.5.6
  * @author Volker Bergmann
  */
-public interface EntitySource extends HeavyweightTypedIterable<Entity> {
+public interface EntitySource extends DataSource<Entity> {
 
 }

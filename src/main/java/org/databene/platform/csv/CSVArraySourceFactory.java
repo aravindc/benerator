@@ -24,11 +24,11 @@ package org.databene.platform.csv;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.SourceFactory;
 import org.databene.commons.converter.ArrayTypeConverter;
-import org.databene.commons.converter.ConvertingIterable;
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightTypedIterable;
-import org.databene.commons.iterator.HeadSkippingIterable;
-import org.databene.document.csv.CSVLineIterable;
+import org.databene.document.csv.CSVLineSource;
+import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.ConvertingDataSource;
+import org.databene.webdecs.util.OffsetDataSource;
 
 /**
  * {@link SourceFactory} which creates array {@link Iterable}s for CSV files.<br/><br/>
@@ -50,11 +50,11 @@ public class CSVArraySourceFactory implements SourceFactory<Object[]> {
     }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public HeavyweightTypedIterable<Object[]> create(String uri, BeneratorContext context) {
-		CSVLineIterable source = new CSVLineIterable(uri, separator, true, encoding);
+	public DataSource<Object[]> create(String uri, BeneratorContext context) {
+		CSVLineSource source = new CSVLineSource(uri, separator, true, encoding);
 		Converter<String[], Object[]> converter = new ArrayTypeConverter(Object.class);
-		HeavyweightTypedIterable<Object[]> result = new ConvertingIterable<String[], Object[]>(source, converter);
-		result = new HeadSkippingIterable<Object[]>(result);
+		DataSource<Object[]> result = new ConvertingDataSource<String[], Object[]>(source, converter);
+		result = new OffsetDataSource<Object[]>(result, 1); // offset = 1 in order to skip header row
 		return result;
     }
 

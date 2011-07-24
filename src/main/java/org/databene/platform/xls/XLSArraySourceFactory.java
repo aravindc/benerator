@@ -24,7 +24,7 @@ package org.databene.platform.xls;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.SourceFactory;
 import org.databene.commons.Converter;
-import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.webdecs.DataSource;
 
 /**
  * {@link SourceFactory} implementation which creates {@link XLSLineIterable}s.<br/><br/>
@@ -40,7 +40,7 @@ public class XLSArraySourceFactory implements SourceFactory<Object[]> {
 	    this.scriptConverter = scriptConverter;
     }
 
-	public HeavyweightTypedIterable<Object[]> create(String uri, BeneratorContext context) {
+	public DataSource<Object[]> create(String uri, BeneratorContext context) {
 		return new XLSLineIterable(uri, true, scriptConverter);
 	}
 

@@ -30,7 +30,6 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.Escalator;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.LoggerEscalator;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.bean.ArrayPropertyExtractor;
@@ -38,14 +37,16 @@ import org.databene.commons.converter.ArrayConverter;
 import org.databene.commons.converter.ConverterChain;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.commons.format.PadFormat;
-import org.databene.commons.iterator.ConvertingIterator;
 import org.databene.document.flat.FlatFileColumnDescriptor;
-import org.databene.document.flat.FlatFileLineIterable;
+import org.databene.document.flat.FlatFileLineSource;
 import org.databene.document.flat.FlatFileUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.FileBasedEntitySource;
 import org.databene.platform.array.Array2EntityConverter;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.ConvertingDataIterator;
 
 /**
  * Reads Entities from a flat file.<br/>
@@ -65,7 +66,7 @@ public class FlatFileEntitySource extends FileBasedEntitySource {
     private boolean initialized;
     
     private Converter<String, String> preprocessor;
-    protected Iterable<String[]> iterable;
+    protected DataSource<String[]> source;
     protected Converter<String[], Entity> converter;
 
     public FlatFileEntitySource() {
@@ -126,10 +127,10 @@ public class FlatFileEntitySource extends FileBasedEntitySource {
     	return Entity.class;
     }
     
-    public HeavyweightIterator<Entity> iterator() {
+    public DataIterator<Entity> iterator() {
         if (!initialized)
             init();
-        return new ConvertingIterator<String[], Entity>(this.iterable.iterator(), converter);
+        return new ConvertingDataIterator<String[], Entity>(this.source.iterator(), converter);
     }
     
     // private helpers -------------------------------------------------------------------------------------------------
@@ -138,13 +139,13 @@ public class FlatFileEntitySource extends FileBasedEntitySource {
     	if (ArrayUtil.isEmpty(descriptors))
     		throw new InvalidGeneratorSetupException("Missing column descriptors. " +
     				"Use the 'columns' property of the " + getClass().getSimpleName() + " to define them.");
-        this.iterable = createIterable();
+        this.source = createSource();
         this.converter = createConverter();
     }
     
-    private Iterable<String[]> createIterable() {
+    private DataSource<String[]> createSource() {
         PadFormat[] formats = ArrayPropertyExtractor.convert(descriptors, "format", PadFormat.class);
-        return new FlatFileLineIterable(resolveUri(), formats, true, encoding, lineFilter);
+        return new FlatFileLineSource(resolveUri(), formats, true, encoding, lineFilter);
     }
 
     @SuppressWarnings("unchecked")

@@ -57,17 +57,12 @@ public class DbUnitEntityIterableTest {
 
     private void check(String uri) throws IOException {
         DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new BeneratorContext());
-        assertTrue(iterator.hasNext());
         assertEquals(createPerson("Alice", "23"), iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(createPerson("Bob", "34"), iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(createPerson("Charly", "45"), iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(createRole("Admin"), iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals(createRole("User"), iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
         iterator.close();
     }
 

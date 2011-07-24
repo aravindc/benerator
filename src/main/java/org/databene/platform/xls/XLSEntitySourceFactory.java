@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,8 +35,8 @@ import org.databene.model.data.EntitySource;
  */
 public class XLSEntitySourceFactory implements SourceFactory<Entity> {
 	
-	String type;
-	Converter<String, ?> scriptConverter;
+	private String type; // TODO 
+	private Converter<String, ?> scriptConverter;
 	
 	public XLSEntitySourceFactory(String type, Converter<String, ?> scriptConverter) {
 		this.type = type;

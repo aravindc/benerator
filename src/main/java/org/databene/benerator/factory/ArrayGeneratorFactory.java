@@ -41,6 +41,7 @@ import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
+import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
@@ -209,7 +210,7 @@ public class ArrayGeneratorFactory {
 	        else
 	        	generator = new IteratingGenerator(storage.query(selector, false, context));
 	    } else if (sourceObject instanceof EntitySource) {
-	        IteratingGenerator<Entity> entityGenerator = new IteratingGenerator<Entity>((EntitySource) sourceObject);
+	    	DataSourceGenerator<Entity> entityGenerator = new DataSourceGenerator<Entity>((EntitySource) sourceObject);
 			generator = new ConvertingGenerator<Entity, Object[]>(entityGenerator, new Entity2ArrayConverter());
 	    } else if (sourceObject instanceof Generator) {
 	        generator = (Generator<Object[]>) sourceObject;

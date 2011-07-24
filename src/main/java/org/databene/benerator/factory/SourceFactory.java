@@ -22,7 +22,7 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.commons.HeavyweightTypedIterable;
+import org.databene.webdecs.DataSource;
 
 /**
  * Interface for classes which provide {@link Iterable}s for iterating through data sources.<br/><br/>
@@ -31,5 +31,5 @@ import org.databene.commons.HeavyweightTypedIterable;
  * @author Volker Bergmann
  */
 public interface SourceFactory<E> {
-	HeavyweightTypedIterable<E> create(String id, BeneratorContext context);
+	DataSource<E> create(String id, BeneratorContext context);
 }

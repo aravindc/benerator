@@ -116,11 +116,9 @@ public class TokenCombiner extends GeneratorProxy<String> {
 				SampleGenerator<String>[] sources = null;
 				String absoluteUri = context.resolveRelativeUri(uri);
 		        CSVLineIterator iterator = new CSVLineIterator(absoluteUri, separator, true, encoding);
-		        if (!iterator.hasNext())
-		        	throw new ConfigurationError("Source file of " + getClass().getSimpleName() + " is empty: " + absoluteUri);
 		        int tokenCount = -1;
-		        while (iterator.hasNext()) {
-		        	String[] tokens = iterator.next();
+		        String[] tokens;
+		        while ((tokens = iterator.next()) != null) {
 		        	if (sources == null) {
 		        		tokenCount = tokens.length;
 		        		sources = new SampleGenerator[tokenCount];

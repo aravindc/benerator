@@ -62,8 +62,8 @@ public class CSVGeneratorUtil {
     		Converter<String, T> converter, List<WeightedSample<T>> samples) {
         try {
             CSVLineIterator iterator = new CSVLineIterator(filename, separator, encoding);
-            while (iterator.hasNext()) {
-                String[] tokens = iterator.next();
+            String[] tokens;
+            while ((tokens = iterator.next()) != null) {
                 if (tokens.length == 0)
                     continue;
                 double weight = (tokens.length < 2 ? 1. : Double.parseDouble(tokens[1]));

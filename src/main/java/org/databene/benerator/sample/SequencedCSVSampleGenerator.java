@@ -111,8 +111,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
             CSVLineIterator parser = new CSVLineIterator(uri);
             String[] tokens;
             List<E> samples = new ArrayList<E>();
-            while (parser.hasNext()) {
-                tokens = parser.next();
+            while ((tokens = parser.next()) != null) {
                 if (tokens.length > 0)
                     samples.add(converter.convert(tokens[0]));
             }

@@ -45,13 +45,10 @@ public class CSVCellIteratorTest {
 	@Test
     public void test() throws IOException {
         CSVCellIterator iterator = new CSVCellIterator("org/databene/csv/names-abc.csv", ',', Encodings.UTF_8);
-        assertTrue(iterator.hasNext());
         assertEquals("Alice",  iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals("Bob",    iterator.next());
-        assertTrue(iterator.hasNext());
         assertEquals("Charly", iterator.next());
-        assertFalse(iterator.hasNext());
+        assertNull(iterator.next());
     }
 	
 }

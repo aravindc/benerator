@@ -37,9 +37,7 @@ import java.util.Map;
 
 import javax.validation.ConstraintValidator;
 
-import static org.databene.benerator.engine.DescriptorConstants.COMPONENT_TYPES;
-import static org.databene.benerator.engine.DescriptorConstants.EL_VALUE;
-import static org.databene.benerator.engine.DescriptorConstants.EL_VARIABLE;
+import static org.databene.benerator.engine.DescriptorConstants.*;
 import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBeanProperties;
 
 import org.databene.benerator.Generator;
@@ -50,14 +48,13 @@ import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.wrapper.AlternativeGenerator;
-import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.Expression;
-import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
 import org.databene.commons.TimeUtil;
@@ -86,6 +83,7 @@ import org.databene.model.data.TypeDescriptor;
 import org.databene.model.data.Uniqueness;
 import org.databene.model.data.VariableHolder;
 import org.databene.script.ScriptConverter;
+import org.databene.webdecs.DataSource;
 import org.w3c.dom.Element;
 
 /**
@@ -363,14 +361,14 @@ public class DescriptorUtil {
 		    String[] uris = DatasetUtil.getDataFiles(sourceName, dataset, nesting);
             Generator<T>[] sources = new Generator[uris.length];
             for (int i = 0; i < uris.length; i++) {
-            	HeavyweightTypedIterable<T> source = factory.create(uris[i], context);
-                sources[i] = new IteratingGenerator<T>(source);
+            	DataSource<T> source = factory.create(uris[i], context);
+                sources[i] = new DataSourceGenerator<T>(source);
             }
 			generator = new AlternativeGenerator<T>(generatedType, sources); // TODO support equivalence partitions
 		} else {
 		    // iterate over (possibly large) data file
-			HeavyweightTypedIterable<T> source = factory.create(sourceName, context);
-		    generator = new IteratingGenerator<T>(source);
+			DataSource<T> source = factory.create(sourceName, context);
+		    generator = new DataSourceGenerator<T>(source);
 		}
 		return generator;
     }

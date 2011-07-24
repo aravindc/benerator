@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -65,14 +65,11 @@ public class XLSEntityIteratorTest extends XLSTest {
 	public void testImport() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
-			assertTrue(iterator.hasNext());
 			assertProduct(PROD1, iterator.next());
-			assertTrue(iterator.hasNext());
 			Entity next = iterator.next();
 			assertProduct(PROD2, next);
-			assertTrue(iterator.hasNext());
 			assertPerson(PERSON1, iterator.next());
-			assertFalse(iterator.hasNext());
+			assertNull(iterator.next());
 		} finally {
 			iterator.close();
 		}
@@ -109,11 +106,9 @@ public class XLSEntityIteratorTest extends XLSTest {
 		// test import
 		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
 		try {
-			assertTrue(iterator.hasNext());
 			assertProduct(PROD1, iterator.next());
-			assertTrue(iterator.hasNext());
 			assertProduct(PROD2, iterator.next());
-			assertFalse(iterator.hasNext());
+			assertNull(iterator.next());
 		} finally {
 			iterator.close();
 			DataModel.getDefaultInstance().removeDescriptorProvider("test");
@@ -124,8 +119,9 @@ public class XLSEntityIteratorTest extends XLSTest {
 	public void testTypeDef() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
-			while (iterator.hasNext())
-				iterator.next();
+			while (iterator.next() != null) {
+				// only iterate
+			}
 		} finally {
 			iterator.close();
 		}

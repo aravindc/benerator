@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -35,7 +35,6 @@ import org.databene.commons.Assert;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Encodings;
-import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.IOUtil;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
@@ -43,6 +42,7 @@ import org.databene.commons.collection.OrderedNameMap;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntitySource;
+import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,9 +95,9 @@ public class Country {
         }
 		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', Encodings.UTF_8);
 		source.setContext(new BeneratorContext());
-        HeavyweightIterator<Entity> iterator = source.iterator();
-        while (iterator.hasNext()) {
-        	Entity entity = iterator.next();
+        DataIterator<Entity> iterator = source.iterator();
+    	Entity entity = iterator.next();
+        while ((entity = iterator.next()) != null) {
         	State state = new State();
         	mapProperty("id", entity, state);
         	mapProperty("name", entity, state);
@@ -401,8 +401,8 @@ public class Country {
         try {
             iterator = new CSVLineIterator(FILE_NAME, ',', true);
             LOGGER.debug("Parsing country setup file {}", FILE_NAME);
-            while (iterator.hasNext()) {
-                String[] cells = iterator.next();
+            String[] cells;
+            while ((cells = iterator.next()) != null) {
                 String isoCode = cells[0];
                 String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1].trim() : "en");
                 String phoneCode = (cells.length > 2 ? cells[2].trim() : null);
