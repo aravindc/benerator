@@ -42,6 +42,7 @@ import org.databene.commons.collection.OrderedNameMap;
 import org.databene.document.csv.CSVLineIterator;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntitySource;
+import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,8 +97,9 @@ public class Country {
 		CSVEntitySource source = new CSVEntitySource(filename, "State", ',', Encodings.UTF_8);
 		source.setContext(new BeneratorContext());
         DataIterator<Entity> iterator = source.iterator();
-    	Entity entity = iterator.next();
-        while ((entity = iterator.next()) != null) {
+        DataContainer<Entity> container = new DataContainer<Entity>();
+        while ((container = iterator.next(container)) != null) {
+        	Entity entity = container.getData();
         	State state = new State();
         	mapProperty("id", entity, state);
         	mapProperty("name", entity, state);
@@ -401,8 +403,9 @@ public class Country {
         try {
             iterator = new CSVLineIterator(FILE_NAME, ',', true);
             LOGGER.debug("Parsing country setup file {}", FILE_NAME);
-            String[] cells;
-            while ((cells = iterator.next()) != null) {
+            DataContainer<String[]> container = new DataContainer<String[]>();
+            while ((container = iterator.next(container)) != null) {
+                String[] cells = container.getData();
                 String isoCode = cells[0];
                 String defaultLocale = (cells.length > 1 && !StringUtil.isEmpty(cells[1]) ? cells[1].trim() : "en");
                 String phoneCode = (cells.length > 2 ? cells[2].trim() : null);

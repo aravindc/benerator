@@ -30,6 +30,7 @@ import org.databene.benerator.sample.WeightedSample;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.webdecs.DataContainer;
 
 /**
  * Provides CSV-related utility methods.<br/><br/>
@@ -62,8 +63,9 @@ public class CSVGeneratorUtil {
     		Converter<String, T> converter, List<WeightedSample<T>> samples) {
         try {
             CSVLineIterator iterator = new CSVLineIterator(filename, separator, encoding);
-            String[] tokens;
-            while ((tokens = iterator.next()) != null) {
+            DataContainer<String[]> container = new DataContainer<String[]>();
+            while ((container = iterator.next(container)) != null) {
+            	String[] tokens = container.getData();
                 if (tokens.length == 0)
                     continue;
                 double weight = (tokens.length < 2 ? 1. : Double.parseDouble(tokens[1]));

@@ -33,6 +33,7 @@ import java.io.IOException;
 
 import org.databene.commons.Encodings;
 import org.databene.document.csv.CSVCellIterator;
+import org.databene.webdecs.DataContainer;
 
 /**
  * Tests the {@link CSVCellIterator}.<br/><br/>
@@ -45,10 +46,11 @@ public class CSVCellIteratorTest {
 	@Test
     public void test() throws IOException {
         CSVCellIterator iterator = new CSVCellIterator("org/databene/csv/names-abc.csv", ',', Encodings.UTF_8);
-        assertEquals("Alice",  iterator.next());
-        assertEquals("Bob",    iterator.next());
-        assertEquals("Charly", iterator.next());
-        assertNull(iterator.next());
+        DataContainer<String> container = new DataContainer<String>();
+        assertEquals("Alice",  iterator.next(container).getData());
+        assertEquals("Bob",    iterator.next(container).getData());
+        assertEquals("Charly", iterator.next(container).getData());
+        assertNull(iterator.next(container));
     }
 	
 }

@@ -30,6 +30,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.DataModel;
 import org.databene.model.data.Entity;
 import org.databene.script.ScriptUtil;
+import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.commons.Context;
 import org.databene.commons.ArrayFormat;
@@ -83,7 +84,7 @@ public class DbUnitEntityIterator implements DataIterator<Entity> {
     	return Entity.class;
     }
     
-    public Entity next() {
+	public DataContainer<Entity> next(DataContainer<Entity> container) {
         if (nextRowNum >= rows.size())
         	return null;
         Row row = rows.get(nextRowNum);
@@ -95,7 +96,7 @@ public class DbUnitEntityIterator implements DataIterator<Entity> {
 			result.setComponent(row.getColumnName(i), rowValue);
         }
         nextRowNum++;
-        return result;
+        return container.setData(result);
     }
 
     public void remove() {
@@ -240,4 +241,5 @@ public class DbUnitEntityIterator implements DataIterator<Entity> {
             return tableName  + '[' + ArrayFormat.format(values) + ']';
         }
     }
+
 }

@@ -31,6 +31,7 @@ import org.databene.document.csv.CSVLineIterator;
 import org.databene.model.data.Entity;
 import org.databene.platform.csv.CSVEntityIterator;
 import org.databene.platform.java.Entity2JavaConverter;
+import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.commons.*;
@@ -78,9 +79,9 @@ public class CityManager {
 					new CSVEntityIterator("/org/databene/domain/address/state_" + country.getIsoCode() + ".csv", 
 							"org.databene.domain.address.State", ',', Encodings.UTF_8),
 					(Converter) new Entity2JavaConverter());
-			State state;
-			while ((state = iterator.next()) != null)
-				country.addState(state);
+			DataContainer<State> state = new DataContainer<State>();
+			while ((state = iterator.next(state)) != null)
+				country.addState(state.getData());
 		} catch (FileNotFoundException e) {
 			LOGGER.warn("No state definition file found: " + e.getMessage());
 		}
@@ -88,10 +89,11 @@ public class CityManager {
 
 	private static int parseCityFile(Country country, String filename, Map<String, String> defaults) throws IOException {
 		CSVLineIterator iterator = new CSVLineIterator(filename, ';', Encodings.UTF_8);
-        String[] header = iterator.next();
+		DataContainer<String[]> container = new DataContainer<String[]>();
+        String[] header = iterator.next(container).getData();
         int warnCount = 0;
-        String[] cells;
-        while ((cells = iterator.next()) != null) {
+        while ((container = iterator.next(container)) != null) {
+            String[] cells = container.getData();
             if (cells.length == 0)
                 continue;
             if (LOGGER.isDebugEnabled())

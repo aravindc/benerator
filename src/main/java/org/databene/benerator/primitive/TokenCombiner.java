@@ -37,6 +37,7 @@ import org.databene.commons.StringUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.commons.validator.BlacklistValidator;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.webdecs.DataContainer;
 
 /**
  * {@link Generator} implementation which takes cells from a CSV file as input 
@@ -117,8 +118,9 @@ public class TokenCombiner extends GeneratorProxy<String> {
 				String absoluteUri = context.resolveRelativeUri(uri);
 		        CSVLineIterator iterator = new CSVLineIterator(absoluteUri, separator, true, encoding);
 		        int tokenCount = -1;
-		        String[] tokens;
-		        while ((tokens = iterator.next()) != null) {
+		        DataContainer<String[]> container = new DataContainer<String[]>();
+		        while ((container = iterator.next(container)) != null) {
+			        String[] tokens = container.getData();
 		        	if (sources == null) {
 		        		tokenCount = tokens.length;
 		        		sources = new SampleGenerator[tokenCount];

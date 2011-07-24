@@ -27,6 +27,7 @@
 package org.databene.platform.csv;
 
 import org.databene.platform.array.Array2EntityConverter;
+import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.util.ConvertingDataIterator;
 import org.databene.model.data.ComplexTypeDescriptor;
@@ -126,9 +127,9 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 		return Entity.class;
 	}
 	
-	public Entity next() {
+	public DataContainer<Entity> next(DataContainer<Entity> container) {
     	assureInitialized();
-        return source.next();
+        return source.next(container);
     }
     
 	public void close() {
@@ -138,9 +139,9 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
     public static List<Entity> parseAll(String uri, char separator, String encoding, ComplexTypeDescriptor descriptor, Converter<String, String> preprocessor, Patterns patterns) throws FileNotFoundException {
     	List<Entity> list = new ArrayList<Entity>();
     	CSVEntityIterator iterator = new CSVEntityIterator(uri, descriptor, preprocessor, separator, encoding);
-    	Entity entity;
-    	while ((entity = iterator.next()) != null)
-    		list.add(entity);
+    	DataContainer<Entity> container = new DataContainer<Entity>();
+    	while ((container = iterator.next(container)) != null)
+    		list.add(container.getData());
     	return list;
     }
 
@@ -166,7 +167,7 @@ public class CSVEntityIterator implements DataIterator<Entity>, Tabular {
 		try {
 			DataIterator<String[]> cellIterator = new CSVLineIterator(uri, separator, true, encoding);
 			if (expectingHeader)
-				setColumns(cellIterator.next());
+				setColumns(cellIterator.next(new DataContainer<String[]>()).getData());
 	        Converter<String[], String[]> arrayConverter = new ArrayConverter(String.class, Object.class, preprocessor); 
 	        Array2EntityConverter a2eConverter = new Array2EntityConverter(entityDescriptor, columns, true);
 	        Converter<String[], Entity> converter = new ConverterChain<String[], Entity>(arrayConverter, a2eConverter);

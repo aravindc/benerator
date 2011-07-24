@@ -36,6 +36,7 @@ import org.databene.commons.LocaleUtil;
 import org.databene.commons.NullSafeComparator;
 import org.databene.commons.StringUtil;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.webdecs.DataContainer;
 
 /**
  * Represents a Noun.<br/>
@@ -107,8 +108,9 @@ public class Noun {
 		Set<Noun> nouns = new HashSet<Noun>(500);
 		String url = LocaleUtil.availableLocaleUrl("/org/databene/domain/lang/noun", locale, ".csv");
 		CSVLineIterator iterator = new CSVLineIterator(url, ',', true);
-		String[] line;
-		while ((line = iterator.next()) != null) {
+		DataContainer<String[]> container = new DataContainer<String[]>();
+		while ((container = iterator.next(container)) != null) {
+			String[] line = container.getData();
 			String singular = (StringUtil.isEmpty(line[0]) ? null : line[0].trim());
 			String plural;
 			if (line.length > 1 && !StringUtil.isEmpty(line[1])) {

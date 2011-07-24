@@ -34,6 +34,7 @@ import org.databene.commons.ConversionException;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.NoOpConverter;
 import org.databene.document.csv.CSVLineIterator;
+import org.databene.webdecs.DataContainer;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -109,9 +110,10 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
         	if (uri == null)
         		throw new InvalidGeneratorSetupException("uri is not set");
             CSVLineIterator parser = new CSVLineIterator(uri);
-            String[] tokens;
             List<E> samples = new ArrayList<E>();
-            while ((tokens = parser.next()) != null) {
+            DataContainer<String[]> container = new DataContainer<String[]>();
+            while ((container = parser.next(container)) != null) {
+            	String[] tokens = container.getData();
                 if (tokens.length > 0)
                     samples.add(converter.convert(tokens[0]));
             }

@@ -38,6 +38,9 @@ import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.TypeDescriptor;
+import org.databene.webdecs.DataContainer;
+import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.DataUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -65,11 +68,11 @@ public class XLSEntityIteratorTest extends XLSTest {
 	public void testImport() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
-			assertProduct(PROD1, iterator.next());
-			Entity next = iterator.next();
+			assertProduct(PROD1, DataUtil.nextNotNull(iterator));
+			Entity next = DataUtil.nextNotNull(iterator);
 			assertProduct(PROD2, next);
-			assertPerson(PERSON1, iterator.next());
-			assertNull(iterator.next());
+			assertPerson(PERSON1, DataUtil.nextNotNull(iterator));
+			assertNull(iterator.next(new DataContainer<Entity>()));
 		} finally {
 			iterator.close();
 		}
@@ -106,9 +109,9 @@ public class XLSEntityIteratorTest extends XLSTest {
 		// test import
 		XLSEntityIterator iterator = new XLSEntityIterator(PRODUCT_XLS);
 		try {
-			assertProduct(PROD1, iterator.next());
-			assertProduct(PROD2, iterator.next());
-			assertNull(iterator.next());
+			assertProduct(PROD1, DataUtil.nextNotNull(iterator));
+			assertProduct(PROD2, DataUtil.nextNotNull(iterator));
+			assertNull(iterator.next(new DataContainer<Entity>()));
 		} finally {
 			iterator.close();
 			DataModel.getDefaultInstance().removeDescriptorProvider("test");
@@ -119,7 +122,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 	public void testTypeDef() throws Exception {
 		XLSEntityIterator iterator = new XLSEntityIterator(IMPORT_XLS);
 		try {
-			while (iterator.next() != null) {
+			while (iterator.next(new DataContainer<Entity>()) != null) {
 				// only iterate
 			}
 		} finally {
@@ -164,4 +167,8 @@ public class XLSEntityIteratorTest extends XLSTest {
 		assertEquals(expected.get("age"), ((Number) actual.get("age")).intValue());
     }
 
+	public static void assertUnavailable(DataIterator<Entity> iterator) {
+		assertNull(iterator.next(new DataContainer<Entity>()));
+	}
+    
 }

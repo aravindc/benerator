@@ -28,8 +28,10 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.commons.IOUtil;
+import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
 import org.databene.webdecs.DataSource;
+import org.databene.webdecs.util.ThreadLocalDataContainer;
 
 /**
  * TODO Document class.<br/><br/>
@@ -41,6 +43,7 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
 
     private DataSource<E> source;
     private DataIterator<E> iterator;
+    private ThreadLocalDataContainer<E> container = new ThreadLocalDataContainer<E>();
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -92,10 +95,12 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
             assertInitialized();
             if (iterator == null)
             	return null;
-        	E result = iterator.next();
-            if (result == null)
+        	DataContainer<E> tmp = iterator.next(container.get());
+            if (tmp == null) {
             	closeIterator();
-			return result;
+            	return null;
+            }
+			return tmp.getData();
         } catch (Exception e) {
         	throw new IllegalGeneratorStateException("Generation failed: ", e);
         }

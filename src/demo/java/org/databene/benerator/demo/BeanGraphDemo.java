@@ -27,6 +27,7 @@
 package org.databene.benerator.demo;
 
 import org.databene.document.csv.CSVToJavaBeanMapper;
+import org.databene.webdecs.DataContainer;
 import org.databene.commons.IOUtil;
 import org.databene.benerator.demo.product.Product;
 
@@ -44,9 +45,9 @@ public class BeanGraphDemo {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = IOUtil.getReaderForURI("org/databene/benerator/products.csv");
         CSVToJavaBeanMapper<Product> mapper = new CSVToJavaBeanMapper<Product>(reader, Product.class);
-        Product value;
-        while ((value = mapper.next()) != null)
-			System.out.println(value);
+        DataContainer<Product> value = new DataContainer<Product>();
+        while ((value = mapper.next(value)) != null)
+			System.out.println(value.getData());
     }
     
 }

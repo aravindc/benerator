@@ -30,6 +30,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.platform.AbstractEntityIteratorTest;
 import org.databene.webdecs.DataIterator;
 
 /**
@@ -39,7 +40,7 @@ import org.databene.webdecs.DataIterator;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class CSVEntityIteratorTest {
+public class CSVEntityIteratorTest extends AbstractEntityIteratorTest {
 
     private static final String URI = "org/databene/platform/csv/person-bean.csv";
 
@@ -63,11 +64,11 @@ public class CSVEntityIteratorTest {
     private void checkIteration(DataIterator<Entity> iterator, String header1, String header2, boolean expectHeaderRow) {
         ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Person");
         if (expectHeaderRow)
-	        assertEquals(new Entity(descriptor, header1, "name", header2, "age"), iterator.next());
-        assertEquals(new Entity(descriptor, header1, "Alice", header2, "23"), iterator.next());
-        assertEquals(new Entity(descriptor, header1, "Bob", header2, "34"), iterator.next());
-        assertEquals(new Entity(descriptor, header1, "Charly", header2, "45"), iterator.next());
-        assertNull(iterator.next());
+	        assertEquals(new Entity(descriptor, header1, "name", header2, "age"), nextOf(iterator));
+        assertEquals(new Entity(descriptor, header1, "Alice", header2, "23"), nextOf(iterator));
+        assertEquals(new Entity(descriptor, header1, "Bob", header2, "34"), nextOf(iterator));
+        assertEquals(new Entity(descriptor, header1, "Charly", header2, "45"), nextOf(iterator));
+        assertUnavailable(iterator);
     }
-    
+
 }

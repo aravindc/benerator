@@ -45,7 +45,9 @@ import org.databene.model.data.PartDescriptor;
 import org.databene.model.data.PrimitiveDescriptorProvider;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.platform.array.Array2EntityConverter;
+import org.databene.webdecs.DataContainer;
 import org.databene.webdecs.DataIterator;
+import org.databene.webdecs.util.ThreadLocalDataContainer;
 
 /**
  * Iterates an Excel sheet and maps its rows to {@link Entity} instances.<br/>
@@ -87,14 +89,14 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		return Entity.class;
 	}
 	
-	public synchronized Entity next() {
+	public synchronized DataContainer<Entity> next(DataContainer<Entity> container) {
 		if (sheetNo == -1)
 			nextSheet();
-		Entity result;
+		DataContainer<Entity> result;
 		do {
 			if (source == null)
 				return null;
-			result = source.next();
+			result = source.next(container);
 			if (result == null)
 				nextSheet();
 		} while (source != null && result == null);
@@ -111,9 +113,9 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 			throws IOException {
     	List<Entity> list = new ArrayList<Entity>();
     	XLSEntityIterator iterator = new XLSEntityIterator(uri, preprocessor);
-		Entity row;
-    	while ((row = iterator.next()) != null)
-			list.add(row);
+		DataContainer<Entity> container = new DataContainer<Entity>();
+    	while ((container = iterator.next(container)) != null)
+			list.add(container.getData());
     	return list;
 	}
 
@@ -157,6 +159,7 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 	    DataIterator<Object[]> source;
 	    Converter<Object[], Entity> converter;
 	    Object[] buffer;
+	    ThreadLocalDataContainer<Object[]> sourceContainer = new ThreadLocalDataContainer<Object[]>();
 		
 		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
 	        this.source = new XLSLineIterator(sheet, true, preprocessor);
@@ -168,14 +171,18 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 			return Entity.class;
 		}
 		
-		public Entity next() {
+		public DataContainer<Entity> next(DataContainer<Entity> container) {
 			Object[] rawData;
 			if (buffer != null) {
 				rawData = buffer;
 				buffer = null;
-			} else
-				rawData = source.next();
-			return converter.convert(rawData);
+			} else {
+				DataContainer<Object[]> tmp = source.next(sourceContainer.get());
+				if (tmp == null)
+					return null;
+				rawData = tmp.getData();
+			}
+			return container.setData(converter.convert(rawData));
 		}
 		
 		public void close() {
@@ -183,7 +190,7 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		}
 		
 		private void init(String complexTypeName) {
-			buffer = source.next();
+			buffer = source.next(new DataContainer<Object[]>()).getData();
 			String headers[] = ((XLSLineIterator) source).getHeaders();
 		    createComplexTypeDescriptor(complexTypeName, headers, buffer);
 		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
@@ -210,7 +217,7 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		    	provider.addDescriptor(complexTypeDescriptor);
 		    }
 		}
-		
+
 	}
-	
+
 }

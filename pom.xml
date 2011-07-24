@@ -12,7 +12,7 @@
     	<jdbacl_version>0.6.10</jdbacl_version>
     	<dbsanity_version>0.8.2</dbsanity_version>
     	<gui_version>0.2.9</gui_version>
-    	<webdecs_version>0.5.9</webdecs_version>
+    	<webdecs_version>0.6.0</webdecs_version>
     	<commons_version>0.5.9</commons_version>
     	<contiperf_version>2.0.0-SNAPSHOT-2011-07-21</contiperf_version>
     </properties>

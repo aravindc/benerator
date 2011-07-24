@@ -34,6 +34,8 @@ import java.io.IOException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.model.data.Entity;
 import org.databene.model.data.ComplexTypeDescriptor;
+import org.databene.platform.AbstractEntityIteratorTest;
+import org.databene.webdecs.DataUtil;
 
 /**
  * Tests the DBUnitXmlEntityImporter with a standard and a flat dataset file.<br/>
@@ -41,7 +43,7 @@ import org.databene.model.data.ComplexTypeDescriptor;
  * Created: 05.08.2007 08:05:10
  * @author Volker Bergmann
  */
-public class DbUnitEntityIterableTest {
+public class DbUnitEntityIterableTest extends AbstractEntityIteratorTest {
 
 	@Test
     public void testNormalDataset() throws IOException{
@@ -57,12 +59,12 @@ public class DbUnitEntityIterableTest {
 
     private void check(String uri) throws IOException {
         DbUnitEntityIterator iterator = new DbUnitEntityIterator(uri, new BeneratorContext());
-        assertEquals(createPerson("Alice", "23"), iterator.next());
-        assertEquals(createPerson("Bob", "34"), iterator.next());
-        assertEquals(createPerson("Charly", "45"), iterator.next());
-        assertEquals(createRole("Admin"), iterator.next());
-        assertEquals(createRole("User"), iterator.next());
-        assertNull(iterator.next());
+        assertEquals(createPerson("Alice", "23"), DataUtil.nextNotNull(iterator));
+        assertEquals(createPerson("Bob", "34"), DataUtil.nextNotNull(iterator));
+        assertEquals(createPerson("Charly", "45"), DataUtil.nextNotNull(iterator));
+        assertEquals(createRole("Admin"), DataUtil.nextNotNull(iterator));
+        assertEquals(createRole("User"), DataUtil.nextNotNull(iterator));
+        assertUnavailable(iterator);
         iterator.close();
     }
 
