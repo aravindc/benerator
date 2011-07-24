@@ -164,7 +164,15 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		public SheetIterator(HSSFSheet sheet, String complexTypeName, Converter<String, ?> preprocessor, String defaultProviderId) {
 	        this.source = new XLSLineIterator(sheet, true, preprocessor);
 	        this.defaultProviderId = defaultProviderId;
-	        init(complexTypeName);
+			DataContainer<Object[]> tmp = source.next(sourceContainer.get());
+			if (tmp == null) {
+				this.source = null; // empty sheet
+				return;
+			}
+			this.buffer = tmp.getData();
+			String headers[] = ((XLSLineIterator) source).getHeaders();
+		    createComplexTypeDescriptor(complexTypeName, headers, buffer);
+		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
         }
 		
 		public Class<Entity> getType() {
@@ -172,6 +180,8 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		}
 		
 		public DataContainer<Entity> next(DataContainer<Entity> container) {
+			if (source == null)
+				return null;
 			Object[] rawData;
 			if (buffer != null) {
 				rawData = buffer;
@@ -186,16 +196,9 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		}
 		
 		public void close() {
-			source.close();
+			IOUtil.close(source);
 		}
 		
-		private void init(String complexTypeName) {
-			buffer = source.next(new DataContainer<Object[]>()).getData();
-			String headers[] = ((XLSLineIterator) source).getHeaders();
-		    createComplexTypeDescriptor(complexTypeName, headers, buffer);
-		    converter = new Array2EntityConverter(complexTypeDescriptor, headers, false);
-        }
-
 		protected void createComplexTypeDescriptor(String complexTypeName, String[] headers, Object[] feed) {
 			complexTypeDescriptor = (ComplexTypeDescriptor) dataModel.getTypeDescriptor(complexTypeName);
 		    if (complexTypeDescriptor == null) {
@@ -218,6 +221,10 @@ public class XLSEntityIterator implements DataIterator<Entity> {
 		    }
 		}
 
+		@Override
+		public String toString() {
+			return getClass().getSimpleName() + "[" + source + "]";
+		}
 	}
 
 }
