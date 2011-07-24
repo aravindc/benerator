@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -27,30 +22,28 @@
 package org.databene.platform.db;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.commons.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Generates {@link Long} values from a database sequence.<br/>
- * <br/>
- * Created at 07.07.2009 18:54:53
- * @since 0.6.0
+ * TODO Document class.<br/><br/>
+ * Created: 24.07.2011 06:16:59
+ * @since 0.7.0
  * @author Volker Bergmann
  */
+public abstract class AbstractSequenceGenerator extends ThreadSafeGenerator<Long> {
 
-public class DBSequenceGenerator extends GeneratorProxy<Long> {
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private String name;
-	private DBSystem database;
-	private boolean cached;
+	protected String name;
+	protected DBSystem database;
 
-    public DBSequenceGenerator(String name, DBSystem source) {
-	    this(name, source, false);
-    }
-    
-    public DBSequenceGenerator(String name, DBSystem database, boolean cached) {
+    public AbstractSequenceGenerator(String name, DBSystem database) {
 	    this.name = name;
 	    this.database = database;
-	    this.cached = cached;
     }
     
     // properties ------------------------------------------------------------------------------------------------------
@@ -71,22 +64,25 @@ public class DBSequenceGenerator extends GeneratorProxy<Long> {
     	this.database = database;
     }
 	
-	public boolean isCached() {
-		return cached;
-	}
-
-	public void setCached(boolean cached) {
-		this.cached = cached;
-	}
-	
 	// Generator interface implementation ------------------------------------------------------------------------------
+
+	public Class<Long> getGeneratedType() {
+	    return Long.class;
+    }
 
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		this.source = (cached ? 
-				new CachedSequenceGenerator(name, database) : 
-				new PlainSequenceGenerator(name, database));
+	    if (database == null)
+	    	throw new InvalidGeneratorSetupException("No 'source' database defined");
+	    if (StringUtil.isEmpty(name))
+	    	throw new InvalidGeneratorSetupException("No sequence 'name' defined");
 		super.init(context);
 	}
 	
+    // helpers ---------------------------------------------------------------------------------------------------------
+
+	protected long fetchSequenceValue() {
+		return database.nextSequenceValue(name);
+	}
+
 }

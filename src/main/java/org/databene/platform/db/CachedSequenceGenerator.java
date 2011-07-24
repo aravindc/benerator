@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,11 +22,9 @@
 package org.databene.platform.db;
 
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.ThreadSafeGenerator;
-import org.databene.commons.StringUtil;
 
 /**
  * Reads the current value of a sequence on first invocation, 
@@ -38,66 +36,37 @@ import org.databene.commons.StringUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class OfflineSequenceGenerator extends ThreadSafeGenerator<Long> {
+public class CachedSequenceGenerator extends AbstractSequenceGenerator {
 
-	private DBSystem target;
-	private String sequenceName;
-	private boolean initialized;
-	private long next;
+	private AtomicLong cacheValue;
 	
-	public OfflineSequenceGenerator() {
+	public CachedSequenceGenerator() {
 		this(null, null);
     }
 
-	public OfflineSequenceGenerator(DBSystem target, String sequenceName) {
-		this.target = target;
-	    this.sequenceName = sequenceName;
-	    this.initialized = false;
-    }
-	
-	public DBSystem getTarget() {
-    	return target;
-    }
-
-	public void setTarget(DBSystem target) {
-    	this.target = target;
-    }
-
-	public String getSequenceName() {
-    	return sequenceName;
-    }
-
-	public void setSequenceName(String sequenceName) {
-    	this.sequenceName = sequenceName;
+	public CachedSequenceGenerator(String name, DBSystem database) {
+		super(name, database);
     }
 	
 	@Override
 	public void init(GeneratorContext context) {
 	    super.init(context);
-	    if (target == null)
-	    	throw new InvalidGeneratorSetupException("No 'target' database defined");
-	    if (StringUtil.isEmpty(sequenceName))
-	    	throw new InvalidGeneratorSetupException("No sequence name defined");
+		cacheValue = new AtomicLong(fetchSequenceValue());
 	}
 
-	public Class<Long> getGeneratedType() {
-	    return Long.class;
-    }
-	
 	public Long generate() {
-	    if (!initialized)
-	    	next = target.nextSequenceValue(sequenceName);
-	    return next++;
+		return cacheValue.getAndIncrement();
     }
 	
 	@Override
 	public void close() {
-	    try {
-	        super.close();
-	        target.setSequenceValue(sequenceName, next);
-        } catch (SQLException e) {
-	        throw new RuntimeException(e);
-        }
+		try {
+    		database.setSequenceValue(name, cacheValue.get());
+    		cacheValue = null;
+    		super.close();
+		} catch (SQLException e) {
+			logger.error("Error closing " + this, e);
+		}
 	}
 	
 }

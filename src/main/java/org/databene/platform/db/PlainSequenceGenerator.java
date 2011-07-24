@@ -1,14 +1,9 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
- * GNU General Public License.
- *
- * For redistributing this software or a derivative work under a license other
- * than the GPL-compatible Free Software License as defined by the Free
- * Software Foundation or approved by OSI, you must first obtain a commercial
- * license to this software product from Volker Bergmann.
+ * GNU General Public License (GPL).
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * WITHOUT A WARRANTY OF ANY KIND. ALL EXPRESS OR IMPLIED CONDITIONS,
@@ -26,28 +21,20 @@
 
 package org.databene.platform.db;
 
-import org.databene.benerator.primitive.HiLoGenerator;
-
 /**
- * Generates {@link Long} values with a HiLo strategy using a database sequence for the Hi values.<br/>
- * <br/>
- * Created at 06.07.2009 09:30:09
- * @since 0.6.0
+ * Generator implementation which provides sequence values from a database.<br/><br/>
+ * Created: 24.07.2011 06:40:20
+ * @since 0.7.0
  * @author Volker Bergmann
  */
+public class PlainSequenceGenerator extends AbstractSequenceGenerator {
 
-public class DBSeqHiLoGenerator extends HiLoGenerator {
+	public PlainSequenceGenerator(String name, DBSystem database) {
+		super(name, database);
+	}
 
-    public DBSeqHiLoGenerator(String name, int maxLo) {
-	    this(name, 100, null);
-    }
+	public Long generate() {
+		return fetchSequenceValue();
+	}
 
-    public DBSeqHiLoGenerator(String sequenceName, int maxLo, DBSystem source) {
-	    super(new DBSequenceGenerator(sequenceName, source), maxLo);
-    }
-
-    public void setDatabase(DBSystem source) {
-    	((DBSequenceGenerator) hiGenerator).setDatabase(source);
-    }
-    
 }

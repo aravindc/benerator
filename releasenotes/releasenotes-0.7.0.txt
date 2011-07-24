@@ -16,6 +16,8 @@ changes
 - removed predefined "benerator" variable from context (use "context" now)
 - removed hexadecimal syntax for decimal number literals in BeneratorScript
 - removed property 'db' from SequenceTableGenerator (replaced with property 'database')
+- renamed Entity2BeanConverter to Entity2JavaConverter
+- replaced OfflineSequenceGenerator with CachedSequenceGenerator
 
 
 enhancements
@@ -32,6 +34,8 @@ enhancements
 - Added TimeUtil.addDays(), addMonths(), addYears(), midnightOf()
 - Introduced generatorFactory attribute in <setup>
 - Added generic 'offset' feature
+- Added 'cached' feature to DBSequenceGenerator, removed OfflineSequenceGenerator
+- renamed 'source' property to 'database' in DBSequenceGenerator and DBSeqHiLoGenerator
 
 
 bug fixes (Find the bug tracker at http://sourceforge.net/tracker2/?group_id=222964&atid=1057386)
