@@ -27,10 +27,11 @@ import java.util.List;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * {@link Generator} that wraps several other 'source generators' and assigns a weight to each one. 
- * Calls to {@link Generator#generate()} are forwarded to a random source generator, with a probability 
+ * Calls to {@link Generator#generate(ProductWrapper)} are forwarded to a random source generator, with a probability 
  * proportional to its assigned weight. If a source generator becomes unavailable, its weight is 
  * ignored.<br/><br/>
  * Created: 09.03.2011 07:59:04
@@ -49,11 +50,11 @@ public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Gene
 	}
 	
 	@Override
-	public synchronized void addSource(Generator<E> source) {
+	public synchronized void addSource(Generator<? extends E> source) {
 		addSource(source, 1.);
 	}
 	
-	public synchronized void addSource(Generator<E> source, Double weight) {
+	public synchronized void addSource(Generator<? extends E> source, Double weight) {
 		if (weight == null)
 			weight = 1.;
 		this.weights.add(weight);
@@ -74,12 +75,13 @@ public class WeightedGeneratorGenerator<E> extends MultiGeneratorWrapper<E, Gene
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Generator<E> generate() {
+	public ProductWrapper<Generator<E>> generate(ProductWrapper<Generator<E>> wrapper) {
     	assertInitialized();
-    	if (availableSources.size() == 0)
+    	if (availableSourceCount() == 0)
     		return null;
-    	int sourceIndex = indexGenerator.generate();
-		return (Generator<E>) availableSources.get(sourceIndex);
+    	int sourceIndex = GeneratorUtil.generateNonNull(indexGenerator);
+		Generator<E> result = (Generator<E>) getAvailableSource(sourceIndex);
+		return wrapper.wrap(result);
 	}
 
 	@Override
