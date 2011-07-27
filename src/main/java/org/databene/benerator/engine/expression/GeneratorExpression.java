@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,8 @@
 package org.databene.benerator.engine.expression;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.util.WrapperProvider;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.DynamicExpression;
@@ -42,13 +44,15 @@ import org.databene.commons.expression.DynamicExpression;
 public class GeneratorExpression<E> extends DynamicExpression<E> {
 
 	private Generator<E> generator;
+	private WrapperProvider<E> wrapperProvider = new WrapperProvider<E>();
 	
     public GeneratorExpression(Generator<E> generator) {
 	    this.generator = generator;
     }
 
 	public E evaluate(Context context) {
-		return generator.generate();
+		ProductWrapper<E> result = generator.generate(wrapperProvider.get());
+		return (result != null ? result.unwrap() : null);
     }
 
 }
