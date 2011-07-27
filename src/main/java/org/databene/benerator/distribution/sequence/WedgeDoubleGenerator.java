@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,8 +22,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Generates 'Double' values for the 'wedge' sequence.<br/><br/>
@@ -31,7 +30,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class WedgeDoubleGenerator extends AbstractNumberGenerator<Double> {
+public class WedgeDoubleGenerator extends AbstractNonNullNumberGenerator<Double> {
 
     private Double cursor;
     private double end;
@@ -61,7 +60,8 @@ public class WedgeDoubleGenerator extends AbstractNumberGenerator<Double> {
         super.init(context);
     }
 
-    public synchronized Double generate() throws IllegalGeneratorStateException {
+	@Override
+	public Double generate() {
         assertInitialized();
         if (cursor == null)
             return null;

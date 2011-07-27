@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,15 +27,15 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Long Generator that implements a 'step' Long Sequence.<br/>
  * <br/>
  * Created: 26.07.2007 18:36:45
+ * @author Volker Bergmann
  */
-public class StepLongGenerator extends AbstractNumberGenerator<Long> {
+public class StepLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
 	private long increment;
 	private long initial;
@@ -77,7 +77,8 @@ public class StepLongGenerator extends AbstractNumberGenerator<Long> {
 		super.init(context);
     }
 
-    public synchronized Long generate() throws IllegalGeneratorStateException {
+	@Override
+	public synchronized Long generate() {
         if ((increment == 0 || (increment > 0 && (max == null || next <= max)) || (increment < 0 && next >= min))) {
         	long value = next;
 		    next += increment;

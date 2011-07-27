@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Double Generator that implements a 'step' Double Sequence.<br/>
@@ -35,7 +35,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Created: 26.07.2007 18:36:45
  * @author Volker Bergmann
  */
-public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
+public class StepDoubleGenerator extends AbstractNonNullNumberGenerator<Double> {
 
 	private double increment;
 	private double initial;
@@ -72,7 +72,8 @@ public class StepDoubleGenerator extends AbstractNumberGenerator<Double> {
         super.init(context);
     }
 
-    public synchronized Double generate() {
+	@Override
+	public Double generate() {
     	assertInitialized();
     	if (increment == 0 || (increment > 0 && (max == null || next <= max)) || (increment < 0 && next >= min)) {
 	        double value = next;

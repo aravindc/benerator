@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,7 +31,7 @@ import java.util.Random;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Creates random {@link Integer} values with a uniform distribution.<br/>
@@ -41,7 +41,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * @author Volker Bergmann
  */
 
-public class RandomIntegerGenerator extends AbstractNumberGenerator<Integer> {
+public class RandomIntegerGenerator extends AbstractNonNullNumberGenerator<Integer> {
 
     private static final int DEFAULT_MIN = Integer.MIN_VALUE / 2 + 1; // test if it works with these min/max values
 	private static final int DEFAULT_MAX = Integer.MAX_VALUE / 2 - 1;
@@ -72,7 +72,8 @@ public class RandomIntegerGenerator extends AbstractNumberGenerator<Integer> {
         super.init(context);
     }
     
-    public Integer generate() {
+	@Override
+	public Integer generate() {
         return generate(min, max, precision);
     }
     

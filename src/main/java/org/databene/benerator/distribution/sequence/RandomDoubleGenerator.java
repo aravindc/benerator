@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.util.RandomUtil;
 
 /**
@@ -36,7 +36,7 @@ import org.databene.benerator.util.RandomUtil;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class RandomDoubleGenerator extends AbstractNumberGenerator<Double> {
+public class RandomDoubleGenerator extends AbstractNonNullNumberGenerator<Double> {
 	
     public RandomDoubleGenerator() {
         this(Double.MIN_VALUE, Double.MAX_VALUE);
@@ -52,7 +52,8 @@ public class RandomDoubleGenerator extends AbstractNumberGenerator<Double> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Double generate() {
+	@Override
+	public Double generate() {
         if (precision == 0)
             return min + Math.random() * (max - min);
         int n = (int)((max - min) / precision);

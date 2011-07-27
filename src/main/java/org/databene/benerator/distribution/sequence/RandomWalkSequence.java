@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -119,10 +119,10 @@ public class RandomWalkSequence extends Sequence {
     }
 
 	private <T> Generator<T> applySkipGenerator(Generator<T> source, boolean unique) {
-		long minStepL = toLong(minStep);
-		if (unique && minStepL <= 0)
+		int minStepI = toInteger(minStep);
+		if (unique && minStepI <= 0)
 			throw new ConfigurationError("Cannot generate unique values when minStep=" + minStep);
-	    return new SkipGeneratorProxy<T>(source, minStepL, toLong(maxStep));
+	    return new SkipGeneratorProxy<T>(source, minStepI, toInteger(maxStep));
     }
     
     // helper methods --------------------------------------------------------------------------------------------------

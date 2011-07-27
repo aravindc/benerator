@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,8 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Long Generator that implements a 'wedge' Long Sequence.<br/>
@@ -38,7 +37,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Created: 13.11.2007 12:54:29
  * @author Volker Bergmann
  */
-public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
+public class WedgeLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
     private AtomicLong next;
     private long end;
@@ -67,7 +66,8 @@ public class WedgeLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
 
-    public synchronized Long generate() throws IllegalGeneratorStateException {
+	@Override
+	public synchronized Long generate() {
         assertInitialized();
         if (next == null)
             return null;

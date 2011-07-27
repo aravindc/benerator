@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Double Generator that implements a 'randomWalk' Double Sequence.<br/>
@@ -35,7 +35,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Created: 13.06.2006 07:36:45
  * @author Volker Bergmann
  */
-public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
+public class RandomWalkDoubleGenerator extends AbstractNonNullNumberGenerator<Double> {
 
     private double next;
 
@@ -83,7 +83,8 @@ public class RandomWalkDoubleGenerator extends AbstractNumberGenerator<Double> {
         super.init(context);
     }
 
-    public synchronized Double generate() {
+	@Override
+	public synchronized Double generate() {
         assertInitialized();
         double value = next;
         next += incrementGenerator.generate();

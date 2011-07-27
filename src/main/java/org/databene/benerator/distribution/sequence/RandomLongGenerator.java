@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.util.RandomUtil;
 
 /**
@@ -38,7 +38,7 @@ import org.databene.benerator.util.RandomUtil;
  * Created: 03.09.2006 09:53:01
  * @author Volker Bergmann
  */
-public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
+public class RandomLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
     public static final long DEFAULT_MIN = Long.MIN_VALUE / 2 + 1;
     public static final long DEFAULT_MAX = Long.MAX_VALUE / 2 - 1;
@@ -71,7 +71,8 @@ public class RandomLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
     
-    public Long generate() {
+	@Override
+	public synchronized Long generate() {
         return generate(min, max, precision);
     }
     

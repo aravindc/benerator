@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.*;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.NumberUtil;
 
 /**
@@ -36,11 +36,10 @@ import org.databene.commons.NumberUtil;
  * Created: 13.11.2007 14:39:29
  * @author Volker Bergmann
  */
-public class BitReverseNaturalNumberGenerator extends ThreadSafeGenerator<Long> {
+public class BitReverseNaturalNumberGenerator extends ThreadSafeNonNullGenerator<Long> {
 
     private long max;
     private long cursor;
-    private Long next;
     private int bitsUsed;
     private long maxCursor;
 
@@ -73,17 +72,16 @@ public class BitReverseNaturalNumberGenerator extends ThreadSafeGenerator<Long> 
         super.init(context);
     }
 
-    public synchronized Long generate() throws IllegalGeneratorStateException {
+	@Override
+	public synchronized Long generate() {
         assertInitialized();
-        if (next == null)
-            return null;
-        long result = next;
+        long result;
         do {
+            result = cursorReversed();
             cursor++;
-            next = cursorReversed();
-        } while (next > max && cursor < maxCursor);
+        } while (result > max && cursor < maxCursor);
         if (cursor >= maxCursor)
-            next = null;
+            return null;
         return result;
     }
 
@@ -91,12 +89,6 @@ public class BitReverseNaturalNumberGenerator extends ThreadSafeGenerator<Long> 
 	public synchronized void reset() {
         initMembers();
         super.reset();
-    }
-
-    @Override
-	public synchronized void close() {
-        super.close();
-        next = null;
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
@@ -111,8 +103,7 @@ public class BitReverseNaturalNumberGenerator extends ThreadSafeGenerator<Long> 
 	private void initMembers() {
 	    cursor = 0;
         bitsUsed = NumberUtil.bitsUsed(max);
-        next = 0L;
-        this.maxCursor = 1 << bitsUsed;
+        this.maxCursor = (1 << bitsUsed) + 1;
     }
 
     private long cursorReversed() {

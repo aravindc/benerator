@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,7 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Generates integers reversing the bits of a continuously rising number.<br/>
@@ -36,7 +35,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * Created: 13.11.2007 15:42:27
  * @author Volker Bergmann
  */
-public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
+public class BitReverseLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
     public static final long MAX_INDEX_RANGE = (1L << 30) - 1;
     
@@ -64,12 +63,13 @@ public class BitReverseLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
 
-	public Long generate() throws IllegalGeneratorStateException {
+	@Override
+	public synchronized Long generate() {
         assertInitialized();
         Long index = indexGenerator.generate();
         if (index == null)
         	return null;
-		return min + index * precision;
+        return min + index * precision;
     }
 
     @Override

@@ -32,6 +32,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generates random {@link BigInteger} with a uniform distribution.<br/>
@@ -80,8 +81,8 @@ public class RandomBigIntegerGenerator extends ThreadSafeGenerator<BigInteger> {
         super.init(context);
     }
     
-    public BigInteger generate() {
-        return generate(min, max, precision);
+	public ProductWrapper<BigInteger> generate(ProductWrapper<BigInteger> wrapper) {
+        return wrapper.wrap(generate(min, max, precision));
     }
     
     // public convenience method ---------------------------------------------------------------------------------------

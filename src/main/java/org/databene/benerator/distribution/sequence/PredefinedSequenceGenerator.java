@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * {@link Generator} class for use by the {@link LiteralSequence}.<br/><br/>
@@ -49,9 +50,12 @@ public class PredefinedSequenceGenerator<E extends Number> extends ThreadSafeGen
 	    return numberType;
     }
 
-	public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 	    int i = cursor.getAndIncrement();
-	    return (i < numbers.length ? numbers[i] : null);
+	    if (i >= numbers.length)
+	    	return null;
+	    else
+	    	return wrapper.wrap(numbers[i]);
     }
 
 	@Override

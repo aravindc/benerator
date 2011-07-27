@@ -29,6 +29,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorOpts;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * {@link GeneratorProxy} implementation that supports distribution of unlimited data volumes 
@@ -122,26 +123,26 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 	}
 	
 	@Override
-    public synchronized E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		assertInitialized();
 		if (buckets.isEmpty())
 			return null;
 		int bucketIndex = RandomUtil.randomIndex(buckets);
 	    ValueBucket<E> bucket = buckets.get(bucketIndex);
-	    E result;
 	    if (duplicationQuota > 0 && RandomUtil.randomProbability() < duplicationQuota) {
-	    	return bucket.getRandomElement();
+	    	return wrapper.wrap(bucket.getRandomElement());
 	    } else {
-	    	E feed = super.generate();
+	    	ProductWrapper<E> feed = super.generate(wrapper);
+		    E result;
 	    	if (feed != null) {
-			    result = bucket.getAndReplaceRandomElement(feed);
+			    result = bucket.getAndReplaceRandomElement(feed.unwrap());
 		    } else {
 		    	result = bucket.getAndRemoveRandomElement();
 			    if (bucket.isEmpty())
 			    	buckets.remove(bucketIndex);
 		    }
+		    return wrapper.wrap(result);
 	    }
-	    return result;
     }
 	
 	@Override
@@ -163,10 +164,11 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 		buckets = new ArrayList<ValueBucket<E>>(bucketCount);
 		for (int i = 0; i < bucketCount; i++)
 			infantry.add(new ValueBucket<E>(bucketSize));
-		E feed;
-		for (int i = 0; i < cacheSize && (feed = super.generate()) != null; i++) {
+		ProductWrapper<E> wrapper = new ProductWrapper<E>();
+		for (int i = 0; i < cacheSize && (wrapper = super.generate(wrapper)) != null; i++) {
 			int bucketIndex = RandomUtil.randomIndex(infantry);
 			ValueBucket<E> bucket = infantry.get(bucketIndex);
+			E feed = wrapper.unwrap();
 			bucket.add(feed);
 			if (bucket.size() == bucketSize) {
 				infantry.remove(bucketIndex);
@@ -177,5 +179,5 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 			if (bucket.size() > 0)
 				buckets.add(bucket);
     }
-	
+
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Long Generator that implements a 'cumulated' Long Sequence.
@@ -39,7 +39,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
+public class CumulatedLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
     public static final long DEFAULT_MAX = Long.MAX_VALUE / 10;
     public static final long DEFAULT_MIN = Long.MIN_VALUE / 10;
@@ -68,8 +68,10 @@ public class CumulatedLongGenerator extends AbstractNumberGenerator<Long> {
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
-    public Long generate() {
-        long index = (baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + baseGen.generate() + 2) / 5L;
+	@Override
+	public synchronized Long generate() {
+        long index = (baseGen.generate() + baseGen.generate() + baseGen.generate() + 
+        		baseGen.generate() + baseGen.generate() + 2) / 5L;
         return min + index * precision;
     }
     

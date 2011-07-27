@@ -33,6 +33,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generates random {@link BigDecimal}s with a uniform distribution.
@@ -83,10 +84,10 @@ public class RandomBigDecimalGenerator extends ThreadSafeGenerator<BigDecimal> {
 	    super.init(context);
 	}
 	
-    public BigDecimal generate() {
+	public ProductWrapper<BigDecimal> generate(ProductWrapper<BigDecimal> wrapper) {
         long n = range.divide(precision).longValue();
         BigDecimal i = BigDecimal.valueOf(RandomUtil.randomLong(0, n));
-		return min.add(i.multiply(precision));
+		return wrapper.wrap(min.add(i.multiply(precision)));
     }
 
     // properties ------------------------------------------------------------------------------------------------------

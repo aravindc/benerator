@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,10 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 /**
  * Long Generator that implements a 'randomWalk' Long Sequence.<br/>
@@ -39,7 +38,7 @@ import org.databene.benerator.primitive.number.AbstractNumberGenerator;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
+public class RandomWalkLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
     long minIncrement;
     long maxIncrement;
@@ -48,7 +47,7 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
     private long initial;
     private long next;
 
-    private Generator<Long> incrementGenerator;
+    private AbstractNonNullNumberGenerator<Long> incrementGenerator;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -91,7 +90,7 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
 
     @Override
     public void init(GeneratorContext context) {
-        incrementGenerator = incrementDistribution.createGenerator(
+        incrementGenerator = (AbstractNonNullNumberGenerator<Long>) incrementDistribution.createGenerator(
         		Long.class, minIncrement, maxIncrement, precision, false);
         if (minIncrement < 0 && maxIncrement <= 0)
             initial = max;
@@ -104,7 +103,8 @@ public class RandomWalkLongGenerator extends AbstractNumberGenerator<Long> {
         super.init(context);
     }
 
-    public synchronized Long generate() {
+	@Override
+	public synchronized Long generate() {
         assertInitialized();
         long value = next;
         next += incrementGenerator.generate();

@@ -93,31 +93,32 @@ public class StepSequence extends Sequence {
 
 	@Override
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
+		int deltaToUse = (delta != null ? toInteger(delta) : 1);
 		if (delta != null && delta.longValue() < 0)
 			return super.applyTo(source, unique);
 		else
-			return new SkipGeneratorProxy<T>(source, toLong(delta), toLong(delta), 
-					SequenceManager.RANDOM_SEQUENCE, toLong(limit));
+			return new SkipGeneratorProxy<T>(source, deltaToUse, deltaToUse, 
+					SequenceManager.RANDOM_SEQUENCE, toInteger(limit));
 	}
 	
     public <T extends Number> Generator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
-        Number incrementToUse = incrementToUse(precision);
-    	if (unique && incrementToUse.doubleValue() == 0)
+        Number deltaToUse = deltaToUse(precision);
+    	if (unique && deltaToUse.doubleValue() == 0)
     		throw new InvalidGeneratorSetupException("Can't generate unique numbers with an increment of 0.");
 		Generator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType)) {
 			if (max == null)
 				max = NumberUtil.maxValue(numberType);
 	        base = new StepLongGenerator(
-					toLong(min), toLong(max), toLong(incrementToUse), toLong(initial));
+					toLong(min), toLong(max), toLong(deltaToUse), toLong(initial));
 		} else
 			base = new StepDoubleGenerator(
-					toDouble(min), toDouble(max), toDouble(incrementToUse), toDouble(initial));
+					toDouble(min), toDouble(max), toDouble(deltaToUse), toDouble(initial));
 		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
 	}
 
-	private <T extends Number> Number incrementToUse(T precision) {
+	private <T extends Number> Number deltaToUse(T precision) {
 	    return (delta != null ? delta : (precision != null ? precision : 1));
     }
 
