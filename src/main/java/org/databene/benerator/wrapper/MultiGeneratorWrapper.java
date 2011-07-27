@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.wrapper;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.databene.benerator.Generator;
@@ -34,8 +35,8 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.util.RandomUtil;
-import org.databene.commons.ArrayFormat;
 import org.databene.commons.CollectionUtil;
+import org.databene.commons.ProgrammerError;
 
 /**
  * Parent class for wrapping several other generators (in a <i>sources</i> property) 
@@ -48,36 +49,47 @@ import org.databene.commons.CollectionUtil;
 public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
 	protected Class<P> generatedType;
-    protected Generator<? extends S>[] sources;
-    protected List<Generator<? extends S>> availableSources;
+    protected List<Generator<? extends S>> sources;
+    private List<Generator<? extends S>> availableSources;
     
-    public MultiGeneratorWrapper(Class<P> generatedType, Generator<? extends S> ... sources) {
+    public MultiGeneratorWrapper(Class<P> generatedType, Generator<? extends S>... sources) {
+    	this(generatedType, CollectionUtil.toList(sources));
+    }
+
+    public MultiGeneratorWrapper(Class<P> generatedType, List<Generator<? extends S>> sources) {
     	this.generatedType = generatedType;
+    	this.sources = new ArrayList<Generator<? extends S>>();
+    	this.availableSources = new ArrayList<Generator<? extends S>>();
         setSources(sources);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
 
-    public Generator<? extends S>[] getSources() {
+    public List<Generator<? extends S>> getSources() {
         return sources;
     }
     
-    public synchronized void setSources(Generator<? extends S> ... sources) {
-        this.sources = sources;
-        this.availableSources = CollectionUtil.toList(sources);
+    public synchronized void setSources(List<Generator<? extends S>> sources) {
+    	this.sources.clear();
+    	for (Generator<? extends S> source : sources)
+    		addSource(source);
     }
 
     public Generator<? extends S> getSource(int index) {
-        return sources[index];
+        return sources.get(index);
     }
     
-    @SuppressWarnings("unchecked")
-    public synchronized void addSource(Generator<S> source) {
-    	Generator<S>[] newSources = new Generator[sources.length + 1];
-    	System.arraycopy(sources, 0, newSources, 0, sources.length);
-    	newSources[sources.length] = source;
-    	setSources(newSources);
+    public synchronized void addSource(Generator<? extends S> source) {
+    	sources.add(source);
     }
+
+	protected int availableSourceCount() {
+		return availableSources.size();
+	}
+
+	protected Generator<? extends S> getAvailableSource(int index) {
+		return availableSources.get(index);
+	}
 
     // Generator interface implementation ------------------------------------------------------------------------------
 
@@ -88,8 +100,9 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-        if (sources.length == 0)
+        if (sources.size() == 0)
             throw new InvalidGeneratorSetupException("sources", "is empty");
+        makeAllGeneratorsAvailable();
         for (Generator<? extends S> source : sources)
             source.init(context);
         super.init(context);
@@ -99,11 +112,11 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     public synchronized void reset() {
         for (Generator<? extends S> source : sources)
             source.reset();
-        this.availableSources = CollectionUtil.toList(sources);
+        makeAllGeneratorsAvailable();
     	super.reset();
     }
 
-    @Override
+	@Override
     public synchronized void close() {
         for (Generator<? extends S> source : sources)
             source.close();
@@ -127,42 +140,63 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     
     // helpers ---------------------------------------------------------------------------------------------------------
     
-    protected synchronized S generateFromRandomSource() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	protected synchronized ProductWrapper<S> generateFromRandomSource(ProductWrapper<S> wrapper) {
     	assertInitialized();
     	if (availableSources.size() == 0)
     		return null;
-    	S product;
+    	ProductWrapper test;
     	do {
         	int sourceIndex = RandomUtil.randomIndex(availableSources);
-    		product = availableSources.get(sourceIndex).generate();
-    		if (product == null)
+        	test = availableSources.get(sourceIndex).generate((ProductWrapper) wrapper);
+    		if (test == null)
     			availableSources.remove(sourceIndex);
-    	} while (product == null && availableSources.size() > 0);
-    	return product;
+    	} while (test == null && availableSources.size() > 0);
+    	return test;
     }
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected ProductWrapper<S> generateFromAvailableSource(int i, ProductWrapper<S> wrapper) {
+    	assertInitialized();
+    	if (i < 0 || i > availableSources.size())
+    		throw new ProgrammerError("illegal generator index: " + i + " in " + this);
+    	ProductWrapper test;
+    	do {
+    		test = availableSources.get(i).generate((ProductWrapper) wrapper);
+    		if (test == null)
+    			availableSources.remove(i);
+    	} while (test == null && i < availableSources.size());
+    	return test;
+	}
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected synchronized S[] generateFromAllSources(Class<S> componentType) {
     	assertInitialized();
-    	if (availableSources.size() < sources.length)
+    	if (availableSources.size() < sources.size())
     		return null;
-    	S[] result = (S[]) Array.newInstance(componentType, sources.length);
-    	for (int i = 0; i < sources.length; i++) {
-    		S product = sources[i].generate();
-    		if (product == null) {
-    			availableSources.remove(i);
+    	S[] result = (S[]) Array.newInstance(componentType, sources.size());
+    	ProductWrapper elementWrapper = new ProductWrapper();
+    	for (int i = 0; i < sources.size(); i++) {
+    		elementWrapper = sources.get(i).generate(elementWrapper);
+    		if (elementWrapper == null)
     			return null;
-    		}
+    		S product = (S) elementWrapper.unwrap();
     		result[i] = product;
     	}
     	return result;
     }
 
+	private void makeAllGeneratorsAvailable() {
+    	this.availableSources.clear();
+    	for (Generator<? extends S> source : sources)
+    		availableSources.add(source);
+	}
+
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     
     @Override
     public synchronized String toString() {
-        return getClass().getSimpleName() + "[" + ArrayFormat.format(sources) + "]";
+        return getClass().getSimpleName() + sources;
     }
 
 }
