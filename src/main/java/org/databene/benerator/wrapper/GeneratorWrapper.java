@@ -46,7 +46,7 @@ import org.databene.commons.NullSafeComparator;
  */
 public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
-    protected Generator<S> source;
+    private Generator<S> source;
     private WrapperProvider<S> sourceWrapperProvider = new WrapperProvider<S>();
 
     public GeneratorWrapper(Generator<S> source) {
