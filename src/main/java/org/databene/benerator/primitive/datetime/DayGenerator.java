@@ -28,7 +28,9 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
+import org.databene.benerator.util.WrapperProvider;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.TimeUtil;
@@ -40,7 +42,7 @@ import org.databene.model.data.Uniqueness;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class DayGenerator extends ThreadSafeGenerator<Date> {
+public class DayGenerator extends ThreadSafeNonNullGenerator<Date> {
 
 	protected Date min;
 	protected Date max;
@@ -53,6 +55,7 @@ public class DayGenerator extends ThreadSafeGenerator<Date> {
 	
 	private Calendar minCalendar;
 	private Generator<Integer> multiplierGenerator;
+	private WrapperProvider<Integer> intWrapper = new WrapperProvider<Integer>();
 
 	public DayGenerator() {
 		this(TimeUtil.date(TimeUtil.currentYear() - 5, 0, 1),
@@ -118,11 +121,13 @@ public class DayGenerator extends ThreadSafeGenerator<Date> {
 	    super.init(context);
 	}
 	
+	@Override
 	public Date generate() {
 		assertInitialized();
-		Integer multiplier = multiplierGenerator.generate();
-		if (multiplier == null)
+		ProductWrapper<Integer> multiplierWrapper = multiplierGenerator.generate(intWrapper.get());
+		if (multiplierWrapper == null)
 			return null;
+		int multiplier = multiplierWrapper.unwrap();
 		Calendar calendar = (Calendar) minCalendar.clone();
 		calendar.add(Calendar.YEAR,         multiplier * yearGranularity );
 		calendar.add(Calendar.MONTH,        multiplier * monthGranularity);
@@ -146,5 +151,5 @@ public class DayGenerator extends ThreadSafeGenerator<Date> {
 	public String toString() {
 		return BeanUtil.toString(this);
 	}
-	
+
 }

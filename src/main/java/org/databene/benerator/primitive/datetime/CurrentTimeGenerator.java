@@ -26,8 +26,7 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
-import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.TimeUtil;
 
 import java.util.Date;
@@ -38,14 +37,15 @@ import java.util.Date;
  * Created: 17.11.2007 13:07:18
  * @author Volker Bergmann
  */
-public class CurrentTimeGenerator extends ThreadSafeGenerator<Date> { 
+public class CurrentTimeGenerator extends ThreadSafeNonNullGenerator<Date> { 
 
 	public Class<Date> getGeneratedType() {
 	    return Date.class;
     }
 
-	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
-        return wrapper.wrap(new Date(TimeUtil.currentTime().getTime()));
+	@Override
+	public Date generate() {
+        return new Date(TimeUtil.currentTime().getTime());
     }
 
 }

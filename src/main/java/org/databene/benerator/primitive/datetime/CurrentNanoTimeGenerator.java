@@ -26,8 +26,7 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
-import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates Long objects that represent the current system time in nanoseconds since 1970-01-01.<br/>
@@ -35,14 +34,15 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * Created: 17.11.2007 13:08:47
  * @author Volker Bergmann
  */
-public class CurrentNanoTimeGenerator extends ThreadSafeGenerator<Long> {
+public class CurrentNanoTimeGenerator extends ThreadSafeNonNullGenerator<Long> {
 
 	public Class<Long> getGeneratedType() {
     	return Long.class;
     }
 
-	public ProductWrapper<Long> generate(ProductWrapper<Long> wrapper) {
-        return wrapper.wrap(System.nanoTime());
+	@Override
+	public Long generate() {
+        return System.nanoTime();
     }
 
 }

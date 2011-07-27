@@ -34,7 +34,9 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.TimeUtil;
 import org.databene.model.data.Uniqueness;
 
@@ -58,6 +60,7 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     long maxTime;
     long timePrecision;
     Distribution timeDistribution;
+	private WrapperProvider<Long> timeLocalWrapper = new WrapperProvider<Long>();
     
     public DateTimeGenerator() {
         this(
@@ -128,14 +131,17 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
         super.init(context);
     }
 
-    public Date generate() {
+	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
     	assertInitialized();
-    	Date dateGeneration = dateGenerator.generate();
-    	Long timeOffsetGeneration = timeOffsetGenerator.generate();
-    	if (dateGeneration!= null && timeOffsetGeneration != null)
-    		return new Date(dateGeneration.getTime() + timeOffsetGeneration);
-    	else
+    	wrapper = dateGenerator.generate(wrapper);
+    	if (wrapper == null)
     		return null;
+    	Date dateGeneration = wrapper.unwrap();
+    	ProductWrapper<Long> timeWrapper = timeOffsetGenerator.generate(timeLocalWrapper.get());
+    	if (timeWrapper == null)
+    		return null;
+    	long timeOffsetGeneration = timeWrapper.unwrap();
+		return wrapper.wrap(new Date(dateGeneration.getTime() + timeOffsetGeneration));
     }
 
 }

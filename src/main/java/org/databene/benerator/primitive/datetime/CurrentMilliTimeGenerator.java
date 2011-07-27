@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,8 +26,7 @@
 
 package org.databene.benerator.primitive.datetime;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
-import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates Long values that represent the current time in milliseconds.<br/>
@@ -35,14 +34,15 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * Created: 17.11.2007 13:14:55
  * @author Volker Bergmann
  */
-public class CurrentMilliTimeGenerator extends ThreadSafeGenerator<Long> {
+public class CurrentMilliTimeGenerator extends ThreadSafeNonNullGenerator<Long> {
 
 	public Class<Long> getGeneratedType() {
     	return Long.class;
     }
 
-	public ProductWrapper<Long> generate(ProductWrapper<Long> wrapper) {
-        return wrapper.wrap(System.currentTimeMillis());
+	@Override
+	public Long generate() {
+        return System.currentTimeMillis();
     }
 
 }
