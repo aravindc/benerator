@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -59,8 +59,8 @@ public class ValidatingGeneratorProxy<E> extends ValidatingGenerator<E> {
      * This calls the source's generate() method and returns its result.
      */
     @Override
-    protected E generateImpl() {
-        return source.generate();
+    protected ProductWrapper<E> doGenerate(ProductWrapper<E> wrapper) {
+        return source.generate(wrapper);
     }
 
     @Override
