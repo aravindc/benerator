@@ -48,12 +48,13 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 	
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		currentLength = generateCount();
 		super.init(context);
+		currentLength = generateCount();
 	}
 
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
-		return wrapper.wrap(generate());
+		String result = generate();
+		return (result != null ? wrapper.wrap(result) : null);
 	}
 
 	public String generate() {
@@ -65,7 +66,7 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 			currentLength = generateCount();           // ...choose the next length value...
 			if (currentLength == null)
 				return null;
-			source.reset();                            // ...and reset character selection
+			getSource().reset();                            // ...and reset character selection
 			part = generateFromSource();
 		}
 		String result = createString(part.unwrap(), currentLength.intValue());
