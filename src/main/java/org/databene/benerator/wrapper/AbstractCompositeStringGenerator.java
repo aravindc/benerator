@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,13 +26,13 @@ import org.databene.benerator.GeneratorContext;
 
 /**
  * Takes the output of several source {@link Generator}s and combines them to a result String.
- * If the source generators generate unique data, the CompositeStringGenerator is able to combine 
+ * If the source generators generate unique data, the class is able to combine 
  * their output to unique values when setting its 'unique' property to 'true'.<br/><br/>
  * Created: 28.07.2010 21:53:41
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public abstract class AbstractCompositeStringGenerator extends GeneratorWrapper<Object[], String> { // TODO remove class
+public abstract class AbstractCompositeStringGenerator extends GeneratorWrapper<Object[], String> { // TODO remove class?
 	
 	private boolean unique;
 
@@ -64,18 +64,19 @@ public abstract class AbstractCompositeStringGenerator extends GeneratorWrapper<
 	    super.init(context);
 	}
 	
-	public String generate() {
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
 		assertInitialized();
-		Object[] parts = source.generate();
-		if (parts == null)
+		ProductWrapper<Object[]> arrayWrapper = generateFromSource();
+		if (arrayWrapper == null)
 			return null;
+		Object[] parts = arrayWrapper.unwrap();
 		StringBuilder builder = new StringBuilder();
 		for (Object part : parts) {
 			if (part == null)
 				return null;
 			builder.append(part);
 		}
-		return builder.toString();
+		return wrapper.wrap(builder.toString());
     }
 
     protected abstract Generator<?>[] initSources(GeneratorContext context, boolean unique);
