@@ -34,6 +34,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
@@ -124,7 +125,7 @@ public class GenerateOrIterateStatement extends AbstractStatement
     		countGenerator.init(context);
     		initialized = true;
     	}
-	    return countGenerator.generate();
+	    return countGenerator.generate(new ProductWrapper<Long>()).unwrap();
     }
 
 	public GeneratorTask getTarget() {

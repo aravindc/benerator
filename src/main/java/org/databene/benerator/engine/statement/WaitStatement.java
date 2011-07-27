@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,7 @@ package org.databene.benerator.engine.statement;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Causes the thread to sleep for a certain number of milliseconds.<br/><br/>
@@ -53,7 +54,7 @@ public class WaitStatement implements Statement {
 			durationGenerator.init(context);
 			generatorInitialized = true;
 		}
-		return durationGenerator.generate().intValue();
+		return durationGenerator.generate(new ProductWrapper<Long>()).unwrap().intValue();
 	}
 	
 }

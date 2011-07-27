@@ -25,13 +25,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentAndVariableSupport;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
 import org.databene.benerator.factory.ComplexTypeGeneratorFactory;
 import org.databene.benerator.factory.DescriptorUtil;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -142,7 +142,7 @@ public class TranscodeStatement extends SequentialStatement implements CascadePa
 		HeavyweightTypedIterable<Entity> iterable = source.queryEntities(tableName, selector, context);
     	List<ComponentBuilder<Entity>> componentBuilders = 
     		ComplexTypeGeneratorFactory.createMutatingComponentBuilders(type, Uniqueness.NONE, context);
-        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
+        Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
         ComponentAndVariableSupport<Entity> cavs = new ComponentAndVariableSupport<Entity>(variables, componentBuilders, context);
         cavs.init(context);
         Iterator<Entity> iterator = iterable.iterator();

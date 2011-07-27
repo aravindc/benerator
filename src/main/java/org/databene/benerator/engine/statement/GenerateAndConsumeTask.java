@@ -39,6 +39,8 @@ import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.engine.ResourceManager;
 import org.databene.benerator.engine.ResourceManagerSupport;
 import org.databene.benerator.engine.Statement;
+import org.databene.benerator.util.WrapperProvider;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
 import org.databene.commons.Context;
 import org.databene.commons.ErrorHandler;
@@ -64,6 +66,7 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     private ResourceManager resourceManager;
     private volatile AtomicBoolean generatorInitialized;
     private BeneratorContext context;
+    private WrapperProvider<?> productWrapperProvider = new WrapperProvider<Object>();
 
     private Consumer<?> consumer;
     
@@ -128,11 +131,13 @@ public class GenerateAndConsumeTask implements GeneratorTask, ResourceManager, M
     		initGenerator(context);
     	try {
     		// generate data object
-	        Object data = generator.generate();
-	        if (data == null) {
+    		ProductWrapper wrapper = productWrapperProvider.get();
+	        wrapper = generator.generate(wrapper);
+	        if (wrapper == null) {
 		        Thread.yield();
 	        	return TaskResult.UNAVAILABLE;
 	        }
+	        Object data = wrapper.unwrap();
 	        BeneratorMonitor.INSTANCE.countGenerations(1);
 	        // consume data object
 			Consumer consumer = getConsumer();
