@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -19,7 +19,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.wrapper;
+package org.databene.benerator.util;
+
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Provides a {@link ThreadLocal} implementation that wraps a {@link ProductWrapper} for reuse.<br/><br/>
@@ -27,7 +29,7 @@ package org.databene.benerator.wrapper;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ThreadLocalProductWrapper<E> extends ThreadLocal<ProductWrapper<E>> {
+public class WrapperProvider<E> extends ThreadLocal<ProductWrapper<E>> {
 
 	@Override
 	protected ProductWrapper<E> initialValue() {
