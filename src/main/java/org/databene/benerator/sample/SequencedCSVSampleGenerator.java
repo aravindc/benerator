@@ -98,7 +98,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     /** test support method */
     void addValue(E value) {
-        ((SampleGenerator<E>) source).addValue(value);
+        ((SampleGenerator<E>) getSource()).addValue(value);
         // do not set dirty flag, otherwise this value would be c�eared
     }
 
@@ -117,7 +117,7 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
                 if (tokens.length > 0)
                     samples.add(converter.convert(tokens[0]));
             }
-            ((SampleGenerator<E>) source).setValues(samples);
+            ((SampleGenerator<E>) getSource()).setValues(samples);
         	super.init(context);
         } catch (FileNotFoundException e) {
             throw new InvalidGeneratorSetupException("uri", "not found: " + uri);
@@ -132,6 +132,6 @@ public class SequencedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "[source=" + source + ", converter=" + converter + ']';
+        return getClass().getSimpleName() + "[source=" + getSource() + ", converter=" + converter + ']';
     }
 }

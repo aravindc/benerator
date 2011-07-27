@@ -82,7 +82,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
     }
 
     public WeightedCSVSampleGenerator(String uri, String encoding, Converter<String, E> converter) {
-        this.source = new AttachedWeightSampleGenerator<E>();
+        setSource(new AttachedWeightSampleGenerator<E>());
         this.converter = converter;
         this.encoding = encoding;
         this.separator = ',';
@@ -126,7 +126,7 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 	@Override
     public void init(GeneratorContext context) {
         List<WeightedSample<E>> samples = CSVGeneratorUtil.parseFile(uri, separator, encoding, converter);
-        AttachedWeightSampleGenerator<E> awSource = (AttachedWeightSampleGenerator<E>) source;
+        AttachedWeightSampleGenerator<E> awSource = (AttachedWeightSampleGenerator<E>) getSource();
         if (samples.size() > 0) {
         	awSource.setSamples(CollectionUtil.toArray(samples));
         } else {

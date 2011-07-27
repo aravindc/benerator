@@ -64,7 +64,7 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
     }
 
     public void addTransition(E from, E to, double weight) {
-    	((StateGenerator<E>) source).addTransition(from, to, weight);
+    	((StateGenerator<E>) getSource()).addTransition(from, to, weight);
     }
     
     // Generator interface implementation ------------------------------------------------------------------------------
