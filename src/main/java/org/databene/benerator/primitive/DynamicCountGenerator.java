@@ -21,6 +21,7 @@
 
 package org.databene.benerator.primitive;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.Expression;
@@ -53,8 +54,9 @@ public class DynamicCountGenerator extends DynamicLongGenerator {
 		    super.resetMembers(minValue, maxValue);
 		else {
 			Long constant = (resetToMin ? minValue : null);
-			source = new ConstantGenerator(constant); // TODO is this correct?
+			Generator<Long> source = new ConstantGenerator(constant); // TODO is this correct?
 	        source.init(context);
+	        setSource(source);
 		}
 	}
 	

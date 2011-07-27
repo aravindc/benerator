@@ -57,7 +57,7 @@ public class SeedSentenceGenerator extends NonNullGeneratorWrapper<String[], Str
 			String line = iterator.next();
 			if (StringUtil.isEmpty(line))
 				continue;
-	    	((SeedGenerator<String>) source).addSample(line.split("\\s"));
+	    	((SeedGenerator<String>) getSource()).addSample(line.split("\\s"));
 		}
     }
 
@@ -80,7 +80,7 @@ public class SeedSentenceGenerator extends NonNullGeneratorWrapper<String[], Str
 
     public void printState() {
 	    System.out.println(getClass().getSimpleName());
-	    ((SeedGenerator<String>) source).printState("  ");
+	    ((SeedGenerator<String>) getSource()).printState("  ");
     }
 
 }

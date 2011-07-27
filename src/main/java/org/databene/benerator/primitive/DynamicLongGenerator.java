@@ -89,8 +89,9 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
 		if (precisionValue == null)
 			precisionValue = 1L;
 	    Distribution dist = distribution.evaluate(context);
-		source = dist.createGenerator(Long.class, minValue, maxValue, precisionValue, false);
+	    Generator<Long> source = dist.createGenerator(Long.class, minValue, maxValue, precisionValue, false);
         source.init(context);
+        setSource(source);
     }
     
 }
