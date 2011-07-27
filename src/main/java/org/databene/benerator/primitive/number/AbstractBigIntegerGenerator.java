@@ -36,7 +36,7 @@ import java.math.BigInteger;
  * Created: 07.06.2006 19:04:08
  * @author Volker Bergmann
  */
-public abstract class AbstractBigIntegerGenerator extends AbstractNumberGenerator<BigInteger> {
+public abstract class AbstractBigIntegerGenerator extends AbstractNonNullNumberGenerator<BigInteger> {
 
     private static final BigInteger DEFAULT_MIN = new BigInteger(new byte[] {
             (byte)0x80, (byte)0x00, (byte)0x00, (byte)0x00,

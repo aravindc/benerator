@@ -36,7 +36,7 @@ import java.math.BigDecimal;
  * Created: 01.07.2006 17:43:29
  * @author Volker Bergmann
  */
-public abstract class AbstractBigDecimalGenerator extends AbstractNumberGenerator<BigDecimal> {
+public abstract class AbstractBigDecimalGenerator extends AbstractNonNullNumberGenerator<BigDecimal> {
 
     public static final BigDecimal DEFAULT_PRECISION = new BigDecimal("0.01");
 

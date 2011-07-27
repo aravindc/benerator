@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -62,7 +62,7 @@ import org.databene.domain.math.FibonacciLongGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class RecurrenceRelationNumberGenerator<E extends Number> extends AbstractNumberGenerator<E> {
+public abstract class RecurrenceRelationNumberGenerator<E extends Number> extends AbstractNonNullNumberGenerator<E> {
 
 	private final int depth;
 	private final LinkedList<E> recentProducts;
@@ -92,8 +92,8 @@ public abstract class RecurrenceRelationNumberGenerator<E extends Number> extend
         resetMembers();
     }
     
-    /** See {@link org.databene.benerator.Generator#generate()} */
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public synchronized E generate() {
     	E next = calculateNext();
     	Comparable<E> c = (Comparable<E>) next;
