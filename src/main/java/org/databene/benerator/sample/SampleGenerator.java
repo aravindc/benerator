@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 
 import java.util.List;
@@ -144,11 +145,11 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
         super.init(context);
     }
 
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         assertInitialized();
-        Integer index;
-        if (samples.size() > 0 && (index = indexGenerator.generate()) != null)
-        	return samples.get(index);
+        ProductWrapper<Integer> indexWrapper = new ProductWrapper<Integer>(); // TODO efficiency
+        if (samples.size() > 0 && (indexWrapper = indexGenerator.generate(indexWrapper)) != null)
+        	return wrapper.wrap(samples.get(indexWrapper.unwrap()));
         else
             return null;
     }
@@ -183,5 +184,5 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> {
     public String toString() {
         return getClass().getSimpleName();
     }
-    
+
 }

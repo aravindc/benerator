@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,11 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.Transition;
 import org.databene.benerator.script.WeightedTransition;
 import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.converter.AnyConverter;
 
 /**
@@ -73,14 +73,17 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
 	    return Transition.class;
     }
 
-    public Transition generate() throws IllegalGeneratorStateException {
+	public ProductWrapper<Transition> generate(ProductWrapper<Transition> wrapper) {
     	if (done)
     		return null;
     	E previousState = currentState;
-    	currentState = source.generate();
-    	if (currentState == null)
+    	ProductWrapper<E> sourceWrapper = generateFromSource();
+    	if (sourceWrapper == null) {
     		done = true;
-	    return new Transition(previousState, currentState);
+    		return wrapper.wrap(new Transition(previousState, null)); // final transition
+    	}
+    	currentState = sourceWrapper.unwrap();
+	    return wrapper.wrap(new Transition(previousState, currentState));
     }
 
     @Override
@@ -102,5 +105,5 @@ public class StateTransitionGenerator<E> extends GeneratorWrapper<E, Transition>
     private E convert(Object object) {
     	return AnyConverter.convert(object, stateType);
     }
-    
+
 }

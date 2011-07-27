@@ -31,7 +31,9 @@ import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,14 +175,13 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
         super.init(context);
     }
 
-    /** @see org.databene.benerator.Generator#generate() */
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
         if (samples.size() == 0)
             return null;
-        int index = indexGenerator.generate().intValue();
+        int index = GeneratorUtil.generateNonNull(indexGenerator).intValue();
         WeightedSample<? extends E> sample = samples.get(index);
-        return sample.getValue();
+        return wrapper.wrap(sample.getValue());
     }
 
     // static interface ------------------------------------------------------------------------------------------------
@@ -243,5 +244,5 @@ public class AttachedWeightSampleGenerator<E> extends AbstractSampleGenerator<E>
     public String toString() {
         return getClass().getSimpleName();
     }
-    
+
 }

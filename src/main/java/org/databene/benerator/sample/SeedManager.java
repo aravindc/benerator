@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 
 /**
@@ -93,7 +94,7 @@ public class SeedManager<E> {
 	public E randomAtom() {
 		if (!initialized)
 			init();
-		return helper.generate();
+		return helper.generate(new ProductWrapper<E>()).unwrap();
 	}
 
     public SeedManager<E> getSuccessor(E atom) {

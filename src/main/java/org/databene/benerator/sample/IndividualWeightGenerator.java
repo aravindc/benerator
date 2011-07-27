@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -34,7 +34,9 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.AbstractWeightFunction;
 import org.databene.benerator.distribution.IndividualWeight;
 import org.databene.benerator.distribution.WeightedLongGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generator for {@link IndividualWeight} distributions.<br/>
@@ -127,13 +129,12 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
         super.init(context);
     }
 
-    /** @see org.databene.benerator.Generator#generate() */
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         assertInitialized();
         if (samples.size() == 0)
             return null;
-        int index = indexGenerator.generate().intValue();
-        return samples.get(index);
+        int index = GeneratorUtil.generateNonNull(indexGenerator).intValue();
+        return wrapper.wrap(samples.get(index));
     }
 
     // static interface ------------------------------------------------------------------------------------------------
@@ -185,5 +186,5 @@ public class IndividualWeightGenerator<E> extends AbstractSampleGenerator<E> {
     public String toString() {
         return getClass().getSimpleName();
     }
-    
+
 }

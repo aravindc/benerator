@@ -27,9 +27,9 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Returns a value only once and then becomes unavailable immediately.<br/>
@@ -63,11 +63,11 @@ public class OneShotGenerator<E> extends ThreadSafeGenerator<E> {
 	    super.close();
     }
 
-    public synchronized E generate() throws IllegalGeneratorStateException {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 	    if (used)
 	    	return null;
 	    used = true;
-	    return value;
+	    return wrapper.wrap(value);
     }
 
     public Class<E> getGeneratedType() {
@@ -76,8 +76,6 @@ public class OneShotGenerator<E> extends ThreadSafeGenerator<E> {
 
     @Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-	    if (value == null)
-	    	throw new InvalidGeneratorSetupException("value is null");
 	    super.init(context);
     }
 
@@ -91,5 +89,5 @@ public class OneShotGenerator<E> extends ThreadSafeGenerator<E> {
     public String toString() {
     	return getClass().getSimpleName() + '[' + value + ']';
     }
-    
+
 }

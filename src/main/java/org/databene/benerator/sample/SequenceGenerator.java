@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
         return productType;
     }
 
-    public synchronized E generate() {
+	public synchronized ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         if (cursor < 0)
             return null;
         E result = values.get(cursor);
@@ -78,7 +79,7 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
             cursor = -1;
         if (logger.isDebugEnabled())
             logger.debug("created: " + result);
-        return result;
+        return wrapper.wrap(result);
     }
 
     @Override
@@ -98,5 +99,5 @@ public class SequenceGenerator<E> extends ThreadSafeGenerator<E> {
     public String toString() {
     	return getClass().getSimpleName() + values;
     }
-    
+
 }

@@ -122,12 +122,6 @@ public class WeightedCSVSampleGenerator<E> extends GeneratorProxy<E> {
 	
     // generator interface ---------------------------------------------------------------------------------------------
 
-    @Override
-    public E generate() {
-        assertInitialized();
-        return source.generate();
-    }
-
     @SuppressWarnings("unchecked")
 	@Override
     public void init(GeneratorContext context) {

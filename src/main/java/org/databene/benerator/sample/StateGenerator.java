@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,12 +31,12 @@ import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.script.WeightedTransition;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.SimpleNonNullGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
@@ -49,11 +49,11 @@ import org.databene.commons.StringUtil;
  * @author Volker Bergmann
  */
 
-public class StateGenerator<E> extends SimpleGenerator<E> {
+public class StateGenerator<E> extends SimpleNonNullGenerator<E> {
 	
 	private Class<E> generatedType;
+	private Map<E, MappedSampleGenerator<E>> transitionsGenerators;
 	private E nextState;
-	private Map<E, MappedSampleGenerator<E>> transitions;
 	
 	// initialization --------------------------------------------------------------------------------------------------
 
@@ -69,14 +69,14 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
     
     public StateGenerator(Class<E> generatedType) {
 	    this.generatedType = generatedType;
-	    this.transitions = new HashMap<E, MappedSampleGenerator<E>>();
+	    this.transitionsGenerators = new HashMap<E, MappedSampleGenerator<E>>();
 	    this.nextState = null;
     }
     
     @SuppressWarnings("unchecked")
     public void setTransitions(String transitionSpec) {
 		if (StringUtil.isEmpty(transitionSpec)) {
-			transitions.clear();
+			transitionsGenerators.clear();
 			return;
 		}
     	try {
@@ -89,10 +89,10 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
     }
 
     public void addTransition(E from, E to, double weight) {
-    	MappedSampleGenerator<E> subGenerator = transitions.get(from);
+    	MappedSampleGenerator<E> subGenerator = transitionsGenerators.get(from);
     	if (subGenerator == null) {
     		subGenerator = new MappedSampleGenerator<E>(generatedType);
-    		transitions.put(from, subGenerator);
+    		transitionsGenerators.put(from, subGenerator);
     	}
     	subGenerator.addSample(to, weight);
     }
@@ -106,38 +106,37 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
     @Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
     	assertNotInitialized();
-        MappedSampleGenerator<E> gen = this.transitions.get(null);
-        if (gen == null)
-        	throw new InvalidGeneratorSetupException("No initial state defined for " + this);
         boolean hasEndTransition = false;
-        for (MappedSampleGenerator<E> tmp : transitions.values())
+        for (MappedSampleGenerator<E> tmp : transitionsGenerators.values())
         	if (tmp.containsSample(null)) {
         		hasEndTransition = true;
         		break;
         	}
         if (!hasEndTransition)
         	throw new InvalidGeneratorSetupException("No final state defined for " + this);
-    	for (Generator<E> tmp : transitions.values())
+    	for (Generator<E> tmp : transitionsGenerators.values())
     		tmp.init(context);
-        nextState = gen.generate();
+        MappedSampleGenerator<E> gen = this.transitionsGenerators.get(null);
+        nextState = gen.generate(new ProductWrapper<E>()).unwrap();
         super.init(context);
     }
 	
-    public E generate() throws IllegalGeneratorStateException {
-    	if (state == GeneratorState.CLOSED)
+	@Override
+	public E generate() {
+    	if (nextState == null)
     		return null;
     	E result = nextState;
-	    MappedSampleGenerator<E> subGenerator = transitions.get(nextState);
-		nextState = subGenerator.generate();
-		if (nextState == null)
-			state = GeneratorState.CLOSED;
+	    MappedSampleGenerator<E> transitionGenerator = transitionsGenerators.get(nextState);
+	    ProductWrapper<E> wrapper = transitionGenerator.generate(new ProductWrapper<E>());
+		nextState = (wrapper != null ? wrapper.unwrap() : null);
 		return result;
     }
 
     @Override
     public void reset() throws IllegalGeneratorStateException {
-        MappedSampleGenerator<E> gen = this.transitions.get(null);
-        nextState = gen.generate();
+        MappedSampleGenerator<E> transitionGenerator = this.transitionsGenerators.get(null);
+	    ProductWrapper<E> wrapper = transitionGenerator.generate(new ProductWrapper<E>());
+		nextState = (wrapper != null ? wrapper.unwrap() : null);
         super.reset();
     }
     
@@ -150,7 +149,7 @@ public class StateGenerator<E> extends SimpleGenerator<E> {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + transitions;
+        return getClass().getSimpleName() + transitionsGenerators;
     }
 
 }

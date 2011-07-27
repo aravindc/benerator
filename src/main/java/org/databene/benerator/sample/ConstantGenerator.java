@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.sample;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generator implementation that always returns the same value.<br/>
@@ -83,8 +84,8 @@ public class ConstantGenerator<E> extends ThreadSafeGenerator<E> {
     }
 
     /** Returns the value of property 'value' */
-    public E generate() {
-        return value;
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+        return wrapper.wrap(value);
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------

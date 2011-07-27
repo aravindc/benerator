@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,9 +29,8 @@ package org.databene.benerator.sample;
 import java.util.List;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.SimpleNonNullGenerator;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.CollectionUtil;
 
@@ -43,7 +42,7 @@ import org.databene.commons.CollectionUtil;
  * @author Volker Bergmann
  */
 
-public class SeedGenerator<E> extends SimpleGenerator<E[]>{
+public class SeedGenerator<E> extends SimpleNonNullGenerator<E[]>{
 	
 	private Class<E> atomType;
 	private Class<E[]> targetType;
@@ -101,8 +100,9 @@ public class SeedGenerator<E> extends SimpleGenerator<E[]>{
 		super.init(context);
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
-    public E[] generate() throws IllegalGeneratorStateException {
+	public E[] generate() {
 		assertInitialized();
 	    List<E> tmp = CollectionUtil.toList((E) null);
 	    do {
