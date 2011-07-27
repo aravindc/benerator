@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -71,16 +71,16 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     		return (Class<T>) source.getGeneratedType();
     }
 
-    /** @see org.databene.benerator.Generator#generate() */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public T generate() {
+	public ProductWrapper<T> generate(ProductWrapper<T> wrapper) {
         try {
-            Object tmp = source.generate();
-            if (tmp == null)
+        	ProductWrapper<S> sourceWrapper = generateFromSource();
+            if (sourceWrapper == null)
             	return null;
+            Object tmp = sourceWrapper.unwrap();
             for (Converter converter : converters)
             	tmp = converter.convert(tmp);
-            return (T) tmp;
+            return wrapper.wrap((T) tmp);
         } catch (ConversionException e) {
             throw new IllegalGeneratorStateException(e);
         }
@@ -90,5 +90,5 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     public String toString() {
     	return getClass().getSimpleName() + "[source=" + source + ", converters=[" + ArrayFormat.format(converters) + "]]";
     }
-    
+
 }
