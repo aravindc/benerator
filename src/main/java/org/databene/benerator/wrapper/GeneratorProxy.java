@@ -50,12 +50,13 @@ public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
 
     @SuppressWarnings("unchecked")
     public Class<E> getGeneratedType() {
+    	Generator<E> source = getSource();
         return (source != null ? source.getGeneratedType() : (Class<E>) Object.class); // TODO v1.0 possibly there is a better way to handle this?
     }
 
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
-    	return source.generate(wrapper);
+    	return getSource().generate(wrapper);
     }
 
 }
