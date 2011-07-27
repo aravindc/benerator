@@ -92,7 +92,7 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
         return iterable.getType();
     }
 
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         try {
             assertInitialized();
             if (iterator == null || !iterator.hasNext()) {
@@ -102,7 +102,7 @@ public class IteratingGenerator<E> extends AbstractGenerator<E> {
         	E result = iterator.next();
         	if (!iterator.hasNext())
 	            closeIterator();
-			return result;
+			return wrapper.wrap(result);
         } catch (Exception e) {
         	throw new IllegalGeneratorStateException("Generation failed: ", e);
         }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -55,25 +55,24 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
-    /** @see org.databene.benerator.Generator#generate() */
-    @SuppressWarnings("unchecked")
-    public S[] generate() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public ProductWrapper<S[]> generate(ProductWrapper<S[]> wrapper) {
     	if (!available)
     		return null;
-        S[] array = (S[]) Array.newInstance(componentType, sources.length);
+        S[] array = (S[]) Array.newInstance(componentType, availableSourceCount());
         for (int i = 0; i < array.length; i++) {
             try {
-                S product = sources[i].generate();
-                if (product == null) {
+            	ProductWrapper<S> productWrapper = (ProductWrapper<S>) sources.get(i).generate(new ProductWrapper());
+                if (productWrapper == null) {
                 	available = false;
                 	return null;
                 }
-				array[i] = product;
+				array[i] = productWrapper.unwrap();
             } catch (Exception e) {
-                throw new RuntimeException("Generation failed for generator #" + i + ": " + sources[i], e);
+                throw new RuntimeException("Generation failed for generator #" + i + " of " + this, e);
             }
         }
-        return array;
+        return wrapper.wrap(array);
     }
 
     @Override
@@ -87,5 +86,5 @@ public class SimpleCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     	super.close();
     	this.available = false;
     }
-    
+
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,9 +30,11 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.ValidatingGenerator;
+import org.databene.commons.CollectionUtil;
 import org.databene.commons.validator.StringLengthValidator;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Assembles the output of several source generators by a java.text.MessageFormat.<br/>
@@ -112,8 +114,8 @@ public class MessageGenerator extends ValidatingGenerator<String> {
 
     /** Sets the source generators */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void setSources(Generator[] sources) {
-        this.helper.setSources(sources);
+    public void setSources(Generator<?>[] sources) {
+        this.helper.setSources((List) CollectionUtil.toList(sources));
     }
 
     // generator interface ---------------------------------------------------------------------------------------------
@@ -135,13 +137,14 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     }
 
     /** Implementation of ValidatingGenerator's generation callback method */
-    @Override
-    public String generateImpl() {
-        Object[] values = helper.generate();
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	protected ProductWrapper<String> doGenerate(ProductWrapper<String> wrapper) {
+        Object[] values = helper.generate(new ProductWrapper()).unwrap();
         if (values == null)
         	return null;
         else
-        	return MessageFormat.format(pattern, values);
+        	return wrapper.wrap(MessageFormat.format(pattern, values));
     }
 
     /** @see org.databene.benerator.Generator#reset() */
