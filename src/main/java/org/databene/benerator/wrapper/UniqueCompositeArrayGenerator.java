@@ -26,6 +26,8 @@
 
 package org.databene.benerator.wrapper;
 
+import java.util.List;
+
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
@@ -47,7 +49,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
     private static final Logger logger = LoggerFactory.getLogger(UniqueCompositeArrayGenerator.class);
 
     private Class<S> componentType;
-    private Object[] next;
+    private Object[] buffer;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -60,6 +62,12 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         this.componentType = componentType;
     }
 
+    @SuppressWarnings("unchecked")
+	public UniqueCompositeArrayGenerator(Class<S> componentType, List<Generator<? extends S>> sources) {
+        super(ArrayUtil.arrayType(componentType), sources);
+        this.componentType = componentType;
+    }
+
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
@@ -68,30 +76,29 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         init();
     }
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void init() {
-	    if (sources.length == 0)
+	    if (sources.size() == 0)
             throw new InvalidGeneratorSetupException("source", "is null");
-        next = new Object[sources.length];
-        for (int i = 0; i < next.length; i++) {
-            next[i] = sources[i].generate();
-            if (next[i] == null)
-                throw new InvalidGeneratorSetupException("Sub generator not available: " + sources[i]);
+        buffer = ArrayUtil.newInstance(componentType, sources.size());
+        for (int i = 0; i < buffer.length; i++) {
+        	ProductWrapper<?> wrapper = sources.get(i).generate(new ProductWrapper());
+            if (wrapper == null)
+                throw new InvalidGeneratorSetupException("Sub generator not available: " + sources.get(i));
+        	buffer[i] = wrapper.unwrap();
         }
     }
 
-    /**
-     * @see org.databene.benerator.Generator#generate()
-     */
     @SuppressWarnings("cast")
-    public S[] generate() {
+	public ProductWrapper<S[]> generate(ProductWrapper<S[]> wrapper) {
     	assertInitialized();
-    	if (next == null)
+    	if (buffer == null)
     		return null;
-        S[] result = (S[]) ArrayUtil.copyOfRange(next, 0, next.length, componentType);
-        fetchNextArrayItem(0);
+        S[] result = (S[]) ArrayUtil.copyOfRange(buffer, 0, buffer.length, componentType);
+        fetchNextArrayItem(buffer.length - 1);
         if (logger.isDebugEnabled())
             logger.debug("generated: " + ArrayFormat.format(result));
-        return result;
+        return wrapper.wrap(result);
     }
 
     @Override
@@ -101,26 +108,27 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         init();
     }
 
-    private void fetchNextArrayItem(int index) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fetchNextArrayItem(int index) {
         // check for overrun
-        if (index >= sources.length) {
-            next = null;
+        if (buffer == null || index < 0 || index >= sources.size()) {
+            buffer = null;
             return;
         }
         // if available, fetch the digit's next value
-        Generator<? extends S> gen = sources[index];
-        
-        Object element = gen.generate();
-        if (element != null) {
-            next[index] = element;
+        Generator<? extends S> elementGenerator = sources.get(index);
+        ProductWrapper elementWrapper = elementGenerator.generate(new ProductWrapper());
+        if (elementWrapper != null) {
+            buffer[index] = elementWrapper.unwrap();
             return;
         }
         // sources[index] was not available
-        fetchNextArrayItem(index + 1);
-        if (next != null) {
-            gen.reset();
-            next[index] = gen.generate();
+        fetchNextArrayItem(index - 1);
+        if (buffer != null) {
+            elementGenerator.reset();
+            elementWrapper = elementGenerator.generate(new ProductWrapper());
+            buffer[index] = elementWrapper.unwrap();
         }
     }
-    
+
 }
