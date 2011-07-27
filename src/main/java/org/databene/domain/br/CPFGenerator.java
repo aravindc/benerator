@@ -1,5 +1,5 @@
 /*
-  * (c) Copyright 2009-2010 by Eric Chaves & Volker Bergmann. All rights reserved.
+  * (c) Copyright 2009-2011 by Eric Chaves & Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,8 +22,7 @@
 package org.databene.domain.br;
 
 import java.util.ArrayList;
-import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 import java.util.Random;
 
@@ -34,7 +33,7 @@ import java.util.Random;
  * @author Eric Chaves
  * @author Volker Bergmann
  */
-public class CPFGenerator extends ThreadSafeGenerator<String> {
+public class CPFGenerator extends ThreadSafeNonNullGenerator<String> {
 
     /**
      * flag indicating should return CPF in numeric or formatted form.
@@ -52,7 +51,8 @@ public class CPFGenerator extends ThreadSafeGenerator<String> {
     	this.formatted = formatted;
     }
 
-    public String generate() throws InvalidGeneratorSetupException{
+	@Override
+	public String generate() {
     	StringBuilder buf = new StringBuilder();
     	ArrayList<Integer> digits = new ArrayList<Integer>();
 	
@@ -81,5 +81,5 @@ public class CPFGenerator extends ThreadSafeGenerator<String> {
     		sum += digits.get(i) * j;
     	digits.add((sum % 11 < 2) ? 0: 11-(sum % 11));
     }
-    
+
 }

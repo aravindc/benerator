@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Eric Chaves & Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Eric Chaves & Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,10 @@ package org.databene.domain.br;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Encodings;
 
 /**
@@ -34,7 +37,7 @@ import org.databene.commons.Encodings;
  * @author Eric Chaves
  * @see "http://en.wikipedia.org/wiki/Cadastro_de_Pessoas_F%C3%ADsicas"
  */
-public class CNPJGenerator extends WeightedCSVSampleGenerator<String>{
+public class CNPJGenerator extends WeightedCSVSampleGenerator<String> implements NonNullGenerator<String> {
 
     private static final String LOCAL = "/org/databene/domain/br/cnpj_sufix.csv";
 	
@@ -55,12 +58,16 @@ public class CNPJGenerator extends WeightedCSVSampleGenerator<String>{
 	
 	// Generator interface implementation ------------------------------------------------------------------------------
 
-	@Override
 	public String generate() {
-		String sufix = super.generate();
-		if (sufix == null)
-			sufix = "0000";
-		return generateCNPJ(sufix);
+		return generate(getResultWrapper()).unwrap();
+	}
+
+	@Override
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		String suffix = super.generate(wrapper).unwrap();
+		if (suffix == null)
+			suffix = "0000";
+		return wrapper.wrap(generateCNPJ(suffix));
 	}
 
 	// private helpers -------------------------------------------------------------------------------------------------
