@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Assert;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -50,8 +51,8 @@ public class BlankEntityGenerator extends ThreadSafeGenerator<Entity> {
         return Entity.class;
     }
 
-    public Entity generate() {
-        return new Entity(descriptor);
-    }
+	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
+        return wrapper.wrap(new Entity(descriptor));
+	}
     
 }

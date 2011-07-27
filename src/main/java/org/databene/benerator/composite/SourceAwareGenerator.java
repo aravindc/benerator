@@ -26,8 +26,9 @@ import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.MessageHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	private boolean firstGeneration;
 	private String message;
 	private ComponentAndVariableSupport<E> support;
+	private WrapperProvider<E> eWrapperProvider = new WrapperProvider<E>();
 	
 	/**
      * @param source another Generator of entities that serves as Entity builder. 
@@ -56,7 +58,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
      * @param instanceName instance name for the generated entities. 
 	 */
 	public SourceAwareGenerator(String instanceName, Generator<E> source, 
-			Map<String, NullableGenerator<?>> variables, List<ComponentBuilder<E>> componentBuilders, 
+			Map<String, Generator<?>> variables, List<ComponentBuilder<E>> componentBuilders, 
 			GeneratorContext context) {
         super(source);
         this.instanceName = instanceName;
@@ -68,37 +70,39 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	
 	@Override
     public void init(GeneratorContext context) {
-        source.init(context);
+		getSource().init(context); // TODO source initialized twice?
     	fetchNextSourceInstance(context);
         this.firstGeneration = true;
         support.init(context);
-		super.init(context);
+		super.init(context); // TODO source initialized twice?
 	}
 
 	private void fetchNextSourceInstance(GeneratorContext context) {
-    	currentInstance = source.generate();
-        if (currentInstance == null) {
-        	message = "Source for entity '" + instanceName + "' is not available any more: " + source;
-            stateLogger.debug(message);
-        }
-        
+    	ProductWrapper<E> test = getSource().generate(eWrapperProvider.get());
+        if (test == null) {
+			currentInstance = null;
+            stateLogger.debug("Source for entity '{}' is not available any more: {}", instanceName, getSource());
+            return;
+        } 
+        currentInstance = test.unwrap();
         if (instanceName != null)
         	context.set(instanceName, currentInstance);
         context.set("this", currentInstance); // TODO BUG: array sub generators use this too, overwriting a top-level entity generator
     }
 	
 	@Override
-    public E generate() {
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		if (!firstGeneration)
 			fetchNextSourceInstance(context);
 		firstGeneration = false;
 		if (currentInstance == null)
 			return null;
-		if (!support.apply(currentInstance))
+		if (!support.apply(currentInstance)) {
 			currentInstance = null;
-        if (currentInstance != null)
-        	logger.debug("Generated {}", currentInstance);
-        return currentInstance;
+			return null;
+		}
+    	logger.debug("Generated {}", currentInstance);
+        return wrapper.wrap(currentInstance);
 	}
 
 	@Override
@@ -118,6 +122,7 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	public String getMessage() {
 		if (message != null)
 			return message;
+		Generator<E> source = getSource();
 	    if (source instanceof MessageHolder && ((MessageHolder) source).getMessage() != null)
 	    	return ((MessageHolder) source).getMessage();
 	    return support.getMessage();
@@ -129,17 +134,17 @@ public class SourceAwareGenerator<E> extends GeneratorProxy<E> implements Messag
 	
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "[" + source + "]";
+	    return getClass().getSimpleName() + "[" + getSource() + "]";
 	}
 
 	@Override
     public boolean isParallelizable() {
-	    return source.isParallelizable() && support.isParallelizable();
+	    return getSource().isParallelizable() && support.isParallelizable();
     }
 
 	@Override
     public boolean isThreadSafe() {
-	    return source.isThreadSafe() && support.isThreadSafe();
+	    return getSource().isThreadSafe() && support.isThreadSafe();
     }
 
 }

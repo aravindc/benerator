@@ -23,28 +23,28 @@ package org.databene.benerator.composite;
 
 import java.lang.reflect.Array;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.util.GeneratorUtil;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.CompositeGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.ArrayUtil;
 
 /**
- * Uses n {@link NullableGenerator}s for generating random arrays of n elements.<br/><br/>
+ * Uses n {@link Generator}s for generating random arrays of n elements.<br/><br/>
  * Created: 05.07.2011 18:15:23
  * @since 0.7.0
  * @author Volker Bergmann
  */
 public class StochasticArrayGenerator<T> extends CompositeGenerator<T[]> { // TODO clean up array generator hierarchy
 	
-	private ThreadLocalProductWrapper<T> threadLocalWrapper = new ThreadLocalProductWrapper<T>();
+	private WrapperProvider<T> threadLocalWrapper = new WrapperProvider<T>();
 	private Class<T> componentType;
-	private NullableGenerator<? extends T>[] sources;
+	private Generator<? extends T>[] sources;
 	
 	@SuppressWarnings("unchecked")
-	public StochasticArrayGenerator(Class<T> componentType, NullableGenerator<? extends T>[] sources) {
+	public StochasticArrayGenerator(Class<T> componentType, Generator<? extends T>[] sources) {
 		super(ArrayUtil.arrayType(componentType));
 		this.componentType = componentType;
 		this.sources = sources;
@@ -64,17 +64,17 @@ public class StochasticArrayGenerator<T> extends CompositeGenerator<T[]> { // TO
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public T[] generate() {
+	public ProductWrapper<T[]> generate(ProductWrapper<T[]> wrapper) {
 		assertInitialized();
 		T[] result = (T[]) Array.newInstance(componentType, sources.length);
-		ProductWrapper wrapper = threadLocalWrapper.get();
+		ProductWrapper wrapper2 = threadLocalWrapper.get();
 		for (int i = 0; i < sources.length; i++) {
-			wrapper = sources[i].generate(wrapper);
-			if (wrapper == null)
+			wrapper2 = sources[i].generate(wrapper2);
+			if (wrapper2 == null)
 				return null;
-			result[i] = (T) wrapper.product;
+			result[i] = (T) wrapper2.unwrap();
 		}
-	    return result;
+	    return wrapper.wrap(result);
     }
 
 }

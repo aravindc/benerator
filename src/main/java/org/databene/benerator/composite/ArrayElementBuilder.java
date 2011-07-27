@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,8 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.commons.Mutator;
 import org.databene.commons.UpdateFailedException;
 
@@ -36,10 +35,10 @@ import org.databene.commons.UpdateFailedException;
 public class ArrayElementBuilder extends DefaultComponentBuilder<Object[]> {
 
     public ArrayElementBuilder(int index, Generator<?> source, double nullQuota) {
-		this(index, NullableGeneratorFactory.injectNulls(source, nullQuota));
+		this(index, GeneratorFactoryUtil.injectNulls(source, nullQuota));
     }
 
-	public ArrayElementBuilder(int index, NullableGenerator<?> source) {
+	public ArrayElementBuilder(int index, Generator<?> source) {
 	    super(source, new Mutator_(index));
     }
 

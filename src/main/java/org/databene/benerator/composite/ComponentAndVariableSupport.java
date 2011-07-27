@@ -25,8 +25,8 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Map;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.MessageHolder;
 import org.databene.commons.Resettable;
@@ -46,14 +46,14 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	
     private static final Logger LOGGER = LoggerFactory.getLogger(SourceAwareGenerator.class);
     
-	private Map<String, NullableGenerator<?>> variables;
+	private Map<String, Generator<?>> variables;
 	private OrderedNameMap<ProductWrapper<?>> variableResults;
 	private ComponentBuilderSupport<E> allComponentsBuilder;
 	private GeneratorContext context;
 	private boolean firstRun;
 	private String message;
 	
-	public ComponentAndVariableSupport(Map<String, NullableGenerator<?>> variables, List<ComponentBuilder<E>> componentBuilders, 
+	public ComponentAndVariableSupport(Map<String, Generator<?>> variables, List<ComponentBuilder<E>> componentBuilders, 
 			GeneratorContext context) {
 		this.variables = variables;
 		this.allComponentsBuilder = new ComponentBuilderSupport<E>(componentBuilders);
@@ -69,8 +69,8 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private void initVariables(GeneratorContext context) {
 	    this.variableResults = new OrderedNameMap<ProductWrapper<?>>();
-        for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
-        	NullableGenerator<?> varGen = entry.getValue();
+        for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
+        	Generator<?> varGen = entry.getValue();
         	try {
 	        	varGen.init(context);
 	        	ProductWrapper<?> result = varGen.generate(new ProductWrapper());
@@ -92,13 +92,13 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 	}
 
     public void reset() {
-		for (NullableGenerator<?> variable : variables.values())
+		for (Generator<?> variable : variables.values())
 			variable.reset();
 		allComponentsBuilder.reset();
 	}
 
     public void close() {
-		for (NullableGenerator<?> variable : variables.values())
+		for (Generator<?> variable : variables.values())
 			variable.close();
 		allComponentsBuilder.close();
         for (String variableName : variables.keySet())
@@ -123,8 +123,8 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
 					return false;
 			firstRun = false;
 		} else { // in subsequent runs, they are calculated on demand
-			for (Map.Entry<String, NullableGenerator<?>> entry : variables.entrySet()) {
-				NullableGenerator<?> generator = entry.getValue();
+			for (Map.Entry<String, Generator<?>> entry : variables.entrySet()) {
+				Generator<?> generator = entry.getValue();
 				ProductWrapper<?> productWrapper = generator.generate(new ProductWrapper());
 				if (!processVariable(entry.getKey(), productWrapper))
 					return false;
@@ -140,7 +140,7 @@ public class ComponentAndVariableSupport<E> implements ThreadAware, MessageHolde
         		LOGGER.debug(message);
             return false;
 		}
-        context.set(varName, varValue.product);
+        context.set(varName, varValue.unwrap());
         return true;
 	}
 

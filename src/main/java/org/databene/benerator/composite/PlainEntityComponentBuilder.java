@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.commons.Mutator;
 import org.databene.commons.UpdateFailedException;
 import org.databene.model.data.Entity;
@@ -42,10 +41,10 @@ import org.databene.model.data.Entity;
 public class PlainEntityComponentBuilder extends DefaultComponentBuilder<Entity> {
 	
     public PlainEntityComponentBuilder(String name, Generator<?> source, double nullQuota) {
-		this(name, NullableGeneratorFactory.injectNulls(source, nullQuota));
+		this(name, GeneratorFactoryUtil.injectNulls(source, nullQuota));
 	}
 
-    public PlainEntityComponentBuilder(String name, NullableGenerator<?> source) {
+    public PlainEntityComponentBuilder(String name, Generator<?> source) {
     	super(source, new Mutator_(name));
 	}
     

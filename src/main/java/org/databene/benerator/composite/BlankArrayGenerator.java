@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,6 +22,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generates an array of fixed size filled with nulls.<br/><br/>
@@ -43,8 +44,8 @@ public class BlankArrayGenerator extends ThreadSafeGenerator<Object[]> {
         return GENERATED_TYPE;
     }
 
-    public Object[] generate() {
-        return new Object[length];
+	public ProductWrapper<Object[]> generate(ProductWrapper<Object[]> wrapper) {
+        return wrapper.wrap(new Object[length]);
     }
-    
+
 }

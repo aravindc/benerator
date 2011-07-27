@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,7 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 /**
  * Parent class for facilitating individual {@link ComponentBuilder} implementation.<br/><br/>
@@ -34,17 +33,17 @@ import org.databene.benerator.nullable.NullableGeneratorFactory;
  */
 public abstract class AbstractComponentBuilder<E> implements ComponentBuilder<E> {
 
-	protected NullableGenerator<?> source;
+	protected Generator<?> source;
 	
     public AbstractComponentBuilder(Generator<?> source, double nullQuota) {
-		this(NullableGeneratorFactory.injectNulls(source, nullQuota));
+		this(GeneratorFactoryUtil.injectNulls(source, nullQuota));
 	}
     
-    public NullableGenerator<?> getSource() {
+    public Generator<?> getSource() {
     	return source;
     }
 
-    public AbstractComponentBuilder(NullableGenerator<?> source) {
+    public AbstractComponentBuilder(Generator<?> source) {
 		this.source = source;
 	}
 

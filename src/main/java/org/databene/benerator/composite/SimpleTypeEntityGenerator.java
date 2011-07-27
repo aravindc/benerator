@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 
@@ -53,13 +54,14 @@ public class SimpleTypeEntityGenerator extends GeneratorWrapper<Object, Entity> 
 		return Entity.class;
 	}
 	
-	public Entity generate() {
-		Object content = source.generate();
-		if (content == null)
+	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
+		ProductWrapper<Object> sourceWrapper = generateFromSource();
+		if (sourceWrapper == null)
 			return null;
+		Object content = sourceWrapper.unwrap();
 		Entity entity = new Entity(complexType);
 		entity.setComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT, content);
-		return entity;
+		return wrapper.wrap(entity);
 	}
 
 }

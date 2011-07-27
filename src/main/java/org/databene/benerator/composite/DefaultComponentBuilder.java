@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -22,10 +22,9 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.Mutator;
 
 /**
@@ -38,13 +37,13 @@ import org.databene.commons.Mutator;
 public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 
 	protected Mutator mutator;
-	private ThreadLocalProductWrapper<Object> productWrapper = new ThreadLocalProductWrapper<Object>();
+	private WrapperProvider<Object> productWrapper = new WrapperProvider<Object>();
 	
     public DefaultComponentBuilder(Generator<?> source, Mutator mutator, double nullQuota) {
-		this(NullableGeneratorFactory.injectNulls(source, nullQuota), mutator);
+		this(GeneratorFactoryUtil.injectNulls(source, nullQuota), mutator);
 	}
 
-    public DefaultComponentBuilder(NullableGenerator<?> source, Mutator mutator) {
+    public DefaultComponentBuilder(Generator<?> source, Mutator mutator) {
 		super(source);
 		this.mutator = mutator;
 	}
@@ -54,7 +53,7 @@ public class DefaultComponentBuilder<E> extends AbstractComponentBuilder<E> {
 		ProductWrapper<?> wrapper = source.generate((ProductWrapper) productWrapper.get());
 		if (wrapper == null)
 			return false;
-		mutator.setValue(target, wrapper.product);
+		mutator.setValue(target, wrapper.unwrap());
 		return true;
 	}
 	
