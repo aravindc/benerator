@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,11 +28,12 @@ package org.databene.benerator.composite;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.CardinalGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayUtil;
 
 /**
  * Creates a stochastic number of instances of a type. The number of elements is determined by the values 
- * minCount, maxCount, countDistribution, countVariation1 and countVariation2. 
+ * minCount, maxCount, countDistribution. 
  * If the number of items is not one, an array of respective size is returned, 
  * otherwise a single object.<br/><br/>
  * Created: 06.03.2008 15:43:54
@@ -45,29 +46,32 @@ public class InstanceArrayGenerator<S> extends CardinalGenerator<S, Object> {
         super(source);
     }
     
+    public InstanceArrayGenerator(Generator<S> source, Generator<Integer> countGenerator) {
+        super(source, countGenerator);
+    }
+    
     public Class<Object> getGeneratedType() {
         return Object.class;
     }
 
-    public Object generate() {
-        int count = countGenerator.generate().intValue();
+	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
+		Integer count = generateCount();
         if (count == 0)
-            return new Object[0];
-        if (count == 1)
-            return source.generate();
-        else {
-            Object[] result = ArrayUtil.newInstance(source.getGeneratedType(), count);
+            return wrapper.wrap(new Object[0]);
+        if (count == 1) {
+            ProductWrapper<S> tmp = generateFromSource();
+            if (tmp == null)
+            	return null;
+			return wrapper.wrap(tmp.unwrap());
+        } else { // count >= 2
+            Object[] result = ArrayUtil.newInstance(getSource().getGeneratedType(), count);
             for (int i = 0; i < count; i++) {
-            	Object part = source.generate();
-                if (part != null)
-                    result[i] = source.generate();
-                else {
-                    // source generator went unavailable, 
-                    // let's repack generated stuff to an array of appropriate length
-                    return ArrayUtil.copyOfRange(result, 0, i);
-                }
+                ProductWrapper<S> tmp = generateFromSource();
+                if (tmp == null)
+                	return null;
+            	result[i] = tmp.unwrap();
             }
-            return result;
+            return wrapper.wrap(result);
         }
     }
 
