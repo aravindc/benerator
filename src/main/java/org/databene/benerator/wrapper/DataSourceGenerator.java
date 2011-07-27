@@ -23,6 +23,7 @@ package org.databene.benerator.wrapper;
 
 import java.io.Closeable;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
@@ -34,7 +35,7 @@ import org.databene.webdecs.DataSource;
 import org.databene.webdecs.util.ThreadLocalDataContainer;
 
 /**
- * TODO Document class.<br/><br/>
+ * {@link Generator} implementation which reads and forwards data from a {@link DataSource}.<br/><br/>
  * Created: 24.07.2011 08:58:09
  * @since 0.7.0
  * @author Volker Bergmann
@@ -90,7 +91,7 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
 		createIterator();
     }
 
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         try {
             assertInitialized();
             if (iterator == null)
@@ -100,7 +101,7 @@ public class DataSourceGenerator<E> extends AbstractGenerator<E> {
             	closeIterator();
             	return null;
             }
-			return tmp.getData();
+			return wrapper.wrap(tmp.getData());
         } catch (Exception e) {
         	throw new IllegalGeneratorStateException("Generation failed: ", e);
         }
