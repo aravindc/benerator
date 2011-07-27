@@ -60,14 +60,14 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
         return String.class;
     }
 
-    public String generate() {
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
         StringBuilder builder = new StringBuilder();
-        String[] parts = source.generate();
+        ProductWrapper<String[]> parts = generateFromSource();
         if (parts == null)
         	return null;
-        for (String part : parts)
+        for (String part : parts.unwrap())
             builder.append(part);
-        return builder.toString();
+        return wrapper.wrap(builder.toString());
     }
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
