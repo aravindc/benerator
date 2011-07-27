@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.converter.DateString2DurationConverter;
@@ -119,13 +120,13 @@ public class DateGenerator extends GeneratorWrapper<Long, Date> {
     }
 
     /** Generates a Date by creating a millisecond value from the source generator and wrapping it into a Date */
-    public Date generate() {
+	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
     	assertInitialized();
-        Long millis = source.generate();
-        if (millis != null)
-        	return new Date(millis);
-        else
+        ProductWrapper<Long> tmp = generateFromSource();
+        if (tmp == null)
         	return null;
+		Long millis = tmp.unwrap();
+        return wrapper.wrap(new Date(millis));
     }
     
     @Override
@@ -163,5 +164,5 @@ public class DateGenerator extends GeneratorWrapper<Long, Date> {
     public String toString() {
     	return getClass().getSimpleName() + '[' + source + ']';
     }
-    
+
 }

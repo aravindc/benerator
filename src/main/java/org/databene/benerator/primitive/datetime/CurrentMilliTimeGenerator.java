@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generates Long values that represent the current time in milliseconds.<br/>
@@ -40,8 +41,8 @@ public class CurrentMilliTimeGenerator extends ThreadSafeGenerator<Long> {
     	return Long.class;
     }
 
-	public Long generate() {
-        return System.currentTimeMillis();
+	public ProductWrapper<Long> generate(ProductWrapper<Long> wrapper) {
+        return wrapper.wrap(System.currentTimeMillis());
     }
 
 }

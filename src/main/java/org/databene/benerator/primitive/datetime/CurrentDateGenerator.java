@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.TimeUtil;
 
 import java.util.Date;
@@ -39,12 +40,12 @@ import java.util.Date;
  */
 public class CurrentDateGenerator extends ThreadSafeGenerator<Date> {
 
-	public Date generate() {
-        return TimeUtil.today();
-    }
-
 	public Class<Date> getGeneratedType() {
 	    return Date.class;
+    }
+
+	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
+        return wrapper.wrap(TimeUtil.today());
     }
 
 }

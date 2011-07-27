@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive.datetime;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generates Long objects that represent the current system time in nanoseconds since 1970-01-01.<br/>
@@ -40,8 +41,8 @@ public class CurrentNanoTimeGenerator extends ThreadSafeGenerator<Long> {
     	return Long.class;
     }
 
-    public Long generate() {
-        return System.nanoTime();
+	public ProductWrapper<Long> generate(ProductWrapper<Long> wrapper) {
+        return wrapper.wrap(System.nanoTime());
     }
 
 }
