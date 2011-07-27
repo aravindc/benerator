@@ -46,7 +46,7 @@ public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
 
     @Override
     public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
-    	if (source == null || state == GeneratorState.CLOSED)
+    	if (getSource() == null || state == GeneratorState.CLOSED)
     		return null;
     	ProductWrapper<E> test = super.generate(wrapper);
         if (test == null) {
