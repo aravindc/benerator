@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.4.0
  * @author Volker Bergmann
  */
-public class ScriptGenerator extends ThreadSafeGenerator<Object>{
+public class ScriptGenerator extends ThreadSafeGenerator<Object> {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ScriptGenerator.class);
 
