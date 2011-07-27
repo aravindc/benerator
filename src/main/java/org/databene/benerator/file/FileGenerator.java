@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -37,7 +37,8 @@ import org.databene.commons.IOUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FileGenerator extends SampleGenerator<File> {
+public class FileGenerator extends SampleGenerator<File> { 
+	// TODO make the class implement NonNullGenerator and remove its usages wrapped with AsNonNullGenerator
 	
 	private String rootUri;
 	private String filter;

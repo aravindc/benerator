@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.file;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.DocumentWriter;
 
 import java.io.IOException;
@@ -41,9 +42,12 @@ public class FileBuilder {
 
     public static <T> void build(Generator<T> generator, int length, DocumentWriter<T> writer) throws IOException {
         writer.setVariable("part_count", length);
-        for (int i = 0; i < length; i++) {
+        ProductWrapper<T> wrapper = new ProductWrapper<T>();
+        for (int i = 0; i < length && wrapper != null; i++) {
             writer.setVariable("part_index", i);
-            writer.writeElement(generator.generate());
+            wrapper = generator.generate(wrapper);
+            if (wrapper != null)
+            	writer.writeElement(wrapper.unwrap());
         }
         writer.close();
     }

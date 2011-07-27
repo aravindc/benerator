@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,8 @@ package org.databene.benerator.file;
 import java.io.File;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.AsNonNullGenerator;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
  * Abstract parent class for generators that generate products based on concrete files.<br/><br/>
@@ -32,7 +33,7 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public abstract class FileContentGenerator<E> extends GeneratorWrapper<File, E> {
+public abstract class FileContentGenerator<E> extends NonNullGeneratorWrapper<File, E> {
 
 	protected String uri;
 	protected String filter;
@@ -57,7 +58,7 @@ public abstract class FileContentGenerator<E> extends GeneratorWrapper<File, E> 
 	@Override
     public void init(GeneratorContext context) {
 		assertNotInitialized();
-	    setSource(new FileGenerator(uri, filter, recursive, true, false));
+	    setSource(new AsNonNullGenerator<File>(new FileGenerator(uri, filter, recursive, true, false)));
 	    super.init(context);
     }
 

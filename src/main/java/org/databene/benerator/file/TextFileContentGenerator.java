@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -40,7 +40,8 @@ public class TextFileContentGenerator extends FileContentGenerator<String> {
 	public String generate() {
 		assertInitialized();
 		try {
-	        return IOUtil.getContentOfURI(source.generate().getAbsolutePath());
+	        String absolutePath = generateFromSource().unwrap().getAbsolutePath();
+			return IOUtil.getContentOfURI(absolutePath);
         } catch (IOException e) {
         	throw new IllegalGeneratorStateException(e);
         }

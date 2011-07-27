@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,8 @@ package org.databene.benerator.file;
 
 import java.io.File;
 
-import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.AsNonNullGenerator;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
  * Generates file and/or directory names out of a directory.<br/><br/>
@@ -31,14 +32,14 @@ import org.databene.benerator.wrapper.GeneratorWrapper;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class FileNameGenerator extends GeneratorWrapper<File, String> {
+public class FileNameGenerator extends NonNullGeneratorWrapper<File, String> {
 
 	public FileNameGenerator() {
 	    this(".", null, false, true, false);
     }
 	
 	public FileNameGenerator(String rootUri, String filter, boolean recursive, boolean files, boolean folders) {
-		super(new FileGenerator(rootUri, filter, recursive, folders, files));
+		super(new AsNonNullGenerator<File>(new FileGenerator(rootUri, filter, recursive, folders, files)));
 	    setRootUri(rootUri);
 	    setFilter(filter);
 	    setRecursive(recursive);
@@ -49,27 +50,27 @@ public class FileNameGenerator extends GeneratorWrapper<File, String> {
 	// properties ------------------------------------------------------------------------------------------------------
 
 	public void setRootUri(String rootUri) {
-	    ((FileGenerator) source).setRootUri(rootUri);
+	    ((FileGenerator) getSource()).setRootUri(rootUri);
     }
 
 	public void setFilter(String filter) {
-		((FileGenerator) source).setFilter(filter);
+		((FileGenerator) getSource()).setFilter(filter);
     }
 
 	public void setFiles(boolean files) {
-		((FileGenerator) source).setFiles(files);
+		((FileGenerator) getSource()).setFiles(files);
     }
 
 	public void setFolders(boolean folders) {
-		((FileGenerator) source).setFolders(folders);
+		((FileGenerator) getSource()).setFolders(folders);
     }
 
 	public void setRecursive(boolean recursive) {
-		((FileGenerator) source).setRecursive(recursive);
+		((FileGenerator) getSource()).setRecursive(recursive);
     }
 
 	public void setUnique(boolean unique) {
-		((FileGenerator) source).setUnique(unique);
+		((FileGenerator) getSource()).setUnique(unique);
     }
 
 	
@@ -80,7 +81,7 @@ public class FileNameGenerator extends GeneratorWrapper<File, String> {
     }
 
 	public String generate() {
-	    return source.generate().getAbsolutePath();
+	    return generateFromSource().unwrap().getAbsolutePath();
     }
 
 }

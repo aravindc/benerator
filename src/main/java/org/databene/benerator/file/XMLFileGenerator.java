@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,6 +41,7 @@ import org.databene.benerator.factory.TypeGeneratorFactory;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.util.SimpleGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.IOUtil;
 import org.databene.commons.SystemInfo;
@@ -104,16 +105,16 @@ public class XMLFileGenerator extends SimpleGenerator<File> {
         super.init(context);
     }
     
-    public File generate() {
-        Object content = contentGenerator.generate();
-        if (content != null)
-        	return persistContent(content);
-        else
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public ProductWrapper<File> generate(ProductWrapper<File> wrapper) {
+		ProductWrapper tmp = contentGenerator.generate(new ProductWrapper());
+        if (tmp == null)
         	return null;
+        return wrapper.wrap(persistContent(tmp.unwrap()));
     }
 
     private File persistContent(Object content) {
-        File file = new File(fileNameGenerator.generate());
+        File file = new File(fileNameGenerator.generate(new ProductWrapper<String>()).unwrap());
         if (content instanceof Entity)
             persistRootEntity((Entity) content, file);
         else

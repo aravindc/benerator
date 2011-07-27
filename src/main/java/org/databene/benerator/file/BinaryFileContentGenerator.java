@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -41,7 +41,7 @@ public class BinaryFileContentGenerator extends FileContentGenerator<byte[]> {
 	public byte[] generate() {
 		assertInitialized();
 	    try {
-	        return IOUtil.getBinaryContentOfUri(source.generate().getAbsolutePath());
+	        return IOUtil.getBinaryContentOfUri(generateFromSource().unwrap().getAbsolutePath());
         } catch (IOException e) {
 	        throw new IllegalGeneratorStateException(e);
         }
