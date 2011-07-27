@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,14 +28,14 @@ package org.databene.benerator.primitive;
 
 import java.util.Random;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates boolean values with a configurable quota of true values.<br/>
  * <br/>
  * Created: 09.06.2006 20:03:18
  */
-public class BooleanGenerator extends ThreadSafeGenerator<Boolean> {
+public class BooleanGenerator extends ThreadSafeNonNullGenerator<Boolean> {
 
     /** The quota of true values to create */
     private double trueQuota;
@@ -74,7 +74,8 @@ public class BooleanGenerator extends ThreadSafeGenerator<Boolean> {
     }
 
     /** generates boolean values with a quota of true values according to the trueQuota property */
-    public Boolean generate() {
+	@Override
+	public Boolean generate() {
         return (random.nextFloat() <= trueQuota);
     }
 
@@ -84,5 +85,5 @@ public class BooleanGenerator extends ThreadSafeGenerator<Boolean> {
     public String toString() {
         return getClass().getSimpleName() + "[trueQuota=" + trueQuota + ']';
     }
-    
+
 }
