@@ -133,7 +133,8 @@ public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNu
     }
 
 	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
-		return wrapper.wrap(generate());
+		Date result = generate();
+		return (result != null ? wrapper.wrap(result) : null);
     }
 
 	public Date generate() {
