@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import java.util.UUID;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Creates UUIDs using {@link java.util.UUID#randomUUID()}.<br/>
@@ -40,15 +40,14 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @author Volker Bergmann
  */
 
-public class UUIDGenerator extends ThreadSafeGenerator<String> {
+public class UUIDGenerator extends ThreadSafeNonNullGenerator<String> {
 	
-    // Generator interface implementation ------------------------------------------------------------------------------
-
 	public Class<String> getGeneratedType() {
 	    return String.class;
     }
 
-    public String generate() {
+	@Override
+	public String generate() {
     	return UUID.randomUUID().toString();
     }
 
