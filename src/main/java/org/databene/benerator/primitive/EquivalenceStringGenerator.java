@@ -23,7 +23,8 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.CardinalGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * {@link Generator} which generates {@link String}s by first generating a part and a part count
@@ -32,17 +33,12 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class EquivalenceStringGenerator<E> extends ThreadSafeGenerator<String> {
+public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> {
 
-	Generator<E> partGenerator;
-	Generator<Integer> lengthGenerator;
+	protected Integer currentLength;
 	
-	Integer currentLength;
-	
-	public EquivalenceStringGenerator(Generator<E> charGenerator,
-			Generator<Integer> lengthGenerator) {
-		this.partGenerator = charGenerator;
-		this.lengthGenerator = lengthGenerator;
+	public EquivalenceStringGenerator(Generator<E> charGenerator, Generator<Integer> lengthGenerator) {
+		super(charGenerator, lengthGenerator, true);
 	}
 
 	public Class<String> getGeneratedType() {
@@ -51,48 +47,37 @@ public class EquivalenceStringGenerator<E> extends ThreadSafeGenerator<String> {
 	
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		partGenerator.init(context);
-		lengthGenerator.init(context);
-		currentLength = lengthGenerator.generate();
+		currentLength = generateCount();
 		super.init(context);
 	}
 
-	public String generate() {
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
 		assertInitialized();
 		if (currentLength == null)
 			return null;
-		E part = partGenerator.generate(); // try to select a new character and keep the previous length 
-		if (part == null) {                             // if you are through with the characters, ...
-			currentLength = lengthGenerator.generate(); // ...choose the next length value...
+		ProductWrapper<E> part = generateFromSource(); // try to select a new character and keep the previous length 
+		if (part == null) {                            // if you are through with the characters, ...
+			currentLength = generateCount();           // ...choose the next length value...
 			if (currentLength == null)
 				return null;
-			partGenerator.reset();                      // ...and reset character selection
-			part = partGenerator.generate();
+			source.reset();                            // ...and reset character selection
+			part = generateFromSource();
 		}
-		String result = createString(part, currentLength);
+		String result = createString(part.unwrap(), currentLength.intValue());
 		if (currentLength == 0) 
-			while (partGenerator.generate() != null) {
+			while (generateFromSource() != null) {
 				// for length 0, any character repetition is "", 
 				// so get rid of the remaining characters and proceed to the next length value
 			}
-		return result;
+		return wrapper.wrap(result);
 	}
 	
 	@Override
 	public void reset() {
-		partGenerator.reset();
-		lengthGenerator.reset();
-		currentLength = lengthGenerator.generate();
 		super.reset();
+		currentLength = generateCount();
 	}
 
-	@Override
-	public void close() {
-		partGenerator.close();
-		lengthGenerator.close();
-		super.close();
-	}
-	
 	private String createString(E part, Integer length) {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < length; i++)
@@ -100,10 +85,4 @@ public class EquivalenceStringGenerator<E> extends ThreadSafeGenerator<String> {
 		return builder.toString();
 	}
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[partGenerator = " + partGenerator + ", " +
-				"countGenerator = " + lengthGenerator + "]";
-	}
-	
 }
