@@ -42,11 +42,11 @@ import org.databene.commons.CollectionUtil;
 public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	
 	protected ComponentBuilder<E>[] builders;
-	private List<ComponentBuilder<E>> avalailableBuilders;
+	private List<ComponentBuilder<E>> availableBuilders;
 
 	public MultiComponentBuilder(ComponentBuilder<E>[] builders) {
 		this.builders = builders;
-		this.avalailableBuilders = CollectionUtil.toList(builders);
+		this.availableBuilders = CollectionUtil.toList(builders);
 	}
 	
 	// Generator interface ---------------------------------------------------------------------------------------------
@@ -63,23 +63,25 @@ public abstract class MultiComponentBuilder<E> implements ComponentBuilder<E> {
 	public void reset() {
 		for (ComponentBuilder<E> builder : builders)
 			builder.reset();
-		this.avalailableBuilders = CollectionUtil.toList(builders);
+		this.availableBuilders = CollectionUtil.toList(builders);
 	}
 
 	public void close() {
 		for (ComponentBuilder<E> builder : builders)
 			builder.close();
-		this.avalailableBuilders.clear();
+		this.availableBuilders.clear();
 	}
 	
 	public boolean buildRandomComponentFor(E target) {
-		if (avalailableBuilders.size() == 0)
+		if (availableBuilders.size() == 0)
 			return false;
 		boolean success;
 		do {
-			int builderIndex = RandomUtil.randomIndex(avalailableBuilders);
-			success = avalailableBuilders.get(builderIndex).buildComponentFor(target);
-		} while (!success && avalailableBuilders.size() > 0);
+			int builderIndex = RandomUtil.randomIndex(availableBuilders);
+			success = availableBuilders.get(builderIndex).buildComponentFor(target);
+			if (!success)
+				availableBuilders.remove(builderIndex);
+		} while (!success && availableBuilders.size() > 0);
 	    return success;
 	}
 	
