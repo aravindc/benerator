@@ -25,10 +25,9 @@ import static org.databene.model.data.TypeDescriptor.PATTERN;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
-import org.databene.benerator.nullable.NullableScriptGenerator;
+import org.databene.benerator.primitive.ScriptGenerator;
 import org.databene.benerator.primitive.ValueMapper;
+import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.Context;
 import org.databene.commons.Converter;
@@ -48,9 +47,9 @@ import org.databene.script.ScriptUtil;
  */
 public class VariableGeneratorFactory {
 
-	public static NullableGenerator<?> createGenerator(
+	public static Generator<?> createGenerator(
 			InstanceDescriptor descriptor, BeneratorContext context) {
-		NullableGenerator<?> generator = null;
+		Generator<?> generator = null;
 		
 		// check if nullQuota == 1
 		generator = createNullQuotaOneGenerator(descriptor);
@@ -65,33 +64,32 @@ public class VariableGeneratorFactory {
 	        generator = wrapWithProxy(generator, type);
 		}
 
-		if (generator == null) {
-			Generator<?> source = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
-			generator = NullableGeneratorFactory.wrap(source);
-		}
+		if (generator == null)
+			generator = InstanceGeneratorFactory.createSingleInstanceGenerator(descriptor, Uniqueness.NONE, context);
 		
 		return context.getGeneratorFactory().applyNullSettings(generator, descriptor.isNullable(), descriptor.getNullQuota());
 	}
 
-	private static NullableGenerator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static Generator<?> createNullQuotaOneGenerator(InstanceDescriptor descriptor) {
 		// check if nullQuota is 1
         Double nullQuota = descriptor.getNullQuota();
         if (nullQuota != null && nullQuota.doubleValue() == 1.)
-            return NullableGeneratorFactory.createConstantGenerator(null);
+            return new ConstantGenerator(null);
         else
         	return null;
 	}
 	
-    protected static NullableGenerator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
+    protected static Generator<?> createScriptGenerator(TypeDescriptor descriptor, Context context) {
         String scriptText = descriptor.getScript();
         if (scriptText != null) {
             Script script = ScriptUtil.parseScriptText(scriptText);
-            return new NullableScriptGenerator(script, context);
+            return new ScriptGenerator(script, context);
         } else
         	return null;
     }
 
-    static NullableGenerator<?> wrapWithPostprocessors(NullableGenerator<?> generator, TypeDescriptor descriptor, BeneratorContext context) {
+    static Generator<?> wrapWithPostprocessors(Generator<?> generator, TypeDescriptor descriptor, BeneratorContext context) {
 		generator = createConvertingGenerator(descriptor, generator, context);
 		if (descriptor instanceof SimpleTypeDescriptor) {
 			SimpleTypeDescriptor simpleType = (SimpleTypeDescriptor) descriptor;
@@ -103,48 +101,53 @@ public class VariableGeneratorFactory {
 	}
     
     @SuppressWarnings("unchecked")
-    protected static <T> NullableGenerator<T> createValidatingGenerator(
-            TypeDescriptor descriptor, NullableGenerator<T> generator, BeneratorContext context) {
+    protected static <T> Generator<T> createValidatingGenerator(
+            TypeDescriptor descriptor, Generator<T> generator, BeneratorContext context) {
 		Validator<T> validator = DescriptorUtil.getValidator(descriptor, context);
         if (validator != null)
-            generator = NullableGeneratorFactory.wrapWithValidator(validator, generator);
+            generator = GeneratorFactoryUtil.wrapWithValidator(validator, generator);
         return generator;
     }
 
-    static NullableGenerator<?> createTypeConvertingGenerator(SimpleTypeDescriptor descriptor, NullableGenerator<?> generator) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	static Generator<?> createTypeConvertingGenerator(SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getPrimitiveType() == null)
             return generator;
         Converter<?, ?> converter = TypeGeneratorFactory.createConverter(descriptor, generator.getGeneratedType());
-    	return (converter != null ? NullableGeneratorFactory.createConvertingGenerator(generator, converter) : generator);
+        if (converter != null)
+        	return GeneratorFactoryUtil.createConvertingGenerator((Generator) generator, converter);
+        else
+        	return generator;
     }
 
-    public static NullableGenerator<?> createConvertingGenerator(TypeDescriptor descriptor, NullableGenerator<?> generator, BeneratorContext context) {
+    public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
         Converter<?,?> converter = DescriptorUtil.getConverter(descriptor, context);
         if (converter != null) {
             if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN)) {
                 BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
             }
-            generator = NullableGeneratorFactory.createConvertingGenerator(descriptor, generator, context);
+            generator = GeneratorFactoryUtil.createConvertingGenerator(descriptor, generator, context);
         }
         return generator;
     }
 
-	static NullableGenerator<?> createMappingGenerator(SimpleTypeDescriptor descriptor, NullableGenerator<?> generator) {
+	@SuppressWarnings("unchecked")
+	static Generator<?> createMappingGenerator(SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getMap() == null)
             return generator;
         String mappingSpec = descriptor.getMap();
         ValueMapper mapper = new ValueMapper(mappingSpec);
-        return NullableGeneratorFactory.createConvertingGenerator(generator, mapper);
+        return GeneratorFactoryUtil.createConvertingGenerator(generator, mapper);
     }
 
-    public static <T> NullableGenerator<T> wrapWithProxy(NullableGenerator<T> generator, TypeDescriptor descriptor) {
+    public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
 		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
 		return wrapWithProxy(generator, cyclic);
     }
 
-	public static <T> NullableGenerator<T> wrapWithProxy(NullableGenerator<T> generator, boolean cyclic) {
+	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, boolean cyclic) {
 		if (cyclic)
-			generator = NullableGeneratorFactory.wrapCyclic(generator);
+			generator = GeneratorFactoryUtil.wrapCyclic(generator);
 		return generator;
     }
 

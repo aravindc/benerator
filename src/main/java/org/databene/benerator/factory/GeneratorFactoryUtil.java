@@ -53,6 +53,8 @@ import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 import org.databene.benerator.wrapper.NonClosingGeneratorProxy;
+import org.databene.benerator.wrapper.NullInjectingGeneratorProxy;
+import org.databene.benerator.wrapper.NullStartingGenerator;
 import org.databene.benerator.wrapper.OffsetBasedGenerator;
 import org.databene.benerator.wrapper.SimpleArrayGenerator;
 import org.databene.benerator.wrapper.SimpleCompositeArrayGenerator;
@@ -65,6 +67,7 @@ import org.databene.commons.Expression;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.ParseException;
 import org.databene.commons.StringUtil;
+import org.databene.commons.Validator;
 import org.databene.commons.converter.MessageConverter;
 import org.databene.commons.expression.DynamicExpression;
 import org.databene.commons.expression.ExpressionUtil;
@@ -82,6 +85,7 @@ import org.databene.platform.xls.XLSLineIterable;
 import org.databene.regex.RegexParser;
 
 import static org.databene.benerator.engine.DescriptorConstants.*;
+import static org.databene.model.data.TypeDescriptor.PATTERN;
 
 /**
  * Provides utility methods for Generator factories.<br/><br/>
@@ -173,6 +177,18 @@ public class GeneratorFactoryUtil {
 	}
 
     // formatting generators -------------------------------------------------------------------------------------------
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Generator<?> createConvertingGenerator(TypeDescriptor descriptor,
+            Generator<?> generator, BeneratorContext context) {
+        Converter<?, ?> converter = DescriptorUtil.getConverter(descriptor, context);
+        if (converter != null) {
+            if (descriptor.getPattern() != null && BeanUtil.hasProperty(converter.getClass(), PATTERN))
+                BeanUtil.setPropertyValue(converter, PATTERN, descriptor.getPattern(), false);
+            return createConvertingGenerator((Generator) generator, converter);
+        }
+        return generator;
+    }
 
     /**
      * Creates a generator that accepts products from a source generator
@@ -367,16 +383,35 @@ public class GeneratorFactoryUtil {
 	public static <T> Generator<T> wrapWithProxy(Generator<T> generator, TypeDescriptor descriptor) {
 		boolean cyclic = descriptor.isCyclic() != null && descriptor.isCyclic().booleanValue();
 		if (cyclic)
-			generator = new CyclicGeneratorProxy<T>(generator);
+			generator = wrapCyclic(generator);
 		int offset = getOffset(descriptor);
 		if (offset > 0)
 			generator = wrapWithOffset(generator, offset);
 		return generator;
     }
 
+	public static <T> Generator<T> wrapWithValidator(Validator<T> validator, Generator<T> generator) {
+		return new ValidatingGeneratorProxy<T>(generator, validator);
+	}
+
+	public static <T> Generator<T> wrapCyclic(Generator<T> generator) {
+		return new CyclicGeneratorProxy<T>(generator);
+	}
+
 	public static int getOffset(TypeDescriptor descriptor) {
 		Integer offset = descriptor.getOffset();
 		return (offset != null ? offset : 0);
+	}
+
+	public static <T> Generator<T> createNullStartingGenerator(Generator<T> source) {
+		return new NullStartingGenerator<T>(source);
+	}
+
+	public static <T> Generator<T> injectNulls(Generator<T> source, double nullQuota) {
+		if (nullQuota == 0.)
+			return source;
+		else
+			return new NullInjectingGeneratorProxy<T>(source, nullQuota);
 	}
 
 }

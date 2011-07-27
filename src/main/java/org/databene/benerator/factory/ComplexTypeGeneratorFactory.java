@@ -45,7 +45,6 @@ import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
@@ -105,7 +104,7 @@ public class ComplexTypeGeneratorFactory {
     		Uniqueness ownerUniqueness, BeneratorContext context, Generator<Entity> source) {
     	List<ComponentBuilder<Entity>> componentBuilders = 
     		createMutatingComponentBuilders(descriptor, ownerUniqueness, context);
-        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(descriptor, context);
+        Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(descriptor, context);
         return new SourceAwareGenerator<Entity>(name, source, variables, componentBuilders, context);
     }
 
@@ -223,7 +222,7 @@ public class ComplexTypeGeneratorFactory {
 
     private static Generator<Entity> createSyntheticEntityGenerator(String name, 
             ComplexTypeDescriptor complexType, Uniqueness ownerUniqueness, BeneratorContext context) {
-        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(complexType, context);
+        Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(complexType, context);
         
         Generator<Entity> source;
         List<ComponentBuilder<Entity>> componentBuilders = null;

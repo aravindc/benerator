@@ -31,18 +31,17 @@ import org.databene.benerator.composite.ArrayElementTypeConverter;
 import org.databene.benerator.composite.BlankArrayGenerator;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.SourceAwareGenerator;
-import org.databene.benerator.composite.UniqueArrayGenerator;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.benerator.util.FilteringGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.DataSourceGenerator;
 import org.databene.benerator.wrapper.IteratingGenerator;
+import org.databene.benerator.wrapper.UniqueCompositeArrayGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
 import org.databene.commons.StringUtil;
@@ -101,14 +100,14 @@ public class ArrayGeneratorFactory {
         if (uniqueness.isUnique()) {
         	// TODO we first create ComponentBuilders and then unwrap them! This can be simplified... 
         	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
-        	NullableGenerator<?>[] generators = new NullableGenerator[elementBuilders.size()];
+        	Generator<?>[] generators = new Generator[elementBuilders.size()];
         	for (int i = 0; i < generators.length; i++)
         		generators[i] = ((AbstractComponentBuilder<?>) elementBuilders.get(i)).getSource();
-        	baseGenerator = new UniqueArrayGenerator<Object>(Object.class, generators);
+        	baseGenerator = new UniqueCompositeArrayGenerator<Object>(Object.class, generators);
         	elementBuilders = null; // element builders are now controlled by the UniqueArrayGenerator
         } else
         	baseGenerator = new BlankArrayGenerator(arrayType.getElementCount());
-        Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(arrayType, context);
+        Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(arrayType, context);
 		return new SourceAwareGenerator<Object[]>(name, baseGenerator, variables, elementBuilders, context);
     }
 
@@ -119,7 +118,7 @@ public class ArrayGeneratorFactory {
         List<ComponentBuilder<Object[]>> elementBuilders = 
         	createSyntheticElementBuilders(arrayType, uniqueness, context);
     	@SuppressWarnings("rawtypes")
-		NullableGenerator[] generators = new NullableGenerator[elementBuilders.size()];
+		Generator[] generators = new Generator[elementBuilders.size()];
     	// TODO we first create ComponentBuilders and then unwrap them! This can be simplified... 
     	// TODO ...possibly with a NullableInstanceGeneratorFactory which takes over most of the ComponentBuilderFactory's functionality
     	for (int i = 0; i < generators.length; i++)
@@ -129,7 +128,7 @@ public class ArrayGeneratorFactory {
 
     private static Generator<Object[]> createMutatingArrayGenerator(
     		String instanceName, ArrayTypeDescriptor type, Uniqueness uniqueness, Generator<Object[]> generator, BeneratorContext context) {
-    	Map<String, NullableGenerator<?>> variables = DescriptorUtil.parseVariables(type, context);
+    	Map<String, Generator<?>> variables = DescriptorUtil.parseVariables(type, context);
     	List<ComponentBuilder<Object[]>> componentBuilders = null; // TODO v0.6.x mutate elements if configured createSyntheticElementBuilders(type, uniqueness, context);
 	    return new SourceAwareGenerator<Object[]>(instanceName, generator, variables, componentBuilders, context);
     }

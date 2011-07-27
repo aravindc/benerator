@@ -43,7 +43,6 @@ import static org.databene.benerator.factory.GeneratorFactoryUtil.mapDetailsToBe
 import org.databene.benerator.Generator;
 import org.databene.benerator.dataset.DatasetUtil;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.parser.ModelParser;
 import org.databene.benerator.script.BeanSpec;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -299,11 +298,11 @@ public class DescriptorUtil {
 					new ConstantExpression<Long>(1L));
 	}
 
-	public static Map<String, NullableGenerator<?>> parseVariables(TypeDescriptor type, BeneratorContext context) {
+	public static Map<String, Generator<?>> parseVariables(TypeDescriptor type, BeneratorContext context) {
 	    Collection<InstanceDescriptor> variables = variablesOfThisAndParents(type);
-        OrderedNameMap<NullableGenerator<?>> varGens = new OrderedNameMap<NullableGenerator<?>>();
+        OrderedNameMap<Generator<?>> varGens = new OrderedNameMap<Generator<?>>();
         for (InstanceDescriptor variable : variables) {
-            NullableGenerator<?> generator = VariableGeneratorFactory.createGenerator(variable, context);
+            Generator<?> generator = VariableGeneratorFactory.createGenerator(variable, context);
             varGens.put(variable.getName(), generator);
         }
 	    return varGens;

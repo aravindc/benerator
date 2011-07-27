@@ -30,12 +30,8 @@ import java.util.TreeSet;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
-import org.databene.benerator.composite.UniqueArrayGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
-import org.databene.benerator.nullable.OneShotNullableGenerator;
 import org.databene.benerator.primitive.EquivalenceStringGenerator;
 import org.databene.benerator.primitive.number.NumberQuantizer;
 import org.databene.benerator.sample.OneShotGenerator;
@@ -73,11 +69,6 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
 	public EquivalenceGeneratorFactory() {
 		super(new MeanDefaultsProvider());
-	}
-
-	@Override
-	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
-    	return new UniqueArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override
@@ -244,8 +235,8 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     }
 
 	@Override
-	public <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType) {
-		return new OneShotNullableGenerator<T>(null, generatedType);
+	public <T> Generator<T> createNullGenerator(Class<T> generatedType) {
+		return new OneShotGenerator<T>(null, generatedType);
 	}
 
     @Override
@@ -292,17 +283,9 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
     // defaults --------------------------------------------------------------------------------------------------------
     
     @Override
-	public NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
+	public Generator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
 		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
-			return NullableGeneratorFactory.createNullStartingGenerator(source);
-		else
-			return NullableGeneratorFactory.wrap(source);
-	}
-
-    @Override
-	public NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota)  {
-		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
-			return NullableGeneratorFactory.createNullStartingGenerator(source);
+			return GeneratorFactoryUtil.createNullStartingGenerator(source);
 		else
 			return source;
 	}

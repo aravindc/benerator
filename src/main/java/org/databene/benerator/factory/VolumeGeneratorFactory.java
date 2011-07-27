@@ -27,12 +27,8 @@ import java.util.Set;
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
 import org.databene.benerator.composite.StochasticArrayGenerator;
-import org.databene.benerator.composite.UniqueArrayGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.nullable.ConstantNullableGenerator;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
 import org.databene.benerator.primitive.BooleanGenerator;
 import org.databene.benerator.primitive.DistributedLengthStringGenerator;
 import org.databene.benerator.primitive.UniqueStringGenerator;
@@ -66,19 +62,11 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
-        if (unique)
-        	return new UniqueArrayGenerator<T>(componentType, sources);
-        else
-        	return new StochasticArrayGenerator<T>(componentType, sources);
-	}
-
-	@Override
 	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique) {
         if (unique)
         	return new UniqueCompositeArrayGenerator<T>(componentType, sources);
         else
-        	return new StochasticArrayGenerator<T>(componentType, NullableGeneratorFactory.wrapAll(sources));
+        	return new StochasticArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override
@@ -146,23 +134,13 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
+	public Generator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
     	if (nullQuota == null) {
     		if (nullable == null)
     			nullable = defaultsProvider.defaultNullable();
     		nullQuota = (nullable ?  defaultsProvider.defaultNullQuota() : 0);
     	}
-		return NullableGeneratorFactory.injectNulls(source, nullQuota);
-	}
-
-    @Override
-	public NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota)  {
-    	if (nullQuota == null) {
-    		if (nullable == null)
-    			nullable = defaultsProvider.defaultNullable();
-    		nullQuota = (nullable ?  defaultsProvider.defaultNullQuota() : 0);
-    	}
-		return NullableGeneratorFactory.injectNulls(source, nullQuota);
+		return GeneratorFactoryUtil.injectNulls(source, nullQuota);
 	}
 
     @Override
@@ -212,8 +190,8 @@ public class VolumeGeneratorFactory extends GeneratorFactory {
 	}
 
 	@Override
-	public <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType) {
-		return new ConstantNullableGenerator<T>(null, generatedType);
+	public <T> Generator<T> createNullGenerator(Class<T> generatedType) {
+		return new ConstantGenerator<T>(null, generatedType);
 	}
 
 	@SuppressWarnings("unchecked")

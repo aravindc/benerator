@@ -32,10 +32,6 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
-import org.databene.benerator.nullable.OneShotNullableGenerator;
-import org.databene.benerator.nullable.SimpleCompositeNullableArrayGenerator;
 import org.databene.benerator.primitive.EquivalenceStringGenerator;
 import org.databene.benerator.sample.OneShotGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
@@ -64,11 +60,6 @@ public class SerialGeneratorFactory extends GeneratorFactory {
 
 	public SerialGeneratorFactory() {
 		super(new MeanDefaultsProvider());
-	}
-
-	@Override
-	public <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique) {
-    	return new SimpleCompositeNullableArrayGenerator<T>(componentType, sources);
 	}
 
 	@Override
@@ -171,8 +162,8 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     }
 
 	@Override
-	public <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType) {
-		return new OneShotNullableGenerator<T>(null, generatedType);
+	public <T> Generator<T> createNullGenerator(Class<T> generatedType) {
+		return new OneShotGenerator<T>(null, generatedType);
 	}
 
     @Override
@@ -183,17 +174,9 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     // defaults --------------------------------------------------------------------------------------------------------
     
     @Override
-	public NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
+	public Generator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota)  {
 		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
-			return NullableGeneratorFactory.createNullStartingGenerator(source);
-		else
-			return NullableGeneratorFactory.wrap(source);
-	}
-
-    @Override
-	public NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota)  {
-		if (nullable == null || nullable || (nullQuota != null && nullQuota > 0))
-			return NullableGeneratorFactory.createNullStartingGenerator(source);
+			return GeneratorFactoryUtil.createNullStartingGenerator(source);
 		else
 			return source;
 	}

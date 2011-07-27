@@ -29,7 +29,6 @@ package org.databene.benerator.factory;
 import org.databene.benerator.sample.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.primitive.CharacterGenerator;
 import org.databene.benerator.*;
 import org.databene.benerator.primitive.datetime.DateGenerator;
@@ -274,13 +273,6 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param sources the source generators
      * @return a generator of the desired characteristics
      */
-	public abstract <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, NullableGenerator<T>[] sources, boolean unique);
-
-    /**
-     * Creates a generator that reads products of an array of {@link NullableGenerator}s and combines them in an array.
-     * @param sources the source generators
-     * @return a generator of the desired characteristics
-     */
 	public abstract <T> Generator<T[]> createCompositeArrayGenerator(Class<T> componentType, Generator<T>[] sources, boolean unique);
 
     // wrappers --------------------------------------------------------------------------------------------------------
@@ -293,10 +285,9 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      */
     public abstract <T> Generator<T> createSingleValueGenerator(T value, boolean unique);
 
-	public abstract NullableGenerator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota);
-	public abstract NullableGenerator<?> applyNullSettings(NullableGenerator<?> source, Boolean nullable, Double nullQuota);
+	public abstract Generator<?> applyNullSettings(Generator<?> source, Boolean nullable, Double nullQuota);
 
-	public abstract <T> NullableGenerator<T> createNullGenerator(Class<T> generatedType);
+	public abstract <T> Generator<T> createNullGenerator(Class<T> generatedType);
 	
 	
 	

@@ -30,7 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorProvider;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
-import org.databene.benerator.primitive.ConcatenatingGenerator;
+import org.databene.benerator.wrapper.ConcatenatingGenerator;
 import org.databene.commons.CharSet;
 import org.databene.commons.CollectionUtil;
 import org.databene.regex.Choice;
@@ -52,28 +52,32 @@ public class RegexGeneratorFactory {
         return create(pattern, 0, null, false, factory);
     }
 
-    public static Generator<String> create(String pattern, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    public static Generator<String> create(String pattern, int minLength, Integer maxLength, boolean unique, 
+    		GeneratorFactory factory) {
         Object regex = new RegexParser().parseRegex(pattern);
         return createFromObject(regex, minLength, maxLength, unique, factory);
 	}
 
     // private helpers -------------------------------------------------------------------------------------------------
 
-    static Generator<String> createFromObject(Object part, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    static Generator<String> createFromObject(Object part, int minLength, Integer maxLength, boolean unique, 
+    		GeneratorFactory factory) {
         if (part instanceof Factor)
             return createFromFactor((Factor) part, minLength, maxLength, unique, factory);
         else 
         	return createFromObject(part, 1, 1, minLength, maxLength, unique, factory);
     }
 
-    private static Generator<String> createFromFactor(Factor part, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    private static Generator<String> createFromFactor(Factor part, int minLength, Integer maxLength, boolean unique, 
+    		GeneratorFactory factory) {
         int minCount = part.getQuantifier().getMin();
         Integer maxCount = part.getQuantifier().getMax();
         Object atom = part.getAtom();
         return createFromObject(atom, minCount, maxCount, minLength, maxLength, unique, factory);
     }
 
-    private static Generator<String> createFromObject(Object object, int minCount, Integer maxCount, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    private static Generator<String> createFromObject(Object object, int minCount, Integer maxCount, 
+    		int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
         if (object instanceof Factor)
             return createFromFactor((Factor) object, minLength, maxLength, unique, factory);
         else if (object instanceof Character)
@@ -81,7 +85,8 @@ public class RegexGeneratorFactory {
         else if (object instanceof CharSet)
         	return createCharSetGenerator((CharSet) object, minCount, maxCount, minLength, maxLength, unique, factory);
         else if (object instanceof CustomCharClass)
-        	return createFromCustomCharClass((CustomCharClass) object, minCount, maxCount, minLength, maxLength, unique, factory);
+        	return createFromCustomCharClass((CustomCharClass) object, minCount, maxCount, minLength, maxLength, unique, 
+        			factory);
         else if (object instanceof Sequence)
             return createFromSequence((Sequence) object, minCount, maxCount, minLength, maxLength, unique, factory);
         else if (object instanceof Group)
@@ -97,15 +102,19 @@ public class RegexGeneratorFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static Generator<String> createFromSequence(Sequence sequence, int minCount, Integer maxCount, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    private static Generator<String> createFromSequence(Sequence sequence, int minCount, Integer maxCount, 
+    		int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
     	Object[] factors = sequence.getFactors();
-		Generator<String>[] componentGenerators = createComponentGenerators(factors, minLength, maxLength, unique, factory);
-    	Generator<String[]> partGenerator = factory.createCompositeArrayGenerator(String.class, componentGenerators, unique);
+		Generator<String>[] componentGenerators = createComponentGenerators(
+				factors, minLength, maxLength, unique, factory);
+    	Generator<String[]> partGenerator = factory.createCompositeArrayGenerator(
+    			String.class, componentGenerators, unique);
     	return new ConcatenatingGenerator(partGenerator);
     }
 
     @SuppressWarnings("rawtypes")
-	static Generator[] createComponentGenerators(Object[] factors, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+	static Generator[] createComponentGenerators(Object[] factors, int minLength, Integer maxLength, boolean unique, 
+			GeneratorFactory factory) {
 	    Generator<?>[] components = new Generator<?>[factors.length];
     	for (int i = 0; i < factors.length; i++)
     		components[i] = createFromObject(factors[i], minLength, maxLength, unique, factory);
@@ -119,7 +128,8 @@ public class RegexGeneratorFactory {
     	final Object[] alternatives = choice.getAlternatives();
     	GeneratorProvider<String> generatorProvider = new GeneratorProvider<String>() {
 			public Generator<String> create() {
-		    	final Generator[] altGens = createComponentGenerators(alternatives, minLength, maxLength, unique, factory);
+		    	final Generator[] altGens = createComponentGenerators(
+		    			alternatives, minLength, maxLength, unique, factory);
 				return new AlternativeGenerator<String>(String.class, altGens);
 			}
 		};
@@ -139,7 +149,8 @@ public class RegexGeneratorFactory {
 		return factory.createCompositeStringGenerator(partGeneratorProvider, minCount, maxCount, unique);
     }
 
-    private static Generator<String> createFromCharacter(char c, int minCount, Integer maxCount, int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
+    private static Generator<String> createFromCharacter(char c, int minCount, Integer maxCount, 
+    		int minLength, Integer maxLength, boolean unique, GeneratorFactory factory) {
     	DefaultsProvider defaultsProvider = factory.getDefaultsProvider();
 		int minReps = max(minLength, minCount, defaultsProvider.defaultMinLength()); 
 		int maxReps = min(maxLength, maxCount, defaultsProvider.defaultMaxLength()); 

@@ -48,7 +48,7 @@ import org.databene.benerator.composite.AlternativeComponentBuilder;
 import org.databene.benerator.composite.ArrayElementBuilder;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.composite.ConditionalComponentBuilder;
-import org.databene.benerator.composite.DynamicInstanceArrayGenerator;
+import org.databene.benerator.composite.InstanceArrayGenerator;
 import org.databene.benerator.composite.PlainEntityComponentBuilder;
 import org.databene.benerator.distribution.DistributingGenerator;
 import org.databene.benerator.distribution.Distribution;
@@ -56,9 +56,8 @@ import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.distribution.sequence.ExpandSequence;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.expression.ScriptExpression;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
-import org.databene.benerator.nullable.NullableScriptGenerator;
+import org.databene.benerator.primitive.ScriptGenerator;
+import org.databene.benerator.wrapper.AsIntegerGeneratorWrapper;
 import org.databene.benerator.wrapper.IteratingGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Expression;
@@ -120,8 +119,8 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
         if (scriptText == null)
         	return null;
         Script script = ScriptUtil.parseScriptText(scriptText);
-        NullableGenerator<?> generator = new NullableScriptGenerator(script, context);
-        generator = NullableGeneratorFactory.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
+        Generator<?> generator = new ScriptGenerator(script, context);
+        generator = GeneratorFactoryUtil.createConvertingGenerator(component.getTypeDescriptor(), generator, context);
         generator = context.getGeneratorFactory().applyNullSettings(generator, getNullability(component, context), component.getNullQuota());
 		return builderFromNullableGenerator(generator, component);
 
@@ -159,7 +158,7 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
 	}
 
 
-	private static NullableGenerator<?> createNullGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
+	private static Generator<?> createNullGenerator(InstanceDescriptor descriptor, BeneratorContext context) {
 		Class<?> generatedType;
 		TypeDescriptor typeDescriptor = descriptor.getTypeDescriptor();
 		if (typeDescriptor instanceof SimpleTypeDescriptor)
@@ -280,11 +279,11 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     }
 
     private static ComponentBuilder<?> builderFromGenerator(Generator<?> source, ComponentDescriptor descriptor, BeneratorContext context) {
-    	NullableGenerator<?> generator = context.getGeneratorFactory().applyNullSettings(source, getNullability(descriptor, context), descriptor.getNullQuota());
+    	Generator<?> generator = context.getGeneratorFactory().applyNullSettings(source, getNullability(descriptor, context), descriptor.getNullQuota());
         return builderFromNullableGenerator(generator, descriptor);
     }
 
-	private static ComponentBuilder<?> builderFromNullableGenerator(NullableGenerator<?> generator, ComponentDescriptor descriptor) {
+	private static ComponentBuilder<?> builderFromNullableGenerator(Generator<?> generator, ComponentDescriptor descriptor) {
     	if (descriptor instanceof ArrayElementDescriptor) {
     		int index = ((ArrayElementDescriptor) descriptor).getIndex();
     		return new ArrayElementBuilder(index, generator);
@@ -292,12 +291,12 @@ public class ComponentBuilderFactory extends InstanceGeneratorFactory {
     		return new PlainEntityComponentBuilder(descriptor.getName(), generator);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     static Generator<Object> createMultiplicityWrapper(
             ComponentDescriptor instance, Generator<?> generator, BeneratorContext context) {
-    	Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(instance, true, context);
-    	return new DynamicInstanceArrayGenerator((Generator<Object>) generator, 
-    			countGenerator, context);
+    	Generator<Long> source = GeneratorFactoryUtil.getCountGenerator(instance, true, context);
+    	Generator<Integer> countGenerator = new AsIntegerGeneratorWrapper<Number>((Generator) source);
+    	return new InstanceArrayGenerator(generator, countGenerator);
     }
 
 }
