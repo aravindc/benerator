@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -50,8 +50,8 @@ public class SynchronizedGeneratorProxy<E> implements Generator<E> {
 	    return source.getGeneratedType();
     }
 
-	public synchronized E generate() {
-	    return source.generate();
+	public synchronized ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+	    return source.generate(wrapper);
     }
 
 	public synchronized void reset() {
