@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.primitive;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.NumberUtil;
 
 /**
@@ -40,7 +40,7 @@ import org.databene.commons.NumberUtil;
  * Created: 15.11.2007 10:52:55
  * @author Volker Bergmann
  */
-public class HibUUIDGenerator extends ThreadSafeGenerator<String> {
+public class HibUUIDGenerator extends ThreadSafeNonNullGenerator<String> {
     
     private static final String IP_ADDRESS;
     private static final String JVM_ID = NumberUtil.formatHex((int) (System.currentTimeMillis() >>> 8), 8);
@@ -83,7 +83,8 @@ public class HibUUIDGenerator extends ThreadSafeGenerator<String> {
 	    return String.class;
     }
 
-    public String generate() {
+	@Override
+	public String generate() {
         long time = System.currentTimeMillis();
         short count = (short) counter.getAndIncrement();
         if (count < 0)
