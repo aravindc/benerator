@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,9 +31,12 @@ import java.util.List;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.BeneratorOpts;
-import org.databene.benerator.nullable.NullableGenerator;
 import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.commons.IOUtil;
 import org.databene.commons.Resettable;
 import org.databene.commons.StringUtil;
 import org.slf4j.Logger;
@@ -55,12 +58,44 @@ public class GeneratorUtil {
 		return "benerator.xml".equals(lcFilename) || lcFilename.endsWith(".ben.xml");
 	}
 
+    public static void init(Generator<?> generator) {
+    	generator.init(new BeneratorContext());
+    }
+
+    public static void close(Generator<?> generator) {
+    	IOUtil.close(generator);
+    }
+
+    /**
+     * Calls a {@link Generator}'s {@link Generator#generate(ProductWrapper)} method and returns its unwrapped result, 
+     * allowing <code>null<code> values as generation results, but requiring the generator to be available. 
+     */
+    public static <T> T generateNullable(Generator<T> generator) {
+    	ProductWrapper<T> wrapper = generator.generate(new ProductWrapper<T>());
+		if (wrapper == null)
+			throw new IllegalGeneratorStateException("Generator unavailable in generateNullable(): " + generator);
+		return wrapper.unwrap();
+    }
+
+    /**
+     * Calls a {@link Generator}'s {@link Generator#generate(ProductWrapper)} method and returns its unwrapped result, 
+     * signaling generator unavailability with a <code>null</code> value and requiring the Generator 
+     * not to create <code>null</code> values as result. 
+     */
+    public static <T> T generateNonNull(Generator<T> generator) {
+    	ProductWrapper<T> wrapper = generator.generate(new ProductWrapper<T>());
+		T result = wrapper.unwrap();
+		if (result == null)
+			throw new IllegalGeneratorStateException("Generated null value in generateNonNull(): " + generator);
+		return result;
+    }
+
 	public static <T> List<T> allProducts(Generator<T> generator) {
 		List<T> list = new ArrayList<T>();
 		int count = 0;
-		T product;
 		int cacheSize = BeneratorOpts.getCacheSize();
-		while ((product = generator.generate()) != null) {
+		ProductWrapper<T> wrapper = new ProductWrapper<T>();
+		while ((wrapper = generator.generate(wrapper)) != null) {
 			count++;
 			if (count > cacheSize) {
 				LOGGER.error("Data set of generator has reached the cache limit and will be reduced to its size " +
@@ -69,7 +104,7 @@ public class GeneratorUtil {
 						"or increase the cache size.");
 				break;
 			}
-			list.add(product);
+			list.add(wrapper.unwrap());
 		}
 		return list;
 	}
@@ -89,11 +124,6 @@ public class GeneratorUtil {
 
 	public static void initAll(Generator<?>[] generators, GeneratorContext context) {
 	    for (Generator<?> generator : generators)
-	    	generator.init(context);
-    }
-
-	public static void initAll(NullableGenerator<?>[] generators, GeneratorContext context) {
-	    for (NullableGenerator<?> generator : generators)
 	    	generator.init(context);
     }
 
