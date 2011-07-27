@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,10 +33,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
-import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.SeedGenerator;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.LocaleUtil;
 import org.databene.domain.lang.Noun;
@@ -49,30 +47,32 @@ import org.databene.domain.lang.Noun;
  * @author Volker Bergmann
  */
 
-public class SeedWordGenerator extends AbstractGenerator<String> {
+public class SeedWordGenerator extends NonNullGeneratorWrapper<Character[], String> {
 	
     private static final int DEFAULT_DEPTH = 4;
-	private SeedGenerator<Character> source;
 	
     public SeedWordGenerator() {
 	    this(null, DEFAULT_DEPTH);
     }
 	
 	public SeedWordGenerator(Iterator<String> seed, int depth) {
-		if (seed == null)
-			seed = defaultNounIterator();
-		this.source = new SeedGenerator<Character>(Character.class, depth);
-	    while (seed.hasNext())
-	    	addSample(seed.next().trim());
+		super(createSource(seed, depth));
     }
 
-	public void addSample(String sample) {
-		char[] charArray = sample.toCharArray();
-		Character[] objectSample = new Character[charArray.length];
-		for (int i = 0; i < charArray.length; i++)
-			objectSample[i] = charArray[i];
-		source.addSample(objectSample);
+	private static SeedGenerator<Character> createSource(Iterator<String> seed, int depth) {
+		if (seed == null)
+			seed = defaultNounIterator();
+		SeedGenerator<Character> result = new SeedGenerator<Character>(Character.class, depth);
+	    while (seed.hasNext()) {
+			char[] charArray = seed.next().toCharArray();
+			Character[] objectSample = new Character[charArray.length];
+			for (int i = 0; i < charArray.length; i++)
+				objectSample[i] = charArray[i];
+			result.addSample(objectSample);
+	    }
+	    return result;
 	}
+
 	
 	// Generator interface implementation ------------------------------------------------------------------------------
 	
@@ -80,23 +80,9 @@ public class SeedWordGenerator extends AbstractGenerator<String> {
 	    return String.class;
     }
 
-	public boolean isThreadSafe() {
-	    return source.isThreadSafe();
-    }
-
-	public boolean isParallelizable() {
-	    return source.isParallelizable();
-    }
-
-	@Override
-	public synchronized void init(GeneratorContext context) {
-	    source.init(context);
-	    super.init(context);
-	}
-	
-	public String generate() throws IllegalGeneratorStateException {
+	public String generate() {
 		assertInitialized();
-	    return toString(source.generate());
+	    return toString(generateFromNotNullSource());
     }
 	
     private static String toString(Character[] chars) {
@@ -131,7 +117,7 @@ public class SeedWordGenerator extends AbstractGenerator<String> {
 
     public void printState() {
 	    System.out.println(getClass().getSimpleName());
-	    source.printState("  ");
+	    ((SeedGenerator<Character>) getSource()).printState("  ");
     }
 
 }
