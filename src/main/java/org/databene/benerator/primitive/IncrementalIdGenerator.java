@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,8 +23,7 @@ package org.databene.benerator.primitive;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates unique long values incrementally.<br/><br/>
@@ -32,7 +31,7 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class IncrementalIdGenerator extends ThreadSafeGenerator<Long> {
+public class IncrementalIdGenerator extends ThreadSafeNonNullGenerator<Long> {
 	
 	private long increment;
 	private volatile AtomicLong cursor = new AtomicLong();
@@ -72,7 +71,8 @@ public class IncrementalIdGenerator extends ThreadSafeGenerator<Long> {
 	    return Long.class;
     }
 	
-	public Long generate() throws IllegalGeneratorStateException {
+	@Override
+	public Long generate() {
 	    return cursor.getAndAdd(increment);
     }
 
