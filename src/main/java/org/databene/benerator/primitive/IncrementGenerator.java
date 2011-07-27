@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.primitive;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -36,7 +36,7 @@ import org.databene.commons.ConfigurationError;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class IncrementGenerator extends ThreadSafeGenerator<Long> {
+public class IncrementGenerator extends ThreadSafeNonNullGenerator<Long> {
 
     private static final long DEFAULT_MIN = 1;
     private static final long DEFAULT_MAX = Long.MAX_VALUE - 1;
@@ -104,6 +104,7 @@ public class IncrementGenerator extends ThreadSafeGenerator<Long> {
 	    return Long.class;
     }
 
+	@Override
 	public Long generate() {
     	if (cursor.get() <= max)
     		return cursor.getAndAdd(increment);
