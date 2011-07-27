@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -82,14 +82,19 @@ public class CollectionGenerator<C extends Collection, I> extends CardinalGenera
         return collectionType;
     }
 
-    /** @see org.databene.benerator.Generator#generate() */
-    public C generate() {
+	public ProductWrapper<C> generate(ProductWrapper<C> wrapper) {
         assertInitialized();
-        int size = countGenerator.generate().intValue();
+        Integer size = generateCount();
+        if (size == null)
+        	return null;
         C collection = BeanUtil.newInstance(collectionType);
-        for (int i = 0; i < size; i++)
-            collection.add(source.generate());
-        return collection;
+        for (int i = 0; i < size; i++) {
+        	ProductWrapper<I> item = generateFromSource();
+        	if (item == null)
+        		return null;
+            collection.add(item.unwrap());
+        }
+        return wrapper.wrap(collection);
     }
 
     // implementation --------------------------------------------------------------------------------------------------
