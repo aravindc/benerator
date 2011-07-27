@@ -62,7 +62,7 @@ public abstract class AbstractArrayGenerator<E, A> extends CardinalGenerator<E, 
     public void init(GeneratorContext context) {
         super.init(context);
         if (generatedType == null) {
-            Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
+            Class<E> cType = (componentType != null ? componentType : getSource().getGeneratedType());
             this.generatedType = ArrayUtil.arrayType(cType);
         }
     }

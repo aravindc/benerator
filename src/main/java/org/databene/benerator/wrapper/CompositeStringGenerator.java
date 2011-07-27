@@ -75,6 +75,7 @@ public class CompositeStringGenerator extends GeneratorWrapper<String[], String>
     @Override
     public String toString() {
         int count = 0;
+        Generator<String[]> source = getSource();
         if (source != null)
             count = ((CompositeArrayGenerator<String>) source).getSources().length;
         return getClass().getSimpleName() + "[count=" + count + ", " +

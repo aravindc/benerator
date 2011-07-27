@@ -56,8 +56,6 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
 
     @Override
     public void init(GeneratorContext context) {
-        if (source == null)
-            throw new InvalidGeneratorSetupException("source", "is null");
         if (ArrayUtil.isEmpty(converters))
             throw new InvalidGeneratorSetupException("converters", "is empty");
         super.init(context);
@@ -68,7 +66,7 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
     	if (converters.length > 0)
     		return (Class<T>) converters[converters.length - 1].getTargetType();
     	else
-    		return (Class<T>) source.getGeneratedType();
+    		return (Class<T>) getSource().getGeneratedType();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -88,7 +86,8 @@ public class ConvertingGenerator<S, T> extends GeneratorWrapper<S, T> {
 
     @Override
     public String toString() {
-    	return getClass().getSimpleName() + "[source=" + source + ", converters=[" + ArrayFormat.format(converters) + "]]";
+    	return getClass().getSimpleName() + "[source=" + getSource() + ", " +
+    			"converters=[" + ArrayFormat.format(converters) + "]]";
     }
 
 }

@@ -64,7 +64,7 @@ public class NullInjectingGeneratorProxy<E> extends GeneratorProxy<E> {
 
 	@Override
 	public String toString() {
-	    return getClass().getSimpleName() + "[" + nullQuota + ", " + source + "]";
+	    return getClass().getSimpleName() + "[" + nullQuota + ", " + getSource() + "]";
 	}
     
 }

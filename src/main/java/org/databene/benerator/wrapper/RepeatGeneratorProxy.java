@@ -57,7 +57,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
     }
 
     public Class<E> getGeneratedType() {
-    	return source.getGeneratedType();
+    	return getSource().getGeneratedType();
     }
     
     @Override
@@ -74,7 +74,7 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         assertInitialized();
         if (repCount == -1 || repCount >= totalReps) {
-    	    wrapper = source.generate(wrapper);
+    	    wrapper = getSource().generate(wrapper);
     	    if (wrapper == null)
     	    	return null;
     	    else

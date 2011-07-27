@@ -85,7 +85,7 @@ public class SkipGeneratorProxy<E> extends CardinalGenerator<E, E> {
     // Generator implementation ----------------------------------------------------------------------------------------
 
 	public Class<E> getGeneratedType() {
-    	return source.getGeneratedType();
+    	return getSource().getGeneratedType();
     }
     
 	@Override
@@ -109,7 +109,7 @@ public class SkipGeneratorProxy<E> extends CardinalGenerator<E, E> {
         count += increment;
         if (limit != null && count > limit)
         	return null;
-        return source.generate(wrapper);
+        return getSource().generate(wrapper);
     }
 
     @Override
