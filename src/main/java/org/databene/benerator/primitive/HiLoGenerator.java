@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,10 @@
 
 package org.databene.benerator.primitive;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.util.AbstractNonNullGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Volker Bergmann
  * @since 0.3.04
  */
-public class HiLoGenerator extends AbstractGenerator<Long> {
+public class HiLoGenerator extends AbstractNonNullGenerator<Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(HiLoGenerator.class);
 
@@ -50,7 +50,7 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
     private int lo;
     private Long hi;
 
-    protected Generator<Long> hiGenerator;
+    protected NonNullGenerator<Long> hiGenerator;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
     	this(new IncrementGenerator(), DEFAULT_MAX_LO);
     }
     
-    public HiLoGenerator(Generator<Long> hiGenerator, int maxLo) {
+    public HiLoGenerator(NonNullGenerator<Long> hiGenerator, int maxLo) {
         this.hiGenerator = hiGenerator;
         setMaxLo(maxLo);
         resetMembers();
@@ -70,7 +70,7 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
 
     // properties ------------------------------------------------------------------------------------
 
-    public void setHiGenerator(Generator<Long> hiGenerator) {
+    public void setHiGenerator(NonNullGenerator<Long> hiGenerator) {
         this.hiGenerator = hiGenerator;
     }
 
@@ -106,14 +106,14 @@ public class HiLoGenerator extends AbstractGenerator<Long> {
         super.init(context);
     }
 
-    public synchronized Long generate() {
+	@Override
+	public synchronized Long generate() {
         assertInitialized();
         if (hi == -1 || lo >= maxLo) {
             hi = hiGenerator.generate();
             if (hi == null)
             	return null;
-            if (logger.isDebugEnabled())
-                logger.debug("fetched new hi value: " + hi);
+            logger.debug("fetched new hi value: {}", hi);
             lo = 0;
         } else
             lo++;
