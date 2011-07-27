@@ -39,7 +39,6 @@ import org.databene.benerator.GeneratorContext;
 public class GeneratorChain<E> extends MultiGeneratorWrapper<E, E> {
 
 	private boolean unique;
-	private int index;
 	private Set<E> usedValues;
 	
 	public GeneratorChain(Class<E> generatedType, boolean unique, Generator<? extends E>... sources) {
@@ -54,26 +53,27 @@ public class GeneratorChain<E> extends MultiGeneratorWrapper<E, E> {
 		super.init(context);
 	}
 
-	public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		assertInitialized();
-		if (sources.length < 1)
-			return null;
-		E result;
 		boolean ok = true;
+		E value;
 		do {
-			result = generateUnvalidated();
+			wrapper = generateUnvalidated(wrapper);
+			if (wrapper == null)
+				return null;
+			value = wrapper.unwrap();
 			if (unique) {
-				if (index < sources.length - 1) {
+				if (availableSourceCount() > 1) {
 					// for all but the last generator check if the value has already occurred and store it...
-					ok = usedValues.add(result);
+					ok = usedValues.add(value);
 				} else {
 					// ...since each generator is expected to be unique itself, 
 					// there is no need to store the value of the last generator in the chain
-					ok = !usedValues.contains(result);
+					ok = !usedValues.contains(value);
 				}
 			}
-		} while (result != null && !ok);
-		return result;
+		} while (!ok);
+		return wrapper.wrap(value);
 	}
 
 	@Override
@@ -90,18 +90,11 @@ public class GeneratorChain<E> extends MultiGeneratorWrapper<E, E> {
 	
 	// helpers ---------------------------------------------------------------------------------------------------------
 	
-	protected E generateUnvalidated() {
-		E result;
-		result = sources[index].generate();
-		while (result == null && index < sources.length - 1) {
-			index++;
-			result = sources[index].generate();
-		}
-		return result;
+	protected ProductWrapper<E> generateUnvalidated(ProductWrapper<E> wrapper) {
+		return generateFromAvailableSource(0, wrapper);
 	}
 
 	protected void clearMembers() {
-		this.index = 0;
 		this.usedValues.clear();
 	}
 
