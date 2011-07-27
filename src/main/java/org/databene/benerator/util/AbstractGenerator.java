@@ -43,11 +43,6 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	private WrapperProvider<E> resultWrapperProvider;
 
 	public AbstractGenerator() {
-	    this(null);
-    }
-
-	public AbstractGenerator(GeneratorContext context) {
-		this.context = context;
 	    this.state = GeneratorState.CREATED;
 	    this.resultWrapperProvider = new WrapperProvider<E>();
     }
