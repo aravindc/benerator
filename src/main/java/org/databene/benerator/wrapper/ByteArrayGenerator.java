@@ -36,7 +36,7 @@ import org.databene.benerator.distribution.SequenceManager;
  * @since 0.3.04
  */
 public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
-
+	
     // constructors ----------------------------------------------------------------------------------------------------
 
     public ByteArrayGenerator() {
@@ -52,12 +52,14 @@ public class ByteArrayGenerator extends AbstractArrayGenerator<Byte, byte[]> {
     }
 
     @Override
-    public byte[] generate() {
-        int length = sizeGenerator.generate().intValue();
-        byte[] array = new byte[length];
+    public ProductWrapper<byte[]> generate(ProductWrapper<byte[]> wrapper) {
+        Integer length = generateCount();
+        if (length == null)
+        	return null;
+        byte[] array = new byte[length.intValue()];
         for (int i = 0; i < length; i++)
-            array[i] = source.generate();
-        return array;
+            array[i] = generateFromSource().unwrap();
+        return wrapper.wrap(array);
     }
     
 }
