@@ -23,6 +23,7 @@ package org.databene.benerator.dataset;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * {@link DatasetBasedGenerator} implementation which bases on an atomic dataset.<br/><br/>
@@ -50,13 +51,19 @@ public class AtomicDatasetGenerator<E> extends GeneratorProxy<E> implements Data
 	}
 
 	public ProductFromDataset<E> generateWithDatasetInfo() {
-		return new ProductFromDataset<E>(generate(), nesting, dataset);
+		ProductWrapper<E> wrapper = generate(getResultWrapper());
+		if (wrapper == null)
+			return null;
+		return new ProductFromDataset<E>(wrapper.unwrap(), nesting, dataset);
 	}
 
 	public E generateForDataset(String requestedDataset) {
 		if (!dataset.equals(requestedDataset))
 			throw new IllegalArgumentException("Requested dataset " + requestedDataset + ", but supporting only dataset " + this.dataset);
-		return generate();
+		ProductWrapper<E> wrapper = generate(getResultWrapper());
+		if (wrapper == null)
+			return null;
+		return wrapper.unwrap();
 	}
 
 	@Override

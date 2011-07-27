@@ -23,6 +23,7 @@ package org.databene.benerator.dataset;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.benerator.wrapper.WeightedGeneratorGenerator;
 
 /**
@@ -58,16 +59,16 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 	@SuppressWarnings("unchecked")
 	public Class<E> getGeneratedType() {
 		WeightedGeneratorGenerator<E> generatorGenerator = getSource();
-		if (generatorGenerator.getSources().length > 0)
+		if (generatorGenerator.getSources().size() > 0)
 			return (Class<E>) generatorGenerator.getSource(0).getGeneratedType();
 		return (Class<E>) Object.class;
 	}
 	
-	public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
 		Generator<E> generator = randomAtomicGenerator();
 		if (generator == null)
 			return null;
-		return generator.generate();
+		return wrapper.wrap(generator.generate(getResultWrapper()).unwrap());
 	}
 
 	// DatasetRelatedGenerator interface implementation ----------------------------------------------------------------
@@ -84,20 +85,20 @@ public class CompositeDatasetGenerator<E> extends GeneratorWrapper<Generator<E>,
 		DatasetBasedGenerator<E> generator = randomAtomicGenerator();
 		if (generator == null)
 			return null;
-		E generation = generator.generate();
+		ProductWrapper<E> generation = generator.generate(getResultWrapper());
 		if (generation == null)
 			return null;
-		return new ProductFromDataset<E>(generation, nesting, generator.getDataset());
+		return new ProductFromDataset<E>(generation.unwrap(), nesting, generator.getDataset());
 	}
 
 	public E generateForDataset(String dataset) {
-		return getGeneratorForDataset(dataset, true).generate();
+		return getGeneratorForDataset(dataset, true).generate(getResultWrapper()).unwrap();
 	}
 
 	// helper methods --------------------------------------------------------------------------------------------------
 	
 	private DatasetBasedGenerator<E> randomGenerator() {
-		return (DatasetBasedGenerator<E>) source.generate();
+		return (DatasetBasedGenerator<E>) getSource().generate(new ProductWrapper<Generator<E>>()).unwrap();
 	}
 
 	private DatasetBasedGenerator<E> randomAtomicGenerator() {

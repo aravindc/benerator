@@ -27,6 +27,7 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -89,9 +90,10 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 		DatasetBasedGenerator<E> sourceGen = getSource();
 		if (sourceGen instanceof CompositeDatasetGenerator)
 			return ((CompositeDatasetGenerator<E>) sourceGen).generateForDataset(requestedDataset);
-		else if (requestedDataset.equals(sourceGen.getDataset()))
-			return sourceGen.generate();
-		else
+		else if (requestedDataset.equals(sourceGen.getDataset())) {
+			ProductWrapper<E> wrapper = sourceGen.generate(getResultWrapper());
+			return (wrapper != null ? wrapper.unwrap() : null);
+		} else
 			throw new IllegalGeneratorStateException("Wrong dataset, expected " + requestedDataset + ", " +
 					"found " + sourceGen.getDataset());
 	}
@@ -112,7 +114,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 			if (subGenerator != null)
 				generator.addSubDataset(subGenerator, 1.); // TODO support individual weights
 		}
-		if (generator.getSource().getSources().length > 0)
+		if (generator.getSource().getSources().size() > 0)
 			return generator;
 		if (required)
 			throw new ConfigurationError("No samples defined for composite dataset: " + dataset.getName());
@@ -138,7 +140,7 @@ public abstract class AbstractDatasetGenerator<E> extends GeneratorProxy<E> impl
 	}
 	
 	protected String randomDataset() {
-		if (source instanceof CompositeDatasetGenerator) {
+		if (getSource() instanceof CompositeDatasetGenerator) {
 			Dataset dataset = DatasetUtil.getDataset(nesting, datasetName);
 			return RandomUtil.randomElement(dataset.getSubSets()).getName();
 		} else
