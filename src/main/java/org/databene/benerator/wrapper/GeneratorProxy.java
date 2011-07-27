@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -53,9 +53,9 @@ public abstract class GeneratorProxy<E> extends GeneratorWrapper<E, E> {
         return (source != null ? source.getGeneratedType() : (Class<E>) Object.class); // TODO v1.0 possibly there is a better way to handle this?
     }
 
-    public E generate() {
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
-        return source.generate();
+    	return source.generate(wrapper);
     }
 
 }
