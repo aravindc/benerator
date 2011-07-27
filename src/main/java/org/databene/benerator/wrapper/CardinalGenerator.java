@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.wrapper;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.util.WrapperProvider;
 
 /**
  * Combines a a random number a source generator's products into a collection.<br/>
@@ -39,25 +40,34 @@ import org.databene.benerator.distribution.SequenceManager;
 public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 
     /** Generator that determines the cardinality of generation */
-    protected Generator<Long> countGenerator;
+    protected Generator<Integer> countGenerator;
+    boolean resettingCountGenerator;
     
-    long minCount;
-    long maxCount;
-    long countPrecision;
+    int minCount;
+    int maxCount;
+    int countPrecision;
     Distribution countDistribution;
+    WrapperProvider<Integer> countWrapperProvider = new WrapperProvider<Integer>();
 
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public CardinalGenerator() {
-        this(null);
+    public CardinalGenerator(Generator<S> source, Generator<Integer> countGenerator) { 
+    	// TODO remove this constructor forcing children to explicitly select count generator reset
+        this(source, countGenerator, false);
     }
-
+    
+    public CardinalGenerator(Generator<S> source, Generator<Integer> countGenerator, boolean resettingCountGenerator) {
+        super(source);
+        this.countGenerator = countGenerator;
+        this.resettingCountGenerator = resettingCountGenerator;
+    }
+    
     public CardinalGenerator(Generator<S> source) {
         this(source, 0, 30, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
     public CardinalGenerator(Generator<S> source, 
-            long minCount, long maxCount, long countPrecision, Distribution countDistribution) {
+    		int minCount, int maxCount, int countPrecision, Distribution countDistribution) {
         super(source);
         this.minCount = minCount;
         this.maxCount = maxCount;
@@ -70,35 +80,28 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
 	/** ensures consistency of the state */
     @Override
     public void init(GeneratorContext context) {
-        countGenerator = countDistribution.createGenerator(Long.class, minCount, maxCount, countPrecision, false);
+    	if (countGenerator == null)
+    		countGenerator = countDistribution.createGenerator(Integer.class, minCount, maxCount, countPrecision, false);
         countGenerator.init(context);
         super.init(context);
-    }
-
-    public void setMinCount(long minCount) {
-    	assertNotInitialized();
-	    this.minCount = minCount;
-    }
-
-    public void setMaxCount(long maxCount) {
-    	assertNotInitialized();
-	    this.maxCount = maxCount;
-    }
-    
-    public void setCountPrecision(long countPrecision) {
-    	assertNotInitialized();
-	    this.countPrecision = countPrecision;
-    }
-    
-    public void setCountDistribution(Distribution distribution) {
-    	assertNotInitialized();
-	    this.countDistribution = distribution;
     }
 
     @Override
     public void reset() {
     	assertInitialized();
-        super.reset(); // don't reset the countGenerator!
+    	if (resettingCountGenerator)
+    		countGenerator.reset();
+        super.reset();
+    }
+    
+    // helpers ---------------------------------------------------------------------------------------------------------
+    
+    protected Integer generateCount() {
+    	ProductWrapper<Integer> wrapper = countWrapperProvider.get();
+    	wrapper = countGenerator.generate(wrapper);
+    	if (wrapper == null)
+    		return null;
+    	return wrapper.unwrap();
     }
     
 }
