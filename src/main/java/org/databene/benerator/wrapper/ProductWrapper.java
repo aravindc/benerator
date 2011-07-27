@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,23 +21,34 @@
 
 package org.databene.benerator.wrapper;
 
-import org.databene.benerator.nullable.NullableGenerator;
+import org.databene.benerator.Generator;
 
 /**
- * Helper class for the {@link NullableGenerator}.<br/><br/>
+ * Helper class for the {@link Generator} class.<br/><br/>
  * Created: 26.01.2010 10:53:53
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class ProductWrapper<E> {
+public class ProductWrapper<E> { // TODO efficiency where used
 	
-	public E product;
+	private E product;
+	private boolean wrapped = false;
 	
-	public ProductWrapper<E> setProduct(E product) {
+	public ProductWrapper<E> wrap(E product) {
 		this.product = product;
+		this.wrapped = true;
 		return this;
 	}
 	
+	public E unwrap() {
+		if (!wrapped)
+			throw new IllegalStateException("Tried to unwrap a product twice");
+		E result = this.product;
+		this.product = null;
+		this.wrapped = false;
+		return result;
+	}
+
 	@Override
 	public String toString() {
 	    return product.toString();
