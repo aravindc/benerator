@@ -45,15 +45,15 @@ public class CyclicGeneratorProxy<E> extends GeneratorProxy<E> {
     }
 
     @Override
-    public E generate() {
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	if (source == null || state == GeneratorState.CLOSED)
     		return null;
-    	E generation = source.generate();
-        if (generation == null) {
+    	ProductWrapper<E> test = super.generate(wrapper);
+        if (test == null) {
             reset();
-            generation = source.generate();
+            test = super.generate(wrapper);
         }
-        return generation;
+        return test;
     }
     
 }
