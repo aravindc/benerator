@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.IOUtil;
 import org.databene.commons.NullSafeComparator;
@@ -46,6 +47,7 @@ import org.databene.commons.NullSafeComparator;
 public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
 
     protected Generator<S> source;
+    private WrapperProvider<S> sourceWrapperProvider = new WrapperProvider<S>();
 
     public GeneratorWrapper(Generator<S> source) {
         this(source, null);
@@ -66,6 +68,11 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     /** Sets the source generator */
     public void setSource(Generator<S> source) {
         this.source = source;
+    }
+    
+    protected ProductWrapper<S> generateFromSource() {
+    	ProductWrapper<S> wrapper = sourceWrapperProvider.get();
+		return source.generate(wrapper);
     }
 
     // Generator interface implementation ------------------------------------------------------------------------------
