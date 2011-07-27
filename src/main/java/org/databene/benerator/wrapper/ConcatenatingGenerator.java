@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,11 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.databene.benerator.primitive;
+package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.wrapper.GeneratorWrapper;
 
 /**
  * {@link Generator} implementation that wraps several String generators 
@@ -62,10 +60,11 @@ public class ConcatenatingGenerator extends GeneratorWrapper<String[], String> {
 	    return String.class;
     }
 
-    public String generate() throws IllegalGeneratorStateException {
-        String[] parts = source.generate();
-        if (parts == null)
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		ProductWrapper<String[]> sourceWrapper = generateFromSource();
+        if (sourceWrapper == null)
         	return null;
+        String[] parts = sourceWrapper.unwrap();
         if (parts.length > 0) {
 	        StringBuilder builder = new StringBuilder();
 	        builder.append(parts[0]);
@@ -73,9 +72,9 @@ public class ConcatenatingGenerator extends GeneratorWrapper<String[], String> {
 	        	String part = parts[i];
 	            builder.append(separator).append(part);
 	        }
-	        return builder.toString();
+	        return wrapper.wrap(builder.toString());
         } else
-        	return "";
-    }
+        	return wrapper.wrap("");
+	}
 
 }
