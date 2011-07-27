@@ -28,12 +28,16 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.MultiGeneratorWrapper;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.CharSet;
 import org.databene.commons.ArrayFormat;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Generates unique strings of variable length.<br/>
@@ -41,7 +45,7 @@ import java.util.Collection;
  * Created: 16.11.2007 11:56:15
  * @author Volker Bergmann
  */
-public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String> {
+public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String> implements NonNullGenerator<String> {
 
     private int minLength;
     private int maxLength;
@@ -85,21 +89,25 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     // Generator interface ---------------------------------------------------------------------------------------------
 
     @Override
-    @SuppressWarnings("unchecked")
     public void init(GeneratorContext context) {
     	assertNotInitialized();
     	// create sub generators
-        Generator<String>[] subGens = new Generator[maxLength - minLength + 1];
+        List<Generator<? extends String>> subGens = new ArrayList<Generator<? extends String>>(maxLength - minLength + 1);
         for (int i = minLength; i <= maxLength; i++)
-            subGens[i - minLength] = new UniqueFixedLengthStringGenerator(i, charSet);
+            subGens.add(new UniqueFixedLengthStringGenerator(i, charSet));
         setSources(subGens);
         super.init(context);
     }
 
-    public String generate() {
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
     	assertInitialized();
-    	return generateFromRandomSource();
+    	return generateFromRandomSource(wrapper);
     }
+
+	public String generate() {
+		ProductWrapper<String> wrapper = generate(new ProductWrapper<String>());
+		return (wrapper != null ? wrapper.unwrap() : null);
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 
