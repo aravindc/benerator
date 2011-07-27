@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,7 @@ package org.databene.benerator.primitive;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.LuhnUtil;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.StringUtil;
 
 /**
@@ -33,7 +33,7 @@ import org.databene.commons.StringUtil;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class LuhnGenerator extends GeneratorProxy<String> {
+public class LuhnGenerator extends NonNullGeneratorProxy<String> {
 	
 	String prefix;
 	int minLength;
