@@ -22,8 +22,8 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.CardinalGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Creates Strings from a {@link Character} {@link Generator} with a length defined by a number Generator.<br/>
@@ -32,35 +32,28 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class DistributedLengthStringGenerator extends ThreadSafeGenerator<String> {
+public class DistributedLengthStringGenerator extends CardinalGenerator<Character, String> {
 	
-	private Generator<Character> charGenerator;
-	private Generator<Integer> lengthGenerator;
-
 	public DistributedLengthStringGenerator(Generator<Character> charGenerator, Generator<Integer> lengthGenerator) {
-		this.charGenerator = charGenerator;
-		this.lengthGenerator = lengthGenerator;
+		super(charGenerator, lengthGenerator);
 	}
 
 	public Class<String> getGeneratedType() {
 		return String.class;
 	}
 	
-	@Override
-	public synchronized void init(GeneratorContext context) {
-		this.charGenerator.init(context);
-		this.lengthGenerator.init(context);
-		super.init(context);
-	}
-
-	public String generate() {
-		Integer length = lengthGenerator.generate();
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		Integer length = generateCount();
 		if (length == null)
 			return null;
 		char[] buffer = new char[length];
-		for (int i = 0; i < length; i++)
-			buffer[i] = charGenerator.generate();
-		return new String(buffer);
+		for (int i = 0; i < length; i++) {
+			ProductWrapper<Character> charWrapper = generateFromSource();
+			if (charWrapper == null)
+				return null;
+			buffer[i] = charWrapper.unwrap();
+		}
+		return wrapper.wrap(new String(buffer));
 	}
 
 }
