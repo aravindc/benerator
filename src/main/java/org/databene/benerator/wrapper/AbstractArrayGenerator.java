@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,8 +28,8 @@ package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.Distribution;
+import org.databene.benerator.distribution.SequenceManager;
 import org.databene.commons.ArrayUtil;
 
 /**
@@ -39,20 +39,16 @@ import org.databene.commons.ArrayUtil;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A>{
-
-    /** The generator that creates the array length */
-    protected Generator<Integer> sizeGenerator;
+public abstract class AbstractArrayGenerator<E, A> extends CardinalGenerator<E, A>{
 
     private Class<E> componentType;
     private Class<A> generatedType;
 
     public AbstractArrayGenerator(Generator<E> source, Class<E> componentType, Class<A> generatedType, 
     		int minLength, int maxLength, Distribution lengthDistribution) {
-        super(source);
+        super(source, minLength, maxLength, 1, SequenceManager.RANDOM_SEQUENCE);
         this.componentType = componentType;
         this.generatedType = generatedType;
-        this.sizeGenerator = lengthDistribution.createGenerator(Integer.class, minLength, maxLength, 1, false);
     }
 
     // configuration properties ----------------------------------------------------------------------------------------
@@ -64,29 +60,26 @@ public abstract class AbstractArrayGenerator<E, A> extends GeneratorWrapper<E, A
     @SuppressWarnings("unchecked")
     @Override
     public void init(GeneratorContext context) {
-        sizeGenerator.init(context);
-        if (source == null)
-            throw new InvalidGeneratorSetupException("source", " is null");
+        super.init(context);
         if (generatedType == null) {
             Class<E> cType = (componentType != null ? componentType : source.getGeneratedType());
             this.generatedType = ArrayUtil.arrayType(cType);
         }
-        super.init(context);
     }
 
     @SuppressWarnings("unchecked")
-    public A generate() {
-        Integer length = sizeGenerator.generate();
-        if (length == null)
-        	return null;
-        E[] array = ArrayUtil.newInstance(componentType, length);
-        for (int i = 0; i < length; i++) {
-            E element = source.generate();
-            if (element == null)
+    public ProductWrapper<A> generate(ProductWrapper<A> wrapper) {
+    	Integer size = generateCount();
+    	if (size == null)
+    		return null;
+        E[] array = ArrayUtil.newInstance(componentType, size.intValue());
+        for (int i = 0; i < size; i++) {
+            ProductWrapper<E> component = generateFromSource();
+            if (component == null)
             	return null;
-			array[i] = element;
+			array[i] = component.unwrap();
         } 
-        return (A) array;
+        return wrapper.wrap((A) array);
     }
 
 }
