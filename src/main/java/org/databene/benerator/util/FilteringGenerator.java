@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,6 +23,7 @@ package org.databene.benerator.util;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Expression;
 
 /**
@@ -42,12 +43,13 @@ public class FilteringGenerator<E> extends GeneratorProxy<E> {
     }
 
 	@Override
-	public E generate() {
-		E feed;
-		while ((feed = super.generate()) != null) {
-			context.set("_candidate", feed);
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+		ProductWrapper<E> feed;
+		while ((feed = super.generate(wrapper)) != null) {
+			E candidate = feed.unwrap();
+			context.set("_candidate", candidate);
 			if (filter.evaluate(context))
-				return feed;
+				return wrapper.wrap(candidate);
 		}
 		return null;
 	}

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.util;
 
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,15 +65,15 @@ public abstract class ValidatingGenerator<P> extends AbstractGenerator<P> {
      * WARNING_THRESHOLD value, a warning is logged, if the count reaches the
      * ERROR_THRESHOLD, an exception is raised.
      */
-
-    public P generate() {
+    public ProductWrapper<P> generate(ProductWrapper<P> wrapper) {
         boolean valid;
         int count = 0;
         P product;
         do {
-        	product = generateImpl();
-        	if (product == null)
+        	wrapper = doGenerate(wrapper);
+        	if (wrapper == null)
         		return null;
+        	product = wrapper.unwrap();
 			valid = validator.valid(product);
             count++;
             if (count >= ERROR_THRESHOLD)
@@ -82,13 +83,13 @@ public abstract class ValidatingGenerator<P> extends AbstractGenerator<P> {
         } while (!valid);
         if (count >= WARNING_THRESHOLD)
             logger.warn("Inefficient generation: needed " + count + " tries to generate a valid value. ");
-        return product;
+        return wrapper.wrap(product);
     }
 
     /**
      * Callback method that does the job of creating values.
      * This is to be implemented by child classes.
      */
-    protected abstract P generateImpl();
+    protected abstract ProductWrapper<P> doGenerate(ProductWrapper<P> wrapper);
     
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,10 +21,11 @@
 
 package org.databene.benerator.util;
 
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Expression;
 
 /**
- * Evaluates an {@link Expression} on each call to {@link ExpressionBasedGenerator#generate()} 
+ * Evaluates an {@link Expression} on each call to {@link ExpressionBasedGenerator#generate(ProductWrapper)} 
  * and returns its results.<br/><br/>
  * Created: 27.03.2010 19:51:46
  * @since 0.6.0
@@ -40,8 +41,8 @@ public class ExpressionBasedGenerator<E> extends ThreadSafeGenerator<E> {
 	    this.generatedType = generatedType;
     }
 
-	public E generate() {
-	    return expression.evaluate(context);
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+	    return wrapper.wrap(expression.evaluate(context));
     }
 
 	public Class<E> getGeneratedType() {
@@ -52,5 +53,5 @@ public class ExpressionBasedGenerator<E> extends ThreadSafeGenerator<E> {
 	public String toString() {
 	    return getClass().getSimpleName() + "(" + expression + " -> " + generatedType + ")";
 	}
-	
+
 }
