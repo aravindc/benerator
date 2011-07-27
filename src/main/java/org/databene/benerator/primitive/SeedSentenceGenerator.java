@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,9 +28,8 @@ package org.databene.benerator.primitive;
 
 import java.io.IOException;
 
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.sample.SeedGenerator;
-import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 import org.databene.commons.IOUtil;
 import org.databene.commons.ReaderLineIterator;
 import org.databene.commons.StringUtil;
@@ -43,7 +42,7 @@ import org.databene.commons.StringUtil;
  * @author Volker Bergmann
  */
 
-public class SeedSentenceGenerator extends GeneratorWrapper<String[], String> {
+public class SeedSentenceGenerator extends NonNullGeneratorWrapper<String[], String> {
 
     private static final int DEFAULT_DEPTH = 4;
 
@@ -62,8 +61,8 @@ public class SeedSentenceGenerator extends GeneratorWrapper<String[], String> {
 		}
     }
 
-	public String generate() throws IllegalGeneratorStateException {
-	    return toString(source.generate());
+	public String generate() {
+	    return toString(generateFromNotNullSource());
     }
 	
     public Class<String> getGeneratedType() {
