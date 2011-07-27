@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -23,7 +23,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.RandomUtil;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates {@link String}s composed of numerical digits.<br/><br/>
@@ -31,9 +31,9 @@ import org.databene.benerator.util.ThreadSafeGenerator;
  * @since 0.6.0
  * @author Volker Bergmann
  */
-public class DigitsGenerator extends ThreadSafeGenerator<String> {
+public class DigitsGenerator extends ThreadSafeNonNullGenerator<String> {
 	
-	// TODO v0.6.7 support length and digit distribution?
+	// TODO v0.7.0 support length and digit distribution?
 
 	private int minLength;
 	private int maxLength;
@@ -98,6 +98,7 @@ public class DigitsGenerator extends ThreadSafeGenerator<String> {
 	    return String.class;
     }
 	
+	@Override
 	public String generate() {
 	    return generate(prefix);
     }
