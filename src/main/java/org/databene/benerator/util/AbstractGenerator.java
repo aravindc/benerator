@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,6 +25,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.GeneratorState;
 import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 
 /**
@@ -38,6 +39,8 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	protected GeneratorState state;
 
 	protected GeneratorContext context;
+	
+	private WrapperProvider<E> resultWrapperProvider;
 
 	public AbstractGenerator() {
 	    this(null);
@@ -46,6 +49,7 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
 	public AbstractGenerator(GeneratorContext context) {
 		this.context = context;
 	    this.state = GeneratorState.CREATED;
+	    this.resultWrapperProvider = new WrapperProvider<E>();
     }
 
 	public synchronized void init(GeneratorContext context) {
@@ -80,6 +84,10 @@ public abstract class AbstractGenerator<E> implements Generator<E> {
     		throw new IllegalGeneratorStateException("Generator was not initialized: " + this);
     	if (state == GeneratorState.CLOSED)
     		throw new IllegalGeneratorStateException("Generator has already been closed: " + this);
+    }
+    
+    protected ProductWrapper<E> getResultWrapper() {
+    	return resultWrapperProvider.get();
     }
     
     // java.lang.Object overrides --------------------------------------------------------------------------------------
