@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 import org.databene.commons.CollectionUtil;
@@ -179,22 +179,22 @@ public abstract class GeneratorTest {
     // Number generator tests ------------------------------------------------------------------------------------------
 
     public static <T extends Number> void checkEqualDistribution(
-            Class<? extends AbstractNumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, double tolerance, T ... expectedValues) {
         Set<T> expectedSet = CollectionUtil.toSet(expectedValues);
         checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
     }
 
     public static <T extends Number> void checkEqualDistribution(
-            Class<? extends AbstractNumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, double tolerance, Set<T> expectedSet) {
         checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
     }
 
     private static <T extends Number> void checkDistribution(
-            Class<? extends AbstractNumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T precision,
             int iterations, boolean equalDistribution, double tolerance, Set<T> expectedSet) {
-    	AbstractNumberGenerator<T> generator = BeanUtil.newInstance(generatorClass);
+    	AbstractNonNullNumberGenerator<T> generator = BeanUtil.newInstance(generatorClass);
         generator.setMin(min);
         generator.setMax(max);
         generator.setPrecision(precision);
