@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -39,19 +39,19 @@ import org.databene.benerator.distribution.SequenceManager;
  */
 public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 
-    private long repCount;
-    private long totalReps;
-    private E next;
+    private Integer repCount;
+    private Integer totalReps;
+    private E currentValue;
 
     public RepeatGeneratorProxy() {
         this(null, 0, 3);
     }
 
-    public RepeatGeneratorProxy(Generator<E> source, long minRepetitions, long maxRepetitions) {
+    public RepeatGeneratorProxy(Generator<E> source, int minRepetitions, int maxRepetitions) {
         this(source, minRepetitions, maxRepetitions, 1, SequenceManager.RANDOM_SEQUENCE);
     }
 
-    public RepeatGeneratorProxy(Generator<E> source, long minRepetitions, long maxRepetitions, 
+    public RepeatGeneratorProxy(Generator<E> source, int minRepetitions, int maxRepetitions, 
     		int repetitionPrecision, Distribution repetitionDistribution) {
         super(source, minRepetitions, maxRepetitions, repetitionPrecision, repetitionDistribution);
     }
@@ -68,24 +68,24 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 
 	private void resetMembers() {
 	    repCount = -1;
-	    totalReps = countGenerator.generate();
-	    next = source.generate();
+	    totalReps = -1;
     }
 
-	public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         assertInitialized();
-        if (next == null)
-            return null;
-        E result = next;
-        repCount++;
-        if (repCount >= totalReps) {
-            next = source.generate();
-            if (next != null) {
-                totalReps = countGenerator.generate();
-                repCount = -1;
-            }
+        if (repCount == -1 || repCount >= totalReps) {
+    	    wrapper = source.generate(wrapper);
+    	    if (wrapper == null)
+    	    	return null;
+    	    else
+    	    	currentValue = wrapper.unwrap();
+    	    repCount = 0;
+    	    totalReps = generateCount();
+        } else {
+            wrapper.wrap(currentValue);
+            repCount++;
         }
-        return result;
+        return wrapper.wrap(currentValue);
     }
 	
 	@Override
@@ -94,5 +94,5 @@ public class RepeatGeneratorProxy<E> extends CardinalGenerator<E, E> {
 	    countGenerator.reset();
 	    resetMembers();
 	}
-	
+
 }
