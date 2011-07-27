@@ -31,6 +31,7 @@ import org.databene.benerator.engine.expression.context.ContextReference;
 import org.databene.benerator.engine.statement.IfStatement;
 import org.databene.benerator.engine.statement.SetGlobalPropertyStatement;
 import org.databene.benerator.script.BeneratorScriptParser;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Context;
@@ -127,7 +128,10 @@ public class PropertyParser extends AbstractBeneratorDescriptorParser {
 
         public E evaluate(Context context) {
 			Generator<E> generator = source.evaluate(context);
-			return generator.generate();
+			ProductWrapper<E> wrapper = generator.generate(new ProductWrapper<E>());
+			if (wrapper == null)
+				throw new ConfigurationError("Generator not available: " + generator);
+			return wrapper.unwrap();
 		}
 
     }
