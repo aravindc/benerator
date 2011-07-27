@@ -46,10 +46,12 @@ public class AsFloatGeneratorWrapper<E extends Number> extends GeneratorWrapper<
 	    return Float.class;
     }
 
-    public Float generate() {
+	public ProductWrapper<Float> generate(ProductWrapper<Float> wrapper) {
     	assertInitialized();
-	    E feed = source.generate();
-		return (feed != null ? feed.floatValue() : null);
+	    ProductWrapper<E> tmp = generateFromSource();
+	    if (tmp == null)
+	    	return null;
+		return wrapper.wrap(tmp.unwrap().floatValue());
     }
 
 }

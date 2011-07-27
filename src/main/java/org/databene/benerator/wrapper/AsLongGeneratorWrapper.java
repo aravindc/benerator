@@ -44,10 +44,13 @@ public class AsLongGeneratorWrapper<E extends Number> extends GeneratorWrapper<E
 	    return Long.class;
     }
 
-    public Long generate() {
+	public ProductWrapper<Long> generate(ProductWrapper<Long> wrapper) {
     	assertInitialized();
-        E feed = source.generate();
-		return (feed != null ? feed.longValue() : null);
+	    ProductWrapper<E> tmp = generateFromSource();
+	    if (tmp == null)
+	    	return null;
+		E feed = tmp.unwrap();
+		return wrapper.wrap(feed.longValue());
     }
 
 }

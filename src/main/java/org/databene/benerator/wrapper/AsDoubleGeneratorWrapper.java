@@ -44,10 +44,12 @@ public class AsDoubleGeneratorWrapper<E extends Number> extends GeneratorWrapper
 	    return Double.class;
     }
 
-    public Double generate() {
+	public ProductWrapper<Double> generate(ProductWrapper<Double> wrapper) {
     	assertInitialized();
-        E number = source.generate();
-		return (number != null ? number.doubleValue() : null);
+    	ProductWrapper<E> number = generateFromSource();
+        if (number == null)
+        	return null;
+		return wrapper.wrap(number.unwrap().doubleValue());
     }
 
 }

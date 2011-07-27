@@ -64,14 +64,15 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 	    return BigDecimal.class;
     }
 
-    public BigDecimal generate() {
-	    E feed = source.generate();
-	    if (feed == null)
+	public ProductWrapper<BigDecimal> generate(ProductWrapper<BigDecimal> wrapper) {
+		ProductWrapper<E> tmp = generateFromSource();
+	    if (tmp == null)
 	    	return null;
+	    E feed = tmp.unwrap();
 	    double d = feed.doubleValue();
 		int prefixDigits = (Math.floor(d) == 0. ? 0 : MathUtil.prefixDigits(d));
 		MathContext mathcontext = new MathContext(prefixDigits + fractionDigits);
-		return new BigDecimal(d, mathcontext);
+		return wrapper.wrap(new BigDecimal(d, mathcontext));
     }
 
 }

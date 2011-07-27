@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,6 @@ package org.databene.benerator.wrapper;
 import java.math.BigInteger;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 
 /**
  * Converts the {@link Number} products of another {@link Generator} to {@link BigInteger}.<br/>
@@ -49,10 +48,13 @@ public class AsBigIntegerGeneratorWrapper<E extends Number> extends GeneratorWra
 	    return BigInteger.class;
     }
 
-    public BigInteger generate() throws IllegalGeneratorStateException {
+	public ProductWrapper<BigInteger> generate(ProductWrapper<BigInteger> wrapper) {
     	assertInitialized();
-	    E feed = source.generate();
-		return (feed != null ? BigInteger.valueOf(feed.longValue()) : null);
+	    ProductWrapper<E> tmp = generateFromSource();
+	    if (tmp == null)
+	    	return null;
+		E feed = tmp.unwrap();
+		return wrapper.wrap(BigInteger.valueOf(feed.longValue()));
     }
 
 }

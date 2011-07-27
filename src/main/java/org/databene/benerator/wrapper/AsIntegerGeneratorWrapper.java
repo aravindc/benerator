@@ -46,10 +46,12 @@ public class AsIntegerGeneratorWrapper<E extends Number> extends GeneratorWrappe
 	    return Integer.class;
     }
 
-    public Integer generate() {
+	public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
     	assertInitialized();
-	    E feed = source.generate();
-	    return (feed != null ? feed.intValue() : null);
+    	ProductWrapper<E> tmp = generateFromSource();
+    	if (tmp == null)
+    		return null;
+	    return wrapper.wrap(tmp.unwrap().intValue());
     }
 
 }
