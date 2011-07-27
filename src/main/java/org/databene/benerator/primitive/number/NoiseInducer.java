@@ -21,15 +21,12 @@
 
 package org.databene.benerator.primitive.number;
 
-import org.databene.benerator.Generator;
-import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.commons.Context;
+import org.databene.benerator.util.GeneratingConverter;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
-import org.databene.commons.context.ContextAware;
 import org.databene.commons.converter.ConverterManager;
-import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.commons.math.ArithmeticEngine;
 import org.databene.model.data.Uniqueness;
 
@@ -40,7 +37,7 @@ import org.databene.model.data.Uniqueness;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements ContextAware {
+public class NoiseInducer extends GeneratingConverter<Number, Number, Number> {
 	
 	private double minNoise;
 	private double maxNoise;
@@ -50,15 +47,13 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	
 	private Class<? extends Number> numberType;
 	private ArithmeticEngine arithmetic;
-	private Generator<Number> noiseGenerator;
-	private GeneratorContext context;
-
+	
 	public NoiseInducer() {
 	    this(-0.1, 0.1, 0.001);
     }
 	
 	public NoiseInducer(double minNoise, double maxNoise, double noisePrecision) {
-	    super(Number.class, Number.class);
+	    super(Number.class, Number.class, null);
 	    this.minNoise = minNoise;
 	    this.maxNoise = maxNoise;
 	    this.noisePrecision = noisePrecision;
@@ -108,18 +103,18 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
     	this.relative = relative;
     }
 
-	public void setContext(Context context) {
-	    this.context = (GeneratorContext) context;
-    }
-
 	// Converter interface implementation ------------------------------------------------------------------------------
 	
-	public Number convert(Number sourceValue) {
+	@Override
+	protected Number doConvert(Number sourceValue) {
 		if (sourceValue == null)
 			return null;
 		if (numberType == null)
 			initialize(sourceValue);
-		Number delta = noiseGenerator.generate();
+		ProductWrapper<Number> wrapper = generate();
+		if (wrapper == null) // TODO what to do when the generator goes unavailable?
+			return null;
+		Number delta = wrapper.unwrap();
 		Number result;
 		if (relative)
 			result = (Number) arithmetic.multiply(sourceValue, arithmetic.subtract(1, delta));
@@ -142,18 +137,19 @@ public class NoiseInducer extends ThreadSafeConverter<Number, Number> implements
 	
 	// private helpers -------------------------------------------------------------------------------------------------
 	
+	@Override
 	@SuppressWarnings("unchecked")
-    private void initialize(Number sourceValue) {
+    protected void initialize(Number sourceValue) {
 	    this.numberType = (relative ? Double.class : sourceValue.getClass());
 	    Converter<Number, ? extends Number> converter = ConverterManager.getInstance().createConverter(Number.class, numberType);
 	    arithmetic = new ArithmeticEngine();
-	    noiseGenerator = context.getGeneratorFactory().createNumberGenerator(
+	    generator = context.getGeneratorFactory().createNumberGenerator(
 	    		(Class<Number>) numberType, 
 	    		(Number) converter.convert(minNoise), true,
 	    		(Number) converter.convert(maxNoise), true,
 	    		(Number) converter.convert(noisePrecision), 
 	    		noiseDistribution, Uniqueness.NONE);
-	    noiseGenerator.init(context);
+		super.initialize(sourceValue);
 	}
 
 }
