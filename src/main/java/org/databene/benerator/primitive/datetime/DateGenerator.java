@@ -29,7 +29,7 @@ package org.databene.benerator.primitive.datetime;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
-import org.databene.benerator.wrapper.GeneratorWrapper;
+import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Period;
 import org.databene.commons.TimeUtil;
@@ -45,7 +45,7 @@ import java.util.GregorianCalendar;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class DateGenerator extends GeneratorWrapper<Long, Date> {
+public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
     
     private DateString2DurationConverter dateConverter = new DateString2DurationConverter();
 
@@ -120,13 +120,13 @@ public class DateGenerator extends GeneratorWrapper<Long, Date> {
     }
 
     /** Generates a Date by creating a millisecond value from the source generator and wrapping it into a Date */
-	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
+	public Date generate() {
     	assertInitialized();
         ProductWrapper<Long> tmp = generateFromSource();
         if (tmp == null)
         	return null;
 		Long millis = tmp.unwrap();
-        return wrapper.wrap(new Date(millis));
+        return new Date(millis);
     }
     
     @Override
