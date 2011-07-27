@@ -50,18 +50,18 @@ public class OffsetBasedGenerator<E> extends GeneratorProxy<E> {
 	@Override
 	public synchronized void init(GeneratorContext context) {
 		super.init(context);
-		advanceToOffset();
+		advanceToOffset(new ProductWrapper<E>());
 	}
 
 	@Override
 	public void reset() {
 		super.reset();
-		advanceToOffset();
+		advanceToOffset(new ProductWrapper<E>());
 	}
 	
-	private void advanceToOffset() {
+	private void advanceToOffset(ProductWrapper<E> wrapper) {
 		for (int i = 0; i < offset; i++)
-			super.generate();
+			super.generate(wrapper);
 	}
 	
 }
