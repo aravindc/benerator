@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,19 +28,19 @@ package org.databene.benerator.primitive.number;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.util.AbstractNonNullGenerator;
 import org.databene.commons.comparator.NumberComparator;
 import org.databene.commons.converter.NumberToNumberConverter;
 
 /**
- * Abstract parent class for all number-conversion adapters.
+ * Abstract parent class for all number generators.
  * It hosts a distribution and defines abstract properties to be implemented by child classes.<br/>
  * <br/>
  * Created: 10.09.2006 19:47:32
  * @since 0.1
  * @author Volker Bergmann
  */
-public abstract class AbstractNumberGenerator<E extends Number> extends AbstractGenerator<E> {
+public abstract class AbstractNonNullNumberGenerator<E extends Number> extends AbstractNonNullGenerator<E> {
 
 	protected Class<E> generatedType;
 
@@ -50,7 +50,7 @@ public abstract class AbstractNumberGenerator<E extends Number> extends Abstract
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public AbstractNumberGenerator(Class<E> generatedType, E min, E max, E precision) {
+    public AbstractNonNullNumberGenerator(Class<E> generatedType, E min, E max, E precision) {
     	this.generatedType = generatedType;
         setMin(min);
         setMax(max);
