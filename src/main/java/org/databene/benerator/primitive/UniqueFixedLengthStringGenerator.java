@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,7 +29,7 @@ package org.databene.benerator.primitive;
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.sequence.BitReverseNaturalNumberGenerator;
 import org.databene.benerator.util.RandomUtil;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.CustomCounter;
@@ -40,8 +40,9 @@ import java.util.Set;
  * Generates unique strings of fixed length.<br/>
  * <br/>
  * Created: 15.11.2007 14:07:49
+ * @author Volker Bergmann
  */
-public class UniqueFixedLengthStringGenerator extends ThreadSafeGenerator<String> {
+public class UniqueFixedLengthStringGenerator extends ThreadSafeNonNullGenerator<String> { // TODO compare and merge with DigitsGenerator?
 
     public static final Set<Character> DEFAULT_CHAR_SET
             = CollectionUtil.toSet('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -75,10 +76,14 @@ public class UniqueFixedLengthStringGenerator extends ThreadSafeGenerator<String
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
+	public Class<String> getGeneratedType() {
+	    return String.class;
+    }
+
     @Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-        Generator<Long> gen = new BitReverseNaturalNumberGenerator(length - 1);
+    	BitReverseNaturalNumberGenerator gen = new BitReverseNaturalNumberGenerator(length - 1);
         gen.init(context);
         for (int i = 0; i < length; i++) {
             this.displayColumn[i] = gen.generate().intValue();
@@ -88,7 +93,8 @@ public class UniqueFixedLengthStringGenerator extends ThreadSafeGenerator<String
         super.init(context);
     }
     
-    public String generate() {
+	@Override
+	public String generate() {
         if (counter == null)
             return null;
         int[] digits = counter.getDigits();
@@ -113,10 +119,6 @@ public class UniqueFixedLengthStringGenerator extends ThreadSafeGenerator<String
     public void reset() {
         super.reset();
         resetMembers();
-    }
-
-	public Class<String> getGeneratedType() {
-	    return String.class;
     }
 
 	private void resetMembers() {
