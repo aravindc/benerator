@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,6 +32,7 @@ import java.text.MessageFormat;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayUtil;
 import org.databene.commons.ui.ConsoleInfoPrinter;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class XmlCreator {
         fileGenerator.init(context);
         try {
 	        for (long i = 0; i < fileCount; i++) {
-	            File file = fileGenerator.generate();
+	        	ProductWrapper<File> file = fileGenerator.generate(new ProductWrapper<File>());
 	            if (file == null)
 	            	throw new RuntimeException("Unable to create the expected number of files. " +
 	            			"Created " + i + " of " + fileCount + " files");
