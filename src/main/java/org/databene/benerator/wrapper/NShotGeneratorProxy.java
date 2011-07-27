@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -42,12 +42,11 @@ public class NShotGeneratorProxy<E> extends GeneratorProxy<E> {
     }
 
     @Override
-    public E generate() {
-    	E product;
-        if (remainingShots <= 0 || (product = super.generate()) == null)
+    public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
+        if (remainingShots <= 0 || (wrapper = super.generate(wrapper)) == null)
             return null;
         this.remainingShots--;
-        return product;
+        return wrapper;
     }
 
     @Override
