@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Context;
 import org.databene.script.Script;
 import org.databene.script.ScriptUtil;
@@ -41,6 +42,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ScriptGenerator extends ThreadSafeGenerator<Object>{
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScriptGenerator.class);
+
     private Script script;
     private Context context;
     
@@ -53,18 +56,16 @@ public class ScriptGenerator extends ThreadSafeGenerator<Object>{
 	    return Object.class;
     }
 
-    public Object generate() {
+	public ProductWrapper<Object> generate(ProductWrapper<Object> wrapper) {
         Object result = ScriptUtil.execute(script, context);
-        if (logger.isDebugEnabled())
-            logger.debug("Generated: " + result);
-        return result;
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Generated: " + result);
+        return wrapper.wrap(result);
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + '[' + script + ']';
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(ScriptGenerator.class);
 
 }
