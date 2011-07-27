@@ -50,11 +50,6 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     private WrapperProvider<S> sourceWrapperProvider = new WrapperProvider<S>();
 
     public GeneratorWrapper(Generator<S> source) {
-        this(source, null);
-    }
-
-    public GeneratorWrapper(Generator<S> source, GeneratorContext context) {
-    	super(context);
         this.source = source;
     }
 
