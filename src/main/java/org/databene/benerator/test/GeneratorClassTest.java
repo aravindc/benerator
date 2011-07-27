@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,6 +28,7 @@ package org.databene.benerator.test;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ParseUtil;
 import junit.framework.AssertionFailedError;
 import org.junit.Test;
@@ -70,7 +71,8 @@ public abstract class GeneratorClassTest extends GeneratorTest {
         generator.toString();
     }
 
-    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Test
     public void testDefaultGenerationIfValid() throws Throwable {
         Generator<?> generator = generatorClass.newInstance();
         boolean valid = true;
@@ -81,7 +83,7 @@ public abstract class GeneratorClassTest extends GeneratorTest {
             valid = false;
         }
         if (valid) { // must be outside of catch block, else exceptions would be ignored
-            generator.generate();
+            generator.generate(new ProductWrapper());
         }
     }
 
