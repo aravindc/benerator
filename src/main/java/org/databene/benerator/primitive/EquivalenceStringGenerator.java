@@ -23,6 +23,7 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.CardinalGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
@@ -33,7 +34,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> {
+public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> implements NonNullGenerator<String> {
 
 	protected Integer currentLength;
 	
@@ -52,6 +53,10 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 	}
 
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
+	public String generate() {
 		assertInitialized();
 		if (currentLength == null)
 			return null;
@@ -69,9 +74,9 @@ public class EquivalenceStringGenerator<E> extends CardinalGenerator<E, String> 
 				// for length 0, any character repetition is "", 
 				// so get rid of the remaining characters and proceed to the next length value
 			}
-		return wrapper.wrap(result);
+		return result;
 	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();
