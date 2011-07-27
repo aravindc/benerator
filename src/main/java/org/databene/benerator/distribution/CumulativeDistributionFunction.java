@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.benerator.util.GeneratorUtil;
@@ -74,7 +74,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
      * @since 0.6.0
      * @author Volker Bergmann
      */
-    public static class IPINumberGenerator<E extends Number> extends AbstractNumberGenerator<E> {
+    public static class IPINumberGenerator<E extends Number> extends AbstractNonNullNumberGenerator<E> {
     	
     	private CumulativeDistributionFunction fcn;
     	private Random random = new Random();
@@ -96,6 +96,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 			this.converter = ConverterManager.getInstance().createConverter(Double.class, targetType);
         }
 
+		@Override
 		public E generate() {
 			double tmp;
 			double prob = minProb + random.nextDouble() * probScale;

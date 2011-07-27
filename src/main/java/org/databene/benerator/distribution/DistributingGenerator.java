@@ -49,7 +49,7 @@ public class DistributingGenerator<E> extends GeneratorProxy<E> {
 	@Override
 	public void init(GeneratorContext context) {
 		dataProvider.init(context);
-		source = distribution.applyTo(dataProvider, unique);
+		setSource(distribution.applyTo(dataProvider, unique));
 	    super.init(context);
 	}
 	

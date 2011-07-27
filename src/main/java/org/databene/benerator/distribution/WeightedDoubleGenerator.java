@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.distribution;
 
 import org.databene.benerator.*;
 import org.databene.benerator.distribution.function.ConstantFunction;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
+import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -40,7 +40,7 @@ import java.util.Random;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class WeightedDoubleGenerator extends AbstractNumberGenerator<Double> {
+public class WeightedDoubleGenerator extends AbstractNonNullNumberGenerator<Double> {
 
     private WeightFunction function;
     private Random random;
@@ -98,7 +98,8 @@ public class WeightedDoubleGenerator extends AbstractNumberGenerator<Double> {
         super.init(context);
     }
 
-    public Double generate() throws IllegalGeneratorStateException {
+	@Override
+	public Double generate() {
         assertInitialized();
         double randomValue = random.nextDouble();
         int n = intervallNoOfRandom(randomValue);
