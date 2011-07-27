@@ -47,10 +47,9 @@ public class AlternativeGenerator<E> extends MultiGeneratorWrapper<E, E> {
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
-    /** @see org.databene.benerator.Generator#generate() */
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	assertInitialized();
-    	return generateFromRandomSource();
+    	return generateFromRandomSource(wrapper);
     }
 
 }
