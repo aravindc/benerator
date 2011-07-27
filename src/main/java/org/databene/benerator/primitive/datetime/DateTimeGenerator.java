@@ -32,6 +32,7 @@ import java.util.Date;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.util.WrapperProvider;
@@ -46,7 +47,7 @@ import org.databene.model.data.Uniqueness;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class DateTimeGenerator extends CompositeGenerator<Date> {
+public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNullGenerator<Date> {
     
     private DayGenerator dateGenerator;
     private Generator<Long> timeOffsetGenerator;
@@ -60,7 +61,7 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     long maxTime;
     long timePrecision;
     Distribution timeDistribution;
-	private WrapperProvider<Long> timeLocalWrapper = new WrapperProvider<Long>();
+	private WrapperProvider<Long> timeWrapperProvider = new WrapperProvider<Long>();
     
     public DateTimeGenerator() {
         this(
@@ -132,16 +133,19 @@ public class DateTimeGenerator extends CompositeGenerator<Date> {
     }
 
 	public ProductWrapper<Date> generate(ProductWrapper<Date> wrapper) {
+		return wrapper.wrap(generate());
+    }
+
+	public Date generate() {
     	assertInitialized();
-    	wrapper = dateGenerator.generate(wrapper);
-    	if (wrapper == null)
+    	Date dateGeneration = dateGenerator.generate();
+    	if (dateGeneration == null)
     		return null;
-    	Date dateGeneration = wrapper.unwrap();
-    	ProductWrapper<Long> timeWrapper = timeOffsetGenerator.generate(timeLocalWrapper.get());
+    	ProductWrapper<Long> timeWrapper = timeOffsetGenerator.generate(timeWrapperProvider.get());
     	if (timeWrapper == null)
     		return null;
     	long timeOffsetGeneration = timeWrapper.unwrap();
-		return wrapper.wrap(new Date(dateGeneration.getTime() + timeOffsetGeneration));
-    }
+		return new Date(dateGeneration.getTime() + timeOffsetGeneration);
+	}
 
 }
