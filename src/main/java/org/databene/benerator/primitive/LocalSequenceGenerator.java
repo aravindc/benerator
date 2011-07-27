@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.FileUtil;
 import org.databene.commons.IOUtil;
@@ -45,7 +46,7 @@ import org.databene.commons.IOUtil;
  * @author Volker Bergmann
  */
 
-public class LocalSequenceGenerator extends GeneratorProxy<Long> {
+public class LocalSequenceGenerator extends NonNullGeneratorProxy<Long> {
 	
     static final String FILENAME = LocalSequenceGenerator.class.getSimpleName() + ".properties";
     
@@ -124,7 +125,7 @@ public class LocalSequenceGenerator extends GeneratorProxy<Long> {
 		}
     }
 	
-	private static Generator<Long> getOrCreateSource(String name, long min) {
+	private static NonNullGenerator<Long> getOrCreateSource(String name, long min) {
 		IncrementalIdGenerator generator = MAP.get(name);
 		if (generator == null) {
 			generator = new IncrementalIdGenerator(min);
