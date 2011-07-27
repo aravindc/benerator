@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator;
 import java.io.Closeable;
 
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Resettable;
 import org.databene.commons.ThreadAware;
 
@@ -74,7 +75,7 @@ public interface Generator<E> extends ThreadAware, Resettable, Closeable {
     /**
      * Returns an instance of the generic type E.
      */
-    E generate();
+    ProductWrapper<E> generate(ProductWrapper<E> wrapper);
 
     /**
      * Closes the generator. After invocation the state is <i>unavailable</i>.
