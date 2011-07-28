@@ -50,7 +50,7 @@ public class WedgeSequence extends Sequence {
     	super("wedge");
     }
 
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
 		Generator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(precision));

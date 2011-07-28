@@ -43,7 +43,7 @@ public abstract class IndividualWeight<E> implements Distribution {
 	
 	public abstract double weight(E object);
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
 	    throw new UnsupportedOperationException("createGenerator() is not supported by " + getClass());
     }

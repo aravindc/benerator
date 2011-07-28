@@ -59,9 +59,9 @@ public class HeadSequence extends Sequence {
 	    return new NShotGeneratorProxy<T>(source, size);
 	}
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
-    	Generator<T> source = STEP_SEQ.createNumberGenerator(numberType, min, max, precision, unique);
+    	Generator<T> source = STEP_SEQ.createGenerator(numberType, min, max, precision, unique);
 		return GeneratorFactoryUtil.asNonNullGenerator(new NShotGeneratorProxy<T>(source, size));
 	}
 

@@ -55,10 +55,10 @@ public class RandomSequence extends Sequence {
 	    super(NAME);
     }
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
     	NonNullGenerator<? extends Number> base;
     	if (unique) {
-    		return SequenceManager.EXPAND_SEQUENCE.createNumberGenerator(numberType, min, max, precision, unique);
+    		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
     	} else if (BeanUtil.isIntegralNumberType(numberType)) {
         	long lMax = (max != null ? max.longValue() :
         			Math.min(RandomLongGenerator.DEFAULT_MAX, NumberUtil.maxValue(numberType).longValue()));

@@ -96,7 +96,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param distribution The Sequence of WeightFunction to use for generation
      * @return a Number generator of the desired characteristics
      */
-    public <T extends Number> Generator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, T precision,
             Distribution distribution, Uniqueness uniqueness) {
         int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
@@ -115,13 +115,13 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param granularity    the resolution to use in number generation.
      * @return a Number generator of the desired characteristics
      */
-    public <T extends Number> Generator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             Integer totalDigits, Integer fractionDigits, T granularity,
-            Distribution distribution, Uniqueness uniqueness) {
+            Distribution distribution, Uniqueness uniqueness) { // TODO total-/fractionDigits
         Assert.notNull(numberType, "numberType");
         if (min != null && min.equals(max))
-            return new ConstantGenerator<T>(min);
+            return GeneratorFactoryUtil.asNonNullGenerator(new ConstantGenerator<T>(min));
         if (min == null)
         	min = defaultsProvider.defaultMin(numberType);
         if (granularity == null)
@@ -132,7 +132,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
             else
             	distribution = defaultDistribution(uniqueness);
         }
-        return distribution.createNumberGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
+        return distribution.createGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
     }
 

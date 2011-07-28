@@ -47,7 +47,7 @@ public class BitReverseSequence extends Sequence {
     	super("bitReverse");
     }
 
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	long lMax = (max != null ? max.longValue() : BitReverseLongGenerator.MAX_INDEX_RANGE + toLong(min));
     	NonNullGenerator<? extends Number> base = new BitReverseLongGenerator(toLong(min), lMax, toLong(precision));

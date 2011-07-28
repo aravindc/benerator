@@ -64,12 +64,11 @@ import static org.databene.model.data.TypeDescriptor.*;
  */
 public class TypeGeneratorFactory { // TODO replace explicit generator constructions with GeneratorFactory calls
     
-    private static final Logger logger = LoggerFactory.getLogger(TypeGeneratorFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TypeGeneratorFactory.class);
     
     public static Generator<?> createTypeGenerator(String name, 
     		TypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
-    	if (logger.isDebugEnabled())
-    		logger.debug(descriptor + ", " + uniqueness);
+		LOGGER.debug(descriptor + ", " + uniqueness);
         if (descriptor instanceof SimpleTypeDescriptor)
             return SimpleTypeGeneratorFactory.createSimpleTypeGenerator((SimpleTypeDescriptor) descriptor, false, uniqueness, context);
         else if (descriptor instanceof ComplexTypeDescriptor)

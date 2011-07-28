@@ -61,7 +61,7 @@ public class ShuffleSequence extends Sequence {
 	    this.increment = null;
     }
 
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (increment == null)
     		increment = BigDecimal.valueOf(2);

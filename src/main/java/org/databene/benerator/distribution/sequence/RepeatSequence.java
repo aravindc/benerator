@@ -71,7 +71,7 @@ public class RepeatSequence extends Sequence {
 	    this.repetitionDistribution = repetitionDistribution;
     }
 
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (minRepetitions > maxRepetitions)
     		throw new ConfigurationError("minRepetitions (" + minRepetitions + ") > " +
@@ -79,7 +79,7 @@ public class RepeatSequence extends Sequence {
     	if (unique && (minRepetitions > 0 || maxRepetitions > 0))
     		throw new ConfigurationError("Uniqueness can't be assured for minRepetitions=" + minRepetitions
     				+ " and maxRepetitions=" + maxRepetitions);
-		Generator<T> source = stepSequence.createNumberGenerator(numberType, min, max, precision, unique);
+		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision, unique);
 		return GeneratorFactoryUtil.asNonNullGenerator(applyTo(source, unique));
 	}
 	

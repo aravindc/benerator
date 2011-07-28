@@ -57,7 +57,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 	    return new SampleGenerator<T>(source.getGeneratedType(), this, unique, allProducts);
     }
 
-	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+	public <T extends Number> NonNullGenerator<T> createGenerator(
 			Class<T> numberType, T min, T max, T precision, boolean unique) {
 		if (unique)
 			throw new IllegalArgumentException(this + " cannot generate unique values");

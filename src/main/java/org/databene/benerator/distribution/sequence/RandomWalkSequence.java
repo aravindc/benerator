@@ -100,7 +100,7 @@ public class RandomWalkSequence extends Sequence {
 	
     // Distribution interface implementation ---------------------------------------------------------------------------
 
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
     	NonNullGenerator<? extends Number> base;

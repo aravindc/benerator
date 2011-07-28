@@ -116,7 +116,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 
     @SuppressWarnings("unchecked")
 	@Override
-	public <T extends Number> Generator<T> createNumberGenerator(
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
@@ -131,7 +131,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         if (granularity == null)
         	granularity = defaultsProvider.defaultGranularity(numberType);
         if (((Comparable<T>) min).compareTo(max) == 0) // if min==max then return min once
-            return new OneShotGenerator<T>(min);
+            return GeneratorFactoryUtil.asNonNullGenerator(new OneShotGenerator<T>(min));
         if (minInclusive == null)
         	minInclusive = true;
         if (maxInclusive == null)
@@ -180,7 +180,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
         	// 0 is not contained in the range (or it is a border value), so add a value in the middle of the range
         	values.addIfViable((Number) engine.divide(engine.add(min, max), 2));
         }
-		return new SequenceGenerator<T>(numberType, CollectionUtil.toArray(values.getAll(), numberType));
+		return GeneratorFactoryUtil.asNonNullGenerator(new SequenceGenerator<T>(numberType, values.getAll()));
     }
     
 	@Override

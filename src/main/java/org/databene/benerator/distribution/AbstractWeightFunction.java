@@ -42,7 +42,7 @@ import org.databene.commons.BeanUtil;
 public abstract class AbstractWeightFunction implements WeightFunction {
 
     @SuppressWarnings("unchecked")
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (Long.class.equals(numberType))
     		return (NonNullGenerator<T>) createLongGenerator(min, max, precision);

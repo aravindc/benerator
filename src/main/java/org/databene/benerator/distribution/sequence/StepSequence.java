@@ -63,7 +63,7 @@ public class StepSequence extends Sequence {
 	/**
 	 * @param delta the increment to choose for created generators. 
 	 * 		When using null, the precision parameter will be used to set the increment 
-	 * 		in {@link #createNumberGenerator(Class, Number, Number, Number, boolean)}
+	 * 		in {@link #createGenerator(Class, Number, Number, Number, boolean)}
 	 */
 	public StepSequence(BigDecimal delta) {
 	    this(delta, null);
@@ -102,7 +102,7 @@ public class StepSequence extends Sequence {
 					SequenceManager.RANDOM_SEQUENCE, toInteger(limit));
 	}
 	
-    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
         Number deltaToUse = deltaToUse(precision);
     	if (unique && deltaToUse.doubleValue() == 0)

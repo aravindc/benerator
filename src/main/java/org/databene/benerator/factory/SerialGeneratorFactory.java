@@ -99,7 +99,7 @@ public class SerialGeneratorFactory extends GeneratorFactory {
     }
 
 	@Override
-	public <T extends Number> Generator<T> createNumberGenerator(
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly

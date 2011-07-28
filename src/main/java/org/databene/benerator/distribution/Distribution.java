@@ -37,7 +37,7 @@ import org.databene.benerator.NonNullGenerator;
  * @author Volker Bergmann
  */
 public interface Distribution {
-    <T extends Number> NonNullGenerator<T> createNumberGenerator(
+    <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique);
     <T> Generator<T> applyTo(Generator<T> source, boolean unique);
 }

@@ -31,7 +31,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
 
 /**
  * Uses a {@link SampleGenerator} and a Distribution's 
- * {@link Distribution#createNumberGenerator(Class, Number, Number, Number, boolean)}
+ * {@link Distribution#createGenerator(Class, Number, Number, Number, boolean)}
  * method for acting as a Generator proxy.<br/><br/>
  * Created: 21.07.2010 01:57:31
  * @since 0.6.3
