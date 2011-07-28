@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.domain.net;
 
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.domain.address.Country;
 
@@ -36,7 +38,7 @@ import org.databene.domain.address.Country;
  * @author Volker Bergmann
  *
  */
-public class DomainGenerator extends AlternativeGenerator<String> {
+public class DomainGenerator extends AlternativeGenerator<String> implements NonNullGenerator<String> {
 	
 	public DomainGenerator() {
 		this(Country.getDefault().getIsoCode());
@@ -51,7 +53,11 @@ public class DomainGenerator extends AlternativeGenerator<String> {
 	}
 
 	public void setDataset(String datasetName) {
-		((CompanyDomainGenerator) sources[2]).setDataset(datasetName);
+		((CompanyDomainGenerator) sources.get(2)).setDataset(datasetName);
+	}
+
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
 	}
 	
 }
