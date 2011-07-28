@@ -131,7 +131,6 @@ public class VariableGeneratorFactory {
         return generator;
     }
 
-	@SuppressWarnings("unchecked")
 	static Generator<?> createMappingGenerator(SimpleTypeDescriptor descriptor, Generator<?> generator) {
         if (descriptor == null || descriptor.getMap() == null)
             return generator;
