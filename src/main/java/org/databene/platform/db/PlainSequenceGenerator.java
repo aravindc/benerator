@@ -33,6 +33,7 @@ public class PlainSequenceGenerator extends AbstractSequenceGenerator {
 		super(name, database);
 	}
 
+	@Override
 	public Long generate() {
 		return fetchSequenceValue();
 	}

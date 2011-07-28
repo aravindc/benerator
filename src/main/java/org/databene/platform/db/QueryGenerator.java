@@ -78,7 +78,7 @@ public class QueryGenerator<E> extends GeneratorProxy<E> {
 	    	throw new InvalidGeneratorSetupException("no query defined");
 	    
 	    // initialize
-		this.source = new IteratingGenerator(target.query(selector, simplifying, context));
+		setSource(new IteratingGenerator(target.query(selector, simplifying, context)));
 	    super.init(context);
     }
 

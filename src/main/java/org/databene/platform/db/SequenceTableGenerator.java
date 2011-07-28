@@ -31,7 +31,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.GeneratorState;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.util.SimpleNonNullGenerator;
 import org.databene.commons.HeavyweightIterator;
 import org.databene.commons.HeavyweightTypedIterable;
 import org.databene.commons.IOUtil;
@@ -44,7 +44,7 @@ import org.databene.script.ScriptUtil;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E> {
+public class SequenceTableGenerator<E extends Number> extends SimpleNonNullGenerator<E> {
 	
 	private String table;
 	private String column;
@@ -121,6 +121,7 @@ public class SequenceTableGenerator<E extends Number> extends SimpleGenerator<E>
     		return new StatementStrategy(incrementorSql, database);
     }
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public E generate() {
 		if (this.state == GeneratorState.CLOSED)

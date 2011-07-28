@@ -54,6 +54,7 @@ public class CachedSequenceGenerator extends AbstractSequenceGenerator {
 		cacheValue = new AtomicLong(fetchSequenceValue());
 	}
 
+	@Override
 	public Long generate() {
 		return cacheValue.getAndIncrement();
     }
@@ -68,5 +69,5 @@ public class CachedSequenceGenerator extends AbstractSequenceGenerator {
 			logger.error("Error closing " + this, e);
 		}
 	}
-	
+
 }

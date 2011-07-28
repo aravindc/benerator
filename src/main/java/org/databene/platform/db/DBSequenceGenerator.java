@@ -27,7 +27,7 @@
 package org.databene.platform.db;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 
 /**
  * Generates {@link Long} values from a database sequence.<br/>
@@ -37,7 +37,7 @@ import org.databene.benerator.wrapper.GeneratorProxy;
  * @author Volker Bergmann
  */
 
-public class DBSequenceGenerator extends GeneratorProxy<Long> {
+public class DBSequenceGenerator extends NonNullGeneratorProxy<Long> {
 	
 	private String name;
 	private DBSystem database;
@@ -83,7 +83,7 @@ public class DBSequenceGenerator extends GeneratorProxy<Long> {
 
 	@Override
 	public synchronized void init(GeneratorContext context) {
-		this.source = (cached ? 
+		setSource(cached ? 
 				new CachedSequenceGenerator(name, database) : 
 				new PlainSequenceGenerator(name, database));
 		super.init(context);

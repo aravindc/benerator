@@ -23,7 +23,7 @@ package org.databene.platform.db;
 
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.commons.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractSequenceGenerator extends ThreadSafeGenerator<Long> {
+public abstract class AbstractSequenceGenerator extends ThreadSafeNonNullGenerator<Long> {
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	

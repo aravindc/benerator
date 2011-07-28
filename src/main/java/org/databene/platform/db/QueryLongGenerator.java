@@ -26,6 +26,7 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.model.storage.StorageSystem;
@@ -58,11 +59,11 @@ public class QueryLongGenerator extends QueryGenerator<Long> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Long generate() {
-		Object input = super.generate();
+	public ProductWrapper<Long> generate(ProductWrapper<Long> wrapper) {
+		Object input = super.generateFromSource();
 		if (converter == null)
 			converter = ConverterManager.getInstance().createConverter(input.getClass(), Long.class);
-		return (Long) converter.convert(input);
+		return wrapper.wrap((Long) converter.convert(input));
 	}
 
 }

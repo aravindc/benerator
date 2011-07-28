@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.platform.db;
 
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.HiLoGenerator;
 import org.databene.model.storage.StorageSystem;
 
@@ -47,7 +48,7 @@ public class QueryHiLoGenerator extends HiLoGenerator {
     }
     
 	public QueryHiLoGenerator(String selector, StorageSystem source, int maxLo) {
-        super(new QueryLongGenerator(selector, source), maxLo);
+        super(GeneratorFactoryUtil.asNonNullGenerator(new QueryLongGenerator(selector, source)), maxLo);
     }
     
     @Override
