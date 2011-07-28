@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.platform.db;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.jdbacl.hsql.HSQLUtil;
 
@@ -95,7 +94,7 @@ public class DBSeqHiLoGeneratorTest extends GeneratorTest {
     	}
     }
     
-    private void expectSequence(Generator<Long> generator, long ... values) {
+    private void expectSequence(DBSeqHiLoGenerator generator, long ... values) {
         for (long expectedValue : values) {
             Long product = generator.generate();
             assertNotNull("Generator is not available: " + generator, product);
