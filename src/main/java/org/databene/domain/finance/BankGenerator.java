@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,12 @@
 
 package org.databene.domain.finance;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Generates {@link BankAccount}s with low validity requirements.<br/><br/>
@@ -38,12 +39,12 @@ import org.databene.benerator.wrapper.CompositeGenerator;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class BankGenerator extends CompositeGenerator<Bank> {
+public class BankGenerator extends CompositeGenerator<Bank> implements NonNullGenerator<Bank> {
 	
-	private Generator<String> bankCodeGenerator;
-	private Generator<String> nameGenerator;
-	private Generator<String> bicGenerator;
-	private Generator<String> binGenerator;
+	private DigitsGenerator bankCodeGenerator;
+	private RegexStringGenerator nameGenerator;
+	private RegexStringGenerator bicGenerator;
+	private DigitsGenerator binGenerator;
 
 	public BankGenerator() {
 		super(Bank.class);
@@ -62,6 +63,10 @@ public class BankGenerator extends CompositeGenerator<Bank> {
         super.init(context);
     }
     
+	public ProductWrapper<Bank> generate(ProductWrapper<Bank> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
 	public Bank generate() {
 		String name = nameGenerator.generate();
 		String bankCode = bankCodeGenerator.generate();
@@ -69,5 +74,5 @@ public class BankGenerator extends CompositeGenerator<Bank> {
 		String bin = binGenerator.generate();
 		return new Bank(name, bankCode, bic, bin);
 	}
-
+	
 }

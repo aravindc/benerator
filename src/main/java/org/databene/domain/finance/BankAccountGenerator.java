@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,10 +26,11 @@
 
 package org.databene.domain.finance;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.primitive.DigitsGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.StringUtil;
 import org.databene.domain.address.Country;
@@ -40,11 +41,11 @@ import org.databene.domain.address.Country;
  * @since 0.5.4
  * @author Volker Bergmann
  */
-public class BankAccountGenerator extends CompositeGenerator<BankAccount> {
+public class BankAccountGenerator extends CompositeGenerator<BankAccount> implements NonNullGenerator<BankAccount> {
 	
 	private String countryCode;
-	private Generator<Bank> bankGenerator;
-	private Generator<String> accountNumberGenerator;
+	private BankGenerator bankGenerator;
+	private DigitsGenerator accountNumberGenerator;
 
 	public BankAccountGenerator() {
 		super(BankAccount.class);
@@ -61,6 +62,10 @@ public class BankAccountGenerator extends CompositeGenerator<BankAccount> {
         super.init(context);
     }
     
+	public ProductWrapper<BankAccount> generate(ProductWrapper<BankAccount> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
 	public BankAccount generate() {
 		Bank bank = bankGenerator.generate();
 		String accountNumber = accountNumberGenerator.generate();
