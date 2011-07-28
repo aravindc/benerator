@@ -120,7 +120,6 @@ public class TypeGeneratorFactory { // TODO replace explicit generator construct
 		return generator;
 	}
     
-    @SuppressWarnings({ "unchecked" })
     static Generator<?> createMappingGenerator(
             SimpleTypeDescriptor descriptor, Generator<?> generator, BeneratorContext context) {
         if (descriptor == null || descriptor.getMap() == null)
