@@ -49,7 +49,7 @@ import org.databene.regex.Sequence;
  */
 public class RegexGeneratorFactory {
 	
-    public static Generator<String> create(String pattern, GeneratorFactory factory) {
+    public static NonNullGenerator<String> create(String pattern, GeneratorFactory factory) {
         return create(pattern, 0, null, false, factory);
     }
 
