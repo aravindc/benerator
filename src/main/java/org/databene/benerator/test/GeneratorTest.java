@@ -75,7 +75,7 @@ public abstract class GeneratorTest {
     	return generator;
     }
     
-	public <T> T generateUnwrapped(Generator<T> generator) {
+	public <T> T generateUnwrapped(Generator<T> generator) { // TODO replace usages with GeneratorUtil.generate() calls
 		ProductWrapper<T> tmp = generator.generate(new ProductWrapper<T>());
 		return (tmp != null ? tmp.unwrap() : null);
 	}
