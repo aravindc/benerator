@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.sequence.ShuffleLongGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link ShuffleLongGenerator}.<br/><br/>
@@ -61,44 +60,28 @@ public class ShuffleLongGeneratorTest extends GeneratorClassTest {
     public void testIncrement1() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 1);
         generator.init(context);
-        assertEquals(0, (long) generator.generate());
-        assertEquals(1, (long) generator.generate());
-        assertEquals(2, (long) generator.generate());
-        assertEquals(3, (long) generator.generate());
-        assertUnavailable(generator);
+        expectGeneratedSequence(generator, 0L, 1L, 2L, 3L).withCeasedAvailability();
     }
 
     @Test
     public void testIncrement2() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 2);
         generator.init(context);
-        assertEquals(0, (long)generator.generate());
-        assertEquals(2, (long)generator.generate());
-        assertEquals(1, (long)generator.generate());
-        assertEquals(3, (long)generator.generate());
-        assertUnavailable(generator);
+        expectGeneratedSequence(generator, 0L, 2L, 1L, 3L).withCeasedAvailability();
     }
 
     @Test
     public void testIncrement3() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 3);
         generator.init(context);
-        assertEquals(0, (long)generator.generate());
-        assertEquals(3, (long)generator.generate());
-        assertEquals(1, (long)generator.generate());
-        assertEquals(2, (long)generator.generate());
-        assertUnavailable(generator);
+        expectGeneratedSequence(generator, 0L, 3L, 1L, 2L).withCeasedAvailability();
     }
 
     @Test
     public void testIncrement4() throws Exception {
         ShuffleLongGenerator generator = new ShuffleLongGenerator(0, 3, 1, 4);
         generator.init(context);
-        assertEquals(0, (long)generator.generate());
-        assertEquals(1, (long)generator.generate());
-        assertEquals(2, (long)generator.generate());
-        assertEquals(3, (long)generator.generate());
-        assertUnavailable(generator);
+        expectGeneratedSequence(generator, 0L, 1L, 2L, 3L).withCeasedAvailability();
     }
 
     @Test
