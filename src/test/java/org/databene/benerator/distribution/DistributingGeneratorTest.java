@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,7 +24,9 @@ package org.databene.benerator.distribution;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.SequenceTestGenerator;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
 
@@ -40,7 +42,8 @@ public class DistributingGeneratorTest extends GeneratorTest {
 	public void test() {
 		SequenceTestGenerator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
 		Distribution distribution = new TestDistribution();
-		Generator<Integer> generator = new DistributingGenerator<Integer>(source, distribution, false);
+		NonNullGenerator<Integer> generator = GeneratorFactoryUtil.asNonNullGenerator(
+				new DistributingGenerator<Integer>(source, distribution, false));
 		generator.init(context);
 		assertEquals(new Integer(1), generator.generate());
 		generator.reset();
@@ -57,7 +60,7 @@ public class DistributingGeneratorTest extends GeneratorTest {
 	        return source;
         }
 
-		public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
                 boolean unique) {
 	        throw new UnsupportedOperationException("not implemented");
         }

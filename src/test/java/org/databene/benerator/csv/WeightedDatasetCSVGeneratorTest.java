@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,8 @@
 
 package org.databene.benerator.csv;
 
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.Encodings;
 import org.junit.Test;
@@ -44,7 +46,8 @@ public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
 
     @Test
     public void testDE() {
-        WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, Encodings.UTF_8);
+        WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "DE", REGION, Encodings.UTF_8);
+        NonNullGenerator<String> generator = GeneratorFactoryUtil.asNonNullGenerator(source);
         generator.init(context);
         boolean mueller = false;
         for (int i = 0; i < 1000; i++) {
@@ -56,7 +59,8 @@ public class WeightedDatasetCSVGeneratorTest extends GeneratorTest {
 
     @Test
     public void testEurope() {
-        WeightedDatasetCSVGenerator<String> generator = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, Encodings.UTF_8);
+        WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(FAMILY_NAME + "_{0}.csv", "europe", REGION, Encodings.UTF_8);
+        NonNullGenerator<String> generator = GeneratorFactoryUtil.asNonNullGenerator(source);
         generator.init(context);
         boolean mueller = false; // German name
         boolean garcia = false;  // Spanish name

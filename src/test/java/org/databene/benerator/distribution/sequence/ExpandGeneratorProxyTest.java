@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -25,8 +25,10 @@ import static org.junit.Assert.*;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.UniqueLongValidator;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.IncrementGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.junit.Test;
@@ -60,8 +62,8 @@ public class ExpandGeneratorProxyTest extends GeneratorTest {
 	@Test
 	public void testNormal() {
 		Generator<Long> feed = new IncrementGenerator(1, 1, N);
-		ExpandGeneratorProxy<Long> generator 
-			= ExpandGeneratorProxy.uniqueProxy(feed, CACHE_SIZE, BUCKET_SIZE);
+		NonNullGenerator<Long> generator = GeneratorFactoryUtil.asNonNullGenerator(
+			ExpandGeneratorProxy.uniqueProxy(feed, CACHE_SIZE, BUCKET_SIZE));
 		generator.init(context);
 		UniqueLongValidator validator = new UniqueLongValidator(N);
 		for (int i = 0; i < N; i++) {

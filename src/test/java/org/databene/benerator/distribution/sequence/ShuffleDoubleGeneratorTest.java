@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,6 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.distribution.sequence.ShuffleDoubleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
@@ -98,10 +97,10 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
     // helper methods --------------------------------------------------------------------------------------------------
 
     private void check(double min, double max, double precision, double increment, double ... expectedProducts) {
-        Generator<Double> generator = new ShuffleDoubleGenerator(min, max, precision, increment);
+    	ShuffleDoubleGenerator generator = new ShuffleDoubleGenerator(min, max, precision, increment);
         generator.init(context);
-        for (double product : expectedProducts)
-            assertEquals(product, generator.generate());
+        for (double expected : expectedProducts)
+			assertEquals(expected, generator.generate());
         assertUnavailable(generator);
     }
 

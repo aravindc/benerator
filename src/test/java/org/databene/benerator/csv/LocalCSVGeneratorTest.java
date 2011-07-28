@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.csv;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.Encodings;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 
 import java.util.Set;
 import java.util.Locale;
@@ -52,7 +53,7 @@ public class LocalCSVGeneratorTest extends GeneratorTest {
         		CSV_LOCAL_FILENAME, Locale.ENGLISH, ".csv", Encodings.UTF_8);
         enGen.init(context);
         for (int i = 0; i < 10; i++) {
-            String name = enGen.generate();
+            String name = GeneratorUtil.generateNonNull(enGen);
             assertTrue(enNames.contains(name));
         }
     }
@@ -64,7 +65,7 @@ public class LocalCSVGeneratorTest extends GeneratorTest {
         		CSV_LOCAL_FILENAME, Locale.GERMAN, ".csv", Encodings.UTF_8);
         deGen.init(context);
         for (int i = 0; i < 10; i++) {
-            String name = deGen.generate();
+            String name = GeneratorUtil.generateNonNull(deGen);
             assertTrue(deNames.contains(name));
         }
     }

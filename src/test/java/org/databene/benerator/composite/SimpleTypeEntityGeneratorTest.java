@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,6 +27,7 @@
 package org.databene.benerator.composite;
 
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
 import org.databene.model.data.PartDescriptor;
@@ -46,7 +47,7 @@ public class SimpleTypeEntityGeneratorTest {
 	@Test
 	public void test() {
 		SimpleTypeEntityGenerator generator = new SimpleTypeEntityGenerator(new ConstantGenerator<String>("hi"), createComplexType());
-		Entity entity = generator.generate();
+		Entity entity = GeneratorUtil.generateNonNull(generator);
 		assertNotNull(entity);
 		String content = (String) entity.getComponent(ComplexTypeDescriptor.__SIMPLE_CONTENT);
 		assertTrue(content != null);
