@@ -26,7 +26,8 @@ import java.util.Random;
 import org.databene.benerator.Generator;
 
 /**
- * TODO.<br/><br/>
+ * {@link GeneratorProxy} implementation which injects a given quota of null values in the 
+ * original generator's results.<br/><br/>
  * Created: 26.01.2010 10:32:58
  * @since 0.6.0
  * @author Volker Bergmann
