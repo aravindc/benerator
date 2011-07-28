@@ -132,7 +132,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
             else
             	distribution = defaultDistribution(uniqueness);
         }
-        return distribution.createGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
+        return distribution.createNumberGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
         // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
     }
 
