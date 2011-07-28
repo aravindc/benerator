@@ -35,6 +35,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.util.RandomUtil;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.ProgrammerError;
 
@@ -51,6 +52,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
 	protected Class<P> generatedType;
     protected List<Generator<? extends S>> sources;
     private List<Generator<? extends S>> availableSources;
+	private WrapperProvider<S> sourceWrapper;
     
     public MultiGeneratorWrapper(Class<P> generatedType, Generator<? extends S>... sources) {
     	this(generatedType, CollectionUtil.toList(sources));
@@ -60,6 +62,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     	this.generatedType = generatedType;
     	this.sources = new ArrayList<Generator<? extends S>>();
     	this.availableSources = new ArrayList<Generator<? extends S>>();
+    	this.sourceWrapper = new WrapperProvider<S>();
         setSources(sources);
     }
 
@@ -140,6 +143,10 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     
     // helpers ---------------------------------------------------------------------------------------------------------
     
+    protected ProductWrapper<S> getSourceWrapper() {
+    	return sourceWrapper.get();
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	protected synchronized ProductWrapper<S> generateFromRandomSource(ProductWrapper<S> wrapper) {
     	assertInitialized();
@@ -175,7 +182,7 @@ public abstract class MultiGeneratorWrapper<S, P> extends AbstractGenerator<P> {
     	if (availableSources.size() < sources.size())
     		return null;
     	S[] result = (S[]) Array.newInstance(componentType, sources.size());
-    	ProductWrapper elementWrapper = new ProductWrapper();
+    	ProductWrapper elementWrapper = getSourceWrapper();
     	for (int i = 0; i < sources.size(); i++) {
     		elementWrapper = sources.get(i).generate(elementWrapper);
     		if (elementWrapper == null)

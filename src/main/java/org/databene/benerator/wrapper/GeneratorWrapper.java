@@ -66,8 +66,11 @@ public abstract class GeneratorWrapper<S, P> extends AbstractGenerator<P> {
     }
     
     protected ProductWrapper<S> generateFromSource() {
-    	ProductWrapper<S> wrapper = sourceWrapperProvider.get();
-		return source.generate(wrapper);
+		return source.generate(getSourceWrapper());
+    }
+
+    protected ProductWrapper<S> getSourceWrapper() {
+    	return sourceWrapperProvider.get();
     }
 
     // Generator interface implementation ------------------------------------------------------------------------------

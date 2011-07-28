@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.ValidatingGenerator;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.commons.CollectionUtil;
 import org.databene.commons.validator.StringLengthValidator;
 
@@ -60,6 +61,8 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     /** provides the objects to format */
     private SimpleCompositeArrayGenerator<?> helper;
 
+	private WrapperProvider<Object[]> sourceWrapperProvider;
+
     // constructors ----------------------------------------------------------------------------------------------------
 
     /** Sets minLength to 0, maxLength to 30 and all other values empty. */
@@ -78,6 +81,7 @@ public class MessageGenerator extends ValidatingGenerator<String> {
         this.minLength = minLength;
         this.maxLength = maxLength;
         this.helper = new SimpleCompositeArrayGenerator<Object>(Object.class, sources);
+        this.sourceWrapperProvider = new WrapperProvider<Object[]>();
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -140,14 +144,14 @@ public class MessageGenerator extends ValidatingGenerator<String> {
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected ProductWrapper<String> doGenerate(ProductWrapper<String> wrapper) {
-        Object[] values = helper.generate(new ProductWrapper()).unwrap();
+        Object[] values = helper.generate((ProductWrapper) getSourceWrapper()).unwrap();
         if (values == null)
         	return null;
         else
         	return wrapper.wrap(MessageFormat.format(pattern, values));
     }
 
-    /** @see org.databene.benerator.Generator#reset() */
+	/** @see org.databene.benerator.Generator#reset() */
     @Override
     public void reset() {
         helper.reset();
@@ -168,6 +172,10 @@ public class MessageGenerator extends ValidatingGenerator<String> {
         helper.close();
         super.close();
     }
+
+    private ProductWrapper<Object[]> getSourceWrapper() {
+		return sourceWrapperProvider.get();
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
 

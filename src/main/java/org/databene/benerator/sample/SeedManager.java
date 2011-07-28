@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.util.WrapperProvider;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.BeanUtil;
 
@@ -50,6 +51,7 @@ public class SeedManager<E> {
 	private boolean initialized;
 	private AttachedWeightSampleGenerator<E> helper;
 	private Class<E> generatedType;
+	private WrapperProvider<E> wrapperProvider;
 	
 	// constructor and properties --------------------------------------------------------------------------------------
 	
@@ -58,6 +60,7 @@ public class SeedManager<E> {
 		this.weight = 0;
 		this.depth = depth;
 	    this.successors = new HashMap<E, SeedManager<E>>();
+	    this.wrapperProvider = new WrapperProvider<E>();
     }
 
     public int getDepth() {
@@ -94,10 +97,10 @@ public class SeedManager<E> {
 	public E randomAtom() {
 		if (!initialized)
 			init();
-		return helper.generate(new ProductWrapper<E>()).unwrap();
+		return helper.generate(getWrapper()).unwrap();
 	}
 
-    public SeedManager<E> getSuccessor(E atom) {
+	public SeedManager<E> getSuccessor(E atom) {
 	    SeedManager<E> result = successors.get(atom);
 	    if (result == null) {
 	    	result = new SeedManager<E>(generatedType, depth - 1);
@@ -117,6 +120,10 @@ public class SeedManager<E> {
 	        successor.printState("  " + indent);
         }
     }
+
+    private ProductWrapper<E> getWrapper() {
+		return wrapperProvider.get();
+	}
 
     // java.lang.Object overrides --------------------------------------------------------------------------------------
     

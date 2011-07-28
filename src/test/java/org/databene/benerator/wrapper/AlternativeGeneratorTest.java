@@ -30,6 +30,7 @@ import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequenceGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.Generator;
 import org.junit.Test;
 import static junit.framework.Assert.*;
@@ -50,9 +51,8 @@ public class AlternativeGeneratorTest extends GeneratorTest {
         Generator<Integer> source2 = new RandomIntegerGenerator(1, 2);
         AlternativeGenerator<Integer> generator = new AlternativeGenerator<Integer>(Integer.class, source1, source2);
         generator.init(context);
-        ProductWrapper<Integer> wrapper = new ProductWrapper<Integer>();
         for (int i = 0; i < 100; i++) {
-			int product = generator.generate(wrapper).unwrap();
+			int product = GeneratorUtil.generateNonNull(generator);
             assertTrue((-2 <= product && product <= -1) || (1 <= product && product <= 2));
         }
     }

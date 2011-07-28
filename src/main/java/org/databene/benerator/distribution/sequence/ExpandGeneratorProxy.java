@@ -164,8 +164,8 @@ public class ExpandGeneratorProxy<E> extends GeneratorProxy<E> {
 		buckets = new ArrayList<ValueBucket<E>>(bucketCount);
 		for (int i = 0; i < bucketCount; i++)
 			infantry.add(new ValueBucket<E>(bucketSize));
-		ProductWrapper<E> wrapper = new ProductWrapper<E>();
-		for (int i = 0; i < cacheSize && (wrapper = super.generate(wrapper)) != null; i++) {
+		ProductWrapper<E> wrapper;
+		for (int i = 0; i < cacheSize && (wrapper = generateFromSource()) != null; i++) {
 			int bucketIndex = RandomUtil.randomIndex(infantry);
 			ValueBucket<E> bucket = infantry.get(bucketIndex);
 			E feed = wrapper.unwrap();

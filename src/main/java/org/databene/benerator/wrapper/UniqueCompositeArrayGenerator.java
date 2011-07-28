@@ -82,7 +82,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
             throw new InvalidGeneratorSetupException("source", "is null");
         buffer = ArrayUtil.newInstance(componentType, sources.size());
         for (int i = 0; i < buffer.length; i++) {
-        	ProductWrapper<?> wrapper = sources.get(i).generate(new ProductWrapper());
+        	ProductWrapper<?> wrapper = sources.get(i).generate((ProductWrapper) getSourceWrapper());
             if (wrapper == null)
                 throw new InvalidGeneratorSetupException("Sub generator not available: " + sources.get(i));
         	buffer[i] = wrapper.unwrap();
@@ -117,7 +117,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         }
         // if available, fetch the digit's next value
         Generator<? extends S> elementGenerator = sources.get(index);
-        ProductWrapper elementWrapper = elementGenerator.generate(new ProductWrapper());
+        ProductWrapper elementWrapper = elementGenerator.generate((ProductWrapper) getSourceWrapper());
         if (elementWrapper != null) {
             buffer[index] = elementWrapper.unwrap();
             return;
@@ -126,7 +126,7 @@ public class UniqueCompositeArrayGenerator<S> extends MultiGeneratorWrapper<S, S
         fetchNextArrayItem(index - 1);
         if (buffer != null) {
             elementGenerator.reset();
-            elementWrapper = elementGenerator.generate(new ProductWrapper());
+            elementWrapper = elementGenerator.generate((ProductWrapper) getSourceWrapper());
             buffer[index] = elementWrapper.unwrap();
         }
     }

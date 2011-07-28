@@ -59,8 +59,10 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
 		
 		// check for constant value
 		Expression<Long> duration  = parseLongAttribute(ATT_DURATION, element, null);
-		if (duration != null)
-			return new WaitStatement(new ExpressionBasedGenerator<Long>(duration, Long.class));
+		if (duration != null) {
+			ExpressionBasedGenerator<Long> base = new ExpressionBasedGenerator<Long>(duration, Long.class);
+			return new WaitStatement(GeneratorFactoryUtil.asNonNullGenerator(base));
+		}
 		
 		// check for distribution
 		Expression<Long> min  = parseLongAttribute(ATT_MIN, element, null);
@@ -71,7 +73,7 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
 			= GeneratorFactoryUtil.getDistributionExpression(distSpec, Uniqueness.NONE, false);
 		Generator<Long> durationGenerator = new DynamicLongGenerator(min, max, granularity, 
 				distribution, ExpressionUtil.constant(false));
-	    return new WaitStatement(durationGenerator);
+	    return new WaitStatement(GeneratorFactoryUtil.asNonNullGenerator(durationGenerator));
     }
 
 }

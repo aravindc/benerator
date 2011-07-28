@@ -22,8 +22,8 @@
 package org.databene.benerator.wrapper;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 
 /**
  * Adapter class which makes an arbitrary {@link Generator} available as {@link NonNullGenerator}.<br/><br/>
@@ -38,11 +38,7 @@ public class AsNonNullGenerator<E> extends GeneratorProxy<E> implements NonNullG
 	}
 	
 	public E generate() {
-		ProductWrapper<E> wrapper = generateFromSource();
-		E result = wrapper.unwrap();
-		if (result == null)
-			throw new IllegalGeneratorStateException("Source generated null value: " + getSource());
-		return result;
+		return GeneratorUtil.generateNonNull(getSource());
 	}
 	
 }

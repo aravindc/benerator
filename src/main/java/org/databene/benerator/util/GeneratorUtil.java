@@ -75,7 +75,7 @@ public class GeneratorUtil {
      * allowing <code>null<code> values as generation results, but requiring the generator to be available. 
      */
     public static <T> T generateNullable(Generator<T> generator) {
-    	ProductWrapper<T> wrapper = generator.generate(new ProductWrapper<T>());
+    	ProductWrapper<T> wrapper = generator.generate(GeneratorUtil.<T>getWrapper());
 		if (wrapper == null)
 			throw new IllegalGeneratorStateException("Generator unavailable in generateNullable(): " + generator);
 		return wrapper.unwrap();
@@ -87,18 +87,24 @@ public class GeneratorUtil {
      * not to create <code>null</code> values as result. 
      */
     public static <T> T generateNonNull(Generator<T> generator) {
-    	ProductWrapper<T> wrapper = generator.generate(new ProductWrapper<T>());
+    	ProductWrapper<T> wrapper = generator.generate(GeneratorUtil.<T>getWrapper());
+    	if (wrapper == null)
+    		return null;
 		T result = wrapper.unwrap();
 		if (result == null)
 			throw new IllegalGeneratorStateException("Generated null value in generateNonNull(): " + generator);
 		return result;
     }
 
+	protected static <T> ProductWrapper<T> getWrapper() {
+		return new ProductWrapper<T>();
+	}
+
 	public static <T> List<T> allProducts(Generator<T> generator) {
 		List<T> list = new ArrayList<T>();
 		int count = 0;
 		int cacheSize = BeneratorOpts.getCacheSize();
-		ProductWrapper<T> wrapper = new ProductWrapper<T>();
+		ProductWrapper<T> wrapper = GeneratorUtil.<T>getWrapper();
 		while ((wrapper = generator.generate(wrapper)) != null) {
 			count++;
 			if (count > cacheSize) {

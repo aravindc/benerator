@@ -21,10 +21,9 @@
 
 package org.databene.benerator.engine.statement;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.Statement;
-import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Causes the thread to sleep for a certain number of milliseconds.<br/><br/>
@@ -34,10 +33,10 @@ import org.databene.benerator.wrapper.ProductWrapper;
  */
 public class WaitStatement implements Statement {
 	
-	private Generator<Long> durationGenerator;
+	private NonNullGenerator<Long> durationGenerator;
 	private boolean generatorInitialized = false;
 
-	public WaitStatement(Generator<Long> durationGenerator) {
+	public WaitStatement(NonNullGenerator<Long> durationGenerator) {
 	    this.durationGenerator = durationGenerator;
     }
 	
@@ -54,7 +53,7 @@ public class WaitStatement implements Statement {
 			durationGenerator.init(context);
 			generatorInitialized = true;
 		}
-		return durationGenerator.generate(new ProductWrapper<Long>()).unwrap().intValue();
+		return durationGenerator.generate().intValue();
 	}
 	
 }

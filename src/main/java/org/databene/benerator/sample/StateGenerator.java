@@ -117,7 +117,7 @@ public class StateGenerator<E> extends SimpleNonNullGenerator<E> {
     	for (Generator<E> tmp : transitionsGenerators.values())
     		tmp.init(context);
         MappedSampleGenerator<E> gen = this.transitionsGenerators.get(null);
-        nextState = gen.generate(new ProductWrapper<E>()).unwrap();
+        nextState = gen.generate(getResultWrapper()).unwrap();
         super.init(context);
     }
 	
@@ -127,7 +127,7 @@ public class StateGenerator<E> extends SimpleNonNullGenerator<E> {
     		return null;
     	E result = nextState;
 	    MappedSampleGenerator<E> transitionGenerator = transitionsGenerators.get(nextState);
-	    ProductWrapper<E> wrapper = transitionGenerator.generate(new ProductWrapper<E>());
+	    ProductWrapper<E> wrapper = transitionGenerator.generate(getResultWrapper());
 		nextState = (wrapper != null ? wrapper.unwrap() : null);
 		return result;
     }
@@ -135,7 +135,7 @@ public class StateGenerator<E> extends SimpleNonNullGenerator<E> {
     @Override
     public void reset() throws IllegalGeneratorStateException {
         MappedSampleGenerator<E> transitionGenerator = this.transitionsGenerators.get(null);
-	    ProductWrapper<E> wrapper = transitionGenerator.generate(new ProductWrapper<E>());
+	    ProductWrapper<E> wrapper = transitionGenerator.generate(getResultWrapper());
 		nextState = (wrapper != null ? wrapper.unwrap() : null);
         super.reset();
     }

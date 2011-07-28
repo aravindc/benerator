@@ -26,9 +26,9 @@
 
 package org.databene.benerator.sample;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.util.RandomUtil;
@@ -54,8 +54,8 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> { // TODO cre
     private Distribution distribution = null;
 
     /** Sequence for choosing a List index of the sample list */
-    private Generator<Integer> indexGenerator = null;
-
+    private NonNullGenerator<Integer> indexGenerator = null;
+    
     private boolean unique;
 
     // constructors ----------------------------------------------------------------------------------------------------
@@ -147,9 +147,9 @@ public class SampleGenerator<E> extends AbstractSampleGenerator<E> { // TODO cre
 
 	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         assertInitialized();
-        ProductWrapper<Integer> indexWrapper = new ProductWrapper<Integer>(); // TODO efficiency
-        if (samples.size() > 0 && (indexWrapper = indexGenerator.generate(indexWrapper)) != null)
-        	return wrapper.wrap(samples.get(indexWrapper.unwrap()));
+        Integer index;
+        if (samples.size() > 0 && (index = indexGenerator.generate()) != null)
+        	return wrapper.wrap(samples.get(index));
         else
             return null;
     }

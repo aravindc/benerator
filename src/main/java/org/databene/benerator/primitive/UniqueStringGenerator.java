@@ -105,7 +105,7 @@ public class UniqueStringGenerator extends MultiGeneratorWrapper<String, String>
     }
 
 	public String generate() {
-		ProductWrapper<String> wrapper = generate(new ProductWrapper<String>());
+		ProductWrapper<String> wrapper = generate(getResultWrapper());
 		return (wrapper != null ? wrapper.unwrap() : null);
 	}
 

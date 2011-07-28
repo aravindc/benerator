@@ -113,7 +113,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		BeneratorContext context = new BeneratorContext();
 		Generator<?> generator = SimpleTypeGeneratorFactory.createSampleGenerator(new SimpleTypeDescriptor("test").withValues("'a'^2,'b'"), Uniqueness.NONE, context);
 		generator.init(context);
-		expectRelativeWeights(generator, 1000, "a", 2, "b", 1);
+		expectRelativeWeights(generator, 3000, "a", 2, "b", 1);
 	}
 	
 	// CSV tests -------------------------------------------------------------------------------------------------------
