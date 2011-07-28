@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,7 +30,6 @@ import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.distribution.sequence.StepLongGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.junit.Test;
-import static junit.framework.Assert.*;
 
 /**
  * Tests the {@link StepLongGenerator}.<br/><br/>
@@ -46,34 +45,24 @@ public class StepLongGeneratorTest extends GeneratorClassTest {
     @Test
     public void testIncrement() throws IllegalGeneratorStateException {
         StepLongGenerator simpleGenerator = new StepLongGenerator(1, 5, 1);
-        assertEquals(1L, (long)simpleGenerator.generate());
-        assertEquals(2L, (long)simpleGenerator.generate());
-        assertEquals(3L, (long)simpleGenerator.generate());
+        expectGeneratedSequence(simpleGenerator, 1L, 2L, 3L, 4L, 5L).withCeasedAvailability();
         StepLongGenerator oddGenerator = new StepLongGenerator(1, 5, 2);
-        assertEquals(1L, (long)oddGenerator.generate());
-        assertEquals(3L, (long)oddGenerator.generate());
-        assertEquals(5L, (long)oddGenerator.generate());
+        expectGeneratedSequence(oddGenerator, 1L, 3L, 5L).withCeasedAvailability();
     }
 
     @Test
     public void testDecrement() throws IllegalGeneratorStateException {
         StepLongGenerator simpleGenerator = new StepLongGenerator(1, 5, -1);
-        assertEquals(5L, (long)simpleGenerator.generate());
-        assertEquals(4L, (long)simpleGenerator.generate());
-        assertEquals(3L, (long)simpleGenerator.generate());
+        expectGeneratedSequence(simpleGenerator, 5L, 4L, 3L, 2L, 1L).withCeasedAvailability();
         StepLongGenerator oddGenerator = new StepLongGenerator(1, 5, -2);
-        assertEquals(5L, (long)oddGenerator.generate());
-        assertEquals(3L, (long)oddGenerator.generate());
-        assertEquals(1L, (long)oddGenerator.generate());
+        expectGeneratedSequence(oddGenerator, 5L, 3L, 1L).withCeasedAvailability();
     }
 
     @Test
     public void testPrecision() throws IllegalGeneratorStateException {
         StepLongGenerator simpleGenerator = new StepLongGenerator(1, 5);
         simpleGenerator.setPrecision(2L);
-        assertEquals(1L, (long)simpleGenerator.generate());
-        assertEquals(3L, (long)simpleGenerator.generate());
-        assertEquals(5L, (long)simpleGenerator.generate());
+        expectGeneratedSequence(simpleGenerator, 1L, 3L, 5L).withCeasedAvailability();
     }
 
 }
