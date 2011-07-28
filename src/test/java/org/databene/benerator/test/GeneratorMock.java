@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008, 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,8 +27,8 @@
 package org.databene.benerator.test;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Mock implementation of the {@link Generator} interface.<br/>
@@ -59,8 +59,8 @@ public class GeneratorMock extends SimpleGenerator<Integer> {
 	    return Integer.class;
     }
 	
-	public Integer generate() throws IllegalGeneratorStateException {
-		return value;
+	public ProductWrapper<Integer> generate(ProductWrapper<Integer> wrapper) {
+		return wrapper.wrap(value);
 	}
 
 	public static GeneratorMock latestInstance = null;
