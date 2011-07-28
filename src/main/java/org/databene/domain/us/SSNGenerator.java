@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,11 +26,10 @@
 
 package org.databene.domain.us;
 
-import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
-import org.databene.benerator.primitive.number.AbstractNumberGenerator;
 import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.StringUtil;
 
 /**
@@ -45,11 +44,11 @@ import org.databene.commons.StringUtil;
  * @see "http://www.socialsecurity.gov/employer/ssnvhighgroup.htm"
  */
 
-public class SSNGenerator extends CompositeGenerator<String> {
+public class SSNGenerator extends CompositeGenerator<String> implements NonNullGenerator<String> {
 
-	private AbstractNumberGenerator<Integer> areaNumberGenerator;
-	private Generator<Integer> groupNumberGenerator;
-	private Generator<Integer> serialNumberGenerator;
+	private RandomIntegerGenerator areaNumberGenerator;
+	private RandomIntegerGenerator groupNumberGenerator;
+	private RandomIntegerGenerator serialNumberGenerator;
 
 	public SSNGenerator() {
 		this(772);
@@ -62,14 +61,19 @@ public class SSNGenerator extends CompositeGenerator<String> {
 		serialNumberGenerator = registerComponent(new RandomIntegerGenerator(1, 9999));
 	}
 
-	public String generate() throws IllegalGeneratorStateException {
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
+	public String generate() {
 		Integer area;
 		do {
 			area = areaNumberGenerator.generate();
 		} while (area == 666 || (area >= 734 && area <= 749));
-		return StringUtil.padLeft(String.valueOf(area), 3, '0') + '-' + 
-		StringUtil.padLeft(String.valueOf(groupNumberGenerator.generate()), 2, '0') + '-' +
-		StringUtil.padLeft(String.valueOf(serialNumberGenerator.generate()), 4, '0');
+		String ssn = StringUtil.padLeft(String.valueOf(area), 3, '0') + '-' + 
+			StringUtil.padLeft(String.valueOf(groupNumberGenerator.generate()), 2, '0') + '-' +
+			StringUtil.padLeft(String.valueOf(serialNumberGenerator.generate()), 4, '0');
+		return ssn;
 	}
 
 	public void setMaxAreaCode(int maxAreaCode) {
@@ -80,5 +84,5 @@ public class SSNGenerator extends CompositeGenerator<String> {
 	public String toString() {
 		return getClass().getSimpleName();
 	}
-	
+
 }
