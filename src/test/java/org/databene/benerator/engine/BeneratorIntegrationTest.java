@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.databene.benerator.BeneratorFactory;
 import org.databene.benerator.engine.parser.xml.BeneratorParseContext;
+import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.IOUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
@@ -38,7 +39,7 @@ import org.w3c.dom.Element;
  * @since 0.6.4
  * @author Volker Bergmann
  */
-public abstract class BeneratorIntegrationTest {
+public abstract class BeneratorIntegrationTest extends GeneratorTest {
 	
 	protected BeneratorContext context;
 
