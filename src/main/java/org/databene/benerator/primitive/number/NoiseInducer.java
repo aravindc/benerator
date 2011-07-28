@@ -21,6 +21,7 @@
 
 package org.databene.benerator.primitive.number;
 
+import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.util.GeneratingConverter;
@@ -112,8 +113,8 @@ public class NoiseInducer extends GeneratingConverter<Number, Number, Number> {
 		if (numberType == null)
 			initialize(sourceValue);
 		ProductWrapper<Number> wrapper = generate();
-		if (wrapper == null) // TODO what to do when the generator goes unavailable?
-			return null;
+		if (wrapper == null)
+			throw new IllegalGeneratorStateException("Noise generator unavailable: " + generator);
 		Number delta = wrapper.unwrap();
 		Number result;
 		if (relative)
