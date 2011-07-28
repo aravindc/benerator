@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import java.io.Closeable;
 import java.util.Iterator;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Wraps a {@link Generator} with an {@link Iterator} interface.<br/>
@@ -43,10 +44,11 @@ public class GeneratorIterator<E> implements Iterator<E>, Closeable {
 	
 	private Generator<E> source;
 	private E next;
+	private WrapperProvider<E> wrapperProvider = new WrapperProvider<E>();
 	
 	public GeneratorIterator(Generator<E> source) {
 		this.source = source;
-		this.next = source.generate();
+		this.next = fetchNext(source);
 	}
 
     public boolean hasNext() {
@@ -55,7 +57,7 @@ public class GeneratorIterator<E> implements Iterator<E>, Closeable {
 
     public E next() {
     	E result = next;
-    	next = source.generate();
+    	next = source.generate(wrapperProvider.get()).unwrap();
 	    return result;
     }
 
@@ -67,4 +69,9 @@ public class GeneratorIterator<E> implements Iterator<E>, Closeable {
         source.close();
     }
     
+	protected E fetchNext(Generator<E> source) {
+		ProductWrapper<E> wrapper = source.generate(wrapperProvider.get());
+		return (wrapper != null ? wrapper.unwrap() : null);
+	}
+
 }
