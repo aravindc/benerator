@@ -26,13 +26,14 @@
 
 package org.databene.domain.person;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.dataset.DatasetBasedGenerator;
 import org.databene.benerator.dataset.ProductFromDataset;
 import org.databene.benerator.primitive.BooleanGenerator;
+import static org.databene.benerator.util.GeneratorUtil.*;
 import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Converter;
 import org.databene.domain.address.Country;
 import org.slf4j.Logger;
@@ -49,7 +50,8 @@ import java.util.Map;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class PersonGenerator extends CompositeGenerator<Person> implements DatasetBasedGenerator<Person> {
+public class PersonGenerator extends CompositeGenerator<Person> 
+		implements DatasetBasedGenerator<Person>, NonNullGenerator<Person> {
 
 	private static Logger logger = LoggerFactory.getLogger(PersonGenerator.class);
 	
@@ -61,7 +63,7 @@ public class PersonGenerator extends CompositeGenerator<Person> implements Datas
     private GenderGenerator genderGen;
     private GivenNameGenerator maleGivenNameGen;
     private GivenNameGenerator femaleGivenNameGen;
-    private Generator<Boolean> secondNameTest;
+    private BooleanGenerator secondNameTest;
     private FamilyNameGenerator familyNameGen;
     private Map<String, Converter<String, String>> femaleFamilyNameConverters;
     private AcademicTitleGenerator acadTitleGen;
@@ -167,9 +169,13 @@ public class PersonGenerator extends CompositeGenerator<Person> implements Datas
         super.init(context);
     }
     
-    public Person generate() throws IllegalGeneratorStateException {
-	    return generateForDataset(randomDataset());
+	public ProductWrapper<Person> generate(ProductWrapper<Person> wrapper) {
+	    return wrapper.wrap(generate());
     }
+
+	public Person generate() {
+		return generateForDataset(randomDataset());
+	}
 
 	public ProductFromDataset<Person> generateWithDatasetInfo() {
 	    String usedDataset = randomDataset();
@@ -180,12 +186,12 @@ public class PersonGenerator extends CompositeGenerator<Person> implements Datas
 	public Person generateForDataset(String datasetToUse) {
     	assertInitialized();
         Person person = new Person(acadTitleGen.getLocale());
-        person.setGender(genderGen.generate());
+        person.setGender(generateNonNull(genderGen));
         GivenNameGenerator givenNameGenerator 
         	= (Gender.MALE.equals(person.getGender()) ? maleGivenNameGen : femaleGivenNameGen);
         String givenName = givenNameGenerator.generateForDataset(datasetToUse);
 		person.setGivenName(givenName);
-        if (secondNameTest.generate()) {
+        if (generateNullable(secondNameTest)) {
         	do {
         		person.setSecondGivenName(givenNameGenerator.generateForDataset(datasetToUse));
         	} while (person.getGivenName().equals(person.getSecondGivenName()));
@@ -195,11 +201,11 @@ public class PersonGenerator extends CompositeGenerator<Person> implements Datas
 			familyName = getFemaleFamilyNameConverter(datasetToUse).convert(familyName);
 		person.setFamilyName(familyName);
         person.setSalutation(salutationProvider.salutation(person.getGender()));
-        person.setAcademicTitle(acadTitleGen.generate());
-        Generator<String> nobTitleGenerator 
+        person.setAcademicTitle(generateNullable(acadTitleGen));
+        NobilityTitleGenerator nobTitleGenerator 
     		= (Gender.MALE.equals(person.getGender()) ? maleNobilityTitleGen : femaleNobilityTitleGen);
-        person.setNobilityTitle(nobTitleGenerator.generate());
-        person.setBirthDate(birthDateGenerator.generate());
+        person.setNobilityTitle(generateNullable(nobTitleGenerator));
+        person.setBirthDate(generateNullable(birthDateGenerator));
         person.setEmail(emailGenerator.generate(givenName, familyName));
         return person;
 	}

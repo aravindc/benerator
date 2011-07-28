@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,15 +26,18 @@
 
 package org.databene.domain.net;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import java.io.IOException;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.util.AbstractNonNullGenerator;
 import org.databene.commons.ConfigurationError;
 import org.databene.commons.Converter;
 import org.databene.commons.StringUtil;
 import org.databene.commons.converter.ThreadSafeConverter;
 import org.databene.domain.address.Country;
+import org.databene.domain.organization.CompanyName;
 import org.databene.domain.organization.CompanyNameGenerator;
 import org.databene.text.DelocalizingConverter;
 
@@ -44,7 +47,7 @@ import org.databene.text.DelocalizingConverter;
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class CompanyDomainGenerator extends AbstractGenerator<String> {
+public class CompanyDomainGenerator extends AbstractNonNullGenerator<String> {
 
 	private CompanyNameGenerator companyNameGenerator;
 	private TopLevelDomainGenerator tldGenerator;
@@ -75,8 +78,11 @@ public class CompanyDomainGenerator extends AbstractGenerator<String> {
 	    return String.class;
     }
 
+	@Override
 	public String generate() {
-		return normalizer.convert(companyNameGenerator.generate().getShortName()) + '.' + tldGenerator.generate();
+		CompanyName name = generateNonNull(companyNameGenerator);
+		String tld = generateNonNull(tldGenerator);
+		return normalizer.convert(name.getShortName()) + '.' + tld;
 	}
 	
 	private static final class Normalizer extends ThreadSafeConverter<String, String> {
@@ -98,7 +104,6 @@ public class CompanyDomainGenerator extends AbstractGenerator<String> {
 			sourceValue = sourceValue.replace(' ', '-');
 			return sourceValue.toLowerCase();
 		}
-
 	}
 
 	public boolean isThreadSafe() {

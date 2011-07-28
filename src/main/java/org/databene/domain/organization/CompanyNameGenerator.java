@@ -26,27 +26,28 @@
 
 package org.databene.domain.organization;
 
+import static org.databene.benerator.util.GeneratorUtil.generateNullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
 import org.databene.benerator.dataset.AbstractDatasetGenerator;
 import org.databene.benerator.dataset.Dataset;
 import org.databene.benerator.dataset.DatasetUtil;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.nullable.NullableGeneratorFactory;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.primitive.RegexStringGenerator;
 import org.databene.benerator.primitive.TokenCombiner;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SequencedCSVSampleGenerator;
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 import org.databene.benerator.wrapper.AlternativeGenerator;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.benerator.wrapper.MessageGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
-import org.databene.benerator.wrapper.ThreadLocalProductWrapper;
 import org.databene.commons.Encodings;
 import org.databene.commons.bean.PropertyAccessConverter;
 import org.databene.domain.address.City;
@@ -62,14 +63,16 @@ import org.slf4j.LoggerFactory;
  * @since 0.5.0
  * @author Volker Bergmann
  */
-public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> {
+public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> 
+		implements NonNullGenerator<CompanyName> {
 	
 	protected static final Logger logger = LoggerFactory.getLogger(CompanyNameGenerator.class);
 
     private static final String ORG = "/org/databene/domain/organization/";
     private static final String PERS = "/org/databene/domain/person/";
 
-    protected static Map<String, NullableGenerator<String>> locationGenerators = new HashMap<String, NullableGenerator<String>>();
+    protected static Map<String, Generator<String>> locationGenerators = 
+    	new HashMap<String, Generator<String>>();
     
     protected String datasetName;
     protected boolean sector;
@@ -101,20 +104,21 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> 
 	protected Generator<CompanyName> createGeneratorForAtomicDataset(Dataset dataset) {
 		return new AtomicCompanyNameGenerator();
 	}
-
-	class AtomicCompanyNameGenerator extends ThreadSafeGenerator<CompanyName> {
+	
+	public CompanyName generate() {
+		ProductWrapper<CompanyName> wrapper = generate(getResultWrapper());
+		return (wrapper != null ? wrapper.unwrap() : null);
+	}
+	
+	
+	
+	class AtomicCompanyNameGenerator extends ThreadSafeNonNullGenerator<CompanyName> {
 		
 	    private AlternativeGenerator<String> shortNameGenerator;
-	    private NullableGenerator<String> sectorGenerator;
-	    private Generator<String> legalFormGenerator;
-	    private NullableGenerator<String> locationGenerator;
+	    private Generator<String> sectorGenerator;
+	    private WeightedDatasetCSVGenerator<String> legalFormGenerator;
+	    private Generator<String> locationGenerator;
 
-	    private transient ThreadLocalProductWrapper<String> productWrapper;
-	    
-	    public AtomicCompanyNameGenerator() {
-	        this.productWrapper = new ThreadLocalProductWrapper<String>();
-	    }
-	    
 		public Class<CompanyName> getGeneratedType() {
 		    return CompanyName.class;
 	    }
@@ -143,25 +147,25 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> 
 			super.init(context);
 		}
 
+		@Override
 		public CompanyName generate() {
 			CompanyName name = new CompanyName();
-	        name.setShortName(shortNameGenerator.generate());
-	        ProductWrapper<String> wrapper = productWrapper.get();
+	        name.setShortName(generateNullable(shortNameGenerator));
 	        if (sectorGenerator != null) {
-				String sector = sectorGenerator.generate(wrapper).product;
+				String sector = generateNullable(sectorGenerator);
 		        if (sector != null)
 		            name.setSector(sector);
 	        }
 	        if (locationGenerator != null) {
-	        	wrapper = locationGenerator.generate(wrapper);
-	        	if (wrapper != null)
-		            name.setLocation(wrapper.product);
+	        	String location = generateNullable(locationGenerator);
+	        	if (location != null)
+		            name.setLocation(location);
 	        }
 	        if (legalFormGenerator != null)
-	        	name.setLegalForm(legalFormGenerator.generate());
+	        	name.setLegalForm(generateNullable(legalFormGenerator));
 	        name.setDatasetName(datasetName);
 	        return name;
-	    }
+		}
 
 	    @Override
 	    public String toString() {
@@ -212,7 +216,7 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> 
 	        	try {
 	        		WeightedDatasetCSVGenerator<String> source = new WeightedDatasetCSVGenerator<String>(
 	        				ORG + "sector_{0}.csv", datasetName, DatasetUtil.REGION_NESTING, Encodings.UTF_8);
-					sectorGenerator = NullableGeneratorFactory.injectNulls(source, 0.7);
+					sectorGenerator = GeneratorFactoryUtil.injectNulls(source, 0.7);
 	        		sectorGenerator.init(context);
 	        	} catch (Exception e) {
 	        		logger.info("Cannot create sector generator: " + e.getMessage() + ". Falling back to US");
@@ -255,11 +259,12 @@ public class CompanyNameGenerator extends AbstractDatasetGenerator<CompanyName> 
 		        	}
 		        } else
 		        	locationBaseGen = new ConstantGenerator<String>(null);
-		        locationGenerator = NullableGeneratorFactory.injectNulls(locationBaseGen, nullQuota);
+		        locationGenerator = GeneratorFactoryUtil.injectNulls(locationBaseGen, nullQuota);
 		        locationGenerator.init(context);
 		        locationGenerators.put(datasetName, locationGenerator);
 			}
 	    }
+
 	}
 
 }

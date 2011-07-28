@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,10 +21,11 @@
 
 package org.databene.domain.person;
 
+import static org.databene.benerator.util.GeneratorUtil.*;
+
 import java.io.IOException;
 import java.util.Locale;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.sample.SampleGenerator;
 import org.databene.commons.BeanUtil;
@@ -47,7 +48,7 @@ public class EMailAddressBuilder implements ThreadAware {
 	private DomainGenerator domainGenerator;
 	private CaseConverter caseConverter;  
 	private Converter<String, String> nameConverter;
-	private Generator<Character> joinGenerator;
+	private SampleGenerator<Character> joinGenerator;
 
 	public EMailAddressBuilder(String dataset) {
 		this.domainGenerator = new DomainGenerator(dataset);
@@ -66,7 +67,7 @@ public class EMailAddressBuilder implements ThreadAware {
 		String given = nameConverter.convert(givenName);
 		String family = nameConverter.convert(familyName);
 		String domain = domainGenerator.generate();
-		Character join = joinGenerator.generate();
+		Character join = generateNonNull(joinGenerator);
 		switch (join) {
 			case '.' : return given + '.' + family + '@' + domain;
 			case '_' : return given + '_' + family + '@' + domain;

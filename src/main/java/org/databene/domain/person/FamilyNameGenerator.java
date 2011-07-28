@@ -28,7 +28,9 @@ package org.databene.domain.person;
 
 import java.util.Locale;
 
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.csv.WeightedDatasetCSVGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Encodings;
 
 /**
@@ -38,7 +40,7 @@ import org.databene.commons.Encodings;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> {
+public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> implements NonNullGenerator<String> {
 
     public FamilyNameGenerator() {
         this(Locale.getDefault().getCountry());
@@ -53,5 +55,9 @@ public class FamilyNameGenerator extends WeightedDatasetCSVGenerator<String> {
     public FamilyNameGenerator(String datasetName, String nesting, String fileNamePattern) {
         super(fileNamePattern, datasetName, nesting, Encodings.UTF_8);
     }
+
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
+	}
     
 }

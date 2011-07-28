@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2007-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,9 +28,10 @@ package org.databene.domain.person;
 
 import java.util.Locale;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.NonNullGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.LocaleUtil;
 import org.databene.domain.address.Country;
 
@@ -40,7 +41,7 @@ import org.databene.domain.address.Country;
  * @since 0.5.1
  * @author Volker Bergmann
  */
-public class EMailAddressGenerator extends EMailAddressBuilder implements Generator<String> { 
+public class EMailAddressGenerator extends EMailAddressBuilder implements NonNullGenerator<String> { 
 	
 	// TODO support unique address generation
 
@@ -91,6 +92,10 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements Genera
 	public void close() {
     }
 
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
 	public String generate() {
 		Person person = personGenerator.generate();
 		return generate(person.getGivenName(), person.getFamilyName());
@@ -110,5 +115,5 @@ public class EMailAddressGenerator extends EMailAddressBuilder implements Genera
 	public String toString() {
 	    return getClass().getName() + '[' + personGenerator.getDataset() + ']';
 	}
-	
+
 }

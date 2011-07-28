@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,9 @@
 
 package org.databene.domain.net;
 
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Encodings;
 
 /**
@@ -36,14 +38,19 @@ import org.databene.commons.Encodings;
  * @author Volker Bergmann
  *
  */
-public class TopLevelDomainGenerator extends WeightedCSVSampleGenerator<String> {
+public class TopLevelDomainGenerator extends WeightedCSVSampleGenerator<String> implements NonNullGenerator<String> {
 
 	public TopLevelDomainGenerator() {
 		super("/org/databene/domain/net/tld.csv", Encodings.UTF_8);
+	}
+	
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
 	}
 	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName();
 	}
+
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,7 +32,7 @@ import java.util.Calendar;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.primitive.datetime.DateGenerator;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Period;
 
@@ -43,7 +43,7 @@ import org.databene.commons.Period;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class BirthDateGenerator extends GeneratorProxy<Date> {
+public class BirthDateGenerator extends NonNullGeneratorProxy<Date> {
 
     private int minAgeYears;
     private int maxAgeYears;

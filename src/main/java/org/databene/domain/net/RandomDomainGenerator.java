@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,21 +26,30 @@
 
 package org.databene.domain.net;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.primitive.RegexStringGenerator;
-import org.databene.benerator.util.AbstractGenerator;
+import org.databene.benerator.wrapper.CompositeGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
+
+import static org.databene.benerator.util.GeneratorUtil.*;
 
 /**
- * Creates an internet domain name from random characters.<br/><br/>
+ * Creates an Internet domain name from random characters.<br/><br/>
  * Created at 23.04.2008 22:44:29
  * @since 0.5.2
  * @author Volker Bergmann
  */
-public class RandomDomainGenerator extends AbstractGenerator<String> {
+public class RandomDomainGenerator extends CompositeGenerator<String> implements NonNullGenerator<String> {
 
-	private Generator<String> nameGenerator = new RegexStringGenerator("[a-z]{4,12}");
-	private Generator<String> tldGenerator = new TopLevelDomainGenerator();
+	private RegexStringGenerator nameGenerator;
+	private TopLevelDomainGenerator tldGenerator;
+
+	public RandomDomainGenerator() {
+		super(String.class);
+		this.nameGenerator = registerComponent(new RegexStringGenerator("[a-z]{4,12}"));
+		this.tldGenerator = registerComponent(new TopLevelDomainGenerator());
+	}
 
 	@Override
 	public synchronized void init(GeneratorContext context) {
@@ -49,20 +58,12 @@ public class RandomDomainGenerator extends AbstractGenerator<String> {
 	    super.init(context);
 	}
 	
-	public Class<String> getGeneratedType() {
-	    return String.class;
+	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		return wrapper.wrap(generate());
 	}
-	
+
 	public String generate() {
-		return nameGenerator.generate() + '.' + tldGenerator.generate();
-	}
-
-	public boolean isThreadSafe() {
-	    return nameGenerator.isThreadSafe() && tldGenerator.isThreadSafe();
-	}
-
-	public boolean isParallelizable() {
-	    return nameGenerator.isParallelizable() && tldGenerator.isParallelizable();
+		return nameGenerator.generate() + '.' + generateNonNull(tldGenerator);
 	}
 
 }

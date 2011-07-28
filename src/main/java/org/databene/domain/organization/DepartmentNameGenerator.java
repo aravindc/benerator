@@ -28,7 +28,9 @@ package org.databene.domain.organization;
 
 import java.util.Locale;
 
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.sample.WeightedCSVSampleGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Encodings;
 import org.databene.commons.LocaleUtil;
 
@@ -42,7 +44,7 @@ import org.databene.commons.LocaleUtil;
  * @author Volker Bergmann
  */
 
-public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> { 
+public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> implements NonNullGenerator<String> { 
 	
     private static final String FILENAME_PREFIX = "/org/databene/domain/organization/department";
 
@@ -67,10 +69,14 @@ public class DepartmentNameGenerator extends WeightedCSVSampleGenerator<String> 
         return String.class;
     }
     
+	public String generate() {
+		return GeneratorUtil.generateNonNull(this);
+	}
+    
     // helpers ---------------------------------------------------------------------------------------------------------
 
 	private static String uriForLocale(Locale locale) {
 		return LocaleUtil.availableLocaleUrl(FILENAME_PREFIX, locale, ".csv");
 	}
-    
+
 }
