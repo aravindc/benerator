@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 
 import java.util.Locale;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.commons.LocaleUtil;
 import org.junit.Test;
@@ -48,7 +47,7 @@ public class DepartmentNameGeneratorTest extends GeneratorClassTest {
 		Runnable runner = new Runnable() {
 			public void run() {
 				logger.debug("Checking Locale " + Locale.getDefault());
-				Generator<String> generator = new DepartmentNameGenerator();
+				DepartmentNameGenerator generator = new DepartmentNameGenerator();
 				generator.init(context);
 				for (int i = 0; i < 100; i++) {
 					String product = generator.generate();
