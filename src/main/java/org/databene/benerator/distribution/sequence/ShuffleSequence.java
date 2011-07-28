@@ -57,7 +57,6 @@ public class ShuffleSequence extends Sequence {
     }
 
     public ShuffleSequence(BigDecimal increment) {
-	    super("shuffle");
 	    this.increment = null;
     }
 

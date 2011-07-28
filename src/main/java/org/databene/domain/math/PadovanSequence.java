@@ -41,10 +41,6 @@ import org.databene.benerator.distribution.Sequence;
 
 public class PadovanSequence extends LongBasedSequence {
 
-    public PadovanSequence() {
-	    super("padovan");
-    }
-
     @Override
     protected NonNullGenerator<Long> createLongGenerator(Long min, Long max, Long granularity, boolean unique) {
 	    return new PadovanLongGenerator(min, max, unique);

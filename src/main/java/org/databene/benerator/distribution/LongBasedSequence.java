@@ -41,10 +41,6 @@ import static org.databene.commons.NumberUtil.*;
 
 public abstract class LongBasedSequence extends Sequence {
 
-	public LongBasedSequence(String name) {
-		super(name);
-	}
-
     public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	NonNullGenerator<Long> source = createLongGenerator(toLong(min), toLong(max), toLong(granularity), unique);
 		return WrapperFactory.wrapNonNullNumberGenerator(numberType, source, min, granularity);

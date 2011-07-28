@@ -46,7 +46,6 @@ public class HeadSequence extends Sequence {
     }
 
 	public HeadSequence(long size) {
-	    super("head");
 	    this.size = size;
     }
 

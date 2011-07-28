@@ -62,7 +62,6 @@ public class ExpandSequence extends Sequence {
     }
 
 	public ExpandSequence(Integer cacheSize, Float duplicationQuota, Integer bucketSize) {
-	    super("expand");
 	    this.cacheSize = cacheSize;
 	    this.duplicationQuota = duplicationQuota;
 	    this.bucketSize = bucketSize;

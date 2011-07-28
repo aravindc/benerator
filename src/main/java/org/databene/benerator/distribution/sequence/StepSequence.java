@@ -50,8 +50,6 @@ import static org.databene.commons.NumberUtil.*;
 
 public class StepSequence extends Sequence {
 
-    private static final String NAME = "step";
-
     private BigDecimal delta;
 	private BigDecimal initial;
 	private BigDecimal limit;
@@ -74,7 +72,6 @@ public class StepSequence extends Sequence {
     }
 	
 	public StepSequence(BigDecimal delta, BigDecimal initial, BigDecimal limit) {
-	    super(NAME);
 	    this.delta = delta;
 	    this.initial = initial;
 	    this.limit = limit;

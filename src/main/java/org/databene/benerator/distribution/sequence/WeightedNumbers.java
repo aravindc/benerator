@@ -48,7 +48,6 @@ public class WeightedNumbers<E> extends Sequence {
     }
 
     public WeightedNumbers(String spec) {
-    	super(WeightedNumbers.class.getSimpleName());
     	if (spec != null)
     		setSpec(spec);
     }

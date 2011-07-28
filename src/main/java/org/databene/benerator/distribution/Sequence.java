@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
+import org.databene.commons.BeanUtil;
 import org.databene.commons.ConfigurationError;
 
 /**
@@ -38,17 +39,7 @@ import org.databene.commons.ConfigurationError;
  */
 public abstract class Sequence implements Distribution {
 	
-    private String name; // TODO v0.7 remove 'name' property
-    
-    protected Sequence(String name) {
-        this.name = name;
-    }
-    
     // interface -------------------------------------------------------------------------------------------------------
-
-    public String getName() {
-        return name;
-    }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
     	if (source == null)
@@ -60,24 +51,7 @@ public abstract class Sequence implements Distribution {
     
     @Override
     public String toString() {
-        return name;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Sequence that = (Sequence) obj;
-        return this.name.equals(that.name);
+        return BeanUtil.toString(this);
     }
 
 }

@@ -77,7 +77,6 @@ public class RandomWalkSequence extends Sequence {
     }
     
     public RandomWalkSequence(BigDecimal minStep, BigDecimal maxStep, BigDecimal initial, boolean buffered) {
-	    super("randomWalk");
 	    this.minStep = minStep;
 	    this.maxStep = maxStep;
 	    this.initial = initial;

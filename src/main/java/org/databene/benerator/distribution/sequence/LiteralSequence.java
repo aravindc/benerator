@@ -45,7 +45,6 @@ public class LiteralSequence extends Sequence {
     }
 
 	protected LiteralSequence(String spec) {
-	    super("literal");
     	setSpec(spec);
     }
 

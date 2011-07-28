@@ -45,8 +45,6 @@ import org.databene.commons.ConfigurationError;
 
 public class RepeatSequence extends Sequence {
 
-    private static final String NAME = "repeat";
-    
     private int minRepetitions;
     private int maxRepetitions;
     private int repetitionGranularity;
@@ -64,7 +62,6 @@ public class RepeatSequence extends Sequence {
 	
 	public RepeatSequence(int minRepetitions, int maxRepetitions, int repetitionGranularity,
 			Distribution repetitionDistribution) {
-	    super(NAME);
 	    this.minRepetitions = minRepetitions;
 	    this.maxRepetitions = maxRepetitions;
 	    this.repetitionGranularity = repetitionGranularity;

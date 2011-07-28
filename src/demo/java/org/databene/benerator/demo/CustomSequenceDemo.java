@@ -32,10 +32,6 @@ public class CustomSequenceDemo {
     /** The custom Sequence implementation */
     public static class OddNumberSequence extends Sequence {
 
-        protected OddNumberSequence() {
-	        super("odd");
-        }
-
 		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
         	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());

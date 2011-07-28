@@ -43,10 +43,6 @@ import static org.databene.commons.NumberUtil.*;
 
 public class BitReverseSequence extends Sequence {
 
-    public BitReverseSequence() {
-    	super("bitReverse");
-    }
-
     public <T extends Number> NonNullGenerator<T> createGenerator(
     		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	long lMax = (max != null ? max.longValue() : BitReverseLongGenerator.MAX_INDEX_RANGE + toLong(min));

@@ -49,18 +49,18 @@ public class SequenceManager {
 
     private static Map<String, Sequence> instances = new HashMap<String, Sequence>();
 
-    public static final Sequence RANDOM_SEQUENCE      = register(new RandomSequence());
-    public static final Sequence SHUFFLE_SEQUENCE     = register(new ShuffleSequence());
-    public static final Sequence CUMULATED_SEQUENCE   = register(new CumulatedSequence());
-    public static final Sequence RANDOM_WALK_SEQUENCE = register(new RandomWalkSequence());
-    public static final Sequence STEP_SEQUENCE        = register(new StepSequence(), "step");
-    public static final Sequence INCREMENT_SEQUENCE   = register(new StepSequence(BigDecimal.ONE), "increment");
-    public static final Sequence WEDGE_SEQUENCE       = register(new WedgeSequence());
-    public static final Sequence BIT_REVERSE_SEQUENCE = register(new BitReverseSequence());
-    public static final Sequence EXPAND_SEQUENCE      = register(new ExpandSequence());
-    public static final Sequence FIBONACCI_SEQUENCE   = register(new FibonacciSequence());
-    public static final Sequence PADOVAN_SEQUENCE     = register(new PadovanSequence());
-    public static final Sequence SINGLE_SEQUENCE      = register(new HeadSequence());
+    public static final Sequence RANDOM_SEQUENCE      = register("random", new RandomSequence());
+    public static final Sequence SHUFFLE_SEQUENCE     = register("shuffle", new ShuffleSequence());
+    public static final Sequence CUMULATED_SEQUENCE   = register("cumulated", new CumulatedSequence());
+    public static final Sequence RANDOM_WALK_SEQUENCE = register("randomWalk", new RandomWalkSequence());
+    public static final Sequence STEP_SEQUENCE        = register("step", new StepSequence());
+    public static final Sequence INCREMENT_SEQUENCE   = register("increment", new StepSequence(BigDecimal.ONE));
+    public static final Sequence WEDGE_SEQUENCE       = register("wedge", new WedgeSequence());
+    public static final Sequence BIT_REVERSE_SEQUENCE = register("bitreverse", new BitReverseSequence());
+    public static final Sequence EXPAND_SEQUENCE      = register("expand", new ExpandSequence());
+    public static final Sequence FIBONACCI_SEQUENCE   = register("fibonacci", new FibonacciSequence());
+    public static final Sequence PADOVAN_SEQUENCE     = register("padovan", new PadovanSequence());
+    public static final Sequence SINGLE_SEQUENCE      = register("head", new HeadSequence());
     
     // Construction & lookup -------------------------------------------------------------------------------------------
     
@@ -71,11 +71,7 @@ public class SequenceManager {
         return sequence;
     }
 
-    public synchronized static Sequence register(Sequence sequence) {
-    	return register(sequence, sequence.getName());
-    }
-
-    public synchronized static Sequence register(Sequence sequence, String name) {
+    public synchronized static Sequence register(String name, Sequence sequence) {
     	instances.put(name, sequence);
 	    return sequence;
     }

@@ -41,10 +41,6 @@ import org.databene.benerator.distribution.Sequence;
 
 public class FibonacciSequence extends LongBasedSequence {
 
-    public FibonacciSequence() {
-	    super("fibonacci");
-    }
-
     @Override
     protected NonNullGenerator<Long> createLongGenerator(Long min, Long max, Long granularity, boolean unique) {
 	    return new FibonacciLongGenerator(min, max, unique);

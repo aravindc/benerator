@@ -47,10 +47,6 @@ import static org.databene.commons.NumberUtil.*;
 
 public class CumulatedSequence extends Sequence {
 
-    public CumulatedSequence() {
-    	super("cumulated");
-    }
-
     public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (unique)
     		throw new ConfigurationError(getClass().getSimpleName() + " does not support uniqueness");

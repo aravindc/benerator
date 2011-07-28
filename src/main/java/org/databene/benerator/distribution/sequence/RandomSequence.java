@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -49,12 +49,6 @@ import static org.databene.commons.NumberUtil.*;
 
 public class RandomSequence extends Sequence {
 
-    private static final String NAME = "random";
-
-	public RandomSequence() {
-	    super(NAME);
-    }
-	
     public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	NonNullGenerator<? extends Number> base;
     	if (unique) {
