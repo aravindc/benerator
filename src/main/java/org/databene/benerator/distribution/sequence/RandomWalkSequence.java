@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.SkipGeneratorProxy;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -99,15 +100,15 @@ public class RandomWalkSequence extends Sequence {
 	
     // Distribution interface implementation ---------------------------------------------------------------------------
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
-		Generator<? extends Number> base;
+    	NonNullGenerator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = createLongGenerator(toLong(min), toLong(max), toLong(precision), unique);
 		else
 			base = createDoubleGenerator(toDouble(min), toDouble(max), toDouble(precision), unique);
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
     }
     
     @Override
@@ -127,14 +128,14 @@ public class RandomWalkSequence extends Sequence {
     
     // helper methods --------------------------------------------------------------------------------------------------
 
-	private <T> Generator<? extends Number> createDoubleGenerator(double min, double max, double precision, boolean unique) {
+	private <T> NonNullGenerator<? extends Number> createDoubleGenerator(double min, double max, double precision, boolean unique) {
 	    if (unique && MathUtil.rangeIncludes(0., min, max)) // check if uniqueness requirements can be met
 	    	throw new InvalidGeneratorSetupException("Cannot guarantee uniqueness for [min=" + min + ",max=" + max + "]");
 	    return new RandomWalkDoubleGenerator(
 	    		toDouble(min), toDouble(max), toDouble(precision), toDouble(minStep), toDouble(maxStep));
     }
 
-	private <T> Generator<? extends Number> createLongGenerator(long min, long max, long precision, boolean unique) {
+	private <T> NonNullGenerator<? extends Number> createLongGenerator(long min, long max, long precision, boolean unique) {
 	    if (unique && MathUtil.rangeIncludes(0, min, max)) // check if uniqueness requirements can be met
 	    	throw new InvalidGeneratorSetupException("Cannot guarantee uniqueness for [min=" + min + ",max=" + max + "]");
 	    return new RandomWalkLongGenerator(

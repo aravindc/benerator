@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,8 +31,7 @@ import java.math.BigInteger;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.PropertyMessage;
-import org.databene.benerator.util.ThreadSafeGenerator;
-import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates random {@link BigInteger} with a uniform distribution.<br/>
@@ -42,7 +41,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 
-public class RandomBigIntegerGenerator extends ThreadSafeGenerator<BigInteger> {
+public class RandomBigIntegerGenerator extends ThreadSafeNonNullGenerator<BigInteger> {
 
     private static final BigInteger DEFAULT_MIN = BigInteger.valueOf(Long.MIN_VALUE);
 	private static final BigInteger DEFAULT_MAX = BigInteger.valueOf(Long.MAX_VALUE);
@@ -81,8 +80,9 @@ public class RandomBigIntegerGenerator extends ThreadSafeGenerator<BigInteger> {
         super.init(context);
     }
     
-	public ProductWrapper<BigInteger> generate(ProductWrapper<BigInteger> wrapper) {
-        return wrapper.wrap(generate(min, max, precision));
+	@Override
+	public BigInteger generate() {
+        return generate(min, max, precision);
     }
     
     // public convenience method ---------------------------------------------------------------------------------------

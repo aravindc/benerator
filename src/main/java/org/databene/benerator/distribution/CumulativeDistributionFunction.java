@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.sample.SampleGenerator;
@@ -56,7 +57,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 	    return new SampleGenerator<T>(source.getGeneratedType(), this, unique, allProducts);
     }
 
-	public <T extends Number> Generator<T> createGenerator(
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
 			Class<T> numberType, T min, T max, T precision, boolean unique) {
 		if (unique)
 			throw new IllegalArgumentException(this + " cannot generate unique values");

@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
 
@@ -41,16 +42,16 @@ import org.databene.commons.BeanUtil;
 public abstract class AbstractWeightFunction implements WeightFunction {
 
     @SuppressWarnings("unchecked")
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (Long.class.equals(numberType))
-    		return (Generator<T>) createLongGenerator(min, max, precision);
+    		return (NonNullGenerator<T>) createLongGenerator(min, max, precision);
     	else if (Double.class.equals(numberType))
-    		return (Generator<T>) createDoubleGenerator(min, max, precision);
+    		return (NonNullGenerator<T>) createDoubleGenerator(min, max, precision);
     	else if (BeanUtil.isIntegralNumberType(numberType))
-    		return WrapperFactory.wrapNumberGenerator(numberType, createLongGenerator(min, max, precision), min, precision);
+    		return WrapperFactory.wrapNonNullNumberGenerator(numberType, createLongGenerator(min, max, precision), min, precision);
     	else
-    		return WrapperFactory.wrapNumberGenerator(numberType, createDoubleGenerator(min, max, precision), min, precision);
+    		return WrapperFactory.wrapNonNullNumberGenerator(numberType, createDoubleGenerator(min, max, precision), min, precision);
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
@@ -63,7 +64,7 @@ public abstract class AbstractWeightFunction implements WeightFunction {
 	    return new WeightedLongGenerator(min.longValue(), max.longValue(), precision.longValue(), this);
     }
 
-	private <T extends Number> WeightedDoubleGenerator createDoubleGenerator(T min, T max, T precision) {
+	private <T extends Number> NonNullGenerator<Double> createDoubleGenerator(T min, T max, T precision) {
 	    return new WeightedDoubleGenerator(min.doubleValue(), max.doubleValue(), precision.doubleValue(), this);
     }
 

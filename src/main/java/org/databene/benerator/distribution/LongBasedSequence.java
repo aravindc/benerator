@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.distribution;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.WrapperFactory;
 import static org.databene.commons.NumberUtil.*;
 
@@ -45,11 +45,11 @@ public abstract class LongBasedSequence extends Sequence {
 		super(name);
 	}
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
-    	Generator<Long> source = createLongGenerator(toLong(min), toLong(max), toLong(precision), unique);
-		return WrapperFactory.wrapNumberGenerator(numberType, source, min, precision);
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	NonNullGenerator<Long> source = createLongGenerator(toLong(min), toLong(max), toLong(precision), unique);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, source, min, precision);
     }
 
-	protected abstract Generator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique);
+	protected abstract NonNullGenerator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique);
 	
 }

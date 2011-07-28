@@ -27,7 +27,9 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.NumberUtil;
 import static org.databene.commons.NumberUtil.*;
@@ -48,11 +50,11 @@ public class WedgeSequence extends Sequence {
     	super("wedge");
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
 		Generator<? extends Number> base = new WedgeLongGenerator(toLong(min), toLong(max), toLong(precision));
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, max);
+		return GeneratorFactoryUtil.asNonNullGenerator(WrapperFactory.wrapNumberGenerator(numberType, base, min, max));
     }
 
 }

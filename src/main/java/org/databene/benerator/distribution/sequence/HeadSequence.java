@@ -22,7 +22,9 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.NShotGeneratorProxy;
 
 /**
@@ -57,10 +59,10 @@ public class HeadSequence extends Sequence {
 	    return new NShotGeneratorProxy<T>(source, size);
 	}
 	
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
-    	Generator<T> source = STEP_SEQ.createGenerator(numberType, min, max, precision, unique);
-		return new NShotGeneratorProxy<T>(source, size);
+    	Generator<T> source = STEP_SEQ.createNumberGenerator(numberType, min, max, precision, unique);
+		return GeneratorFactoryUtil.asNonNullGenerator(new NShotGeneratorProxy<T>(source, size));
 	}
 
 }

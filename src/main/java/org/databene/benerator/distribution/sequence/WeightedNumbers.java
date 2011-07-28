@@ -22,7 +22,9 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.AttachedWeightSampleGenerator;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
@@ -55,7 +57,7 @@ public class WeightedNumbers<E> extends Sequence {
 		samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
 	}
 
-	public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision,
             boolean unique) {
 		if (unique)
 			throw new ConfigurationError(getClass().getSimpleName() + " is not designed to generate unique values");
@@ -64,7 +66,7 @@ public class WeightedNumbers<E> extends Sequence {
 			generator.addSample(
 					NumberToNumberConverter.convert((Number) samples[i].getValue(), numberType), 
 					samples[i].getWeight());
-		return generator;
+		return GeneratorFactoryUtil.asNonNullGenerator(generator);
     }
 
 	@Override

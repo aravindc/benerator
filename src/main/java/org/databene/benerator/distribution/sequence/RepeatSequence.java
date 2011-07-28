@@ -27,9 +27,11 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Distribution;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.RepeatGeneratorProxy;
 import org.databene.commons.ConfigurationError;
 
@@ -69,7 +71,7 @@ public class RepeatSequence extends Sequence {
 	    this.repetitionDistribution = repetitionDistribution;
     }
 
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (minRepetitions > maxRepetitions)
     		throw new ConfigurationError("minRepetitions (" + minRepetitions + ") > " +
@@ -77,8 +79,8 @@ public class RepeatSequence extends Sequence {
     	if (unique && (minRepetitions > 0 || maxRepetitions > 0))
     		throw new ConfigurationError("Uniqueness can't be assured for minRepetitions=" + minRepetitions
     				+ " and maxRepetitions=" + maxRepetitions);
-		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision, unique);
-		return applyTo(source, unique);
+		Generator<T> source = stepSequence.createNumberGenerator(numberType, min, max, precision, unique);
+		return GeneratorFactoryUtil.asNonNullGenerator(applyTo(source, unique));
 	}
 	
     @Override

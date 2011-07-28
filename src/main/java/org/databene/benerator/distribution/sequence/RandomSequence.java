@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.WrapperFactory;
@@ -54,10 +55,10 @@ public class RandomSequence extends Sequence {
 	    super(NAME);
     }
 	
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
-		Generator<? extends Number> base;
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    	NonNullGenerator<? extends Number> base;
     	if (unique) {
-    		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
+    		return SequenceManager.EXPAND_SEQUENCE.createNumberGenerator(numberType, min, max, precision, unique);
     	} else if (BeanUtil.isIntegralNumberType(numberType)) {
         	long lMax = (max != null ? max.longValue() :
         			Math.min(RandomLongGenerator.DEFAULT_MAX, NumberUtil.maxValue(numberType).longValue()));
@@ -73,7 +74,7 @@ public class RandomSequence extends Sequence {
     		double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
 			base = new RandomDoubleGenerator(toDouble(min), dMax, toDouble(precision));
     	}
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
 	}
 
     @Override

@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 
 import org.databene.benerator.Generator;
 import org.databene.benerator.InvalidGeneratorSetupException;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.wrapper.SkipGeneratorProxy;
@@ -62,7 +63,7 @@ public class StepSequence extends Sequence {
 	/**
 	 * @param delta the increment to choose for created generators. 
 	 * 		When using null, the precision parameter will be used to set the increment 
-	 * 		in {@link #createGenerator(Class, Number, Number, Number, boolean)}
+	 * 		in {@link #createNumberGenerator(Class, Number, Number, Number, boolean)}
 	 */
 	public StepSequence(BigDecimal delta) {
 	    this(delta, null);
@@ -101,12 +102,12 @@ public class StepSequence extends Sequence {
 					SequenceManager.RANDOM_SEQUENCE, toInteger(limit));
 	}
 	
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
         Number deltaToUse = deltaToUse(precision);
     	if (unique && deltaToUse.doubleValue() == 0)
     		throw new InvalidGeneratorSetupException("Can't generate unique numbers with an increment of 0.");
-		Generator<? extends Number> base;
+    	NonNullGenerator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType)) {
 			if (max == null)
 				max = NumberUtil.maxValue(numberType);
@@ -115,7 +116,7 @@ public class StepSequence extends Sequence {
 		} else
 			base = new StepDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(deltaToUse), toDouble(initial));
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
 	}
 
 	private <T extends Number> Number deltaToUse(T precision) {

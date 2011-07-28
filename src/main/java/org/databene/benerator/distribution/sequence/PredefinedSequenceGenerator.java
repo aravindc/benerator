@@ -33,7 +33,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.6.3
  * @author Volker Bergmann
  */
-public class PredefinedSequenceGenerator<E extends Number> extends ThreadSafeGenerator<E> {
+public class PredefinedSequenceGenerator<E extends Number> extends ThreadSafeGenerator<E> { // compare with SequenceGenerator
 
 	private Class<E> numberType;
 	private E[] numbers;

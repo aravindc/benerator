@@ -27,6 +27,7 @@
 package org.databene.benerator.distribution;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.sample.IndividualWeightGenerator;
 import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.ConfigurationError;
@@ -42,7 +43,7 @@ public abstract class IndividualWeight<E> implements Distribution {
 	
 	public abstract double weight(E object);
 	
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
 	    throw new UnsupportedOperationException("createGenerator() is not supported by " + getClass());
     }

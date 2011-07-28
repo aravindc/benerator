@@ -22,9 +22,11 @@
 package org.databene.benerator.distribution.sequence;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorOpts;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 
 import static org.databene.commons.NumberUtil.*;
 
@@ -68,10 +70,12 @@ public class ExpandSequence extends Sequence {
 	
 	// Distribution interface implementation ---------------------------------------------------------------------------
 
-	public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
-		Generator<T> source = SequenceManager.STEP_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
+	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
+			Class<T> numberType, T min, T max, T precision, boolean unique) {
+		NonNullGenerator<T> source = SequenceManager.STEP_SEQUENCE.createNumberGenerator(numberType, min, max, precision, unique);
 		int cacheSize = cacheSize(min, max, precision);
-		return new ExpandGeneratorProxy<T>(source, duplicationQuota(unique), cacheSize, bucketSize(cacheSize));
+		return GeneratorFactoryUtil.asNonNullGenerator(
+				new ExpandGeneratorProxy<T>(source, duplicationQuota(unique), cacheSize, bucketSize(cacheSize)));
 	}
 
 	@Override

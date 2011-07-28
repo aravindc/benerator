@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,7 +26,7 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import static org.databene.commons.NumberUtil.*;
@@ -47,12 +47,11 @@ public class BitReverseSequence extends Sequence {
     	super("bitReverse");
     }
 
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	long lMax = (max != null ? max.longValue() : BitReverseLongGenerator.MAX_INDEX_RANGE + toLong(min));
-		Generator<? extends Number> base;
-		base = new BitReverseLongGenerator(toLong(min), lMax, toLong(precision));
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
+    	NonNullGenerator<? extends Number> base = new BitReverseLongGenerator(toLong(min), lMax, toLong(precision));
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
     }
 
 }

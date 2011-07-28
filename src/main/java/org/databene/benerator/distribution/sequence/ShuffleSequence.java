@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import java.math.BigDecimal;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
@@ -61,20 +61,20 @@ public class ShuffleSequence extends Sequence {
 	    this.increment = null;
     }
 
-    public <T extends Number> Generator<T> createGenerator(
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(
     		Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (increment == null)
     		increment = BigDecimal.valueOf(2);
     	if (max == null)
     		max = NumberUtil.maxValue(numberType);
-		Generator<? extends Number> base;
+		NonNullGenerator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = new ShuffleLongGenerator(
 					toLong(min), toLong(max), toLong(precision), toLong(increment));
 		else
 			base = new ShuffleDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(precision), toDouble(increment));
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
     }
     
 }

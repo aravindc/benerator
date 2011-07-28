@@ -90,7 +90,7 @@ public class RandomWalkLongGenerator extends AbstractNonNullNumberGenerator<Long
 
     @Override
     public void init(GeneratorContext context) {
-        incrementGenerator = (AbstractNonNullNumberGenerator<Long>) incrementDistribution.createGenerator(
+        incrementGenerator = (AbstractNonNullNumberGenerator<Long>) incrementDistribution.createNumberGenerator(
         		Long.class, minIncrement, maxIncrement, precision, false);
         if (minIncrement < 0 && maxIncrement <= 0)
             initial = max;

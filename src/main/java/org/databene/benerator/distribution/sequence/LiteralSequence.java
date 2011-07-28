@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -21,8 +21,9 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.WeightedSample;
 import org.databene.benerator.script.BeneratorScriptParser;
 import org.databene.commons.StringUtil;
@@ -63,13 +64,13 @@ public class LiteralSequence extends Sequence {
     }
 
 	@SuppressWarnings("unchecked")
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision,
             boolean unique) {
 		Number[] ts = new Number[numbers.length];
 		NumberToNumberConverter<Number, T> converter = new NumberToNumberConverter<Number, T>(Number.class, numberType);
 		for (int i = 0; i < numbers.length; i++)
 			ts[i] = converter.convert(numbers[i]);
-	    return new PredefinedSequenceGenerator<T>((T[]) ts);
+	    return GeneratorFactoryUtil.asNonNullGenerator(new PredefinedSequenceGenerator<T>((T[]) ts));
     }
 
 }

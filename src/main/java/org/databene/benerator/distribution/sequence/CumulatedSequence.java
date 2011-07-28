@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -28,7 +28,7 @@ package org.databene.benerator.distribution.sequence;
 
 import java.math.BigInteger;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.distribution.Sequence;
 import org.databene.benerator.wrapper.WrapperFactory;
 import org.databene.commons.BeanUtil;
@@ -51,10 +51,10 @@ public class CumulatedSequence extends Sequence {
     	super("cumulated");
     }
 
-    public <T extends Number> Generator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createNumberGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
     	if (unique)
     		throw new ConfigurationError(getClass().getSimpleName() + " does not support uniqueness");
-		Generator<? extends Number> base;
+    	NonNullGenerator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType)) {
 	    	long lMax = (max != null ? max.longValue() : 
 	    		(numberType != Long.class && numberType != BigInteger.class ? NumberUtil.maxValue(numberType).longValue() : CumulatedLongGenerator.DEFAULT_MAX));
@@ -63,7 +63,7 @@ public class CumulatedSequence extends Sequence {
 			double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
 			base = new CumulatedDoubleGenerator(toDouble(min), dMax, toDouble(precision));
 		}
-		return WrapperFactory.wrapNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
     }
 
 }

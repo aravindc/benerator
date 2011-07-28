@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -32,8 +32,7 @@ import java.math.RoundingMode;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.util.RandomUtil;
-import org.databene.benerator.util.ThreadSafeGenerator;
-import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates random {@link BigDecimal}s with a uniform distribution.
@@ -43,7 +42,7 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @author Volker Bergmann
  */
 
-public class RandomBigDecimalGenerator extends ThreadSafeGenerator<BigDecimal> {
+public class RandomBigDecimalGenerator extends ThreadSafeNonNullGenerator<BigDecimal> {
 
 	private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(Double.MIN_VALUE);
 	private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
@@ -84,10 +83,11 @@ public class RandomBigDecimalGenerator extends ThreadSafeGenerator<BigDecimal> {
 	    super.init(context);
 	}
 	
-	public ProductWrapper<BigDecimal> generate(ProductWrapper<BigDecimal> wrapper) {
+	@Override
+	public BigDecimal generate() {
         long n = range.divide(precision).longValue();
         BigDecimal i = BigDecimal.valueOf(RandomUtil.randomLong(0, n));
-		return wrapper.wrap(min.add(i.multiply(precision)));
+		return min.add(i.multiply(precision));
     }
 
     // properties ------------------------------------------------------------------------------------------------------
