@@ -21,8 +21,6 @@
 
 package org.databene.benerator.factory;
 
-import static junit.framework.Assert.*;
-
 import java.util.Locale;
 
 import org.databene.benerator.NonNullGenerator;
@@ -57,9 +55,9 @@ public class RegexStringGeneratorFactory_equivalenceTest extends GeneratorTest {
     
     // tests -----------------------------------------------------------------------------------------------------------
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testNullPattern() throws Exception {
-        assertNull(createGenerator(null, 0, null).generate());
+        createGenerator(null, 0, null);
     }
 
     @Test
