@@ -28,8 +28,6 @@ package org.databene.benerator.factory;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 
 import org.databene.benerator.sample.WeightedSample;
@@ -42,12 +40,9 @@ import org.databene.benerator.distribution.WeightFunction;
 import org.databene.benerator.distribution.function.ConstantFunction;
 import org.databene.benerator.distribution.function.GaussianFunction;
 import org.databene.benerator.distribution.sequence.HeadSequence;
-import org.databene.benerator.distribution.sequence.RandomDoubleGenerator;
-import org.databene.benerator.distribution.sequence.RandomIntegerGenerator;
 import org.databene.benerator.Generator;
 import org.databene.benerator.NonNullGenerator;
 import org.databene.commons.*;
-import org.databene.commons.converter.FormatFormatConverter;
 import org.databene.model.data.Uniqueness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,91 +257,6 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     
     
     
-    // formatting generators -------------------------------------------------------------------------------------------
-
-    @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testGetConvertingGenerator() {
-        Generator<Double> source = new RandomDoubleGenerator(0, 9);
-        NumberFormat format = DecimalFormat.getInstance();
-        format.setMinimumFractionDigits(0);
-        format.setMaximumFractionDigits(2);
-        Generator<String> generator = GeneratorFactoryUtil.createConvertingGenerator(
-                source, new FormatFormatConverter(Object.class, format, false));
-        initAndUseGenerator(generator);
-    }
-
-    @Test
-    public void testGetMessageGenerator() {
-        List<String> salutations = Arrays.asList("Hello", "Hi");
-        AttachedWeightSampleGenerator<String> salutationGenerator = new AttachedWeightSampleGenerator<String>(String.class, salutations);
-        List<String> names = Arrays.asList("Alice", "Bob", "Charly");
-        AttachedWeightSampleGenerator<String> nameGenerator = new AttachedWeightSampleGenerator<String>(String.class, names);
-        String pattern = "{0} {1}";
-        Generator<String> generator = GeneratorFactoryUtil.createMessageGenerator(pattern, 0, 12, salutationGenerator, nameGenerator);
-        generator.init(context);
-        ProductWrapper<String> wrapper = new ProductWrapper<String>();
-        for (int i = 0; i < 10; i++) {
-            String message = generator.generate(wrapper).unwrap();
-            StringTokenizer tokenizer = new StringTokenizer(message, " ");
-            assertEquals(2, tokenizer.countTokens());
-            assertTrue(salutations.contains(tokenizer.nextToken()));
-            assertTrue(names.contains(tokenizer.nextToken()));
-        }
-    }
-
-    // collection generators -------------------------------------------------------------------------------------------
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetCollectionGeneratorByCardinalityDistributionType() {
-        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
-        for (Sequence sequence : SequenceManager.registeredSequences()) {
-        	if (sequence instanceof HeadSequence)
-        		continue;
-            Generator<List<?>> generator = GeneratorFactoryUtil.createCollectionGeneratorOfVariableSize(
-                    List.class, source, 0, 5, sequence);
-            initAndUseGenerator(generator);
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetCollectionGeneratorByCardinalityDistributionFunction() {
-        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
-        int minSize = 0;
-        int maxSize = 5;
-        for (WeightFunction distributionFunction : getDistributionFunctions(minSize, maxSize)) {
-            Generator<List<?>> generator = GeneratorFactoryUtil.createCollectionGeneratorOfVariableSize(
-                    List.class, source, minSize, maxSize, distributionFunction);
-            initAndUseGenerator(generator);
-        }
-    }
-
-    // array generators ------------------------------------------------------------------------------------------------
-
-    @Test
-    public void testGetArrayGeneratorByCardinalityDistributionType() {
-        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
-        for (Sequence sequence : SequenceManager.registeredSequences()) {
-        	if (sequence instanceof HeadSequence)
-        		continue;
-            Generator<Integer[]> generator = GeneratorFactoryUtil.createArrayGeneratorOfVariableLength(source, Integer.class, 0, 5, sequence);
-            initAndUseGenerator(generator);
-        }
-    }
-
-    @Test
-    public void testGetArrayGeneratorByCardinalityDistributionFunction() {
-        int minLength = 0;
-        int maxLength = 5;
-        Generator<Integer> source = new RandomIntegerGenerator(0, 9);
-        for (WeightFunction distributionFunction : getDistributionFunctions(minLength, maxLength)) {
-            Generator<Integer[]> generator = GeneratorFactoryUtil.createArrayGeneratorOfVariableLength(source, Integer.class, minLength, maxLength, distributionFunction);
-            initAndUseGenerator(generator);
-        }
-    }
-
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testGetHeterogenousArrayGenerator() {
@@ -367,38 +277,6 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
 
     // source generators -----------------------------------------------------------------------------------------------
-
-    @Test
-    public void testGetCSVCellGenerator() { // TODO move this and other test methods to GeneratorFactoryUtilTest
-        Generator<String> generator = GeneratorFactoryUtil.createCSVCellGenerator("file://org/databene/csv/names-abc.csv", ',', Encodings.UTF_8);
-        generator.init(context);
-        assertEquals("Alice", nextProduct(generator));
-        assertEquals("Bob", nextProduct(generator));
-        assertEquals("Charly", nextProduct(generator));
-        assertNull(generator.generate(new ProductWrapper<String>()));
-    }
-
-	protected <T> T nextProduct(Generator<T> generator) {
-		return generator.generate(new ProductWrapper<T>()).unwrap();
-	}
-
-    @Test
-    public void testGetArraySourceGenerator() {
-        Generator<String[]> generator = GeneratorFactoryUtil.createCSVLineGenerator(
-                "file://org/databene/csv/names-abc.csv", ',', Encodings.UTF_8, true);
-        generator.init(context);
-        assertArrayEquals(new String[] { "Alice", "Bob" }, nextProduct(generator));
-        assertArrayEquals(new String[] { "Charly"}, nextProduct(generator));
-        assertNull(generator.generate(new ProductWrapper<String[]>()));
-    }
-
-    private void assertArrayEquals(String[] expected, String[] actual) {
-        assertEquals(expected.length, actual.length);
-        for (int i = 0; i < expected.length; i++)
-            if (!NullSafeComparator.equals(expected[i], actual[i])) {
-                fail("Expected: [" + ArrayFormat.format(expected) + "] Actual: [" + ArrayFormat.format(actual) + "]");
-            }
-    }
 
     // helpers ---------------------------------------------------------------------------------------------------------
 /*
