@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -44,10 +44,6 @@ public class RepeatSequenceTest extends GeneratorTest {
 		expectGeneratedSequence(generator, 1, 2, 2, 3, 3, 3).withCeasedAvailability();
 	}
 
-	private RepeatSequence createSequence122333() {
-	    return new RepeatSequence(0, 3, 1, new StepSequence(BigDecimal.ONE, BigDecimal.ZERO));
-    }
-	
 	@Test
 	public void testApplyTo() {
         Generator<Integer> source = new SequenceTestGenerator<Integer>(1, 2, 3);
@@ -56,5 +52,10 @@ public class RepeatSequenceTest extends GeneratorTest {
 		generator.init(context);
 		expectGeneratedSequence(generator, 1, 2, 2, 3, 3, 3).withCeasedAvailability();
 	}
+	
+	private RepeatSequence createSequence122333() {
+	    StepSequence repetitionDistribution = new StepSequence(BigDecimal.ONE, BigDecimal.ZERO);
+		return new RepeatSequence(0, 2, 1, repetitionDistribution);
+    }
 	
 }
