@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,20 +26,21 @@
 
 package org.databene.benerator.xml;
 
-import org.databene.benerator.util.ThreadSafeGenerator;
+import org.databene.benerator.util.ThreadSafeNonNullGenerator;
 
 /**
  * Generates JavaBeans with 'name' property of value "Bob" for testing.<br/><br/>
  * Created: 29.03.2008 08:26:22
  * @author Volker Bergmann
  */
-public class BobGenerator extends ThreadSafeGenerator<Bob> {
+public class BobGenerator extends ThreadSafeNonNullGenerator<Bob> {
 
     public Class<Bob> getGeneratedType() {
 	    return Bob.class;
     }
 
-    public Bob generate() {
+	@Override
+	public Bob generate() {
         return new Bob();
     }
 

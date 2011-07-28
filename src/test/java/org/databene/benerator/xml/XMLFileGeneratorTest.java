@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import java.io.IOException;
 
 import org.databene.benerator.file.XMLFileGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.xml.XMLUtil;
 import org.databene.model.data.DataModel;
 import org.junit.Before;
@@ -62,12 +63,12 @@ public class XMLFileGeneratorTest extends GeneratorTest {
     	super.setUp();
         DataModel.getDefaultInstance().clear();
     }
-
+    
     @Test
     public void testSimpleTypeElement() throws IOException {
         createXMLFile(SIMPLE_ELEMENT_TEST_XSD, "root", "target/simple-element-test.xml");
     }
-
+    
     @Test
     public void testBean() throws IOException {
         Document document = createXMLFile(BEAN_TEST_XSD, "root", "target/bean_test.xml");
@@ -100,7 +101,7 @@ public class XMLFileGeneratorTest extends GeneratorTest {
     private Document createXMLFile(String schemaUri, String root, String filename) throws IOException {
         XMLFileGenerator generator = new XMLFileGenerator(schemaUri, root, filename);
         generator.init(context);
-        File file = generator.generate();
+        File file = GeneratorUtil.generateNonNull(generator);
         assertNotNull(file);
         logger.debug("Generated " + file);
         generator.close();
