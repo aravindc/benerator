@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.file.XMLFileGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.model.data.AlternativeGroupDescriptor;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.ComponentDescriptor;
@@ -118,8 +119,8 @@ public class XMLSchemaDescriptorProviderTest {
         
         XMLFileGenerator g = new XMLFileGenerator(ANNOTATION_TEST_FILE, "root", "target/test{0}.xml");
         g.init(new BeneratorContext());
-        g.generate();
-        g.generate();
+        GeneratorUtil.generateNonNull(g);
+        GeneratorUtil.generateNonNull(g);
     }
 
     @Test

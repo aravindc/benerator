@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.SequenceTestGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.test.PersonIterable;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.ConvertingGenerator;
 import org.databene.commons.ArrayFormat;
 import org.databene.commons.ConfigurationError;
@@ -81,7 +82,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 10; i++)
-			assertEqualArrays(PersonAttrArrayGenerator.ALICE, generator.generate());
+			assertEqualArrays(PersonAttrArrayGenerator.ALICE, GeneratorUtil.generateNonNull(generator));
 	}
 	
 	@Test
@@ -103,7 +104,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<String> g = new ConvertingGenerator<Object[], String>(generator, new ArrayElementExtractor<String>(String.class, 0));
 		generator.init(context);
 		expectGeneratedSet(g, "de", "at", "ch");
-		assertNull(generator.generate());
+		assertUnavailable(generator);
 	}
 	
 	@Test
@@ -112,9 +113,9 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		descriptor.setSource("org/databene/benerator/factory/person.ent.csv");
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
-		assertEqualArrays(ALICE, generator.generate());
-		assertEqualArrays(OTTO, generator.generate());
-		assertNull(generator.generate());
+		assertEqualArrays(ALICE, GeneratorUtil.generateNonNull(generator));
+		assertEqualArrays(OTTO, GeneratorUtil.generateNonNull(generator));
+		assertUnavailable(generator);
 	}
 	
     @Test
@@ -127,7 +128,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<String> g = new ConvertingGenerator<Object[], String>(generator, new ArrayElementExtractor<String>(String.class, 0));
 		generator.init(context);
 		expectGeneratedSet(g, "de", "at", "ch");
-		assertNull(generator.generate());
+		assertUnavailable(generator);
 	}
 	
 	@Test
@@ -153,10 +154,10 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 			generator.init(context);
 			
 			// verify results
-	        assertEqualArrays(ALICE, generator.generate());
-	        Object[] p2 = generator.generate();
+	        assertEqualArrays(ALICE, GeneratorUtil.generateNonNull(generator));
+	        Object[] p2 = GeneratorUtil.generateNonNull(generator);
 	        assertEqualArrays(OTTO,  p2);
-	        assertNull(generator.generate());
+	        assertUnavailable(generator);
 			
 		} finally {
 			db.execute("drop table agft_person if exists");
@@ -171,10 +172,10 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("testEntitySource", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 2; i++) {
-	        Object[] product = generator.generate();
+	        Object[] product = GeneratorUtil.generateNonNull(generator);
 	        assertTrue("Found: " + ArrayFormat.format(product), Arrays.equals(ALICE, product) || Arrays.equals(BOB, product));
         }
-		assertNull(generator.generate());
+		assertUnavailable(generator);
 	}
 	
 	@Test
@@ -185,7 +186,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", descriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 10; i++)
-			assertEqualArrays(ALICE, generator.generate());
+			assertEqualArrays(ALICE, GeneratorUtil.generateNonNull(generator));
 	}
 	
 	@Test(expected = ConfigurationError.class)
@@ -209,7 +210,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<Object[]> generator = ArrayGeneratorFactory.createArrayGenerator("", arrayDescriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 10; i++) {
-			Object[] product = generator.generate();
+			Object[] product = GeneratorUtil.generateNonNull(generator);
 			assertNotNull(product);
 			assertTrue("Expected 'Alice' or 'Bob', but was: " + product[0], 
 					"Alice".equals(product[0]) || "Bob".equals(product[0]));
@@ -233,7 +234,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		
 		// validate
 		for (int i = 0; i < 10; i++)
-			assertEqualArrays(MUTATED_ALICE, generator.generate());
+			assertEqualArrays(MUTATED_ALICE, GeneratorUtil.generateNonNull(generator));
 	}
 	*/
 
@@ -261,11 +262,11 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		generator.init(context);
 		
 		// test generator
-		assertArray(INT13, generator.generate());
-		assertArray(INT14, generator.generate());
-		assertArray(INT23, generator.generate());
-		assertArray(INT24, generator.generate());
-		assertNull(generator.generate());
+		assertArray(INT13, GeneratorUtil.generateNonNull(generator));
+		assertArray(INT14, GeneratorUtil.generateNonNull(generator));
+		assertArray(INT23, GeneratorUtil.generateNonNull(generator));
+		assertArray(INT24, GeneratorUtil.generateNonNull(generator));
+		assertUnavailable(generator);
 	}
 
 	@Test
@@ -287,7 +288,7 @@ public class ArrayGeneratorFactoryTest extends GeneratorTest {
 		Generator<Object[]> generator = (Generator<Object[]>) InstanceGeneratorFactory.createSingleInstanceGenerator(arrayInstDescriptor, Uniqueness.NONE, context);
 		generator.init(context);
 		for (int i = 0; i < 4; i++) {
-	        Object[] product = generator.generate();
+	        Object[] product = GeneratorUtil.generateNonNull(generator);
 	        assertTrue(
         		Arrays.equals(INT13, product)
         		|| Arrays.equals(INT14, product)

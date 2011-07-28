@@ -24,13 +24,13 @@ package org.databene.benerator.factory;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
-import org.databene.benerator.nullable.AbstractNullableGenerator;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.test.NullableGeneratorTest;
+import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.AbstractGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.ComponentDescriptor;
 import org.databene.model.data.Entity;
@@ -43,7 +43,7 @@ import org.databene.model.data.Uniqueness;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public abstract class AbstractComponentBuilderFactoryTest extends NullableGeneratorTest {
+public abstract class AbstractComponentBuilderFactoryTest extends GeneratorTest {
 
 	// private helpers -------------------------------------------------------------------------------------------------
 	
@@ -57,7 +57,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends NullableGenera
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static final class ComponentBuilderGenerator<E> extends AbstractNullableGenerator<E> {
+	public static final class ComponentBuilderGenerator<E> extends AbstractGenerator<E> {
 		
         @SuppressWarnings("rawtypes")
 		private ComponentBuilder builder;
@@ -83,8 +83,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends NullableGenera
 			Entity entity = new Entity("Test");
 			if (!builder.buildComponentFor(entity))
 				return null;
-			wrapper.product = (E) entity.get(componentName);
-			return wrapper;
+			return wrapper.wrap((E) entity.get(componentName));
 		}
 		
 		@Override
@@ -112,7 +111,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends NullableGenera
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void expectUniqueSequence(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		expectGeneratedSequence(helper, products).withCeasedAvailability();
 	}
@@ -120,7 +119,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends NullableGenera
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     protected <T> void expectUniqueSet(PartDescriptor name, T... products) {
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<T> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		expectGeneratedSet(helper, products).withCeasedAvailability();
 	}
@@ -138,7 +137,7 @@ public abstract class AbstractComponentBuilderFactoryTest extends NullableGenera
 	    for (int i = 0; i < n; i++) {
 	    	wrapper = gen.generate(wrapper);
 	    	assertNotNull(wrapper);
-	    	assertNull(wrapper.product);
+	    	assertNull(wrapper.unwrap());
 	    }
     }
 	
