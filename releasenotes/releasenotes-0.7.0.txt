@@ -19,6 +19,10 @@ changes
 - renamed Entity2BeanConverter to Entity2JavaConverter
 - replaced OfflineSequenceGenerator with CachedSequenceGenerator
 - replaced Iterable and Iterator with DataSource and DataIterator
+- Changed signature of generate() method in Generator interface
+- New convenience methods in GeneratorUtil
+- New helper class GeneratingConverter
+- Renamed ValidatingGenerator.generateImpl() to doGenerate()
 
 
 enhancements
