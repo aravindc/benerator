@@ -23,7 +23,7 @@ package org.databene.benerator.file;
 
 import java.io.File;
 
-import org.databene.benerator.wrapper.AsNonNullGenerator;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
@@ -39,7 +39,7 @@ public class FileNameGenerator extends NonNullGeneratorWrapper<File, String> {
     }
 	
 	public FileNameGenerator(String rootUri, String filter, boolean recursive, boolean files, boolean folders) {
-		super(new AsNonNullGenerator<File>(new FileGenerator(rootUri, filter, recursive, folders, files)));
+		super(GeneratorFactoryUtil.asNonNullGenerator(new FileGenerator(rootUri, filter, recursive, folders, files)));
 	    setRootUri(rootUri);
 	    setFilter(filter);
 	    setRecursive(recursive);

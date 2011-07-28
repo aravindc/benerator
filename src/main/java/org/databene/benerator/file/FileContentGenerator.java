@@ -24,7 +24,7 @@ package org.databene.benerator.file;
 import java.io.File;
 
 import org.databene.benerator.GeneratorContext;
-import org.databene.benerator.wrapper.AsNonNullGenerator;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.wrapper.NonNullGeneratorWrapper;
 
 /**
@@ -58,7 +58,7 @@ public abstract class FileContentGenerator<E> extends NonNullGeneratorWrapper<Fi
 	@Override
     public void init(GeneratorContext context) {
 		assertNotInitialized();
-	    setSource(new AsNonNullGenerator<File>(new FileGenerator(uri, filter, recursive, true, false)));
+	    setSource(GeneratorFactoryUtil.asNonNullGenerator(new FileGenerator(uri, filter, recursive, true, false)));
 	    super.init(context);
     }
 
