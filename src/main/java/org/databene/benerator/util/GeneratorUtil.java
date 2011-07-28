@@ -59,7 +59,11 @@ public class GeneratorUtil {
 	}
 
     public static void init(Generator<?> generator) {
-    	generator.init(new BeneratorContext());
+    	init(generator, new BeneratorContext());
+    }
+
+    public static void init(Generator<?> generator, GeneratorContext context) {
+    	generator.init(context);
     }
 
     public static void close(Generator<?> generator) {
