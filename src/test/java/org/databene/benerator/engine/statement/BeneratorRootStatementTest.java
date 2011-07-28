@@ -32,6 +32,7 @@ import org.databene.benerator.engine.BeneratorRootStatement;
 import org.databene.benerator.engine.DescriptorRunner;
 import org.databene.benerator.factory.EquivalenceGeneratorFactory;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.CollectionUtil;
 import org.databene.model.data.Entity;
 import org.junit.Test;
@@ -78,7 +79,7 @@ public class BeneratorRootStatementTest extends GeneratorTest {
     }
 
 	private void checkGeneration(Generator<?> generator) {
-	    Entity entity = (Entity) generator.generate();
+	    Entity entity = (Entity) GeneratorUtil.generateNonNull(generator);
 	    assertNotNull("generator unavailable: " + generator, entity);
 		assertEquals("Person", entity.type());
 		assertEquals("Alice", entity.get("name"));

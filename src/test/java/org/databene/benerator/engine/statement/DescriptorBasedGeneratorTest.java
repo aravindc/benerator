@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import org.databene.benerator.Generator;
 import org.databene.benerator.engine.DescriptorBasedGenerator;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.SystemInfo;
 import org.databene.model.data.Entity;
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class DescriptorBasedGeneratorTest extends GeneratorTest {
 	}
 
 	private void checkGeneration(Generator<?> generator) {
-	    Entity entity = (Entity) generator.generate();
+	    Entity entity = (Entity) GeneratorUtil.generateNonNull(generator);
 	    assertNotNull(entity);
 		assertEquals("Person", entity.type());
 		assertEquals("Alice", entity.get("name"));

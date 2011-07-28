@@ -27,11 +27,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.databene.benerator.Generator;
-import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.engine.GeneratorTask;
 import org.databene.benerator.sample.ConstantGenerator;
 import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ErrorHandler;
 import org.databene.commons.Expression;
 import org.databene.commons.expression.ConstantExpression;
@@ -79,11 +79,11 @@ public class GenerateOrIterateStatementTest {
 	        return Entity.class;
         }
 		
-		public Entity generate() throws IllegalGeneratorStateException {
+		public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
 			int tmp = invocationCount;
 			threads.add(Thread.currentThread());
-            invocationCount = tmp + 1; 						// update is slightly delayed in order to provoke update errors 
-	        return new Entity("Person", "name", "Alice");   // in case of concurrency issues
+            invocationCount = tmp + 1; 	// update is slightly delayed in order to provoke update errors...
+	        return wrapper.wrap(new Entity("Person", "name", "Alice"));   // ...in case of concurrency issues
         }
 	}
 	
