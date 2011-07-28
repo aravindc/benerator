@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,9 +26,10 @@
 
 package org.databene.benerator.distribution.sequence;
 
-import org.databene.benerator.IllegalGeneratorStateException;
+import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.sequence.RandomWalkDoubleGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Set;
@@ -48,60 +49,53 @@ public class RandomWalkDoubleGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testGreater() throws IllegalGeneratorStateException {
+    public void testGreaterSimple() {
         RandomWalkDoubleGenerator simpleGenerator = initialize(new RandomWalkDoubleGenerator(1, 5, 1, 1, 1));
-        assertEquals(1., simpleGenerator.generate());
-        assertEquals(2., simpleGenerator.generate());
-        assertEquals(3., simpleGenerator.generate());
-        
-        RandomWalkDoubleGenerator oddGenerator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, 2, 2));
-        assertEquals(1., oddGenerator.generate());
-        assertEquals(3., oddGenerator.generate());
-        assertEquals(5., oddGenerator.generate());
+        expectGeneratedSequence(simpleGenerator, 1., 2., 3.);
     }
 
     @Test
-    public void testGreaterOrEquals() throws IllegalGeneratorStateException {
+    public void testGreaterOdd() {
+        RandomWalkDoubleGenerator oddGenerator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, 2, 2));
+        expectGeneratedSequence(oddGenerator, 1., 3., 5.);
+    }
+
+    @Test
+    public void testGreaterOrEquals() {
         RandomWalkDoubleGenerator generator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, 0, 2));
         Set<Double> space = CollectionUtil.toSet(1., 3., 5.);
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
+        assertProductSpace(space, generator);
     }
 
     @Test
-    public void testEquals() throws IllegalGeneratorStateException {
+    public void testEquals() {
         RandomWalkDoubleGenerator generator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, 0, 0));
-        assertEquals(3., generator.generate());
-        assertEquals(3., generator.generate());
-        assertEquals(3., generator.generate());
+        expectGeneratedSequence(generator, 3., 3., 3.);
     }
 
     @Test
-    public void testLessOrEquals() throws IllegalGeneratorStateException {
+    public void testLessOrEquals() {
         RandomWalkDoubleGenerator generator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, -2, 0));
         Set<Double> space = CollectionUtil.toSet(1., 3., 5.);
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
+        assertProductSpace(space, generator);
     }
 
     @Test
-    public void testLess() throws IllegalGeneratorStateException {
+    public void testLess() {
         RandomWalkDoubleGenerator generator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, -2, -2));
-        assertEquals(5., generator.generate());
-        assertEquals(3., generator.generate());
-        assertEquals(1., generator.generate());
+        expectGeneratedSequence(generator, 5., 3., 1.);
     }
 
     @Test
-    public void testLessOrGreater() throws IllegalGeneratorStateException {
+    public void testLessOrGreater() {
         RandomWalkDoubleGenerator generator = initialize(new RandomWalkDoubleGenerator(1, 5, 2, -2, 2));
         Set<Double> space = CollectionUtil.toSet(1., 3., 5.);
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
-        assertTrue(space.contains(generator.generate()));
+        assertProductSpace(space, generator);
+    }
+
+    private void assertProductSpace(Set<Double> space, Generator<Double> generator) {
+    	Double product = generator.generate(new ProductWrapper<Double>()).unwrap();
+		assertTrue("Expected one of " + space + ", but found " + product, space.contains(product));
     }
 
 }

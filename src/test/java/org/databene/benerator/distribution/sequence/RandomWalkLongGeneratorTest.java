@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator.distribution.sequence;
 import org.databene.benerator.IllegalGeneratorStateException;
 import org.databene.benerator.distribution.sequence.RandomWalkLongGenerator;
 import org.databene.benerator.test.GeneratorClassTest;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.CollectionUtil;
 
 import java.util.Set;
@@ -51,15 +52,11 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
     public void testGreater() throws IllegalGeneratorStateException {
         RandomWalkLongGenerator simpleGenerator = new RandomWalkLongGenerator(1, 5, 1, 1, 1, 1);
         simpleGenerator.init(context);
-        assertEquals(1L, (long)simpleGenerator.generate());
-        assertEquals(2L, (long)simpleGenerator.generate());
-        assertEquals(3L, (long)simpleGenerator.generate());
+        expectGeneratedSequence(simpleGenerator, 1L, 2L, 3L);
 
         RandomWalkLongGenerator oddGenerator = new RandomWalkLongGenerator(1, 5, 2, 1, 2, 2);
         oddGenerator.init(context);
-        assertEquals(1L, (long)oddGenerator.generate());
-        assertEquals(3L, (long)oddGenerator.generate());
-        assertEquals(5L, (long)oddGenerator.generate());
+        expectGeneratedSequence(oddGenerator, 1L, 3L, 5L);
     }
 
     @Test
@@ -76,9 +73,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
 	public void testEquals() throws IllegalGeneratorStateException {
         RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, 1, 0, 0);
         generator.init(context);
-        assertEquals(3L, (long)generator.generate());
-        assertEquals(3L, (long)generator.generate());
-        assertEquals(3L, (long)generator.generate());
+        expectGeneratedSequence(generator, 3L, 3L, 3L);
     }
 
     @Test
@@ -95,9 +90,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
     public void testLess() throws IllegalGeneratorStateException {
         RandomWalkLongGenerator generator = new RandomWalkLongGenerator(1, 5, 2, 1, -2, -2);
         generator.init(context);
-        assertEquals(5L, (long)generator.generate());
-        assertEquals(3L, (long)generator.generate());
-        assertEquals(1L, (long)generator.generate());
+        expectGeneratedSequence(generator, 5L, 3L, 1L);
     }
 
     @Test
@@ -111,7 +104,7 @@ public class RandomWalkLongGeneratorTest extends GeneratorClassTest {
     }
 
     private void assertProductSpace(Set<Long> space, RandomWalkLongGenerator generator) {
-        Long product = generator.generate();
+        Long product = generator.generate(new ProductWrapper<Long>()).unwrap();
 		assertTrue("Expected one of " + space + ", but found " + product, space.contains(product));
     }
 
