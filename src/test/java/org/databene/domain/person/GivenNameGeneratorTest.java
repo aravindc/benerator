@@ -1,7 +1,6 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.measure.count.ObjectCounter;
 import org.junit.Test;
@@ -22,7 +21,7 @@ public class GivenNameGeneratorTest extends GeneratorClassTest {
     @Test
     public void test() throws IllegalGeneratorStateException {
         ObjectCounter<String> counter = new ObjectCounter<String>(10);
-        Generator<String> generator = new GivenNameGenerator();
+        GivenNameGenerator generator = new GivenNameGenerator();
         generator.init(context);
         for (int i = 0; i < 10; i++)
             counter.count(generator.generate());

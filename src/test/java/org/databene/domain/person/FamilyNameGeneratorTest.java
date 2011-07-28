@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -27,7 +27,6 @@
 package org.databene.domain.person;
 
 import org.databene.benerator.IllegalGeneratorStateException;
-import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorClassTest;
 import org.databene.measure.count.ObjectCounter;
 import org.junit.Test;
@@ -48,7 +47,7 @@ public class FamilyNameGeneratorTest extends GeneratorClassTest {
     @Test
     public void test() throws IllegalGeneratorStateException {
         ObjectCounter<String> counter = new ObjectCounter<String>(10);
-        Generator<String> generator = new FamilyNameGenerator();
+        FamilyNameGenerator generator = new FamilyNameGenerator();
         generator.init(context);
         for (int i = 0; i < 10; i++)
             counter.count(generator.generate());
