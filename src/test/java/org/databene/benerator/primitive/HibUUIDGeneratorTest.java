@@ -45,7 +45,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testWithoutSeparator() {
-        Generator<String> generator = new HibUUIDGenerator();
+    	HibUUIDGenerator generator = new HibUUIDGenerator();
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             String id = generator.generate();
@@ -55,7 +55,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
 
     @Test
     public void testMinusSeparator() {
-        Generator<String> generator = new HibUUIDGenerator("-");
+    	HibUUIDGenerator generator = new HibUUIDGenerator("-");
         generator.init(context);
         for (int i = 0; i < 5; i++) {
             String id = generator.generate();
@@ -70,7 +70,7 @@ public class HibUUIDGeneratorTest extends GeneratorClassTest {
     
     @Test
     public void testUniqueness() {
-        Generator<String> generator = new UUIDGenerator();
+        Generator<String> generator = new HibUUIDGenerator();
         generator.init(context);
         expectUniqueGenerations(generator, 100);
     }

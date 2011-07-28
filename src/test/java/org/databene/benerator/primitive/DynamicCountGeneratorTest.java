@@ -56,7 +56,7 @@ public class DynamicCountGeneratorTest extends GeneratorTest {
 	public void testMaxIsNull() {
 		DynamicCountGenerator generator = new DynamicCountGenerator(ONE, NULL, ONE, STEP, FALSE, true);
 		generator.init(context);
-		assertEquals(1L, generator.generate().longValue());
+		assertEquals(1L, generateUnwrapped(generator).longValue());
 		generator.close();
 	}
 	
