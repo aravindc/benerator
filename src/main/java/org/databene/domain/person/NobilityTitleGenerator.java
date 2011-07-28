@@ -27,6 +27,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.csv.LocalCSVGenerator;
 import org.databene.benerator.util.RandomUtil;
 import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.Encodings;
 
 /**
@@ -82,11 +83,11 @@ public class NobilityTitleGenerator extends GeneratorProxy<String> {
     // Generator interface implementation ------------------------------------------------------------------------------
     
     @Override
-    public String generate() {
+    public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
         if (RandomUtil.randomProbability() < getNobleQuota())
-        	return super.generate();
+        	return super.generate(wrapper);
         else
-        	return "";
+        	return wrapper.wrap("");
     }
     
     @Override
