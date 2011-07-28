@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -26,6 +26,7 @@
 
 package org.databene.benerator;
 
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.commons.ArrayFormat;
 
 /**
@@ -59,11 +60,11 @@ public class SequenceTestGenerator<E> implements Generator<E> {
         return (Class<E>) (sequence.length > 0 ? sequence[0].getClass() : Object.class);
     }
 
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
     	generateCount++;
         if (cursor >= sequence.length)
             return null;
-        return sequence[cursor++];
+        return wrapper.wrap(sequence[cursor++]);
     }
 
     public boolean wasInitialized() {
@@ -92,5 +93,5 @@ public class SequenceTestGenerator<E> implements Generator<E> {
 	public boolean isThreadSafe() {
 	    return false;
     }
-    
+
 }

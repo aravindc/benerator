@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -29,6 +29,7 @@ package org.databene.benerator;
 import org.junit.Test;
 import static junit.framework.Assert.*;
 import org.databene.benerator.sample.ConstantGenerator;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.benerator.wrapper.ValidatingGeneratorProxy;
 import org.databene.commons.Validator;
 
@@ -46,7 +47,7 @@ public class ValidatingGeneratorProxyTest {
                 new ConstantGenerator<Integer>(1),
                 new MockValidator(true));
         for (int i = 0; i < 10; i++)
-            generator.generate();
+        	GeneratorUtil.generateNullable(generator);
     }
 
 	@Test
@@ -55,7 +56,7 @@ public class ValidatingGeneratorProxyTest {
                 new ConstantGenerator<Integer>(1),
                 new MockValidator(false));
         try {
-            generator.generate();
+            GeneratorUtil.generateNullable(generator);
             fail("Exception expercted");
         } catch (IllegalGeneratorStateException e) {
             // This is the expected behavior

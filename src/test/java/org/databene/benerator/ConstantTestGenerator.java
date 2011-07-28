@@ -26,6 +26,8 @@
 
 package org.databene.benerator;
 
+import org.databene.benerator.wrapper.ProductWrapper;
+
 
 /**
  * Helper class for testing.<br/><br/>
@@ -54,9 +56,9 @@ public class ConstantTestGenerator<E> implements Generator<E> {
         return (value != null ? (Class<E>) value.getClass() : null);
     }
 
-    public E generate() {
+	public ProductWrapper<E> generate(ProductWrapper<E> wrapper) {
         this.lastMethodCall = "generate";
-        return value;
+        return wrapper.wrap(value);
     }
 
     public boolean wasInitialized() {
@@ -82,5 +84,5 @@ public class ConstantTestGenerator<E> implements Generator<E> {
 	public boolean isThreadSafe() {
 	    return true;
     }
-    
+
 }
