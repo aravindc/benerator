@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2010-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -24,6 +24,7 @@ package org.databene.platform.db;
 import static org.junit.Assert.*;
 
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.IOUtil;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.junit.AfterClass;
@@ -65,12 +66,12 @@ public class QueryGeneratorTest extends GeneratorTest {
 		try {
 	        generator = new QueryGenerator<Integer>("select value from TT", db, true);
 	        generator.init(context);
-	        assertEquals(1000, generator.generate().intValue());
+	        assertEquals(1000, GeneratorUtil.generateNonNull(generator).intValue());
 	        assertUnavailable(generator);
 
 	        db.execute("update TT set value = 1001 where id = 1");
 	        generator.reset();
-	        assertEquals(1001, generator.generate().intValue());
+	        assertEquals(1001, GeneratorUtil.generateNonNull(generator).intValue());
 	        assertUnavailable(generator);
         } finally {
 	        IOUtil.close(generator);
