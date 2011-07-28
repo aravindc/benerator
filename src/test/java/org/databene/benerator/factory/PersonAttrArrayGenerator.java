@@ -22,6 +22,7 @@
 package org.databene.benerator.factory;
 
 import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 
 /**
  * Constant array generator for test purposes.<br/><br/>
@@ -37,8 +38,8 @@ public class PersonAttrArrayGenerator extends SimpleGenerator<Object[]> {
         return Object[].class;
     }
 	
-	public Object[] generate() {
-        return ALICE;
+	public ProductWrapper<Object[]> generate(ProductWrapper<Object[]> wrapper) {
+        return wrapper.wrap(ALICE);
     }
 
 }

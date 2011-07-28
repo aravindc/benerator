@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2009-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2009-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -30,6 +30,7 @@ package org.databene.benerator.factory;
 import java.util.Locale;
 
 import org.databene.benerator.util.SimpleGenerator;
+import org.databene.benerator.wrapper.ProductWrapper;
 import org.databene.model.data.Entity;
 
 public class MyGenerator extends SimpleGenerator<Entity> {
@@ -44,11 +45,12 @@ public class MyGenerator extends SimpleGenerator<Entity> {
 		this.locale = locale;
 	}
 
-	public Entity generate() {
-		return new Entity("MyEntity", "locale", locale);
+	public ProductWrapper<Entity> generate(ProductWrapper<Entity> wrapper) {
+		return wrapper.wrap(new Entity("MyEntity", "locale", locale));
 	}
 
     public Class<Entity> getGeneratedType() {
         return Entity.class;
     }
+
 }

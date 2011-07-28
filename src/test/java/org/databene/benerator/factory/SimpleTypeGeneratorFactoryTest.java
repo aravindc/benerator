@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -33,6 +33,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.script.BeneratorScriptFactory;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.converter.ConverterManager;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.DataModel;
@@ -176,7 +177,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		ObjectCounter<String> counter = new ObjectCounter<String>(2);
 		int n = 1000;
 		for (int i = 0; i < n; i++)
-			counter.count(generator.generate());
+			counter.count(GeneratorUtil.generateNonNull(generator));
 		assertEquals(n * 24. / (24. + 89.), counter.getCount("Alice"), n / 20);
 	}
 
@@ -196,7 +197,7 @@ public class SimpleTypeGeneratorFactoryTest extends GeneratorTest {
 		Generator<String> generator = createAndInitGenerator(type, Uniqueness.SIMPLE);
 		ObjectCounter<String> counter = new ObjectCounter<String>(2);
 		for (int i = 0; i < 2; i++)
-			counter.count(generator.generate());
+			counter.count(GeneratorUtil.generateNonNull(generator));
 		assertEquals(counter.toString(), 1, counter.getCount("Alice"));
 		assertEquals(counter.toString(), 1, counter.getCount("Otto"));
 		assertUnavailable(generator);
