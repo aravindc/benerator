@@ -43,15 +43,15 @@ public abstract class AbstractWeightFunction implements WeightFunction {
 
     @SuppressWarnings("unchecked")
     public <T extends Number> NonNullGenerator<T> createGenerator(
-    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (Long.class.equals(numberType))
-    		return (NonNullGenerator<T>) createLongGenerator(min, max, precision);
+    		return (NonNullGenerator<T>) createLongGenerator(min, max, granularity);
     	else if (Double.class.equals(numberType))
-    		return (NonNullGenerator<T>) createDoubleGenerator(min, max, precision);
+    		return (NonNullGenerator<T>) createDoubleGenerator(min, max, granularity);
     	else if (BeanUtil.isIntegralNumberType(numberType))
-    		return WrapperFactory.wrapNonNullNumberGenerator(numberType, createLongGenerator(min, max, precision), min, precision);
+    		return WrapperFactory.wrapNonNullNumberGenerator(numberType, createLongGenerator(min, max, granularity), min, granularity);
     	else
-    		return WrapperFactory.wrapNonNullNumberGenerator(numberType, createDoubleGenerator(min, max, precision), min, precision);
+    		return WrapperFactory.wrapNonNullNumberGenerator(numberType, createDoubleGenerator(min, max, granularity), min, granularity);
     }
 
     public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
@@ -60,12 +60,12 @@ public abstract class AbstractWeightFunction implements WeightFunction {
     
     // helper methods --------------------------------------------------------------------------------------------------
 
-	private <T extends Number> WeightedLongGenerator createLongGenerator(T min, T max, T precision) {
-	    return new WeightedLongGenerator(min.longValue(), max.longValue(), precision.longValue(), this);
+	private <T extends Number> WeightedLongGenerator createLongGenerator(T min, T max, T granularity) {
+	    return new WeightedLongGenerator(min.longValue(), max.longValue(), granularity.longValue(), this);
     }
 
-	private <T extends Number> NonNullGenerator<Double> createDoubleGenerator(T min, T max, T precision) {
-	    return new WeightedDoubleGenerator(min.doubleValue(), max.doubleValue(), precision.doubleValue(), this);
+	private <T extends Number> NonNullGenerator<Double> createDoubleGenerator(T min, T max, T granularity) {
+	    return new WeightedDoubleGenerator(min.doubleValue(), max.doubleValue(), granularity.doubleValue(), this);
     }
 
 }

@@ -54,16 +54,16 @@ public class RandomWalkDoubleGenerator extends AbstractNonNullNumberGenerator<Do
         incrementGenerator = new RandomDoubleGenerator(minIncrement, maxIncrement);
     }
 
-    public RandomWalkDoubleGenerator(double min, double max, double precision, double minIncrement, double maxIncrement) {
-        super(Double.class, min, max, precision);
-        incrementGenerator = new RandomDoubleGenerator(minIncrement, maxIncrement, precision);
+    public RandomWalkDoubleGenerator(double min, double max, double granularity, double minIncrement, double maxIncrement) {
+        super(Double.class, min, max, granularity);
+        incrementGenerator = new RandomDoubleGenerator(minIncrement, maxIncrement, granularity);
     }
     
     // properties ------------------------------------------------------------------------------------------------------
 
-    public void setPrecision(double precision) {
-    	super.setPrecision(precision);
-        incrementGenerator.setPrecision(precision);
+    public void setGranularity(double granularity) {
+    	super.setGranularity(granularity);
+        incrementGenerator.setGranularity(granularity);
     }
 
     public double getNext() {

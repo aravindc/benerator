@@ -38,6 +38,6 @@ import org.databene.benerator.NonNullGenerator;
  */
 public interface Distribution {
     <T extends Number> NonNullGenerator<T> createGenerator(
-    		Class<T> numberType, T min, T max, T precision, boolean unique);
+    		Class<T> numberType, T min, T max, T granularity, boolean unique);
     <T> Generator<T> applyTo(Generator<T> source, boolean unique);
 }

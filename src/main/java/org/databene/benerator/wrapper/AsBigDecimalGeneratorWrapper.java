@@ -48,10 +48,10 @@ public class AsBigDecimalGeneratorWrapper<E extends Number> extends GeneratorWra
 	    this(source, null, null);
     }
 
-    public AsBigDecimalGeneratorWrapper(Generator<E> source, BigDecimal min, BigDecimal precision) {
+    public AsBigDecimalGeneratorWrapper(Generator<E> source, BigDecimal min, BigDecimal granularity) {
 	    super(source);
-	    if (precision != null) {
-	    	this.fractionDigits = MathUtil.fractionDigits(precision.doubleValue());
+	    if (granularity != null) {
+	    	this.fractionDigits = MathUtil.fractionDigits(granularity.doubleValue());
 	    	if (min != null)
 	    		this.fractionDigits = Math.max(this.fractionDigits, MathUtil.fractionDigits(min.doubleValue()));
 	    } else if (min != null)

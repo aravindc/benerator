@@ -46,18 +46,18 @@ public class RandomDoubleGenerator extends AbstractNonNullNumberGenerator<Double
         this(min, max, 1);
     }
 
-    public RandomDoubleGenerator(double min, double max, double precision) {
-        super(Double.class, min, max, precision);
+    public RandomDoubleGenerator(double min, double max, double granularity) {
+        super(Double.class, min, max, granularity);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
 
 	@Override
 	public Double generate() {
-        if (precision == 0)
+        if (granularity == 0)
             return min + Math.random() * (max - min);
-        int n = (int)((max - min) / precision);
-        return min + RandomUtil.randomInt(0, n) * precision;
+        int n = (int)((max - min) / granularity);
+        return min + RandomUtil.randomInt(0, n) * granularity;
     }
 
 }

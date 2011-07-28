@@ -42,7 +42,7 @@ public class RandomLongGenerator extends AbstractNonNullNumberGenerator<Long> {
 
     public static final long DEFAULT_MIN = Long.MIN_VALUE / 2 + 1;
     public static final long DEFAULT_MAX = Long.MAX_VALUE / 2 - 1;
-	private static final long DEFAULT_PRECISION = 1;
+	private static final long DEFAULT_GRANULARITY = 1;
 
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -51,19 +51,19 @@ public class RandomLongGenerator extends AbstractNonNullNumberGenerator<Long> {
     }
 
     public RandomLongGenerator(long min, Long max) {
-        this(min, max, DEFAULT_PRECISION);
+        this(min, max, DEFAULT_GRANULARITY);
     }
 
-    public RandomLongGenerator(long min, Long max, long precision) {
-        super(Long.class, min, max, precision);
+    public RandomLongGenerator(long min, Long max, long granularity) {
+        super(Long.class, min, max, granularity);
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
     public void init(GeneratorContext context) {
-    	if (precision == 0L)
-    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+    	if (granularity == 0L)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".granularity may not be 0");
         if (min > max)
             throw new InvalidGeneratorSetupException(
                     new PropertyMessage("min", "greater than max"),
@@ -73,16 +73,16 @@ public class RandomLongGenerator extends AbstractNonNullNumberGenerator<Long> {
     
 	@Override
 	public synchronized Long generate() {
-        return generate(min, max, precision);
+        return generate(min, max, granularity);
     }
     
     // public convenience method ---------------------------------------------------------------------------------------
 
-    public static long generate(long min, long max, long precision) {
+    public static long generate(long min, long max, long granularity) {
     	if (min == max)
     		return min;
-        long range = (max - min) / precision;
-        return min + RandomUtil.randomLong(0, range) * precision;
+        long range = (max - min) / granularity;
+        return min + RandomUtil.randomLong(0, range) * granularity;
     }
 
 }

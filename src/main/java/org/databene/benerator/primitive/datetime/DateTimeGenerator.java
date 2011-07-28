@@ -54,12 +54,12 @@ public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNu
     
     Date minDate;
     Date maxDate;
-    String datePrecision;
+    String dateGranularity;
     Distribution dateDistribution;
     
     long minTime;
     long maxTime;
-    long timePrecision;
+    long timeGranularity;
     Distribution timeDistribution;
 	private WrapperProvider<Long> timeWrapperProvider = new WrapperProvider<Long>();
     
@@ -79,8 +79,8 @@ public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNu
         setMaxTime(maxTime);
         setDateDistribution(SequenceManager.RANDOM_SEQUENCE);
         setTimeDistribution(SequenceManager.RANDOM_SEQUENCE);
-        setDatePrecision("00-00-01");
-        setTimePrecision(TimeUtil.time(0, 1));
+        setDateGranularity("00-00-01");
+        setTimeGranularity(TimeUtil.time(0, 1));
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -93,8 +93,8 @@ public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNu
         this.maxDate = maxDate;
     }
 
-    public void setDatePrecision(String datePrecision) {
-    	this.datePrecision = datePrecision;
+    public void setDateGranularity(String dateGranularity) {
+    	this.dateGranularity = dateGranularity;
     }
     
     public void setDateDistribution(Distribution distribution) {
@@ -109,8 +109,8 @@ public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNu
         this.maxTime = TimeUtil.millisSinceOwnEpoch(maxTime);
     }
     
-    public void setTimePrecision(Time timePrecision) {
-        this.timePrecision = TimeUtil.millisSinceOwnEpoch(timePrecision);
+    public void setTimeGranularity(Time timeGranularity) {
+        this.timeGranularity = TimeUtil.millisSinceOwnEpoch(timeGranularity);
     }
     
     public void setTimeDistribution(Distribution distribution) {
@@ -124,10 +124,10 @@ public class DateTimeGenerator extends CompositeGenerator<Date> implements NonNu
     	assertNotInitialized();
     	this.dateGenerator = registerComponent(
     			new DayGenerator(minDate, maxDate, dateDistribution, false));
-    	dateGenerator.setPrecision(datePrecision);
+    	dateGenerator.setGranularity(dateGranularity);
     	this.dateGenerator.init(context);
     	this.timeOffsetGenerator = registerComponent(context.getGeneratorFactory().createNumberGenerator(
-    			Long.class, minTime, true, maxTime, true, timePrecision, timeDistribution, Uniqueness.NONE));
+    			Long.class, minTime, true, maxTime, true, timeGranularity, timeDistribution, Uniqueness.NONE));
     	this.timeOffsetGenerator.init(context);
         super.init(context);
     }

@@ -32,7 +32,7 @@ import org.databene.commons.expression.ExpressionUtil;
 /**
  * {@link Generator} implementation that generates {@link Long} numbers, 
  * redefining the underlying distribution on each <code>reset()</code> by
- * evaluating the <code>min</code>, <code>max</code>, <code>precision</code>,
+ * evaluating the <code>min</code>, <code>max</code>, <code>granularity</code>,
  * <code>distribution</code> and <code>unique</code> values.<br/><br/>
  * Created: 27.03.2010 19:28:38
  * @since 0.6.0
@@ -42,7 +42,7 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
 
     protected Expression<Long> min;
     protected Expression<Long> max;
-    protected Expression<Long> precision;
+    protected Expression<Long> granularity;
     protected Expression<? extends Distribution> distribution;
     protected Expression<Boolean> unique;
 
@@ -55,12 +55,12 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
     }
 
     public DynamicLongGenerator(Expression<Long> min, Expression<Long> max, 
-    		Expression<Long> precision, Expression<? extends Distribution> distribution,
+    		Expression<Long> granularity, Expression<? extends Distribution> distribution,
     	    Expression<Boolean> unique) {
         super(null);
         this.min = min;
         this.max = max;
-        this.precision = precision;
+        this.granularity = granularity;
         this.distribution = distribution;
     }
     
@@ -85,11 +85,11 @@ public class DynamicLongGenerator extends GeneratorProxy<Long> {
 	protected void resetMembers(Long minValue, Long maxValue) {
 		if (minValue == null)
 			minValue = 0L;
-		Long precisionValue = ExpressionUtil.evaluate(precision, context);
-		if (precisionValue == null)
-			precisionValue = 1L;
+		Long granularityValue = ExpressionUtil.evaluate(granularity, context);
+		if (granularityValue == null)
+			granularityValue = 1L;
 	    Distribution dist = distribution.evaluate(context);
-	    Generator<Long> source = dist.createGenerator(Long.class, minValue, maxValue, precisionValue, false);
+	    Generator<Long> source = dist.createGenerator(Long.class, minValue, maxValue, granularityValue, false);
         source.init(context);
         setSource(source);
     }

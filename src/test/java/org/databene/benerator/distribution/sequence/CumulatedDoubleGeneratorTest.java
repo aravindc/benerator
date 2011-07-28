@@ -61,7 +61,7 @@ public class CumulatedDoubleGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testPrecision() {
+    public void testGranularity() {
         checkProductSet(createAndInit( 1,  3, 2), 100, CollectionUtil.toSet( 1.,  3.));
         checkProductSet(createAndInit(-3, -1, 2), 100, CollectionUtil.toSet(-3., -1.));
         checkProductSet(createAndInit(-1,  1, 2), 100, CollectionUtil.toSet(-1.,  1.));
@@ -71,8 +71,8 @@ public class CumulatedDoubleGeneratorTest extends GeneratorClassTest {
 	    return initialize(new CumulatedDoubleGenerator(min, max));
     }
 
-	private CumulatedDoubleGenerator createAndInit(int min, int max, int precision) {
-	    return initialize(new CumulatedDoubleGenerator(min, max, precision));
+	private CumulatedDoubleGenerator createAndInit(int min, int max, int granularity) {
+	    return initialize(new CumulatedDoubleGenerator(min, max, granularity));
     }
 
 }

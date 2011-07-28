@@ -57,7 +57,7 @@ public class WeightedNumbers<E> extends Sequence {
 		samples = BeneratorScriptParser.parseWeightedLiteralList(spec);
 	}
 
-	public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+	public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
             boolean unique) {
 		if (unique)
 			throw new ConfigurationError(getClass().getSimpleName() + " is not designed to generate unique values");

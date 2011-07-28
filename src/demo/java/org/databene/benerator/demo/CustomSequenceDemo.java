@@ -36,10 +36,10 @@ public class CustomSequenceDemo {
 	        super("odd");
         }
 
-		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
         	OddNumberGenerator doubleGenerator = new OddNumberGenerator(min.doubleValue(), max.doubleValue());
-			return WrapperFactory.wrapNonNullNumberGenerator(numberType, doubleGenerator, min, precision);
+			return WrapperFactory.wrapNonNullNumberGenerator(numberType, doubleGenerator, min, granularity);
         }
     }
 
@@ -47,7 +47,7 @@ public class CustomSequenceDemo {
     	
     	private double min;
     	private double max;
-    	private double precision;
+    	private double granularity;
     	
     	private double next;
     	
@@ -55,10 +55,10 @@ public class CustomSequenceDemo {
 	        this(min, max, null);
         }
 
-		public OddNumberGenerator(double min, double max, Double precision) {
+		public OddNumberGenerator(double min, double max, Double granularity) {
 	        this.min = min;
 	        this.max = max;
-	        this.precision = (precision != null ? precision : 2);
+	        this.granularity = (granularity != null ? granularity : 2);
 	        this.next = min;
         }
 		
@@ -73,7 +73,7 @@ public class CustomSequenceDemo {
         	if (next >= max)
         		return null;
 	        double result = next;
-	        next += precision;
+	        next += granularity;
 	        return result;
         }
 

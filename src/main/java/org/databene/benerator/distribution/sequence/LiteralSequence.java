@@ -64,7 +64,7 @@ public class LiteralSequence extends Sequence {
     }
 
 	@SuppressWarnings("unchecked")
-    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
             boolean unique) {
 		Number[] ts = new Number[numbers.length];
 		NumberToNumberConverter<Number, T> converter = new NumberToNumberConverter<Number, T>(Number.class, numberType);

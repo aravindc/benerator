@@ -45,11 +45,11 @@ public abstract class LongBasedSequence extends Sequence {
 		super(name);
 	}
 
-    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
-    	NonNullGenerator<Long> source = createLongGenerator(toLong(min), toLong(max), toLong(precision), unique);
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, source, min, precision);
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
+    	NonNullGenerator<Long> source = createLongGenerator(toLong(min), toLong(max), toLong(granularity), unique);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, source, min, granularity);
     }
 
-	protected abstract NonNullGenerator<Long> createLongGenerator(Long min, Long max, Long precision, boolean unique);
+	protected abstract NonNullGenerator<Long> createLongGenerator(Long min, Long max, Long granularity, boolean unique);
 	
 }

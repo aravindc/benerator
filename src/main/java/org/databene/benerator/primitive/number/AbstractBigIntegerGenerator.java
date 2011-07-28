@@ -48,18 +48,18 @@ public abstract class AbstractBigIntegerGenerator extends AbstractNonNullNumberG
             (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff}
     );
 
-    /** Initializes the generator to create uniformly distributed random BigIntegers with precision 1 */
+    /** Initializes the generator to create uniformly distributed random BigIntegers with granularity 1 */
     public AbstractBigIntegerGenerator() {
         this(DEFAULT_MIN, DEFAULT_MAX);
     }
 
-    /** Initializes the generator to create uniformly distributed random BigIntegers with precision 1 */
+    /** Initializes the generator to create uniformly distributed random BigIntegers with granularity 1 */
     public AbstractBigIntegerGenerator(BigInteger min, BigInteger max) {
         this(min, max, NumberToNumberConverter.convert(1, BigInteger.class));
     }
 
-    /** Initializes the generator to create uniformly distributed random BigIntegers with the specified precision */
-    public AbstractBigIntegerGenerator(BigInteger min, BigInteger max, BigInteger precision) {
-        super(BigInteger.class, min, max, precision);
+    /** Initializes the generator to create uniformly distributed random BigIntegers with the specified granularity */
+    public AbstractBigIntegerGenerator(BigInteger min, BigInteger max, BigInteger granularity) {
+        super(BigInteger.class, min, max, granularity);
     }
 }

@@ -99,17 +99,17 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
     }
 
 
-    private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision) {
+    private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T granularity) {
         for (Sequence sequence : SequenceManager.registeredSequences())
         	if (!(sequence instanceof HeadSequence))
-        		checkNumberGenerator(type, min, max, precision, sequence);
+        		checkNumberGenerator(type, min, max, granularity, sequence);
         if (max != null)
 	        for (WeightFunction function : getDistributionFunctions(min.doubleValue(), max.doubleValue()))
-	            checkNumberGenerator(type, min, max, precision, function);
+	            checkNumberGenerator(type, min, max, granularity, function);
     }
     
-    private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, Sequence sequence) {
-        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, precision, sequence, Uniqueness.NONE);
+    private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T granularity, Sequence sequence) {
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, granularity, sequence, Uniqueness.NONE);
         generator.init(context);
         ProductWrapper<T> wrapper = new ProductWrapper<T>();
         for (int i = 0; i < 5; i++) {
@@ -123,10 +123,10 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
         }
     }
 
-    private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T precision, WeightFunction weightFunction) {
-        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, precision, weightFunction, Uniqueness.NONE);
+    private <T extends Number> void checkNumberGenerator(Class<T> type, T min, T max, T granularity, WeightFunction weightFunction) {
+        Generator<T> generator = generatorFactory.createNumberGenerator(type, min, true, max, true, granularity, weightFunction, Uniqueness.NONE);
         generator.init(context);
-        int range = (int)((max.doubleValue() - min.doubleValue() + precision.doubleValue()) / precision.doubleValue());
+        int range = (int)((max.doubleValue() - min.doubleValue() + granularity.doubleValue()) / granularity.doubleValue());
         int[] count = new int[range];
         ProductWrapper<T> wrapper = new ProductWrapper<T>();
         for (int i = 0; i < 1000; i++) {
@@ -134,7 +134,7 @@ public class VolumeGeneratorFactoryTest extends GeneratorTest {
             double d = n.doubleValue();
             assertTrue(d >= min.doubleValue());
             assertTrue(d <= max.doubleValue());
-            int index = (int)((d - min.doubleValue()) / precision.doubleValue());
+            int index = (int)((d - min.doubleValue()) / granularity.doubleValue());
             count[index]++;
         }
         logger.debug(weightFunction + ": " + ArrayFormat.formatInts(", ", count));

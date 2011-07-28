@@ -62,7 +62,7 @@ public class ShuffleSequence extends Sequence {
     }
 
     public <T extends Number> NonNullGenerator<T> createGenerator(
-    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (increment == null)
     		increment = BigDecimal.valueOf(2);
     	if (max == null)
@@ -70,11 +70,11 @@ public class ShuffleSequence extends Sequence {
 		NonNullGenerator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType))
 			base = new ShuffleLongGenerator(
-					toLong(min), toLong(max), toLong(precision), toLong(increment));
+					toLong(min), toLong(max), toLong(granularity), toLong(increment));
 		else
 			base = new ShuffleDoubleGenerator(
-					toDouble(min), toDouble(max), toDouble(precision), toDouble(increment));
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
+					toDouble(min), toDouble(max), toDouble(granularity), toDouble(increment));
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
     }
     
 }

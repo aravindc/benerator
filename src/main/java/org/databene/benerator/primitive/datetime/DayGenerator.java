@@ -82,10 +82,10 @@ public class DayGenerator extends ThreadSafeNonNullGenerator<Date> {
     	this.max = max;
     }
 
-	public void setPrecision(String precisionSpec) {
-		String[] tokens = precisionSpec.split("-");
+	public void setGranularity(String granularitySpec) {
+		String[] tokens = granularitySpec.split("-");
 		if (tokens.length != 3)
-			throw new ConfigurationError("Illegal date granularity spec: " + precisionSpec);
+			throw new ConfigurationError("Illegal date granularity spec: " + granularitySpec);
 		this.yearGranularity = Integer.parseInt(tokens[0]);
 		this.monthGranularity = Integer.parseInt(tokens[1]);
 		this.dayGranularity = Integer.parseInt(tokens[2]);

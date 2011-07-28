@@ -46,11 +46,11 @@ public class RandomBigDecimalGenerator extends ThreadSafeNonNullGenerator<BigDec
 
 	private static final BigDecimal DEFAULT_MIN = BigDecimal.valueOf(Double.MIN_VALUE);
 	private static final BigDecimal DEFAULT_MAX = BigDecimal.valueOf(Double.MAX_VALUE);
-	private static final BigDecimal DEFAULT_PRECISION = BigDecimal.valueOf(1);
+	private static final BigDecimal DEFAULT_GRANULARITY = BigDecimal.valueOf(1);
 	
 	private BigDecimal min;
 	private BigDecimal max;
-	private BigDecimal precision;
+	private BigDecimal granularity;
 	private BigDecimal range;
 
     public RandomBigDecimalGenerator() {
@@ -58,16 +58,16 @@ public class RandomBigDecimalGenerator extends ThreadSafeNonNullGenerator<BigDec
     }
 
     public RandomBigDecimalGenerator(BigDecimal min, BigDecimal max) {
-        this(min, max, DEFAULT_PRECISION);
+        this(min, max, DEFAULT_GRANULARITY);
     }
 
-    public RandomBigDecimalGenerator(BigDecimal min, BigDecimal max, BigDecimal precision) {
+    public RandomBigDecimalGenerator(BigDecimal min, BigDecimal max, BigDecimal granularity) {
         this.min = min;
         this.max = max;
-        this.precision = precision;
-        BigDecimal tmp = max.subtract(min).divide(precision);
+        this.granularity = granularity;
+        BigDecimal tmp = max.subtract(min).divide(granularity);
         tmp.setScale(0, RoundingMode.DOWN);
-        this.range = tmp.multiply(precision);
+        this.range = tmp.multiply(granularity);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -78,16 +78,16 @@ public class RandomBigDecimalGenerator extends ThreadSafeNonNullGenerator<BigDec
 
 	@Override
 	public synchronized void init(GeneratorContext context) {
-    	if (BigDecimal.ONE.compareTo(precision) == 0)
-    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+    	if (BigDecimal.ONE.compareTo(granularity) == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".granularity may not be 0");
 	    super.init(context);
 	}
 	
 	@Override
 	public BigDecimal generate() {
-        long n = range.divide(precision).longValue();
+        long n = range.divide(granularity).longValue();
         BigDecimal i = BigDecimal.valueOf(RandomUtil.randomLong(0, n));
-		return min.add(i.multiply(precision));
+		return min.add(i.multiply(granularity));
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -100,8 +100,8 @@ public class RandomBigDecimalGenerator extends ThreadSafeNonNullGenerator<BigDec
     	return max;
     }
 
-	public BigDecimal getPrecision() {
-    	return precision;
+	public BigDecimal getGranularity() {
+    	return granularity;
     }
 
 }

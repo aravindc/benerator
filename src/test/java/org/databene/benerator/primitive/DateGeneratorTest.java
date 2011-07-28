@@ -54,8 +54,8 @@ public class DateGeneratorTest extends GeneratorTest {
         check(TimeUtil.date(1970, 6, 1), TimeUtil.date(1970, 6,  3), Period.MILLISECOND.getMillis());
     }
 
-    private void check(Date min, Date max, long precision) {
-        DateGenerator generator = new DateGenerator(min, max, precision);
+    private void check(Date min, Date max, long granularity) {
+        DateGenerator generator = new DateGenerator(min, max, granularity);
         generator.init(context);
         for (int i = 0; i < 10000; i++) {
             Date date = generator.generate();
@@ -64,7 +64,7 @@ public class DateGeneratorTest extends GeneratorTest {
             assertFalse(date.after(max));
             long time = date.getTime();
             long time0 = min.getTime();
-            assertEquals(0, (time - time0) % precision);
+            assertEquals(0, (time - time0) % granularity);
         }
     }
 

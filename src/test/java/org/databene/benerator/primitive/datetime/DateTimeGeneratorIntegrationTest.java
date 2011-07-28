@@ -59,11 +59,11 @@ public class DateTimeGeneratorIntegrationTest extends BeneratorIntegrationTest {
 			"<bean id='" + beanId + "' class='" + DateTimeGenerator.class.getName() + "'>" +
 			"  <property name='minDate'          value='2008-09-01'/>" +
 			"  <property name='maxDate'          value='2008-09-05'/>" +
-			"  <property name='datePrecision'    value='00-00-02'  />" +
+			"  <property name='dateGranularity'    value='00-00-02'  />" +
 			"  <property name='dateDistribution' value='step'      />" +
 			"  <property name='minTime'          value='08:00:00'  />" +
 			"  <property name='maxTime'          value='16:00:00'  />" +
-			"  <property name='timePrecision'    value='00:00:01'  />" +
+			"  <property name='timeGranularity'    value='00:00:01'  />" +
 			"  <property name='timeDistribution' value='step'      />" +
 			"</bean>";
 		BeanStatement statement = (BeanStatement) parse(xml);
@@ -76,7 +76,7 @@ public class DateTimeGeneratorIntegrationTest extends BeneratorIntegrationTest {
 		assertEquals(SequenceManager.STEP_SEQUENCE, generator.dateDistribution);
 		assertEquals( 8 * 3600 * 1000, generator.minTime);
 		assertEquals(16 * 3600 * 1000, generator.maxTime);
-		assertEquals(1000, generator.timePrecision);
+		assertEquals(1000, generator.timeGranularity);
 		assertEquals(SequenceManager.STEP_SEQUENCE, generator.timeDistribution);
 		
 		// check generation

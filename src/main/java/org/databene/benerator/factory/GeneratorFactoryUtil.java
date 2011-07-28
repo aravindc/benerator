@@ -326,10 +326,10 @@ public class GeneratorFactoryUtil {
 				if (minCountValue.equals(maxCountValue))
 					return new ConstantGenerator<Long>(minCountValue);
 			}
-			final Expression<Long> countPrecision = DescriptorUtil.getCountPrecision(descriptor);
+			final Expression<Long> countGranularity = DescriptorUtil.getCountGranularity(descriptor);
 			final Expression<Distribution> countDistribution = 
 				getDistributionExpression(descriptor.getCountDistribution(), Uniqueness.NONE, true);
-			return new DynamicCountGenerator(minCount, maxCount, countPrecision, countDistribution, 
+			return new DynamicCountGenerator(minCount, maxCount, countGranularity, countDistribution, 
 					ExpressionUtil.constant(false), resetToMin);
     	}
     }

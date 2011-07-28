@@ -93,7 +93,7 @@ public class XLSEntityIteratorTest extends XLSTest {
 		final ComplexTypeDescriptor descriptor = new ComplexTypeDescriptor("Product");
 		descriptor.addComponent(new PartDescriptor("ean", "string"));
 		SimpleTypeDescriptor priceTypeDescriptor = new SimpleTypeDescriptor("priceType", "big_decimal");
-		priceTypeDescriptor.setPrecision("0.01");
+		priceTypeDescriptor.setGranularity("0.01");
 		descriptor.addComponent(new PartDescriptor("price", priceTypeDescriptor));
 		descriptor.addComponent(new PartDescriptor("date", "date"));
 		descriptor.addComponent(new PartDescriptor("available", "boolean"));

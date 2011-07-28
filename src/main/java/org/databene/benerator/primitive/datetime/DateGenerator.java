@@ -51,7 +51,7 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
 
     private long min;
     private long max;
-    private long precision;
+    private long granularity;
     private Distribution distribution;
     private boolean unique;
     
@@ -63,24 +63,24 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
     }
 
     /** Initializes the generator to create dates with a uniform distribution */
-    public DateGenerator(Date min, Date max, long precision) {
-        this(min, max, precision, SequenceManager.RANDOM_SEQUENCE);
+    public DateGenerator(Date min, Date max, long granularity) {
+        this(min, max, granularity, SequenceManager.RANDOM_SEQUENCE);
     }
 
     /** Initializes the generator to create dates of a Sequence or WeightFunction */
-    public DateGenerator(Date min, Date max, long precision, Distribution distribution) {
-        this(min, max, precision, distribution, false);
+    public DateGenerator(Date min, Date max, long granularity, Distribution distribution) {
+        this(min, max, granularity, distribution, false);
     }
 
     /** Initializes the generator to create dates of a Sequence or WeightFunction */
-    public DateGenerator(Date min, Date max, long precision, Distribution distribution, boolean unique) {
+    public DateGenerator(Date min, Date max, long granularity, Distribution distribution, boolean unique) {
     	super(null);
         this.distribution = distribution;
 		this.min = (min != null ? min.getTime() : Long.MIN_VALUE);
 		this.max = (max != null ? max.getTime() : TimeUtil.date(TimeUtil.currentYear() + 10, 11, 31).getTime());
-		this.precision = precision;
+		this.granularity = granularity;
 		this.unique = unique;
-        setSource(distribution.createGenerator(Long.class, this.min, this.max, this.precision, this.unique));
+        setSource(distribution.createGenerator(Long.class, this.min, this.max, this.granularity, this.unique));
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -95,9 +95,9 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
         this.max = max.getTime();
     }
 
-    /** Sets the date precision in milliseconds */
-    public void setPrecision(String precision) {
-        this.precision = dateConverter.convert(precision);
+    /** Sets the date granularity in milliseconds */
+    public void setGranularity(String granularity) {
+        this.granularity = dateConverter.convert(granularity);
     }
 
     /** Sets the distribution to use */
@@ -114,7 +114,7 @@ public class DateGenerator extends NonNullGeneratorWrapper<Long, Date> {
     @Override
     public void init(GeneratorContext context) {
     	assertNotInitialized();
-    	setSource(distribution.createGenerator(Long.class, min, max, precision, unique));
+    	setSource(distribution.createGenerator(Long.class, min, max, granularity, unique));
 		super.init(context);
     }
 

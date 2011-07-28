@@ -51,7 +51,7 @@
 	<generate type="db_product" count="{product_count}" consumer="db">
 		<id name="ean_code" generator="new EANGenerator(true)" />
 		<reference name="category_id" targetType="db_category" source="db" distribution="random" />
-		<attribute name="price" type="big_decimal" min="0.49" max="99.99" precision="0.10" distribution="cumulated" />
+		<attribute name="price" type="big_decimal" min="0.49" max="99.99" granularity="0.10" distribution="cumulated" />
 		<!-- Export the generated products not only to the database, but also to a flat file -->
 		<consumer class="FlatFileEntityExporter">
 			<property name="uri" value="products.flat" />

@@ -58,10 +58,10 @@ public abstract class CumulativeDistributionFunction implements Distribution {
     }
 
 	public <T extends Number> NonNullGenerator<T> createGenerator(
-			Class<T> numberType, T min, T max, T precision, boolean unique) {
+			Class<T> numberType, T min, T max, T granularity, boolean unique) {
 		if (unique)
 			throw new IllegalArgumentException(this + " cannot generate unique values");
-	    return new IPINumberGenerator<T>(this, numberType, min, max, precision);
+	    return new IPINumberGenerator<T>(this, numberType, min, max, granularity);
     }
 	
 	@Override
@@ -84,16 +84,16 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 		private double probScale;
 		private double minD;
 		private double maxD;
-		private double precisionD;
+		private double granularityD;
     	
-		public IPINumberGenerator(CumulativeDistributionFunction fcn, Class<E> targetType, E min, E max, E precision) {
-			super(targetType, min, max, precision);
+		public IPINumberGenerator(CumulativeDistributionFunction fcn, Class<E> targetType, E min, E max, E granularity) {
+			super(targetType, min, max, granularity);
 			this.fcn = fcn;
 			this.minD = (min != null ? min.doubleValue() : (max != null ? maxD - 9 : 0));
 			this.maxD = (max != null ? max.doubleValue() : (min != null ? minD + 9 : 0));
-			this.precisionD = precision.doubleValue();
+			this.granularityD = granularity.doubleValue();
 			this.minProb = fcn.cumulativeProbability(minD);
-			this.probScale = fcn.cumulativeProbability(maxD + precisionD) - this.minProb;
+			this.probScale = fcn.cumulativeProbability(maxD + granularityD) - this.minProb;
 			this.converter = ConverterManager.getInstance().createConverter(Double.class, targetType);
         }
 
@@ -102,7 +102,7 @@ public abstract class CumulativeDistributionFunction implements Distribution {
 			double tmp;
 			double prob = minProb + random.nextDouble() * probScale;
 			tmp = fcn.inverse(prob);
-			tmp = Math.floor((tmp - minD) / precisionD) * precisionD + minD;
+			tmp = Math.floor((tmp - minD) / granularityD) * granularityD + minD;
 			return converter.convert(tmp);
         }
 

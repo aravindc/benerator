@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema 
 		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-		xmlns:ben="http://databene.org/benerator-0.5.0.xsd"
+		xmlns:ben="http://databene.org/benerator-0.7.0.xsd"
 		targetNamespace="demo/shop/product.xsd"
 		xmlns="demo/shop/product.xsd"
 		elementFormDefault="qualified">
@@ -17,7 +17,7 @@
 	
 	<xs:simpleType name="price-type">
 		<xs:annotation><xs:appinfo>
-			<ben:type min="0.49" max="99.99" precision="0.10" distribution="cumulated"/>
+			<ben:type min="0.49" max="99.99" granularity="0.10" distribution="cumulated"/>
 		</xs:appinfo></xs:annotation>
 		<xs:restriction base="xs:decimal">
 			<xs:minInclusive value="0"/>

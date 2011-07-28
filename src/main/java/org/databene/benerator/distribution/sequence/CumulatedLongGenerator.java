@@ -56,8 +56,8 @@ public class CumulatedLongGenerator extends AbstractNonNullNumberGenerator<Long>
         this(min, max, 1);
     }
 
-    public CumulatedLongGenerator(long min, long max, long precision) {
-        super(Long.class, min, max, precision);
+    public CumulatedLongGenerator(long min, long max, long granularity) {
+        super(Long.class, min, max, granularity);
     }
 
     // properties ------------------------------------------------------------------------------------------------------
@@ -72,14 +72,14 @@ public class CumulatedLongGenerator extends AbstractNonNullNumberGenerator<Long>
 	public synchronized Long generate() {
         long index = (baseGen.generate() + baseGen.generate() + baseGen.generate() + 
         		baseGen.generate() + baseGen.generate() + 2) / 5L;
-        return min + index * precision;
+        return min + index * granularity;
     }
     
     @Override
     public void init(GeneratorContext context) {
-    	if (precision.compareTo(0L) == 0)
-    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
-        baseGen = new RandomLongGenerator(0, (max - min) / precision);
+    	if (granularity.compareTo(0L) == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".granularity may not be 0");
+        baseGen = new RandomLongGenerator(0, (max - min) / granularity);
         baseGen.init(context);
         super.init(context);
     }

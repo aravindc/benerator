@@ -64,13 +64,13 @@ public class RandomWalkLongGenerator extends AbstractNonNullNumberGenerator<Long
         this(min, max, 1, min, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
     }
 
-    public RandomWalkLongGenerator(long min, long max, long precision, long initial, long minIncrement, long maxIncrement) {
-        this(min, max, precision, initial, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
+    public RandomWalkLongGenerator(long min, long max, long granularity, long initial, long minIncrement, long maxIncrement) {
+        this(min, max, granularity, initial, minIncrement, maxIncrement, SequenceManager.RANDOM_SEQUENCE);
     }
 
-    public RandomWalkLongGenerator(long min, long max, long precision, long initial, 
+    public RandomWalkLongGenerator(long min, long max, long granularity, long initial, 
     		long minIncrement, long maxIncrement, Distribution incrementDistribution) {
-        super(Long.class, min, max, precision);
+        super(Long.class, min, max, granularity);
         this.minIncrement = minIncrement;
         this.maxIncrement = maxIncrement;
         this.incrementDistribution = incrementDistribution;
@@ -92,7 +92,7 @@ public class RandomWalkLongGenerator extends AbstractNonNullNumberGenerator<Long
     @Override
     public void init(GeneratorContext context) {
         incrementGenerator = incrementDistribution.createGenerator(
-        		Long.class, minIncrement, maxIncrement, precision, false);
+        		Long.class, minIncrement, maxIncrement, granularity, false);
         if (minIncrement < 0 && maxIncrement <= 0)
             initial = max;
         else if (minIncrement >= 0 && maxIncrement > 0)

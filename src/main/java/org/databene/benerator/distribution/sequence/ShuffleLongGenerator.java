@@ -34,7 +34,7 @@ import org.databene.benerator.primitive.number.AbstractNonNullNumberGenerator;
  * Long Generator that implements a 'shuffle' Long Sequence: 
  * It starts with min and produced numbers by continuously incrementing the cursor 
  * by a fix <code>increment</code> value; when <code>max</code> is reached, it 
- * repeats the procedure starting by min+precision, later min+2*precision and so on.
+ * repeats the procedure starting by min+granularity, later min+2*granularity and so on.
  * The generated numbers are unique as long as the generator is not reset.<br/>
  * <br/>
  * Created: 18.06.2006 14:40:29
@@ -54,8 +54,8 @@ public class ShuffleLongGenerator extends AbstractNonNullNumberGenerator<Long> {
         this(min, max, 2, 1);
     }
 
-    public ShuffleLongGenerator(long min, long max, long precision, long increment) {
-        super(Long.class, min, max, precision);
+    public ShuffleLongGenerator(long min, long max, long granularity, long increment) {
+        super(Long.class, min, max, granularity);
         this.increment = increment;
         reset();
     }
@@ -75,8 +75,8 @@ public class ShuffleLongGenerator extends AbstractNonNullNumberGenerator<Long> {
     @Override
 	public void init(GeneratorContext context) {
         assertNotInitialized();
-        if (precision <= 0)
-            throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
+        if (granularity <= 0)
+            throw new InvalidGeneratorSetupException("Granularity must be greater than zero, but is " + granularity);
         if (min < max && increment <= 0)
             throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
         next = min;
@@ -92,7 +92,7 @@ public class ShuffleLongGenerator extends AbstractNonNullNumberGenerator<Long> {
         if (next + increment <= max)
         	next += increment;
         else {
-        	long newOffset = (next - min + precision) % increment;
+        	long newOffset = (next - min + granularity) % increment;
         	next = (newOffset > 0 ? min + newOffset : null);
         }
         return result;

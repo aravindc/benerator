@@ -83,8 +83,8 @@ public class BitReverseLongGeneratorTest extends GeneratorClassTest {
 		return gen;
     }
 
-	private BitReverseLongGenerator createAndInit(long min, long max, long precision) {
-	    BitReverseLongGenerator gen = new BitReverseLongGenerator(min, max, precision);
+	private BitReverseLongGenerator createAndInit(long min, long max, long granularity) {
+	    BitReverseLongGenerator gen = new BitReverseLongGenerator(min, max, granularity);
 	    gen.init(context);
 		return gen;
     }

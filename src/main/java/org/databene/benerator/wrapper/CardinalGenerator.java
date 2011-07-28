@@ -45,7 +45,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     
     int minCount;
     int maxCount;
-    int countPrecision;
+    int countGranularity;
     Distribution countDistribution;
     WrapperProvider<Integer> countWrapperProvider = new WrapperProvider<Integer>();
 
@@ -67,11 +67,11 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     }
 
     public CardinalGenerator(Generator<S> source, 
-    		int minCount, int maxCount, int countPrecision, Distribution countDistribution) {
+    		int minCount, int maxCount, int countGranularity, Distribution countDistribution) {
         super(source);
         this.minCount = minCount;
         this.maxCount = maxCount;
-        this.countPrecision = countPrecision;
+        this.countGranularity = countGranularity;
         this.countDistribution = countDistribution;
     }
     
@@ -81,7 +81,7 @@ public abstract class CardinalGenerator<S, P> extends GeneratorWrapper<S, P> {
     @Override
     public void init(GeneratorContext context) {
     	if (countGenerator == null)
-    		countGenerator = countDistribution.createGenerator(Integer.class, minCount, maxCount, countPrecision, false);
+    		countGenerator = countDistribution.createGenerator(Integer.class, minCount, maxCount, countGranularity, false);
         countGenerator.init(context);
         super.init(context);
     }

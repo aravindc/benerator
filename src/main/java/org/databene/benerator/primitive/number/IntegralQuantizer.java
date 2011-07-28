@@ -27,7 +27,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Quantizes integer numbers ({@link Byte}, {@link Short}, {@link Integer}, {@link Long})
- * to be <code>min</code> plus an integral multiple of <code>precision</code>.<br/><br/>
+ * to be <code>min</code> plus an integral multiple of <code>granularity</code>.<br/><br/>
  * Created: 15.03.2010 15:27:08
  * @since 0.6.0
  * @author Volker Bergmann
@@ -35,18 +35,18 @@ import org.databene.commons.converter.ThreadSafeConverter;
 public class IntegralQuantizer<E extends Number> extends ThreadSafeConverter<E, E> {
 	
 	private long min;
-	private long precision;
+	private long granularity;
 	private NumberToNumberConverter<Long, E> converter;
 
-	public IntegralQuantizer(Class<E> numberType, Long min, long precision) {
+	public IntegralQuantizer(Class<E> numberType, Long min, long granularity) {
 	    super(numberType, numberType);
 	    this.min = (min != null ? min : 0L);
-	    this.precision = precision;
+	    this.granularity = granularity;
 	    this.converter = new NumberToNumberConverter<Long, E>(Long.class, numberType);
     }
 
 	public E convert(E sourceValue) throws ConversionException {
-		long l = (sourceValue.longValue() - min) / precision * precision + min;
+		long l = (sourceValue.longValue() - min) / granularity * granularity + min;
 	    return converter.convert(l);
     }
 

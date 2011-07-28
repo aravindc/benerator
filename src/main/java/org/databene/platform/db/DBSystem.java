@@ -727,9 +727,9 @@ public class DBSystem extends AbstractStorageSystem {
                 typeDescriptor.setMaxLength(column.getSize());
             if (column.getFractionDigits() != null) {
             	if ("timestamp".equals(type))
-            		typeDescriptor.setPrecision("1970-01-02");
+            		typeDescriptor.setGranularity("1970-01-02");
             	else
-            		typeDescriptor.setPrecision(decimalPrecision(column.getFractionDigits()));
+            		typeDescriptor.setGranularity(decimalGranularity(column.getFractionDigits()));
             }
             //typeDescriptors.put(typeDescriptor.getName(), typeDescriptor);
             PartDescriptor descriptor = new PartDescriptor(columnName);
@@ -992,7 +992,7 @@ public class DBSystem extends AbstractStorageSystem {
         }
     }
 
-    private String decimalPrecision(int scale) {
+    private String decimalGranularity(int scale) {
         if (scale == 0)
             return "1";
         StringBuilder builder = new StringBuilder("0.");

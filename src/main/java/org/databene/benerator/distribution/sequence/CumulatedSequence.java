@@ -51,19 +51,19 @@ public class CumulatedSequence extends Sequence {
     	super("cumulated");
     }
 
-    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (unique)
     		throw new ConfigurationError(getClass().getSimpleName() + " does not support uniqueness");
     	NonNullGenerator<? extends Number> base;
 		if (BeanUtil.isIntegralNumberType(numberType)) {
 	    	long lMax = (max != null ? max.longValue() : 
 	    		(numberType != Long.class && numberType != BigInteger.class ? NumberUtil.maxValue(numberType).longValue() : CumulatedLongGenerator.DEFAULT_MAX));
-			base = new CumulatedLongGenerator(toLong(min), lMax, toLong(precision));
+			base = new CumulatedLongGenerator(toLong(min), lMax, toLong(granularity));
 		} else {
 			double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
-			base = new CumulatedDoubleGenerator(toDouble(min), dMax, toDouble(precision));
+			base = new CumulatedDoubleGenerator(toDouble(min), dMax, toDouble(granularity));
 		}
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
     }
 
 }

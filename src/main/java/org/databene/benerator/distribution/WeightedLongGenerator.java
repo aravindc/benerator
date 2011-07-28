@@ -57,16 +57,16 @@ public class WeightedLongGenerator extends AbstractNonNullNumberGenerator<Long> 
         this(min, max, 1);
     }
 
-    public WeightedLongGenerator(long min, long max, long precision) {
-        this(min, max, precision, new ConstantFunction(1));
+    public WeightedLongGenerator(long min, long max, long granularity) {
+        this(min, max, granularity, new ConstantFunction(1));
     }
 
     public WeightedLongGenerator(long min, long max, WeightFunction function) {
         this(min, max, 1, function);
     }
 
-    public WeightedLongGenerator(long min, long max, long precision, WeightFunction function) {
-        super(Long.class, min, max, precision);
+    public WeightedLongGenerator(long min, long max, long granularity, WeightFunction function) {
+        super(Long.class, min, max, granularity);
         this.function = function;
         this.randomizer = new Random();
     }
@@ -96,7 +96,7 @@ public class WeightedLongGenerator extends AbstractNonNullNumberGenerator<Long> 
     	assertInitialized();
         float random = randomizer.nextFloat();
         long n = intervallNoOfRandom(random);
-        return min + n * precision;
+        return min + n * granularity;
     }
 
     // private helpers -------------------------------------------------------------------------------------------------
@@ -111,9 +111,9 @@ public class WeightedLongGenerator extends AbstractNonNullNumberGenerator<Long> 
     }
 
     private void normalize() {
-        int sampleCount = (int) ((max - min) / precision) + 1;
+        int sampleCount = (int) ((max - min) / granularity) + 1;
         if (sampleCount > 100000)
-            throw new InvalidGeneratorSetupException("precision", "too small, resulting in a set of " + sampleCount + " samples");
+            throw new InvalidGeneratorSetupException("granularity", "too small, resulting in a set of " + sampleCount + " samples");
         probSum = new float[sampleCount];
         if (sampleCount == 1)
             probSum[0] = 1;

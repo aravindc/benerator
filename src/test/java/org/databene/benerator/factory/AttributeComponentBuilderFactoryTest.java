@@ -344,7 +344,7 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 	public void testDateMinMax() {
 		String componentName = "part";
 		SimpleTypeDescriptor type = new SimpleTypeDescriptor("lDate", "date").withMin("2000-03-04").withMax("2000-08-09");
-		type.setPrecision("0000-00-01");
+		type.setGranularity("0000-00-01");
 		PartDescriptor attribute = new PartDescriptor(componentName, type);
 		ComponentBuilder<Entity> builder = createComponentBuilder(attribute);
 		ComponentBuilderGenerator<Date> helper = new ComponentBuilderGenerator<Date>(builder, componentName);
@@ -506,7 +506,7 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
                 "type", "date",
                 "min", "2000-01-01",
                 "max", "2000-12-31",
-                "precision", "0000-00-01",
+                "granularity", "0000-00-01",
                 "distribution", "cumulated",
                 "pattern", "yyyy-MM-dd",
                 "nullQuota", "0.1"

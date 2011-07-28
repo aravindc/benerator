@@ -60,7 +60,7 @@ public class DistributingGeneratorTest extends GeneratorTest {
 	        return source;
         }
 
-		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision,
+		public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity,
                 boolean unique) {
 	        throw new UnsupportedOperationException("not implemented");
         }

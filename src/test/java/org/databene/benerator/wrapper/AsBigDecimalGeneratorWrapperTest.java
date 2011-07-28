@@ -40,7 +40,7 @@ import org.junit.Test;
 public class AsBigDecimalGeneratorWrapperTest {
 
 	@Test
-	public void testPrecision() {
+	public void testGranularity() {
 		Generator<Double> source = new SequenceTestGenerator<Double>(0.1234, 1.234, 12.34, 123.4, 1234.56);
 		AsBigDecimalGeneratorWrapper<Double> wrapper 
 			= new AsBigDecimalGeneratorWrapper<Double>(source, BigDecimal.ZERO, new BigDecimal("0.01"));

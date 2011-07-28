@@ -51,7 +51,7 @@ public class DayGeneratorTest extends GeneratorClassTest {
 		Date maxDate = TimeUtil.date(2010, 8, 8);
 		DayGenerator generator = new DayGenerator(
         		minDate, maxDate, SequenceManager.STEP_SEQUENCE, false);
-		generator.setPrecision("01-02-03");
+		generator.setGranularity("01-02-03");
         generator.init(context);
         assertEquals(minDate, generator.min);
         assertEquals(maxDate, generator.max);

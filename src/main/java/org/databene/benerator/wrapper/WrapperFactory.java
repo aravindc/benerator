@@ -45,13 +45,13 @@ import org.databene.benerator.factory.GeneratorFactoryUtil;
 public class WrapperFactory {
 
     public static <T extends Number> NonNullGenerator<T> wrapNonNullNumberGenerator(
-    		Class<T> numberType, NonNullGenerator<? extends Number> source, T min, T precision) {
-    	return GeneratorFactoryUtil.asNonNullGenerator(wrapNumberGenerator(numberType, source, min, precision));
+    		Class<T> numberType, NonNullGenerator<? extends Number> source, T min, T granularity) {
+    	return GeneratorFactoryUtil.asNonNullGenerator(wrapNumberGenerator(numberType, source, min, granularity));
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static <T extends Number> Generator<T> wrapNumberGenerator(
-    		Class<T> numberType, Generator<? extends Number> source, T min, T precision) {
+    		Class<T> numberType, Generator<? extends Number> source, T min, T granularity) {
     	if (numberType.equals(source.getGeneratedType()))
     	 	return (Generator<T>) source;
     	if (Integer.class.equals(numberType))
@@ -67,7 +67,7 @@ public class WrapperFactory {
     	else if (Float.class.equals(numberType))
     		return new AsFloatGeneratorWrapper(source);
     	else if (BigDecimal.class.equals(numberType))
-    		return new AsBigDecimalGeneratorWrapper(source, (BigDecimal) min, (BigDecimal) precision);
+    		return new AsBigDecimalGeneratorWrapper(source, (BigDecimal) min, (BigDecimal) granularity);
     	else if (BigInteger.class.equals(numberType))
     		return new AsBigIntegerGeneratorWrapper(source);
     	else 

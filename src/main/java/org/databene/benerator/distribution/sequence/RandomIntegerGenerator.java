@@ -45,7 +45,7 @@ public class RandomIntegerGenerator extends AbstractNonNullNumberGenerator<Integ
 
     private static final int DEFAULT_MIN = Integer.MIN_VALUE / 2 + 1; // test if it works with these min/max values
 	private static final int DEFAULT_MAX = Integer.MAX_VALUE / 2 - 1;
-	private static final int DEFAULT_PRECISION = 1;
+	private static final int DEFAULT_GRANULARITY = 1;
 
 	private static Random random = new Random();
 
@@ -56,38 +56,38 @@ public class RandomIntegerGenerator extends AbstractNonNullNumberGenerator<Integ
     }
 
     public RandomIntegerGenerator(int min, int max) {
-        this(min, max, DEFAULT_PRECISION);
+        this(min, max, DEFAULT_GRANULARITY);
     }
 
-    public RandomIntegerGenerator(int min, int max, int precision) {
-        super(Integer.class, min, max, precision);
+    public RandomIntegerGenerator(int min, int max, int granularity) {
+        super(Integer.class, min, max, granularity);
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
 
     @Override
     public void init(GeneratorContext context) {
-    	if (precision == 0)
-    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+    	if (granularity == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".granularity may not be 0");
         super.init(context);
     }
     
 	@Override
 	public Integer generate() {
-        return generate(min, max, precision);
+        return generate(min, max, granularity);
     }
     
     // public convenience method ---------------------------------------------------------------------------------------
 
-    public static int generate(int min, int max, int precision) {
+    public static int generate(int min, int max, int granularity) {
         if (min > max)
             throw new InvalidGeneratorSetupException(new PropertyMessage("min", "greater than max"));
-        int range = (max - min + precision) / precision;
+        int range = (max - min + granularity) / granularity;
         int result;
         if (range != 0)
-            result = min + Math.abs(random.nextInt() % range) * precision;
+            result = min + Math.abs(random.nextInt() % range) * granularity;
         else
-            result = random.nextInt() * precision;
+            result = random.nextInt() * granularity;
         if (result < min)
             result += range;
         return result;

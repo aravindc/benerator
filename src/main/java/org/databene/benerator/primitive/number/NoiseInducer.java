@@ -42,7 +42,7 @@ public class NoiseInducer extends GeneratingConverter<Number, Number, Number> {
 	
 	private double minNoise;
 	private double maxNoise;
-	private double noisePrecision;
+	private double noiseGranularity;
 	private Distribution noiseDistribution;
 	private boolean relative;
 	
@@ -53,11 +53,11 @@ public class NoiseInducer extends GeneratingConverter<Number, Number, Number> {
 	    this(-0.1, 0.1, 0.001);
     }
 	
-	public NoiseInducer(double minNoise, double maxNoise, double noisePrecision) {
+	public NoiseInducer(double minNoise, double maxNoise, double noiseGranularity) {
 	    super(Number.class, Number.class, null);
 	    this.minNoise = minNoise;
 	    this.maxNoise = maxNoise;
-	    this.noisePrecision = noisePrecision;
+	    this.noiseGranularity = noiseGranularity;
 	    this.noiseDistribution = SequenceManager.CUMULATED_SEQUENCE;
 	    this.relative = true;
     }
@@ -80,12 +80,12 @@ public class NoiseInducer extends GeneratingConverter<Number, Number, Number> {
     	this.maxNoise = maxNoise;
     }
 
-	public double getNoisePrecision() {
-    	return noisePrecision;
+	public double getNoiseGranularity() {
+    	return noiseGranularity;
     }
 
-	public void setNoisePrecision(double noisePrecision) {
-    	this.noisePrecision = noisePrecision;
+	public void setNoiseGranularity(double noiseGranularity) {
+    	this.noiseGranularity = noiseGranularity;
     }
 
 	public Distribution getNoiseDistribution() {
@@ -148,7 +148,7 @@ public class NoiseInducer extends GeneratingConverter<Number, Number, Number> {
 	    		(Class<Number>) numberType, 
 	    		(Number) converter.convert(minNoise), true,
 	    		(Number) converter.convert(maxNoise), true,
-	    		(Number) converter.convert(noisePrecision), 
+	    		(Number) converter.convert(noiseGranularity), 
 	    		noiseDistribution, Uniqueness.NONE);
 		super.initialize(sourceValue);
 	}

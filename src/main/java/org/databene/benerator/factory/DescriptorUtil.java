@@ -292,9 +292,9 @@ public class DescriptorUtil {
 		return new GlobalMaxCountExpression();
     }
 
-	public static Expression<Long> getCountPrecision(InstanceDescriptor descriptor) {
-		return (descriptor.getCountPrecision() != null ? 
-					descriptor.getCountPrecision() : 
+	public static Expression<Long> getCountGranularity(InstanceDescriptor descriptor) {
+		return (descriptor.getCountGranularity() != null ? 
+					descriptor.getCountGranularity() : 
 					new ConstantExpression<Long>(1L));
 	}
 

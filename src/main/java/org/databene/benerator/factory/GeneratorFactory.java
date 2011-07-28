@@ -92,18 +92,18 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      * @param numberType         the number type, e.g. java.lang.Integer
      * @param min          the minimum number to generate
      * @param max          the maximum number to generate
-     * @param precision    the resolution to use in number generation.
+     * @param granularity    the resolution to use in number generation.
      * @param distribution The Sequence of WeightFunction to use for generation
      * @return a Number generator of the desired characteristics
      */
     public <T extends Number> NonNullGenerator<T> createNumberGenerator(
-            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, T precision,
+            Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, T granularity,
             Distribution distribution, Uniqueness uniqueness) {
-        int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(precision.doubleValue()));
+        int fractionDigits = Math.max(MathUtil.fractionDigits(min.doubleValue()), MathUtil.fractionDigits(granularity.doubleValue()));
         int prefixDigits = (max != null ? MathUtil.prefixDigits(max.doubleValue()) : MathUtil.prefixDigits(min.doubleValue()));
 		int totalDigits = prefixDigits + fractionDigits;
         return createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
-        		totalDigits, fractionDigits, precision, distribution, uniqueness);
+        		totalDigits, fractionDigits, granularity, distribution, uniqueness);
     }
     
     /**
@@ -133,7 +133,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
             	distribution = defaultDistribution(uniqueness);
         }
         return distribution.createGenerator(numberType, min, max, granularity, uniqueness.isUnique()); 
-        // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
+        // TODO v0.7 define difference between granularity and fractionDigits and implement it accordingly
     }
 
     // sample source ------------------------------------------------------------------------------------------------
@@ -162,12 +162,12 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
      *
      * @param min          The earliest Date to generate
      * @param max          The latest Date to generate
-     * @param precision    the time resolution of dates in milliseconds
+     * @param granularity    the time resolution of dates in milliseconds
      * @param distribution the distribution to use
      * @return a generator of the desired characteristics
      */
     public Generator<Date> createDateGenerator(
-            Date min, Date max, long precision, Distribution distribution) {
+            Date min, Date max, long granularity, Distribution distribution) {
     	if (min == null) {
     		if (max == null) {
         		min = TimeUtil.date(1970, 0, 1);
@@ -176,7 +176,7 @@ public abstract class GeneratorFactory { // TODO scan implementations and check 
     			min = TimeUtil.add(max, Calendar.DATE, -365);
     	} else if (max == null)
     		max = TimeUtil.add(min, Calendar.DATE, 365);
-        return new DateGenerator(min, max, precision, distribution);
+        return new DateGenerator(min, max, granularity, distribution);
     }
 
     // text generators -------------------------------------------------------------------------------------------------

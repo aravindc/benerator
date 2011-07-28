@@ -66,13 +66,13 @@ public class WeightedDoubleGeneratorTest extends GeneratorClassTest {
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
-    public void testNegativePrecision() throws IllegalGeneratorStateException {
-    	create( 0,  1, -1, new ConstantFunction(1)); // negative precision
+    public void testNegativeGranularity() throws IllegalGeneratorStateException {
+    	create( 0,  1, -1, new ConstantFunction(1)); // negative granularity
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
-    public void testZeroPrecision() throws IllegalGeneratorStateException {
-    	create( 0,  1,  0, new ConstantFunction(1)); // precision == 0
+    public void testZeroGranularity() throws IllegalGeneratorStateException {
+    	create( 0,  1,  0, new ConstantFunction(1)); // granularity == 0
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
@@ -80,8 +80,8 @@ public class WeightedDoubleGeneratorTest extends GeneratorClassTest {
     	create( 2,  1,  1, new ConstantFunction(1)); // min > max
     }
     
-	private WeightedDoubleGenerator create(double min, double max, double precision, WeightFunction distribution) {
-	    WeightedDoubleGenerator generator = new WeightedDoubleGenerator(min, max, precision, distribution);
+	private WeightedDoubleGenerator create(double min, double max, double granularity, WeightFunction distribution) {
+	    WeightedDoubleGenerator generator = new WeightedDoubleGenerator(min, max, granularity, distribution);
 	    generator.init(context);
 		return generator;
     }

@@ -45,11 +45,11 @@ public class RandomBigIntegerGenerator extends ThreadSafeNonNullGenerator<BigInt
 
     private static final BigInteger DEFAULT_MIN = BigInteger.valueOf(Long.MIN_VALUE);
 	private static final BigInteger DEFAULT_MAX = BigInteger.valueOf(Long.MAX_VALUE);
-	private static final BigInteger DEFAULT_PRECISION = BigInteger.valueOf(1);
+	private static final BigInteger DEFAULT_GRNULARITY = BigInteger.valueOf(1);
 
     private BigInteger min;
     private BigInteger max;
-    private BigInteger precision;
+    private BigInteger granularity;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
@@ -58,13 +58,13 @@ public class RandomBigIntegerGenerator extends ThreadSafeNonNullGenerator<BigInt
     }
 
     public RandomBigIntegerGenerator(BigInteger min, BigInteger max) {
-        this(min, max, DEFAULT_PRECISION);
+        this(min, max, DEFAULT_GRNULARITY);
     }
 
-    public RandomBigIntegerGenerator(BigInteger min, BigInteger max, BigInteger precision) {
+    public RandomBigIntegerGenerator(BigInteger min, BigInteger max, BigInteger granularity) {
         this.min = min;
         this.max = max;
-        this.precision = precision;
+        this.granularity = granularity;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------
@@ -75,25 +75,25 @@ public class RandomBigIntegerGenerator extends ThreadSafeNonNullGenerator<BigInt
 
     @Override
     public synchronized void init(GeneratorContext context) {
-    	if (BigInteger.ZERO.compareTo(precision) == 0)
-    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+    	if (BigInteger.ZERO.compareTo(granularity) == 0)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".granularity may not be 0");
         super.init(context);
     }
     
 	@Override
 	public BigInteger generate() {
-        return generate(min, max, precision);
+        return generate(min, max, granularity);
     }
     
     // public convenience method ---------------------------------------------------------------------------------------
 
-    public static BigInteger generate(BigInteger min, BigInteger max, BigInteger precision) {
+    public static BigInteger generate(BigInteger min, BigInteger max, BigInteger granularity) {
         if (min.compareTo(max) > 0)
             throw new InvalidGeneratorSetupException(
                     new PropertyMessage("min", "greater than max"),
                     new PropertyMessage("max", "less than min"));
-        long range = max.subtract(min).divide(precision).longValue();
-        return min.add(BigInteger.valueOf(RandomLongGenerator.generate(0, range, 1)).multiply(precision));
+        long range = max.subtract(min).divide(granularity).longValue();
+        return min.add(BigInteger.valueOf(RandomLongGenerator.generate(0, range, 1)).multiply(granularity));
     }
 
 }

@@ -136,7 +136,7 @@ public interface DescriptorConstants {
     static final String ATT_DURATION = "duration";
     static final String ATT_MIN = "min";
     static final String ATT_MAX = "max";
-    static final String ATT_PRECISION = "precision";
+    static final String ATT_GRANULARITY = "granularity";
     static final String ATT_DISTRIBUTION = "distribution";
     static final String ATT_STATS = "stats";
 	static final String ATT_TEMPLATE = "template";

@@ -59,11 +59,11 @@ public class DateTimeIntegrationTest extends BeneratorIntegrationTest {
 	// test methods ----------------------------------------------------------------------------------------------------
 	
 	@Test
-	public void testDateWithMinMaxAndPrecision() {
+	public void testDateWithMinMaxAndGranularity() {
 		// create DateTimeGenerator from XML descriptor
 		parseAndExecute(
 			"<generate type='entity' count='500' consumer='cons'>" +
-        	"  <value type='date' min='2008-09-29' max='2008-10-02' precision='0000-00-01'/>" +
+        	"  <value type='date' min='2008-09-29' max='2008-10-02' granularity='0000-00-01'/>" +
         	"</generate>");
 		List<Object[]> products = consumer.getProducts();
 		HashSet<Date> usedDates = new HashSet<Date>();

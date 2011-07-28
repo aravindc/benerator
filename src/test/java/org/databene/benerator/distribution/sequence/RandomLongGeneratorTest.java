@@ -60,14 +60,14 @@ public class RandomLongGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testPrecision() {
+    public void testGranularity() {
         RandomLongGenerator generator = new RandomLongGenerator(-2, 2L, 2);
         generator.init(context);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-2L, 0L, 2L));
     }
 
     @Test
-    public void testPrecisionOffset() {
+    public void testGranularityOffset() {
         RandomLongGenerator generator = new RandomLongGenerator(-1, 3L, 2);
         generator.init(context);
         checkEqualDistribution(generator, 3000, 0.1, CollectionUtil.toSet(-1L, 1L, 3L));

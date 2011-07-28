@@ -59,9 +59,9 @@ public class StepLongGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testPrecision() throws IllegalGeneratorStateException {
+    public void testGranularity() throws IllegalGeneratorStateException {
         StepLongGenerator simpleGenerator = new StepLongGenerator(1, 5);
-        simpleGenerator.setPrecision(2L);
+        simpleGenerator.setGranularity(2L);
         expectGeneratedSequence(simpleGenerator, 1L, 3L, 5L).withCeasedAvailability();
     }
 

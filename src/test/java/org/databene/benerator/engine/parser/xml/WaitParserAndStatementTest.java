@@ -49,7 +49,7 @@ public class WaitParserAndStatementTest {
 	@Test
 	public void testDistributedDuration() throws Exception {
 		Element element = XMLUtil.parseStringAsElement(
-				"<wait min='11' max='25' precision='2' distribution='step'/>");
+				"<wait min='11' max='25' granularity='2' distribution='step'/>");
 		BeneratorContext context = new BeneratorContext();
 		WaitStatement statement = (WaitStatement) new WaitParser().parse(element, null, null);
 		for (int i = 0; i < 5; i++)

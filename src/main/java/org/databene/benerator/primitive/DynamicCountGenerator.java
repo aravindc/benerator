@@ -41,9 +41,9 @@ public class DynamicCountGenerator extends DynamicLongGenerator {
         super();
     }
 
-    public DynamicCountGenerator(Expression<Long> min, Expression<Long> max, Expression<Long> precision, 
+    public DynamicCountGenerator(Expression<Long> min, Expression<Long> max, Expression<Long> granularity, 
     		Expression<? extends Distribution> distribution, Expression<Boolean> unique, boolean resetToMin) {
-        super(min, max, precision, distribution, unique);
+        super(min, max, granularity, distribution, unique);
         this.resetToMin = resetToMin;
     }
     

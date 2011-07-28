@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006-2009 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2006-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -38,33 +38,33 @@ import java.math.BigDecimal;
  */
 public abstract class AbstractBigDecimalGenerator extends AbstractNonNullNumberGenerator<BigDecimal> {
 
-    public static final BigDecimal DEFAULT_PRECISION = new BigDecimal("0.01");
+    public static final BigDecimal DEFAULT_GRANULARITY = new BigDecimal("0.01");
 
     private Integer fractionDigits;
 
-    /** Initializes the generator to create uniformly distributed random BigDecimals with precision 1 */
+    /** Initializes the generator to create uniformly distributed random BigDecimals with granularity 1 */
     public AbstractBigDecimalGenerator() {
         this(new BigDecimal(Long.MIN_VALUE), new BigDecimal(Long.MAX_VALUE));
     }
 
-    /** Initializes the generator to create uniformly distributed random BigDecimals with precision 1 */
+    /** Initializes the generator to create uniformly distributed random BigDecimals with granularity 1 */
     public AbstractBigDecimalGenerator(BigDecimal min, BigDecimal max) {
-        this(min, max, DEFAULT_PRECISION);
+        this(min, max, DEFAULT_GRANULARITY);
     }
 
     /** Initializes the generator to create uniformly distributed random BigDecimals */
-    public AbstractBigDecimalGenerator(BigDecimal min, BigDecimal max, BigDecimal precision) {
-        super(BigDecimal.class, min, max, precision);
+    public AbstractBigDecimalGenerator(BigDecimal min, BigDecimal max, BigDecimal granularity) {
+        super(BigDecimal.class, min, max, granularity);
     }
 
     // config properties -----------------------------------------------------------------------------------------------
 
     @Override
-    public void setPrecision(BigDecimal precision) {
-        super.setPrecision(precision);
+    public void setGranularity(BigDecimal granularity) {
+        super.setGranularity(granularity);
         this.fractionDigits = Math.max(
                 MathUtil.fractionDigits(min.doubleValue()),
-                MathUtil.fractionDigits(precision.doubleValue())
+                MathUtil.fractionDigits(granularity.doubleValue())
             );
     }
 

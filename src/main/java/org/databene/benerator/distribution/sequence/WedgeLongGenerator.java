@@ -50,8 +50,8 @@ public class WedgeLongGenerator extends AbstractNonNullNumberGenerator<Long> {
         this(min, max, 1);
     }
 
-    public WedgeLongGenerator(long min, long max, long precision) {
-        super(Long.class, min, max, precision);
+    public WedgeLongGenerator(long min, long max, long granularity) {
+        super(Long.class, min, max, granularity);
         this.next = new AtomicLong(min);
     }
 
@@ -60,9 +60,9 @@ public class WedgeLongGenerator extends AbstractNonNullNumberGenerator<Long> {
     @Override
 	public void init(GeneratorContext context) {
     	assertNotInitialized();
-        max = min + (max - min) / precision * precision;
-        long steps = (max - min) / precision + 1;
-        end = min + steps / 2 * precision;
+        max = min + (max - min) / granularity * granularity;
+        long steps = (max - min) / granularity + 1;
+        end = min + steps / 2 * granularity;
         super.init(context);
     }
 
@@ -77,7 +77,7 @@ public class WedgeLongGenerator extends AbstractNonNullNumberGenerator<Long> {
         else {
             long nextValue = max - result + min;
             if (nextValue < end)
-            	nextValue += precision;
+            	nextValue += granularity;
             next.set(nextValue);
         }
         return result;

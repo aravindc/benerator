@@ -55,26 +55,26 @@ public class RandomSequence extends Sequence {
 	    super(NAME);
     }
 	
-    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T precision, boolean unique) {
+    public <T extends Number> NonNullGenerator<T> createGenerator(Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	NonNullGenerator<? extends Number> base;
     	if (unique) {
-    		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
+    		return SequenceManager.EXPAND_SEQUENCE.createGenerator(numberType, min, max, granularity, unique);
     	} else if (BeanUtil.isIntegralNumberType(numberType)) {
         	long lMax = (max != null ? max.longValue() :
         			Math.min(RandomLongGenerator.DEFAULT_MAX, NumberUtil.maxValue(numberType).longValue()));
 			if (Integer.class.equals(numberType.getClass()))
-				base = new RandomIntegerGenerator(toInteger(min), toInteger(lMax), toInteger(precision));
+				base = new RandomIntegerGenerator(toInteger(min), toInteger(lMax), toInteger(granularity));
 			else if (BigInteger.class.equals(numberType.getClass()))
-				base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(lMax), toBigInteger(precision));
+				base = new RandomBigIntegerGenerator(toBigInteger(min), toBigInteger(lMax), toBigInteger(granularity));
 			else if (BigDecimal.class.equals(numberType.getClass()))
-				base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(lMax), toBigDecimal(precision));
+				base = new RandomBigDecimalGenerator(toBigDecimal(min), toBigDecimal(lMax), toBigDecimal(granularity));
 			else
-				base = new RandomLongGenerator(toLong(min), lMax, toLong(precision));
+				base = new RandomLongGenerator(toLong(min), lMax, toLong(granularity));
     	} else {
     		double dMax = (max != null ? max.doubleValue() : Long.MAX_VALUE);
-			base = new RandomDoubleGenerator(toDouble(min), dMax, toDouble(precision));
+			base = new RandomDoubleGenerator(toDouble(min), dMax, toDouble(granularity));
     	}
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
 	}
 
     @Override

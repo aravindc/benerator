@@ -49,7 +49,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
 
     public static final String TOTAL_DIGITS = "totalDigits";
     public static final String FRACTION_DIGITS = "fractionDigits";
-    public static final String PRECISION = "precision";
+    public static final String GRANULARITY = "granularity";
 
     public static final String TRUE_QUOTA = "trueQuota";
     public static final String MIN_LENGTH = "minLength";
@@ -80,7 +80,7 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         addConstraint(MAX_INCLUSIVE,   Boolean.class, new AndOperation());
         addConstraint(TOTAL_DIGITS,    String.class,  new FirstArgSelector<String>());
         addConstraint(FRACTION_DIGITS, String.class,  new FirstArgSelector<String>());
-        addConfig(PRECISION,           String.class);
+        addConfig(GRANULARITY,           String.class);
         // boolean setup
         addConfig(TRUE_QUOTA,          Double.class);
         // string setup
@@ -158,12 +158,12 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         setDetailValue(FRACTION_DIGITS, fractionDigits);
     }
 
-    public String getPrecision() {
-        return (String) getDetailValue(PRECISION);
+    public String getGranularity() {
+        return (String) getDetailValue(GRANULARITY);
     }
 
-    public void setPrecision(String precision) {
-        setDetailValue(PRECISION, precision);
+    public void setGranularity(String granularity) {
+        setDetailValue(GRANULARITY, granularity);
     }
 
     public Double getTrueQuota() {
@@ -242,8 +242,8 @@ public class SimpleTypeDescriptor extends TypeDescriptor {
         return this;
     }
 
-    public SimpleTypeDescriptor withPrecision(String precision) {
-        setPrecision(precision);
+    public SimpleTypeDescriptor withGranularity(String granularity) {
+        setGranularity(granularity);
         return this;
     }
 

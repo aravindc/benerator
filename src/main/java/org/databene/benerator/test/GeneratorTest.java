@@ -174,25 +174,25 @@ public abstract class GeneratorTest {
     // Number generator tests ------------------------------------------------------------------------------------------
 
     public static <T extends Number> void checkEqualDistribution(
-            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T granularity,
             int iterations, double tolerance, T ... expectedValues) {
         Set<T> expectedSet = CollectionUtil.toSet(expectedValues);
-        checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
+        checkDistribution(generatorClass, min, max, granularity, iterations, true, tolerance, expectedSet);
     }
 
     public static <T extends Number> void checkEqualDistribution(
-            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T granularity,
             int iterations, double tolerance, Set<T> expectedSet) {
-        checkDistribution(generatorClass, min, max, precision, iterations, true, tolerance, expectedSet);
+        checkDistribution(generatorClass, min, max, granularity, iterations, true, tolerance, expectedSet);
     }
 
     private static <T extends Number> void checkDistribution(
-            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T precision,
+            Class<? extends AbstractNonNullNumberGenerator<T>> generatorClass, T min, T max, T granularity,
             int iterations, boolean equalDistribution, double tolerance, Set<T> expectedSet) {
     	AbstractNonNullNumberGenerator<T> generator = BeanUtil.newInstance(generatorClass);
         generator.setMin(min);
         generator.setMax(max);
-        generator.setPrecision(precision);
+        generator.setGranularity(granularity);
         ObjectCounter<T> counter = new ObjectCounter<T>(expectedSet != null ? expectedSet.size() : 10);
         ProductWrapper<T> wrapper = new ProductWrapper<T>();
         for (int i = 0; i < iterations; i++)

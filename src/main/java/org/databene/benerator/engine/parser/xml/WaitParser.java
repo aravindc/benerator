@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
 public class WaitParser extends AbstractBeneratorDescriptorParser {
 
 	public WaitParser() {
-	    super(EL_WAIT, null, CollectionUtil.toSet(ATT_DURATION, ATT_MIN, ATT_MAX, ATT_PRECISION, ATT_DISTRIBUTION));
+	    super(EL_WAIT, null, CollectionUtil.toSet(ATT_DURATION, ATT_MIN, ATT_MAX, ATT_GRANULARITY, ATT_DISTRIBUTION));
     }
 
 	@Override
@@ -65,11 +65,11 @@ public class WaitParser extends AbstractBeneratorDescriptorParser {
 		// check for distribution
 		Expression<Long> min  = parseLongAttribute(ATT_MIN, element, null);
 		Expression<Long> max  = parseLongAttribute(ATT_MAX, element, null);
-		Expression<Long> precision  = parseLongAttribute(ATT_PRECISION, element, null);
+		Expression<Long> granularity  = parseLongAttribute(ATT_GRANULARITY, element, null);
 		String distSpec  = getAttribute(ATT_DISTRIBUTION, element);
 		Expression<Distribution> distribution 
 			= GeneratorFactoryUtil.getDistributionExpression(distSpec, Uniqueness.NONE, false);
-		Generator<Long> durationGenerator = new DynamicLongGenerator(min, max, precision, 
+		Generator<Long> durationGenerator = new DynamicLongGenerator(min, max, granularity, 
 				distribution, ExpressionUtil.constant(false));
 	    return new WaitStatement(durationGenerator);
     }

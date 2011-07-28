@@ -49,8 +49,8 @@ public class BitReverseLongGenerator extends AbstractNonNullNumberGenerator<Long
         this(min, max, 1);
     }
 
-    public BitReverseLongGenerator(long min, long max, long precision) {
-        super(Long.class, min, max, precision);
+    public BitReverseLongGenerator(long min, long max, long granularity) {
+        super(Long.class, min, max, granularity);
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class BitReverseLongGenerator extends AbstractNonNullNumberGenerator<Long
     @Override
 	public void init(GeneratorContext context) {
     	assertNotInitialized();
-        indexGenerator = new BitReverseNaturalNumberGenerator((max - min - 1 + precision) / precision);
+        indexGenerator = new BitReverseNaturalNumberGenerator((max - min - 1 + granularity) / granularity);
         indexGenerator.init(context);
         super.init(context);
     }
@@ -69,7 +69,7 @@ public class BitReverseLongGenerator extends AbstractNonNullNumberGenerator<Long
         Long index = indexGenerator.generate();
         if (index == null)
         	return null;
-        return min + index * precision;
+        return min + index * granularity;
     }
 
     @Override

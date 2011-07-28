@@ -54,8 +54,8 @@ public class WeightedDoubleGenerator extends AbstractNonNullNumberGenerator<Doub
         this(0, 0, 1, new ConstantFunction(1));
     }
 
-    public WeightedDoubleGenerator(double min, double max, double precision, WeightFunction function) {
-        super(Double.class, min, max, precision);
+    public WeightedDoubleGenerator(double min, double max, double granularity, WeightFunction function) {
+        super(Double.class, min, max, granularity);
         this.function = function;
         this.random = new Random();
     }
@@ -70,11 +70,11 @@ public class WeightedDoubleGenerator extends AbstractNonNullNumberGenerator<Doub
 	public void init(GeneratorContext context) {
     	if (min > max)
             throw new InvalidGeneratorSetupException("min ("+ min + ") > max(" + max + ")");
-        if (precision <= 0)
-            throw new InvalidGeneratorSetupException("precision value not supported: "+ precision);
-        int sampleCount = (int) ((max - min) / precision) + 1;
+        if (granularity <= 0)
+            throw new InvalidGeneratorSetupException("granularity value not supported: "+ granularity);
+        int sampleCount = (int) ((max - min) / granularity) + 1;
         if (sampleCount > 100000)
-            throw new InvalidGeneratorSetupException("precision", "too small, resulting in a set of " + sampleCount + " samples");
+            throw new InvalidGeneratorSetupException("granularity", "too small, resulting in a set of " + sampleCount + " samples");
         probSum = new double[sampleCount];
         value = new double[sampleCount];
         if (sampleCount == 1) {

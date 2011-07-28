@@ -23,6 +23,7 @@ changes
 - New convenience methods in GeneratorUtil
 - New helper class GeneratingConverter
 - Renamed ValidatingGenerator.generateImpl() to doGenerate()
+- Renamed all 'precision' properties to 'granularity'
 
 
 enhancements

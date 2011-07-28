@@ -345,10 +345,10 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
     private static Generator<Date> createDateGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
         Date min = parseDate(descriptor, MIN, null);
         Date max = parseDate(descriptor, MAX, null);
-        long precision = parseDatePrecision(descriptor);
+        long granularity = parseDateGranularity(descriptor);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, true, context);
-	    return context.getGeneratorFactory().createDateGenerator(min, max, precision, distribution);
+	    return context.getGeneratorFactory().createDateGenerator(min, max, granularity, distribution);
     }
 
     private static Generator<Character> createCharacterGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {
@@ -374,8 +374,8 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         }
     }
 
-    private static long parseDatePrecision(SimpleTypeDescriptor descriptor) {
-        String detail = (String) descriptor.getDeclaredDetailValue(DescriptorConstants.ATT_PRECISION);
+    private static long parseDateGranularity(SimpleTypeDescriptor descriptor) {
+        String detail = (String) descriptor.getDeclaredDetailValue(DescriptorConstants.ATT_GRANULARITY);
 		if (detail != null)
         	return DateString2DurationConverter.defaultInstance().convert(detail);
         else
@@ -394,11 +394,11 @@ public class SimpleTypeGeneratorFactory extends TypeGeneratorFactory {
         Boolean maxInclusive = descriptor.isMaxInclusive();
         Integer totalDigits = DescriptorUtil.getNumberDetail(descriptor, "totalDigits", Integer.class);
         Integer fractionDigits = DescriptorUtil.getNumberDetail(descriptor, "fractionDigits", Integer.class);
-        T precision = DescriptorUtil.getNumberDetail(descriptor, PRECISION, targetType);
+        T granularity = DescriptorUtil.getNumberDetail(descriptor, GRANULARITY, targetType);
         Distribution distribution = GeneratorFactoryUtil.getDistribution(
         		descriptor.getDistribution(), uniqueness, false, context);
         return context.getGeneratorFactory().createNumberGenerator(targetType, min, minInclusive, max, maxInclusive, 
-                totalDigits, fractionDigits, precision, distribution, uniqueness);
+                totalDigits, fractionDigits, granularity, distribution, uniqueness);
     }
 
     private static Generator<String> createStringGenerator(SimpleTypeDescriptor descriptor, Uniqueness uniqueness, BeneratorContext context) {

@@ -46,8 +46,8 @@ public class ShuffleDoubleGenerator extends AbstractNonNullNumberGenerator<Doubl
         this(Double.MIN_VALUE, Double.MAX_VALUE, 2, 1);
     }
 
-    public ShuffleDoubleGenerator(double min, double max, double precision, double increment) {
-        super(Double.class, min, max, precision);
+    public ShuffleDoubleGenerator(double min, double max, double granularity, double increment) {
+        super(Double.class, min, max, granularity);
         this.increment = increment;
         reset();
     }
@@ -72,8 +72,8 @@ public class ShuffleDoubleGenerator extends AbstractNonNullNumberGenerator<Doubl
 
     @Override
     public void init(GeneratorContext context) throws InvalidGeneratorSetupException {
-        if (precision <= 0)
-            throw new InvalidGeneratorSetupException("Precision must be greater than zero, but is " + precision);
+        if (granularity <= 0)
+            throw new InvalidGeneratorSetupException("Granularity must be greater than zero, but is " + granularity);
         if (min < max && increment <= 0)
             throw new InvalidGeneratorSetupException("Unsupported increment value: " + increment);
         next = min;
@@ -89,7 +89,7 @@ public class ShuffleDoubleGenerator extends AbstractNonNullNumberGenerator<Doubl
         if (next + increment <= max)
             next += increment;
         else {
-            double newOffset = (next - min + precision) % increment;
+            double newOffset = (next - min + granularity) % increment;
 			next = (newOffset > 0 ? min + newOffset : null);
         }
         return result;

@@ -190,7 +190,7 @@
 			<xs:attribute name="duration"     type="xs:string"/>
 			<xs:attribute name="min"          type="xs:string"/>
 			<xs:attribute name="max"          type="xs:string"/>
-			<xs:attribute name="precision"    type="xs:string"/>
+			<xs:attribute name="granularity"  type="xs:string"/>
 			<xs:attribute name="distribution" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
@@ -571,7 +571,7 @@
 		<xs:attribute name="minInclusive" type="xs:string"/>
 		<xs:attribute name="max"          type="xs:string"/>
 		<xs:attribute name="maxInclusive" type="xs:string"/>
-		<xs:attribute name="precision"    type="xs:string"/>
+		<xs:attribute name="granularity"  type="xs:string"/>
 		
 		<!-- String generator setup -->
 		<xs:attribute name="pattern"      type="xs:string"/>

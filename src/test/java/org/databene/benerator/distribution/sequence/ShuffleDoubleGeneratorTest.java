@@ -57,7 +57,7 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
     }
 
     @Test
-    public void testFractionalPrecision() throws Exception {
+    public void testFractionalGranularity() throws Exception {
         check( 0, 1, 0.5, 1,   0, 1,  0.5);
         check(-1, 0, 0.5, 1,  -1, 0, -0.5);
     }
@@ -78,12 +78,12 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
-    public void testZeroPrecision() {
+    public void testZeroGranularity() {
         new ShuffleDoubleGenerator(0, 1, 0, 1).init(context);
     }
 
     @Test(expected = InvalidGeneratorSetupException.class)
-    public void testNegativePrecision() {
+    public void testNegativeGranularity() {
         new ShuffleDoubleGenerator(0, 1, -1, 1).init(context);
     }
 
@@ -96,8 +96,8 @@ public class ShuffleDoubleGeneratorTest extends GeneratorClassTest {
     
     // helper methods --------------------------------------------------------------------------------------------------
 
-    private void check(double min, double max, double precision, double increment, double ... expectedProducts) {
-    	ShuffleDoubleGenerator generator = new ShuffleDoubleGenerator(min, max, precision, increment);
+    private void check(double min, double max, double granularity, double increment, double ... expectedProducts) {
+    	ShuffleDoubleGenerator generator = new ShuffleDoubleGenerator(min, max, granularity, increment);
         generator.init(context);
         for (double expected : expectedProducts)
 			assertEquals(expected, generator.generate());

@@ -49,7 +49,7 @@ public class RepeatSequence extends Sequence {
     
     private int minRepetitions;
     private int maxRepetitions;
-    private int repetitionPrecision;
+    private int repetitionGranularity;
     private Distribution repetitionDistribution;
 
 	private final static Distribution stepSequence = new StepSequence();
@@ -62,31 +62,31 @@ public class RepeatSequence extends Sequence {
 		this(minRepetitions, maxRepetitions, 1, SequenceManager.RANDOM_SEQUENCE);
 	}
 	
-	public RepeatSequence(int minRepetitions, int maxRepetitions, int repetitionPrecision,
+	public RepeatSequence(int minRepetitions, int maxRepetitions, int repetitionGranularity,
 			Distribution repetitionDistribution) {
 	    super(NAME);
 	    this.minRepetitions = minRepetitions;
 	    this.maxRepetitions = maxRepetitions;
-	    this.repetitionPrecision = repetitionPrecision;
+	    this.repetitionGranularity = repetitionGranularity;
 	    this.repetitionDistribution = repetitionDistribution;
     }
 
     public <T extends Number> NonNullGenerator<T> createGenerator(
-    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	if (minRepetitions > maxRepetitions)
     		throw new ConfigurationError("minRepetitions (" + minRepetitions + ") > " +
     				"maxRepetitions (" + maxRepetitions + ")");
     	if (unique && (minRepetitions > 0 || maxRepetitions > 0))
     		throw new ConfigurationError("Uniqueness can't be assured for minRepetitions=" + minRepetitions
     				+ " and maxRepetitions=" + maxRepetitions);
-		Generator<T> source = stepSequence.createGenerator(numberType, min, max, precision, unique);
+		Generator<T> source = stepSequence.createGenerator(numberType, min, max, granularity, unique);
 		return GeneratorFactoryUtil.asNonNullGenerator(applyTo(source, unique));
 	}
 	
     @Override
 	public <T> Generator<T> applyTo(Generator<T> source, boolean unique) {
 	    return new RepeatGeneratorProxy<T>(source, minRepetitions, maxRepetitions, 
-	    		repetitionPrecision, repetitionDistribution);
+	    		repetitionGranularity, repetitionDistribution);
 	}
 	
 }

@@ -57,12 +57,12 @@ public class StepSequence extends Sequence {
 	private BigDecimal limit;
 	
 	public StepSequence() {
-	    this(null); // when using null, the precision parameter will be used to set the increment in createGenerator
+	    this(null); // when using null, the granularity parameter will be used to set the increment in createGenerator
     }
 	
 	/**
 	 * @param delta the increment to choose for created generators. 
-	 * 		When using null, the precision parameter will be used to set the increment 
+	 * 		When using null, the granularity parameter will be used to set the increment 
 	 * 		in {@link #createGenerator(Class, Number, Number, Number, boolean)}
 	 */
 	public StepSequence(BigDecimal delta) {
@@ -103,8 +103,8 @@ public class StepSequence extends Sequence {
 	}
 	
     public <T extends Number> NonNullGenerator<T> createGenerator(
-    		Class<T> numberType, T min, T max, T precision, boolean unique) {
-        Number deltaToUse = deltaToUse(precision);
+    		Class<T> numberType, T min, T max, T granularity, boolean unique) {
+        Number deltaToUse = deltaToUse(granularity);
     	if (unique && deltaToUse.doubleValue() == 0)
     		throw new InvalidGeneratorSetupException("Can't generate unique numbers with an increment of 0.");
     	NonNullGenerator<? extends Number> base;
@@ -116,11 +116,11 @@ public class StepSequence extends Sequence {
 		} else
 			base = new StepDoubleGenerator(
 					toDouble(min), toDouble(max), toDouble(deltaToUse), toDouble(initial));
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
 	}
 
-	private <T extends Number> Number deltaToUse(T precision) {
-	    return (delta != null ? delta : (precision != null ? precision : 1));
+	private <T extends Number> Number deltaToUse(T granularity) {
+	    return (delta != null ? delta : (granularity != null ? granularity : 1));
     }
 
 	@Override

@@ -51,7 +51,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     public static final String MAX_COUNT          = "maxCount";
     
     // configs
-    public static final String COUNT_PRECISION    = "countPrecision";
+    public static final String COUNT_GRANULARITY    = "countGranularity";
     public static final String COUNT_DISTRIBUTION = "countDistribution";
     public static final String COUNT              = "count";
     public static final String NULL_QUOTA         = "nullQuota";
@@ -88,7 +88,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
         
         // configs
         addConfig(COUNT,              Expression.class);
-        addConfig(COUNT_PRECISION,    Expression.class);
+        addConfig(COUNT_GRANULARITY,    Expression.class);
         addConfig(COUNT_DISTRIBUTION, String.class);
         addConfig(NULL_QUOTA,         Double.class);
     }
@@ -209,12 +209,12 @@ public class InstanceDescriptor extends FeatureDescriptor {
     }
 
     @SuppressWarnings("unchecked")
-    public Expression<Long> getCountPrecision() {
-        return (Expression<Long>) getDetailValue(COUNT_PRECISION);
+    public Expression<Long> getCountGranularity() {
+        return (Expression<Long>) getDetailValue(COUNT_GRANULARITY);
     }
     
-    public void setCountPrecision(Expression<Long> distribution) {
-        setDetailValue(COUNT_PRECISION, distribution);
+    public void setCountGranularity(Expression<Long> distribution) {
+        setDetailValue(COUNT_GRANULARITY, distribution);
     }
 
     public Double getNullQuota() {
@@ -238,7 +238,7 @@ public class InstanceDescriptor extends FeatureDescriptor {
     
     @Override
     public void setDetailValue(String detailName, Object detailValue) {
-    	if (COUNT.equals(detailName) || MIN_COUNT.equals(detailName) || MAX_COUNT.equals(detailName) || COUNT_PRECISION.equals(detailName)) {
+    	if (COUNT.equals(detailName) || MIN_COUNT.equals(detailName) || MAX_COUNT.equals(detailName) || COUNT_GRANULARITY.equals(detailName)) {
             FeatureDetail<Object> detail = getConfiguredDetail(detailName);
             if (detail == null)
                 throw new UnsupportedOperationException(getClass().getSimpleName() + " does not support detail type: " + detailName);

@@ -27,7 +27,7 @@ import org.databene.commons.converter.ThreadSafeConverter;
 
 /**
  * Quantizes floating point numbers ({@link Double} or {@link Float}) 
- * to be <code>min</code> plus an integral multiple of <code>precision</code>.<br/><br/>
+ * to be <code>min</code> plus an integral multiple of <code>granularity</code>.<br/><br/>
  * Created: 15.03.2010 15:35:05
  * @since 0.6.0
  * @author Volker Bergmann
@@ -35,18 +35,18 @@ import org.databene.commons.converter.ThreadSafeConverter;
 public class FloatingPointQuantizer<E extends Number> extends ThreadSafeConverter<E, E> {
 	
 	private Double min;
-	private double precision;
+	private double granularity;
 	private NumberToNumberConverter<Double, E> converter;
 
-	public FloatingPointQuantizer(Class<E> numberType, Double min, double precision) {
+	public FloatingPointQuantizer(Class<E> numberType, Double min, double granularity) {
 	    super(numberType, numberType);
 	    this.min = (min != null ? min : 0.);
-	    this.precision = precision;
+	    this.granularity = granularity;
 	    this.converter = new NumberToNumberConverter<Double, E>(Double.class, numberType);
     }
 
 	public E convert(E sourceValue) throws ConversionException {
-		double l = Math.floor((sourceValue.doubleValue() - min) / precision) * precision + min;
+		double l = Math.floor((sourceValue.doubleValue() - min) / granularity) * granularity + min;
 	    return converter.convert(l);
     }
 

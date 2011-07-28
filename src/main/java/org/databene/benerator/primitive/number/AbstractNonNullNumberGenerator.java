@@ -46,15 +46,15 @@ public abstract class AbstractNonNullNumberGenerator<E extends Number> extends A
 
 	protected E min;
     protected E max;
-    protected E precision;
+    protected E granularity;
     
     // constructors ----------------------------------------------------------------------------------------------------
 
-    public AbstractNonNullNumberGenerator(Class<E> generatedType, E min, E max, E precision) {
+    public AbstractNonNullNumberGenerator(Class<E> generatedType, E min, E max, E granularity) {
     	this.generatedType = generatedType;
         setMin(min);
         setMax(max);
-        setPrecision(precision);
+        setGranularity(granularity);
     }
 
     // config properties -----------------------------------------------------------------------------------------------
@@ -75,12 +75,12 @@ public abstract class AbstractNonNullNumberGenerator<E extends Number> extends A
         this.max = max;
     }
 
-    public E getPrecision() {
-        return NumberToNumberConverter.convert(precision, generatedType);
+    public E getGranularity() {
+        return NumberToNumberConverter.convert(granularity, generatedType);
     }
 
-    public void setPrecision(E precision) {
-        this.precision = precision;
+    public void setGranularity(E granularity) {
+        this.granularity = granularity;
     }
 
     // Generator interface ---------------------------------------------------------------------------------------------

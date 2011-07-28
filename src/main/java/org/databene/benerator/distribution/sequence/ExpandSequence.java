@@ -71,9 +71,9 @@ public class ExpandSequence extends Sequence {
 	// Distribution interface implementation ---------------------------------------------------------------------------
 
 	public <T extends Number> NonNullGenerator<T> createGenerator(
-			Class<T> numberType, T min, T max, T precision, boolean unique) {
-		NonNullGenerator<T> source = SequenceManager.STEP_SEQUENCE.createGenerator(numberType, min, max, precision, unique);
-		int cacheSize = cacheSize(min, max, precision);
+			Class<T> numberType, T min, T max, T granularity, boolean unique) {
+		NonNullGenerator<T> source = SequenceManager.STEP_SEQUENCE.createGenerator(numberType, min, max, granularity, unique);
+		int cacheSize = cacheSize(min, max, granularity);
 		return GeneratorFactoryUtil.asNonNullGenerator(
 				new ExpandGeneratorProxy<T>(source, duplicationQuota(unique), cacheSize, bucketSize(cacheSize)));
 	}
@@ -100,15 +100,15 @@ public class ExpandSequence extends Sequence {
 		return (cacheSize != null ? cacheSize : BeneratorOpts.getCacheSize());
     }
 	
-	private <T extends Number> int cacheSize(T min, T max, T precision) {
+	private <T extends Number> int cacheSize(T min, T max, T granularity) {
 		if (cacheSize != null)
 			return cacheSize;
-		long volume = volume(toLong(min), toLong(max), toLong(precision));
+		long volume = volume(toLong(min), toLong(max), toLong(granularity));
 		return (int) Math.min(BeneratorOpts.getCacheSize(), volume);
 	}
 
-	private static <T extends Number> long volume(long min, long max, long precision) {
-	    return (max - min + precision - 1) / precision;
+	private static <T extends Number> long volume(long min, long max, long granularity) {
+	    return (max - min + granularity - 1) / granularity;
     }
     
 }

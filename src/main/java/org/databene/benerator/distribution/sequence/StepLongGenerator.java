@@ -64,9 +64,9 @@ public class StepLongGenerator extends AbstractNonNullNumberGenerator<Long> {
     }
     
     @Override
-    public void setPrecision(Long precision) {
-        super.setPrecision(precision);
-        this.increment = precision;
+    public void setGranularity(Long granularity) {
+        super.setGranularity(granularity);
+        this.increment = granularity;
     }
 
     // Generator implementation ----------------------------------------------------------------------------------------

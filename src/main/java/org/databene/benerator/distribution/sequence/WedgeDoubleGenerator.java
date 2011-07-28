@@ -43,8 +43,8 @@ public class WedgeDoubleGenerator extends AbstractNonNullNumberGenerator<Double>
         this(min, max, 1);
     }
 
-    public WedgeDoubleGenerator(double min, double max, double precision) {
-        super(Double.class, min, max, precision);
+    public WedgeDoubleGenerator(double min, double max, double granularity) {
+        super(Double.class, min, max, granularity);
         this.cursor = min;
     }
 
@@ -54,9 +54,9 @@ public class WedgeDoubleGenerator extends AbstractNonNullNumberGenerator<Double>
 	public void init(GeneratorContext context) {
     	assertNotInitialized();
         cursor = min;
-        max = min + (max - min) / precision * precision;
-        double steps = (max - min) / precision + 1;
-        end = min + Math.floor(steps / 2) * precision;
+        max = min + (max - min) / granularity * granularity;
+        double steps = (max - min) / granularity + 1;
+        end = min + Math.floor(steps / 2) * granularity;
         super.init(context);
     }
 
@@ -66,12 +66,12 @@ public class WedgeDoubleGenerator extends AbstractNonNullNumberGenerator<Double>
         if (cursor == null)
             return null;
         double result = cursor;
-        if (Math.abs(cursor - end) < precision / 2)
+        if (Math.abs(cursor - end) < granularity / 2)
             cursor = null;
         else {
             cursor = max - cursor + min;
             if (cursor < end)
-                cursor += precision;
+                cursor += granularity;
         }
         return result;
     }

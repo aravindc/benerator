@@ -48,10 +48,10 @@ public class BitReverseSequence extends Sequence {
     }
 
     public <T extends Number> NonNullGenerator<T> createGenerator(
-    		Class<T> numberType, T min, T max, T precision, boolean unique) {
+    		Class<T> numberType, T min, T max, T granularity, boolean unique) {
     	long lMax = (max != null ? max.longValue() : BitReverseLongGenerator.MAX_INDEX_RANGE + toLong(min));
-    	NonNullGenerator<? extends Number> base = new BitReverseLongGenerator(toLong(min), lMax, toLong(precision));
-		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, precision);
+    	NonNullGenerator<? extends Number> base = new BitReverseLongGenerator(toLong(min), lMax, toLong(granularity));
+		return WrapperFactory.wrapNonNullNumberGenerator(numberType, base, min, granularity);
     }
 
 }

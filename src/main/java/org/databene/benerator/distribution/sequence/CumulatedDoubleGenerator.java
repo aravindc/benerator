@@ -48,16 +48,16 @@ public class CumulatedDoubleGenerator extends AbstractNonNullNumberGenerator<Dou
         this(min, max, 1);
     }
 
-    public CumulatedDoubleGenerator(double min, double max, double precision) {
-        super(Double.class, min, max, precision);
+    public CumulatedDoubleGenerator(double min, double max, double granularity) {
+        super(Double.class, min, max, granularity);
     }
     
     @Override
     public void init(GeneratorContext context) {
-    	if (precision == 0.)
-    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".precision may not be 0");
+    	if (granularity == 0.)
+    		throw new InvalidGeneratorSetupException(getClass().getSimpleName() + ".granularity may not be 0");
         super.init(context);
-        baseGen = new RandomDoubleGenerator(min, max, precision);
+        baseGen = new RandomDoubleGenerator(min, max, granularity);
         baseGen.init(context);
     }
 
@@ -66,7 +66,7 @@ public class CumulatedDoubleGenerator extends AbstractNonNullNumberGenerator<Dou
     	assertInitialized();
         double exactValue = (baseGen.generate() + baseGen.generate() + baseGen.generate() + 
         		baseGen.generate() + baseGen.generate()) / 5.;
-        return min + (int)(Math.round((exactValue - min) / precision)) * precision;
+        return min + (int)(Math.round((exactValue - min) / granularity)) * granularity;
     }
 
 }

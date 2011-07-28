@@ -400,9 +400,9 @@ public class AnnotationMapper {
 			if (annotationType == Unique.class)
 				instanceDescriptor.setDetailValue("unique", true);
 			else if (annotationType == Granularity.class)
-				instanceDescriptor.getLocalType(false).setDetailValue("precision", String.valueOf(DescriptorUtil.convertType(((Granularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
+				instanceDescriptor.getLocalType(false).setDetailValue("granularity", String.valueOf(DescriptorUtil.convertType(((Granularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
 			else if (annotationType == DecimalGranularity.class)
-				instanceDescriptor.getLocalType(false).setDetailValue("precision", String.valueOf(DescriptorUtil.convertType(((DecimalGranularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
+				instanceDescriptor.getLocalType(false).setDetailValue("granularity", String.valueOf(DescriptorUtil.convertType(((DecimalGranularity) annotation).value(), (SimpleTypeDescriptor) instanceDescriptor.getLocalType(false))));
 			else if (annotationType == SizeDistribution.class)
 				instanceDescriptor.getLocalType(false).setDetailValue("lengthDistribution", ((SizeDistribution) annotation).value());
 			else if (annotationType == Pattern.class)
@@ -519,7 +519,7 @@ public class AnnotationMapper {
     		typeDescriptor.setMin(String.valueOf(DescriptorUtil.convertType(((DecimalMin) annotation).value(), typeDescriptor)));
     	else if (annotation instanceof Digits) {
     		Digits digits = (Digits) annotation;
-			typeDescriptor.setPrecision(String.valueOf(Math.pow(10, - digits.fraction())));
+			typeDescriptor.setGranularity(String.valueOf(Math.pow(10, - digits.fraction())));
 			// TODO v0.7 integer() part?
     	} else if (annotation instanceof Future)
 	        typeDescriptor.setMin(new SimpleDateFormat("yyyy-MM-dd").format(TimeUtil.tomorrow()));

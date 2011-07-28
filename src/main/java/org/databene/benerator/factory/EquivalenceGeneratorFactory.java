@@ -119,7 +119,7 @@ public class EquivalenceGeneratorFactory extends GeneratorFactory {
 	public <T extends Number> NonNullGenerator<T> createNumberGenerator(
             Class<T> numberType, T min, Boolean minInclusive, T max, Boolean maxInclusive, 
             Integer totalDigits, Integer fractionDigits, T granularity, Distribution distribution, Uniqueness uniqueness) {
-        // TODO v0.7 define difference between precision and fractionDigits and implement it accordingly
+        // TODO v0.7 define difference between granularity and fractionDigits and implement it accordingly
         Assert.notNull(numberType, "numberType");
         if (distribution != null)
         	return super.createNumberGenerator(numberType, min, minInclusive, max, maxInclusive, 
