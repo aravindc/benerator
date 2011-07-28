@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2008-2010 by Volker Bergmann. All rights reserved.
+ * (c) Copyright 2008-2011 by Volker Bergmann. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, is permitted under the terms of the
@@ -31,6 +31,7 @@ import java.util.Locale;
 import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.benerator.test.PersonIterable;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.measure.count.ObjectCounter;
 import org.databene.model.data.ComplexTypeDescriptor;
 import org.databene.model.data.Entity;
@@ -62,7 +63,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		type.setDetailValue("locale", "de");
 		Generator<Entity> generator = createGenerator(type);
 		generator.init(context);
-		Entity product = generator.generate();
+		Entity product = GeneratorUtil.generateNonNull(generator);
 		assertNotNull(product);
 		assertEquals(Locale.GERMAN, product.get("locale"));
 	}
@@ -119,7 +120,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		ObjectCounter<Entity> counter = new ObjectCounter<Entity>(2);
 		int n = 1000;
 		for (int i = 0; i < n; i++)
-			counter.count(generator.generate());
+			counter.count(GeneratorUtil.generateNonNull(generator));
 		assertEquals(n * 24. / (24. + 89.), counter.getCount(alice), n / 20);
 	}
 
@@ -141,8 +142,8 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		instance.setUnique(true);
 		Generator<Entity> generator = createGenerator(instance);
 		generator.init(context);
-		Entity person1 = generator.generate();
-		Entity person2 = generator.generate();
+		Entity person1 = GeneratorUtil.generateNonNull(generator);
+		Entity person2 = GeneratorUtil.generateNonNull(generator);
 		assertTrue(alice.equals(person1) && otto.equals(person2) || otto.equals(person1) && alice.equals(person2));
 		assertUnavailable(generator);
 	}
@@ -158,7 +159,7 @@ public class ComplexTypeGeneratorFactoryTest extends GeneratorTest {
 		context.set("personSource", new PersonIterable());
 		Generator<Entity> generator = createGenerator(twen);
 		generator.init(context);
-		Entity person1 = generator.generate();
+		Entity person1 = GeneratorUtil.generateNonNull(generator);
 		assertEquals(PersonIterable.createAlice(), person1);
 		assertUnavailable(generator);
 	}

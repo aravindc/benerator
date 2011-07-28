@@ -30,6 +30,7 @@ import org.databene.benerator.Generator;
 import org.databene.benerator.distribution.SequenceManager;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.test.GeneratorTest;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.model.data.InstanceDescriptor;
 import org.databene.model.data.SimpleTypeDescriptor;
 import org.databene.model.data.Uniqueness;
@@ -61,7 +62,7 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst");
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
-		assertNull(countGenerator.generate());
+		assertNull(GeneratorUtil.generateNonNull(countGenerator));
 	}
 	
 	@Test
@@ -85,7 +86,7 @@ public class GeneratorFactoryUtilTest extends GeneratorTest {
 		InstanceDescriptor descriptor = new InstanceDescriptor("inst").withMinCount(6);
 		Generator<Long> countGenerator = GeneratorFactoryUtil.getCountGenerator(descriptor, false, context);
 		countGenerator.init(context);
-		assertNull(countGenerator.generate());
+		assertNull(GeneratorUtil.generateNonNull(countGenerator));
 	}
 	
 }

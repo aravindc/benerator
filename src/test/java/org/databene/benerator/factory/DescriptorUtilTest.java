@@ -42,6 +42,7 @@ import org.databene.benerator.test.GeneratorMock;
 import org.databene.benerator.test.JSR303ConstraintValidatorMock;
 import org.databene.benerator.test.ValidatorMock;
 import org.databene.benerator.test.WeightFunctionMock;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.Converter;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
@@ -321,7 +322,7 @@ public class DescriptorUtilTest {
 		descriptor.setGenerator(generatorSpec);
 		Generator<?> generator = DescriptorUtil.getGeneratorByName(descriptor, context);
 		assertNotNull(generator);
-		assertEquals(expectedValue, generator.generate());
+		assertEquals(expectedValue, GeneratorUtil.generateNonNull(generator));
 	}
 
 	private void checkGetWeightFunction(

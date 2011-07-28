@@ -28,11 +28,11 @@ package org.databene.benerator.factory;
 
 import java.util.Date;
 
+import org.databene.benerator.Generator;
 import org.databene.benerator.composite.ComponentBuilder;
 import org.databene.benerator.engine.BeneratorContext;
 import org.databene.benerator.factory.ComponentBuilderFactory;
-import org.databene.benerator.nullable.NullableGenerator;
-import org.databene.benerator.wrapper.ProductWrapper;
+import org.databene.benerator.util.GeneratorUtil;
 import org.databene.commons.TimeUtil;
 import org.databene.commons.Validator;
 import org.databene.commons.expression.ConstantExpression;
@@ -77,11 +77,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("'OK'");
 		ComponentBuilder<?> builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
-		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
-			assertEquals("OK", helper.generate(wrapper).product);
+			assertEquals("OK", GeneratorUtil.generateNonNull(helper));
 	}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -91,11 +90,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setScript("null");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
-		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
-			assertEquals(null, helper.generate(wrapper).product);
+			assertEquals(null, GeneratorUtil.generateNonNull(helper));
 	}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -106,11 +104,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		type.setScript("'abc'");
 		type.setConverter("org.databene.commons.converter.ToUpperCaseConverter");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
-		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
-			assertEquals("ABC", helper.generate(wrapper).product);
+			assertEquals("ABC", GeneratorUtil.generateNonNull(helper));
 	}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -122,11 +119,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		BeneratorContext context = new BeneratorContext();
 		context.set("myEnum", TestEnum.firstInstance);
 		ComponentBuilder builder = createComponentBuilder(part, context);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, part.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, part.getName());
 		helper.init(context);
-		ProductWrapper<String> wrapper = new ProductWrapper<String>();
 		for (int i = 0; i < 10; i++)
-			assertEquals("firstInstance", helper.generate(wrapper).product);
+			assertEquals("firstInstance", GeneratorUtil.generateNonNull(helper));
 	}
 
 	// constant --------------------------------------------------------------------------------------------------------
@@ -138,11 +134,12 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setConstant("");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
-		ProductWrapper<String> wrapper = new ProductWrapper<String>();
-		for (int i = 0; i < 10; i++)
-			assertEquals("Invalid product: ", "", helper.generate(wrapper).product);
+		for (int i = 0; i < 10; i++) {
+			String actual = GeneratorUtil.generateNonNull(helper);
+			assertEquals("Invalid product: ", "", actual);
+		}
 	}
 
 	// values ----------------------------------------------------------------------------------------------------------
@@ -155,10 +152,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("'A','B'");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		for (int i = 0; i < 10; i++) {
-			String s = helper.generate(new ProductWrapper<String>()).product;
+			String s = GeneratorUtil.generateNonNull(helper);
 			assertTrue("A".equals(s) || "B".equals(s));
 		}
 	}
@@ -172,9 +169,9 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		type.setValues("'A'");
 		ComponentBuilder builder = createComponentBuilder(name);
 		builder.init(context);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		for (int i = 0; i < 10; i++)
-			assertEquals("A", helper.generate(new ProductWrapper<String>()).product);
+			assertEquals("A", GeneratorUtil.generateNonNull(helper));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -185,10 +182,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setValues("");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		for (int i = 0; i < 10; i++)
-			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
+			assertEquals("", GeneratorUtil.generateNonNull(helper));
 	}
 	
 	// pattern ---------------------------------------------------------------------------------------------------------
@@ -201,7 +198,7 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setPattern("\\d{2,4}");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		Validator<Character> charValidator = new Validator<Character>() {
 			public boolean valid(Character c) {
@@ -219,10 +216,10 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		SimpleTypeDescriptor type = (SimpleTypeDescriptor) name.getLocalType(false);
 		type.setPattern("");
 		ComponentBuilder builder = createComponentBuilder(name);
-		NullableGenerator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
+		Generator<String> helper = new ComponentBuilderGenerator(builder, name.getName());
 		helper.init(context);
 		for (int i = 0; i < 10; i++)
-			assertEquals("", helper.generate(new ProductWrapper<String>()).product);
+			assertEquals("", GeneratorUtil.generateNonNull(helper));
 	}
 
 	// csv string source -----------------------------------------------------------------------------------------------
@@ -238,7 +235,6 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		PartDescriptor name = createCSVStringAttributeDescriptor();
 		SimpleTypeDescriptor localType = (SimpleTypeDescriptor) name.getLocalType(false);
 		localType.setDistribution("step");
-		localType.setMin("0");
 		expectUniqueSequence(name, "Alice", "Bob", "Charly");
 	}
 	
@@ -320,6 +316,7 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
 		builder.init(context);
 		Entity entity = new Entity("Entity");
 		builder.buildComponentFor(entity);
+		assertTrue("1".equals(entity.get("a")) || "2".equals(entity.get("b")));
     }
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -343,7 +340,6 @@ public class AttributeComponentBuilderFactoryTest extends AbstractComponentBuild
     
     // test date and time generation -----------------------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testDateMinMax() {
 		String componentName = "part";
