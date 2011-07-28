@@ -26,9 +26,13 @@
 
 package org.databene.domain.person;
 
+import java.util.List;
+
+import org.databene.benerator.Generator;
 import org.databene.benerator.GeneratorContext;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.WeightedSample;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.CollectionUtil;
 
 /**
@@ -39,7 +43,7 @@ import org.databene.commons.CollectionUtil;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class GenderGenerator extends GeneratorProxy<Gender> {
+public class GenderGenerator extends NonNullGeneratorProxy<Gender> {
 
 	private double femaleQuota;
 	
@@ -64,10 +68,12 @@ public class GenderGenerator extends GeneratorProxy<Gender> {
 	@Override
     public synchronized void init(GeneratorContext context) {
     	assertNotInitialized();
-	    source = context.getGeneratorFactory().createWeightedSampleGenerator(CollectionUtil.toList(
-	    		new WeightedSample<Gender>(Gender.FEMALE, femaleQuota),
-	    		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
-	    ), Gender.class);
+	    List<WeightedSample<Gender>> samples = CollectionUtil.toList(
+    		new WeightedSample<Gender>(Gender.FEMALE, femaleQuota),
+    		new WeightedSample<Gender>(Gender.MALE, 1 - femaleQuota)
+	    );
+		Generator<Gender> source = context.getGeneratorFactory().createWeightedSampleGenerator(samples, Gender.class);
+		setSource(GeneratorFactoryUtil.asNonNullGenerator(source));
         super.init(context);
     }
 
