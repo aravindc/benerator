@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 
 import java.sql.SQLException;
 
-import org.databene.benerator.Generator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.jdbacl.hsql.HSQLUtil;
 import org.junit.Before;
@@ -65,7 +64,7 @@ public class DBSequenceGeneratorTest extends GeneratorTest {
 		long first = db.nextSequenceValue(seq);
 		try {
 			// assure that the generated values are like if they stem from the DB sequence
-			Generator<Long> generator = new DBSequenceGenerator(seq, db, cached);
+			DBSequenceGenerator generator = new DBSequenceGenerator(seq, db, cached);
 			generator.init(context);
 			long n = first;
 			for (int i = 0; i < 10; i++) {
