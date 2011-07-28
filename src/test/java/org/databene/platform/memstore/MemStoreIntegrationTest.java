@@ -49,7 +49,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	private ConsumerMock<Entity> consumer;
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUpConsumerAndDescriptor() throws Exception {
 		consumer = new ConsumerMock<Entity>(true);
 		context.set("cons", consumer);
 
@@ -115,6 +115,7 @@ public class MemStoreIntegrationTest extends BeneratorIntegrationTest {
 	@Test
 	public void testVariable() {
 		MemStore.ignoreClose = false;
+		context.setDefaultOneToOne(true);
 		parseAndExecute(
 			"<generate type='order' consumer='cons'>" +
 			"	<variable name='p' source='src' type='product'/>" +
