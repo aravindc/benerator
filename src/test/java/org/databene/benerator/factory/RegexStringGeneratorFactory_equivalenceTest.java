@@ -25,7 +25,7 @@ import static junit.framework.Assert.*;
 
 import java.util.Locale;
 
-import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.test.GeneratorTest;
 import org.databene.commons.LocaleUtil;
 import org.junit.AfterClass;
@@ -168,8 +168,8 @@ public class RegexStringGeneratorFactory_equivalenceTest extends GeneratorTest {
     	expectGeneratedSequence(createGenerator(regex, minLength, maxLength), products).withCeasedAvailability();
     }
     
-    private Generator<String> createGenerator(String pattern, int minLength, Integer maxLength) {
-    	Generator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, false, new EquivalenceGeneratorFactory());
+    private NonNullGenerator<String> createGenerator(String pattern, int minLength, Integer maxLength) {
+    	NonNullGenerator<String> generator = RegexGeneratorFactory.create(pattern, minLength, maxLength, false, new EquivalenceGeneratorFactory());
     	generator.init(context);
 		return generator;
     }
