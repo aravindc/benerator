@@ -31,7 +31,7 @@ import org.databene.benerator.GeneratorContext;
 import org.databene.benerator.InvalidGeneratorSetupException;
 import org.databene.benerator.factory.GeneratorFactory;
 import org.databene.benerator.factory.VolumeGeneratorFactory;
-import org.databene.benerator.wrapper.GeneratorProxy;
+import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ import java.util.Locale;
  * @since 0.1
  * @author Volker Bergmann
  */
-public class RegexStringGenerator extends GeneratorProxy<String> {
+public class RegexStringGenerator extends NonNullGeneratorProxy<String> {
 
     /** Optional String representation of a regular expression */
     private String pattern;
@@ -128,12 +128,12 @@ public class RegexStringGenerator extends GeneratorProxy<String> {
     /** ensures consistency of the generators state */
     @Override
     public void init(GeneratorContext context) {
-    	Generator<String> tmp = getGeneratorFactory(context).createRegexStringGenerator(pattern, minLength, maxLength, unique);
+    	Generator<String> tmp = getGeneratorFactory(context).createRegexStringGenerator(
+    			pattern, minLength, maxLength, unique);
         try {
 			setSource(tmp);
             super.init(context);
         } catch (Exception e) {
-        	getGeneratorFactory(context).createRegexStringGenerator(pattern, minLength, maxLength, unique);
             throw new InvalidGeneratorSetupException("Illegal regular expression: ", e);
         }
     }

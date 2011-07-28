@@ -28,8 +28,8 @@ package org.databene.benerator.primitive;
 
 import org.databene.benerator.*;
 import org.databene.regex.RegexParser;
+import org.databene.benerator.factory.GeneratorFactoryUtil;
 import org.databene.benerator.sample.SampleGenerator;
-import org.databene.benerator.wrapper.AsNonNullGenerator;
 import org.databene.benerator.wrapper.NonNullGeneratorProxy;
 import org.databene.commons.LocaleUtil;
 import org.databene.commons.SyntaxError;
@@ -137,7 +137,7 @@ public class CharacterGenerator extends NonNullGeneratorProxy<Character> {
                 Object regex = new RegexParser(locale).parseSingleChar(pattern);
                 values = RegexParser.toSet(regex);
             }
-            setSource(new AsNonNullGenerator<Character>(new SampleGenerator<Character>(Character.class, values)));
+            setSource(GeneratorFactoryUtil.asNonNullGenerator(new SampleGenerator<Character>(Character.class, values)));
             super.init(context);
         } catch (SyntaxError e) {
             throw new IllegalGeneratorStateException(e);

@@ -22,6 +22,7 @@
 package org.databene.benerator.primitive;
 
 import org.databene.benerator.Generator;
+import org.databene.benerator.NonNullGenerator;
 import org.databene.benerator.wrapper.CardinalGenerator;
 import org.databene.benerator.wrapper.ProductWrapper;
 
@@ -32,7 +33,8 @@ import org.databene.benerator.wrapper.ProductWrapper;
  * @since 0.7.0
  * @author Volker Bergmann
  */
-public class DistributedLengthStringGenerator extends CardinalGenerator<Character, String> {
+public class DistributedLengthStringGenerator extends CardinalGenerator<Character, String> 
+		implements NonNullGenerator<String>{
 	
 	public DistributedLengthStringGenerator(Generator<Character> charGenerator, Generator<Integer> lengthGenerator) {
 		super(charGenerator, lengthGenerator);
@@ -43,6 +45,10 @@ public class DistributedLengthStringGenerator extends CardinalGenerator<Characte
 	}
 	
 	public ProductWrapper<String> generate(ProductWrapper<String> wrapper) {
+		return wrapper.wrap(generate());
+	}
+
+	public String generate() {
 		Integer length = generateCount();
 		if (length == null)
 			return null;
@@ -53,7 +59,7 @@ public class DistributedLengthStringGenerator extends CardinalGenerator<Characte
 				return null;
 			buffer[i] = charWrapper.unwrap();
 		}
-		return wrapper.wrap(new String(buffer));
+		return new String(buffer);
 	}
 
 }
